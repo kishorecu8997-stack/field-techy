@@ -1,7 +1,7 @@
 import React, { Suspense, type JSX } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { urls } from "@/config/urls";
-import LoaderComponent from "@/shared/commonUI/LoaderComponent";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 const Home = React.lazy(() => import("@/pages/home"));
 const Login = React.lazy(() => import("@/pages/auth"));
