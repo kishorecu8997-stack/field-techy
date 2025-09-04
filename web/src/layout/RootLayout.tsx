@@ -12,7 +12,7 @@ import { Outlet } from "react-router-dom";
  */
 const RootLayout = (): JSX.Element => {
   return (
-    <div className="w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1080px] mx-auto h-screen flex flex-col">
+    <div className="w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1080px] mx-auto h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
       <div className="flex-1 overflow-hidden">
         <div className="p-4">
           <Outlet />
@@ -21,5 +21,6 @@ const RootLayout = (): JSX.Element => {
     </div>
   );
 };
+
 
 export default RootLayout;
