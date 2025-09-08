@@ -27,7 +27,7 @@ const Loader2: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={2}
-      d="M12 4v4m0 8v4m4-4h4m-8 0H4m4-4H4m4 0h4"
+      d="M12 4a8 8 0 1 1-8 8"
     />
   </svg>
 );
