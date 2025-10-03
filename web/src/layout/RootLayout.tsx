@@ -1,4 +1,6 @@
-import type { JSX } from "react";
+import Drawer from "@/shared/components/Drawer";
+import Header from "@/shared/components/Header";
+import { useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
 /**
@@ -11,16 +13,26 @@ import { Outlet } from "react-router-dom";
  * @returns {JSX.Element} The layout wrapper for child routes.
  */
 const RootLayout = (): JSX.Element => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   return (
-    <div className="w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1080px] mx-auto h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-      <div className="flex-1 overflow-hidden">
-        <div className="p-4">
-          <Outlet />
+    <div className="bg-white dark:bg-gray-800 text-gray-900">
+      <div className="w-full max-w-[1340px] mx-auto h-screen flex flex-col  dark:text-gray-100 transition-colors p-1">
+        <div className="flex-1 overflow-hidden">
+          <Header
+            onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <Drawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+          />
+          <div className="p-4">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default RootLayout;
