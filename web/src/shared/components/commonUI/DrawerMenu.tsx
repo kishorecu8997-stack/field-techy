@@ -23,6 +23,19 @@ export type MenuItems = {
   onClick?: () => void;
 };
 
+
+/**
+ * DrawerMenu component displays a vertical list of menu items with borders.
+ * Features dark mode support, each item has an icon, label, and right-chevron arrow.
+ * Borders separate items and frame the container. Logout item opens a confirmation popup.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onMenuItemClick - Function called when a menu item is clicked
+ * 
+ * @example
+ * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
+ */
 const DrawerMenu: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuItems: MenuItems[] = [

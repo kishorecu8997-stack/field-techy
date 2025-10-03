@@ -11,6 +11,22 @@ interface HeaderProps {
   isDrawerOpen: boolean;
 }
 
+/**
+ * Header component with navigation, search bar, and user profile.
+ * Features responsive design with mobile menu, dark mode support, and notification badges.
+ * Clicking the profile button opens a drawer from the right side.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onDrawerToggle - Function to toggle the profile drawer
+ * @param {boolean} props.isDrawerOpen - Boolean indicating if the profile drawer is open
+ * 
+ * @example
+ * <Header 
+ *   onDrawerToggle={() => setIsDrawerOpen(prev => !prev)} 
+ *   isDrawerOpen={isDrawerOpen} 
+ * />
+ */
 const Header: React.FC<HeaderProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);

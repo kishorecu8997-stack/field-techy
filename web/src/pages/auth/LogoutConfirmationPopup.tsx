@@ -6,6 +6,21 @@ interface LogoutConfirmationPopupProps {
   onCancel: () => void;
 }
 
+/**
+ * LogoutConfirmationPopup component displays a modal asking user to confirm logout.
+ * Features dark mode support, centered content, and action buttons.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onConfirm - Function called when user confirms logout
+ * @param {Function} props.onCancel - Function called when user cancels logout
+ * 
+ * @example
+ * <LogoutConfirmationPopup 
+ *   onConfirm={() => console.log('Logged out')} 
+ *   onCancel={() => console.log('Cancelled')} 
+ * />
+ */
 const LogoutConfirmationPopup: React.FC<LogoutConfirmationPopupProps> = ({
   onConfirm,
   onCancel,

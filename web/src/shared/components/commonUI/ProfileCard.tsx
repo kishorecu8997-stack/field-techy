@@ -1,5 +1,28 @@
 import React from "react";
 
+/**
+ * ProfileCard component displays a user profile with avatar, name, title, and rating information.
+ * Features a progress indicator around the avatar and dark mode support.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.avatarUrl - URL of the user's avatar image
+ * @param {string} props.name - User's full name
+ * @param {string} props.title - User's job title or role
+ * @param {number} props.rating - Average rating (e.g., 4.5)
+ * @param {number} props.reviewCount - Total number of reviews
+ * @param {number} props.completionPercentage - Profile completion percentage (0-100)
+ * 
+ * @example
+ * <ProfileCard
+ *   avatarUrl="/path/to/avatar.jpg"
+ *   name="John Doe"
+ *   title="Senior Developer"
+ *   rating={4.8}
+ *   reviewCount={128}
+ *   completionPercentage={85}
+ * />
+ */
 const ProfileCard = ({
   avatarUrl,
   name,
