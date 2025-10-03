@@ -16,7 +16,6 @@ export interface OTPValues {
   otp: string;
 }
 
-
 /**
  * OTP verification page component for handling one-time password authentication.
  * Provides an input field for entering OTP, countdown timer, and resend functionality.
@@ -62,6 +61,7 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
   }, [timeLeft]);
 
   const handleSubmit = (data: OTPValues) => {
+  console.log('data :', data);
     console.log(data, "data from OTP Form");
     handleNavigate?.();
   };
@@ -72,31 +72,35 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-center  ">
+    <div className="flex items-center justify-center">
       <FormContainer
         methods={method}
         onSubmit={handleSubmit}
         className="w-full"
       >
-        <div className="bg-white rounded-xl p-6  shadow-lg relative gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3">
           <IoClose
-            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 h-7 w-7 cursor-pointer"
+            className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
             onClick={onClose}
           />
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-3xl font-bold">{header}</h2>
-            <p className="text-md text-center text-gray-600 mb-6 px-3">{description}</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{header}</h2>
+            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
           </div>
           <div className="p-2">
-            <OTPInput name="otp" length={4} />
-            <div className="flex justify-between items-center mb-4 text-sm text-gray-500 p-5">
+            <OTPInput 
+              name="otp" 
+              length={4} 
+              errorAlign="center"
+            />
+            <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
               <span>
                 {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
               </span>
               <button
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 font-medium ${
+                className={`text-green-600 dark:text-green-400 font-medium ${
                   timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
@@ -106,7 +110,7 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
           </div>
           <Button
             type="submit"
-             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
           </Button>

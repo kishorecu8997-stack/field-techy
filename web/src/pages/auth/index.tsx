@@ -26,7 +26,7 @@ const Layout: React.FC = () => {
       </div>
 
       {/* Right Panel - 70% width on desktop, full width on mobile */}
-      <div className="flex-1 w-full overflow-y-auto rounded-t-xl md:rounded-none bg-white">
+      <div className="flex-1 w-full overflow-y-auto rounded-t-xl md:rounded-none ">
         <RightPanel />
       </div>
     </div>

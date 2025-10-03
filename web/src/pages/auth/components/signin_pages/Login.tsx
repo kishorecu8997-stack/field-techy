@@ -44,17 +44,17 @@ const Login = ({
 
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className=" p-10 w-full ">
+      <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img src={logo} alt="logo" className="h-20 w-24" />
           </div>
-          <h2 className="text-3xl font-bold">Sign In</h2>
-          <h2 className="text-md font-extralight ">
-            Don’t have an account?{" "}
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sign In</h2>
+          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
+            Don't have an account?{" "}
             <NavLink
               to={urls.auth.signUp}
-              className="text-teal-900 underline font-semibold"
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
             >
               Sign Up
             </NavLink>
@@ -65,12 +65,22 @@ const Login = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2 w-full"
         >
-          <InputField name="email" label="Email Address" type="email" />
-          <PasswordInput name="password" label="Password" />
+          <InputField 
+            name="email" 
+            label="Email Address" 
+            type="email" 
+          />
+          <PasswordInput 
+            name="password" 
+            label="Password" 
+          />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
+            <CheckboxInput 
+              name="rememberMe" 
+              secondaryLabel="Remember Me" 
+            />
             <NavLink
-              className="text-teal-900 hover:underline font-semibold"
+              className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={urls.auth.forgetPassword}
             >
               Forgot Password?
@@ -84,27 +94,30 @@ const Login = ({
           </Button>
         </FormContainer>
         <div
-          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+          className="text-gray-900 dark:text-gray-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
-          <LuPhone />
+          <LuPhone className="dark:text-gray-300" />
           Sign in with Phone Number
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
-          <hr className="flex-1 border-t border-gray-300" />
-          <span className="text-gray-500 text-sm">or</span>
-          <hr className="flex-1 border-t border-gray-300" />
+          <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
+          <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
+          <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
         </div>
         <div className="flex flex-col gap-2 items-center justify-center pt-5">
           <Button
-            className="w-full "
+            className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             variant="outline"
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
-            <span className="whitespace-nowrap">LinkedIn</span>
+            <span className="whitespace-nowrap text-gray-900 dark:text-white">LinkedIn</span>
           </Button>
         </div>
-        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <Popup 
+          open={isOpen} 
+          onClose={() => setIsOpen(false)}
+        >
           <OTPPage
             header="Enter the OTP"
             description="We sent you an OTP code"
