@@ -7,6 +7,20 @@ import img1 from "@/pages/assets/img1.png";
 import img2 from "@/pages/assets/img2.png";
 import img3 from "@/pages/assets/img3.png";
 
+
+/**
+ * Left Panel component with a carousel showcasing different sections/features.
+ * Displays rotating slides with titles, descriptions, and images to highlight
+ * platform benefits and features for users.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <LeftPanel />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Left Panel carousel component
+ */
 const LeftPanel: React.FC = () => {
   const sections = [
     {

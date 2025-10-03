@@ -8,6 +8,19 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { TagInputField } from "@/shared/components/commonUI/inputs/TagInputField";
 import { CgNotes } from "react-icons/cg";
 
+/**
+ * Profile Setup form component containing input fields for user profile information.
+ * Includes fields for personal details, professional information, and resume upload.
+ * Used within the Profile Setting page for collecting user profile data.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <ProfileSetup />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Profile Setup form component with input fields
+ */
 const ProfileSetup = () => {
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">

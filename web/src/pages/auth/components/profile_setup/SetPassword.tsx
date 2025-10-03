@@ -11,6 +11,19 @@ export type SetPasswordFormData = {
   confirmPassword: string;
 };
 
+/**
+ * Set Password form component for creating a new user password.
+ * Provides password and confirm password fields with validation.
+ * Handles form submission and navigation to login page.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <SetPassword />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Set Password form component
+ */
 const SetPassword = () => {
   const navigate = useNavigate();
   const methods = useForm<SetPasswordFormData>({

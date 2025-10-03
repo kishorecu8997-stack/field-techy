@@ -8,6 +8,20 @@ import { useNavigate } from "react-router-dom";
 import { urls } from "@/config/urls";
 import type { ProfileSetupData } from "../types";
 
+
+/**
+ * Profile Setting page component for completing user profile information.
+ * Provides form fields for user details including profile image, personal information,
+ * and professional details. Handles form submission and navigation to background verification.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <ProfileSettingPage />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Profile Setting page component
+ */
 const ProfileSettingPage = () => {
   const navigate = useNavigate();
   const formCtx = useForm<ProfileSetupData>({

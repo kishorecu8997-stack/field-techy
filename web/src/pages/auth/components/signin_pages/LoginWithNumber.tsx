@@ -15,6 +15,20 @@ export type LoginFormData = {
   phone: string;
 };
 
+/**
+ * Login with phone number component that allows users to sign in using their phone number.
+ * Provides phone input field, OTP verification, and alternative login options.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Function to toggle between phone and email login
+ * @example
+ * return (
+ *   <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Login with Number form component
+ */
 const LoginWithNumber = ({
   setIsNumberLogin,
 }: {

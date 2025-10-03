@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// const BackgroundVerification = () => {
-//   return (
-//     <div>BackgroundVerification</div>
-//   )
-// }
-
-// export default BackgroundVerification
-
 import { urls } from "@/config/urls";
 import logo from "@/pages/assets/logo.png";
 import { Button } from "@/shared/components/Buttons";
@@ -42,9 +32,9 @@ const BackgroundVerification = () => {
     navigate(urls.auth.set_password);
   };
 
-const handleBack = () => {
-  navigate(-1); // Go back to previous page
-};
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
+  };
 
   return (
     <div className="flex items-center justify-center w-lg">

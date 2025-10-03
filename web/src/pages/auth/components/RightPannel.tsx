@@ -2,6 +2,19 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
+/**
+ * Right Panel component that serves as a container for dynamic content.
+ * Renders the current route's component using React Router's Outlet,
+ * providing a consistent layout structure with proper spacing and alignment.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <RightPanel />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Right Panel container with outlet for routing
+ */
 const RightPanel: React.FC = () => {
   return (
     <div className="h-full w-full overflow-y-auto bg-white flex flex-col items-center justify-center">

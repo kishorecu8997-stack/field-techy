@@ -16,6 +16,30 @@ export interface OTPValues {
   otp: string;
 }
 
+
+/**
+ * OTP verification page component for handling one-time password authentication.
+ * Provides an input field for entering OTP, countdown timer, and resend functionality.
+ * Used in email/phone verification processes during registration or login.
+ * 
+ * @component
+ * @param {VerifyEmailModalProps} props - Component properties
+ * @param {string} [props.header] - Header text for the OTP modal
+ * @param {string} [props.description] - Description text for the OTP process
+ * @param {() => void} [props.onClose] - Function to close the modal
+ * @param {() => void} [props.handleNavigate] - Function to navigate after successful verification
+ * @example
+ * return (
+ *   <OTPPage 
+ *     header="Verify Email" 
+ *     description="Enter the code sent to your email" 
+ *     onClose={() => setShowOTP(false)}
+ *     handleNavigate={() => navigate('/dashboard')}
+ *   />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered OTP verification component
+ */
 const OTPPage: React.FC<VerifyEmailModalProps> = ({
   header,
   description,

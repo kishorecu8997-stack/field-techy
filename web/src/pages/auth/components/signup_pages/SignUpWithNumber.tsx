@@ -16,6 +16,20 @@ export type LoginFormData = {
   phone: string;
 };
 
+/**
+ * Sign Up with phone number component that allows users to register using their phone number.
+ * Provides phone input field, terms agreement checkbox, OTP verification, and alternative signup options.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Function to toggle between phone and email signup
+ * @example
+ * return (
+ *   <SignUpWithNumber setIsNumberLogin={setIsNumberLogin} />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Sign Up with Number form component
+ */
 const SignUpWithNumber = ({
   setIsNumberLogin,
 }: {
