@@ -42,7 +42,7 @@ export const TextareaInput = ({ name, label, placeholder, required = false }: Te
             <textarea
               {...field}
               id={name}
-              placeholder={placeholder}
+              placeholder={placeholder || label}
               className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition"
               required={required}
             />

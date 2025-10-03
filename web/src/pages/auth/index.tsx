@@ -1,14 +1,22 @@
+// src/components/Layout.tsx
+import React from "react";
+import LeftPanel from "./components/LeftPannel";
+import RightPanel from "./components/RightPannel";
 
-/**
- * Login page component.
- *
- * @component
- * @returns {JSX.Element} The login page UI.
- */
-const Login = () => {
+const Layout: React.FC = () => {
   return (
-    <div>Login</div>
-  )
-}
+    <div className="flex flex-col md:flex-row md:min-h-screen overflow-hidden bg-gradient-to-b from-emerald-800 to-blue-950">
+      {/* Left Panel - 30% width on desktop */}
+      <div className="w-full md:w-[30%] lg:w-[30%] flex-shrink-0">
+        <LeftPanel />
+      </div>
 
-export default Login
+      {/* Right Panel - 70% width on desktop, full width on mobile */}
+      <div className="flex-1 w-full overflow-y-auto rounded-t-xl md:rounded-none bg-white">
+        <RightPanel />
+      </div>
+    </div>
+  );
+};
+
+export default Layout;
