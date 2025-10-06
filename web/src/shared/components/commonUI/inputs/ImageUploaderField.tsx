@@ -41,7 +41,7 @@ export const ImageUploadField = ({
 
     // Validate file size
     if (file.size > maxSize) {
-      alert(`File size exceeds ${maxSize / (1024 * 1024)} MB.`);
+      alert(`File size exceeds ${maxSize / (1024)} KB.`);
       return;
     }
 
@@ -71,7 +71,7 @@ export const ImageUploadField = ({
       fileSize: (value: File | null) => {
         if (!value) return true;
         if (value.size > maxSize) {
-          return `File size must be less than ${maxSize / (1024 * 1024)} MB.`;
+          return `File size must be less than ${maxSize / 1024} KB.`;
         }
         return true;
       },
