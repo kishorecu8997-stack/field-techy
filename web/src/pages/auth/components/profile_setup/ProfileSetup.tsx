@@ -66,15 +66,17 @@ const ProfileSetup = () => {
         name="designation"
         type="text"
         placeholder="Current Designation"
+        required
       />
-      <InputField name="company" type="text" placeholder="Company/Employer" />
-      <InputField name="location" type="text" placeholder="Location" />
+      <InputField name="company" type="text" placeholder="Company/Employer" required/>
+      <InputField name="location" type="text" placeholder="Location" required/>
       <InputField
         name="experience"
         type="text"
         placeholder="Experience Years"
+        required
       />
-      <FileUpload name="resume" label="Resume" />
+      <FileUpload name="resume" label="Resume" required/>
     </div>
   );
 };

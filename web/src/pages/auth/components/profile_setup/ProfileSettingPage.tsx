@@ -25,6 +25,7 @@ import type { ProfileSetupData } from "../types";
 const ProfileSettingPage = () => {
   const navigate = useNavigate();
   const formCtx = useForm<ProfileSetupData>({
+    mode: 'onChange',
     defaultValues: {
       address: "",
       amount: "",

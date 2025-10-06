@@ -17,7 +17,7 @@ export const FormContainer = <T extends FieldValues>({
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onSubmit)}
-        className={className }
+        className={className}
       >
         {children}
       </form>

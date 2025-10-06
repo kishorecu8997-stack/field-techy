@@ -17,7 +17,34 @@ import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPass
 const PasswordSection = () => {
   return (
     <div className="flex flex-col gap-4">
-      <PasswordInput name="password" label="New Password" />
+      <PasswordInput
+        name="password"
+        label="New Password"
+        rules={{
+          required: "Password is required",
+          validate: (value: string) => {
+            if (value.length < 8) {
+              return "Password must be at least 8 characters long";
+            }
+            if (value.length > 20) {
+              return "Password must not exceed 20 characters";
+            }
+            if (!/[a-z]/.test(value)) {
+              return "Password must include at least one lowercase letter";
+            }
+            if (!/[A-Z]/.test(value)) {
+              return "Password must include at least one uppercase letter";
+            }
+            if (!/\d/.test(value)) {
+              return "Password must include at least one number";
+            }
+            if (!/[@$!%*?&]/.test(value)) {
+              return "Password must include at least one special character (@$!%*?&)";
+            }
+            return true;
+          },
+        }}
+      />
       <ConfirmPassword
         name="confirmPassword"
         label="Confirm New Password"

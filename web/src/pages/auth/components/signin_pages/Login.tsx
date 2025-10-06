@@ -69,10 +69,12 @@ const Login = ({
             name="email" 
             label="Email Address" 
             type="email" 
+            required
           />
           <PasswordInput 
             name="password" 
             label="Password" 
+            required
           />
           <div className="flex items-center justify-between flex-wrap">
             <CheckboxInput 

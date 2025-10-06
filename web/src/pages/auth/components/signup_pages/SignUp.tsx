@@ -16,13 +16,6 @@ export interface SignUpFormData {
   terms: boolean;
 }
 
-/**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
- */
 const SignUp = ({
   setIsNumberLogin,
 }: {
@@ -37,6 +30,8 @@ const SignUp = ({
     },
   });
 
+  const termsAccepted = methods.watch("terms");
+
   const handleSubmit = (data: SignUpFormData) => {
     console.log(data, "data from Login Form");
     setIsOpen(true);
@@ -44,17 +39,17 @@ const SignUp = ({
 
   return (
     <div className="flex items-center justify-center max-w-lg">
-      <div className=" p-10 w-full ">
+      <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img src={logo} alt="logo" className="h-20 w-24" />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
-          <h2 className="text-md font-extralight ">
+          <h2 className="text-md font-extralight">
             Already have an account?{" "}
             <NavLink
               to={urls.auth.login}
-              className="text-teal-900 hover:underline font-semibold" 
+              className="text-teal-900 hover:underline font-semibold"
             >
               Sign In
             </NavLink>
@@ -63,9 +58,9 @@ const SignUp = ({
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2 "
+          className="flex flex-col gap-3 p-2"
         >
-          <InputField name="email" label="Email Address" type="email" />
+          <InputField name="email" label="Email Address" type="email" required />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
               name="terms"
@@ -80,7 +75,10 @@ const SignUp = ({
           </div>
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            disabled={!termsAccepted}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+            }`}
           >
             Create Account
           </Button>
@@ -99,7 +97,7 @@ const SignUp = ({
         </div>
         <div className="flex flex-col gap-2 items-center justify-center pt-5">
           <Button
-            className="w-full "
+            className="w-full"
             variant="outline"
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >

@@ -1,4 +1,8 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 interface InputFieldProps {
   name: string;
@@ -79,9 +83,11 @@ export const InputField = ({
                 id={name}
                 type={type}
                 placeholder={placeholder || label}
-                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${showValidationCheck && isDirty && invalid ? "pr-10" : ""}`}
+                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
+                  showValidationCheck && isDirty && invalid ? "pr-10" : ""
+                }`}
               />
-              {showValidationCheck && isDirty && invalid && (
+              {showValidationCheck && isDirty && !invalid && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
                   ✓
                 </div>

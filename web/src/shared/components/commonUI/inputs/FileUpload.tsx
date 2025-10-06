@@ -55,16 +55,18 @@ export const FileUpload = ({
       fileType: (files: FileList) => {
         if (!files || files.length === 0) return true;
         const file = files[0];
-        const acceptedTypes = accept.split(",").map((t) => t.trim());
-        const isValidType = acceptedTypes.some(
-          (type) =>
-            file.type.startsWith(type.replace(".", "")) ||
-            file.name.toLowerCase().endsWith(type)
-        );
+        const acceptedExtensions = accept
+          .split(",")
+          .map((ext) => ext.trim().toLowerCase());
+
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+        const isValidExtension =
+          fileExtension && acceptedExtensions.includes(`.${fileExtension}`);
+
         return (
-          isValidType ||
-          `Only ${acceptedTypes
-            .map((t) => t.replace(".", "").toUpperCase())
+          isValidExtension ||
+          `Only ${acceptedExtensions
+            .map((ext) => ext.replace(".", "").toUpperCase())
             .join(", ")} files are allowed`
         );
       },

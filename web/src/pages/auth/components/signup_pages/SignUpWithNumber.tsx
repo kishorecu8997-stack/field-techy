@@ -14,22 +14,9 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 
 export type LoginFormData = {
   phone: string;
+  terms: boolean;
 };
 
-/**
- * Sign Up with phone number component that allows users to register using their phone number.
- * Provides phone input field, terms agreement checkbox, OTP verification, and alternative signup options.
- * 
- * @component
- * @param {Object} props - Component props
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Function to toggle between phone and email signup
- * @example
- * return (
- *   <SignUpWithNumber setIsNumberLogin={setIsNumberLogin} />
- * )
- * 
- * @returns {JSX.Element} The rendered Sign Up with Number form component
- */
 const SignUpWithNumber = ({
   setIsNumberLogin,
 }: {
@@ -40,22 +27,26 @@ const SignUpWithNumber = ({
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
+      terms: false,
     },
   });
+
+  const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
     console.log(data, "data from Login Form");
     setIsOpen(true);
   };
+
   return (
     <div className="flex items-center justify-center max-w-lg">
-      <div className=" p-10 w-full ">
+      <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img src={logo} alt="logo" className="h-20 w-24" />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
-          <h2 className="text-md font-extralight ">
+          <h2 className="text-md font-extralight">
             Already have an account?{" "}
             <NavLink
               to={urls.auth.login}
@@ -70,7 +61,7 @@ const SignUpWithNumber = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Phone Number" />
+          <PhoneInputField name="phone" label="Phone Number" required />
           <div className="flex items-center w-full">
             <CheckboxInput
               name="terms"
@@ -85,7 +76,10 @@ const SignUpWithNumber = ({
           </div>
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            disabled={!termsAccepted}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+            }`}
           >
             Create Account
           </Button>
@@ -95,7 +89,7 @@ const SignUpWithNumber = ({
           onClick={() => setIsNumberLogin(false)}
         >
           <LuPhone />
-          Sign in with Email
+          Sign up with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />
@@ -104,7 +98,7 @@ const SignUpWithNumber = ({
         </div>
         <div className="flex flex-col gap-2 items-center justify-center pt-5">
           <Button
-            className="w-full "
+            className="w-full"
             variant="outline"
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >

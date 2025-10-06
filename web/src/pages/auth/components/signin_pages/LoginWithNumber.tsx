@@ -3,13 +3,13 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
-import { LuPhone } from "react-icons/lu";
 import logo from "@/pages/assets/logo.png";
 import { NavLink } from "react-router-dom";
 import { urls } from "@/config/urls";
 import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
+import { MdEmail } from "react-icons/md";
 
 export type LoginFormData = {
   phone: string;
@@ -18,7 +18,7 @@ export type LoginFormData = {
 /**
  * Login with phone number component that allows users to sign in using their phone number.
  * Provides phone input field, OTP verification, and alternative login options.
- * 
+ *
  * @component
  * @param {Object} props - Component props
  * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Function to toggle between phone and email login
@@ -26,7 +26,7 @@ export type LoginFormData = {
  * return (
  *   <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />
  * )
- * 
+ *
  * @returns {JSX.Element} The rendered Login with Number form component
  */
 const LoginWithNumber = ({
@@ -68,7 +68,7 @@ const LoginWithNumber = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Phone Number" />
+          <PhoneInputField name="phone" label="Phone Number" required/>
 
           <Button
             type="submit"
@@ -81,7 +81,7 @@ const LoginWithNumber = ({
           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(false)}
         >
-          <LuPhone />
+          <MdEmail />
           Sign in with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">

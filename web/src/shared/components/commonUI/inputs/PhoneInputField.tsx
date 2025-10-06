@@ -1,4 +1,8 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 interface PhoneInputFieldProps {
   name: string;
@@ -21,16 +25,39 @@ export const PhoneInputField = ({
   required = false,
   rules,
 }: PhoneInputFieldProps) => {
-  const { control } = useFormContext();
+  const { control, getValues, setValue } = useFormContext();
 
   const countries: Country[] = [
-    { code: "+1", name: "US", flag: "🇺🇸" },
-    { code: "+44", name: "UK", flag: "🇬🇧" },
     { code: "+91", name: "IN", flag: "🇮🇳" },
+    { code: "+44", name: "UK", flag: "🇬🇧" },    
   ];
+
+  // Ensure default country code is set if missing
+  const currentValue = getValues(name);
+  if (!currentValue) {
+    setValue(name, `${countries[0].code} `);
+  }
 
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
+    validate: (value: string) => {
+      const [code, ...rest] = (value || "").split(" ");
+      const number = rest.join("").replace(/\D/g, "");
+
+      if (code === "+91") {
+        return /^[6-9]\d{9}$/.test(number)
+          ? true
+          : "Enter a valid 10-digit Indian mobile number";
+      }
+
+      if (code === "+44") {
+        return /^\d{10}$/.test(number)
+          ? true
+          : "Enter a valid 10-digit UK mobile number";
+      }
+
+      return "Enter a valid phone number";
+    },
     ...rules,
   };
 
@@ -47,17 +74,17 @@ export const PhoneInputField = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          // Split value into code + number
           const [countryCode, ...rest] = (field.value || "").split(" ");
           const numberValue = rest.join(" ");
 
           return (
             <>
               <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden">
-                {/* Native select for country */}
                 <select
                   value={countryCode || countries[0].code}
-                  onChange={(e) => field.onChange(`${e.target.value} ${numberValue}`)}
+                  onChange={(e) =>
+                    field.onChange(`${e.target.value} ${numberValue}`)
+                  }
                   className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-3 border-r border-gray-300 dark:border-gray-600 outline-none"
                 >
                   {countries.map((c) => (
@@ -67,17 +94,22 @@ export const PhoneInputField = ({
                   ))}
                 </select>
 
-                {/* Phone input */}
                 <input
                   type="tel"
                   value={numberValue}
-                  onChange={(e) => field.onChange(`${countryCode || countries[0].code} ${e.target.value}`)}
-                  placeholder={placeholder || label}
+                  onChange={(e) =>
+                    field.onChange(
+                      `${countryCode || countries[0].code} ${e.target.value}`
+                    )
+                  }
+                  placeholder={placeholder}
                   className="flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition"
                 />
               </div>
               {error && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-500">{error.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                  {error.message}
+                </p>
               )}
             </>
           );

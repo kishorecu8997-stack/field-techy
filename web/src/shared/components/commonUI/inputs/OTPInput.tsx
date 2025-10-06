@@ -149,7 +149,13 @@ export const OTPInput = ({
             </div>
             {error && (
               <p
-                className={`text-sm text-red-600 dark:text-red-500 text-${errorAlign}`}
+                className={`text-sm text-red-600 dark:text-red-500 ${
+                  errorAlign === "left"
+                    ? "text-left"
+                    : errorAlign === "right"
+                    ? "text-right"
+                    : "text-center"
+                }`}
               >
                 {error.message?.toString()}
               </p>

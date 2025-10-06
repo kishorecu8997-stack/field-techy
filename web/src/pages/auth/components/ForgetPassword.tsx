@@ -51,7 +51,7 @@ const ForgetPassword = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-10"
         >
-          <InputField name="email" label="Email Address" type="email" />
+          <InputField name="email" label="Email Address" type="email" required />
 
           <Button
             type="submit"
