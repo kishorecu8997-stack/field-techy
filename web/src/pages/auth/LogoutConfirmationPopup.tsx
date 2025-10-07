@@ -1,9 +1,12 @@
+import Popup from "@/shared/components/Popup";
 import React from "react";
 import { IoCloseSharp } from "react-icons/io5";
 
-interface LogoutPopupProps {
+interface LogoutProps {
   onConfirm: () => void;
   onCancel: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 /**
@@ -21,11 +24,14 @@ interface LogoutPopupProps {
  *   onCancel={() => console.log('Cancelled')} 
  * />
  */
-const LogoutConfirmationPopup: React.FC<LogoutPopupProps> = ({
+const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
+  isOpen,
+  onClose,
   onConfirm,
   onCancel,
 }) => {
   return (
+    <Popup open={isOpen} onClose={onClose}>
     <div className="flex items-center justify-center z-50">
       <div className="relative w-full max-w-md  dark:from-gray-800 dark:via-gray-700 dark:to-gray-900 rounded-lg shadow-xl overflow-hidden">
         <div className="p-6 pb-4">
@@ -64,6 +70,7 @@ const LogoutConfirmationPopup: React.FC<LogoutPopupProps> = ({
         </div>
       </div>
     </div>
+    </Popup>
   );
 };
 

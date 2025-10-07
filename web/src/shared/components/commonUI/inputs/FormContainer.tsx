@@ -5,10 +5,36 @@ import {
   type SubmitHandler,
 } from "react-hook-form";
 
+/**
+ * Props for the FormContainer component
+ * @template T - The form data type extending FieldValues
+ */
 interface FormContainerProps<T extends FieldValues> {
+  /**
+   * React Hook Form methods object containing form state, validation, and handlers
+   * @type {UseFormReturn<T>}
+   */
   methods: UseFormReturn<T>;
+  
+  /**
+   * Optional callback function called when the form is submitted with valid data
+   * @param {T} data - The validated form data
+   * @returns {void}
+   * @optional
+   */
   onSubmit?: (data: T) => void;
+  
+  /**
+   * React children elements to be rendered inside the form
+   * @type {React.ReactNode}
+   */
   children: React.ReactNode;
+  
+  /**
+   * Optional CSS class name to apply to the form element
+   * @type {string}
+   * @optional
+   */
   className?: string;
 }
 
