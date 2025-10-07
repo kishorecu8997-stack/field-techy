@@ -21,9 +21,7 @@ export const FormContainer = <T extends FieldValues>({
   const handleSubmit: SubmitHandler<T> = onSubmit
     ? onSubmit
     : (data) => {
-        if (import.meta.env.DEV) {
-          console.warn("Form submitted but no onSubmit handler provided", data);
-        }
+        console.warn("Form submitted but no onSubmit handler provided", data);
       };
 
   return (

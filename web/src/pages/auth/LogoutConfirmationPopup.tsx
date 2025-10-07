@@ -1,7 +1,7 @@
 import React from "react";
 import { IoCloseSharp } from "react-icons/io5";
 
-interface LogoutConfirmationPopupProps {
+interface LogoutPopupProps {
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -21,7 +21,7 @@ interface LogoutConfirmationPopupProps {
  *   onCancel={() => console.log('Cancelled')} 
  * />
  */
-const LogoutConfirmationPopup: React.FC<LogoutConfirmationPopupProps> = ({
+const LogoutConfirmationPopup: React.FC<LogoutPopupProps> = ({
   onConfirm,
   onCancel,
 }) => {
