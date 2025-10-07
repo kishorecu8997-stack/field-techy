@@ -21,7 +21,7 @@ const Layout: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row md:min-h-screen overflow-hidden bg-gradient-to-b from-emerald-800 to-blue-950">
       {/* Left Panel - 30% width on desktop */}
-      <div className="w-full md:w-[30%] lg:w-[30%] flex-shrink-0">
+      <div className="w-full md:w-[30%] flex-shrink-0">
         <LeftPanel />
       </div>
 

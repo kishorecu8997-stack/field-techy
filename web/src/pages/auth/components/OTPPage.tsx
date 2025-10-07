@@ -60,9 +60,8 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSubmit = (data: OTPValues) => {
-  console.log('data :', data);
-    console.log(data, "data from OTP Form");
+  const handleSubmit = () => {
+
     handleNavigate?.();
   };
 

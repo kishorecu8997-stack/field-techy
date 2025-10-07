@@ -1,5 +1,5 @@
 import { urls } from "@/config/urls";
-import logo from "@/pages/assets/logo.png";
+import {assetsConfig} from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import {
   CheckboxInput,
@@ -37,8 +37,7 @@ const Login = ({
     },
   });
 
-  const handleSubmit = (data: LoginFormData) => {
-    console.log(data, "data from Login Form");
+  const handleSubmit = () => {    
     setIsOpen(true);
   };
 
@@ -47,7 +46,7 @@ const Login = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={logo} alt="logo" className="h-20 w-24" />
+            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sign In</h2>
           <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">

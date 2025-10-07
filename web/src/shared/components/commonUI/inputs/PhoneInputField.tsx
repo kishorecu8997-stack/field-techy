@@ -1,8 +1,5 @@
-import {
-  Controller,
-  useFormContext,
-  type RegisterOptions,
-} from "react-hook-form";
+import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import { validatePhone } from "@/shared/libs/utils";
 
 interface PhoneInputFieldProps {
   name: string;
@@ -40,24 +37,7 @@ export const PhoneInputField = ({
 
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
-    validate: (value: string) => {
-      const [code, ...rest] = (value || "").split(" ");
-      const number = rest.join("").replace(/\D/g, "");
-
-      if (code === "+91") {
-        return /^[6-9]\d{9}$/.test(number)
-          ? true
-          : "Enter a valid 10-digit Indian mobile number";
-      }
-
-      if (code === "+44") {
-        return /^\d{10}$/.test(number)
-          ? true
-          : "Enter a valid 10-digit UK mobile number";
-      }
-
-      return "Enter a valid phone number";
-    },
+    validate: validatePhone,
     ...rules,
   };
 

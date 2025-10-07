@@ -2,7 +2,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { ImageUploadField } from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import { useForm } from "react-hook-form";
 import ProfileSetup from "./ProfileSetup";
-import logo from "@/pages/assets/logo.png";
+import {assetsConfig} from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import { useNavigate } from "react-router-dom";
 import { urls } from "@/config/urls";
@@ -41,8 +41,7 @@ const ProfileSettingPage = () => {
     },
   });
 
-  const handleSubmit = (data: ProfileSetupData) => {
-    console.log(data, "data from Login Form");
+  const handleSubmit = () => {    
     navigate(urls.auth.background_verification);
   };
 
@@ -76,7 +75,7 @@ const ProfileSettingPage = () => {
       </div>
       <div className="absolute  w-full flex flex-col items-center justify-center">
         <div className="flex items-center justify-center">
-          <img src={logo} alt="profile" className="w-20 h-20" />
+          <img src={assetsConfig.logos.companyLogo} alt="profile" className="w-20 h-20" />
         </div>
         <FormContainer
           methods={formCtx}

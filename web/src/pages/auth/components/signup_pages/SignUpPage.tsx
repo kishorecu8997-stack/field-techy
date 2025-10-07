@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SignUp from "./SignUp";
+import SignUpWithEmail from "./SignUpWithEmail";
 import SignUpWithNumber from "./SignUpWithNumber";
 
 /**
@@ -22,7 +22,7 @@ const SignUpPage = () => {
       {isNumberLogin ? (
         <SignUpWithNumber setIsNumberLogin={setIsNumberLogin} />
       ) : (
-        <SignUp setIsNumberLogin={setIsNumberLogin} />
+        <SignUpWithEmail setIsNumberLogin={setIsNumberLogin} />
       )}
     </div>
   );

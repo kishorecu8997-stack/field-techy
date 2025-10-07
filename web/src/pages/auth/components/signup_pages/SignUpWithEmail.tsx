@@ -1,5 +1,5 @@
 import { urls } from "@/config/urls";
-import logo from "@/pages/assets/logo.png";
+import {assetsConfig} from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -32,9 +32,8 @@ const SignUp = ({
 
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = (data: SignUpFormData) => {
-    console.log(data, "data from Login Form");
-    setIsOpen(true);
+  const handleSubmit = () => {
+        setIsOpen(true);
   };
 
   return (
@@ -42,7 +41,7 @@ const SignUp = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={logo} alt="logo" className="h-20 w-24" />
+            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">

@@ -22,7 +22,7 @@ export const ImageUploadField = ({
   label,
   required = false,
   rules,
-  maxSize = 350 * 1024, // 350 KB
+  maxSize = 250 * 1024, // 250 KB
   accept = "image/*",
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();

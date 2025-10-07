@@ -5,7 +5,7 @@ import { urls } from "@/config/urls";
 
 const Layout = React.lazy(() => import("@/pages/auth"));
 const SignInpage = React.lazy(
-  () => import("@/pages/auth/components/signin_pages/SignInpage")
+  () => import("@/pages/auth/components/signin_pages/SignInPage")
 );
 const SignUpPage = React.lazy(
   () => import("@/pages/auth/components/signup_pages/SignUpPage")
