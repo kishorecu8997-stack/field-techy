@@ -1,10 +1,10 @@
 /**
  * Breadcrumb Component
- * Dynamically generates breadcrumb navigation from the current URL path.
- * Converts URL segments into human-readable labels (e.g., "/my-jobs" → "My Jobs").
+ * Dynamically generates breadcrumb navigation from the current URL path,
+ * starting from /engineer as the root.
  *
  * @param {Object} props - Component props
- * @param {string} [props.homeLabel='Home'] - Label for the root path
+ * @param {string} [props.homeLabel='Home'] - Label for the /engineer path
  * @param {Record<string, string>} [props.customLabels] - Optional custom label overrides
  * @returns {JSX.Element} Rendered breadcrumb trail
  */
@@ -21,18 +21,26 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   customLabels = {},
 }) => {
   const location = useLocation();
-  const pathnames = location.pathname.split("/").filter((x) => x);
+
+  // Split current path and remove empty segments
+  const allSegments = location.pathname.split("/").filter(Boolean);
+
+  // Find index of 'engineer' in the path
+  const engineerIndex = allSegments.indexOf("engineer");
+
+  // If 'engineer' is not in the path, show nothing or fallback
+  if (engineerIndex === -1) {
+    return null; // or return a default breadcrumb if needed
+  }
+
+  // Get segments AFTER /engineer
+  const breadcrumbSegments = allSegments.slice(engineerIndex + 1);
 
   /**
    * Converts kebab-case or snake_case to Title Case
-   * @param {string} str - Input string
-   * @returns {string} Title-cased string
    */
   const formatLabel = (str: string): string => {
-    // Use custom label if provided
     if (customLabels[str]) return customLabels[str];
-
-    // Replace hyphens/underscores with spaces and title-case
     return str
       .replace(/[-_]/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -41,17 +49,20 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   return (
     <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
       <ol className="flex items-center space-x-1">
-        {/* Home Link */}
+        {/* Home link points to /engineer */}
         <li>
-          <a href="/" className="hover:text-emerald-600 transition-colors">
+          <NavLink
+            to="/engineer"
+            className="hover:text-emerald-600 transition-colors"
+          >
             {homeLabel}
-          </a>
+          </NavLink>
         </li>
 
-        {/* Dynamic Path Segments */}
-        {pathnames.map((value, index) => {
-          const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-          const isLast = index === pathnames.length - 1;
+        {breadcrumbSegments.map((value, index) => {
+          // Build path: /engineer + segments up to current
+          const to = `/engineer/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
+          const isLast = index === breadcrumbSegments.length - 1;
 
           return (
             <li key={to} className="flex items-center">
@@ -65,7 +76,6 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
                   to={to}
                   className="hover:text-teal-800 dark:hover:text-teal-400 text-gray-700 dark:text-gray-300 transition-colors"
                 >
-                  {" "}
                   {formatLabel(value)}
                 </NavLink>
               )}

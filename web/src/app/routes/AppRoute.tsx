@@ -1,14 +1,16 @@
 import React, { Suspense, type JSX } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { urls } from "@/config/urls";
 
 const Login = React.lazy(() => import("@/pages/auth"));
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
-const MyJobsPage = React.lazy(() => import("@/pages/my_job/MyJobsPage"));
+const MyJobsPage = React.lazy(() => import("@/pages/my_job"));
 const JobDetailsPage = React.lazy(
   () => import("@/pages/my_job/JobDetailsPage")
 );
+const SearchResult = React.lazy(() => import("@/pages/serch_result"));
 
 /**
  * Wraps a React lazy-loaded component with Suspense to show a fallback loader
@@ -41,16 +43,17 @@ const withSuspense = (
  */
 export const routes = createBrowserRouter([
   {
-    path: "/login",
+    path: urls.login,
     element: withSuspense(Login),
   },
   {
-    path: "/",
+    path: urls.root,
     element: withSuspense(RootLayout),
     children: [
       // { path: urls.home.my_jobs, element: withSuspense(MyJobs) },
-      { path: "my-jobs", element: withSuspense(MyJobsPage) },
-      { path: "/my-jobs/:jobId", element: withSuspense(JobDetailsPage) },
+      { path: urls.home.my_jobs, element: withSuspense(MyJobsPage) },
+      { path: `${urls.home.my_jobs}/:jobId`, element: withSuspense(JobDetailsPage) },
+      { path: urls.home.search_result, element: withSuspense(SearchResult) },
     ],
   },
   {

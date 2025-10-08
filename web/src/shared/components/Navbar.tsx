@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logo_small.svg";
 import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
+import { urls } from "@/config/urls";
 
 interface NavbarProps {
   onDrawerToggle: () => void;
@@ -57,13 +58,13 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         <img src={logo} alt="FT Logo" className="h-12 w-auto" />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
           <NavLink
-            to="/my-jobs"
+            to={urls.home.my_jobs}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
             My Jobs
           </NavLink>
           <NavLink
-            to="/"
+            to={urls.home.my_jobs}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
             Earning
@@ -73,7 +74,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
       {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 max-w-[500px]">
-        <JobSearchBar />
+        <Link to={urls.home.search_result}>
+          <JobSearchBar />
+        </Link>
       </div>
 
       {/* Right Section: Icons + Profile Button */}

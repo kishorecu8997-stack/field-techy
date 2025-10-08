@@ -1,18 +1,16 @@
 // components/MyJobsHeader.tsx
+import type { MyJobsHeaderProps } from "@/pages/my_job/types";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
 
-interface MyJobsHeaderProps {
-  title: string;
-  currentSort: string;
-  onSortChange: (sort: string) => void;
-}
 
 const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   title,
   currentSort,
   onSortChange,
+  isShowBreadcrumb = true,
+  description,
 }) => {
   return (
     <div className="py-2">
@@ -23,16 +21,26 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
               {title}
             </h1>
             <div className="mt-1">
-              <Breadcrumb
-                customLabels={{
-                  "my-jobs": "My Jobs",
-                  "in-progress": "In Progress",
-                }}
-              />
+              {isShowBreadcrumb && (
+                <Breadcrumb
+                  customLabels={{
+                    "my-jobs": "My Jobs",
+                    "in-progress": "In Progress",
+                  }}
+                />
+              )}
+              {description && (
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {description}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex-shrink-0">
-            <SortDropdown currentSort={currentSort} onSortChange={onSortChange} />
+            <SortDropdown
+              currentSort={currentSort}
+              onSortChange={onSortChange}
+            />
           </div>
         </div>
       </header>

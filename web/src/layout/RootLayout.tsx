@@ -1,7 +1,8 @@
-import { useState, useEffect, type JSX } from "react";
-import { Outlet } from "react-router-dom";
 import Drawer from "@/shared/components/Drawer";
+import Footer from "@/shared/components/Footer";
 import Navbar from "@/shared/components/Navbar";
+import { useEffect, useState, type JSX } from "react";
+import { Outlet } from "react-router-dom";
 
 const RootLayout = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -40,15 +41,15 @@ const RootLayout = (): JSX.Element => {
       </main>
 
       <footer className="bg-teal-900 text-white py-12 mt-12">
-        <div className="container mx-auto px-6 flex flex-wrap justify-between">
-          <div className="text-left">
+        <div className="container mx-auto px-6 flex flex-wrap justify-center">
+          <div className="text-center">
             <h2 className="text-3xl font-bold mb-4">Finding a Job is Easy</h2>
             <div className="mt-6 max-w-prose">
               It is a long established fact that a reader will be distracted by
               the readable content of a page when looking at its layout.
             </div>
           </div>
-          <div className="mt-6 flex flex-col justify-center h-fit gap-3">
+          {/* <div className="mt-6 flex flex-col justify-center h-fit gap-3">
             <label className="text-md text-white">Email Address</label>
             <div className="flex">
               <input
@@ -60,10 +61,10 @@ const RootLayout = (): JSX.Element => {
                 Get Started
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </footer>
-
+      <Footer />
       <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   );

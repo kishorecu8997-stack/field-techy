@@ -7,10 +7,10 @@
  * ⚠️ For nested routes under `/home`, use RELATIVE paths (no leading slash).
  */
 export const urls = {
-  login: "/",
+  root: "/",
+  login: "/engineer/login",
   home: {
-    root: "/home",
-    my_jobs: "/my-jobs",
-    my_job_details: "/my-job-details",
+    my_jobs: "/engineer/my-jobs",
+    search_result: "/engineer/search-result",
   },
 };

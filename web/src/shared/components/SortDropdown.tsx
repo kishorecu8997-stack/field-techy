@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { SORT_OPTIONS, type SortOption } from "@/pages/serch_result/types";
+import React, { useState } from "react";
 
 interface SortDropdownProps {
-    currentSort: string;
-    onSortChange: (sort: string) => void;
+  currentSort: string;
+  onSortChange: (sort: SortOption) => void;
 }
 
 /**
@@ -14,11 +15,16 @@ interface SortDropdownProps {
  * @param {(sort: string) => void} props.onSortChange - Callback when sort option is selected
  * @returns {JSX.Element} Rendered dropdown
  */
-const SortDropdown: React.FC<SortDropdownProps> = ({ currentSort, onSortChange }) => {
+const SortDropdown: React.FC<SortDropdownProps> = ({
+  currentSort,
+  onSortChange,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const options = ['Newest', 'Oldest'];
-
+  const options = [
+    { value: SORT_OPTIONS.NEWEST, label: "Newest" },
+    { value: SORT_OPTIONS.OLDEST, label: "Oldest" },
+  ];
   return (
     <div className="relative inline-block">
       <button
@@ -27,13 +33,20 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ currentSort, onSortChange }
       >
         Sort by: {currentSort}
         <svg
-          className={`ml-2 h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`ml-2 h-4 w-4 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </button>
 
@@ -41,18 +54,18 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ currentSort, onSortChange }
         <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
           {options.map((option) => (
             <button
-              key={option}
+              key={option.value}
               onClick={() => {
-                onSortChange(option);
+                onSortChange(option.value);
                 setIsOpen(false);
               }}
               className={`block w-full text-left px-4 py-2 text-sm ${
-                currentSort === option
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'text-gray-700 hover:bg-gray-100'
+                currentSort === option.label
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "text-gray-700 hover:bg-gray-100"
               }`}
             >
-              {option}
+              {option.label}
             </button>
           ))}
         </div>
