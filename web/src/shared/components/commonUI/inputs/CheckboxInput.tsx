@@ -1,45 +1,78 @@
-import { Controller, useFormContext } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 interface CheckboxInputProps {
   name: string;
   label?: string;
   required?: boolean;
+  secondaryLabel?: string;
+  /** Optional react-hook-form validation rules */
+  rules?: RegisterOptions;
 }
 
 /**
  * CheckboxInput - A reusable checkbox component for react-hook-form.
  *
- * This component integrates with `react-hook-form` using `Controller`.
- * It supports light and dark mode styling via Tailwind CSS classes.
- *
- * @param {string} name - The name of the checkbox field in the form.
- * @param {string} [label] - Optional label text displayed next to the checkbox.
- * @param {boolean} [required=false] - Whether the checkbox is required.
- *
- * @example
- * <CheckboxInput name="agree" label="I agree to the terms" required />
+ * Features:
+ * - Supports required and custom validation rules.
+ * - Integrates with react-hook-form using Controller.
+ * - Light/dark mode styling via Tailwind CSS.
  */
-export const CheckboxInput = ({ name, label, required = false }: CheckboxInputProps) => {
+export const CheckboxInput = ({
+  name,
+  label,
+  required = false,
+  rules,
+  secondaryLabel,
+}: CheckboxInputProps) => {
   const { control } = useFormContext();
 
+  // Merge required rule with custom rules
+  const validationRules: RegisterOptions = {
+    required: required ? `${label || name} is required` : false,
+    ...rules,
+  };
+
   return (
-    <div className="flex items-center gap-2 py-2">
+    <div className="flex flex-col py-2">
       <Controller
         name={name}
         control={control}
-        rules={{ required }}
+        rules={validationRules}
         render={({ field, fieldState: { error } }) => (
           <>
-            <input
-              {...field}
-              type="checkbox"
-              id={name}
-              checked={field.value || false}
-              className="accent-primary"
-            />
-            {label && <label htmlFor={name} className="text-gray-700 dark:text-gray-300">{label}</label>}
+            <div className="flex items-center gap-2">
+              <input
+                {...field}
+                type="checkbox"
+                id={name}
+                checked={field.value || false}
+                className="accent-primary"
+              />
+              {label && (
+                <label
+                  htmlFor={name}
+                  className="text-gray-700 font-bold dark:text-gray-300"
+                >
+                  {label} {required && <span className="text-red-600">*</span>}
+                </label>
+              )}
+              {secondaryLabel && (
+                <label
+                  htmlFor={name}
+                  className="text-gray-500 dark:text-gray-400"
+                >
+                  {secondaryLabel}
+                </label>
+              )}
+            </div>
             {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">{`${label} is required`}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                {error.message}
+              </p>
             )}
           </>
         )}

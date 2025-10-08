@@ -1,54 +1,42 @@
-import React, { Suspense, type JSX } from "react";
+import React from "react";
 import { createBrowserRouter } from "react-router-dom";
+import { withSuspense } from "./WithSuspense";
 import { urls } from "@/config/urls";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-const Home = React.lazy(() => import("@/pages/home"));
-const Login = React.lazy(() => import("@/pages/auth"));
-const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
-
-/**
- * Wraps a React lazy-loaded component with Suspense to show a fallback loader
- * while the component is being loaded.
- *
- * @param {React.LazyExoticComponent<() => JSX.Element>} Component - The lazy-loaded React component.
- * @returns {JSX.Element} The component wrapped in a Suspense boundary with a loader.
- */
-const withSuspense = (
-  Component: React.LazyExoticComponent<() => JSX.Element>
-) => {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-[80vh] w-full">
-          <LoaderComponent />
-        </div>
-      }
-    >
-      <Component />
-    </Suspense>
-  );
-};
-
-/**
- * Application routes for react-router-dom using lazy-loaded components.
- * Each route element is wrapped with `withSuspense` for loading fallback.
- *
- * @type {import("react-router-dom").Router}
- */
+const Layout = React.lazy(() => import("@/pages/auth"));
+const SignInpage = React.lazy(
+  () => import("@/pages/auth/components/signin_pages/SignInPage")
+);
+const SignUpPage = React.lazy(
+  () => import("@/pages/auth/components/signup_pages/SignUpPage")
+);
+const ProfileSettingPage = React.lazy(
+  () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
+);
+const ForgetPassword = React.lazy(
+  () => import("@/pages/auth/components/ForgetPassword")
+);
+const ResetPassword = React.lazy(
+  () => import("@/pages/auth/components/ResetPassword")
+);
+const BackgroundVerification = React.lazy(
+  () => import("@/pages/auth/components/profile_setup/BackgroundVerification")
+);
+const SetPassword = React.lazy(
+  () => import("@/pages/auth/components/profile_setup/SetPassword")
+);
 export const routes = createBrowserRouter([
   {
-    path: urls.login,
-    element: withSuspense(Login),
-  },
-  {
-    path: urls.home,
-    element: withSuspense(RootLayout),
+    path: urls.root,
+    element: withSuspense(Layout),
     children: [
-      {
-        index: true,
-        element: withSuspense(Home),
-      },
+      { index: true, element: withSuspense(SignInpage) },
+      { path: urls.auth.signUp, element: withSuspense(SignUpPage) },
+      { path: urls.auth.profile_setup, element: withSuspense(ProfileSettingPage) },
+      { path: urls.auth.forgetPassword, element: withSuspense(ForgetPassword) },
+      { path: urls.auth.resetPassword, element: withSuspense(ResetPassword) },
+      { path: urls.auth.background_verification, element: withSuspense(BackgroundVerification) },
+      { path: urls.auth.set_password, element: withSuspense(SetPassword) },
     ],
   },
 ]);
