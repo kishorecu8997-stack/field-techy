@@ -4,6 +4,18 @@
  * Centralized object for all routes used in the app.
  */
 export const urls = {
-  login: "/",
-  home: "/home",
+  root: "/",
+  auth: {
+    forgetPassword: "engineer/auth/forget-password",
+    resetPassword: " engineer/auth/reset-password",
+    signUp: "engineer/auth/signup",
+    otp: "engineer/auth/otp",
+    login: "engineer/auth",
+    profile_setup: "engineer/auth/profile-setup",
+    background_verification: "engineer/auth/background-verification",
+    set_password: "engineer/auth/set-password",
+  },
+  main:{
+    home:"/engineer/home",
+  }
 };

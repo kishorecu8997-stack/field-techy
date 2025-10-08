@@ -1,4 +1,8 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 interface InputFieldProps {
   name: string;
@@ -18,7 +22,7 @@ interface InputFieldProps {
   showValidationCheck?: boolean;
 }
 
-/**
+/**   
  * InputField - A reusable input component for react-hook-form.
  *
  * Supports text, email, number, and date types.
@@ -79,13 +83,15 @@ export const InputField = ({
                 id={name}
                 type={type}
                 placeholder={placeholder || label}
-                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""}`}
+                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
+                  showValidationCheck && isDirty && invalid ? "pr-10" : ""
+                }`}
               />
-                {showValidationCheck && isDirty && !invalid && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
-                    ✓
-                  </div>
-                )}
+              {showValidationCheck && isDirty && !invalid && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
+                  ✓
+                </div>
+              )}
             </div>
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
