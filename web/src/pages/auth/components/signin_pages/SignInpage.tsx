@@ -14,7 +14,7 @@ import LoginWithNumber from "./LoginWithNumber";
  * 
  * @returns {JSX.Element} The rendered Sign In page component with conditional rendering
  */
-const SignInpage = () => {
+const SignInPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
   return (
@@ -28,4 +28,4 @@ const SignInpage = () => {
   );
 };
 
-export default SignInpage;
+export default SignInPage;

@@ -61,7 +61,6 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
   }, [timeLeft]);
 
   const handleSubmit = () => {
-
     handleNavigate?.();
   };
 
