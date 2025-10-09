@@ -3,8 +3,9 @@ import { Controller, useFormContext, type RegisterOptions } from "react-hook-for
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 
-interface PasswordInputProps {
+interface ConfirmPasswordInputProps {
   name: string;
+  passwordField: string; // The original password field to match
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -13,27 +14,33 @@ interface PasswordInputProps {
 }
 
 /**
- * PasswordInput - A reusable password input component for react-hook-form.
+ * ConfirmPasswordInput - A reusable confirm password input component for react-hook-form.
  *
  * Features:
  * - Show/hide password toggle button.
+ * - Validates that the value matches the original password field.
  * - Supports light and dark theme styling via Tailwind CSS.
  * - Integrated with react-hook-form using Controller.
  * - Supports required and custom validation rules.
  */
-export const PasswordInput = ({
+export const ConfirmPassword = ({
   name,
+  passwordField,
   label,
   placeholder,
   required = false,
   rules,
-}: PasswordInputProps) => {
-  const { control } = useFormContext();
+}: ConfirmPasswordInputProps) => {
+  const { control, watch } = useFormContext();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Merge default rules (required) with custom rules
+  const passwordValue = watch(passwordField); // get the original password value
+
+  // Merge default rules (required + match password) with custom rules
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
+    validate: (value: string) =>
+      value === passwordValue || "Passwords do not match",
     ...rules,
   };
 

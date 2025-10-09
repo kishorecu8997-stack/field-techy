@@ -1,8 +1,10 @@
 import React from "react";
-import ProfileCard from "./commonUI/ProfileCard";
 import { IoCloseSharp } from "react-icons/io5";
-import img from "../../assets/img1.jpg";
+import {assetsConfig} from "@/assets";
+import ProfileCard from "./commonUI/ProfileCard";
 import DrawerMenu from "./commonUI/DrawerMenu";
+
+
 
 interface DrawerProps {
   isOpen: boolean;
@@ -35,7 +37,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
           </div>
 
           <ProfileCard
-            avatarUrl={img}
+            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
             name="Michel Brown"
             title="Software Engineer"
             rating={4}

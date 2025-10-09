@@ -8,8 +8,9 @@ import {
   FaWallet,
 } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
-import Popup from "../Popup";
 import LogoutConfirmationPopup from "@/pages/auth/LogoutConfirmationPopup";
+import { useNavigate } from "react-router";
+import { urls } from "@/config/urls";
 
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -23,16 +24,15 @@ export type MenuItems = {
   onClick?: () => void;
 };
 
-
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
  * Features dark mode support, each item has an icon, label, and right-chevron arrow.
  * Borders separate items and frame the container. Logout item opens a confirmation popup.
- * 
+ *
  * @component
  * @param {Object} props - Component props
  * @param {Function} props.onMenuItemClick - Function called when a menu item is clicked
- * 
+ *
  * @example
  * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
  */
@@ -54,6 +54,8 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       },
     },
   ];
+
+  const navigate = useNavigate()
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
@@ -113,12 +115,12 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           )}
         </React.Fragment>
       ))}
-      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <LogoutConfirmationPopup
-          onConfirm={() => console.log("confirm")}
-          onCancel={() => setIsOpen(false)}
-        />
-      </Popup>
+      <LogoutConfirmationPopup
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={() => navigate(urls.auth.login)}
+        onCancel={() => setIsOpen(false)}
+      />
     </div>
   );
 };
