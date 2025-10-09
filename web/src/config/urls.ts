@@ -9,7 +9,7 @@
 export const urls = {
   root: "/",
   login: "/engineer/login",
-  privacy_policy: "/engineer/privacy-policy",
+  privacy_policy: "/engineer/policy",
   home: {
     my_jobs: "/engineer/my-jobs",
     search_result: "/engineer/search-result",

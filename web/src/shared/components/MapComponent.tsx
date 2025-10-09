@@ -74,6 +74,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         width: "100%",
         borderRadius: "8px",
         border: "1px solid #e2e8f0",
+        zIndex: 10,
       }}
       scrollWheelZoom={true}
     >
