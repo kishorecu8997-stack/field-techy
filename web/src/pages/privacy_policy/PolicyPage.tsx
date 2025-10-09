@@ -1,5 +1,6 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import PrivacyPolicy from "./PrivacyPolicy";
+import ContentPage from "./ContentPage";
+import { privacySections } from "@/dummy_datas/policyDatas";
 
 const PolicyPage = () => {
   return (
@@ -7,13 +8,10 @@ const PolicyPage = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="Privacy Policy"
-          currentSort="Newest"
           onSortChange={() => {}}
           isShowSort={false}
         />
-        <div className=" mt-6">
-          <PrivacyPolicy />
-        </div>
+        <ContentPage content={privacySections} />
       </div>
     </div>
   );

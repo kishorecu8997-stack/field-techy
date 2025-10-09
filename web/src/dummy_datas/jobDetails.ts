@@ -4,7 +4,7 @@ import type {
   JobInfoSectionProps,
   WorkSubmissionComponentProps,
 } from "@/pages/my_job/types";
-import type { Job } from "@/pages/serch_result/types";
+import type { Job } from "@/pages/search_result/types";
 
 export const logs: LogEntry[] = [
   {
@@ -105,7 +105,7 @@ export const OtherProposal: ProposalTermsProps = {
         text: "Should Know to Speak in French and English",
       },
       {
-        text: "Additionally Should be able to Troubleshoot, install, maintain and repaeir equipments.",
+        text: "Additionally Should be able to Troubleshoot, install, maintain and repair equipments.",
       },
     ],
   },

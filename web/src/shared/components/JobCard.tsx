@@ -1,8 +1,9 @@
 import { urls } from "@/config/urls";
-import { WORKING_TYPES, type Job } from "@/pages/serch_result/types";
+import { WORKING_TYPES, type Job } from "@/pages/search_result/types";
 import { Link } from "react-router-dom";
 import { MdLocationPin } from "react-icons/md";
 import { FaDollarSign } from "react-icons/fa6";
+import { Status } from "@/pages/my_job/types";
 
 const JobCard: React.FC<Job> = ({
   id,
@@ -17,11 +18,11 @@ const JobCard: React.FC<Job> = ({
 }) => {
   const getStatusColor = () => {
     switch (status) {
-      case "completed":
+      case Status.completed:
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      case "applied":
+      case Status.applied:
         return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
-      case "inprogress":
+      case Status.inprogress:
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";

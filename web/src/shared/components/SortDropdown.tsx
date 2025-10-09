@@ -1,9 +1,9 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/serch_result/types";
+import { SORT_OPTIONS, type SortOption } from "@/pages/search_result/types";
 import React, { useState } from "react";
 
 interface SortDropdownProps {
-  currentSort?: string;
-  onSortChange: (sort: SortOption) => void;
+  currentSort?: SortOption;
+  onSortChange?: (sort: SortOption) => void;
 }
 
 /**
@@ -20,6 +20,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   onSortChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
 
   const options = [
     { value: SORT_OPTIONS.NEWEST, label: "Newest" },
@@ -31,7 +32,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >
-        Sort by: {currentSort}
+        Sort by: {options.find((option) => option.value === sort)?.label}
         <svg
           className={`ml-2 h-4 w-4 transition-transform ${
             isOpen ? "rotate-180" : ""
@@ -56,7 +57,8 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
             <button
               key={option.value}
               onClick={() => {
-                onSortChange(option.value);
+                setSort(option.value);
+                onSortChange?.(option.value);
                 setIsOpen(false);
               }}
               className={`block w-full text-left px-4 py-2 text-sm ${

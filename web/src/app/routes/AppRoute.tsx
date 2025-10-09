@@ -32,7 +32,7 @@ const MyJobsPage = React.lazy(() => import("@/pages/my_job"));
 const JobDetailsPage = React.lazy(
   () => import("@/pages/my_job/JobDetailsPage")
 );
-const SearchResult = React.lazy(() => import("@/pages/serch_result"));
+const SearchResult = React.lazy(() => import("@/pages/search_result"));
 const MyJobPrivacyPolicy = React.lazy(
   () => import("@/pages/privacy_policy/PolicyPage")
 );

@@ -4,7 +4,7 @@ import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
 import { client, jobHeaderData, jobs } from "@/dummy_datas/jobDetails";
-import type { JobStatus } from "../serch_result/types";
+import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -25,7 +25,7 @@ const JobDetailsPage = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="My Jobs"
-          currentSort="Newest"
+          currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

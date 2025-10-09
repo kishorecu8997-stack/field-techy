@@ -1,7 +1,7 @@
 export interface MyJobsHeaderProps {
   title: string;
-  currentSort?: string;
-  onSortChange: (sort: SortOption) => void;
+  currentSort?: SortOption;
+  onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
   isShowSort?: boolean;

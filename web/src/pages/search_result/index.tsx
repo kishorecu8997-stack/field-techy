@@ -1,10 +1,10 @@
+import { sampleJobs } from "@/dummy_datas/searchData";
 import { useEffect, useState } from "react";
 import MyJobsHeader from "../../shared/components/MyJobsHeader";
 import FilterPanel from "./components/FilterPanel";
 import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
-import { SORT_OPTIONS, type Filters, type Job, type SortOption } from "./types";
-import { sampleJobs } from "@/dummy_datas/serchData";
+import { SORT_OPTIONS, type Filters, type Job } from "./types";
 
 /**
  * Main application component for job search results
@@ -12,15 +12,12 @@ import { sampleJobs } from "@/dummy_datas/serchData";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
- 
   // State management
   const [jobs] = useState<Job[]>(sampleJobs);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(sampleJobs);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentSort, setCurrentSort] = useState<SortOption>(
-    SORT_OPTIONS.NEWEST
-  );
+
   const [filters, setFilters] = useState<Filters>({
     location: [],
     category: [],
@@ -81,44 +78,9 @@ const SearchResult = () => {
       );
     }
 
-    // Apply sorting
-    switch (currentSort) {
-      case SORT_OPTIONS.NEWEST:
-        filtered.sort((a, b) => {
-          // Simple sort by posted time (assuming format like "30min ago")
-          const timeA = a.postedTime?.includes("min")
-            ? parseInt(a.postedTime)
-            : a.postedTime?.includes("h")
-            ? parseInt(a.postedTime) * 60
-            : 0;
-          const timeB = b.postedTime?.includes("min")
-            ? parseInt(b.postedTime)
-            : b.postedTime?.includes("h")
-            ? parseInt(b.postedTime) * 60
-            : 0;
-          return timeB - timeA;
-        });
-        break;
-      case SORT_OPTIONS.OLDEST:
-        filtered.sort((a, b) => {
-          const timeA = a.postedTime?.includes("min")
-            ? parseInt(a.postedTime)
-            : a.postedTime?.includes("h")
-            ? parseInt(a.postedTime) * 60
-            : 0;
-          const timeB = b.postedTime?.includes("min")
-            ? parseInt(b.postedTime)
-            : b.postedTime?.includes("h")
-            ? parseInt(b.postedTime) * 60
-            : 0;
-          return timeA - timeB;
-        });
-        break;
-    }
-
     setFilteredJobs(filtered);
     setCurrentPage(1);
-  }, [jobs, filters, currentSort]);
+  }, [jobs, filters]);
 
   /**
    * Handle filter changes
@@ -150,14 +112,6 @@ const SearchResult = () => {
     setCurrentPage(page);
   };
 
-  /**
-   * Handle sort change
-   * @param {SortOption} sort - New sort option
-   */
-  const handleSortChange = (sort: SortOption) => {
-    setCurrentSort(sort);
-  };
-
   // Get jobs for current page
   const startIndex = (currentPage - 1) * 4;
   const currentJobs = filteredJobs.slice(startIndex, startIndex + 4);
@@ -167,10 +121,10 @@ const SearchResult = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="Search Result"
-          currentSort="Newest"
           isShowBreadcrumb={false}
+          onSortChange={() => {}}
+          currentSort={SORT_OPTIONS.NEWEST}
           description={`${filteredJobs.length} jobs found`}
-          onSortChange={(sort) => handleSortChange(sort)}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

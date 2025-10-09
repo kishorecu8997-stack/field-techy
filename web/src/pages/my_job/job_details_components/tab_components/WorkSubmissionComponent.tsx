@@ -3,7 +3,6 @@ import { FaFileAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import type { WorkInfoItem, WorkSubmissionComponentProps } from "../../types";
 
-
 /**
  * A reusable component displaying a complete work submission panel.
  * Includes technician info, job details, file attachment, notes, signature, approval, payment status, and user review.
@@ -72,7 +71,7 @@ const WorkSubmissionComponent: React.FC<{
           ))}
         </div>
       </div>
-    <div className="bg-white rounded-xl  p-6 mb-4 dark:bg-gray-700">
+      <div className="bg-white rounded-xl  p-6 mb-4 dark:bg-gray-700">
         <h4 className="font-semibold mb-2">Location of Job</h4>
         <p className="text-gray-700 dark:text-gray-300">{location}</p>
       </div>
@@ -89,32 +88,33 @@ const WorkSubmissionComponent: React.FC<{
 
       <div className="mb-4 px-5">
         <h4 className="font-semibold mb-2">Technician Notes</h4>
-        <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">{notes}</p>
+        <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">
+          {notes}
+        </p>
       </div>
 
       <div className="mb-4 px-5">
         <h4 className="font-semibold mb-2">Technician Signature</h4>
         <div className="flex items-center  justify-between">
-        {signatureUrl ? (
-          <div className="w-fit">
-            <img
-              src={signatureUrl}
-              alt="Signature"
-              className="max-w-full h-auto border border-gray-300 rounded"
+          {signatureUrl ? (
+            <div className="w-fit">
+              <img
+                src={signatureUrl}
+                alt="Signature not found"
+                className="max-w-full h-auto border border-gray-300 rounded p-2"
               />
-          </div>
-        ) : (
-          <div className="h-16 bg-gray-100 flex items-center justify-center text-gray-500 italic">
-            [Signature Placeholder]
-          </div>
-        )}
-        {isApproved && (
-          <div
-          className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700 w-fit"
-          >
-            Approved
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="h-16 bg-gray-100 flex items-center justify-center text-gray-500 italic">
+              signature not found
+            </div>
+          )}
+
+          {isApproved && (
+            <div className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700 w-fit">
+              Approved
+            </div>
+          )}
         </div>
       </div>
 
@@ -123,12 +123,16 @@ const WorkSubmissionComponent: React.FC<{
           <IoMdCheckmarkCircleOutline className="text-emerald-500 w-8 h-8 " />
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800 dark:text-gray-300">Payment Released</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{paymentStatus}</p>
+          <h4 className="font-semibold text-gray-800 dark:text-gray-300">
+            Payment Released
+          </h4>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {paymentStatus}
+          </p>
         </div>
       </div>
 
-     <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700">
+      <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700">
         <div className="flex items-start gap-3">
           <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
             <img
@@ -138,7 +142,9 @@ const WorkSubmissionComponent: React.FC<{
             />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-800 dark:text-gray-400">{reviewerName}</h4>
+            <h4 className="font-semibold text-gray-800 dark:text-gray-400">
+              {reviewerName}
+            </h4>
             <div className="flex items-center gap-1 mb-2">
               {renderStars(rating)}
             </div>

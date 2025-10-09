@@ -3,6 +3,7 @@ import { earningsData, userData } from "@/dummy_datas/jobDetails";
 import MyJobsHeader from "../../shared/components/MyJobsHeader";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
+import { SORT_OPTIONS } from "../search_result/types";
 
 const MyJobsPage = () => {
  
@@ -12,7 +13,7 @@ const MyJobsPage = () => {
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="My Jobs"
-          currentSort="Newest"
+          currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

@@ -6,7 +6,7 @@ import {
   termsData,
   workSubmissions,
 } from "@/dummy_datas/jobDetails";
-import { JOB_STATUSES, type JobStatus } from "@/pages/serch_result/types";
+import { JOB_STATUSES, type JobStatus } from "@/pages/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import Proposal from "../../../shared/components/Proposal";
 import JobInfoSection from "./tab_components/JobInfoSection";
