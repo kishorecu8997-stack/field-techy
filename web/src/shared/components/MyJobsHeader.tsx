@@ -4,13 +4,13 @@ import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
 
-
 const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   title,
   currentSort,
   onSortChange,
   isShowBreadcrumb = true,
   description,
+  isShowSort = true,
 }) => {
   return (
     <div className="py-2">
@@ -36,12 +36,14 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
               )}
             </div>
           </div>
-          <div className="flex-shrink-0">
-            <SortDropdown
-              currentSort={currentSort}
-              onSortChange={onSortChange}
-            />
-          </div>
+          {isShowSort && (
+            <div className="flex-shrink-0">
+              <SortDropdown
+                currentSort={currentSort}
+                onSortChange={onSortChange}
+              />
+            </div>
+          )}
         </div>
       </header>
     </div>

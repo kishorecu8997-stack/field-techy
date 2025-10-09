@@ -4,6 +4,7 @@ export interface MyJobsHeaderProps {
   onSortChange: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
+  isShowSort?: boolean;
 }
 
 export interface UserProfile {

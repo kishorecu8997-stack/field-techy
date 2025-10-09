@@ -9,8 +9,10 @@
 export const urls = {
   root: "/",
   login: "/engineer/login",
+  privacy_policy: "/engineer/privacy-policy",
   home: {
     my_jobs: "/engineer/my-jobs",
     search_result: "/engineer/search-result",
+    privacy_policy: "/engineer/privacy-policy",
   },
 };
