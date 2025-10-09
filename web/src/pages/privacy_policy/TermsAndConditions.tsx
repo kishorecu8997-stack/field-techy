@@ -13,7 +13,7 @@ const TermsAndConditions = () => {
           isShowSort={false}
         />
         <div className=" mt-6">
-          <ContentPage content={termsAndCondition} />;
+          <ContentPage content={termsAndCondition} />
         </div>
       </div>
     </div>
