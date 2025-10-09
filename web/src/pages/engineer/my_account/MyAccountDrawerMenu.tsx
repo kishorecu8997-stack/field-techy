@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// const UserProfileSidebar = () => {
-//   return (
-//     <div>UserProfileSidebar</div>
-//   )
-// }
-
-// export default UserProfileSidebar
-
 import React, { useState } from "react";
 import {
   FaBookmark,
@@ -48,18 +38,14 @@ export type MenuItems = {
  * @example
  * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
  */
-const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
+const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems: MenuItems[] = [
-    {
-      label: "My Profile",
-      icon: FaUser,
-      key: "profile",
-    },
+    { label: "My Profile", icon: FaUser, key: "profile" },
     { label: "My Jobs", icon: FaBriefcase, key: "jobs" },
     { label: "My Earning", icon: FaWallet, key: "earning" },
     { label: "Saved Jobs", icon: FaBookmark, key: "saved" },
@@ -154,4 +140,5 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
   );
 };
 
-export default UserProfileSidebar;
+export default MyAccountDrawerMenu;
+``;

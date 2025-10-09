@@ -53,7 +53,7 @@ export const InputField = ({
   // Add email pattern validation if type is email
   if (type === "email") {
     validationRules.pattern = {
-      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "Please enter a valid email address",
       ...rules?.pattern, // merge with custom pattern if provided
     };

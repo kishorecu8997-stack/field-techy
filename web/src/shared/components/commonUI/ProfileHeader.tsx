@@ -1,8 +1,24 @@
 import React from "react";
-import { type UserProfile } from "../../../pages/engineer/components/ProfileSidebar/types";
 import { Pencil } from "lucide-react";
 import { assetsConfig } from "@/assets";
 
+/**
+ * Type for user profile information displayed in the drawer.
+ */
+type UserProfile = {
+  /** User's full name */
+  name: string;
+  /** User's role or job title */
+  role: string;
+  /** User's rating (e.g., out of 5) */
+  rating: number;
+  /** Number of reviews received */
+  reviews: number;
+  /** Completion percentage (0-100) */
+  completion: number;
+  /** URL to the user's avatar image */
+  avatarUrl: string;
+};
 interface ProfileHeaderProps {
   user: UserProfile;
 }
