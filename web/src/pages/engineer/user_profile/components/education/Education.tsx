@@ -2,7 +2,6 @@ import React from "react";
 import educationData from "@/dummyData/education.json";
 import DrawerHeader from "@/shared/components/DrawerHeader";
 import { NavLink } from "react-router-dom";
-import { urls } from "@/config/urls";
 import { Pencil, Trash2Icon } from "lucide-react";
 
 // Reusable EducationCard component

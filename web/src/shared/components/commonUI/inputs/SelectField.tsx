@@ -28,7 +28,7 @@ export const SelectField = ({
   const { control } = useFormContext();
 
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: required ? `${placeholder !== "Select" ? placeholder || label || name : label || name} is required` : false,
     ...rules,
   };
 

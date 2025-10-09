@@ -12,6 +12,10 @@ interface InputFieldProps {
   type?: "text" | "email" | "number" | "date";
   /** Additional react-hook-form validation rules */
   rules?: RegisterOptions;
+  /** Minimum input length (characters) */
+  minLength?: number;
+  /** Maximum input length (characters) */
+  maxLength?: number;
   /** Icon to display on the left side of input */
   leftIcon?: React.ReactNode;
   /** Custom className for the input container */
@@ -22,7 +26,7 @@ interface InputFieldProps {
   showValidationCheck?: boolean;
 }
 
-/**   
+/**
  * InputField - A reusable input component for react-hook-form.
  *
  * Supports text, email, number, and date types.
@@ -37,6 +41,8 @@ export const InputField = ({
   required = false,
   type = "text",
   rules,
+  minLength,
+  maxLength,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
@@ -46,7 +52,7 @@ export const InputField = ({
 
   // Default validation rules
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: required ? `${placeholder || label || name} is required` : false,
     ...rules,
   };
 
@@ -57,6 +63,30 @@ export const InputField = ({
       message: "Please enter a valid email address",
       ...rules?.pattern, // merge with custom pattern if provided
     };
+  }
+
+  // minLength and maxLength validation (prefers explicit rules if provided)
+  if (rules?.minLength) {
+    // user provided explicit minLength rule, keep it
+    validationRules.minLength = rules.minLength as any;
+  } else if (typeof minLength === "number") {
+    validationRules.minLength = {
+      value: minLength,
+      message: `${
+        placeholder || label || name
+      } must be at least ${minLength} characters`,
+    } as any;
+  }
+
+  if (rules?.maxLength) {
+    validationRules.maxLength = rules.maxLength as any;
+  } else if (typeof maxLength === "number") {
+    validationRules.maxLength = {
+      value: maxLength,
+      message: `${
+        placeholder || label || name
+      } must be at most ${maxLength} characters`,
+    } as any;
   }
 
   return (
@@ -83,6 +113,8 @@ export const InputField = ({
                 id={name}
                 type={type}
                 placeholder={placeholder || label}
+                {...(typeof minLength === "number" ? { minLength } : {})}
+                {...(typeof maxLength === "number" ? { maxLength } : {})}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && invalid ? "pr-10" : ""
                 }`}
