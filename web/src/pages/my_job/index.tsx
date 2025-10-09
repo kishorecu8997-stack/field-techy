@@ -1,19 +1,11 @@
 // src/pages/MyJobsPage.tsx
+import { earningsData, userData } from "@/dummy_datas/jobDetails";
 import MyJobsHeader from "../../shared/components/MyJobsHeader";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 
 const MyJobsPage = () => {
-  const userData = {
-    name: "Michel Brown",
-    phone: "+91 74582405XX",
-    role: "Software Engineer",
-    profileCompletion: 39,
-  };
-
-  const earningsData = {
-    balance: 8250.56,
-  };
+ 
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

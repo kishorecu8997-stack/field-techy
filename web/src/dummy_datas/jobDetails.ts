@@ -1,8 +1,8 @@
-import type { WorkSubmissionComponentProps } from "@/pages/my_job/job_details_components/tab_components/WorkSubmissionComponent";
 import type {
   LogEntry,
   ProposalTermsProps,
   JobInfoSectionProps,
+  WorkSubmissionComponentProps,
 } from "@/pages/my_job/types";
 import type { Job } from "@/pages/serch_result/types";
 
@@ -198,3 +198,25 @@ export const client = {
     "Email Verified",
   ],
 };
+
+
+  // Updated markers to show the correct location
+  export const exampleMarkers = [
+    {
+      id: 1,
+      position: [43.0987, -75.2258] as [number, number], // Coordinates for Utica, NY
+      title: "Work Location",
+      description: "3517 W. Gray St. Utica, Pennsylvania 57867",
+    },
+  ];
+
+   export const userData = {
+    name: "Michel Brown",
+    phone: "+91 74582405XX",
+    role: "Software Engineer",
+    profileCompletion: 39,
+  };
+
+  export const earningsData = {
+    balance: 8250.56,
+  };
