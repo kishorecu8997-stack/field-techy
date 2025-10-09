@@ -11,8 +11,16 @@ const JobDetailsPage = React.lazy(
   () => import("@/pages/my_job/JobDetailsPage")
 );
 const SearchResult = React.lazy(() => import("@/pages/serch_result"));
-const MyJobPrivacyPolicy = React.lazy(() => import("@/pages/privacy_policy/PolicyPage"));
-const PolicyPage = React.lazy(() => import("@/pages/privacy_policy/PrivacyPolicy"));
+const MyJobPrivacyPolicy = React.lazy(
+  () => import("@/pages/privacy_policy/PolicyPage")
+);
+const PolicyPage = React.lazy(
+  () => import("@/pages/privacy_policy/PrivacyPolicy")
+);
+const TermsAndConditions = React.lazy(
+  () => import("@/pages/privacy_policy/TermsAndConditions")
+);
+const FAQ = React.lazy(() => import("@/pages/privacy_policy/FAQ"));
 
 /**
  * Wraps a React lazy-loaded component with Suspense to show a fallback loader
@@ -48,16 +56,27 @@ export const routes = createBrowserRouter([
     path: urls.login,
     element: withSuspense(Login),
   },
-  {path:urls.privacy_policy, element: withSuspense(PolicyPage)},
+  { path: urls.privacy_policy, element: withSuspense(PolicyPage) },
   {
     path: urls.root,
     element: withSuspense(RootLayout),
     children: [
       // { path: urls.home.my_jobs, element: withSuspense(MyJobs) },
       { path: urls.home.my_jobs, element: withSuspense(MyJobsPage) },
-      { path: `${urls.home.my_jobs}/:jobId`, element: withSuspense(JobDetailsPage) },
+      {
+        path: `${urls.home.my_jobs}/:jobId`,
+        element: withSuspense(JobDetailsPage),
+      },
       { path: urls.home.search_result, element: withSuspense(SearchResult) },
-      { path: urls.home.privacy_policy, element: withSuspense(MyJobPrivacyPolicy) },
+      {
+        path: urls.home.privacy_policy,
+        element: withSuspense(MyJobPrivacyPolicy),
+      },
+      {
+        path: urls.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.home.faq, element: withSuspense(FAQ) },
     ],
   },
   {

@@ -1,24 +1,8 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
 import { FaFileAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import type { WorkInfoItem, WorkSubmissionComponentProps } from "../../types";
 
-export interface WorkSubmissionComponentProps {
-  name: string;
-  workDates: string;
-  startTime: string;
-  endTime: string;
-  onsiteTask: boolean;
-  location: string;
-  fileName: string;
-  notes: string;
-  signatureUrl?: string;
-  isApproved: boolean;
-  paymentStatus: string;
-  reviewerName: string;
-  rating: number;
-  reviewComment: string;
-}
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -61,30 +45,36 @@ const WorkSubmissionComponent: React.FC<{
     ));
   };
 
+  const infoItems: WorkInfoItem[] = [
+    { label: "Name", value: name },
+    { label: "Date(s) of Work", value: workDates },
+    { label: "Work Start Date & Time", value: startTime },
+    { label: "Work End Date & Time", value: endTime },
+    {
+      label: "Task Carried out at the site?",
+      value: onsiteTask ? "Yes" : "No",
+    },
+  ];
+
   return (
     <div className="p-4 ">
-      <div className="mb-4 flex flex-col gap-1">
-        <p>
-          <strong className="text-gray-700 ">Name :</strong> {name}
-        </p>
-        <p>
-           <strong className="text-gray-700">Date(s) of Work :</strong> {workDates}
-        </p>
-        <p>
-          <strong className="text-gray-700">Work Start Date & Time :</strong> {startTime}
-        </p>
-        <p>
-          <strong className="text-gray-700">Work End Date & Time :</strong> {endTime}
-        </p>
-        <p>
-           <strong className="text-gray-700">Task Carried out at the site? </strong>{" "}
-          {onsiteTask ? "Yes" : "No"}
-        </p>
+      <div className="bg-white rounded-xl shadow-sm  p-6 mb-4 dark:bg-gray-700">
+        <div className="space-y-4">
+          {infoItems.map((item, index) => (
+            <div key={index} className="flex items-start gap-4">
+              <span className="font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[180px]">
+                {item.label}:
+              </span>
+              <span className="text-gray-900 flex-1 break-words dark:text-gray-300">
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-
-      <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+      <div className="mb-4 p-4 bg-gray-100 rounded-lg dark:bg-gray-700">
         <h4 className="font-semibold mb-2">Location of Job</h4>
-        <p className="text-gray-700">{location}</p>
+        <p className="text-gray-700 dark:text-gray-300">{location}</p>
       </div>
 
       <div className="mb-4">
@@ -99,18 +89,19 @@ const WorkSubmissionComponent: React.FC<{
 
       <div className="mb-4">
         <h4 className="font-semibold mb-2">Technician Notes</h4>
-        <p className="text-gray-700 text-sm leading-relaxed">{notes}</p>
+        <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">{notes}</p>
       </div>
 
       <div className="mb-4">
         <h4 className="font-semibold mb-2">Technician Signature</h4>
+        <div className="flex items-center  justify-between">
         {signatureUrl ? (
           <div className="w-fit">
             <img
               src={signatureUrl}
               alt="Signature"
               className="max-w-full h-auto border border-gray-300 rounded"
-            />
+              />
           </div>
         ) : (
           <div className="h-16 bg-gray-100 flex items-center justify-center text-gray-500 italic">
@@ -118,19 +109,22 @@ const WorkSubmissionComponent: React.FC<{
           </div>
         )}
         {isApproved && (
-          <Button size="sm" className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700">
+          <div
+          className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700 w-fit"
+          >
             Approved
-          </Button>
+          </div>
         )}
+        </div>
       </div>
 
-      <div className=" mb-4 p-4 bg-gray-100 rounded-lg flex items-start gap-3">
+      <div className=" mb-4 p-4 bg-gray-100 rounded-lg flex items-start gap-3 dark:bg-gray-700">
         <div className="items-center gap-2 p-2 bg-gray-100 rounded-md w-fit">
           <IoMdCheckmarkCircleOutline className="text-emerald-500 w-8 h-8 " />
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800">Payment Released</h4>
-          <p className="text-sm text-gray-600">{paymentStatus}</p>
+          <h4 className="font-semibold text-gray-800 dark:text-gray-300">Payment Released</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{paymentStatus}</p>
         </div>
       </div>
 
@@ -144,11 +138,11 @@ const WorkSubmissionComponent: React.FC<{
             />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-800">{reviewerName}</h4>
+            <h4 className="font-semibold text-gray-800 dark:text-gray-400">{reviewerName}</h4>
             <div className="flex items-center gap-1 mb-2">
               {renderStars(rating)}
             </div>
-            <p className="text-gray-700 text-sm leading-relaxed">
+            <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">
               {reviewComment}
             </p>
           </div>

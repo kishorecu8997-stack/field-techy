@@ -68,7 +68,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
             <li key={to} className="flex items-center">
               <span className="mx-2">/</span>
               {isLast ? (
-                <span className="text-gray-700 font-medium">
+                <span className="text-gray-700 font-medium dark:text-gray-500">
                   {formatLabel(value)}
                 </span>
               ) : (

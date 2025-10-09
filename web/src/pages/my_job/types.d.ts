@@ -1,6 +1,6 @@
 export interface MyJobsHeaderProps {
   title: string;
-  currentSort: string;
+  currentSort?: string;
   onSortChange: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
@@ -101,4 +101,27 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: WorkingType | string;
   status?: JobStatus | string;
+}
+
+
+export interface WorkSubmissionComponentProps {
+  name: string;
+  workDates: string;
+  startTime: string;
+  endTime: string;
+  onsiteTask: boolean;
+  location: string;
+  fileName: string;
+  notes: string;
+  signatureUrl?: string;
+  isApproved: boolean;
+  paymentStatus: string;
+  reviewerName: string;
+  rating: number;
+  reviewComment: string;
+}
+
+export interface WorkInfoItem {
+  label: string;
+  value: string;
 }

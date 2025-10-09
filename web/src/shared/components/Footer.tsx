@@ -8,8 +8,11 @@ import { FaLinkedin } from "react-icons/fa";
 import logo from "../../assets/logo_small.svg";
 import { NavLink } from "react-router-dom";
 import { urls } from "@/config/urls";
+import ReportPage from "@/pages/report";
+import { useState } from "react";
 
 const Footer = () => {
+  const [open, setOpen] = useState(false);
   return (
     <footer className="bg-white dark:bg-gray-900 pt-12 pb-8 px-6 md:px-12 relative overflow-hidden text-gray-600 dark:text-gray-300">
       <div className="container mx-auto">
@@ -17,11 +20,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="md:w-1/3">
             <div className="mb-6">
-              <img
-                src={logo}
-                alt="Field Techy Logo"
-                className="h-12 w-auto"
-              />
+              <img src={logo} alt="Field Techy Logo" className="h-12 w-auto" />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               OUR ADDRESS
@@ -90,12 +89,12 @@ const Footer = () => {
             </h3>
             <ul className="space-y-4">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                <div
+                onClick={() => setOpen(true)}
+                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors cursor-pointer"
                 >
                   Report A Problem
-                </a>
+                </div>
               </li>
               <li>
                 <a
@@ -106,20 +105,20 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <NavLink
+                  to={urls.home.faq}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   FAQ
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a
-                  href="#"
+                <NavLink
+                  to={urls.home.terms_and_conditions}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Terms & Conditions
-                </a>
+                </NavLink>
               </li>
               <li>
                 <NavLink
@@ -158,6 +157,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <ReportPage open={open} onClose={() => setOpen(false)} />
     </footer>
   );
 };

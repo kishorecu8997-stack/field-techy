@@ -19,9 +19,9 @@ const LocationMap = () => {
     <div className="p-4 mx-auto">
       <h1 className="text-2xl font-bold mb-4">Work Location Details</h1>
       <div className=" rounded-lg shadow-sm">
-        <div className="mb-1 p-3 bg-gray-50 rounded-md">
-          <h3 className="font-semibold text-gray-800 mb-1">SPOC Details</h3>
-          <p className="text-sm text-gray-700">
+        <div className="mb-1 p-3 bg-gray-50 rounded-md dark:bg-gray-700">
+          <h3 className="font-semibold text-gray-800 mb-1 dark:text-gray-400">SPOC Details</h3>
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             <span className="font-medium">Work location is at:</span> 3517 W. Gray St. Utica, Pennsylvania 57867
           </p>
         </div>

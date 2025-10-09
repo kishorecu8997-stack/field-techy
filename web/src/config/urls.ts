@@ -14,5 +14,7 @@ export const urls = {
     my_jobs: "/engineer/my-jobs",
     search_result: "/engineer/search-result",
     privacy_policy: "/engineer/privacy-policy",
+    faq: "/engineer/faq",
+    terms_and_conditions: "/engineer/terms-and-conditions",
   },
 };

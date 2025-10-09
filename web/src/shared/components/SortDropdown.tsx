@@ -2,7 +2,7 @@ import { SORT_OPTIONS, type SortOption } from "@/pages/serch_result/types";
 import React, { useState } from "react";
 
 interface SortDropdownProps {
-  currentSort: string;
+  currentSort?: string;
   onSortChange: (sort: SortOption) => void;
 }
 
