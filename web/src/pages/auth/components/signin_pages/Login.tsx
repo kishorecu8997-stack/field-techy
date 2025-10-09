@@ -1,6 +1,5 @@
 import { urls } from "@/config/urls";
 import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
 import {
   CheckboxInput,
   InputField,
@@ -15,6 +14,7 @@ import { LuPhone } from "react-icons/lu";
 import { BiLogoLinkedin } from "react-icons/bi";
 import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Type representing the data structure for the Login form.
@@ -124,7 +124,7 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.main.home)}
+            handleNavigate={() => navigate(urls.home.my_jobs)}
           />
         </Popup>
       </div>

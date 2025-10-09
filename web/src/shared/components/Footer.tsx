@@ -5,11 +5,12 @@ import { FaFacebook } from "react-icons/fa";
 import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
-import logo from "../../assets/logo_small.svg";
+// import logo from "../../assets/logo_small.svg";
 import { NavLink } from "react-router-dom";
 import { urls } from "@/config/urls";
 import ReportPage from "@/pages/report";
 import { useState } from "react";
+import { assetsConfig } from "@/assets";
 
 const Footer = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +21,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="md:w-1/3">
             <div className="mb-6">
-              <img src={logo} alt="Field Techy Logo" className="h-12 w-auto" />
+              <img src={assetsConfig.logos.ftLogo} alt="Field Techy Logo" className="h-12 w-auto" />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               OUR ADDRESS

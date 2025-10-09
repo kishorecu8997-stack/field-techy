@@ -1,4 +1,3 @@
-import { Button } from "@/shared/components/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useForm } from "react-hook-form";
@@ -10,6 +9,7 @@ import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { MdEmail } from "react-icons/md";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 export type LoginFormData = {
   phone: string;
@@ -103,7 +103,7 @@ const navigate = useNavigate();
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.main.home)}
+            handleNavigate={() => navigate(urls.home.my_jobs)}
             
           />
         </Popup>

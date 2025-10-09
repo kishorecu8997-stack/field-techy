@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
-import logo from "../../assets/logo_small.svg";
 import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
 import { urls } from "@/config/urls";
+import { assetsConfig } from "@/assets";
 
 interface NavbarProps {
   onDrawerToggle: () => void;
@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
       <div className="flex items-center space-x-8 ">
-        <img src={logo} alt="FT Logo" className="h-12 w-auto" />
+        <img src={assetsConfig.logos.ftLogo} alt="FT Logo" className="h-12 w-auto" />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
           <NavLink
             to={urls.home.my_jobs}
@@ -149,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           <TbAlignLeft className="h-5 w-5" />
           <span className="max-w-[6rem] truncate text-left">Hi, Alex</span>
           <img
-            src={logo}
+            src={assetsConfig.logos.ftLogo}
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />

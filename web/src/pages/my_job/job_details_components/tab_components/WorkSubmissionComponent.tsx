@@ -58,7 +58,7 @@ const WorkSubmissionComponent: React.FC<{
 
   return (
     <div className="p-4 ">
-      <div className="bg-white rounded-xl shadow-sm  p-6 mb-4 dark:bg-gray-700">
+      <div className="bg-white rounded-xl  p-6 mb-4 dark:bg-gray-700">
         <div className="space-y-4">
           {infoItems.map((item, index) => (
             <div key={index} className="flex items-start gap-4">
@@ -72,12 +72,12 @@ const WorkSubmissionComponent: React.FC<{
           ))}
         </div>
       </div>
-      <div className="mb-4 p-4 bg-gray-100 rounded-lg dark:bg-gray-700">
+    <div className="bg-white rounded-xl  p-6 mb-4 dark:bg-gray-700">
         <h4 className="font-semibold mb-2">Location of Job</h4>
         <p className="text-gray-700 dark:text-gray-300">{location}</p>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 px-5">
         <h4 className="font-semibold mb-2">Completed Task File</h4>
         <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-md w-fit">
           <span className="text-sm text-gray-700 flex justify-center items-center text-center gap-2">
@@ -87,12 +87,12 @@ const WorkSubmissionComponent: React.FC<{
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 px-5">
         <h4 className="font-semibold mb-2">Technician Notes</h4>
         <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">{notes}</p>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 px-5">
         <h4 className="font-semibold mb-2">Technician Signature</h4>
         <div className="flex items-center  justify-between">
         {signatureUrl ? (
@@ -118,8 +118,8 @@ const WorkSubmissionComponent: React.FC<{
         </div>
       </div>
 
-      <div className=" mb-4 p-4 bg-gray-100 rounded-lg flex items-start gap-3 dark:bg-gray-700">
-        <div className="items-center gap-2 p-2 bg-gray-100 rounded-md w-fit">
+      <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700 flex flex-row gap-3">
+        <div className="items-center gap-2 p-2 bg-gray-100 rounded-md w-fit ">
           <IoMdCheckmarkCircleOutline className="text-emerald-500 w-8 h-8 " />
         </div>
         <div>
@@ -128,7 +128,7 @@ const WorkSubmissionComponent: React.FC<{
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-gray-200">
+     <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700">
         <div className="flex items-start gap-3">
           <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
             <img
