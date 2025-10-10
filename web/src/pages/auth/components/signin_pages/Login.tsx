@@ -1,5 +1,5 @@
 import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
+import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import {
   CheckboxInput,
@@ -15,6 +15,7 @@ import { LuPhone } from "react-icons/lu";
 import { BiLogoLinkedin } from "react-icons/bi";
 import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 
 /**
  * Type representing the data structure for the Login form.
@@ -37,7 +38,7 @@ const Login = ({
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
 
@@ -46,9 +47,15 @@ const Login = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Sign In</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Sign In
+          </h2>
           <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
             Don't have an account?{" "}
             <NavLink
@@ -64,22 +71,16 @@ const Login = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2 w-full"
         >
-          <InputField 
-            name="email" 
-            label="Email Address" 
-            type="email" 
+          <InputField
+            name="email"
+            label="Email ID"
+            type="text"
             required
+            rules={validateEmailRules}
           />
-          <PasswordInput 
-            name="password" 
-            label="Password" 
-            required
-          />
+          <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput 
-              name="rememberMe" 
-              secondaryLabel="Remember Me" 
-            />
+            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={urls.auth.forgetPassword}
@@ -112,13 +113,12 @@ const Login = ({
             variant="outline"
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
-            <span className="whitespace-nowrap text-gray-900 dark:text-white">LinkedIn</span>
+            <span className="whitespace-nowrap text-gray-900 dark:text-white">
+              LinkedIn
+            </span>
           </Button>
         </div>
-        <Popup 
-          open={isOpen} 
-          onClose={() => setIsOpen(false)}
-        >
+        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
             description="We sent you an OTP code"

@@ -1,4 +1,4 @@
-import {assetsConfig} from "@/assets";
+import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -8,7 +8,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
 import { urls } from "@/config/urls";
-
+import { MdOutlineMailOutline } from "react-icons/md";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 export type ForgetPasswordFormData = {
   email: string;
 };
@@ -29,7 +30,7 @@ const ForgetPassword = () => {
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
 
@@ -38,7 +39,11 @@ const ForgetPassword = () => {
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-md font-extralight ">
@@ -50,7 +55,16 @@ const ForgetPassword = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-10"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email ID"
+            type="text"
+            required
+            leftIcon={
+              <MdOutlineMailOutline className="text-lg text-gray-500" />
+            }
+            rules={validateEmailRules}
+          />
 
           <Button
             type="submit"

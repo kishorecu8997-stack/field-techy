@@ -20,6 +20,10 @@ interface InputFieldProps {
   inputClassName?: string;
   /** Show validation checkmark when valid */
   showValidationCheck?: boolean;
+  /** Custom icon to show when the field is valid */
+  validIcon?: React.ReactNode;
+  /** Custom icon to show when the field is invalid */
+  invalidIcon?: React.ReactNode;
 }
 
 /**   
@@ -40,7 +44,7 @@ export const InputField = ({
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 w-full",
-  showValidationCheck = false,
+  showValidationCheck = false,  
 }: InputFieldProps) => {
   const { control } = useFormContext();
 
@@ -53,7 +57,7 @@ export const InputField = ({
   // Add email pattern validation if type is email
   if (type === "email") {
     validationRules.pattern = {
-      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "Please enter a valid email address",
       ...rules?.pattern, // merge with custom pattern if provided
     };
@@ -84,7 +88,7 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
-                  showValidationCheck && isDirty && invalid ? "pr-10" : ""
+                  showValidationCheck && isDirty ? "pr-10" : ""
                 }`}
               />
               {showValidationCheck && isDirty && !invalid && (

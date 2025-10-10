@@ -1,5 +1,7 @@
 import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
 import { useState, useRef } from "react";
+import { toast } from "react-toastify";
+
 
 interface ImageUploadFieldProps {
   name: string;
@@ -10,46 +12,47 @@ interface ImageUploadFieldProps {
   accept?: string;
 }
 
-/**
- * ImageUploadField - A reusable image upload component for react-hook-form.
- *
- * Displays a circular preview with an edit button.
- * Validates file type and size.
- * Integrates with react-hook-form using Controller.
- */
 export const ImageUploadField = ({
   name,
   label,
   required = false,
   rules,
   maxSize = 250 * 1024, // 250 KB
-  accept = "image/*",
+  accept = ".jpeg",
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);  
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, onChange: (value: File | null) => void) => {
+  const validateJPEGSignature = async (file: File): Promise<boolean> => {
+    const buffer = await file.slice(0, 2).arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    return bytes[0] === 0xFF && bytes[1] === 0xD8;
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    onChange: (value: File | null) => void
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file.");
+    const isJPEGMime = file.type === "image/jpeg";
+    const hasJPEGExtension = file.name.toLowerCase().endsWith(".jpeg");
+    const isValidSignature = await validateJPEGSignature(file);
+
+    if (!isJPEGMime || !hasJPEGExtension || !isValidSignature) {
+      toast.error("Only genuine JPEG files with .jpeg extension are allowed.");
       return;
     }
 
-    // Validate file size
-    if (file.size > maxSize) {
-      alert(`File size exceeds ${maxSize / (1024)} KB.`);
+    if (file.size < 50 * 1024 || file.size > maxSize) {
+      toast.error("File size must be between 50 KB and 250 KB.");
       return;
     }
 
-    // Create preview URL
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-
-    // Pass file to form state
     onChange(file);
   };
 
@@ -57,21 +60,23 @@ export const ImageUploadField = ({
     fileInputRef.current?.click();
   };
 
-  // Default validation rules
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
     validate: {
-      fileType: (value: File | null) => {
+      fileType: async (value: File | null) => {
         if (!value) return true;
-        if (!value.type.startsWith("image/")) {
-          return "Please upload a valid image file.";
+        const isJPEGMime = value.type === "image/jpeg";
+        const hasJPEGExtension = value.name.toLowerCase().endsWith(".jpeg");
+        const isValidSignature = await validateJPEGSignature(value);
+        if (!isJPEGMime || !hasJPEGExtension || !isValidSignature) {
+          return "Only genuine JPEG files with .jpeg extension are allowed.";
         }
         return true;
       },
       fileSize: (value: File | null) => {
         if (!value) return true;
-        if (value.size > maxSize) {
-          return `File size must be less than ${maxSize / 1024} KB.`;
+        if (value.size < 50 * 1024 || value.size > maxSize) {
+          return "File size must be between 50 KB and 250 KB.";
         }
         return true;
       },
@@ -95,7 +100,6 @@ export const ImageUploadField = ({
         render={({ field, fieldState: { error } }) => {
           const { onChange, value } = field;
 
-          // If value is a File, generate preview on mount or change
           if (value instanceof File && !previewUrl) {
             const url = URL.createObjectURL(value);
             setPreviewUrl(url);
@@ -104,7 +108,6 @@ export const ImageUploadField = ({
           return (
             <>
               <div className="relative inline-block">
-                {/* Circular Avatar Preview */}
                 <div
                   className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 cursor-pointer"
                   onClick={triggerFileInput}
@@ -122,7 +125,6 @@ export const ImageUploadField = ({
                   )}
                 </div>
 
-                {/* Edit Button Overlay */}
                 <button
                   type="button"
                   onClick={triggerFileInput}
@@ -145,7 +147,6 @@ export const ImageUploadField = ({
                   </svg>
                 </button>
 
-                {/* Hidden File Input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -167,3 +168,5 @@ export const ImageUploadField = ({
     </div>
   );
 };
+
+export default ImageUploadField;

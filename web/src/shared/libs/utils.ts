@@ -15,8 +15,8 @@ export function cn(...classes: (string | boolean | undefined | null)[]) {
  * Returns true when valid or a string message describing the validation error.
  */
 export const validatePassword = (value: string) => {
-  if (value.length < 8) {
-    return "Password must be at least 8 characters long";
+  if (value.length < 10) {
+    return "Password must be at least 10 characters long";
   }
   if (value.length > 20) {
     return "Password must not exceed 20 characters";
@@ -45,14 +45,17 @@ export const phoneValidations: Record<
   { regex: RegExp; message: string }
 > = {
   "+91": {
-    regex: /^[6-9]\d{9}$/,
-    message: "Enter a valid 10-digit Indian mobile number",
+    // Allows optional +91 or 0 prefix, followed by 10 digits starting with 6–9
+    regex: /^(?:\+91|0)?[6-9]\d{9}$/,
+    message: "Enter a valid Indian mobile number (10 digits starting with 6–9)",
   },
   "+44": {
-    regex: /^\d{10}$/,
-    message: "Enter a valid 10-digit UK mobile number",
+    // UK mobile numbers typically start with 7 and are 10 digits long after the country code
+    regex: /^(?:\+44|0)?7\d{9}$/,
+    message: "Enter a valid UK mobile number (starts with 7 and has 10 digits)",
   },
 };
+
 
 /**
  * validatePhone - reusable validator for react-hook-form.

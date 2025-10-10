@@ -89,7 +89,7 @@ const SignUpWithNumber = ({
           onClick={() => setIsNumberLogin(false)}
         >
           <LuPhone />
-          Sign up with Email
+          Sign in with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />

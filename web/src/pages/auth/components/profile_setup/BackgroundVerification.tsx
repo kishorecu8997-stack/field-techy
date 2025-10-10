@@ -74,8 +74,9 @@ const BackgroundVerification = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-4"
         >
-          <FileUpload name="governmentId" label="Government ID" placeholder="Government ID" required/>
-          <FileUpload name="certificate" label="Certificate" placeholder="Certificate" required/>
+          <FileUpload name="governmentId1" label="Government ID 1" placeholder="Government ID" required accept=".pdf" maxPages={5}/>
+          <FileUpload name="governmentId2" label="Government ID 2" placeholder="Government ID" required accept=".pdf" maxPages={5}/>
+          <FileUpload name="certificate" label="Certificate" placeholder="Certificate" required accept=".pdf" maxPages={5}/>
           <div className="pt-6">
             <Button
               type="submit"

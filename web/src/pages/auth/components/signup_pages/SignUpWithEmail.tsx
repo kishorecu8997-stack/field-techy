@@ -1,5 +1,5 @@
 import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
+import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -10,6 +10,8 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import { MdOutlineMailOutline } from "react-icons/md";
 
 export interface SignUpFormData {
   email: string;
@@ -33,7 +35,7 @@ const SignUp = ({
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = () => {
-        setIsOpen(true);
+    setIsOpen(true);
   };
 
   return (
@@ -41,7 +43,11 @@ const SignUp = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">
@@ -59,7 +65,16 @@ const SignUp = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email ID"
+            type="text"
+            required
+            leftIcon={
+              <MdOutlineMailOutline className="text-lg text-gray-500" />
+            }
+            rules={validateEmailRules}
+          />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
               name="terms"
@@ -76,7 +91,9 @@ const SignUp = ({
             type="submit"
             disabled={!termsAccepted}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              !termsAccepted
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
             }`}
           >
             Create Account

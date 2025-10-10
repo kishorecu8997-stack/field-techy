@@ -54,12 +54,9 @@ const LeftPanel: React.FC = () => {
   };
 
  return (
-  <div className="h-screen flex flex-col text-white">
-    {/* Header or fixed top content */}
-    <div className="flex-shrink-0 h-12 md:h-16 lg:h-24"></div>
+  <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">
+      <div className="w-full max-h-[calc(100vh-3rem)] md:max-h-[calc(100vh-4rem)] lg:max-h-[calc(100vh-6rem)] flex items-center justify-center">
 
-    {/* Main content area that takes remaining height */}
-    <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-6 md:p-8 lg:p-12">
       <Slider {...settings} className="w-full">
         {sections.map((section, index) => (
           <div

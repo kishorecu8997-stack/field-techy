@@ -41,7 +41,8 @@ const ProfileSettingPage = () => {
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = (data:ProfileSetupData) => {  
+    console.log(data)  
     navigate(urls.auth.background_verification);
   };
 
