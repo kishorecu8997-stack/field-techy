@@ -1,6 +1,18 @@
-import { jobs } from "@/dummy_datas/jobDetails";
+import { jobs } from "@/dummy_data/jobDetails";
 import JobCard from "@/shared/components/JobCard";
 
+/**
+ * Renders a responsive grid of job cards using dummy job data.
+ *
+ * Displays a list of available jobs in a responsive grid layout (1 column on mobile,
+ * 2 columns on medium screens and up). If no jobs are available, shows a "No jobs found"
+ * message. Each job is rendered using the `JobCard` component.
+ *
+ * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
+ *
+ * @example
+ * <JobList />
+ */
 const JobList = () => {
   return (
     <div className="lg:col-span-2">

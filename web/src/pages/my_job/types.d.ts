@@ -32,14 +32,6 @@ export interface ClientInfoCardProps {
   verifications: string[];
 }
 
-export const Status = {
-  applied: "applied",
-  inprogress: "inprogress",
-  completed: "completed",
-} as const;
-
-export type StatusType = (typeof Status)[keyof typeof Status];
-
 export interface JobHeaderCardProps {
   title: string;
   client: string;
@@ -70,10 +62,19 @@ export interface JobInfoSectionProps {
   files: string[];
 }
 
+export type LogStatus = "check-in" | "in-progress" | "delayed" | "approved";
+
+export const LOG_STATUSES = {
+  checkIn: "check-in",
+  inProgress: "in-progress",
+  delayed: "delayed",
+  approved: "approved",
+} as const;
+
 export interface LogEntry {
   title: string;
   date: string;
-  status: "check-in" | "in-progress" | "delayed" | "approved";
+  status: string;
   showIcon?: boolean;
   children?: React.ReactNode;
 }
@@ -94,7 +95,6 @@ export interface ProposalTermsProps {
   element?: React.ReactNode;
 }
 
-
 export interface JobHeaderCardProps {
   title: string;
   client: string;
@@ -102,7 +102,6 @@ export interface JobHeaderCardProps {
   type?: WorkingType | string;
   status?: JobStatus | string;
 }
-
 
 export interface WorkSubmissionComponentProps {
   name: string;

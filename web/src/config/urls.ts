@@ -1,30 +1,62 @@
-// config/urls.ts
 /**
  * Application route URLs.
  *
  * Centralized object for all routes used in the app.
  *
- * ⚠️ For nested routes under `/home`, use RELATIVE paths (no leading slash).
+ * ✅ Best Practices:
+ * - Use absolute paths for linking
+ * - Use relative paths only for route definitions
+ * - Group related routes under common base
+ * - Use consistent naming
  */
+export const BASE = {
+  ENGINEER: "/engineer",
+  AUTH: "/engineer/auth",
+} as const;
+
 export const urls = {
-  root: "/",
-  login: "/engineer/login",
-  privacy_policy: "/engineer/policy",
-  home: {
-    my_jobs: "/engineer/my-jobs",
-    search_result: "/engineer/search-result",
-    privacy_policy: "/engineer/privacy-policy",
-    faq: "/engineer/faq",
-    terms_and_conditions: "/engineer/terms-and-conditions",
+  engineer: {
+    base: BASE.ENGINEER,
+    privacy_policy: `${BASE.ENGINEER}/policy`,
+
+    home: {
+      my_jobs: "my-jobs",
+      search_result: "search-result",
+      faq: "faq",
+      terms_and_conditions: "terms-and-conditions",
+      privacy_policy: "privacy-policy",
+    },
+    auth: {
+      login: "login",
+      signup: "signup",
+      profile_setup: "profile-setup",
+      forget_password: "forget-password",
+      reset_password: "reset-password",
+      set_password: "set-password",
+      background_verification: "background-verification",
+    },
   },
-  auth: {
-    forgetPassword: "engineer/auth/forget-password",
-    resetPassword: " engineer/auth/reset-password",
-    signUp: "engineer/auth/signup",
-    otp: "engineer/auth/otp",
-    login: "engineer/auth",
-    profile_setup: "engineer/auth/profile-setup",
-    background_verification: "engineer/auth/background-verification",
-    set_password: "engineer/auth/set-password",
+} as const;
+
+// ✅ Helper for absolute paths (for navigation/linking)
+export const absoluteUrls = {
+  engineer: {
+    auth: {
+      login: `${BASE.AUTH}/login`,
+      signup: `${BASE.AUTH}/signup`,
+      profile_setup: `${BASE.AUTH}/profile-setup`,
+      forget_password: `${BASE.AUTH}/forget-password`,
+      reset_password: `${BASE.AUTH}/reset-password`,
+      set_password: `${BASE.AUTH}/set-password`,
+      background_verification: `${BASE.AUTH}/background-verification`,
+      privacy_policy: `${BASE.AUTH}/policy`,
+    },
+    home: {
+      my_jobs: `${BASE.ENGINEER}/my-jobs`,
+      search_result: `${BASE.ENGINEER}/search-result`,
+      faq: `${BASE.ENGINEER}/faq`,
+      terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
+      privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+    },
   },
-};
+} as const;

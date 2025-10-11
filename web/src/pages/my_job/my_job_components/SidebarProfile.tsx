@@ -2,6 +2,15 @@ import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 
+/**
+ * Sidebar component displaying the user's profile summary and earnings overview.
+ *
+ * Composed of two main sections:
+ * - **ProfileCard**: Shows user name, contact info, role, and profile completion status.
+ * - **EarningsCard**: Displays current balance and quick actions for financial management.
+ * @example
+ * <SidebarProfile user={user} earnings={earnings} />
+ */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
   return (
     <div className="space-y-6">
@@ -13,6 +22,12 @@ const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
 
 export default SidebarProfile;
 
+/**
+ * Displays a visually styled user profile card with avatar placeholder, contact info,
+ * role, and a profile completion progress bar.
+ *
+ * Includes a "Complete Profile" call-to-action button (currently static).
+ */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
   const { name, phone, role, profileCompletion } = user;
   return (
@@ -46,6 +61,12 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
   );
 };
 
+/**
+ * Renders a financial summary card showing the user's current balance and quick-action buttons
+ * for managing payouts (e.g., "Bank Details", "Withdraw").
+ *
+ * Includes a "View all" link (currently placeholder) for navigating to a full earnings page.
+ */
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
 

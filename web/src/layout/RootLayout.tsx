@@ -4,6 +4,25 @@ import Navbar from "@/shared/components/Navbar";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
+/**
+ * Root layout component that wraps all authenticated/engineer-facing pages.
+ * Provides a consistent structure including:
+ * - A sticky header with scroll-aware styling (transparent on top, solid when scrolled)
+ * - A responsive navigation bar with mobile drawer toggle
+ * - Main content area via React Router's `<Outlet />`
+ * - Custom footer section followed by a shared `<Footer />` component
+ * - A side drawer for mobile navigation
+ *
+ * Uses `useEffect` to listen for scroll events and dynamically update header appearance.
+ * Optimized with passive event listener for scroll performance.
+ *
+ * @returns {JSX.Element} The complete page layout with header, main content, and footer.
+ *
+ * @example
+ * <RootLayout>
+ *   <MyJobsPage />
+ * </RootLayout>
+ */
 const RootLayout = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,19 +68,6 @@ const RootLayout = (): JSX.Element => {
               the readable content of a page when looking at its layout.
             </div>
           </div>
-          {/* <div className="mt-6 flex flex-col justify-center h-fit gap-3">
-            <label className="text-md text-white">Email Address</label>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="px-4 py-2 rounded-l-full focus:outline-none text-white bg-transparent border border-gray-300"
-              />
-              <button className="bg-teal-500 px-6 py-2 rounded-r-full font-medium border border-gray-300">
-                Get Started
-              </button>
-            </div>
-          </div> */}
         </div>
       </footer>
       <Footer />

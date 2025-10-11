@@ -1,7 +1,10 @@
-import { termsAndCondition } from "@/dummy_datas/policyDatas";
+import { termsAndCondition } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 
+/**
+ * Terms & Conditions page displaying static policy content from dummy data.
+ */
 const TermsAndConditions = () => {
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

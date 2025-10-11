@@ -5,20 +5,22 @@ import { FaFacebook } from "react-icons/fa";
 import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
-// import logo from "../../assets/logo_small.svg";
 import { NavLink } from "react-router-dom";
-import { urls } from "@/config/urls";
+import { absoluteUrls } from "@/config/urls";
 import ReportPage from "@/pages/report";
 import { useState } from "react";
 import { assetsConfig } from "@/assets";
 
+/**
+ * Main footer component with company info, quick links, support options,
+ * social media icons, and a report problem modal.
+ */
 const Footer = () => {
   const [open, setOpen] = useState(false);
   return (
     <footer className="bg-white dark:bg-gray-900 pt-12 pb-8 px-6 md:px-12 relative overflow-hidden text-gray-600 dark:text-gray-300">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row gap-12">
-          {/* Company Info */}
           <div className="md:w-1/3">
             <div className="mb-6">
               <img src={assetsConfig.logos.ftLogo} alt="Field Techy Logo" className="h-12 w-auto" />
@@ -42,7 +44,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div className="md:w-1/3">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6">
               QUICK LINKS
@@ -83,7 +84,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
           <div className="md:w-1/3">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6">
               SUPPORT
@@ -107,7 +107,7 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={urls.home.faq}
+                  to={absoluteUrls.engineer.home.faq}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   FAQ
@@ -115,7 +115,7 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={urls.home.terms_and_conditions}
+                  to={absoluteUrls.engineer.home.terms_and_conditions}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Terms & Conditions
@@ -124,7 +124,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
-                  to={urls.home.privacy_policy}
+                  to={absoluteUrls.engineer.home.privacy_policy}
                 >
                   Privacy Policy
                 </NavLink>
@@ -133,7 +133,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Section */}
         <div className="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-600 dark:text-gray-500 mb-4 md:mb-0">
             Copyright © 2025 Field Techy | All Rights Reserved.

@@ -1,11 +1,11 @@
 import {
   job,
   logs,
-  OtherProposal,
-  Requirements,
+  otherProposal,
+  requirements,
   termsData,
   workSubmissions,
-} from "@/dummy_datas/jobDetails";
+} from "@/dummy_data/jobDetails";
 import { JOB_STATUSES, type JobStatus } from "@/pages/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import Proposal from "../../../shared/components/Proposal";
@@ -13,8 +13,21 @@ import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
-// import LocationMap from "./tab_components/LocationMap";
 
+/**
+ * Renders a tabbed section for job details based on the current job status.
+ *
+ * This component conditionally displays various tabs such as Logs, Work Submissions,
+ * Job Information, Requirements, SPOC Details, Other Proposals, and Terms & Conditions.
+ * Certain tabs (e.g., Logs and Work Submissions) are hidden when the job status is 'applied'.
+ *
+ * @param {Object} props - The component props.
+ * @param {JobStatus} props.status - The current status of the job (e.g., 'applied', 'in_progress').
+ * @returns {JSX.Element} A tabbed interface containing job-related information sections.
+ *
+ * @example
+ * <JobTabSection status={JOB_STATUSES.in_progress} />
+ */
 const JobTabSection = ({ status }: { status: JobStatus }) => {
   const tabs = [
     {
@@ -34,7 +47,7 @@ const JobTabSection = ({ status }: { status: JobStatus }) => {
     {
       label: "Requirement",
       content: (
-        <Proposal jobTitle={Requirements.jobTitle} terms={Requirements.terms} />
+        <Proposal jobTitle={requirements.jobTitle} terms={requirements.terms} />
       ),
     },
     {
@@ -45,8 +58,8 @@ const JobTabSection = ({ status }: { status: JobStatus }) => {
       label: "Other",
       content: (
         <Proposal
-          jobTitle={OtherProposal.jobTitle}
-          terms={OtherProposal.terms}
+          jobTitle={otherProposal.jobTitle}
+          terms={otherProposal.terms}
         />
       ),
     },

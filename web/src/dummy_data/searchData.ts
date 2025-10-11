@@ -9,7 +9,7 @@ import type { Job } from "@/pages/search_result/types";
       description:
         "Join our dynamic team as a Senior Product Designer where you will lead the design of innovative products. Your role will encompass everything from conceptualization to execution, ensuring a seamless user experience across all platforms.",
       location: "San Francisco, USA",
-      salary: "$4000",
+      salary: "4000",
       postedTime: "30min ago",
       category: "Designing",
       rating: 4,
@@ -25,7 +25,7 @@ import type { Job } from "@/pages/search_result/types";
       description:
         "We are seeking a talented graphic designer with a flair for creativity and a keen eye for detail. This position will focus on reimagining our visual identity and elevating our brand through stunning graphics.",
       location: "San Francisco, USA",
-      salary: "$4000",
+      salary: "4000",
       postedTime: "30min ago",
       category: "Designing",
       rating: 5,
@@ -41,7 +41,7 @@ import type { Job } from "@/pages/search_result/types";
       description:
         "We are looking for a Junior Web Designer who is passionate about creating engaging and user-friendly websites. You will work alongside our team to assist in developing web interfaces that captivate users and enhance their online experience.",
       location: "Austin, USA",
-      salary: "$4000",
+      salary: "4000",
       postedTime: "30min ago",
       category: "IT",
       rating: 4,
@@ -57,7 +57,7 @@ import type { Job } from "@/pages/search_result/types";
       description:
         "We're looking for a skilled Software Engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
       location: "New York, USA",
-      salary: "$5000",
+      salary: "5000",
       postedTime: "1h ago",
       category: "IT",
       rating: 5,

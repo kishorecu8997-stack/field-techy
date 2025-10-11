@@ -1,3 +1,11 @@
+import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
+
+interface BreadcrumbProps {
+  homeLabel?: string;
+  customLabels?: Record<string, string>;
+}
+
 /**
  * Breadcrumb Component
  * Dynamically generates breadcrumb navigation from the current URL path,
@@ -8,14 +16,6 @@
  * @param {Record<string, string>} [props.customLabels] - Optional custom label overrides
  * @returns {JSX.Element} Rendered breadcrumb trail
  */
-import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
-
-interface BreadcrumbProps {
-  homeLabel?: string;
-  customLabels?: Record<string, string>;
-}
-
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
   homeLabel = "Home",
   customLabels = {},

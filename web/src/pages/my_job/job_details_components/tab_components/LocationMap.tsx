@@ -1,6 +1,19 @@
-import { exampleMarkers } from "@/dummy_datas/jobDetails";
+import { exampleMarkers } from "@/dummy_data/jobDetails";
 import MapComponent from "@/shared/components/MapComponent";
 
+/**
+ * Displays the job's work location with a descriptive address and an interactive map.
+ *
+ * This component renders a static address block for the SPOC (Single Point of Contact)
+ * work location and embeds a map using the `MapComponent`, centered on predefined
+ * coordinates from dummy data. It also logs map click events for potential future use
+ * (e.g., coordinate selection or debugging).
+ *
+ * @returns {JSX.Element} A section containing the location address and an interactive map.
+ *
+ * @example
+ * <LocationMap />
+ */
 const LocationMap = () => {
   const handleMapClick = (latlng: { lat: number; lng: number }) => {
     console.log("User clicked map at:", latlng);
@@ -20,9 +33,9 @@ const LocationMap = () => {
           </p>
         </div>
         <MapComponent
-          initialPosition={[43.0987, -75.2258]} // Coordinates for Utica, NY
-          initialZoom={14} // Zoom level appropriate for street view
-          markers={exampleMarkers}
+          initialPosition={[exampleMarkers.position[0], exampleMarkers.position[1]]} // Coordinates for Utica, NY
+          initialZoom={exampleMarkers.maxZoom} // Zoom level appropriate for street view
+          markers={[exampleMarkers]}
           onMapClick={handleMapClick}
         />
       </div>

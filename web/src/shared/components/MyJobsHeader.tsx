@@ -1,9 +1,14 @@
-// components/MyJobsHeader.tsx
 import type { MyJobsHeaderProps } from "@/pages/my_job/types";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
 
+/**
+ * MyJobsHeader Component
+ * Renders the header section for the My Jobs page, displaying title, breadcrumb navigation, description, and a sort dropdown.
+ * @param {MyJobsHeaderProps} props - Configuration props including title, sort options, and display flags
+ * @returns {JSX.Element} The rendered header element
+ */
 const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   title,
   currentSort,

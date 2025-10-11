@@ -97,7 +97,7 @@ export const job: JobInfoSectionProps = {
   files: ["File Documents.doc", "File Documents.doc", "Image Document.jpg"],
 };
 
-export const OtherProposal: ProposalTermsProps = {
+export const otherProposal: ProposalTermsProps = {
   jobTitle: "Angular Developer",
   terms: {
     items: [
@@ -111,7 +111,7 @@ export const OtherProposal: ProposalTermsProps = {
   },
 };
 
-export const Requirements: ProposalTermsProps = {
+export const requirements: ProposalTermsProps = {
   jobTitle: "Angular Developer",
   terms: {
     title: "Requirements",
@@ -129,7 +129,7 @@ export const Requirements: ProposalTermsProps = {
   },
 };
 
-export const jobs:Job[] = [
+export const jobs: Job[] = [
   {
     id: "1",
     title: "Install Security System at Client.",
@@ -138,9 +138,8 @@ export const jobs:Job[] = [
     duration: "8 Hours of Work",
     location: "San Francisco, CA",
     pay: "400",
-    status: "completed" ,
+    status: "completed",
     type: "on-site",
-    
   },
   {
     id: "2",
@@ -150,7 +149,7 @@ export const jobs:Job[] = [
     duration: "8 Hours of Work",
     location: "San Francisco, CA",
     pay: "400",
-    status: "applied" ,
+    status: "applied",
     type: "remote",
   },
   {
@@ -161,7 +160,7 @@ export const jobs:Job[] = [
     duration: "8 Hours of Work",
     location: "San Francisco, CA",
     pay: "400",
-    status: "inprogress" ,
+    status: "inprogress",
     type: "remote",
   },
   {
@@ -172,8 +171,8 @@ export const jobs:Job[] = [
     duration: "8 Hours of Work",
     location: "San Francisco, CA",
     pay: "400",
-    status: "completed" ,
-    type: "on-site" ,
+    status: "completed",
+    type: "on-site",
   },
 ];
 
@@ -199,24 +198,22 @@ export const client = {
   ],
 };
 
+// Updated markers to show the correct location
+export const exampleMarkers = {
+  id: 1,
+  position: [43.0987, -75.2258] as [number, number], // Coordinates for Utica, NY
+  title: "Work Location",
+  description: "3517 W. Gray St. Utica, Pennsylvania 57867",
+  maxZoom: 14,
+};
 
-  // Updated markers to show the correct location
-  export const exampleMarkers = [
-    {
-      id: 1,
-      position: [43.0987, -75.2258] as [number, number], // Coordinates for Utica, NY
-      title: "Work Location",
-      description: "3517 W. Gray St. Utica, Pennsylvania 57867",
-    },
-  ];
+export const userData = {
+  name: "Michel Brown",
+  phone: "+91 74582405XX",
+  role: "Software Engineer",
+  profileCompletion: 39,
+};
 
-   export const userData = {
-    name: "Michel Brown",
-    phone: "+91 74582405XX",
-    role: "Software Engineer",
-    profileCompletion: 39,
-  };
-
-  export const earningsData = {
-    balance: 8250.56,
-  };
+export const earningsData = {
+  balance: 8250.56,
+};

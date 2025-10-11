@@ -1,6 +1,6 @@
-import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
@@ -28,7 +28,7 @@ const BackgroundVerification = () => {
   });
 
   const handleSubmit = () => {    
-    navigate(urls.auth.set_password);
+    navigate(absoluteUrls.engineer.auth.set_password);
   };
 
   const handleBack = () => {

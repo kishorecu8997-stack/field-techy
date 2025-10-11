@@ -1,4 +1,5 @@
 import React from "react";
+import { LOG_STATUSES } from "@/pages/search_result/types";
 import type { LogComponentProps, LogEntry } from "../../types";
 
 /**
@@ -13,25 +14,25 @@ const LogItem: React.FC<LogEntry> = ({
 }) => {
   const getStatusStyles = () => {
     switch (status) {
-      case "check-in":
+      case LOG_STATUSES.checkIn:
         return {
           border: "border-l-4 border-yellow-500",
           badge: "bg-yellow-500 text-white",
           icon: "",
         };
-      case "in-progress":
+      case LOG_STATUSES.inProgress:
         return {
           border: "border-l-4 border-blue-500",
           badge: "bg-blue-600 text-white",
           icon: "",
         };
-      case "delayed":
+      case LOG_STATUSES.delayed:
         return {
           border: "border-l-4 border-orange-500",
           badge: "bg-orange-600 text-white",
           icon: "",
         };
-      case "approved":
+      case LOG_STATUSES.approved:
         return {
           border: "border-l-4 border-emerald-500",
           badge: "bg-emerald-700 text-white",
@@ -61,10 +62,10 @@ const LogItem: React.FC<LogEntry> = ({
         <div className="flex items-center gap-2">
           {showIcon && <span className="text-xs">{icon}</span>}
           <span className={`px-3 py-1 rounded text-xs font-medium ${badge}`}>
-            {status === "check-in" && "Check In"}
-            {status === "in-progress" && "In Progress"}
-            {status === "delayed" && "Delayed"}
-            {status === "approved" && "Approved"}
+            {status === LOG_STATUSES.checkIn && "Check In"}
+            {status === LOG_STATUSES.inProgress && "In Progress"}
+            {status === LOG_STATUSES.delayed && "Delayed"}
+            {status === LOG_STATUSES.approved && "Approved"}
           </span>
         </div>
       </div>
@@ -74,19 +75,6 @@ const LogItem: React.FC<LogEntry> = ({
 
 /**
  * A reusable component that renders a list of log entries.
- * Accepts an array of log objects and displays them in a vertical stack.
- * Fully typed, documented, and styled with Tailwind CSS.
- *
- * @param {LogComponentProps} props - The props for the LogComponent
- * @returns {JSX.Element} Rendered list of log entries
- *
- * @example
- * const logs = [
- *   { title: "Check In To Office", date: "12-Feb-2024, 07:30 PM", status: "check-in", showIcon: true },
- *   { title: "Need To Work Tomorrow", date: "12-Feb-2024, 07:30 PM", status: "in-progress" }
- * ];
- *
- * <LogComponent logs={logs} />
  */
 const LogComponent: React.FC<LogComponentProps> = ({ logs }) => {
   if (logs.length === 0) {

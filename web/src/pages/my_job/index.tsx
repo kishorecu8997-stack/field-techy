@@ -1,12 +1,14 @@
-// src/pages/MyJobsPage.tsx
-import { earningsData, userData } from "@/dummy_datas/jobDetails";
+import { earningsData, userData } from "@/dummy_data/jobDetails";
 import MyJobsHeader from "../../shared/components/MyJobsHeader";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 import { SORT_OPTIONS } from "../search_result/types";
 
+/**
+ * Displays the engineer's dashboard with job listings and profile sidebar.
+ * Includes a header with sorting controls and uses dummy data for user and earnings.
+ */
 const MyJobsPage = () => {
- 
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

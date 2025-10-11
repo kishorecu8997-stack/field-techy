@@ -1,7 +1,11 @@
-import { FAQData } from "@/dummy_datas/policyDatas";
+import { FAQData } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 
+/**
+ * FAQ page displaying frequently asked questions using static dummy data.
+ * Renders a header and content section via reusable components.
+ */
 const FAQ = () => {
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

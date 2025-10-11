@@ -3,12 +3,12 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { useState } from "react";
 import {
-    MapContainer,
-    Marker,
-    Popup,
-    TileLayer,
-    useMap,
-    useMapEvents,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
 } from "react-leaflet";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -57,6 +57,12 @@ const MapEventHandler: React.FC<{
   return null;
 };
 
+/**
+ * MapComponent
+ * Renders an interactive map using React Leaflet, displaying markers and handling map click events.
+ * @param {MapComponentProps} props - Configuration props including initial position, zoom, markers, and click handler
+ * @returns {JSX.Element} The rendered map container element
+ */
 const MapComponent: React.FC<MapComponentProps> = ({
   initialPosition = [51.505, -0.09],
   initialZoom = 13,

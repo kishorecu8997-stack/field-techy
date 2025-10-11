@@ -1,5 +1,3 @@
-// src/components/FilterPanel.tsx
-
 import React, { useState } from 'react';
 import type { Filters } from '../types';
 
@@ -98,29 +96,29 @@ const FilterPanel: React.FC<{
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6 h-fit">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 h-fit border border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Filters</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Filters</h2>
         <button 
           onClick={handleClearAll}
-          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium cursor-pointer"
         >
           CLEAR ALL
         </button>
       </div>
 
       {/* Location Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Location</h3>
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Location</h3>
         <div className="flex flex-wrap gap-2">
           {locationOptions.map(option => (
             <button
               key={option}
               onClick={() => toggleFilter(selectedLocation, option, setSelectedLocation)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 selectedLocation.includes(option)
                   ? 'bg-green-700 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {option}
@@ -130,17 +128,17 @@ const FilterPanel: React.FC<{
       </div>
 
       {/* Category Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Category</h3>
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Category</h3>
         <div className="flex flex-wrap gap-2">
           {categoryOptions.map(option => (
             <button
               key={option}
               onClick={() => toggleFilter(selectedCategory, option, setSelectedCategory)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 selectedCategory.includes(option)
                   ? 'bg-green-700 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {option}
@@ -150,17 +148,17 @@ const FilterPanel: React.FC<{
       </div>
 
       {/* Rating Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Rating</h3>
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Rating</h3>
         <div className="flex flex-wrap gap-2">
           {ratingOptions.map(rating => (
             <button
               key={rating}
               onClick={() => toggleRating(rating)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 selectedRating.includes(rating)
                   ? 'bg-green-700 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {rating} Star
@@ -170,9 +168,9 @@ const FilterPanel: React.FC<{
       </div>
 
       {/* Experience Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Experience</h3>
-        <div className="relative">
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Experience</h3>
+        <div className="relative pt-6">
           <input
             type="range"
             min="0"
@@ -186,17 +184,17 @@ const FilterPanel: React.FC<{
                 experience: value
               });
             }}
-            className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
+            className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider "
           />
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs">
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs whitespace-nowrap">
             {experience} Years
           </div>
         </div>
       </div>
 
       {/* Budget Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Budget</h3>
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Budget</h3>
         <div className="flex flex-wrap gap-2">
           {budgetOptions.map(option => (
             <button
@@ -209,10 +207,10 @@ const FilterPanel: React.FC<{
                   budgetType: type
                 });
               }}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 budgetType === (option.toLowerCase().includes('hourly') ? 'hourly' : 'fixed')
                   ? 'bg-green-700 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {option}
@@ -222,24 +220,24 @@ const FilterPanel: React.FC<{
       </div>
 
       {/* Skills Filter */}
-      <div className="mb-6">
-        <h3 className="font-medium text-gray-700 mb-3">Skills</h3>
+      <div className="mb-5">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Skills</h3>
         <div className="flex flex-wrap gap-2">
           {skillOptions.slice(0, 9).map(skill => (
             <button
               key={skill}
               onClick={() => toggleFilter(selectedSkills, skill, setSelectedSkills)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
                 selectedSkills.includes(skill)
                   ? 'bg-green-700 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {skill}
             </button>
           ))}
         </div>
-        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-2">
+        <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mt-2 cursor-pointer">
           View All
         </button>
       </div>

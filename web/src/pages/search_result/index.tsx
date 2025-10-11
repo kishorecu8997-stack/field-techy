@@ -1,4 +1,4 @@
-import { sampleJobs } from "@/dummy_datas/searchData";
+import { sampleJobs } from "@/dummy_data/searchData";
 import { useEffect, useState } from "react";
 import MyJobsHeader from "../../shared/components/MyJobsHeader";
 import FilterPanel from "./components/FilterPanel";

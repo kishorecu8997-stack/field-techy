@@ -1,15 +1,16 @@
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
+import Popup from "@/shared/components/Popup";
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
-import {assetsConfig} from "@/assets";
-import { NavLink, useNavigate } from "react-router-dom";
-import { urls } from "@/config/urls";
-import OTPPage from "../OTPPage";
-import Popup from "@/shared/components/Popup";
-import { useState } from "react";
 import { MdEmail } from "react-icons/md";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { NavLink } from "react-router-dom";
+import OTPPage from "../OTPPage";
 
 export type LoginFormData = {
   phone: string;
@@ -34,7 +35,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-const navigate = useNavigate();
+  const { goToMyJobs } = useHomeNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -42,7 +43,7 @@ const navigate = useNavigate();
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
   return (
@@ -50,13 +51,17 @@ const navigate = useNavigate();
       <div className=" p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign In</h2>
           <h2 className="text-md font-extralight ">
             Don’t have an account?{" "}
             <NavLink
-              to={urls.auth.signUp}
+              to={absoluteUrls.engineer.auth.signup}
               className="text-teal-900 hover:underline font-semibold"
             >
               Sign Up
@@ -68,7 +73,7 @@ const navigate = useNavigate();
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Phone Number" required/>
+          <PhoneInputField name="phone" label="Phone Number" required />
 
           <Button
             type="submit"
@@ -103,8 +108,7 @@ const navigate = useNavigate();
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.home.my_jobs)}
-            
+            handleNavigate={goToMyJobs}
           />
         </Popup>
       </div>

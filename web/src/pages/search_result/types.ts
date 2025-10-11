@@ -19,6 +19,14 @@ export const WORKING_TYPES = {
   remote: "remote",
 } as const;
 
+export type LogStatus = "check-in" | "in-progress" | "delayed" | "approved";
+export const LOG_STATUSES = {
+  checkIn: "check-in",
+  inProgress: "in-progress",
+  delayed: "delayed",
+  approved: "approved",
+} as const;
+
 /**
  * Represents a job listing
  */
