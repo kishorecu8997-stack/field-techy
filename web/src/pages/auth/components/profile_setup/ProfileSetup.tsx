@@ -93,7 +93,7 @@ const ProfileSetup = () => {
         leftIcon={<FaGlobeAsia className="text-lg text-gray-500" />}
       />
       <InputField
-        name="postal code/pin code"
+        name="postalCode"
         label="Postal Code/Pin Code"
         type="text"
         placeholder="Postal Code/Pin Code"
@@ -101,7 +101,7 @@ const ProfileSetup = () => {
         leftIcon={<HiOutlineLocationMarker className="text-lg text-gray-500" />}
         rules={{
           validate: (value: string) =>
-            validateZipcode(value, getValues("country")),
+            validateZipcode(value, getValues("country") as string),
         }}
       />
       <TagSelectField
@@ -122,7 +122,7 @@ const ProfileSetup = () => {
         rules={{ validate: (v: string) => validatePortfolio(v) }}
       />
       <SelectField
-        name="service category"
+        name="serviceCategory"
         label="Service Category"
         placeholder="Select Category"
         options={serviceCategories}
@@ -165,7 +165,7 @@ const ProfileSetup = () => {
         required
         rules={{ validate: (v: string) => validateExperience(v) }}
       />
-      <FileUpload name="resume" label="Resume/CV" required accept=".pdf" maxPages={5}/>
+      <FileUpload name="resume" label="Resume/CV" required accept=".pdf" maxPages={5} validatePDF={true}/>
     </div>
   );
 };

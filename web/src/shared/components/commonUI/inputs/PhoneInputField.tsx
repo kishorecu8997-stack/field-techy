@@ -16,6 +16,20 @@ interface Country {
   validationKey: "india" | "uk"; // used for validation mapping
 }
 
+/**
+ * A phone number input field for react-hook-form with a country code selector.
+ * It combines a dropdown for selecting the country code (e.g., +91, +44) with a text input for the number.
+ * The component enforces country-specific validation rules.
+ *
+ * @component
+ * @param {object} props - The component props.
+ * @param {string} props.name - The name of the form field.
+ * @param {string} [props.label] - The label for the input field.
+ * @param {string} [props.placeholder="Enter phone number"] - The placeholder for the number input.
+ * @param {boolean} [props.required=false] - Whether the field is required.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for react-hook-form.
+ * @returns {JSX.Element} The rendered phone input field.
+ */
 export const PhoneInputField = ({
   name,
   label,
@@ -106,7 +120,7 @@ export const PhoneInputField = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const [countryCode, ...rest] = (field.value || "").split(" ");
+          const [countryCode = countries[0].code, ...rest] = (field.value || "").split(" ");
           const numberValue = rest.join(" ");
 
           return (

@@ -21,6 +21,21 @@ interface TagSelectFieldProps {
   options: string[];
 }
 
+/**
+ * A tag selection component for react-hook-form that allows users to select tags from a predefined list.
+ * Selected tags are displayed as dismissible pills. It prevents duplicate selections and enforces a tag limit.
+ *
+ * @component
+ * @param {object} props - The component props.
+ * @param {string} props.name - The name of the form field.
+ * @param {string} [props.label] - The label for the input field.
+ * @param {string} [props.placeholder="Select a tag..."] - The placeholder for the select dropdown.
+ * @param {boolean} [props.required=false] - Whether the field is required.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for react-hook-form.
+ * @param {React.ReactNode} [props.leftIcon] - An optional icon to display inside the select dropdown.
+ * @param {number} [props.maxTags=10] - The maximum number of tags allowed.
+ * @param {string[]} props.options - The list of available tags to choose from.
+ */
 export const TagSelectField = ({
   name,
   label,
@@ -50,7 +65,7 @@ export const TagSelectField = ({
     const trimmedTag = tag.trim();
     if (!trimmedTag) return;
 
-    if (value.includes(trimmedTag)) {
+    if (value.length > 0 && value.includes(trimmedTag)) {
       toast.error("This tag is already selected.");
       return;
     }

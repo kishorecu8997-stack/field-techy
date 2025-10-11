@@ -27,6 +27,24 @@ interface InputFieldProps {
   maxPages?: number;
 }
 
+/**
+ * A reusable file upload component for react-hook-form.
+ * It provides an interface for uploading files, showing a preview of the file name, size, and page count (for PDFs).
+ * Includes robust validation for file type, size, and genuine PDF signatures and page counts.
+ *
+ * @component
+ * @param {object} props - The component props.
+ * @param {string} props.name - The name of the form field.
+ * @param {string} [props.label="Upload Document"] - The label for the input field.
+ * @param {boolean} [props.required=false] - Whether the field is required.
+ * @param {string} [props.accept=".pdf"] - Comma-separated string of allowed file extensions (e.g., ".pdf,.docx").
+ * @param {number} [props.maxSize=358400] - Maximum file size in bytes (defaults to 350 KB).
+ * @param {string} [props.containerClassName] - Tailwind CSS classes for the container.
+ * @param {string} [props.placeholder="Upload Resume/CV"] - Placeholder text.
+ * @param {boolean} [props.validatePDF=true] - Whether to perform PDF-specific validation.
+ * @param {number} [props.minPages=1] - Minimum number of pages for a PDF.
+ * @param {number} [props.maxPages=5] - Maximum number of pages for a PDF.
+ */
 export const FileUpload = ({
   name,
   label = "Upload Document",
@@ -187,7 +205,7 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
   setFileUrl(url);
   field.onChange(files);
 };
-
+  
   const handleRemove = (field: any) => {
     field.onChange(null);
     setFileName(null);
@@ -338,4 +356,3 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
     </div>
   );
 };
-
