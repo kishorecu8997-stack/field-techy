@@ -53,7 +53,12 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  const v = (value || '').trim();
+  if (!value) return 'Address must be at least 20 characters';
+
+  // Disallow leading or trailing spaces
+  if (/^\s|\s$/.test(value)) return 'Address must not start or end with a space';
+
+  const v = value.trim();
   if (v.length < 20) return 'Address must be at least 20 characters';
   if (v.length > 50) return 'Address must not exceed 50 characters';
   // Allow letters, numbers, spaces, and / , . - #
@@ -62,6 +67,7 @@ export const validateAddress = (value: string) => {
   }
   return true;
 };
+
 
 
 /**

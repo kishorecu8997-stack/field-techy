@@ -6,7 +6,19 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-
+// Custom chevron-down icon
+const ChevronDownIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5 text-gray-500 pointer-events-none"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+  </svg>
+);
 
 interface TagSelectFieldProps {
   name: string;
@@ -24,17 +36,6 @@ interface TagSelectFieldProps {
 /**
  * A tag selection component for react-hook-form that allows users to select tags from a predefined list.
  * Selected tags are displayed as dismissible pills. It prevents duplicate selections and enforces a tag limit.
- *
- * @component
- * @param {object} props - The component props.
- * @param {string} props.name - The name of the form field.
- * @param {string} [props.label] - The label for the input field.
- * @param {string} [props.placeholder="Select a tag..."] - The placeholder for the select dropdown.
- * @param {boolean} [props.required=false] - Whether the field is required.
- * @param {RegisterOptions} [props.rules] - Additional validation rules for react-hook-form.
- * @param {React.ReactNode} [props.leftIcon] - An optional icon to display inside the select dropdown.
- * @param {number} [props.maxTags=10] - The maximum number of tags allowed.
- * @param {string[]} props.options - The list of available tags to choose from.
  */
 export const TagSelectField = ({
   name,
@@ -49,7 +50,6 @@ export const TagSelectField = ({
   options = [],
 }: TagSelectFieldProps) => {
   const { control } = useFormContext();
-  
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
@@ -65,7 +65,7 @@ export const TagSelectField = ({
     const trimmedTag = tag.trim();
     if (!trimmedTag) return;
 
-    if (value.length > 0 && value.includes(trimmedTag)) {
+    if (value.includes(trimmedTag)) {
       toast.error("This tag is already selected.");
       return;
     }
@@ -96,6 +96,7 @@ export const TagSelectField = ({
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
+
       <Controller
         name={name}
         control={control}
@@ -105,13 +106,16 @@ export const TagSelectField = ({
 
           return (
             <>
+              {/* Select wrapper */}
               <div className="relative">
+                {leftIcon && (
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
+                    {leftIcon}
+                  </div>
+                )}
+
+                {/* Wrapper for custom arrow */}
                 <div className="relative">
-                  {leftIcon && (
-                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
-                      {leftIcon}
-                    </div>
-                  )}
                   <select
                     value={selectedOption}
                     onChange={(e) => {
@@ -125,7 +129,9 @@ export const TagSelectField = ({
                         handleAddTag(selectedOption, onChange, value);
                       }
                     }}
-                    className={`${inputClassName} ${leftIcon ? "pl-10" : ""}`}
+                    className={`${inputClassName} ${
+                      leftIcon ? "pl-10" : ""
+                    } pr-10 appearance-none`}
                   >
                     <option value="">{placeholder}</option>
                     {options.map((opt) => (
@@ -134,6 +140,11 @@ export const TagSelectField = ({
                       </option>
                     ))}
                   </select>
+
+                  {/* Custom dropdown arrow */}
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <ChevronDownIcon />
+                  </div>
                 </div>
               </div>
 
@@ -143,6 +154,7 @@ export const TagSelectField = ({
                 </p>
               )}
 
+              {/* Render selected tags */}
               <div className="flex flex-wrap gap-2 py-2">
                 {value.map((tag: string, index: number) => (
                   <span
@@ -154,6 +166,7 @@ export const TagSelectField = ({
                       type="button"
                       onClick={() => removeTag(index, onChange, value)}
                       className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
+                      aria-label={`Remove tag ${tag}`}
                     >
                       ×
                     </button>

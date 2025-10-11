@@ -1,11 +1,15 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
-import { useState, useRef, useEffect } from "react";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
+import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { AVATARS } from "@/dummydata/avatars";
 
 interface ImageUploadFieldProps {
   name: string;
-  label?: string; // This is unused, consider removing it or adding a <label> element.
+  label?: string;
   required?: boolean;
   rules?: RegisterOptions;
   maxSize?: number;
@@ -20,65 +24,25 @@ export const ImageUploadField = ({
   maxSize = 250 * 1024, // 250 KB
   accept = ".jpeg",
 }: ImageUploadFieldProps) => {
-  const { control, setValue, getValues } = useFormContext();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [fallbackEmoji, setFallbackEmoji] = useState<string | null>(null); // Stores avatar URL or file URL
+  const { control } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const prevFileRef = useRef<File | null>(null);
 
-  // Cleanup object URLs
+  // Cleanup object URL on unmount
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
-  // Sync form value with preview/emoji
-  useEffect(() => {
-    const currentValue = getValues(name);
-    if (typeof currentValue === 'string') {
-      if (currentValue.startsWith("http")) {
-        setFallbackEmoji(currentValue);
-        setPreviewUrl(null);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
       }
-    } else if (currentValue instanceof File) {
-      setPreviewUrl(URL.createObjectURL(currentValue));
-      setFallbackEmoji(null);
-    }
-  }, [getValues, name]);
+    };
+  }, [objectUrl]);
 
   const validateJPEGSignature = async (file: File): Promise<boolean> => {
     const buffer = await file.slice(0, 2).arrayBuffer();
     const bytes = new Uint8Array(buffer);
-    return bytes[0] === 0xFF && bytes[1] === 0xD8;
-  };
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: File | null) => void
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const isJPEGMime = file.type === "image/jpeg";
-    const hasCorrectExtension = file.name.toLowerCase().endsWith(accept);
-    const isValidSignature = await validateJPEGSignature(file);
-
-    if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
-      toast.error(`Only genuine JPEG files with ${accept} extension are allowed.`);
-      return;
-    }
-
-    if (file.size < 50 * 1024 || file.size > maxSize) {
-      toast.error("File size must be between 50 KB and 250 KB.");
-      return;
-    }
-
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    setFallbackEmoji(null); // Clear avatar when real image is uploaded
-    onChange(file);
-    setIsPopupOpen(false); // Close popup after upload
+    return bytes[0] === 0xff && bytes[1] === 0xd8;
   };
 
   const triggerFileInput = () => {
@@ -89,17 +53,11 @@ export const ImageUploadField = ({
     setIsPopupOpen(true);
   };
 
-  const handleAvatarSelect = (avatar: { id: string; url: string }) => {
-    setFallbackEmoji(avatar.url);
-    setValue(name, avatar.url, { shouldValidate: true, shouldDirty: true });
-    setIsPopupOpen(false);
-  };
-
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
     validate: {
-      fileType: async (value: File | null) => {
-        if (!value || typeof value === 'string') return true;
+      fileType: async (value: File | string | null) => {
+        if (!value || typeof value === "string") return true;
         const isJPEGMime = value.type === "image/jpeg";
         const hasCorrectExtension = value.name.toLowerCase().endsWith(accept);
         const isValidSignature = await validateJPEGSignature(value);
@@ -108,8 +66,8 @@ export const ImageUploadField = ({
         }
         return true;
       },
-      fileSize: (value: File | null) => {
-        if (!value || typeof value === 'string') return true;
+      fileSize: (value: File | string | null) => {
+        if (!value || typeof value === "string") return true;
         if (value.size < 50 * 1024 || value.size > maxSize) {
           return "File size must be between 50 KB and 250 KB.";
         }
@@ -132,26 +90,73 @@ export const ImageUploadField = ({
         name={name}
         control={control}
         rules={validationRules}
-        render={({ field, fieldState: { error } }) => {
-          const { onChange } = field;
+        render={({ field: { onChange, value }, fieldState: { error } }) => {
+          // Determine what to display
+          let displaySrc: string | null = null;
+
+          if (typeof value === "string" && value.startsWith("http")) {
+            displaySrc = value;
+            // Clear object URL if we're showing an avatar URL
+            if (objectUrl) {
+              URL.revokeObjectURL(objectUrl);
+              setObjectUrl(null);
+              prevFileRef.current = null;
+            }
+          } else if (value instanceof File) {
+            // Only create new object URL if file is new
+            if (value !== prevFileRef.current) {
+              if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+              }
+              const url = URL.createObjectURL(value);
+              setObjectUrl(url);
+              prevFileRef.current = value;
+            }
+            displaySrc = objectUrl;
+          }
+
+          const handleFileChangeInner = async (
+            event: React.ChangeEvent<HTMLInputElement>
+          ) => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const isJPEGMime = file.type === "image/jpeg";
+            const hasCorrectExtension = file.name.toLowerCase().endsWith(accept);
+            const isValidSignature = await validateJPEGSignature(file);
+
+            if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
+              toast.error(
+                `Only genuine JPEG files with ${accept} extension are allowed.`
+              );
+              return;
+            }
+
+            if (file.size < 50 * 1024 || file.size > maxSize) {
+              toast.error("File size must be between 50 KB and 250 KB.");
+              return;
+            }
+
+            onChange(file);
+            setIsPopupOpen(false);
+          };
+
+          const handleAvatarSelectInner = (avatar: { id: string; url: string }) => {
+            onChange(avatar.url);
+            setIsPopupOpen(false);
+          };
 
           return (
             <>
               <div className="relative inline-block">
                 <div
                   className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 cursor-pointer flex items-center justify-center"
-                  onClick={handleOpenPopup} // 👈 Open unified popup
+                  onClick={handleOpenPopup}
                 >
-                  {previewUrl ? (
+                  {displaySrc ? (
                     <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : fallbackEmoji ? (
-                    <img
-                      src={fallbackEmoji}
-                      alt="Avatar"
+                      src={displaySrc}
+                      alt="Profile"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -161,7 +166,7 @@ export const ImageUploadField = ({
 
                 <button
                   type="button"
-                  onClick={handleOpenPopup} // 👈 Same click opens popup
+                  onClick={handleOpenPopup}
                   className="absolute bottom-0 right-0 w-8 h-8 bg-green-700 hover:bg-green-800 text-white rounded-full flex items-center justify-center transition"
                   aria-label="Edit image"
                 >
@@ -185,7 +190,7 @@ export const ImageUploadField = ({
                   ref={fileInputRef}
                   type="file"
                   accept={accept}
-                  onChange={(e) => handleFileChange(e, onChange)}
+                  onChange={handleFileChangeInner}
                   className="hidden"
                 />
               </div>
@@ -196,27 +201,23 @@ export const ImageUploadField = ({
                 </p>
               )}
 
-              {/* Unified Popup: Avatars + Upload */}
               {isPopupOpen && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                  {/* Dark semi-transparent backdrop with blur */}
                   <div
                     className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                     onClick={() => setIsPopupOpen(false)}
                   />
-                  {/* White card with rounded corners */}
                   <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 shadow-xl z-10">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 text-center">
                       Choose Your Profile Picture
                     </h3>
 
-                    {/* Avatar Grid */}
                     <div className="grid grid-cols-5 gap-3 mb-4">
                       {AVATARS.map((avatar) => (
                         <button
                           key={avatar.id}
                           type="button"
-                          onClick={() => handleAvatarSelect(avatar)}
+                          onClick={() => handleAvatarSelectInner(avatar)}
                           className="w-12 h-12 rounded-lg overflow-hidden border-2 border-transparent hover:border-teal-500 transition flex items-center justify-center"
                           aria-label={`Select ${avatar.id} avatar`}
                         >
@@ -229,13 +230,12 @@ export const ImageUploadField = ({
                       ))}
                     </div>
 
-                    {/* Upload Button */}
                     <button
                       type="button"
                       onClick={triggerFileInput}
                       className="w-full py-2 text-sm font-medium text-teal-700 hover:text-teal-800 border border-teal-300 hover:border-teal-500 rounded-lg transition"
                     >
-                      🖼️ Upload from Device
+                      Upload from Device
                     </button>
 
                     <button
