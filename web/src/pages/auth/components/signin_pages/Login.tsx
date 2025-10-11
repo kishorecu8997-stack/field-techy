@@ -9,7 +9,7 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { LuPhone } from "react-icons/lu";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -29,6 +29,7 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -123,6 +124,7 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
+            handleNavigate={() => navigate(urls.main.home)}
           />
         </Popup>
       </div>
