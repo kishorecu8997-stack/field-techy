@@ -1,55 +1,58 @@
-import { FormProvider, type FieldValues, type UseFormReturn, } from "react-hook-form";
+import {
+  FormProvider,
+  type FieldValues,
+  type UseFormReturn,
+  type SubmitHandler,
+} from "react-hook-form";
 
 /**
- * Props for FormContainer - a simple wrapper that connects react-hook-form
- * methods to a native <form> via FormProvider and handleSubmit.
- *
- * @template T - the shape of the form values (react-hook-form FieldValues)
- * @property {UseFormReturn<T>} methods - the return value of useForm<T>()
- * @property {(data: T) => void} onSubmit - submit handler called with validated data
- * @property {React.ReactNode} children - form fields / UI to render inside the form
- * @property {string} [className] - optional className to apply to the <form>
+ * Props for the FormContainer component
+ * @template T - The form data type extending FieldValues
  */
 interface FormContainerProps<T extends FieldValues> {
+  /**
+   * React Hook Form methods object containing form state, validation, and handlers
+   * @type {UseFormReturn<T>}
+   */
   methods: UseFormReturn<T>;
-  onSubmit: (data: T) => void;
+  
+  /**
+   * Optional callback function called when the form is submitted with valid data
+   * @param {T} data - The validated form data
+   * @returns {void}
+   * @optional
+   */
+  onSubmit?: (data: T) => void;
+  
+  /**
+   * React children elements to be rendered inside the form
+   * @type {React.ReactNode}
+   */
   children: React.ReactNode;
+  
+  /**
+   * Optional CSS class name to apply to the form element
+   * @type {string}
+   * @optional
+   */
   className?: string;
 }
 
-/**
- * FormContainer
- *
- * A small, reusable form wrapper that provides react-hook-form context
- * to child components using <FormProvider> and wires up the native
- * <form>'s onSubmit to react-hook-form's handleSubmit.
- *
- * Use this component anywhere you need to render a form driven by
- * react-hook-form. It keeps the common boilerplate in a single place.
- *
- * @example
- * const methods = useForm({ defaultValues: { email: "" }});
- * return (
- *   <FormContainer methods={methods} onSubmit={data => console.log(data)}>
- *     <input {...methods.register('email')} />
- *   </FormContainer>
- * )
- *
- * @param {FormContainerProps<T>} props
- * @returns {JSX.Element}
- */
 export const FormContainer = <T extends FieldValues>({
   methods,
   onSubmit,
   children,
   className,
 }: FormContainerProps<T>) => {
+  const handleSubmit: SubmitHandler<T> = onSubmit
+    ? onSubmit
+    : (data) => {
+        console.warn("Form submitted but no onSubmit handler provided", data);
+      };
+
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onSubmit)}
-        className={className}
-      >
+      <form onSubmit={methods.handleSubmit(handleSubmit)} className={className}>
         {children}
       </form>
     </FormProvider>

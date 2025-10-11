@@ -4,7 +4,7 @@ import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputF
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import {assetsConfig} from "@/assets";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { urls } from "@/config/urls";
 import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
@@ -34,6 +34,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -102,6 +103,8 @@ const LoginWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
+            handleNavigate={() => navigate(urls.main.home)}
+            
           />
         </Popup>
       </div>

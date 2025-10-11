@@ -29,36 +29,27 @@ type PopupProps = {
  */
 const Popup = ({ open, onClose, children }: PopupProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const onCloseRef = useRef(onClose);
-
-  // keep the latest onClose in a ref so the effect below doesn't need to depend on it
-  useEffect(() => {
-    onCloseRef.current = onClose;
-  }, [onClose]);
 
   useEffect(() => {
-    if (!open) return;
-
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCloseRef.current();
+      if (e.key === 'Escape') onClose();
     };
 
-    document.addEventListener('keydown', handleEsc);
-
-    // preserve previous overflow value then lock scroll
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (open) {
+      document.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden';
+    }
 
     return () => {
       document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = '';
     };
-  }, [open]);
+  }, [open, onClose]);
 
   // Handle backdrop click
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      onCloseRef.current();
+      onClose();
     }
   };
 

@@ -25,9 +25,11 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/auth/components/profile_setup/SetPassword")
 );
+const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+
 export const routes = createBrowserRouter([
   {
-    path: urls.root,
+    path: urls.auth.login,
     element: withSuspense(Layout),
     children: [
       { index: true, element: withSuspense(SignInpage) },
@@ -37,6 +39,16 @@ export const routes = createBrowserRouter([
       { path: urls.auth.resetPassword, element: withSuspense(ResetPassword) },
       { path: urls.auth.background_verification, element: withSuspense(BackgroundVerification) },
       { path: urls.auth.set_password, element: withSuspense(SetPassword) },
+    ],
+  },
+   {
+    path: urls.main.home,
+    element: withSuspense(RootLayout),
+    children: [
+      {
+        index: true,
+        element: <div className="text-center">Welcome to the Home Page</div>,
+      },
     ],
   },
 ]);

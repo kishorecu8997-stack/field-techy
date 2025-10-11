@@ -2,24 +2,23 @@ import securePayments from "./secure-payments.png";
 import skillsMatching from "./skills-matching.png";
 import workTracking from "./work-tracking.png";
 import companyLogo from "./company-logo.png";
+import ftLogo from "./ft_logo.svg";
+import defaultProfileImage from "./default_profile_img.jpg";
 
-/**
- * Centralized asset registry for descriptive and optimized image access.
- */
 // JSON format export with category-wise organization
 export const assetsConfig = {
   logos: {
-    companyLogo
+    ftLogo,
+    companyLogo,
   },
   images: {
+    profile: {
+      defaultProfileImage,
+    },
     left_panel_image: {
       securePayments,
       skillsMatching,
-      workTracking
-    }
-  }
+      workTracking,
+    },
+  },
 };
-
-
-
-
