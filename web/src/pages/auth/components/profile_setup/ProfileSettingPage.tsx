@@ -50,30 +50,30 @@ const ProfileSettingPage = () => {
   };
 
   return (
-    <>
-      <div className="flexed absolute top-6 left-6 md:left-[20rem] lg:left-[40rem] z-10">
-        <button
-          onClick={handleBack}
-          className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
-          aria-label="Go back"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+  <div className="flex items-center justify-center w-full h-[90vh]">
+      <div className=" w-full flex flex-col items-center justify-center">
+        <div className=" w-full px-4 z-10 ">
+          <button
+            onClick={handleBack}
+            className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
+            aria-label="Go back"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="absolute  w-full flex flex-col items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+        </div>
         <div className="flex items-center justify-center">
           <img src={assetsConfig.logos.companyLogo} alt="profile" className="w-20 h-20" />
         </div>
@@ -108,7 +108,7 @@ const ProfileSettingPage = () => {
           </div>
         </FormContainer>
       </div>
-    </>
+    </div>
   );
 };
 

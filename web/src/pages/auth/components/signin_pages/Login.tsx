@@ -91,7 +91,6 @@ const Login = ({
               validate: validatePassword,
             }}
           />
-          <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
             <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
             <NavLink
