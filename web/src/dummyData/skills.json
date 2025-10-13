@@ -1,0 +1,13 @@
+{
+  "skills": [
+    { "id": 1, "label": "JavaScript" },
+    { "id": 2, "label": "React" },
+    { "id": 3, "label": "Node.js" },
+    { "id": 4, "label": "CSS" },
+    { "id": 5, "label": "TypeScript" },
+    { "id": 6, "label": "Python" },
+    { "id": 7, "label": "SQL" },
+    { "id": 8, "label": "C#" },
+    { "id": 9, "label": ".Net" }
+  ]
+}

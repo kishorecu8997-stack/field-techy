@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { assetsConfig } from "@/assets";
 import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
+import { toast } from "react-toastify";
 
 interface HeaderProps {
   onDrawerToggle: () => void;
@@ -131,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             3
           </span>
         </button>
-        <button className="p-2 text-gray-600 hover:text-gray-900">
+        <button className="p-2 text-gray-600 hover:text-gray-900" onClick={() => toast.info("No new notifications")}>
           <FaBell size={20} />
         </button>
         <button

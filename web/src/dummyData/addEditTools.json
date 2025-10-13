@@ -1,0 +1,8 @@
+{
+  "addEditTools": [
+    { "id": "1", "label": "Testing Tool" },
+    { "id": "2", "label": "Router" },
+    { "id": "3", "label": "Laptop" },
+    { "id": "4", "label": "Switches" }
+  ]
+}

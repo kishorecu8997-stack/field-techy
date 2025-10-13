@@ -1,0 +1,9 @@
+{
+  "workLocationTypes": [
+    { "id": "1", "type": "On-site", "description": "Employee works from the employer's physical office or location." },
+    { "id": "2", "type": "Remote", "description": "Employee works entirely from a remote location, such as home." },
+    { "id": "3", "type": "Hybrid", "description": "Employee splits time between working remotely and on-site." },
+    { "id": "4", "type": "Field-based", "description": "Employee works primarily in the field, such as client sites or travel-based roles." },
+    { "id": "5", "type": "Flexible", "description": "Employee has the flexibility to choose their work location based on needs." }
+  ]
+}

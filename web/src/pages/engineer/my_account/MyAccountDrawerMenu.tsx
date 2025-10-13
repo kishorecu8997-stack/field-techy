@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   FaBookmark,
   FaBriefcase,
@@ -6,12 +6,14 @@ import {
   FaSignOutAlt,
   FaUser,
   FaWallet,
-} from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
-import LogoutConfirmationPopup from "@/pages/auth/LogoutConfirmationPopup";
-import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import { assetsConfig } from "@/assets";
-import DrawerHeader from "@/shared/components/DrawerHeader";
+} from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
+import LogoutConfirmationPopup from '@/pages/auth/LogoutConfirmationPopup';
+import ProfileCard from '@/shared/components/commonUI/ProfileCard';
+import { assetsConfig } from '@/assets';
+import DrawerHeader from '@/shared/components/DrawerHeader';
+import { useForm } from 'react-hook-form';
+import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
 
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -43,15 +45,20 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const methods = useForm({
+    defaultValues: {
+      profileImage: assetsConfig.images.profile.defaultProfileImage,
+    },
+  });
 
   const menuItems: MenuItems[] = [
-    { label: "My Profile", icon: FaUser, key: "profile" },
-    { label: "My Jobs", icon: FaBriefcase, key: "jobs" },
-    { label: "My Earning", icon: FaWallet, key: "earning" },
-    { label: "Saved Jobs", icon: FaBookmark, key: "saved" },
-    { label: "Settings", icon: FaCog, key: "settings" },
+    { label: 'My Profile', icon: FaUser, key: 'profile' },
+    { label: 'My Jobs', icon: FaBriefcase, key: 'jobs' },
+    { label: 'My Earning', icon: FaWallet, key: 'earning' },
+    { label: 'Saved Jobs', icon: FaBookmark, key: 'saved' },
+    { label: 'Settings', icon: FaCog, key: 'settings' },
     {
-      label: "Logout",
+      label: 'Logout',
       icon: FaSignOutAlt,
       key: "logout",
       isLogout: true,
@@ -64,15 +71,17 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   return (
     <>
       <DrawerHeader title="My Account" onClose={onClose} />
-      <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
-        <ProfileCard
-          avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-          name="Michel Brown"
-          title="Software Engineer"
-          rating={4}
-          reviewCount={10}
-          completionPercentage={39}
-        />
+      <FormContainer methods={methods}>
+        <div >
+          <ProfileCard
+            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            name="Michel Brown"
+            title="Software Engineer"
+            rating={4}
+            reviewCount={10}
+            completionPercentage={39}
+          />
+        </div>
         {menuItems.map((item, index, array) => (
           <React.Fragment key={item.key}>
             <button
@@ -135,7 +144,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           onConfirm={() => console.log("confirm")}
           onCancel={() => setIsOpen(false)}
         />
-      </div>
+      </FormContainer>
     </>
   );
 };

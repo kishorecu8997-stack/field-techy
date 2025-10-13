@@ -17,7 +17,7 @@ const RootLayout = (): JSX.Element => {
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-900">
       <div className=" xl:container w-full mx-auto h-screen flex flex-col  dark:text-gray-100 transition-colors p-1">
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-auto">
           <Header
             onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
             isDrawerOpen={isDrawerOpen}

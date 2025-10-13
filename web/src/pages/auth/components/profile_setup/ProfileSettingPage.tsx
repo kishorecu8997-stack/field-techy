@@ -1,5 +1,5 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { ImageUploadField } from "@/shared/components/commonUI/inputs/ImageUploaderField";
+import { ImageUploaderField } from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import { useForm } from "react-hook-form";
 import ProfileSetup from "./ProfileSetup";
 import {assetsConfig} from "@/assets";
@@ -91,7 +91,7 @@ const ProfileSettingPage = () => {
             </div>
             <div className="flex flex-row justify-center items-center">
               <div className=" w-fit ">
-                <ImageUploadField name="profileImage" />
+                <ImageUploaderField name="profileImage" />
               </div>
             </div>
             <div className="flex justify-center w-full">
