@@ -16,6 +16,7 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import OTPPage from "../OTPPage";
 import Popup from "@/shared/components/Popup";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import { validatePassword } from "@/shared/libs/utils";
 
 /**
  * Type representing the data structure for the Login form.
@@ -44,8 +45,8 @@ const Login = ({
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img
@@ -79,9 +80,17 @@ const Login = ({
             required
             rules={validateEmailRules}
           />
-          <PasswordInput name="password" label="Password" required />
+          <PasswordInput
+            name="password"
+            label="Password"
+            required
+            rules={{
+              required: "Password is required",
+              validate: validatePassword,
+            }}
+          />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
+            <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={urls.auth.forgetPassword}

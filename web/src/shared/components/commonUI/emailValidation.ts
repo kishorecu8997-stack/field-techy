@@ -2,7 +2,7 @@ export const validateEmailRules = {
   required: "Email ID is required",
   maxLength: {
     value: 100,
-    message: "Email must not exceed 100 characters",
+    message: "Email id must not exceed 100 characters",
   },
   validate: (value: string) => {
     // Disallow leading or trailing spaces
@@ -11,7 +11,7 @@ export const validateEmailRules = {
     const trimmed = value.trim();
 
     // Enforce minimum and maximum length
-    if (trimmed.length < 5) return "Email must be at least 5 characters";
+    if (trimmed.length < 10) return "Email must be at least 10 characters";
     if (trimmed.length > 100) return "Email must not exceed 100 characters";
 
     const emailRegex = /^(?!.*\.\.)(?!\.)(?!.*\.$)[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;

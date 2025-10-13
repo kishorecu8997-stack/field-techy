@@ -20,6 +20,11 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
+interface TagOption {
+  value: string;
+  label: string;
+}
+
 interface TagSelectFieldProps {
   name: string;
   label?: string;
@@ -30,7 +35,7 @@ interface TagSelectFieldProps {
   containerClassName?: string;
   inputClassName?: string;
   maxTags?: number;
-  options: string[];
+  options: TagOption[]; // ✅ Updated type
 }
 
 /**
@@ -58,14 +63,13 @@ export const TagSelectField = ({
   };
 
   const handleAddTag = (
-    tag: string,
+    tagValue: string,
     onChange: (value: string[]) => void,
     value: string[]
   ) => {
-    const trimmedTag = tag.trim();
-    if (!trimmedTag) return;
+    if (!tagValue) return;
 
-    if (value.includes(trimmedTag)) {
+    if (value.includes(tagValue)) {
       toast.error("This tag is already selected.");
       return;
     }
@@ -75,7 +79,7 @@ export const TagSelectField = ({
       return;
     }
 
-    const newValue = [...value, trimmedTag];
+    const newValue = [...value, tagValue];
     onChange(newValue);
     setSelectedOption("");
   };
@@ -103,6 +107,11 @@ export const TagSelectField = ({
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
           const { onChange, value = [] } = field;
+
+          // ✅ Filter out already selected tags
+          const availableOptions = options.filter(
+            (opt) => !value.includes(opt.value)
+          );
 
           return (
             <>
@@ -134,9 +143,9 @@ export const TagSelectField = ({
                     } pr-10 appearance-none`}
                   >
                     <option value="">{placeholder}</option>
-                    {options.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
+                    {availableOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
                       </option>
                     ))}
                   </select>
@@ -156,22 +165,29 @@ export const TagSelectField = ({
 
               {/* Render selected tags */}
               <div className="flex flex-wrap gap-2 py-2">
-                {value.map((tag: string, index: number) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => removeTag(index, onChange, value)}
-                      className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
-                      aria-label={`Remove tag ${tag}`}
+                {value.map((tagValue: string, index: number) => {
+                  // Find the label for display
+                  const tagLabel =
+                    options.find((opt) => opt.value === tagValue)?.label ||
+                    tagValue;
+
+                  return (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      {tagLabel}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(index, onChange, value)}
+                        className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
+                        aria-label={`Remove tag ${tagLabel}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
             </>
           );

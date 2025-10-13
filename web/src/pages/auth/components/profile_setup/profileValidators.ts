@@ -53,21 +53,21 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  if (!value) return 'Address must be at least 20 characters';
+  if (!value) return 'Address must be at least 6 characters';
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value)) return 'Address must not start or end with a space';
 
   const v = value.trim();
-  if (v.length < 20) return 'Address must be at least 20 characters';
+  if (v.length < 6) return 'Address must be at least 6 characters';
   if (v.length > 50) return 'Address must not exceed 50 characters';
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return 'Address may contain only letters, numbers, spaces, and / , . - #';
   }
+
   return true;
 };
-
 
 
 /**
@@ -79,6 +79,15 @@ export const validateAddress = (value: string) => {
  * - attempts a HEAD request to check reachability but gracefully
  *   degrades when CORS or network restrictions prevent verification.
  */
+/**
+ * Validate a portfolio/URL field:
+ * - optional (if empty, valid)
+ * - length 10–100
+ * - no whitespace
+ * - must be a valid URL
+ * - **only allows www.linkedin.com or www.github.com**
+ * - skips reachability check (due to CORS), but validates domain strictly
+ */
 export const validatePortfolio = async (value: string) => {
   const v = (value || '').trim();
   if (!v) return true; // optional
@@ -87,37 +96,28 @@ export const validatePortfolio = async (value: string) => {
   if (v.length > 100) return 'Portfolio link must not exceed 100 characters';
   if (/\s/.test(v)) return 'Portfolio link must not contain spaces';
 
-  // Ensure scheme — allow users to type example.com
   let urlStr = v;
   try {
+    // Add https:// if no scheme
     if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(urlStr)) {
       urlStr = `https://${urlStr}`;
     }
+
     const parsed = new URL(urlStr);
-    if (!parsed.hostname || !/\.[a-zA-Z]{2,}$/.test(parsed.hostname)) {
-      return 'Enter a valid URL';
+
+    // ✅ Only allow these two domains (exact match)
+    if (parsed.hostname !== 'www.linkedin.com' && parsed.hostname !== 'www.github.com') {
+      return 'Only LinkedIn (www.linkedin.com) and GitHub (www.github.com) links are allowed';
     }
+
+    // Optional: ensure path is valid (e.g., not malformed), but we don't restrict it
   } catch {
     return 'Enter a valid URL';
   }
 
-  // Try a lightweight reachability check. In browsers this can be blocked by CORS
-  // so we catch failures and accept the URL syntactically.
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(urlStr, { method: 'HEAD', signal: controller.signal });
-    clearTimeout(timeout);
-    if (res && 'ok' in res) {
-      if (res.ok) return true;
-      return 'The provided link is not accessible (non-2xx response)';
-    }
-    // If we get here the response is opaque or cannot be inspected — accept.
-    return true;
-  } catch {
-    // Network error, timeout or CORS - unable to verify reachability client-side.
-    return true;
-  }
+  // ⚠️ Skip fetch/HEAD request — both LinkedIn and GitHub block HEAD requests from browsers due to CORS.
+  // Even if we try, it will fail in most cases. So we skip network validation.
+  return true;
 };
 
 /**
@@ -131,8 +131,11 @@ export const validateAmount = (value: string) => {
   if (!v) return 'Amount is required';
   if (/\s/.test(v)) return 'Amount must not contain spaces';
   if (!/^\d+$/.test(v)) return 'Amount must contain digits only (no letters or special characters)';
-  if (v.length < 2) return 'Amount must be at least 2 digits';
-  if (v.length > 5) return 'Amount must not exceed 5 digits';
+  
+  const num = parseInt(v, 10);
+  if (num < 10) return 'Amount must be at least 10';
+  if (num > 99999) return 'Amount must not exceed 99999';
+  
   return true;
 };
 

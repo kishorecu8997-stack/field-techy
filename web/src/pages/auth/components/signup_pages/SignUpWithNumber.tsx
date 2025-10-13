@@ -39,8 +39,8 @@ const SignUpWithNumber = ({
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
@@ -61,7 +61,7 @@ const SignUpWithNumber = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Phone Number" required />
+          <PhoneInputField name="phone" label="Mobile Number" required />
           <div className="flex items-center w-full">
             <CheckboxInput
               name="terms"
@@ -71,7 +71,7 @@ const SignUpWithNumber = ({
               className="text-teal-900 underline font-semibold pl-1"
               to={urls.auth.signUp}
             >
-              Terms and Services
+              Terms and Conditions
             </NavLink>
           </div>
           <Button
@@ -89,7 +89,7 @@ const SignUpWithNumber = ({
           onClick={() => setIsNumberLogin(false)}
         >
           <LuPhone />
-          Sign in with Email
+          Sign in with Email ID
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />
@@ -107,8 +107,8 @@ const SignUpWithNumber = ({
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header="Verify Phone Number"
-            description="A verification OTP has been sent to your phone. Please check your phone."
+            header="Verify Mobile Number"
+            description="A verification OTP has been sent to your mobile. Please check your mobile."
             onClose={() => setIsOpen(false)}
             handleNavigate={() => navigate(urls.auth.profile_setup)}
           />

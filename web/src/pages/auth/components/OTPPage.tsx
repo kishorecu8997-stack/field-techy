@@ -10,6 +10,8 @@ interface VerifyEmailModalProps {
   description?: string;
   onClose?: () => void;
   handleNavigate?: () => void;
+  buttonText?: string;
+  isSuccess?: boolean;
 }
 
 export interface OTPValues {
@@ -44,6 +46,8 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
   description,
   onClose,
   handleNavigate,
+  buttonText,
+  isSuccess,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -85,32 +89,34 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{header}</h2>
             <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
           </div>
-          <div className="p-2">
-            <OTPInput 
-              name="otp" 
-              length={4} 
-              errorAlign="center"
-            />
-            <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
-              <span>
-                {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
-              </span>
-              <button
-                onClick={handleResend}
-                disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Resend
-              </button>
+          {!isSuccess && (
+            <div className="p-2">
+              <OTPInput
+                name="otp"
+                length={4}
+                errorAlign="center"
+              />
+              <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
+                <span>
+                  {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
+                </span>
+                <button
+                  onClick={handleResend}
+                  disabled={timeLeft > 0}
+                  className={`text-green-600 dark:text-green-400 font-medium ${
+                    timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  Resend
+                </button>
+              </div>
             </div>
-          </div>
+          )}
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
-            Submit
+            {buttonText || "Submit"}
           </Button>
         </div>
       </FormContainer>

@@ -3,7 +3,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
-import {assetsConfig} from "@/assets";
+import { assetsConfig } from "@/assets";
 import { NavLink, useNavigate } from "react-router-dom";
 import { urls } from "@/config/urls";
 import OTPPage from "../OTPPage";
@@ -34,7 +34,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -42,15 +42,19 @@ const navigate = useNavigate();
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className=" p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign In</h2>
           <h2 className="text-md font-extralight ">
@@ -68,7 +72,7 @@ const navigate = useNavigate();
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Phone Number" required/>
+          <PhoneInputField name="phone" label="Mobile Number" required />
 
           <Button
             type="submit"
@@ -100,11 +104,10 @@ const navigate = useNavigate();
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header="Verify Phone Number"
+            header="Verify Mobile Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
             handleNavigate={() => navigate(urls.main.home)}
-            
           />
         </Popup>
       </div>

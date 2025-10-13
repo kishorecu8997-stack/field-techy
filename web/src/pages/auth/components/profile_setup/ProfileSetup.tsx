@@ -46,7 +46,7 @@ const ProfileSetup = () => {
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
       <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-        Basic Details *
+        Basic Details
       </div>
       <InputField
         name="firstname"
@@ -66,7 +66,7 @@ const ProfileSetup = () => {
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
-      <PhoneInputField name="phone" label="Phone Number" required />
+      <PhoneInputField name="phone" label="Mobile Number" required />
       <InputField
         name="email"
         label="Email ID"
@@ -139,7 +139,7 @@ const ProfileSetup = () => {
       />
 
       <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-        Experience Details *
+        Experience Details
       </div>
       <InputField
         name="designation"

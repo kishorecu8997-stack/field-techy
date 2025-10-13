@@ -16,13 +16,13 @@ interface ImageUploadFieldProps {
   accept?: string;
 }
 
-export const ImageUploadField = ({
+export const ImageUploaderField = ({
   name,
   label,
   required = false,
   rules = {},
-  maxSize = 250 * 1024, // 250 KB
-  accept = ".jpeg",
+  maxSize = 350 * 1024, // 350 KB
+  accept = ".jpeg,.jpg",
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -59,17 +59,19 @@ export const ImageUploadField = ({
       fileType: async (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
         const isJPEGMime = value.type === "image/jpeg";
-        const hasCorrectExtension = value.name.toLowerCase().endsWith(accept);
+        const hasCorrectExtension =
+          value.name.toLowerCase().endsWith(".jpeg") ||
+          value.name.toLowerCase().endsWith(".jpg");
         const isValidSignature = await validateJPEGSignature(value);
         if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
-          return "Only genuine JPEG files with .jpeg extension are allowed.";
+          return "Only genuine JPEG files with .jpeg or .jpg extension are allowed.";
         }
         return true;
       },
       fileSize: (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
         if (value.size < 50 * 1024 || value.size > maxSize) {
-          return "File size must be between 50 KB and 250 KB.";
+          return "File size must be between 50 KB and 350 KB.";
         }
         return true;
       },
@@ -94,16 +96,16 @@ export const ImageUploadField = ({
           // Determine what to display
           let displaySrc: string | null = null;
 
-          if (typeof value === "string" && value.startsWith("http")) {
+          if (typeof value === "string") {
+            // Avatar URL (local or remote)
             displaySrc = value;
-            // Clear object URL if we're showing an avatar URL
             if (objectUrl) {
               URL.revokeObjectURL(objectUrl);
               setObjectUrl(null);
               prevFileRef.current = null;
             }
           } else if (value instanceof File) {
-            // Only create new object URL if file is new
+            // Uploaded file
             if (value !== prevFileRef.current) {
               if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
@@ -122,18 +124,20 @@ export const ImageUploadField = ({
             if (!file) return;
 
             const isJPEGMime = file.type === "image/jpeg";
-            const hasCorrectExtension = file.name.toLowerCase().endsWith(accept);
+            const hasCorrectExtension =
+              file.name.toLowerCase().endsWith(".jpeg") ||
+              file.name.toLowerCase().endsWith(".jpg");
             const isValidSignature = await validateJPEGSignature(file);
 
             if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
               toast.error(
-                `Only genuine JPEG files with ${accept} extension are allowed.`
+                `Only genuine JPEG files with .jpeg or .jpg extension are allowed.`
               );
               return;
             }
 
             if (file.size < 50 * 1024 || file.size > maxSize) {
-              toast.error("File size must be between 50 KB and 250 KB.");
+              toast.error("File size must be between 50 KB and 350 KB.");
               return;
             }
 
@@ -256,4 +260,4 @@ export const ImageUploadField = ({
   );
 };
 
-export default ImageUploadField;
+export default ImageUploaderField;

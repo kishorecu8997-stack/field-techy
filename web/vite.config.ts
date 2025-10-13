@@ -2,13 +2,15 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
-  base:'/engineer/auth',
-   resolve: {
+  base: command === 'build' ? '/engineer/auth/login/' : '/',
+  server:{
+    allowedHosts:true
+  },
+  resolve: {
     alias: {
-      "@": "/src", // Direct alias path for the src directory
+      "@": "/src",
     },
   },
-})
+}))

@@ -1,10 +1,13 @@
 import { urls } from "@/config/urls";
 import {assetsConfig} from "@/assets";
 import { Button } from "@/shared/components/Buttons";
+import Popup from "@/shared/components/Popup";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import PasswordSection from "../PasswordSection";
+import OTPPage from "../OTPPage";
 
 export type SetPasswordFormData = {
   password: string;
@@ -26,6 +29,7 @@ export type SetPasswordFormData = {
  */
 const SetPassword = () => {
   const navigate = useNavigate();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const methods = useForm<SetPasswordFormData>({
     defaultValues: {
       password: "",
@@ -34,7 +38,7 @@ const SetPassword = () => {
   });
 
   const handleSubmit = () => {
-    navigate(urls.auth.login);
+    setIsPopupOpen(true);
   };
 
   // Add back navigation handler
@@ -87,6 +91,16 @@ const SetPassword = () => {
             </Button>
           </div>
         </FormContainer>
+        <Popup open={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+          <OTPPage
+            header="Account Created Successfully!"
+            description="Your password has been set. You can now sign in."
+            onClose={() => setIsPopupOpen(false)}
+            handleNavigate={() => navigate(`/${urls.auth.login}`)}
+            buttonText="OK"
+            isSuccess
+          />
+        </Popup>
       </div>
     </div>
   );

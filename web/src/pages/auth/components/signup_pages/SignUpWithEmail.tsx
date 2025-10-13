@@ -39,8 +39,8 @@ const SignUp = ({
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+   <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img
@@ -84,7 +84,7 @@ const SignUp = ({
               className="text-teal-900 underline font-semibold pl-1"
               to={urls.auth.signUp}
             >
-              Terms and Services
+              Terms and Conditions
             </NavLink>
           </div>
           <Button
@@ -104,7 +104,7 @@ const SignUp = ({
           onClick={() => setIsNumberLogin(true)}
         >
           <LuPhone />
-          Sign in with Phone Number
+          Sign in with Mobile Number
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />

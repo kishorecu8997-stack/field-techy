@@ -28,7 +28,7 @@ const ResetPassword = () => {
   });
 
   const handleSubmit = () => {    
-    navigate(urls.auth.login);
+    navigate(`/${urls.auth.login}`);
   };
 
   return (
