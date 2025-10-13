@@ -1,6 +1,7 @@
-import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
@@ -10,13 +11,20 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
-import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 
 export type LoginFormData = {
   phone: string;
   terms: boolean;
 };
 
+/**
+ * Phone-based sign-up form that collects a phone number and terms acceptance,
+ * then triggers OTP verification via modal. Includes toggle to email sign-up
+ * and LinkedIn alternative.
+ *
+ * @param {Object} props
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Toggles between phone/email sign-up flows
+ */
 const SignUpWithNumber = ({
   setIsNumberLogin,
 }: {
@@ -49,7 +57,7 @@ const SignUpWithNumber = ({
           <h2 className="text-md font-extralight">
             Already have an account?{" "}
             <NavLink
-              to={urls.auth.login}
+              to={absoluteUrls.engineer.auth.login}
               className="text-teal-900 hover:underline font-semibold"
             >
               Sign In
@@ -69,7 +77,7 @@ const SignUpWithNumber = ({
             />
             <NavLink
               className="text-teal-900 underline font-semibold pl-1"
-              to={urls.auth.signUp}
+              to={absoluteUrls.engineer.auth.signup}
             >
               Terms and Services
             </NavLink>
@@ -110,7 +118,7 @@ const SignUpWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.auth.profile_setup)}
+            handleNavigate={() => navigate(absoluteUrls.engineer.auth.profile_setup)}
           />
         </Popup>
       </div>
