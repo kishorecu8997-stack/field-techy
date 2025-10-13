@@ -6,7 +6,8 @@ export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
   base: command === 'build' ? '/engineer/auth/login/' : '/',
   server:{
-    allowedHosts:true
+    allowedHosts:true,
+    open: '/engineer/auth/login',
   },
   resolve: {
     alias: {

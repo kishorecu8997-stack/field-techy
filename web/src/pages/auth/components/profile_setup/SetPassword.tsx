@@ -1,13 +1,13 @@
-import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
-import Popup from "@/shared/components/Popup";
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import PasswordSection from "../PasswordSection";
 import OTPPage from "../OTPPage";
+import Popup from "@/shared/components/Popup";
 
 export type SetPasswordFormData = {
   password: string;
@@ -96,7 +96,7 @@ const SetPassword = () => {
             header="Account Created Successfully!"
             description="Your password has been set. You can now sign in."
             onClose={() => setIsPopupOpen(false)}
-            handleNavigate={() => navigate(`/${urls.auth.login}`)}
+            handleNavigate={() => navigate(absoluteUrls.engineer.auth.login)}
             buttonText="OK"
             isSuccess
           />

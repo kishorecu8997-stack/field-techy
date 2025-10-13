@@ -1,15 +1,15 @@
 import { assetsConfig } from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
-import { urls } from "@/config/urls";
-import { MdOutlineMailOutline } from "react-icons/md";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { absoluteUrls } from "@/config/urls";
 export type ForgetPasswordFormData = {
   email: string;
 };
@@ -79,7 +79,7 @@ const ForgetPassword = () => {
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.auth.resetPassword)}
+            handleNavigate={() => navigate(absoluteUrls.engineer.auth.reset_password)}
           />
         </Popup>
       </div>

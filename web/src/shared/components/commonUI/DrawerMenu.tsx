@@ -1,14 +1,16 @@
+import { absoluteUrls } from "@/config/urls";
+import LogoutConfirmationPopup from "@/pages/auth/LogoutConfirmationPopup";
 import React, { useState } from "react";
 import {
   FaBookmark,
   FaBriefcase,
+  FaChevronRight,
   FaCog,
   FaSignOutAlt,
   FaUser,
   FaWallet,
 } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
-import LogoutConfirmationPopup from "@/pages/auth/LogoutConfirmationPopup";
+import { useNavigate } from "react-router";
 
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -52,6 +54,8 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       },
     },
   ];
+
+  const navigate = useNavigate()
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
@@ -114,7 +118,7 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <LogoutConfirmationPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onConfirm={() => console.log("confirm")}
+        onConfirm={() => navigate(absoluteUrls.engineer.auth.login)}
         onCancel={() => setIsOpen(false)}
       />
     </div>

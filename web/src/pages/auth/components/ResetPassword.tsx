@@ -1,6 +1,6 @@
-import { urls } from "@/config/urls";
-import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +28,7 @@ const ResetPassword = () => {
   });
 
   const handleSubmit = () => {    
-    navigate(`/${urls.auth.login}`);
+    navigate(absoluteUrls.engineer.auth.login);
   };
 
   return (

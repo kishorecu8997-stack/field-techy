@@ -1,6 +1,7 @@
-import { urls } from "@/config/urls";
 import { assetsConfig } from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
@@ -8,16 +9,37 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
+import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { MdOutlineMailOutline } from "react-icons/md";
 
 export interface SignUpFormData {
   email: string;
   terms: boolean;
 }
 
+/**
+ * Sign-up form component for new engineer users.
+ * Collects the user's email and consent to terms, then triggers an OTP verification flow
+ * via a modal popup. Also provides alternative login options:
+ * - Switch to phone number login
+ * - Continue with LinkedIn
+ *
+ * Features:
+ * - Form validation using `react-hook-form`
+ * - Terms & Conditions acceptance enforcement (submit disabled until accepted)
+ * - Navigation to Sign In page for existing users
+ * - Modal-based OTP verification after form submission
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Callback to switch to phone-based login flow
+ *
+ * @example
+ * <SignUp setIsNumberLogin={setIsNumberLogin} />
+ *
+ * @returns {JSX.Element} The sign-up form UI with email input, terms checkbox, and action buttons.
+ */
 const SignUp = ({
   setIsNumberLogin,
 }: {
@@ -53,7 +75,7 @@ const SignUp = ({
           <h2 className="text-md font-extralight">
             Already have an account?{" "}
             <NavLink
-              to={urls.auth.login}
+              to={absoluteUrls.engineer.auth.login}
               className="text-teal-900 hover:underline font-semibold"
             >
               Sign In
@@ -82,7 +104,7 @@ const SignUp = ({
             />
             <NavLink
               className="text-teal-900 underline font-semibold pl-1"
-              to={urls.auth.signUp}
+              to={absoluteUrls.engineer.auth.signup}
             >
               Terms and Conditions
             </NavLink>
@@ -125,7 +147,7 @@ const SignUp = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.auth.profile_setup)}
+            handleNavigate={() => navigate(absoluteUrls.engineer.auth.profile_setup)}
           />
         </Popup>
       </div>

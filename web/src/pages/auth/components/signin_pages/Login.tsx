@@ -1,22 +1,23 @@
-import { urls } from "@/config/urls";
 import { assetsConfig } from "@/assets";
-import { Button } from "@/shared/components/Buttons";
+import { absoluteUrls } from "@/config/urls";
+import Popup from "@/shared/components/Popup";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { validatePassword } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import type { LoginFormData } from "../types";
-import { LuPhone } from "react-icons/lu";
 import { BiLogoLinkedin } from "react-icons/bi";
+import { LuPhone } from "react-icons/lu";
+import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
-import Popup from "@/shared/components/Popup";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { validatePassword } from "@/shared/libs/utils";
+import type { LoginFormData } from "../types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Type representing the data structure for the Login form.
@@ -30,7 +31,8 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const navigate = useNavigate();
+  const { goToMyJobs } = useHomeNavigation();
+
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -61,7 +63,7 @@ const Login = ({
           <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
             Don't have an account?{" "}
             <NavLink
-              to={urls.auth.signUp}
+              to={absoluteUrls.engineer.auth.signup}
               className="text-teal-900 dark:text-teal-400 underline font-semibold"
             >
               Sign Up
@@ -89,11 +91,12 @@ const Login = ({
               validate: validatePassword,
             }}
           />
+          <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
             <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
-              to={urls.auth.forgetPassword}
+              to={absoluteUrls.engineer.auth.forget_password}
             >
               Forgot Password?
             </NavLink>
@@ -133,7 +136,7 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(urls.main.home)}
+            handleNavigate={goToMyJobs}
           />
         </Popup>
       </div>

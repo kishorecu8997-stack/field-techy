@@ -53,7 +53,6 @@ export const SelectField = ({
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
-
       <Controller
         name={name}
         control={control}
