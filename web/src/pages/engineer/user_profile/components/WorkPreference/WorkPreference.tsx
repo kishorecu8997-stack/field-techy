@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { preferredWorkTypesData, servicesCategoriesData } from "@/dummyData";
+import { validateRate } from "../../Validate";
 
 /**
  * @typedef {Object} WorkPreferenceFormData
@@ -69,6 +70,7 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClic
       servicesCategories: "",
       ratePreference: "",
     },
+    mode: "onSubmit",
   });
 
   return (
@@ -125,7 +127,9 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClic
             name="ratePreference"
             placeholder="Hourly/Fixed Rate Preference"
             leftIcon={<CiWallet className="text-lg text-gray-500" />}
-            required
+            required    
+            rules={{ validate: (v: string) => validateRate(v) }}
+        
           />
         </div>
 

@@ -71,6 +71,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({
       emailId: "",
       addressLocation: "",
     },
+    mode: "onSubmit",
   });
 
   return (

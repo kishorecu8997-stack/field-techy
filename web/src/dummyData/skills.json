@@ -8,6 +8,11 @@
     { "id": 6, "label": "Python" },
     { "id": 7, "label": "SQL" },
     { "id": 8, "label": "C#" },
-    { "id": 9, "label": ".Net" }
+    { "id": 9, "label": ".Net" },
+    { "id": 10, "label": "PostgreSQL" },
+    { "id": 11, "label": "MongoDB" },
+    { "id": 12, "label": "AWS" },
+    { "id": 13, "label": "Azure" },
+    { "id": 14, "label": "Docker" }
   ]
 }

@@ -12,10 +12,10 @@ import DrawerHeader from "@/shared/components/DrawerHeader";
 import { toast } from "react-toastify/unstyled";
 
 // Local document/image assets from src/assets/document
-import img8140054 from "@/assets/document/8140054.jpg";
-import img8351119 from "@/assets/document/8351119.jpg";
-import imgExampleJpg from "@/assets/document/file_example_JPG_100kB.jpg";
-import sampleLocalPdf from "@/assets/document/sample-local-pdf.pdf";
+import img8140054 from "@/assets/document/Certificate.jpg";
+import img8351119 from "@/assets/document/Government-ID.jpg";
+import imgExampleJpg from "@/assets/document/Government-ID1.jpg";
+import sampleLocalPdf from "@/assets/document/Resume.pdf";
 
 /**
  * Initial sample data for documents.
@@ -25,8 +25,8 @@ import sampleLocalPdf from "@/assets/document/sample-local-pdf.pdf";
 const initialDocuments = [
  {
     id: 1,
-    title: "Scanned Document - 8140054",
-    fileName: "8140054.jpg",
+    title: "Certificate",
+    fileName: "Certificate.jpg",
     fileType: "JPEG",
     previewUrl: img8140054,
     uploadDate: "2022-11-01",
@@ -38,8 +38,8 @@ const initialDocuments = [
   },
   {
     id: 2,
-    title: "Scanned Document - 8351119",
-    fileName: "8351119.jpg",
+    title: "Government-ID",
+    fileName: "Government-ID.jpg",
     fileType: "JPEG",
     previewUrl: img8351119,
     uploadDate: "2022-11-02",
@@ -50,8 +50,8 @@ const initialDocuments = [
   },
   {
     id: 3,
-    title: "Example JPEG",
-    fileName: "file_example_JPG_100kB.jpg",
+    title: "Government-ID1",
+    fileName: "Government-ID1.jpg",
     fileType: "JPEG",
     previewUrl: imgExampleJpg,
     uploadDate: "2021-06-15",
@@ -62,8 +62,8 @@ const initialDocuments = [
   },
   {
     id: 4,
-    title: "Sample PDF",
-    fileName: "sample-local-pdf.pdf",
+    title: "Resume",
+    fileName: "Resume.pdf",
     fileType: "PDF",
     previewUrl: sampleLocalPdf,
     uploadDate: "2021-06-16",
@@ -93,23 +93,7 @@ interface DrawerMenuProps {
  */
 const Documents: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
   const [documents, setDocuments] = useState(initialDocuments);
-
-  /**
-   * Handles the action for adding a new document.
-   * Currently, it shows a placeholder toast message.
-   */
-  const handleAddDocument = () => {
-    toast.error("Add Document functionality not implemented yet.");
-  };
-
-  /**
-   * Handles the action for editing an existing document.
-   * @param {number} id - The ID of the document to be edited.
-   */
-  const handleEditDocument = (id: number) => {
-    toast.error(`Edit document #${id} functionality not implemented yet.`);
-  };
-
+ 
   /**
    * Handles the deletion of a document after user confirmation.
    * @param {number} id - The ID of the document to be deleted.
@@ -135,7 +119,7 @@ const Documents: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
       <div className="p-4 max-w-3xl mx-auto">
         <DocumentsList
           documents={documents}          
-          onEditDocument={handleEditDocument}
+          onEditDocument={() => onMenuItemClick(`editDocument`)}
           onDeleteDocument={handleDeleteDocument}
         />
       </div>

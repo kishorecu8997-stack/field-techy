@@ -88,7 +88,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
       startDate: null,
       endDate: null,
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   /**

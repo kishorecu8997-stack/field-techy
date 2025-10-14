@@ -58,7 +58,7 @@ export const TagSelectField = ({
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: required ? `${placeholder === "Select a tag..." ? label || name : placeholder} is required` : false,
     ...rules,
   };
 

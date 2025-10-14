@@ -15,6 +15,7 @@ import AddExperiences from "@/pages/engineer/user_profile/components/experiences
 import EditExperiences from "@/pages/engineer/user_profile/components/experiences/components/EditExperiences";
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import Documents from "@/pages/engineer/user_profile/components/documents/Documents";
+import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
 
 /**
  * Props for the Drawer component.
@@ -154,6 +155,13 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
       case "documents":
        return (
           <Documents
+            onMenuItemClick={(data) => setKey(data)}
+            onClose={onClose}
+          />
+        );
+        case "editDocument":
+       return (
+          <EditDocument
             onMenuItemClick={(data) => setKey(data)}
             onClose={onClose}
           />

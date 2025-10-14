@@ -5,23 +5,48 @@
 /**
  * Validate name (first/last) - only letters allowed (no spaces), length 8-35
  */
+// export const validateName = (value: string) => {
+//   // length requirement: 2 to 50 characters
+//   const raw = value || "";
+
+//   // Reject any whitespace (leading/trailing/internal)
+//   if (/\s/.test(raw)) return `${value} must not contain spaces`;
+
+//   // Only letters allowed (A-Z)
+//   if (!/^[A-Za-z]+$/.test(raw))
+//     return `${value} must contain only alphabetic characters (no numbers or special characters)`;
+
+//   // length requirement: 2 to 50 characters
+//   if (raw.length < 2) return `${value} must be at least 2 characters`;
+//   if (raw.length > 50) return `${value} must not exceed 50 characters`;
+
+//   return true;
+// };
+
 export const validateName = (value: string) => {
-  // length requirement: 2 to 50 characters
   const raw = value || "";
 
-  // Reject any whitespace (leading/trailing/internal)
-  if (/\s/.test(raw)) return `${value} must not contain spaces`;
+  // Reject leading or trailing spaces
+  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
 
-  // Only letters allowed (A-Z)
-  if (!/^[A-Za-z]+$/.test(raw))
-    return `${value} must contain only alphabetic characters (no numbers or special characters)`;
+  // Reject consecutive spaces
+  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
 
-  // length requirement: 2 to 50 characters
+  // Reject if contains anything other than letters and single spaces
+  if (!/^[A-Za-z ]+$/.test(raw))
+    return `${value} must contain only alphabetic characters and single spaces`;
+
+  // Reject if more than 10 spaces
+  const spaceCount = (raw.match(/ /g) || []).length;
+  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+
+  // Length requirement: 2 to 50 characters
   if (raw.length < 2) return `${value} must be at least 2 characters`;
   if (raw.length > 50) return `${value} must not exceed 50 characters`;
 
   return true;
 };
+
 
 /**
  * Validate email address - based on a more secure regex pattern.
@@ -178,19 +203,19 @@ export const validateDesignation = (value: string) => {
 };
 
 export const validateCompany = (value: string) => {
-  if (!value) return "Company/Employer must be at least 4 characters";
+  if (!value) return "Employer must be at least 4 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
-    return "Company/Employer must not start or end with a space";
+    return "Employer must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 4) return "Company/Employer must be at least 4 characters";
-  if (v.length > 50) return "Company/Employer must not exceed 50 characters";
+  if (v.length < 4) return "Employer must be at least 4 characters";
+  if (v.length > 50) return "Employer must not exceed 50 characters";
 
   // Only letters, numbers, and / & - . with single spaces between
   if (!/^[A-Za-z0-9/&.-]+(?: [A-Za-z0-9/&.-]+)*$/.test(v)) {
-    return "Company/Employer may contain only letters, numbers, single spaces, and / & - .";
+    return "Employer may contain only letters, numbers, single spaces, and / & - .";
   }
 
   return true;
@@ -273,6 +298,20 @@ export const validateDateRange = (
   return true;
 };
 
+export const validateRate = (value: string) => {
+  const v = (value || "").trim();
+
+  if (!v) return "Rate is required";
+  if (!/^\d+$/.test(v)) return "Rate must be a number";
+  if (v.length < 1) return "Rate must have at least 1 digit";
+  if (v.length > 5) return "Rate must not exceed 5 digits";
+
+  const num = Number(v);
+  if (num <= 0) return "Rate must be greater than 0";
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -285,4 +324,5 @@ export default {
   validateCompany,
   validatePassingYear,
   validateDateRange,
+  validateRate,
 };

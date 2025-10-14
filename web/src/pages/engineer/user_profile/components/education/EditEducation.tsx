@@ -76,6 +76,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ onClose, onMenuItemClick,
       majorSubject: "",
       passingYear: "",
     },
+    mode: "onSubmit",
   });
 
   /**

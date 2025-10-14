@@ -44,10 +44,11 @@ export const SelectField = ({
   const { control } = useFormContext();
 
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
-    ...rules,
-  };
-
+  required: required
+    ? `${placeholder === 'Select' ? label || name : placeholder} is required`
+    : false,
+  ...rules,
+};
   return (
     <div className="flex flex-col py-1">
       {label && (

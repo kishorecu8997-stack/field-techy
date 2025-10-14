@@ -18,7 +18,7 @@ import {
   employmentTypeData,
 } from "@/dummyData";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateDateRange } from "../../../Validate";
+import { validateCompany, validateDateRange } from "../../../Validate";
 
 /**
  * Defines the shape of the form data for adding a new work experience.
@@ -84,7 +84,7 @@ const AddExperiences: React.FC<AddExperiencesProps> = ({
       startDate: null,
       endDate: null,
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   return (
@@ -112,7 +112,7 @@ const AddExperiences: React.FC<AddExperiencesProps> = ({
             }))}
             required
           />
-          <InputField name="employer" placeholder="Employer" required />
+          <InputField name="employer" placeholder="Employer" required rules={{ validate: (v: string) => validateCompany(v) }}/>
 
           <SelectField
             name="workLocationType"
