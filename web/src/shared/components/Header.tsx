@@ -150,7 +150,7 @@ const Header: React.FC<HeaderProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       </div>
 
       {/* Drawer */}
-      <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />
+      {isDrawerOpen && <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />}
     </header>
   );
 };

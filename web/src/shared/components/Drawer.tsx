@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account/MyAccountDrawerMenu";
 import PersonalInformation from "@/pages/engineer/user_profile/PersonalInformation";
@@ -40,165 +41,62 @@ interface DrawerProps {
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const [key, setKey] = useState<string>("");
+  const [key, setKey] = useState<string>("myAccount");
+
+  const commonProps = {
+    onMenuItemClick: (data: string) => setKey(data),
+    onClose: onClose,
+  };
+
+  const sectionComponents: Record<string, React.ComponentType<any>> = {
+    myAccount: MyAccountDrawerMenu,
+    profile: UserProfileSidebar,
+    personalInfo: PersonalInformation,
+    education: Education,
+    addEducation: AddEducation,
+    editEducation: EditEducation,
+    skillsAndTools: SkillsAndTools,
+    addSkills: AddSkills,
+    editSkills: EditSkills,
+    addTools: AddTools,
+    editTools: EditTools,
+    experiences: Experiences,
+    addExperiences: AddExperiences,
+    editExperiences: EditExperiences,
+    workPreference: WorkPreference,
+    documents: Documents,
+    editDocument: EditDocument,
+    settings: () => <div>Settings Section</div>,
+    jobs: () => <div>Jobs Section</div>,
+    earning: () => <div>Earning Section</div>,
+    saved: () => <div>Saved Section</div>,
+  };
 
   /**
    * Renders the section content based on the selected key.
    * @returns {React.ReactElement} The section to display in the drawer.
    */
   const handleSections = (): React.ReactElement => {
-    let keyVal = key;
-    if (key.includes("-")) {
-      const keyParts = key.split("-");
-      keyVal = keyParts[0];
-    }
-    switch (keyVal) {
-      case "profile":
-        return (
-          <UserProfileSidebar
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "personalInfo":
-        return (
-          <PersonalInformation
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "education":
-        return (
-          <Education
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "addEducation":
-        return (
-          <AddEducation
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "editEducation":
-        return (
-          <EditEducation
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "skillsAndTools":
-        return (
-          <SkillsAndTools
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "addSkills":
-        return (
-          <AddSkills
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "editSkills":
-        return (
-          <EditSkills
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "addTools":
-        return (
-          <AddTools
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "editTools":
-        return (
-          <EditTools
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-
-      case "experiences":
-        return (
-          <Experiences
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "addExperiences":
-        return (
-          <AddExperiences
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "editExperiences":
-        return (
-          <EditExperiences
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "workPreference":
-        return (
-          <WorkPreference
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "documents":
-       return (
-          <Documents
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-        case "editDocument":
-       return (
-          <EditDocument
-            onMenuItemClick={(data) => setKey(data)}
-            onClose={onClose}
-          />
-        );
-      case "settings":
-        return <div>Settings Section</div>;
-      case "jobs":
-        return <div>Jobs Section</div>;
-      case "earning":
-        return <div>Earning Section</div>;
-      case "saved":
-        return <div>Saved Section</div>;
-      case "settings":
-        return <div>Settings Section</div>;
-      default:
-        return (
-          <div>
-            <MyAccountDrawerMenu
-              onMenuItemClick={(data) => setKey(data)}
-              onClose={onClose}
-            />
-          </div>
-        );
-    }
+    const keyVal = key.split("-")[0];
+    const Component = sectionComponents[keyVal] || MyAccountDrawerMenu;
+    return <Component {...commonProps} />;
   };
 
-  return (
+  const drawerContent = (
     <>
       <div
         className="fixed inset-0 flex items-center justify-center p-4 bg-[rgba(61,63,66,0.6)] animate-fade-in"
         onClick={onClose}
+        style={{ zIndex: 49 }} // Ensure backdrop is just below the drawer
       />
       <div className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl transform transition-transform duration-300 ease-in-out dark:bg-gray-500 h-full overflow-y-auto">
         <div className="p-6 ">{handleSections()}</div>
       </div>
     </>
   );
+
+  // Render into a portal to attach to the body
+  return ReactDOM.createPortal(drawerContent, document.body);
 };
 
 export default Drawer;
