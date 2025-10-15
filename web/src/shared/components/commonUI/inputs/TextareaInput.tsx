@@ -27,10 +27,10 @@ export const TextareaInput = ({ name, label, placeholder, required = false }: Te
   const { control } = useFormContext();
 
   return (
-    <div className="flex flex-col py-4 gap-2">
+    <div className="flex flex-col py-4 gap-1">
       {label && (
-        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-          {label}
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+          {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller

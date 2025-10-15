@@ -1,9 +1,10 @@
+import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { IoClose } from "react-icons/io5";
+
 
 interface VerifyEmailModalProps {
   header?: string;
@@ -77,7 +78,7 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
         className="w-full"
       >
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3">
-          <IoClose
+          <icons.closeFilled
             className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
             onClick={onClose}
           />

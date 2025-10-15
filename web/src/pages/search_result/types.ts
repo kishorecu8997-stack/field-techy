@@ -6,11 +6,12 @@ export const BUDGET_TYPES = {
   Fixed: "fixed",
 } as const;
 
-export type JobStatus = "completed" | "applied" | "inprogress";
+export type JobStatus = "completed" | "applied" | "inprogress" | "new";
 export const JOB_STATUSES = {
   completed: "completed",
   applied: "applied",
   inprogress: "inprogress",
+  new: "new",
 } as const;
 
 export type WorkingType = "on-site" | "remote";
@@ -49,6 +50,9 @@ export interface Job {
   pay?: string;
   status?: JobStatus;
   type?: WorkingType;
+  companyLogo?: string;
+  company?: string;
+  employmentType?: string;
 }
 
 /**

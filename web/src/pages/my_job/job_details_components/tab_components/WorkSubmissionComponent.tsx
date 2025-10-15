@@ -1,7 +1,11 @@
 import React from "react";
-import { FaFileAlt } from "react-icons/fa";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import type { WorkInfoItem, WorkSubmissionComponentProps } from "../../types";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm } from "react-hook-form";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { icons } from "@/config/icons";
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -13,7 +17,8 @@ import type { WorkInfoItem, WorkSubmissionComponentProps } from "../../types";
  */
 const WorkSubmissionComponent: React.FC<{
   workSubmissions: WorkSubmissionComponentProps;
-}> = ({ workSubmissions }) => {
+  isWorkSubmitted?: boolean;
+}> = ({ workSubmissions, isWorkSubmitted }) => {
   const {
     name,
     workDates,
@@ -49,11 +54,17 @@ const WorkSubmissionComponent: React.FC<{
     { label: "Date(s) of Work", value: workDates },
     { label: "Work Start Date & Time", value: startTime },
     { label: "Work End Date & Time", value: endTime },
-    {
-      label: "Task Carried out at the site?",
-      value: onsiteTask ? "Yes" : "No",
-    },
+    // {
+    //   label: "Task Carried out at the site?",
+    //   value: onsiteTask ? "Yes" : "No",
+    // },
   ];
+
+  const FormCtx = useForm();
+
+  const handleSubmit = () => {
+    console.log("Submitted");
+  };
 
   return (
     <div className="p-4 ">
@@ -69,91 +80,110 @@ const WorkSubmissionComponent: React.FC<{
               </span>
             </div>
           ))}
+          <div className="flex gap-2 bg-white rounded-xl dark:bg-gray-700">
+            <span className="font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-[180px]">
+              Task Carried out at the site?:
+            </span>
+            <p className="text-gray-700 dark:text-gray-300">
+              {onsiteTask ? "Yes" : "No"}
+            </p>
+          </div>
         </div>
       </div>
       <div className="bg-white rounded-xl  p-6 mb-4 dark:bg-gray-700">
         <h4 className="font-semibold mb-2">Location of Job</h4>
         <p className="text-gray-700 dark:text-gray-300">{location}</p>
       </div>
-
-      <div className="mb-4 px-5">
-        <h4 className="font-semibold mb-2">Completed Task File</h4>
-        <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-md w-fit">
-          <span className="text-sm text-gray-700 flex justify-center items-center text-center gap-2">
-            <FaFileAlt />
-            {fileName}
-          </span>
-        </div>
-      </div>
-
-      <div className="mb-4 px-5">
-        <h4 className="font-semibold mb-2">Technician Notes</h4>
-        <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">
-          {notes}
-        </p>
-      </div>
-
-      <div className="mb-4 px-5">
-        <h4 className="font-semibold mb-2">Technician Signature</h4>
-        <div className="flex items-center  justify-between">
-          {signatureUrl ? (
-            <div className="w-fit">
-              <img
-                src={signatureUrl}
-                alt="Signature not found"
-                className="max-w-full h-auto border border-gray-300 rounded p-2"
-              />
+      {isWorkSubmitted ? (
+        <FormContainer methods={FormCtx} onSubmit={handleSubmit}>
+          <FileUpload name="file" label="Upload completed task File" required accept=".pdf" />
+          <TextareaInput name="notes" label="Technician notes (if any)" required />
+          <Button className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
+            Submit
+          </Button>
+        </FormContainer>
+      ) : (
+        <>
+          <div className="mb-4 px-5">
+            <h4 className="font-semibold mb-2">Completed Task File</h4>
+            <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-md w-fit">
+              <span className="text-sm text-gray-700 flex justify-center items-center text-center gap-2">
+                <icons.file />
+                {fileName}
+              </span>
             </div>
-          ) : (
-            <div className="h-16 bg-gray-100 flex items-center justify-center text-gray-500 italic">
-              signature not found
-            </div>
-          )}
-
-          {isApproved && (
-            <div className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700 w-fit">
-              Approved
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700 flex flex-row gap-3">
-        <div className="items-center gap-2 p-2 bg-gray-100 rounded-md w-fit ">
-          <IoMdCheckmarkCircleOutline className="text-emerald-500 w-8 h-8 " />
-        </div>
-        <div>
-          <h4 className="font-semibold text-gray-800 dark:text-gray-300">
-            Payment Released
-          </h4>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            {paymentStatus}
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700">
-        <div className="flex items-start gap-3">
-          <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
-            <img
-              src="/avatar-placeholder.jpg"
-              alt="Reviewer"
-              className="w-full h-full object-cover"
-            />
           </div>
-          <div className="flex-1">
-            <h4 className="font-semibold text-gray-800 dark:text-gray-400">
-              {reviewerName}
-            </h4>
-            <div className="flex items-center gap-1 mb-2">
-              {renderStars(rating)}
-            </div>
+
+          <div className="mb-4 px-5">
+            <h4 className="font-semibold mb-2">Technician Notes</h4>
             <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">
-              {reviewComment}
+              {notes}
             </p>
           </div>
-        </div>
-      </div>
+
+          <div className="mb-4 px-5">
+            <h4 className="font-semibold mb-2">Technician Signature</h4>
+            <div className="flex items-center  justify-between">
+              {signatureUrl ? (
+                <div className="w-fit">
+                  <img
+                    src={signatureUrl}
+                    alt="Signature not found"
+                    className="max-w-full h-auto border border-gray-300 rounded p-2"
+                  />
+                </div>
+              ) : (
+                <div className="h-16 bg-gray-100 flex items-center justify-center text-gray-500 italic">
+                  signature not found
+                </div>
+              )}
+
+              {isApproved && (
+                <div className="mt-2 px-2 py-1 bg-teal-800 text-white rounded font-medium hover:bg-teal-700 w-fit">
+                  Approved
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700 flex flex-row gap-3">
+            <div className="items-center gap-2 p-2 bg-gray-100 rounded-md w-fit ">
+              <icons.check className="text-emerald-500 w-8 h-8 " />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-300">
+                Payment Released
+              </h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {paymentStatus}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 mb-4 dark:bg-gray-700">
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
+                <img
+                  src="/avatar-placeholder.jpg"
+                  alt="Reviewer"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-400">
+                  {reviewerName}
+                </h4>
+                <div className="flex items-center gap-1 mb-2">
+                  {renderStars(rating)}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed dark:text-gray-300">
+                  {reviewComment}
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

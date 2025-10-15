@@ -1,26 +1,24 @@
 import { client, jobHeaderData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
+import ClientInfoCard from "@/pages/my_job/job_details_components/ClientInfoCard";
+import JobHeaderCard from "@/pages/my_job/job_details_components/JobHeaderCard";
+import JobTabSection from "@/pages/my_job/job_details_components/JobTabSection";
+import { SORT_OPTIONS, type JobStatus } from "@/pages/search_result/types";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import MyJobsHeader from "../../shared/components/MyJobsHeader";
-import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
-import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/JobHeaderCard";
-import JobTabSection from "./job_details_components/JobTabSection";
+// import { useParams } from "react-router-dom";
 
 /**
- * Page component displaying detailed information about a specific job.
- *
- * @returns {JSX.Element} Job details page layout.
+ * Displays the engineer's dashboard with job listings and profile sidebar.
+ * Includes a header with sorting controls and uses dummy data for user and earnings.
  */
-const JobDetailsPage = () => {
-  const params = useParams();
-  const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
+const SendProposal = () => {
+//   const { jobId } = useParams();
   const [isSendProposal, setIsSendProposal] = useState(false);
 
   const filter = () => {
-    return sampleJobs.find((job) => {
-      return job.id === Number(params.jobId);
+    return sampleJobs?.filter((job) => {
+      return job?.id === "4";
     });
   };
 
@@ -28,7 +26,7 @@ const JobDetailsPage = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="My Jobs"
+          title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />
@@ -38,15 +36,13 @@ const JobDetailsPage = () => {
               title={jobHeaderData.title}
               client={jobHeaderData.client}
               duration={jobHeaderData.duration}
-              type={filter()?.type}
-              status={filter()?.status}
-              setIsWorkSubmitted={setIsWorkSubmitted}
+              type={filter()[0]?.type}
+              status={filter()[0]?.status}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
             />
             <JobTabSection
-              status={filter()?.status as JobStatus}
-              isWorkSubmitted={isWorkSubmitted}
+              status={filter()[0].status as JobStatus}
               isSendProposal={isSendProposal}
             />
           </div>
@@ -66,4 +62,4 @@ const JobDetailsPage = () => {
   );
 };
 
-export default JobDetailsPage;
+export default SendProposal;

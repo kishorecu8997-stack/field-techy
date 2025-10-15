@@ -28,21 +28,34 @@ import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
  * @example
  * <JobTabSection status={JOB_STATUSES.in_progress} />
  */
-const JobTabSection = ({ status }: { status: JobStatus }) => {
+const JobTabSection = ({
+  status,
+  isWorkSubmitted,
+  isSendProposal,
+}: {
+  status: JobStatus;
+  isWorkSubmitted?: boolean;
+  isSendProposal?: boolean;
+}) => {
   const tabs = [
     {
       label: "Logs",
       content: <LogComponent logs={logs} />,
-      hide: status === JOB_STATUSES.applied,
+      hide: status === JOB_STATUSES.applied || status === JOB_STATUSES.new,
     },
     {
       label: "Work Submissions",
-      content: <WorkSubmissionComponent workSubmissions={workSubmissions} />,
-      hide: status === JOB_STATUSES.applied,
+      content: (
+        <WorkSubmissionComponent
+          workSubmissions={workSubmissions}
+          isWorkSubmitted={isWorkSubmitted}
+        />
+      ),
+      hide: status === JOB_STATUSES.applied || status === JOB_STATUSES.new,
     },
     {
       label: "Job Information",
-      content: <JobInfoSection jobInfo={job} />,
+      content: <JobInfoSection jobInfo={job} isSendProposal={isSendProposal} />,
     },
     {
       label: "Requirement",

@@ -38,6 +38,9 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: string;
   status?: StatusType | string;
+  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
+  isSendProposal?: boolean
 }
 
 export interface JobTabsProps {

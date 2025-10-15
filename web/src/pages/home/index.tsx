@@ -1,3 +1,12 @@
+import { earningsData, jobData, userData } from "@/dummy_data/jobDetails";
+import { sampleJobs } from "@/dummy_data/searchData";
+import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
+import { FeaturedJobs } from "./components/FeaturedJobs";
+import JobExplorationBanner from "./components/JobExplorationBanner";
+import { RecommendedJobs } from "./components/RecommendedJobs";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
+import Pagination from "../search_result/components/Pagination";
 
 /**
  * Home page component.
@@ -6,9 +15,56 @@
  * @returns {JSX.Element} The home page UI.
  */
 const Home = () => {
-  return (
-    <div>home</div>
-  )
-}
+  const navigate = useNavigate();
 
-export default Home
+  const handleExploreJobs = () => {
+    navigate(absoluteUrls.engineer.home.explore_jobs);
+  };
+
+  const currentPage = 1;
+  const totalPages = 1;
+
+  const handlePageChange = (page: number) => {
+    console.log("Page changed to: ", page);
+  };
+
+  const fineNewJobs = sampleJobs.filter((job) => {
+    return job.status === "new";
+  });
+
+  return (
+    <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="container mx-auto px-4 py-6 md:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <JobExplorationBanner />
+            <FeaturedJobs
+              jobs={jobData}
+              title="Featured Jobs"
+              onViewAll={handleExploreJobs}
+            />
+            <RecommendedJobs
+              jobs={fineNewJobs}
+              onViewAll={handleExploreJobs}
+              title="Recommended Jobs"
+            />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+
+          {/* Sidebar - takes 1 column on large screens */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-6">
+              <SidebarProfile user={userData} earnings={earningsData} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

@@ -1,6 +1,6 @@
 import React from "react";
 import type { ClientInfoCardProps } from "../types";
-import { FaLocationDot } from "react-icons/fa6";
+import { icons } from "@/config/icons";
 
 /**
  * Displays client profile information including name, location, rating, and verifications.
@@ -35,7 +35,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
 
       <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-1">
-          <FaLocationDot className="h-4 w-4 flex-shrink-0" />
+          <icons.locationDot className="h-4 w-4 flex-shrink-0" />
           <span>{location}</span>
         </div>
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">

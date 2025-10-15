@@ -57,7 +57,7 @@ const JobCard: React.FC<Job> = ({
         <span
           className={`px-2.5 py-1 rounded-full text-xs font-medium ${getTypeColor()}`}
         >
-          {type}
+          {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
         </span>
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">

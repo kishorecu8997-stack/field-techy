@@ -39,6 +39,8 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/privacy_policy/FAQ"));
+const Home = React.lazy(() => import("@/pages/home"));
+const ExploreJobs = React.lazy(() => import("@/pages/home/components/ExploreJobs"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -89,7 +91,8 @@ export const routes = createBrowserRouter([
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
     children: [
-      { index: true, element: withSuspense(MyJobsPage) },
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.explore_jobs, element: withSuspense(ExploreJobs) },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,

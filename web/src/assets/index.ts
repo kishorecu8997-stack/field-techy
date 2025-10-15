@@ -4,6 +4,7 @@ import workTracking from "./work-tracking.png";
 import companyLogo from "./company-logo.png";
 import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
+import attachment from "./attachment_01.png";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -20,5 +21,8 @@ export const assetsConfig = {
       skillsMatching,
       workTracking,
     },
+    dashboard:{
+      attachment
+    }
   },
 };
