@@ -1,4 +1,5 @@
 import type { MyJobsHeaderProps } from "@/pages/my_job/types";
+import ReportPage from "@/pages/report";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
@@ -17,6 +18,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   description,
   isShowSort = true,
 }) => {
+  const [isShowReport, setIsShowReport] = React.useState(false);
+
   return (
     <div className="py-2">
       <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
@@ -41,16 +44,28 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
               )}
             </div>
           </div>
-          {isShowSort && (
-            <div className="flex-shrink-0">
-              <SortDropdown
-                currentSort={currentSort}
-                onSortChange={onSortChange}
-              />
+          <>
+            <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
+              <div
+                className="underline cursor-pointer hover:text-teal-900"
+                onClick={() => setIsShowReport(true)}
+              >
+                Report
+              </div>
+              {isShowSort && (
+                <SortDropdown
+                  currentSort={currentSort}
+                  onSortChange={onSortChange}
+                />
+              )}
             </div>
-          )}
+          </>
         </div>
       </header>
+        <ReportPage
+          open={isShowReport}
+          onClose={() => setIsShowReport(false)}
+        />
     </div>
   );
 };

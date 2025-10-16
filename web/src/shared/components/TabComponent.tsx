@@ -9,6 +9,7 @@ interface TabItem {
 interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
+  isShowTabs?: boolean;
 }
 
 /**
@@ -30,6 +31,7 @@ interface TabComponentProps {
 const TabComponent: React.FC<TabComponentProps> = ({
   tabs,
   defaultActiveTab,
+  isShowTabs = true,
 }) => {
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
   const visibleTabs = tabs.filter((tab) => !tab.hide);
@@ -46,7 +48,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
   return (
     <div className="w-full">
       <div className="flex flex-wrap gap-2 mb-4">
-        {visibleTabs.map((tab) => (
+        {isShowTabs && visibleTabs.map((tab) => (
           <button
             key={tab.label}
             onClick={() => setActiveTab(tab.label)}

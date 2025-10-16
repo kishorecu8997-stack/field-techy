@@ -13,6 +13,7 @@ import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
+import SendProposal from "@/pages/home/components/SendProposal";
 
 /**
  * Renders a tabbed section for job details based on the current job status.
@@ -55,7 +56,7 @@ const JobTabSection = ({
     },
     {
       label: "Job Information",
-      content: <JobInfoSection jobInfo={job} isSendProposal={isSendProposal} />,
+      content: <JobInfoSection jobInfo={job} />,
     },
     {
       label: "Requirement",
@@ -86,7 +87,14 @@ const JobTabSection = ({
 
   return (
     <div className="">
-      <TabComponent tabs={tabs} defaultActiveTab="Job Information" />
+      {isSendProposal ? (
+        <SendProposal />
+      ) : (
+        <TabComponent
+          tabs={tabs}
+          defaultActiveTab="Job Information"
+        />
+      )}
     </div>
   );
 };
