@@ -3,13 +3,10 @@ import { IoCloseSharp } from "react-icons/io5";
 import {assetsConfig} from "@/assets";
 import ProfileCard from "./commonUI/ProfileCard";
 import DrawerMenu from "./commonUI/DrawerMenu";
+import type { DrawerProps } from "./type";
 
 
 
-interface DrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 /**
  * Drawer component that slides in from the right when opened.

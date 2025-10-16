@@ -2,16 +2,9 @@ import { useState } from "react";
 import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import type { ConfirmPasswordInputProps } from "./type";
 
-interface ConfirmPasswordInputProps {
-  name: string;
-  passwordField: string; // The original password field to match
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  /** Optional react-hook-form validation rules */
-  rules?: RegisterOptions;
-}
+
 
 /**
  * ConfirmPasswordInput - A reusable confirm password input component for react-hook-form.

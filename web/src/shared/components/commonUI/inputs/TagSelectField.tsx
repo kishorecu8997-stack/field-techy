@@ -5,6 +5,7 @@ import {
 } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import type { TagSelectFieldProps } from "./type";
 
 // Custom chevron-down icon
 const ChevronDownIcon = () => (
@@ -20,23 +21,7 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-interface TagOption {
-  value: string;
-  label: string;
-}
 
-interface TagSelectFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  leftIcon?: React.ReactNode;
-  containerClassName?: string;
-  inputClassName?: string;
-  maxTags?: number;
-  options: TagOption[]; // ✅ Updated type
-}
 
 /**
  * A tag selection component for react-hook-form that allows users to select tags from a predefined list.
@@ -48,9 +33,7 @@ export const TagSelectField = ({
   placeholder = "Select a tag...",
   required = false,
   rules,
-  leftIcon,
   containerClassName = "flex flex-col py-1",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-4 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition",
   maxTags = 10,
   options = [],
 }: TagSelectFieldProps) => {
@@ -75,7 +58,7 @@ export const TagSelectField = ({
     }
 
     if (value.length >= maxTags) {
-      toast.error(`You can select up to ${maxTags} tags only.`);
+      toast.error(`You can select up to ${maxTags} skills only.`);
       return;
     }
 
@@ -108,7 +91,6 @@ export const TagSelectField = ({
         render={({ field, fieldState: { error } }) => {
           const { onChange, value = [] } = field;
 
-          // ✅ Filter out already selected tags
           const availableOptions = options.filter(
             (opt) => !value.includes(opt.value)
           );
@@ -117,43 +99,40 @@ export const TagSelectField = ({
             <>
               {/* Select wrapper */}
               <div className="relative">
-                {leftIcon && (
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
-                    {leftIcon}
-                  </div>
-                )}
-
-                {/* Wrapper for custom arrow */}
-                <div className="relative">
-                  <select
-                    value={selectedOption}
-                    onChange={(e) => {
-                      const selected = e.target.value;
-                      setSelectedOption(selected);
-                      handleAddTag(selected, onChange, value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddTag(selectedOption, onChange, value);
-                      }
-                    }}
-                    className={`${inputClassName} ${
-                      leftIcon ? "pl-10" : ""
-                    } pr-10 appearance-none`}
-                  >
-                    <option value="">{placeholder}</option>
-                    {availableOptions.map((opt) => (
+                <select
+                  value={selectedOption}
+                  onChange={(e) => {
+                    const selected = e.target.value;
+                    setSelectedOption(selected);
+                    handleAddTag(selected, onChange, value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTag(selectedOption, onChange, value);
+                    }
+                  }}
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:border-gray-500 focus:outline-none transition appearance-none"
+                >
+                  <option value="" disabled hidden>
+                    {placeholder}
+                  </option>
+                  {availableOptions.length > 0 ? (
+                    availableOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
-                    ))}
-                  </select>
+                    ))
+                  ) : (
+                    <option disabled className="text-gray-400">
+                      No more skills available
+                    </option>
+                  )}
+                </select>
 
-                  {/* Custom dropdown arrow */}
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDownIcon />
-                  </div>
+                {/* Custom dropdown arrow */}
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <ChevronDownIcon />
                 </div>
               </div>
 
@@ -166,7 +145,6 @@ export const TagSelectField = ({
               {/* Render selected tags */}
               <div className="flex flex-wrap gap-2 py-2">
                 {value.map((tagValue: string, index: number) => {
-                  // Find the label for display
                   const tagLabel =
                     options.find((opt) => opt.value === tagValue)?.label ||
                     tagValue;

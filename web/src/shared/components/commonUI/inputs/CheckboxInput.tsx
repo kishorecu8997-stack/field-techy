@@ -3,15 +3,9 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
+import type { CheckboxInputProps } from "./type";
 
-interface CheckboxInputProps {
-  name: string;
-  label?: string;
-  required?: boolean;
-  secondaryLabel?: string;
-  /** Optional react-hook-form validation rules */
-  rules?: RegisterOptions;
-}
+
 
 /**
  * CheckboxInput - A reusable checkbox component for react-hook-form.

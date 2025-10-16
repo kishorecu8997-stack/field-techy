@@ -5,16 +5,9 @@ import {
 } from "react-hook-form";
 import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { AVATARS } from "@/dummydata/avatars";
+import { AVATARS } from "@/dummy_data/avatars";
+import type { ImageUploadFieldProps } from "./type";
 
-interface ImageUploadFieldProps {
-  name: string;
-  label?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  maxSize?: number;
-  accept?: string;
-}
 
 export const ImageUploaderField = ({
   name,
@@ -22,7 +15,7 @@ export const ImageUploaderField = ({
   required = false,
   rules = {},
   maxSize = 350 * 1024, // 350 KB
-  accept = ".jpeg,.jpg",
+  accept = ".jpeg,.jpg,.png", // Allow PNG
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -30,7 +23,6 @@ export const ImageUploaderField = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
 
-  // Cleanup object URL on unmount
   useEffect(() => {
     return () => {
       if (objectUrl) {
@@ -39,10 +31,26 @@ export const ImageUploaderField = ({
     };
   }, [objectUrl]);
 
-  const validateJPEGSignature = async (file: File): Promise<boolean> => {
-    const buffer = await file.slice(0, 2).arrayBuffer();
+  // Validate signature for jpeg/png
+  const validateImageSignature = async (
+    file: File
+  ): Promise<"jpeg" | "png" | null> => {
+    // JPEG: ff d8, PNG: 89 50 4E 47 0D 0A 1A 0A
+    const buffer = await file.slice(0, 8).arrayBuffer();
     const bytes = new Uint8Array(buffer);
-    return bytes[0] === 0xff && bytes[1] === 0xd8;
+    if (bytes[0] === 0xff && bytes[1] === 0xd8) return "jpeg";
+    if (
+      bytes[0] === 0x89 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x4e &&
+      bytes[3] === 0x47 &&
+      bytes[4] === 0x0d &&
+      bytes[5] === 0x0a &&
+      bytes[6] === 0x1a &&
+      bytes[7] === 0x0a
+    )
+      return "png";
+    return null;
   };
 
   const triggerFileInput = () => {
@@ -58,13 +66,21 @@ export const ImageUploaderField = ({
     validate: {
       fileType: async (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
-        const isJPEGMime = value.type === "image/jpeg";
-        const hasCorrectExtension =
-          value.name.toLowerCase().endsWith(".jpeg") ||
-          value.name.toLowerCase().endsWith(".jpg");
-        const isValidSignature = await validateJPEGSignature(value);
-        if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
-          return "Only genuine JPEG files with .jpeg or .jpg extension are allowed.";
+        const name = value.name.toLowerCase();
+        const isJPEG = value.type === "image/jpeg";
+        const isPNG = value.type === "image/png";
+        const hasAllowedExt =
+          name.endsWith(".jpeg") || name.endsWith(".jpg") || name.endsWith(".png");
+        const imgType = await validateImageSignature(value);
+
+        if (
+          !(
+            (isJPEG && imgType === "jpeg") ||
+            (isPNG && imgType === "png")
+          ) ||
+          !hasAllowedExt
+        ) {
+          return "Only genuine JPEG/PNG files with .jpeg, .jpg, or .png extension are allowed.";
         }
         return true;
       },
@@ -97,7 +113,6 @@ export const ImageUploaderField = ({
           let displaySrc: string | null = null;
 
           if (typeof value === "string") {
-            // Avatar URL (local or remote)
             displaySrc = value;
             if (objectUrl) {
               URL.revokeObjectURL(objectUrl);
@@ -105,7 +120,6 @@ export const ImageUploaderField = ({
               prevFileRef.current = null;
             }
           } else if (value instanceof File) {
-            // Uploaded file
             if (value !== prevFileRef.current) {
               if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
@@ -123,15 +137,24 @@ export const ImageUploaderField = ({
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const isJPEGMime = file.type === "image/jpeg";
-            const hasCorrectExtension =
-              file.name.toLowerCase().endsWith(".jpeg") ||
-              file.name.toLowerCase().endsWith(".jpg");
-            const isValidSignature = await validateJPEGSignature(file);
+            const nameLc = file.name.toLowerCase();
+            const isJPEG = file.type === "image/jpeg";
+            const isPNG = file.type === "image/png";
+            const hasAllowedExt =
+              nameLc.endsWith(".jpeg") ||
+              nameLc.endsWith(".jpg") ||
+              nameLc.endsWith(".png");
+            const imgType = await validateImageSignature(file);
 
-            if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
+            if (
+              !(
+                (isJPEG && imgType === "jpeg") ||
+                (isPNG && imgType === "png")
+              ) ||
+              !hasAllowedExt
+            ) {
               toast.error(
-                `Only genuine JPEG files with .jpeg or .jpg extension are allowed.`
+                `Only genuine JPEG/PNG files with .jpeg, .jpg, or .png extension are allowed.`
               );
               return;
             }

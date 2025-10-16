@@ -5,33 +5,35 @@ import {
   type RegisterOptions,
 } from "react-hook-form";
 
-interface PhoneInputFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-}
+import { CountrySelect } from "./CountrySelect";
+import type { Country, PhoneInputFieldProps } from "./type";
 
-interface Country {
-  code: string;
-  name: string;
-  flag: string; // SVG path
-  validationKey: "india" | "uk";
-}
+
 
 export const PhoneInputField = ({
   name,
   label,
-  placeholder = "Enter phone number",
+  placeholder = "Enter mobile number",
   required = false,
   rules,
+  disabled,
+  inputClassName,
 }: PhoneInputFieldProps) => {
   const { control, getValues, setValue, clearErrors } = useFormContext();
 
   const countries: Country[] = [
-    { code: "+91", name: "IN", flag: "src/assets/flags/in.svg", validationKey: "india" },
-    { code: "+44", name: "UK", flag: "src/assets/flags/gb.svg", validationKey: "uk" },
+    {
+      code: "+91",
+      name: "India",
+      flag: "https://flagcdn.com/w40/in.png", // ✅ Removed trailing spaces
+      validationKey: "india",
+    },
+    {
+      code: "+44",
+      name: "UK",
+      flag: "https://flagcdn.com/w40/gb.png", // ✅ Removed trailing spaces
+      validationKey: "uk",
+    },
   ];
 
   useEffect(() => {
@@ -62,9 +64,8 @@ export const PhoneInputField = ({
     if (!/^\d+$/.test(phoneNumber)) {
       return "Phone number must contain only digits (0-9)";
     }
-
+    
     const { validationKey } = selectedCountry;
-
     if (validationKey === "india") {
       if (phoneNumber.length !== 10) {
         return "Indian phone number must be exactly 10 digits long";
@@ -73,14 +74,12 @@ export const PhoneInputField = ({
         return "Indian mobile numbers must start with 6, 7, 8, or 9";
       }
     } else if (validationKey === "uk") {
-      if (phoneNumber.length !== 11) {
-        return "UK phone number must be exactly 11 digits long";
+      // ✅ CORRECTED: After +44, UK mobile = 10 digits, starting with 7, 8, or 9
+      if (phoneNumber.length !== 10) {
+        return "UK phone number must be exactly 10 digits long";
       }
-      if (phoneNumber[0] !== "0") {
-        return "UK phone number must start with 0";
-      }
-      if (phoneNumber[1] === "0") {
-        return "UK phone number cannot have 0 as the second digit";
+      if (!/^[789]/.test(phoneNumber)) {
+        return "UK mobile numbers must start with 7, 8, or 9";
       }
     }
 
@@ -111,54 +110,35 @@ export const PhoneInputField = ({
           ).split(" ");
           const numberValue = rest.join(" ");
 
-          const currentCountry = countries.find(c => c.code === countryCode);
-
           return (
             <>
-              <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden">
-                {/* Custom dropdown button */}
-                <div className="relative bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-3 border-r border-gray-300 dark:border-gray-600 cursor-pointer">
-                  {currentCountry && (
-                    <div className="flex items-center gap-1">
-                      <img
-                        src={currentCountry.flag}
-                        alt={currentCountry.name}
-                        className="w-5 h-5"
-                        onError={(e) => {
-                          // Fallback if SVG fails
-                          e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDQgMyI+PHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMyIgZmlsbD0iI0ZGNjkzMyIvPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjEiIHk9IjEiIGZpbGw9IiNGRkZGRkYiLz48cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxIiB5PSIyIiBmaWxsPSIjMTM4ODA4Ii8+PGNpcmNsZSBjeD0iMS41IiBjeT0iMS41IiByPSIwLjUiIGZpbGw9IiMwMDAwODAiLz48L3N2Zz4=";
-                        }}
-                      />
-                      <span>{currentCountry.code}</span>
-                    </div>
-                  )}
-                  <select
-                    value={countryCode}
-                    onChange={(e) => {
-                      field.onChange(`${e.target.value} ${numberValue}`);
-                      clearErrors(name);
-                    }}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  >
-                    {countries.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.code}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
+              <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600">
+                <CountrySelect
+                  countries={countries}
+                  value={countryCode}
+                  onChange={(newCode) => {
+                    field.onChange(`${newCode} ${numberValue}`);
+                    clearErrors(name);
+                  }}
+                />
                 <input
                   type="tel"
                   value={numberValue}
+                  disabled={typeof disabled !== "undefined" ? disabled : false}
                   onChange={(e) => {
                     const newValue = e.target.value;
                     if (/^\d*$/.test(newValue)) {
                       field.onChange(`${countryCode} ${newValue}`);
                     }
                   }}
+                  onBlur={(e) => {
+                    const trimmed = e.target.value.trim();
+                    field.onChange(`${countryCode} ${trimmed}`);
+                  }}
                   placeholder={placeholder}
-                  className="flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none"
+                  className={`flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none ${
+                    inputClassName || ""
+                  }`}
                 />
               </div>
 

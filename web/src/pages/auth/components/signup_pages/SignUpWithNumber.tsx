@@ -38,6 +38,17 @@ const SignUpWithNumber = ({
       terms: false,
     },
   });
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    navigate(absoluteUrls.engineer.auth.profile_setup, {
+      state: {
+        signupPhone: method.getValues("phone"),
+        mobileVerified: true,
+        disableMobile: true, // Lock mobile in ProfileSetup
+        disableEmail: false, // Email should be editable in ProfileSetup
+      },
+    });
+  };
 
   const termsAccepted = method.watch("terms");
 
@@ -51,7 +62,11 @@ const SignUpWithNumber = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">
@@ -86,7 +101,9 @@ const SignUpWithNumber = ({
             type="submit"
             disabled={!termsAccepted}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              !termsAccepted
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
             }`}
           >
             Create Account
@@ -115,10 +132,10 @@ const SignUpWithNumber = ({
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header="Verify Mobile Number"
-            description="A verification OTP has been sent to your mobile. Please check your mobile."
+            header="Enter the OTP"
+            description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.engineer.auth.profile_setup)}
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>

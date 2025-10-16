@@ -1,48 +1,56 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { useFormContext } from "react-hook-form";
-import { FaGlobeAsia, FaRegUser } from "react-icons/fa";
-import { MdOutlineMailOutline, MdWorkOutline } from "react-icons/md";
+import { useFormContext, useWatch } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { FaRegUser } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp } from "react-icons/io5";
 import { IoWalletOutline } from "react-icons/io5";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import countries from "@/dummydata/countries";
+import countries from "@/dummy_data/countries";
 import {
   validateZipcode,
   validateName,
   validateAddress,
   validatePortfolio,
   validateAmount,
-  validateCompany,  
+  validateCompany,
 } from "@/pages/auth/components/profile_setup/profileValidators";
 import {
   validateExperience,
   validateDesignation,
 } from "@/pages/auth/components/profile_setup/profileValidators";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
-import { CgNotes } from "react-icons/cg";
-import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { serviceCategories } from "@/dummydata/serviceCategories";
-import skills from "@/dummydata/skills";
+import { serviceCategories } from "@/dummy_data/serviceCategories";
+import skills from "@/dummy_data/skills";
+import { useLocation } from "react-router-dom";
+import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 
-/**
- * Profile Setup form component containing input fields for user profile information.
- * Includes fields for personal details, professional information, and resume upload.
- * Used within the Profile Setting page for collecting user profile data.
- *
- * @component
- * @example
- * return (
- *   <ProfileSetup />
- * )
- *
- * @returns {JSX.Element} The rendered Profile Setup form component with input fields
- */
+// Recommended: Place ProfileSetup inside a FormProvider
 const ProfileSetup = () => {
-  const { getValues } = useFormContext();
+  const { control, setValue } = useFormContext();
+  const location = useLocation();
+  const {
+    signupEmail,
+    emailVerified,
+    signupPhone,
+    mobileVerified,
+    disableEmail = false,
+    disableMobile = false,
+  } = location.state || {};
+  const country = useWatch({ control, name: "country" });
+
+  const [isMobileVerified, setIsMobileVerified] = useState(!!mobileVerified);
+  const [isEmailVerified, setIsEmailVerified] = useState(!!emailVerified);
+  
+  // Set up the email and phone field on mount / when location.state changes
+  useEffect(() => {
+    if (signupEmail) setValue("email", signupEmail);
+    if (signupPhone) setValue("phone", signupPhone);
+  }, [signupEmail, signupPhone, setValue]);
+
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
       <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
@@ -66,15 +74,23 @@ const ProfileSetup = () => {
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
-      <PhoneInputField name="phone" label="Mobile Number" required />
-      <InputField
-        name="email"
-        label="Email ID"
-        type="text"
+      <VerifiedPhoneInputField
+        name="phone"
         required
-        leftIcon={<MdOutlineMailOutline className="text-lg text-gray-500" />}
-        rules={validateEmailRules}
+        verified={isMobileVerified}
+        setVerified={setIsMobileVerified}
+        disabled={disableMobile}
       />
+      
+
+      <VerifiedEmailInputField
+        name="email"
+        required
+        verified={isEmailVerified}
+        setVerified={setIsEmailVerified}
+        disabled={disableEmail}
+      />
+
       <InputField
         name="address"
         label="Address"
@@ -90,18 +106,20 @@ const ProfileSetup = () => {
         placeholder="Select Country"
         options={countries}
         required
-        leftIcon={<FaGlobeAsia className="text-lg text-gray-500" />}
       />
       <InputField
         name="postalCode"
-        label="Postal Code/Pin Code"
+        label="Postal Code"
         type="text"
-        placeholder="Postal Code/Pin Code"
+        placeholder="Postal Code"
         required
         leftIcon={<HiOutlineLocationMarker className="text-lg text-gray-500" />}
         rules={{
           validate: (value: string) =>
-            validateZipcode(value, getValues("country") as string),
+            validateZipcode(
+              value,
+              typeof country === "string" ? country : country?.value
+            ),
         }}
       />
       <TagSelectField
@@ -109,7 +127,6 @@ const ProfileSetup = () => {
         label="Skills"
         placeholder="Add your skills"
         required
-        leftIcon={<CgNotes className="text-lg text-gray-500" />}
         options={skills}
         maxTags={10}
       />
@@ -119,7 +136,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Portfolio Link"
         leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validatePortfolio(v) }}
+        rules={{ validate: (v: string) => validatePortfolio(v, country) }}
       />
       <SelectField
         name="serviceCategory"
@@ -127,13 +144,13 @@ const ProfileSetup = () => {
         placeholder="Select Category"
         options={serviceCategories}
         required
-        leftIcon={<MdWorkOutline className="text-lg text-gray-500" />}
       />
       <InputField
         name="amount"
         label="Amount"
         type="text"
         placeholder="$50/hr"
+        required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}
       />
@@ -156,7 +173,7 @@ const ProfileSetup = () => {
         placeholder="Company/Employer"
         required
         rules={{ validate: (v: string) => validateCompany(v) }}
-      />    
+      />
       <InputField
         name="experience"
         label="Experience"
@@ -165,7 +182,14 @@ const ProfileSetup = () => {
         required
         rules={{ validate: (v: string) => validateExperience(v) }}
       />
-      <FileUpload name="resume" label="Resume/CV" required accept=".pdf" maxPages={5} validatePDF={true}/>
+      <FileUpload
+        name="resume"
+        label="Resume/CV"
+        required
+        accept=".pdf"
+        maxPages={5}
+        validatePDF={true}
+      />
     </div>
   );
 };

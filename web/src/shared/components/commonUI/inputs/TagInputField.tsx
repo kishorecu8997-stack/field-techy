@@ -5,18 +5,9 @@ import {
 } from "react-hook-form";
 import { useState } from "react";
 import type { KeyboardEvent } from "react";
+import type { TagInputFieldProps } from "./type";
 
-interface TagInputFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  leftIcon?: React.ReactNode;
-  containerClassName?: string;
-  inputClassName?: string;
-  maxTags?: number;
-}
+
 
 /**
  * A reusable tag/chip input component for react-hook-form.

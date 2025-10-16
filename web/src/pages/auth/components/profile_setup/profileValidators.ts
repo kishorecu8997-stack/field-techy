@@ -38,8 +38,9 @@ export const validateZipcode = (value: string, country?: string) => {
   }
 
   if (country === 'uk') {
-    // 6 to 8 alphanumeric chars, maximum one internal space, no leading/trailing space
+    // 6 to 8 alphanumeric chars, maximum one internal space, no leading/trailing space    
     const ukRegex = /^(?! )(?!.* $)(?!(?:.* ){2,})[A-Za-z0-9 ]{6,8}$/;
+
     return ukRegex.test(v)
       ? true
       : 'Enter a valid UK postcode (6-8 alphanumeric chars, max one internal space)';
@@ -88,37 +89,54 @@ export const validateAddress = (value: string) => {
  * - **only allows www.linkedin.com or www.github.com**
  * - skips reachability check (due to CORS), but validates domain strictly
  */
-export const validatePortfolio = async (value: string) => {
-  const v = (value || '').trim();
-  if (!v) return true; // optional
+export const validatePortfolio = (value: string, country?: string) => {
+  const v = (value || "").trim();
+  if (!v) return true;
 
-  if (v.length < 10) return 'Portfolio link must be at least 10 characters';
-  if (v.length > 100) return 'Portfolio link must not exceed 100 characters';
-  if (/\s/.test(v)) return 'Portfolio link must not contain spaces';
+  if (v.length < 10) return "Portfolio link must be at least 10 characters";
+  if (v.length > 100) return "Portfolio link must not exceed 100 characters";
+  if (/\s/.test(v)) return "Portfolio link must not contain spaces";
 
   let urlStr = v;
   try {
-    // Add https:// if no scheme
     if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(urlStr)) {
       urlStr = `https://${urlStr}`;
     }
 
     const parsed = new URL(urlStr);
 
-    // ✅ Only allow these two domains (exact match)
-    if (parsed.hostname !== 'www.linkedin.com' && parsed.hostname !== 'www.github.com') {
-      return 'Only LinkedIn (www.linkedin.com) and GitHub (www.github.com) links are allowed';
+    // ✅ Only allow GitHub and LinkedIn
+    const allowedDomains = [
+      "www.linkedin.com",
+      "linkedin.com",
+      "www.github.com",
+      "github.com"
+    ];
+
+    if (!allowedDomains.includes(parsed.hostname)) {
+      return "Only LinkedIn and GitHub links are allowed";
     }
 
-    // Optional: ensure path is valid (e.g., not malformed), but we don't restrict it
+    // ✅ Region-specific LinkedIn rules
+    if (country === "in" && parsed.hostname.includes("linkedin.com")) {
+      if (!parsed.pathname.startsWith("/in/")) {
+        return "Indian LinkedIn profiles should start with /in/";
+      }
+    }
+
+    if (country === "uk" && parsed.hostname.includes("linkedin.com")) {
+      if (!parsed.pathname.includes("-uk")) {
+        return "UK LinkedIn profiles should include '-uk' in the URL";
+      }
+    }
+
   } catch {
-    return 'Enter a valid URL';
+    return "Enter a valid URL";
   }
 
-  // ⚠️ Skip fetch/HEAD request — both LinkedIn and GitHub block HEAD requests from browsers due to CORS.
-  // Even if we try, it will fail in most cases. So we skip network validation.
   return true;
 };
+
 
 /**
  * Validate amount field:
@@ -130,12 +148,18 @@ export const validateAmount = (value: string) => {
   const v = (value || '').trim();
   if (!v) return 'Amount is required';
   if (/\s/.test(v)) return 'Amount must not contain spaces';
-  if (!/^\d+$/.test(v)) return 'Amount must contain digits only (no letters or special characters)';
-  
-  const num = parseInt(v, 10);
-  if (num < 10) return 'Amount must be at least 10';
+
+  // Allow: digits only OR digits.digits (1-2 decimal places)
+  if (!/^\d+(\.\d{1,2})?$/.test(v)) {
+    return 'Amount must be a valid number with up to 2 decimal places (e.g., 50 or 50.99)';
+  }
+
+  const num = parseFloat(v);
+  if (isNaN(num)) return 'Amount must be a valid number';
+
+  if (num < 1) return 'Amount must be at least 1';
   if (num > 99999) return 'Amount must not exceed 99999';
-  
+
   return true;
 };
 
@@ -213,5 +237,3 @@ export default {
   validateDesignation,
   validateCompany
 };
-
-

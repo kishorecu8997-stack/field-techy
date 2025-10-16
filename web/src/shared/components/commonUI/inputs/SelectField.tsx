@@ -1,20 +1,11 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
-import type { ReactNode } from "react";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
+import type { SelectFieldProps } from "./type";
 
-interface Option {
-  value: string;
-  label: string;
-}
 
-interface SelectFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  options?: Option[];
-  rules?: RegisterOptions;
-  leftIcon?: ReactNode;
-}
 
 // Custom chevron-down icon
 const ChevronDownIcon = () => (
@@ -37,7 +28,6 @@ export const SelectField = ({
   required = false,
   options = [],
   rules,
-  leftIcon,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
 
@@ -59,41 +49,34 @@ export const SelectField = ({
         rules={validationRules}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div className="relative w-full flex items-center">
-              {leftIcon && (
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  {leftIcon}
-                </div>
-              )}
-
-              {/* Select wrapper for custom arrow */}
-              <div className="relative w-full">
-                <select
-                  {...field}
-                  value={field.value ?? ""}
-                  className={`w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-4 ${
-                    leftIcon ? 'pl-10' : ''
-                  } pr-10 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition appearance-none`}
-                >
-                  <option value="" disabled>
-                    {placeholder}
+            <div className="relative w-full">
+              <select
+                {...field}
+                value={field.value ?? ""}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:border-gray-500 transition appearance-none"
+              >
+                {/* Placeholder, shown only if nothing is selected */}
+                <option value="" disabled hidden>
+                  {placeholder}
+                </option>
+                {/* Only show the country options in the dropdown */}
+                {options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
                   </option>
-                  {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                ))}
+              </select>
 
-                {/* Custom dropdown arrow */}
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <ChevronDownIcon />
-                </div>
+              {/* Custom dropdown arrow */}
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <ChevronDownIcon />
               </div>
             </div>
 
             {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">{error.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                {error.message}
+              </p>
             )}
           </>
         )}

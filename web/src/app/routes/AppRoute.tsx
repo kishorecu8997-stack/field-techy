@@ -10,8 +10,11 @@ const SignInPage = React.lazy(
 const SignUpPage = React.lazy(
   () => import("@/pages/auth/components/signup_pages/SignUpPage")
 );
-const ProfileSettingPage = React.lazy(
-  () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
+// const ProfileSettingPage = React.lazy(
+//   () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
+// );
+const MultiStepRegistrationForm = React.lazy(
+  () => import("@/pages/auth/components/profile_setup/MultiStepRegistrationForm ")
 );
 const ForgetPassword = React.lazy(
   () => import("@/pages/auth/components/ForgetPassword")
@@ -64,7 +67,7 @@ export const routes = createBrowserRouter([
       { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
       {
         path: urls.engineer.auth.profile_setup,
-        element: withSuspense(ProfileSettingPage),
+        element: withSuspense(MultiStepRegistrationForm),
       },
       {
         path: urls.engineer.auth.forget_password,

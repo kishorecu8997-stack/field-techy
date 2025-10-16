@@ -40,7 +40,7 @@ export interface SignUpFormData {
  *
  * @returns {JSX.Element} The sign-up form UI with email input, terms checkbox, and action buttons.
  */
-const SignUp = ({
+const SignUpWithEmail = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,6 +53,18 @@ const SignUp = ({
       terms: false,
     },
   });
+  // Inside handleOTPVerified in SignUp
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    navigate(absoluteUrls.engineer.auth.profile_setup, {
+      state: {
+        signupEmail: methods.getValues("email"),
+        emailVerified: true, // Pre-verified
+        disableEmail: true, // Lock email in ProfileSetup
+        disableMobile: false, // Mobile should be editable in ProfileSetup
+      },
+    });
+  };
 
   const termsAccepted = methods.watch("terms");
 
@@ -61,7 +73,7 @@ const SignUp = ({
   };
 
   return (
-   <div className="flex items-center justify-center w-full">
+    <div className="flex items-center justify-center w-full">
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
@@ -147,7 +159,7 @@ const SignUp = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.engineer.auth.profile_setup)}
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>
@@ -155,4 +167,4 @@ const SignUp = ({
   );
 };
 
-export default SignUp;
+export default SignUpWithEmail;

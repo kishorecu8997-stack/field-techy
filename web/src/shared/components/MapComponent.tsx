@@ -14,6 +14,7 @@ import {
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import type { MapComponentProps } from "./type";
 
 // Fix default icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -23,19 +24,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-export interface MapMarker {
-  id?: string | number;
-  position: [number, number]; // [lat, lng]
-  title?: string;
-  description?: string;
-}
 
-interface MapComponentProps {
-  initialPosition?: [number, number];
-  initialZoom?: number;
-  markers?: MapMarker[];
-  onMapClick?: (latlng: { lat: number; lng: number }) => void;
-}
 
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
