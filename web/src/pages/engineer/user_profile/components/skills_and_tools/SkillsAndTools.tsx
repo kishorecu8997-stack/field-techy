@@ -1,12 +1,4 @@
-/**
- * @file SkillsAndTools.tsx
- * @description This component displays the user's professional skills and familiar tools.
- * It uses `ChipsCard` components to render lists of skills and tools, and provides
- * actions to navigate to add or edit views.
- */
-
 import React from "react";
-import DrawerHeader from "@/shared/components/DrawerHeader";
 import ChipsCard from "@/shared/components/ChipsCard";
 import {jobSkillsData, toolsData} from "@/dummy_data";
 
@@ -28,21 +20,9 @@ interface DrawerMenuProps {
  */
 const SkillsAndTools: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
-  onClose,
 }) => {
   return (
-    <>
-      {/* Header */}
-      <DrawerHeader
-        title="Skills and Tools"
-        onClose={onClose}
-        onBack={() => {
-          // Navigate back to the main profile view.
-          onMenuItemClick("profile");
-        }}
-      />
-
-      {/* Skills and Tools Cards */}
+    <>      
       <div className="flex flex-col gap-4">
         <ChipsCard
           title="Skills"

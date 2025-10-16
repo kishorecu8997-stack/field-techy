@@ -10,6 +10,8 @@ import preferredWorkTypes from "./preferredWorkTypes.json";
 import servicesCategories from "./servicesCategories.json";
 import Skills from "./skills.json";
 import AddEditTools from "./addEditTools.json";
+import initialDocument from "./initialDocument.json";
+
 
 
 
@@ -27,3 +29,4 @@ export const servicesCategoriesData = servicesCategories.servicesCategories;
 export const preferredWorkTypesData = preferredWorkTypes.preferredWorkTypes;
 export const skillsData = Skills.skills;
 export const addEditToolsData = AddEditTools.addEditTools;
+export const initialDocumentData = initialDocument.documents;

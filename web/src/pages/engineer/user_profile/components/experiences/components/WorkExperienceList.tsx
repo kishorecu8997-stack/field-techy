@@ -1,9 +1,3 @@
-/**
- * @file WorkExperienceList.tsx
- * @description A component that renders a list of work experience entries.
- * It displays details for each experience and provides buttons for add, edit, and delete actions.
- */
-
 import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";

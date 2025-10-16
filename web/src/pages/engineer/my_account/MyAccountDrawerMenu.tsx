@@ -11,7 +11,6 @@ import { FaChevronRight } from 'react-icons/fa';
 import LogoutConfirmationPopup from '@/pages/auth/LogoutConfirmationPopup';
 import ProfileCard from '@/shared/components/commonUI/ProfileCard';
 import { assetsConfig } from '@/assets';
-import DrawerHeader from '@/shared/components/DrawerHeader';
 import { useForm } from 'react-hook-form';
 import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
 
@@ -70,7 +69,6 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   return (
     <>
-      <DrawerHeader title="My Account" onClose={onClose} />
       <FormContainer methods={methods}>
         <div >
           <ProfileCard

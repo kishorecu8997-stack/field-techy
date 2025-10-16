@@ -3,26 +3,27 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
+import React from "react";
 
 interface InputFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  required?: boolean;
+  isLabelShow?: boolean;
+  /**
+   * Set to true for default required message,
+   * or a string for a custom required error message.
+   */
+  required?: boolean | string;
   type?: "text" | "email" | "number" | "date";
-  /** Additional react-hook-form validation rules */
+  /**
+   * Additional validation rules (e.g., minLength, pattern, validate).
+   * Note: required can be set via the required prop instead.
+   */
   rules?: RegisterOptions;
-  /** Minimum input length (characters) */
-  minLength?: number;
-  /** Maximum input length (characters) */
-  maxLength?: number;
-  /** Icon to display on the left side of input */
   leftIcon?: React.ReactNode;
-  /** Custom className for the input container */
   containerClassName?: string;
-  /** Custom className for the input field */
   inputClassName?: string;
-  /** Show validation checkmark when valid */
   showValidationCheck?: boolean;
 }
 
@@ -38,62 +39,47 @@ export const InputField = ({
   name,
   label,
   placeholder,
+  isLabelShow = true,
   required = false,
   type = "text",
   rules,
-  minLength,
-  maxLength,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400",
+  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   showValidationCheck = false,
 }: InputFieldProps) => {
   const { control } = useFormContext();
 
-  // Default validation rules
+  // Build required validation message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required; // custom message
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
+
+  // Merge required with other rules
   const validationRules: RegisterOptions = {
-    required: required ? `${placeholder || label || name} is required` : false,
+    required: requiredMessage,
     ...rules,
   };
 
-  // Add email pattern validation if type is email
+  // Add email pattern validation if type is email (unless overridden in rules)
   if (type === "email") {
-    validationRules.pattern = {
-      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      message: "Please enter a valid email address",
-      ...rules?.pattern, // merge with custom pattern if provided
-    };
-  }
-
-  // minLength and maxLength validation (prefers explicit rules if provided)
-  if (rules?.minLength) {
-    // user provided explicit minLength rule, keep it
-    validationRules.minLength = rules.minLength as any;
-  } else if (typeof minLength === "number") {
-    validationRules.minLength = {
-      value: minLength,
-      message: `${
-        placeholder || label || name
-      } must be at least ${minLength} characters`,
-    } as any;
-  }
-
-  if (rules?.maxLength) {
-    validationRules.maxLength = rules.maxLength as any;
-  } else if (typeof maxLength === "number") {
-    validationRules.maxLength = {
-      value: maxLength,
-      message: `${
-        placeholder || label || name
-      } must be at most ${maxLength} characters`,
-    } as any;
+    if (!("pattern" in validationRules)) {
+      validationRules.pattern = {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Please enter a valid email address",
+      };
+    }
   }
 
   return (
     <div className={containerClassName}>
-      {label && (
+      {isLabelShow && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -111,13 +97,11 @@ export const InputField = ({
               <input
                 {...field}
                 id={name}
+                // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
-                required={required}
                 placeholder={placeholder || label}
-                {...(typeof minLength === "number" ? { minLength } : {})}
-                {...(typeof maxLength === "number" ? { maxLength } : {})}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
-                  showValidationCheck && isDirty && invalid ? "pr-10" : ""
+                  showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 }`}
               />
               {showValidationCheck && isDirty && !invalid && (

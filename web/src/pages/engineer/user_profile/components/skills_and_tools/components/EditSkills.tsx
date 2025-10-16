@@ -1,12 +1,4 @@
-/**
- * @file EditSkills.tsx
- * @description This component provides a form for users to edit their professional skills.
- * It features a multi-select input field pre-populated with the user's current skills,
- * allowing them to add or remove selections.
- */
-
 import React, { useEffect } from "react";
-import DrawerHeader from "@/shared/components/DrawerHeader";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
@@ -28,10 +20,6 @@ export type EditSkillsFormData = {
 interface EditSkillsProps {
   /** An array of the user's current skill IDs to pre-populate the form. */
   currentSkills?: string[];
-  /** Callback when a menu item is clicked */
-  onMenuItemClick: (key: string) => void;
-  /** Callback to close the sidebar */
-  onClose: () => void;
 }
 
 /**
@@ -40,7 +28,7 @@ interface EditSkillsProps {
  * @param {EditSkillsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditSkills form component.
  */
-const EditSkills: React.FC<EditSkillsProps> = ({ onClose, onMenuItemClick, currentSkills }) => {
+const EditSkills: React.FC<EditSkillsProps> = ({ currentSkills }) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -73,48 +61,37 @@ const EditSkills: React.FC<EditSkillsProps> = ({ onClose, onMenuItemClick, curre
    * @type {Array<{label: string, value: string}>}
    */
   const skillOptions = skillsData.map((skill) => ({
-      label: skill.label,
-      value: skill.id.toString(),
-    }));
+    label: skill.label,
+    value: skill.id.toString(),
+  }));
 
   return (
-    <div className="relative flex flex-col h-screen bg-white">
-      <FormContainer
-        methods={methods}
-        onSubmit={onSubmit}
-        className="flex flex-col h-full"
-      >
-        {/* Header */}
-        <DrawerHeader
-          title="Edit Skills"
-          onClose={onClose}
-          onBack={() => onMenuItemClick("skillsAndTools")}
+    <FormContainer
+      methods={methods}
+      onSubmit={onSubmit}
+      className="flex flex-col h-full"
+    >
+      <div className="flex-1 overflow-y-auto px-3 space-y-3">
+        <TagSelectField
+          name="skills"
+          label="Skills"
+          isLabelShow={false}
+          placeholder="Select Skill Name"
+          required
+          options={skillOptions}
+          maxTags={15}
         />
+      </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-3 pb-24 space-y-3">
-          {/* Skills Multi-Select */}
-          <TagSelectField
-            name="skills"
-            label="Skills"
-            placeholder="Select Skill Name"
-            required
-            options={skillOptions}
-            maxTags={15}
-          />
-        </div>
-
-        {/* Fixed bottom button */}
-        <div className=" bottom-0  p-10 bg-white ">
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          >
-            Save
-          </Button>
-        </div>
-      </FormContainer>
-    </div>
+      <div className="bg-white ">
+        <Button
+          type="submit"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+        >
+          Save
+        </Button>
+      </div>
+    </FormContainer>
   );
 };
 

@@ -1,10 +1,3 @@
-/**
- * @file UserProfileSidebar.tsx
- * @description This component serves as the main navigation view within the user profile drawer.
- * It displays the user's profile summary and a list of sections to navigate to,
- * such as Personal Information, Education, and Settings.
- */
-
 import React, { useState } from 'react';
 import {
   FaBriefcase,
@@ -19,11 +12,10 @@ import {
 import { FaChevronRight } from 'react-icons/fa';
 import LogoutConfirmationPopup from '@/pages/auth/LogoutConfirmationPopup';
 import { assetsConfig } from '@/assets';
-import DrawerHeader from '@/shared/components/DrawerHeader';
 import { useForm } from 'react-hook-form';
 import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
-
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
+import type { MenuItems } from './types';
 
 /**
  * Props for the UserProfileSidebar component.
@@ -37,28 +29,6 @@ interface DrawerMenuProps {
   /** Callback to close the sidebar */
   onClose: () => void;
 }
-
-/**
- * Type for sidebar menu items.
- * @typedef {Object} MenuItems
- * @property {string} label - The label of the menu item.
- * @property {React.FC<React.SVGProps<SVGSVGElement>>} icon - The icon component for the menu item.
- * @property {string} key - Unique key for the menu item.
- * @property {boolean} [isLogout] - If true, marks the item as a logout action.
- * @property {() => void} [onClick] - Optional click handler for the menu item.
- */
-export type MenuItems = {
-  /** The label of the menu item */
-  label: string;
-  /** The icon component for the menu item */
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  /** Unique key for the menu item */
-  key: string;
-  /** If true, marks the item as a logout action */
-  isLogout?: boolean;
-  /** Optional click handler for the menu item */
-  onClick?: () => void;
-};
 
 /**
  * UserProfileSidebar component displays a vertical list of user profile menu items with icons and borders.
@@ -114,7 +84,6 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
 
   return (
     <>
-      <DrawerHeader title="My Profile" onClose={onClose} />
       <FormContainer methods={methods}>
         <div className="flex flex-row justify-center items-center">
            <div >

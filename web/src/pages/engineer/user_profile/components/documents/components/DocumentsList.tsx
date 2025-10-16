@@ -4,8 +4,8 @@
  * It handles the display of documents, provides an "Add" button, and delegates
  * edit/delete actions to parent components via callbacks.
  */
-import DocumentCard from '@/shared/components/DocumentCard';
-import React from 'react';
+import DocumentCard from "@/shared/components/DocumentCard";
+import React from "react";
 
 /**
  * Represents a single document with its metadata.
@@ -19,7 +19,7 @@ export interface Document {
   /** The original file name of the document. */
   fileName: string;
   /** The type of the file (e.g., PDF, JPEG). */
-  fileType: 'PDF' | 'PNG' | 'JPEG' | 'JPG' | 'GIF' | 'DOCX' | 'XLSX';
+  fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   /** A URL to a preview image or the document itself. */
   previewUrl?: string;
   /** The date the document was uploaded, in string format. */
@@ -54,9 +54,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   documents,
   onAddDocument,
   onEditDocument,
-  onDeleteDocument
+  onDeleteDocument,
 }) => {
-
   /**
    * Invokes the onEditDocument callback with the document's ID.
    * @param {number} id - The unique identifier of the document to edit.
@@ -75,29 +74,38 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
   return (
     <div className="bg-white rounded-lg ">
-        {onAddDocument && (
-      <div className="flex justify-end items-center mb-4">        
-          <button 
+      {onAddDocument && (
+        <div className="flex justify-end items-center mb-4">
+          <button
             onClick={onAddDocument}
             className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                clipRule="evenodd"
+              />
             </svg>
             Add Document
           </button>
-      </div>
-        )}
-      
+        </div>
+      )}
+
       {documents.length > 0 ? (
         <div className="space-y-4">
           {documents.map((doc) => (
-            <DocumentCard 
-              key={doc.id} 
-              document={doc} 
-              onEdit={handleEdit} 
-              onDelete={handleDelete} 
-              id={doc.id} 
+            <DocumentCard
+              key={doc.id}
+              document={doc}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              id={doc.id}
             />
           ))}
         </div>

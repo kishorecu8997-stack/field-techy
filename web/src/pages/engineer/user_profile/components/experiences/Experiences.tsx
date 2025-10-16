@@ -1,12 +1,4 @@
-/**
- * @file Experiences.tsx
- * @description This component displays a summary of the user's work experiences.
- * It uses a `WorkExperienceList` to render each entry and provides actions
- * to add, edit, or delete experiences by invoking callbacks.
- */
-
 import React from "react";
-import DrawerHeader from "@/shared/components/DrawerHeader";
 import { experienceData } from "@/dummy_data";
 import { WorkExperienceList } from "./components/WorkExperienceList";
 import { toast } from "react-toastify";
@@ -17,8 +9,6 @@ import { toast } from "react-toastify";
 interface DrawerMenuProps {
   /** Callback to navigate to a different view within the drawer (e.g., 'addExperiences'). */
   onMenuItemClick: (key: string) => void;
-  /** Callback to close the parent drawer or sidebar. */
-  onClose: () => void;
 }
 
 /**
@@ -31,7 +21,6 @@ interface DrawerMenuProps {
  */
 const Experiences: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
-  onClose,
 }) => {
   /**
    * The dummy experience data has string IDs, but the child component expects numbers.
@@ -45,16 +34,6 @@ const Experiences: React.FC<DrawerMenuProps> = ({
 
   return (
     <div className="">
-      {/* Header */}
-      <DrawerHeader
-        title="Experiences"
-        onClose={onClose}
-        onBack={() => {
-          // Navigate back to the main profile view.
-          onMenuItemClick("profile");
-        }}
-      />
-
       <WorkExperienceList
         title="Experiences"
         items={itemsWithNumericId}

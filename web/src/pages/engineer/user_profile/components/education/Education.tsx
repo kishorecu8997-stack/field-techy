@@ -6,7 +6,6 @@
  */
 import React from "react";
 import educationData from "@/dummy_data/education.json";
-import DrawerHeader from "@/shared/components/DrawerHeader";
 import DrawerCard from "@/shared/components/DrawerCard";
 import { toast } from "react-toastify";
 
@@ -28,19 +27,10 @@ interface DrawerMenuProps {
  * @param {DrawerMenuProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered Education component.
  */
-const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
+const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
 
   return (
     <>
-      {/* Header */}
-      <DrawerHeader
-        title="Education"
-        onClose={onClose}
-        onBack={() => {          
-          // Navigate back to the main profile view.
-          onMenuItemClick('profile');
-        }}
-      />
       <DrawerCard
         title="Education"
         items={educationData.education}

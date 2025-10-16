@@ -5,20 +5,7 @@ import {
 } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
-// Custom chevron-down icon
-const ChevronDownIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 text-gray-500 pointer-events-none"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-  </svg>
-);
+import { FaChevronDown } from "react-icons/fa";
 
 interface TagOption {
   value: string;
@@ -28,6 +15,7 @@ interface TagOption {
 interface TagSelectFieldProps {
   name: string;
   label?: string;
+  isLabelShow?: boolean;
   placeholder?: string;
   required?: boolean;
   rules?: RegisterOptions;
@@ -45,6 +33,7 @@ interface TagSelectFieldProps {
 export const TagSelectField = ({
   name,
   label,
+  isLabelShow = true,
   placeholder = "Select a tag...",
   required = false,
   rules,
@@ -60,7 +49,7 @@ export const TagSelectField = ({
   const validationRules: RegisterOptions = {
     required: required
       ? `${
-          placeholder === "Select a tag..." ? label || name : placeholder
+         label || name
         } is required`
       : false,
     ...rules,
@@ -79,7 +68,7 @@ export const TagSelectField = ({
     }
 
     if (value.length >= maxTags) {
-      toast.error(`You can select up to ${maxTags} tags only.`);
+      toast.error(`You can select up to ${maxTags} ${name} only.`);
       return;
     }
 
@@ -99,7 +88,7 @@ export const TagSelectField = ({
 
   return (
     <div className={containerClassName}>
-      {label && (
+      {isLabelShow && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
           {label} {required && <span className="text-red-600">*</span>}
         </label>
@@ -159,7 +148,7 @@ export const TagSelectField = ({
 
                   {/* Custom dropdown arrow */}
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDownIcon />
+                    <FaChevronDown className="h-4 w-4 text-gray-500" />
                   </div>
                 </div>
               </div>

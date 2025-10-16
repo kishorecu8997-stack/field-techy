@@ -1,3 +1,4 @@
+import formatKeyToLabel from '@/utils/formatKeyToLabel';
 import React from 'react';
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -27,22 +28,6 @@ interface DrawerCardProps {
   onEditAction?: (id: number) => void;
   onDeleteAction?: (id: number) => void;
 }
-
-/**
- * Convert object keys to a human-friendly label.
- * Examples: 'passingYear' -> 'Passing Year', 'first_name' -> 'First Name'
- *
- * @param key - The object key to format.
- * @returns A human-readable label for display.
- */
-const formatKeyToLabel = (key: string): string => {
-  return key
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // camelCase -> space
-    .replace(/_/g, ' ')                  // snake_case -> space
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-};
 
 /**
  * Keys that should not be displayed in the details area.

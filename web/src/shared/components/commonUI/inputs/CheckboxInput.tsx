@@ -7,6 +7,7 @@ import {
 interface CheckboxInputProps {
   name: string;
   label?: string;
+  isLabelShow?: boolean;
   required?: boolean;
   secondaryLabel?: string;
   /** Optional react-hook-form validation rules */
@@ -24,6 +25,7 @@ interface CheckboxInputProps {
 export const CheckboxInput = ({
   name,
   label,
+  isLabelShow = true,
   required = false,
   rules,
   secondaryLabel,
@@ -52,7 +54,7 @@ export const CheckboxInput = ({
                 checked={field.value || false}
                 className="accent-primary"
               />
-              {label && (
+              {isLabelShow && (
                 <label
                   htmlFor={name}
                   className="text-gray-700 font-bold dark:text-gray-300"

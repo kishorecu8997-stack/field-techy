@@ -1,11 +1,3 @@
-/**
- * @file WorkPreference.tsx
- * @description This component provides a form for users to set their work preferences.
- * It includes fields for portfolio link, preferred work types, service categories,
- * and rate preferences. It's designed to be displayed within a drawer.
- */
-import React from "react";
-import DrawerHeader from "@/shared/components/DrawerHeader";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { RiTodoLine } from "react-icons/ri";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -17,30 +9,7 @@ import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
 import { validatePortfolioLink, validateRate } from "../../Validate";
-
-/**
- * @typedef {Object} WorkPreferenceFormData
- * @property {string} portfolioLink - A URL to the user's portfolio.
- * @property {string} preferredWorkTypes - The key for the selected preferred work type.
- * @property {string} servicesCategories - The key for the selected service category.
- * @property {string} ratePreference - The user's hourly or fixed rate preference.
- */
-export type WorkPreferenceFormData = {
-  portfolioLink: string;
-  preferredWorkTypes: string;
-  servicesCategories: string;
-  ratePreference: string;
-};
-
-/**
- * Props for the WorkPreference component.
- */
-interface WorkPreferenceProps {
-  /** Callback when a menu item is clicked */
-  onMenuItemClick: (key: string) => void;
-  /** Callback to close the sidebar */
-  onClose: () => void;
-}
+import type { WorkPreferenceFormData } from "./types";
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
@@ -48,7 +17,7 @@ interface WorkPreferenceProps {
  * @param {WorkPreferenceProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
-const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClick }) => {
+const WorkPreference = () => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -74,75 +43,67 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClic
   });
 
   return (
-    <div className="relative flex flex-col h-screen bg-white">
-      <FormContainer
-        methods={methods}
-        onSubmit={handleSubmit}
-        className="flex flex-col h-full"
-      >
-        {/* Header */}
-        <DrawerHeader
-          title="Work Preference"
-          onClose={onClose}
-          onBack={() => {
-            // When user clicks back, open Add Education view. This will allow returning back to this page
-            onMenuItemClick("profile");
-          }}
+    <FormContainer
+      methods={methods}
+      onSubmit={handleSubmit}
+      className="flex flex-col h-full"
+    >
+      <div className="flex-1 overflow-y-auto px-3 space-y-3">
+        <InputField
+          label="Portfolio Link"
+          isLabelShow={false}
+          name="portfolioLink"
+          type="text"
+          placeholder="Portfolio Link"
+          leftIcon={<FiLink2 className="text-lg text-gray-500" />}
+          required
+          rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+        />
+        <SelectField
+          label="Preferred Work Types"
+          isLabelShow={false}
+          name="preferredWorkTypes"
+          placeholder="Preferred Work Type"
+          leftIcon={<RiTodoLine className="text-lg text-gray-500" />}
+          options={preferredWorkTypesData.map((e) => ({
+            value: e.id,
+            label: e.type,
+          }))}
+          required
+        />
+        <SelectField
+          label="Services Categories"
+          isLabelShow={false}
+          name="servicesCategories"
+          placeholder="Services Categories"
+          leftIcon={<HiOutlineBriefcase className="text-lg text-gray-500" />}
+          options={servicesCategoriesData.map((e) => ({
+            value: e.id,
+            label: e.category,
+          }))}
+          required
         />
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-3 pb-24 space-y-3">
-          {/* Portfolio Link */}
-          <InputField
-            name="portfolioLink"
-            type="text"
-            placeholder="Portfolio Link"
-            leftIcon={<FiLink2 className="text-lg text-gray-500" />}
-            required
-            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
-          />
-          <SelectField
-            name="preferredWorkTypes"
-            placeholder="Preferred Work Type"
-            leftIcon={<RiTodoLine className="text-lg text-gray-500" />}
-            options={preferredWorkTypesData.map((e) => ({
-              value: e.id,
-              label: e.type,
-            }))}
-            required
-          />
-          <SelectField
-            name="servicesCategories"
-            placeholder="Services Categories"
-            leftIcon={<HiOutlineBriefcase className="text-lg text-gray-500" />}
-            options={servicesCategoriesData.map((e) => ({
-              value: e.id,
-              label: e.category,
-            }))}
-            required
-          />
+        <InputField
+          label="Rate Preference"
+          isLabelShow={false}
+          name="ratePreference"
+          placeholder="Hourly/Fixed Rate Preference"
+          leftIcon={<CiWallet className="text-lg text-gray-500" />}
+          required
+          rules={{ validate: (v: string) => validateRate(v) }}
+        />
+      </div>
 
-          {/* Rate Preference */}
-          <InputField            
-            name="ratePreference"
-            placeholder="Hourly/Fixed Rate Preference"
-            leftIcon={<CiWallet className="text-lg text-gray-500" />}
-            required    
-            rules={{ validate: (v: string) => validateRate(v) }}        
-          />
-        </div>
-
-        {/* Fixed bottom button */}
-        <div className=" bottom-0  p-10 bg-white ">
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          >
-            Save Preferences
-          </Button>
-        </div>
-      </FormContainer>
-    </div>
+      <div className="bg-white ">
+        <Button
+          type="submit"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+        >
+          Save Preferences
+        </Button>
+      </div>
+    </FormContainer>
   );
 };
 

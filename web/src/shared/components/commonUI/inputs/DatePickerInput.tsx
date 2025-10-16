@@ -13,6 +13,7 @@ interface DatePickerInputProps {
   /** Optional label to display above the input field. */
   label?: string;
   /** The currently selected date. Can be `null` if no date is selected. */
+  isLabelShow?: boolean;
   value: Date | null;
   /** The minimum selectable date. Dates before this will be disabled. */
   minDate?: Date;
@@ -37,6 +38,7 @@ interface DatePickerInputProps {
  */
 export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   label,
+  isLabelShow = true,
   value,
   minDate,
   maxDate,
@@ -299,14 +301,14 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
-      {label && (
+      {isLabelShow && (
         <label className="block text-base font-medium text-gray-700 dark:text-gray-300 mb-1">
           {label}
         </label>
       )}
 
       <div
-        className="flex items-center w-[391.35px] h-[50.23px] px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary cursor-pointer"
+        className="flex items-center h-[50.23px] px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <input
@@ -337,7 +339,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
           {/* Calendar Header */}
           <div className="flex items-center justify-between mb-4">
             <button
-            type="button"
+              type="button"
               onClick={
                 view === "day"
                   ? goToPrevMonth
@@ -394,7 +396,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
             )}
 
             <button
-            type="button"
+              type="button"
               onClick={
                 view === "day"
                   ? goToNextMonth
