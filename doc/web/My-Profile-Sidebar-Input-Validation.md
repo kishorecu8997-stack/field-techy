@@ -23,12 +23,12 @@
 | Profile Sidebar/Education | Delete Button | Button | Yes | Delete the Education details | Delete the Education details | N/A | N/A |
 | Profile Sidebar/Skills and Tools | Card View | Card | Yes | Display Add /Edit Skills | Display Skills and Tools details | N/A | N/A |
 | Profile Sidebar/Add & Edit Tools | + Add Skill | Link button | Yes | Open Add Skill sidebar | Open Add Skill sidebar | N/A | N/A |
-| Profile Sidebar/Add Skills | Select Skill name | Dropdown | Yes | skills name select | Multi select Skills | 1 Selection | 10 Selection |
-| Profile Sidebar/Edit Skills | Select Skill name | Dropdown | Yes | skills name select | Multi select Skills | 1 Selection | 10 Selection |
+| Profile Sidebar/Add Skills | Select Skill name | Dropdown | Yes | skills name select | Multi select Skills | 1 Selection | 15 Selection |
+| Profile Sidebar/Edit Skills | Select Skill name | Dropdown | Yes | skills name select | Multi select Skills | 1 Selection | 15 Selection |
 | Profile Sidebar/Add & Edit Tools | Card View | Card | Yes | Display Add/Edit Tools details | Multi select Tools | N/A | N/A |
 | Profile Sidebar/Add & Edit Tools | + Add Tools | Link button | Yes | Open Add Tools sidebar | Multi select Tools | N/A | N/A |
-| Profile Sidebar/ Add Tools | Select Tool name | Dropdown | Yes | Tool name select | Select The tool the tool display as chips | 1 Selection | 10 Selection |
-| Profile Sidebar/ Edit Tools | Select Tool name | Dropdown | Yes | Tool name select | Select The tool the tool display as chips | 1 Selection | 10 Selection |
+| Profile Sidebar/ Add Tools | Select Tool name | Dropdown | Yes | Tool name select | Select The tool the tool display as chips | 1 Selection | 15 Selection |
+| Profile Sidebar/ Edit Tools | Select Tool name | Dropdown | Yes | Tool name select | Select The tool the tool display as chips | 1 Selection | 15 Selection |
 | Profile Sidebar/Experience | Card View | Card | Yes | Display Experience details | Card View | N/A | N/A |
 | Profile Sidebar/Experience | + Add Experience | Link button | Yes | Open Add Experience sidebar | Open Add Experience sidebar | N/A | N/A |
 | Profile Sidebar/ Add Experiences | Designation | Dropdown | Yes | Designation select | Designation must be selected(Drop down) | 1 Selection | 1 Selection |
@@ -47,5 +47,5 @@
 | Profile Sidebar/Work Preference | Portfolio Link | Text | Yes | Portfolio Link | Enter the Portfolio Link Portfolio Link, allow users to add links to GitHub, LinkedIn, or a personal website. | One profile web address | One profile web address |
 | Profile Sidebar/Work Preference | Preferred Work Type | Dropdown | Yes | Preferred Work Type | Select The specific work type from the dropdown list | 1 Selection | 1 Selection |
 | Profile Sidebar/Work Preference | Services Categories | Dropdown | Yes | Services Categories | Select The specific service category from the dropdown list | 1 Selection | 1 Selection |
-| Profile Sidebar/Work Preference | Hourly/Fixed Rate Preference | Number | Yes | Hourly Rate | Enter the Hourly/Fixed Rate(Number only) | 1 number (Value should be > 0) | 5 number (Value should be > 0) |
+| Profile Sidebar/Work Preference | Hourly/Fixed Rate Preference | Number | Yes | Hourly Rate | Enter the Hourly/Fixed Rate allow users to enter decimal values (e.g., 5.55 ) | 1 number (Value should be > 0) 2 decimal values | 5 number (Value should be > 0) 2 decimal values |
 | Profile Sidebar/Documents | Documents | File Upload | Yes | Edit & Delete docs | Only valid PDF format are allowed | 50 KB per upload | 350 KB per upload |
