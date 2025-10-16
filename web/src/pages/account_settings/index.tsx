@@ -1,12 +1,11 @@
 import { icons } from "@/config/icons";
-import type { DrawerMenuProps, MenuItems } from "@/shared/components/Drawer";
 import React from "react";
 import { FaChevronRight } from "react-icons/fa";
 import LogoutConfirmationPopup from "../auth/LogoutConfirmationPopup";
+import type { DrawerMenuProps, MenuItems } from "@/shared/components/Drawer";
 
 const AccountSettings: React.FC<DrawerMenuProps> = ({
     onMenuItemClick,
-    onClose,
 }) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const menuItems: MenuItems[] = [

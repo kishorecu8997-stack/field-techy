@@ -73,7 +73,6 @@ const RootLayout = (): JSX.Element => {
         </footer>
         <Footer />
       </div>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </>
   );
 };
