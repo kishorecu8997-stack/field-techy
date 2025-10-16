@@ -7,8 +7,9 @@
 
 import React from "react";
 import DrawerHeader from "@/shared/components/DrawerHeader";
-import { experienceData } from "@/dummyData";
+import { experienceData } from "@/dummy_data";
 import { WorkExperienceList } from "./components/WorkExperienceList";
+import { toast } from "react-toastify";
 
 /**
  * Props for components rendered within a drawer that require navigation and close actions.
@@ -60,7 +61,7 @@ const Experiences: React.FC<DrawerMenuProps> = ({
         onAddAction={() => onMenuItemClick(`addExperiences`)}
         onEditAction={(id) => onMenuItemClick(`editExperiences-${id}`)}
         // TODO: Implement a proper confirmation modal for deletion instead of a browser alert.
-        onDeleteAction={(id) => alert(`Delete experience at index ${id}`)}
+        onDeleteAction={(id) => toast.info(`Delete experience at index ${id}`)}
       />
     </div>
   );

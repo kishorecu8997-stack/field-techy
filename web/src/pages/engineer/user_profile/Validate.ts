@@ -5,23 +5,6 @@
 /**
  * Validate name (first/last) - only letters allowed (no spaces), length 8-35
  */
-// export const validateName = (value: string) => {
-//   // length requirement: 2 to 50 characters
-//   const raw = value || "";
-
-//   // Reject any whitespace (leading/trailing/internal)
-//   if (/\s/.test(raw)) return `${value} must not contain spaces`;
-
-//   // Only letters allowed (A-Z)
-//   if (!/^[A-Za-z]+$/.test(raw))
-//     return `${value} must contain only alphabetic characters (no numbers or special characters)`;
-
-//   // length requirement: 2 to 50 characters
-//   if (raw.length < 2) return `${value} must be at least 2 characters`;
-//   if (raw.length > 50) return `${value} must not exceed 50 characters`;
-
-//   return true;
-// };
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -254,8 +237,9 @@ export const validatePassingYear = (value: string) => {
   const yearStr = (value || "").trim();
   if (!yearStr) return "Passing Year is required";
 
-  if (!/^\d{4}$/.test(yearStr)) {
-    return "Please enter a valid 4-digit year";
+  // Ensure the value contains only digits and is exactly 4 characters long.
+  if (!/^\d{4}$/.test(yearStr) || /\D/.test(yearStr)) {
+    return "Passing year must be a 4-digit number without symbols or letters";
   }
 
   const year = parseInt(yearStr, 10);
@@ -298,19 +282,99 @@ export const validateDateRange = (
   return true;
 };
 
+// export const validateRate = (value: string) => {
+//   const v = (value || "").trim();
+
+//   if (!v) return "Rate is required";
+
+//   // Disallow '+' or any non-numeric characters except '.' for decimals
+//   if (/[^\d.]/.test(v)) {
+//     return "Rate must contain numbers only and no symbols";
+//   }
+
+//   // Accept integers or decimals with up to 2 digits after the decimal point
+//   if (!/^\d+(\.\d{1,2})?$/.test(v)) {
+//     return "Rate must be a number with up to 2 decimal places";
+//   }
+
+//   const num = Number(v);
+//   if (isNaN(num)) return "Rate must be a valid number";
+//   if (num < 1) return "Rate must be greater than or equal to 1";
+//   if (num >= 100000) return "Rate must not exceed 5 digits before decimal";
+
+//   return true;
+// };
+
 export const validateRate = (value: string) => {
   const v = (value || "").trim();
 
   if (!v) return "Rate is required";
-  if (!/^\d+$/.test(v)) return "Rate must be a number";
-  if (v.length < 1) return "Rate must have at least 1 digit";
-  if (v.length > 5) return "Rate must not exceed 5 digits";
+
+  // Block +, -, e, E and other non-numeric characters explicitly
+  if (/[+\-eE]/.test(v) || /[^\d.]/.test(v.replace('.', ''))) {
+    return "Rate must be a valid number and cannot contain symbols and letters";
+  }
+
+  // Only numbers with up to 5 digits before decimal, optional decimal with up to 2 digits
+  if (!/^\d{1,5}(\.\d{1,2})?$/.test(v)) {
+    return "Rate must be a number with up to 5 digits before the decimal and up to 2 decimal places";
+  }
 
   const num = Number(v);
-  if (num <= 0) return "Rate must be greater than 0";
+  if (isNaN(num)) return "Rate must be a valid number";
+  if (num < 1) return "Rate must be greater than or equal to 1";
 
   return true;
+};  
+
+
+
+export const validatePortfolioLink = (value: string) => {
+  const v = (value || "").trim();
+
+  if (!v) return "Portfolio link is required";  
+  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+
+  try {
+    const url = new URL(v);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "Portfolio link must start with http:// or https://";
+    }
+
+    const hostname = url.hostname.toLowerCase();
+    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+
+
+    const isGitHubProfile =
+      (hostname.includes("github.com") && /^\/[^\/]+$/.test(pathname));
+
+    const isLinkedInProfile =
+      (hostname.includes("linkedin.com") &&
+        /^\/in\/[^\/]+$/.test(pathname)); // LinkedIn profiles follow /in/username
+
+    const isPersonalSite =
+      !hostname.endsWith(".zip") &&
+      !hostname.endsWith(".exe") &&
+      !hostname.includes("malware") &&
+      !hostname.includes("phishing") &&
+      !hostname.includes("adult") &&
+      !hostname.includes("torrent") &&
+      pathname === ""; // homepage only
+
+    const isAllowed =
+      isGitHubProfile || isLinkedInProfile || isPersonalSite;
+
+    if (!isAllowed) {
+      return "Only GitHub, LinkedIn profile pages, or safe personal homepages are allowed";
+    }
+
+    return true;
+  } catch {
+    return "Portfolio link must be a valid URL";
+  }
 };
+
 
 export default {
   validateName,
@@ -325,4 +389,5 @@ export default {
   validatePassingYear,
   validateDateRange,
   validateRate,
+  validatePortfolioLink,
 };

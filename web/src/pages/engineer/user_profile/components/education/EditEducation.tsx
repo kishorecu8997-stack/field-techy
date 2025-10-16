@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validatePassingYear } from "../../Validate";
-import { educationFieldData } from "@/dummyData";
+import { educationFieldData } from "@/dummy_data";
 
 /**
  * Shape of the form data used by the Edit Education form.
@@ -130,7 +130,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ onClose, onMenuItemClick,
             options={educationFieldData.majors.map((m) => ({ value: m.key, label: m.label }))}
             required
           />
-          <InputField type="number"
+          <InputField           
             name="passingYear"
             placeholder="Passing Year"
             maxLength={4}

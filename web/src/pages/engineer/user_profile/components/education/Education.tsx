@@ -5,9 +5,10 @@
  * edit, or delete entries by invoking callbacks.
  */
 import React from "react";
-import educationData from "@/dummyData/education.json";
+import educationData from "@/dummy_data/education.json";
 import DrawerHeader from "@/shared/components/DrawerHeader";
 import DrawerCard from "@/shared/components/DrawerCard";
+import { toast } from "react-toastify";
 
 /**
  * Props for the Education component, typically used for components
@@ -46,7 +47,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
         onAddAction={() => onMenuItemClick(`addEducation`)}
         onEditAction={(id) => onMenuItemClick(`editEducation-${id}`)}
         // TODO: Implement a proper confirmation modal for deletion.
-        onDeleteAction={(id) => alert(`Delete education at index ${id}`)}
+        onDeleteAction={(id) => toast.info(`Delete education at index ${id}`)}
       />
     </>
   );

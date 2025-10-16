@@ -11,7 +11,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { educationFieldData } from "@/dummyData";
+import { educationFieldData } from "@/dummy_data";
 import { validatePassingYear } from "../../Validate";
 
 /**
@@ -119,7 +119,7 @@ const AddEducation: React.FC<AddEducationProps> = ({ onClose, onMenuItemClick })
             options={educationFieldData.majors.map((m) => ({ value: m.key, label: m.label }))}
             required
           />
-          <InputField type="number"
+          <InputField           
             name="passingYear"
             placeholder="Passing Year"
             maxLength={4}

@@ -89,7 +89,7 @@ export const SelectField = ({
                         )}
                         <span
                           className={`block truncate ${
-                            !value ? 'text-gray-400 dark:text-gray-500 italic' : ''
+                            !value ? 'text-gray-400 dark:text-gray-500 ' : ''
                           }`}
                         >
                           {value ? selectedOption?.label : placeholder}

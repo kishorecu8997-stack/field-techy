@@ -96,8 +96,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
         <div className="space-y-4">
           {items.map((item) => (
             <div
-              key={item.id as number}
-              className=" "
+              key={item.id as number}              
             >
               <div className="flex justify-between items-start mb-2">
                 {/* Use the first display field as the title (e.g., level, position, name) */}

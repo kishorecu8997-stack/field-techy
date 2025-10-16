@@ -15,8 +15,8 @@ import { CiWallet } from "react-icons/ci";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { preferredWorkTypesData, servicesCategoriesData } from "@/dummyData";
-import { validateRate } from "../../Validate";
+import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
+import { validatePortfolioLink, validateRate } from "../../Validate";
 
 /**
  * @typedef {Object} WorkPreferenceFormData
@@ -99,6 +99,7 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClic
             placeholder="Portfolio Link"
             leftIcon={<FiLink2 className="text-lg text-gray-500" />}
             required
+            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
           <SelectField
             name="preferredWorkTypes"
@@ -122,14 +123,12 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({ onClose, onMenuItemClic
           />
 
           {/* Rate Preference */}
-          <InputField
-            type="number"
+          <InputField            
             name="ratePreference"
             placeholder="Hourly/Fixed Rate Preference"
             leftIcon={<CiWallet className="text-lg text-gray-500" />}
             required    
-            rules={{ validate: (v: string) => validateRate(v) }}
-        
+            rules={{ validate: (v: string) => validateRate(v) }}        
           />
         </div>
 

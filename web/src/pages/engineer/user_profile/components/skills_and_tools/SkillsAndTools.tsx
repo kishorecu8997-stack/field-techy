@@ -8,7 +8,7 @@
 import React from "react";
 import DrawerHeader from "@/shared/components/DrawerHeader";
 import ChipsCard from "@/shared/components/ChipsCard";
-import {jobSkillsData, toolsData} from "@/dummyData";
+import {jobSkillsData, toolsData} from "@/dummy_data";
 
 /**
  * Props for components rendered within a drawer that require navigation and close actions.

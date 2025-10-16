@@ -14,6 +14,9 @@
   { "id": "12", "label": "Yarn" },
   { "id": "13", "label": "Webpack" },
   { "id": "14", "label": "ESLint" },
-  { "id": "15", "label": "Prettier" }
+  { "id": "15", "label": "Prettier" },
+  { "id": "16", "label": "Kubernetes" },
+  { "id": "17", "label": "SSMS" },
+  { "id": "18", "label": "DBeaver" }
 ]
 }

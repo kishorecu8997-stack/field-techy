@@ -45,7 +45,7 @@ export const InputField = ({
   maxLength,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-250",
+  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400",
   showValidationCheck = false,
 }: InputFieldProps) => {
   const { control } = useFormContext();
@@ -112,6 +112,7 @@ export const InputField = ({
                 {...field}
                 id={name}
                 type={type}
+                required={required}
                 placeholder={placeholder || label}
                 {...(typeof minLength === "number" ? { minLength } : {})}
                 {...(typeof maxLength === "number" ? { maxLength } : {})}

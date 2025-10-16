@@ -5,7 +5,7 @@ import {
 } from "react-hook-form";
 import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { AVATARS } from "@/dummyData/avatars";
+import { AVATARS } from "@/dummy_data/avatars";
 
 interface ImageUploadFieldProps {
   name: string;

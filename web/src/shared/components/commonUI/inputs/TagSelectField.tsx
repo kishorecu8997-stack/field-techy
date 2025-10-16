@@ -58,7 +58,11 @@ export const TagSelectField = ({
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
-    required: required ? `${placeholder === "Select a tag..." ? label || name : placeholder} is required` : false,
+    required: required
+      ? `${
+          placeholder === "Select a tag..." ? label || name : placeholder
+        } is required`
+      : false,
     ...rules,
   };
 
@@ -142,7 +146,10 @@ export const TagSelectField = ({
                       leftIcon ? "pl-10" : ""
                     } pr-10 appearance-none`}
                   >
-                    <option value="">{placeholder}</option>
+                    <option value="" disabled hidden>
+                      {placeholder}
+                    </option>
+
                     {availableOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}

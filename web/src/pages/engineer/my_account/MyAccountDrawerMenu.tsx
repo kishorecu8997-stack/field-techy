@@ -150,4 +150,3 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 };
 
 export default MyAccountDrawerMenu;
-``;

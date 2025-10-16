@@ -16,7 +16,7 @@ import {
   designationData,
   workLocationTypeData,
   employmentTypeData,
-} from "@/dummyData";
+} from "@/dummy_data";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
 

@@ -5,14 +5,7 @@ import {
   type RegisterOptions,
 } from "react-hook-form";
 import React, { useState, useEffect } from "react";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
-import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 import { toast } from "react-toastify";
-
-// Set worker once
-if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
-}
 
 interface InputFieldProps {
   name: string;
@@ -95,6 +88,18 @@ export const FileUpload = ({
     );
   };
 
+  // ✅ Lazy load PDF.js to reduce initial bundle size
+  const getPDFJS = async () => {
+    const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf");
+    const pdfWorker = (await import("pdfjs-dist/legacy/build/pdf.worker.min?url")).default;
+
+    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+    }
+
+    return pdfjsLib;
+  };
+
   // ✅ Return both error AND page count
   // ✅ Enhanced: Genuine PDF validation + page count
 const validatePdfPages = async (file: File): Promise<{ error: string | null; pages: number | null }> => {
@@ -120,6 +125,7 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
 
   // ✅ Step 2: Validate structure and page count
   try {
+    const pdfjsLib = await getPDFJS();
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const numPages = pdf.numPages;

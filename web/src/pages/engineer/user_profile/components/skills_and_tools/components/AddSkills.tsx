@@ -11,7 +11,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
-import { skillsData } from "@/dummyData";
+import { skillsData } from "@/dummy_data";
 
 
 /**
@@ -91,7 +91,7 @@ const AddSkills: React.FC<AddSkillsProps> = ({ onClose, onMenuItemClick }) => {
             placeholder="Select Skill Name"
             required
             options={skillOptions}
-            maxTags={10}
+            maxTags={15}
           />
         </div>
 

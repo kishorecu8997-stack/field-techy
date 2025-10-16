@@ -11,7 +11,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/Buttons";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
-import { addEditToolsData } from "@/dummyData";
+import { addEditToolsData } from "@/dummy_data";
 
 /**
  * Defines the shape of the form data for editing tools.
@@ -100,7 +100,7 @@ const EditTools: React.FC<EditToolsProps> = ({ onClose, onMenuItemClick, current
             placeholder="Select Tool Name"
             required
             options={toolOptions}
-            maxTags={10}
+            maxTags={15}
           />
         </div>
 
