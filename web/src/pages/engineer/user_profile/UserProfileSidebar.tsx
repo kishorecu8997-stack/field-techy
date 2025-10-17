@@ -43,7 +43,6 @@ interface DrawerMenuProps {
  */
 const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
-  onClose,
 }) => {
   /**
    * State to control the visibility of the logout confirmation popup.

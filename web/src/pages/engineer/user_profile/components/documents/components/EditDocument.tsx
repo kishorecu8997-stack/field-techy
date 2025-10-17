@@ -1,7 +1,7 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { Button } from "@/shared/components/Buttons";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Defines the shape of the form data for editing a document.

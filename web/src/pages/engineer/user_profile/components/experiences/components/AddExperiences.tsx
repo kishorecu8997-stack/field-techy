@@ -1,8 +1,6 @@
-import React from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm, Controller } from "react-hook-form";
-import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import {
   designationData,
@@ -12,6 +10,7 @@ import {
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -117,7 +116,7 @@ const AddExperiences = () => {
                 minDate={new Date(1970, 0, 1)}
                 maxDate={new Date()}
               />
-              {error && <p className="text-red-600 text-sm">{error.message}</p>}
+              {error && <p className="text-600 text-sm">{error.message}</p>}
             </>
           )}
         />

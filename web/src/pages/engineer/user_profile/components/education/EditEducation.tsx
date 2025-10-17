@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validatePassingYear } from "../../Validate";
 import { educationFieldData } from "@/dummy_data";
 import type { EducationFormData } from "./types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 interface EditEducationProps {
   /** The education data to pre-fill in the form for editing. */

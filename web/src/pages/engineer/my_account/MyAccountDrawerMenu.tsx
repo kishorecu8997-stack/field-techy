@@ -41,7 +41,6 @@ export type MenuItems = {
  */
 const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
-  onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({

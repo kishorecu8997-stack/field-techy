@@ -5,11 +5,11 @@ import { FiLink2 } from "react-icons/fi";
 import { HiOutlineBriefcase } from "react-icons/hi2";
 import { CiWallet } from "react-icons/ci";
 import { useForm } from "react-hook-form";
-import { Button } from "@/shared/components/Buttons";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
 import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.

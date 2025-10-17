@@ -9,6 +9,7 @@ export interface SelectFieldProps {
   placeholder?: string;
   required?: boolean | string;
   options: SelectOption[];
-  isShowLabel?:boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
+  leftIcon?: React.ReactNode;
 }

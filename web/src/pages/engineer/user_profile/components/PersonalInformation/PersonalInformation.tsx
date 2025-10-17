@@ -6,9 +6,9 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { Button } from "@/shared/components/Buttons";
 import { validateAddress, validateEmail, validateName } from "../../Validate";
 import type { EditProfileFormData } from "./types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
