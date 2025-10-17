@@ -76,20 +76,20 @@ interface Country {
   validationKey: "india" | "uk";
 }
 
-interface Option {
-  value: string;
+export interface SelectOption {
+  value: string | number;
   label: string;
 }
 
-interface SelectFieldProps {
+export interface SelectFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  required?: boolean;
-  options?: Option[];
+  required?: boolean | string;
+  options: SelectOption[];
+  isShowLabel?:boolean;
   rules?: RegisterOptions;
 }
-
 interface CountrySelectProps {
   countries: Country[];
   value: string;
