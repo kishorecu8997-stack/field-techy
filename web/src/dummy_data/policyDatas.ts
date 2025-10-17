@@ -179,3 +179,46 @@ export const termsAndCondition: Section[] = [
     content: "We collect only the data necessary to provide and improve our services—such as contact details, job preferences, and transaction history. Your data is never sold to third parties. We use industry-standard security measures to protect your information and comply with applicable data protection regulations including GDPR where relevant."
   }
 ];
+
+export const AboutAppSection: Section[] = [
+      {
+        title: "",
+        content:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates voluptatem provident error dolore vel, laudantium laborum blanditiis veniam. Ducimus, ea?",
+      },
+      {
+        title: "",
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate nesciunt provident ipsum labore quaerat, porro similiqe molestias sequi sed ex harum voluptatum laudantium minima veritatis iusto fugit exercitationem in consectetur nisi veniam eum. Ipsum rerum voluptatum dicta veniam porro modi recusandae laudantium enim mollitia? Eum reiciendis porro exercitationem cum ut.",
+      },
+      {
+        title: "",
+        content:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates voluptatem provident error dolore vel, laudantium laborum blanditiis veniam. Ducimus, ea?",
+      },
+      {
+        title: "",
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate nesciunt provident ipsum labore quaerat, porro similiqe molestias sequi sed ex harum voluptatum laudantium minima veritatis iusto fugit exercitationem in consectetur nisi veniam eum. Ipsum rerum voluptatum dicta veniam porro modi recusandae laudantium enim mollitia? Eum reiciendis porro exercitationem cum ut.",
+      },
+      {
+        title: "",
+        content:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates voluptatem provident error dolore vel, laudantium laborum blanditiis veniam. Ducimus, ea?",
+      },
+      {
+        title: "",
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate nesciunt provident ipsum labore quaerat, porro similiqe molestias sequi sed ex harum voluptatum laudantium minima veritatis iusto fugit exercitationem in consectetur nisi veniam eum. Ipsum rerum voluptatum dicta veniam porro modi recusandae laudantium enim mollitia? Eum reiciendis porro exercitationem cum ut.",
+      },
+      {
+        title: "",
+        content:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates voluptatem provident error dolore vel, laudantium laborum blanditiis veniam. Ducimus, ea?",
+      },
+      {
+        title: "",
+        content:
+          "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate nesciunt provident ipsum labore quaerat, porro similiqe molestias sequi sed ex harum voluptatum laudantium minima veritatis iusto fugit exercitationem in consectetur nisi veniam eum. Ipsum rerum voluptatum dicta veniam porro modi recusandae laudantium enim mollitia? Eum reiciendis porro exercitationem cum ut.",
+      },
+];

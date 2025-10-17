@@ -1,6 +1,9 @@
 import AccountSettings from "@/pages/account_settings";
-import BankAccountList from "@/pages/account_settings/BankAccountList";
+import AddBankDetails from "@/pages/account_settings/bank_details/AddBankDetails";
+import BankAccountList from "@/pages/account_settings/bank_details/BankAccountList";
+import EditBankDetails from "@/pages/account_settings/bank_details/EditBankDetails";
 import ChangePassword from "@/pages/account_settings/ChangePassword";
+import ContactUs from "@/pages/account_settings/contect_us/ContactUs";
 import MyAccountDrawerMenu from "@/pages/my_account";
 
  export  const sectionConfig: Record<
@@ -94,7 +97,7 @@ import MyAccountDrawerMenu from "@/pages/my_account";
       title: "My Earning",
     },
     saved: { component: () => "test", title: "Saved Jobs" },
-    settings: { component: AccountSettings, title: "Account Settings" },
+    settings: { component: AccountSettings, title: "Account Settings", parent: "myAccount" },
     changePassword: {
       component: ChangePassword,
       title: "Change Password",
@@ -102,7 +105,18 @@ import MyAccountDrawerMenu from "@/pages/my_account";
     },
     manageBankAccounts: {
       component: BankAccountList,
-      title: "Manage Bank Accounts",
+      title: " Bank Details",
       parent: "settings",
     },
+    addBankdetails: {
+      component: AddBankDetails,
+      title: "Add Bank Details",
+      parent: "manageBankAccounts",
+    },
+    editBankdetails: {
+      component: EditBankDetails,
+      title: "Edit Bank Details",
+      parent: "manageBankAccounts",
+    },
+    contactUs: { component:  ContactUs, title: "Contact Us", parent: "settings" },
   };

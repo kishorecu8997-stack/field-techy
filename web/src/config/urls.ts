@@ -25,6 +25,7 @@ export const urls = {
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
+      about_app: "about-app",
     },
     auth: {
       login: "login",
@@ -50,6 +51,7 @@ export const absoluteUrls = {
       set_password: `${BASE.AUTH}/set-password`,
       background_verification: `${BASE.AUTH}/background-verification`,
       privacy_policy: `${BASE.AUTH}/policy`,
+      about_app: `${BASE.AUTH}/about-app`,
     },
     home: {
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
@@ -57,6 +59,7 @@ export const absoluteUrls = {
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+      about_app: `${BASE.ENGINEER}/about-app`,
     },
   },
 } as const;

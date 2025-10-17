@@ -10,6 +10,9 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoNotificationsSharp, IoWallet } from "react-icons/io5";
 import { MdContactSupport, MdEmail, MdLock } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
+import { FaPhoneAlt } from "react-icons/fa";
+import { IoHeadsetSharp } from "react-icons/io5";
+import { BiSolidMessageRounded } from "react-icons/bi";
 
 export const icons = {
   bookmark: FaRegBookmark,
@@ -35,4 +38,7 @@ export const icons = {
   lock: MdLock,
   wallet: IoWallet,
   danger: PiWarningOctagonFill,
+  phone: FaPhoneAlt,
+  headset: IoHeadsetSharp,
+  message: BiSolidMessageRounded,
 };

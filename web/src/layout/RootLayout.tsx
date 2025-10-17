@@ -1,4 +1,3 @@
-import Drawer from "@/shared/components/Drawer";
 import Footer from "@/shared/components/Footer";
 import Navbar from "@/shared/components/Navbar";
 import { useEffect, useState, type JSX } from "react";

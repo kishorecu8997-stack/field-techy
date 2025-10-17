@@ -39,6 +39,7 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/privacy_policy/FAQ"));
+const AboutApp = React.lazy(() => import("@/pages/privacy_policy/AboutApp"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -108,6 +109,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
     ],
   },
 

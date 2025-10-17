@@ -39,7 +39,7 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({ onClose, title = "title", o
   };
 
   return (
-    <div className="flex items-center gap-3 mb-6">
+    <div className="flex items-center gap-3 ">
       {onBack ? (
         <button onClick={handleBack} aria-label="Back" className="text-gray-700 hover:text-gray-900">
           <IoChevronBack className="h-6 w-6 cursor-pointer" />
