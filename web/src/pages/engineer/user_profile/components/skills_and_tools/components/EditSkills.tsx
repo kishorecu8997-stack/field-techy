@@ -75,7 +75,7 @@ const EditSkills: React.FC<EditSkillsProps> = ({ currentSkills }) => {
         <TagSelectField
           name="skills"
           label="Skills"
-          isLabelShow={false}
+          isShowLabel={false}
           placeholder="Select Skill Name"
           required
           options={skillOptions}

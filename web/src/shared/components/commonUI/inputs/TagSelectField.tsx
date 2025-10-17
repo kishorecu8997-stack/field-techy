@@ -15,7 +15,7 @@ interface TagOption {
 interface TagSelectFieldProps {
   name: string;
   label?: string;
-  isLabelShow?: boolean;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
   rules?: RegisterOptions;
@@ -33,7 +33,7 @@ interface TagSelectFieldProps {
 export const TagSelectField = ({
   name,
   label,
-  isLabelShow = true,
+  isShowLabel = true,
   placeholder = "Select a tag...",
   required = false,
   rules,
@@ -88,7 +88,7 @@ export const TagSelectField = ({
 
   return (
     <div className={containerClassName}>
-      {isLabelShow && (
+      {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
           {label} {required && <span className="text-red-600">*</span>}
         </label>

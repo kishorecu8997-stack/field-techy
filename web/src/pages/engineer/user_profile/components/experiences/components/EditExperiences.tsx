@@ -79,7 +79,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <SelectField
           label="Designation"
-          isLabelShow={false}
+          isShowLabel={false}
           name="designation"
           placeholder="Designation"
           options={designationData.map((e) => ({
@@ -90,7 +90,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
         />
         <InputField
           label="Employer"
-          isLabelShow={false}
+          isShowLabel={false}
           name="employer"
           placeholder="Employer"
           required
@@ -99,7 +99,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
 
         <SelectField
           label="Work Location Type"
-          isLabelShow={false}
+          isShowLabel={false}
           name="workLocationType"
           placeholder="Work Location Type"
           options={workLocationTypeData.map((e) => ({
@@ -111,7 +111,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
 
         <SelectField
           label="Employment Type"
-          isLabelShow={false}
+          isShowLabel={false}
           name="employmentType"
           placeholder="Employment Type"
           options={employmentTypeData.map((e) => ({
@@ -131,7 +131,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
             <>
               <DatePickerInput
                 label="Start Date"
-                isLabelShow={false}
+                isShowLabel={false}
                 placeholder="Start date"
                 value={field.value}
                 onChange={field.onChange}
@@ -148,7 +148,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
           render={({ field }) => (
             <DatePickerInput
               label="End Date"
-              isLabelShow={false}
+              isShowLabel={false}
               placeholder="End date (optional)"
               value={field.value}
               onChange={(date) => {

@@ -9,7 +9,7 @@ interface InputFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  isLabelShow?: boolean;
+  isShowLabel?: boolean;
   /**
    * Set to true for default required message,
    * or a string for a custom required error message.
@@ -39,7 +39,7 @@ export const InputField = ({
   name,
   label,
   placeholder,
-  isLabelShow = true,
+  isShowLabel = true,
   required = false,
   type = "text",
   rules,
@@ -76,7 +76,7 @@ export const InputField = ({
 
   return (
     <div className={containerClassName}>
-      {isLabelShow && (
+      {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}

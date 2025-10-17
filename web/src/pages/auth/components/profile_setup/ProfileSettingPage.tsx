@@ -1,12 +1,12 @@
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { ImageUploaderField } from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import { useForm } from "react-hook-form";
-import ProfileSetup from "./ProfileSetup";
-import {assetsConfig} from "@/assets";
-import { Button } from "@/shared/components/Buttons";
 import { useNavigate } from "react-router-dom";
-import { urls } from "@/config/urls";
 import type { ProfileSetupData } from "../types";
+import ProfileSetup from "./ProfileSetup";
 
 
 /**
@@ -42,7 +42,7 @@ const ProfileSettingPage = () => {
   });
 
   const handleSubmit = () => {    
-    navigate(urls.auth.background_verification);
+    navigate(absoluteUrls.engineer.auth.background_verification);
   };
 
   const handleBack = () => {

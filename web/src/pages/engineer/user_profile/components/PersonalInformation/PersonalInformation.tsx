@@ -50,7 +50,7 @@ const PersonalInformation: React.FC = ({}) => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <InputField
           label="Full Name"
-          isLabelShow={false}
+          isShowLabel={false}
           name="fullName"
           type="text"
           placeholder="Full Name"
@@ -61,7 +61,7 @@ const PersonalInformation: React.FC = ({}) => {
         <PhoneInputField name="phoneNumber" required />
         <InputField
           label="Email Address"
-          isLabelShow={false}
+          isShowLabel={false}
           name="emailId"
           type="email"
           placeholder="Enter Email"
@@ -71,7 +71,7 @@ const PersonalInformation: React.FC = ({}) => {
         />
         <InputField
           label="Address Location"
-          isLabelShow={false}
+          isShowLabel={false}
           name="addressLocation"
           type="text"
           placeholder="Address"

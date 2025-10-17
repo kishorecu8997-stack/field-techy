@@ -53,7 +53,7 @@ const AddSkills = () => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <TagSelectField
           label="Skills"
-          isLabelShow={false}
+          isShowLabel={false}
           name="skills"
           placeholder="Select Skill Name"
           required

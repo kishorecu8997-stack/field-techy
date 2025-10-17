@@ -1,36 +1,77 @@
 import Drawer from "@/shared/components/Drawer";
-import Header from "@/shared/components/Header";
-import { useState, type JSX } from "react";
+import Footer from "@/shared/components/Footer";
+import Navbar from "@/shared/components/Navbar";
+import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
 /**
- * Root layout component for the application.
+ * Root layout component that wraps all authenticated/engineer-facing pages.
+ * Provides a consistent structure including:
+ * - A sticky header with scroll-aware styling (transparent on top, solid when scrolled)
+ * - A responsive navigation bar with mobile drawer toggle
+ * - Main content area via React Router's `<Outlet />`
+ * - Custom footer section followed by a shared `<Footer />` component
+ * - A side drawer for mobile navigation
  *
- * Provides a centered container with responsive max-widths
- * and renders nested routes via `Outlet`.
+ * Uses `useEffect` to listen for scroll events and dynamically update header appearance.
+ * Optimized with passive event listener for scroll performance.
  *
- * @component
- * @returns {JSX.Element} The layout wrapper for child routes.
+ * @returns {JSX.Element} The complete page layout with header, main content, and footer.
+ *
+ * @example
+ * <RootLayout>
+ *   <MyJobsPage />
+ * </RootLayout>
  */
 const RootLayout = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="bg-white dark:bg-gray-800 text-gray-900">
-      <div className=" xl:container w-full mx-auto h-screen flex flex-col  dark:text-gray-100 transition-colors p-1">
-        <div className="flex-1 overflow-auto">
-          <Header
+    <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-white dark:bg-gray-800 shadow-sm"
+            : "bg-transparent dark:bg-transparent shadow-none"
+        }`}
+      >
+        <div className="xl:container mx-auto px-6">
+          <Navbar
             onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
             isDrawerOpen={isDrawerOpen}
           />
-          <Drawer
-            isOpen={isDrawerOpen}
-            onClose={() => setIsDrawerOpen(false)}
-          />
-          <div className="p-4">
-            <Outlet />
+        </div>
+      </header>
+
+      <main className="flex-1 container mx-auto px-6 py-4">
+        <Outlet />
+      </main>
+
+      <footer className="bg-teal-900 text-white py-12 mt-12">
+        <div className="container mx-auto px-6 flex flex-wrap justify-center">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-4">Finding a Job is Easy</h2>
+            <div className="mt-6 max-w-prose">
+              It is a long established fact that a reader will be distracted by
+              the readable content of a page when looking at its layout.
+            </div>
           </div>
         </div>
-      </div>
+      </footer>
+      <Footer />
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   );
 };

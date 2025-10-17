@@ -47,7 +47,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <SelectField
           label="Education Level"
-          isLabelShow={false}
+          isShowLabel={false}
           name="educationLevel"
           placeholder="Education Level"
           options={educationFieldData.educationLevels.map((e) => ({
@@ -59,7 +59,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
 
         <SelectField
           label="Course"
-          isLabelShow={false}
+          isShowLabel={false}
           name="course"
           placeholder="Course"
           options={educationFieldData.courses.map((c) => ({
@@ -71,7 +71,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
 
         <SelectField
           label="University"
-          isLabelShow={false}
+          isShowLabel={false}
           name="university"
           placeholder="University"
           options={educationFieldData.universities.map((u) => ({
@@ -83,7 +83,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
 
         <SelectField
           label="Major Subject"
-          isLabelShow={false}
+          isShowLabel={false}
           name="majorSubject"
           placeholder="Major Subject"
           options={educationFieldData.majors.map((m) => ({
@@ -94,7 +94,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
         />
         <InputField
           label="Passing Year"
-          isLabelShow={false}
+          isShowLabel={false}
           name="passingYear"
           placeholder="Passing Year"
           required

@@ -13,7 +13,7 @@ interface DatePickerInputProps {
   /** Optional label to display above the input field. */
   label?: string;
   /** The currently selected date. Can be `null` if no date is selected. */
-  isLabelShow?: boolean;
+  isShowLabel?: boolean;
   value: Date | null;
   /** The minimum selectable date. Dates before this will be disabled. */
   minDate?: Date;
@@ -38,7 +38,7 @@ interface DatePickerInputProps {
  */
 export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   label,
-  isLabelShow = true,
+  isShowLabel = true,
   value,
   minDate,
   maxDate,
@@ -301,7 +301,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
-      {isLabelShow && (
+      {isShowLabel && (
         <label className="block text-base font-medium text-gray-700 dark:text-gray-300 mb-1">
           {label}
         </label>

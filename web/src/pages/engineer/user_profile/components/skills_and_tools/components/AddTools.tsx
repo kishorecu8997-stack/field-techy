@@ -58,7 +58,7 @@ const AddTools = () => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <TagSelectField
           label="Tools"
-          isLabelShow={false}
+          isShowLabel={false}
           name="tools"
           placeholder="Select Tool Name"
           required

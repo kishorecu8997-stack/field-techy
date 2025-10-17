@@ -60,7 +60,7 @@ const EditTools: React.FC<EditToolsProps> = ({ currentTools }) => {
         <TagSelectField
           name="tools"
           label="Tools"
-          isLabelShow={false}
+          isShowLabel={false}
           placeholder="Select Tool Name"
           required
           options={toolOptions}

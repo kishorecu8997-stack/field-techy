@@ -51,7 +51,7 @@ const WorkPreference = () => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <InputField
           label="Portfolio Link"
-          isLabelShow={false}
+          isShowLabel={false}
           name="portfolioLink"
           type="text"
           placeholder="Portfolio Link"
@@ -61,7 +61,7 @@ const WorkPreference = () => {
         />
         <SelectField
           label="Preferred Work Types"
-          isLabelShow={false}
+          isShowLabel={false}
           name="preferredWorkTypes"
           placeholder="Preferred Work Type"
           leftIcon={<RiTodoLine className="text-lg text-gray-500" />}
@@ -73,7 +73,7 @@ const WorkPreference = () => {
         />
         <SelectField
           label="Services Categories"
-          isLabelShow={false}
+          isShowLabel={false}
           name="servicesCategories"
           placeholder="Services Categories"
           leftIcon={<HiOutlineBriefcase className="text-lg text-gray-500" />}
@@ -86,7 +86,7 @@ const WorkPreference = () => {
 
         <InputField
           label="Rate Preference"
-          isLabelShow={false}
+          isShowLabel={false}
           name="ratePreference"
           placeholder="Hourly/Fixed Rate Preference"
           leftIcon={<CiWallet className="text-lg text-gray-500" />}
