@@ -128,7 +128,7 @@ The QA team must be granted the following access and permissions:
 
 These test cases provide the detailed, step-by-step instructions for execution and are the single source of truth for test validation.
 
-### 7.1 Web Auth Module Flow Test Cases
+## 7.1 Input Validation and UI Refinements Flow Test Cases
 
 ### 7.1.1 User Login Functionality
 
@@ -218,133 +218,393 @@ These test cases provide the detailed, step-by-step instructions for execution a
 | 3    | Click "Verify" button | Form submission is blocked |
 | 4    | Check system state | User remains unauthenticated, no session token is set |
 
-## 7.2 Input Validation and UI Flow Test Cases
+7.1.6 Test Case ID: TC_06
 
-### 7.2.1 Profile Setup - Personal Information Validation
+- **Test Scenario**: New password meets all complexity requirements  
+- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data**:
+    - New password: SecureP@ss123  
+    - Confirm password: SecureP@ss123  
 
-7.2.1 Test Case ID: TC_01
-- **Test Scenario**: Full Name field accepts alphabets only with spaces (max 50 characters)
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to password setup page | Password form displays with new and confirm password fields |
+| 2 | Enter `SecureP@ss123` in New password field | Field accepts input without validation errors |
+| 3 | Enter `SecureP@ss123` in Confirm password field | Field accepts input without validation errors |
+| 4 | Click **"Save"** button | Form submits successfully |
 
+
+- **Test Scenario**: New password does not match confirm password  
+- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data**:
+    - New password: SecureP@ss123  
+    - Confirm password: SecureP@ss456  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to password setup page | Password form displays with new and confirm password fields |
+| 2 | Enter `SecureP@ss123` in New password field | Field accepts input without validation errors |
+| 3 | Enter `SecureP@ss456` in Confirm password field | Error message appears: "Password must match with the password in the previous field" |
+| 4 | Click **"Save"** button | Form submission is blocked |
+
+ 
+- **Test Scenario**: New password length below minimum limit  
+- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data**:
+     - New password:  P@ss1 (7 characters - below minimum)  
+     - Confirm password: P@ss1  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to password setup page | Password form displays with new and confirm password fields |
+| 2 | Enter `P@ss1` in New password field | Error message appears: "Password must be at least 8 characters" |
+| 3 | Enter `P@ss1` in Confirm password field | Password field accepts input without validation errors |
+| 4 | Click **"Save"** button | Form submission is blocked |
+
+
+
+### 7.2.1 Profile Setup Functionality
+
+7.2.1 Test Case ID: 01 <br>
+- **Test Scenario**:First Name field rejects special characters  
 - **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
 - **Test Data**:  
-  - Full Name: John Smith (valid)  
-  - Full Name: John@Doe (invalid - contains special character)  
-  - Full Name: J (invalid - below minimum)  
-  - Full Name: Johnathan Michael Smith (valid - maximum length)  
+  - First Name: John@Doe (contains special character)
 
-| Step | Action | Expected Outcome |
-| ---- | ------ | ---------------- |
+| Step | Action | Expected Result |
+|------|---------|----------------|
 | 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
-| 2 | Enter `John Smith` in Full Name field | Field accepts input without validation errors |
-| 3 | Enter `John@Doe` in Full Name field | Error message appears: "Only alphabets and spaces allowed" |
-| 4 | Enter `J` in Full Name field | Error message appears: "Name must be at least 2 characters" |
-| 5 | Enter `Johnathan Michael Smith` in Full Name field | Field accepts input without validation errors |
-| 6 | Click "Save" button | Form submits successfully if all fields are valid |
+| 2 | Enter `John@Doe` in First Name field | Error message appears: "Special characters and numbers not allowed" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
 
 
 7.2.2 Test Case ID: TC_02
-- **Test Scenario**: Address field accepts letters, spaces, numbers and special characters (`/` ,`,`, `.` ,`-`, `#`) with 20–50 character limit
+- **Test Scenario:** First Name field rejects input below minimum length  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **First Name:** J (1 character - below minimum)
 
-- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
-- **Test Data**:  
-  - Address: 123 Main St, Suite #5 (valid)  
-  - Address: 123 Main St!@# (invalid - contains disallowed special characters)  
-  - Address: 123 Main St (valid - minimum length)  
-  - Address: 123 Main Street, Apartment 5, Building B, City Center (valid - maximum length)  
-
-| Step | Action | Expected Outcome |
-| ---- | ------ | ---------------- |
+| Step | Action | Expected Result |
+|------|---------|----------------|
 | 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
-| 2 | Enter `123 Main St, Suite #5` in Address field | Field accepts input without validation errors |
-| 3 | Enter `123 Main St!@#` in Address field | Error message appears: "Only letters, spaces, numbers and (`/` ,`,`, `.` ,`-`, `#`) allowed" |
-| 4 | Enter `123 Main St` in Address field | Field accepts input without validation errors |
-| 5 | Enter `123 Main Street, Apartment 5, Building B, City Center` in Address field | Field accepts input without validation errors |
-| 6 | Click "Save" button | Form submits successfully if all fields are valid |
-
-
-### 7.2.2 Education Section Validation
-
-7.2.2 Test Case ID: TC_01
-- **Test Scenario**: Passing Year field accepts 4-digit numbers between 1970 and current year (2025)
-
-- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
-- **Test Data**:  
-  - Passing Year: 1970 (valid - minimum)  
-  - Passing Year: 2025 (valid - maximum)  
-  - Passing Year: 1969 (invalid - below minimum)  
-  - Passing Year: 2026 (invalid - above maximum)  
-  - Passing Year: abcd (invalid - non-numeric)  
-
-| Step | Action | Expected Outcome |
-| ---- | ------ | ---------------- |
-| 1 | Navigate to education section in profile setup | Education form displays with passing year field |
-| 2 | Enter `1970` in Passing Year field | Field accepts input without validation errors |
-| 3 | Enter `2025` in Passing Year field | Field accepts input without validation errors |
-| 4 | Enter `1969` in Passing Year field | Error message appears: "Passing year must be between 1970 and 2025" |
-| 5 | Enter `2026` in Passing Year field | Error message appears: "Passing year must be between 1970 and 2025" |
-| 6 | Enter `abcd` in Passing Year field | Error message appears: "Passing year must contain only digits" |
-| 7 | Click "Save" button | Form submits successfully if all fields are valid |
+| 2 | Enter `J` in First Name field | Error message appears: "First name must be at least 2 characters" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
 
 
 
-### 7.2.3 Experience Section Validation
+7.2.3 Test Case ID: TC_03
+- **Test Scenario:** First Name field accepts input within valid length range  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **First Name:** Johnathan (valid - 9 characters)
 
-7.2.3 Test Case ID: TC_01
-- **Test Scenario**: Employer field accepts letters, spaces, numbers and special characters (& - / .) with 4–50 character limit
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Enter `Johnathan` in First Name field | Field accepts input without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
 
-- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
-- **Test Data**:  
-  - Employer: Tech Company Inc. (valid)  
-  - Employer: Tech@Company (invalid - contains disallowed special character)  
-  - Employer: ABC (invalid - below minimum)  
-  - Employer: Technology Solutions Company Limited (valid - maximum length)  
 
-| Step | Action | Expected Outcome |
-| ---- | ------ | ---------------- |
+7.2.4 Test Case ID: TC_04
+- **Test Scenario:** Address field rejects invalid special characters  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Address:** 123 Main St!@# (contains disallowed special characters)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Enter `123 Main St!@#` in Address field | Error message appears: "Only letters, spaces, numbers and ( `/ , . - #` ) allowed" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
+
+7.2.5 Test Case ID: TC_05
+- **Test Scenario:** Address field rejects input below minimum length  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Address:** 123 (below minimum)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Enter `123` in Address field | Error message appears: "Address must be at least 6 characters" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
+
+7.2.6 Test Case ID: TC_06 
+- **Test Scenario:** Address field accepts input within valid length range  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Address:** 123 Main Street, Apartment 5 (valid - 28 characters)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Enter address in Address field | Field accepts input without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
+
+7.2.7 Test Case ID: TC_07  
+- **Test Scenario:** Indian Postal Code requires 6 numeric characters  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Country:** India  
+  - **Postal Code:** 110001 (valid)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select "India" from Country dropdown | Country field is set to India |
+| 3 | Enter `110001` in Postal Code field | Field accepts input without validation errors |
+| 4 | Check system state | Form can be submitted if all other fields are valid |
+
+7.2.8 Test Case ID: TC_08  
+- **Test Scenario:** Indian Postal Code rejects non-numeric characters  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Country:** India  
+  - **Postal Code:** 11A001 (contains letter)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select "India" from Country dropdown | Country field is set to India |
+| 3 | Enter `11A001` in Postal Code field | Error message appears: "Postal code must be 6 numerical characters for India" |
+| 4 | Check system state | Form cannot be submitted until field is corrected |
+
+7.2.9 Test Case ID: TC_09  
+- **Test Scenario:** UK Postal Code requires 6–8 alphanumeric characters with space  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Country:** UK  
+  - **Postal Code:** SW1A 1AA (valid)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select "UK" from Country dropdown | Country field is set to UK |
+| 3 | Enter `SW1A 1AA` in Postal Code field | Field accepts input without validation errors |
+| 4 | Check system state | Form can be submitted if all other fields are valid |
+
+7.2.10 Test Case ID: TC_10  
+- **Test Scenario:** UK Postal Code rejects invalid format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Country:** UK  
+  - **Postal Code:** SW1A1AA (no space)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select "UK" from Country dropdown | Country field is set to UK |
+| 3 | Enter `SW1A1AA` in Postal Code field | Error message appears: "Postal code must be 6–8 alphanumeric characters with 1 space allowed for UK" |
+| 4 | Check system state | Form cannot be submitted until field is corrected |
+
+7.2.11 Test Case ID: TC_11  
+- **Test Scenario:** Profile image upload accepts valid file formats  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Profile Image:** profile.jpg (200KB)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select `profile.jpg` for upload | File uploads successfully without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
+
+7.2.12 Test Case ID: TC_12  
+- **Test Scenario:** Profile image upload rejects invalid file format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Profile Image:** profile.pdf
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select `profile.pdf` for upload | Error message appears: "Only valid JPEG, JPG and PNG format are allowed" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+7.2.13 Test Case ID: TC_13  
+- **Test Scenario:** Profile image upload rejects file below minimum size  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Profile Image:** profile_small.jpg (45KB)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select `profile_small.jpg` for upload | Error message appears: "Image must be at least 50KB" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+7.2.14 Test Case ID: TC_14  
+- **Test Scenario:** Profile image upload rejects file above maximum size  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Profile Image:** profile_large.jpg (355KB)
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to profile setup page | Profile setup form displays with personal information section |
+| 2 | Select `profile_large.jpg` for upload | Error message appears: "Image cannot exceed 350KB" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+
+### 7.3.1 Experience Details Functionality
+
+7.3.1 Test Case ID: TC_01
+- **Test Scenario:** Current Designation field rejects special characters  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Current Designation:** Senior@Engineer (contains special character)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with designation field |
+| 2 | Enter `Senior@Engineer` in Current Designation field | Error message appears: "Only letters and spaces allowed" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
+
+
+7.3.2 Test Case ID: TC_02
+- **Test Scenario:** Current Designation field rejects input below minimum length  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Current Designation:** SE (2 characters - minimum valid)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with designation field |
+| 2 | Enter `SE` in Current Designation field | Field accepts input without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
+
+
+7.3.3 Test Case ID: TC_03
+- **Test Scenario:** Company/Employer field rejects invalid special characters  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Company/Employer:** Tech@Company (contains disallowed special character)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
 | 1 | Navigate to experience section in profile setup | Experience form displays with employer field |
-| 2 | Enter `Tech Company Inc.` in Employer field | Field accepts input without validation errors |
-| 3 | Enter `Tech@Company` in Employer field | Error message appears: "Only letters, spaces, numbers and & - / . allowed" |
-| 4 | Enter `ABC` in Employer field | Error message appears: "Employer name must be at least 4 characters" |
-| 5 | Enter `Technology Solutions Company Limited` in Employer field | Field accepts input without validation errors |
-| 6 | Click "Save" button | Form submits successfully if all fields are valid |
+| 2 | Enter `Tech@Company` in Company/Employer field | Error message appears: "Only letters, spaces, numbers and `& - / .` allowed" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
+
+7.3.4 Test Case ID: TC_04
+- **Test Scenario:** Company/Employer field rejects input below minimum length  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Company/Employer:** ABC (3 characters - below minimum)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with employer field |
+| 2 | Enter `ABC` in Company/Employer field | Error message appears: "Company/Employer must be at least 4 characters" |
+| 3 | Check system state | Form cannot be submitted until field is corrected |
+
+
+7.3.5 Test Case ID: TC_05
+- **Test Scenario:** Resume/CV upload accepts valid file format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Resume:** resume.pdf (200KB)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with resume upload field |
+| 2 | Select `resume.pdf` for upload | File uploads successfully without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
+
+
+7.3.6 Test Case ID: TC_06
+- **Test Scenario:** Resume/CV upload rejects invalid file format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Resume:** resume.jpg  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with resume upload field |
+| 2 | Select `resume.jpg` for upload | Error message appears: "Only valid PDF format are allowed" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+7.3.7 Test Case ID: TC_07 
+- **Test Scenario:** Resume/CV upload rejects file below minimum size  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Resume:** resume_small.pdf (45KB)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with resume upload field |
+| 2 | Select `resume_small.pdf` for upload | Error message appears: "File must be at least 50KB" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+7.3.8 Test Case ID: TC_08
+- **Test Scenario:** Resume/CV upload rejects file above maximum size  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Resume:** resume_large.pdf (355KB)  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to experience section in profile setup | Experience form displays with resume upload field |
+| 2 | Select `resume_large.pdf` for upload | Error message appears: "File cannot exceed 350KB" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
 
 
 
-### 7.2.4 Document Upload and Image Validation
+### 7.4.1 Background Verification Functionality
 
-7.2.4 Test Case ID: TC_01
-- **Test Scenario**: Document and Image upload accepts only PDF,JPG,JPEG and PNG files with 50KB–350KB size limit
+7.4.1 Test Case ID: TC_01
+- **Test Scenario:** Government ID upload accepts valid PDF format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Government ID:** id_card.pdf (200KB)  
 
-- **Environment**: Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
-- **Test Data**:  
-  - Valid file: `document.pdf` (200KB)
-  - Valid image: `image.jpg` (200KB)
-  - Invalid file type: `image.pdf`
-  - Invalid file size: `small.pdf` (45KB)  
-  - Invalid file size: `large.pdf` (355KB)  
-  - Invalid image size: `small.jpeg` (45KB)  
-  - Invalid image size: `large.png` (355KB) 
-
-| Step | Action | Expected Outcome |
-| ---- | ------ | ---------------- |
-| 1 | Navigate to Documents section in profile setup | Documents form displays with file upload field |
-| 2 | Select `document1.pdf` (200KB) for upload | File uploads successfully without validation errors |
-| 3 | Select `document.jpg` for upload | Error message appears: "Only PDF files are allowed" |
-| 4 | Select `document.pdf` (45KB) for upload | Error message appears: "File size must be at least 50KB" |
-| 5 | Select `documentlarge.pdf` (355KB) for upload | Error message appears: "File size must be no more than 350KB" |
-| 6 | Click "Next" button | Form submits successfully if all fields are valid |
-| 1 | Navigate to image section in Basic details | Images form displays with profile picture upload field |
-| 2 | Select `image.jpg` (200KB) for upload | Image uploads successfully without validation errors |
-| 3 | Select `image1.pdf` for upload | Error message appears: "Only JPG,JPEG and PNG  are allowed" |
-| 4 | Select `image1.jpeg` (45KB) for upload | Error message appears: "File size must be at least 50KB" |
-| 5 | Select `image1.png` (355KB) for upload | Error message appears: "File size must be no more than 350KB" |
-| 6 | Click "Next" button | Form submits successfully if all fields are valid |
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to background verification section | Background verification form displays with document upload fields |
+| 2 | Select `id_card.pdf` for Government ID upload | File uploads successfully without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
 
 
+7.4.2 Test Case ID: TC_02
+- **Test Scenario:** Government ID upload rejects invalid file format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Government ID:** id_card.jpg  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to background verification section | Background verification form displays with document upload fields |
+| 2 | Select `id_card.jpg` for Government ID upload | Error message appears: "Only valid PDF format are allowed" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
 
 
+7.4.3 Test Case ID: TC_03
+- **Test Scenario:** Certificate upload accepts valid PDF format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Certificate:** certificate.pdf (200KB)  
 
-## 7.3 Test Case Design Techniques Used
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to background verification section | Background verification form displays with document upload fields |
+| 2 | Select `certificate.pdf` for Certificate upload | File uploads successfully without validation errors |
+| 3 | Check system state | Form can be submitted if all other fields are valid |
+
+
+7.4.4 Test Case ID: TC_04
+- **Test Scenario:** Certificate upload rejects invalid file format  
+- **Environment:** Any browser (Chrome, Firefox, Edge) on desktop or mobile device  
+- **Test Data:**  
+  - **Certificate:** certificate.jpg  
+
+| Step | Action | Expected Result |
+|------|---------|----------------|
+| 1 | Navigate to background verification section | Background verification form displays with document upload fields |
+| 2 | Select `certificate.jpg` for Certificate upload | Error message appears: "Only valid PDF format are allowed" |
+| 3 | Check system state | Form cannot be submitted until valid file is selected |
+
+
+### 7.2 Test Case Design Techniques Used
 
 ### Boundary Value Analysis (BVA)
 Applied to fields with defined input limits to ensure that the system behaves correctly at the boundaries of input ranges.
@@ -355,7 +615,6 @@ Applied to fields with defined input limits to ensure that the system behaves co
 - Testing **Password** with 7, 8, and 9 characters to confirm minimum length handling.
 - Testing **Document upload** with file sizes of 49KB, 50KB, 349KB, 350KB, and 351KB.
 
----
 
 ### Equivalence Partitioning
 Divides input data into valid and invalid partitions to reduce the number of test cases while ensuring good coverage.
@@ -374,7 +633,6 @@ Divides input data into valid and invalid partitions to reduce the number of tes
   - One invalid file type (e.g., `pdf`)
 
 
----
 
 ### State Transition Testing
 Used to validate the behavior of the system as it moves between different states, ensuring transitions are valid and correct actions are triggered.
@@ -385,129 +643,83 @@ Used to validate the behavior of the system as it moves between different states
 
 
 
-## 7.4 Decision Table with Detailed Explanations:
+### 7.3 Decision Table with Detailed Explanations:
 
 ### Table Context
+
 **What This Table Shows**: This decision table maps different testing scenarios to expected system behaviors. Each column represents a specific test situation you might encounter.
 
-### 1. Profile Setup – Basic Details
+### 7.3.1 Login Authentication
+
+| Test Case Description | Email ID | Password | OTP | Mobile Number | Country Code | Expected Result |
+|----------------------|----------|----------|-----|---------------|--------------|-----------------|
+| All fields valid | Yes <br> *(10-100 chars)* | Yes <br> *(8-20 chars, valid format)* | Yes <br> *(1234)* | Yes <br> *(10 digits)* | Yes | Form submits successfully |
+| Email invalid format | No | Yes | Yes | Yes | Yes | Shows "Please enter a valid email address" error |
+| Email below minimum length | No | Yes | Yes | Yes | Yes | Shows "Email must be at least 10 characters" error |
+| Email above maximum length | No | Yes | Yes | Yes | Yes | Shows "Email cannot exceed 100 characters" error |
+| Password invalid format | Yes | No | Yes | Yes | Yes | Shows "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character" error |
+| Password below minimum length | Yes | No | Yes | Yes | Yes | Shows "Password must be at least 8 characters" error |
+| Password above maximum length | Yes | No | Yes | Yes | Yes | Shows "Password cannot exceed 20 characters" error |
+| OTP invalid format | Yes | Yes | No *(abcd)* | Yes | Yes | Shows "OTP must contain only digits" error |
+| OTP wrong length | Yes | Yes | No <br> *(123)* | Yes | Yes | Shows "OTP must be 4 characters" error |
+| Mobile number invalid (UK) | Yes | Yes | Yes | No *(1234567890)* | Yes | Shows "Mobile number must be 10 digits for UK" error |
+| Mobile number invalid (India) | Yes | Yes | Yes | No *(123456789)* | Yes | Shows "Mobile number must be 10 digits for India" error |
 
 
-| Test Case Description             | Profile Image | First Name | Last Name | Country | State | City | Address | Postal Code | Skills | Service Categories | Portfolio Link | Amount | Expected Result                                                           |
-|----------------------------------|----------------|-------------|------------|---------|--------|------|---------|--------------|--------|---------------------|----------------|--------|-----------------------------------------------------------------------------|
-| All fields valid                 | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Form submits successfully                                                 |
-| Profile image invalid format     | No             | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Only `.jpg`,`.png` and `.jpeg` files are allowed" error                                |
-| Profile image below minimum size | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Image must be at least 50KB" error                                |
-| Profile image above maximum size | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Image cannot exceed 350KB" error                                  |
-| First name invalid format        | Yes            | No          | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Special characters and numbers not allowed" error                 |
-| First name below minimum length  | Yes            | No          | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "First name must be at least 2 characters" error                   |
-| First name above maximum length  | Yes            | No          | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "First name cannot exceed 50 characters" error                     |
-| Last name invalid format         | Yes            | Yes         | No         | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Special characters and numbers not allowed" error                 |
-| Last name below minimum length   | Yes            | Yes         | No         | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Last name must be at least 2 characters" error                    |
-| Last name above maximum length   | Yes            | Yes         | No         | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | Yes    | Shows "Last name cannot exceed 50 characters" error                      |
-| Postal code invalid (India)      | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | No           | Yes    | Yes                 | Yes            | Yes    | Shows "Postal code must be 6 numerical characters for India" error       |
-| Postal code invalid (UK)         | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | No           | Yes    | Yes                 | Yes            | Yes    | Shows "Postal code must be 6-8 alphanumeric characters with 1 space allowed for UK" error |
-| Skills not selected              | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | No     | Yes                 | Yes            | Yes    | Shows "Skills must be selected" error                                    |
-| Service categories not selected  | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | No                  | Yes            | Yes    | Shows "Service categories must be selected" error                        |
-| Portfolio link invalid format    | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | No             | Yes    | Shows "Portfolio link must be a valid URL" error                         |
-| Amount below minimum (1)        | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | No     | Shows "Amount must be at least 1" error                                 |
-| Amount above maximum (5) and decimal(2)     | Yes            | Yes         | Yes        | Yes     | Yes    | Yes  | Yes     | Yes          | Yes    | Yes                 | Yes            | No     | Shows "Amount must not exceed 5 digits" error (eg:12345.87)                              |
+### 7.3.2 Profile Setup - Basic Details
 
-### 2. Profile Setup – Experience Details
-
-
-
-| Test Case Description                          | Current Designation | Company/Employer | Start Date | End Date | Expected Result                                                                 |
-|-------------------------------------------------|----------------------|------------------|-------------|----------|----------------------------------------------------------------------------------|
-| All fields valid                                | Yes                  | Yes              | Yes         | Yes      | Form submits successfully                                                        |
-| Current designation invalid format              | No                   | Yes              | Yes         | Yes      | Shows "Only letters and spaces allowed" error                                    |
-| Current designation below minimum length        | No                   | Yes              | Yes         | Yes      | Shows "Current designation must be at least 2 characters" error                  |
-| Current designation above maximum length        | No                   | Yes              | Yes         | Yes      | Shows "Current designation cannot exceed 50 characters" error                    |
-| Company/employer invalid format                 | Yes                  | No               | Yes         | Yes      | Shows "Only letters, spaces, numbers and special character (`&`,`-`,`/`,`.`) allowed" error |
-| Company/employer below minimum length           | Yes                  | No               | Yes         |          | Shows "Company/Employer must be at least 2 characters" error                     |
-
-
-### 3. Personal Information Section
-
-| Test Case Description                       | Full Name | Country Code | Mobile Number | Email | Address | Postal Code | Expected Result                                                                 |
-|--------------------------------------------|-----------|---------------|----------------|-------|---------|--------------|----------------------------------------------------------------------------------|
-| All fields valid                            | Yes       | Yes           | Yes            | Yes   | Yes     | Yes          | Form submits successfully                                                        |
-| Full Name invalid format                    | No        | Yes           | Yes            | Yes   | Yes     | Yes          | Shows "Only alphabets and spaces allowed" error                                 |
-| Full Name below minimum length              | No        | Yes           | Yes            | Yes   | Yes     | Yes          | Shows "Name must be at least 2 characters" error                                |
-| Full Name above maximum length              | No        | Yes           | Yes            | Yes   | Yes     | Yes          | Shows "Name cannot exceed 50 characters" error                                  |
-| Country code not selected                   | Yes       | No            | Yes            | Yes   | Yes     | Yes          | Shows "Country code must be selected" error                                     |
-| Mobile number invalid format (UK)           | Yes       | Yes           | No             | Yes   | Yes     | Yes          | Shows "Mobile number must be 10 digits for UK" error                            |
-| Mobile number invalid format (India)        | Yes       | Yes           | No             | Yes   | Yes     | Yes          | Shows "Mobile number must be 10 digits for India" error                         |
-| Email invalid format                        | Yes       | Yes           | Yes            | No    | Yes     | Yes          | Shows "Please enter a valid email address" error                                |
-| Email below minimum length                  | Yes       | Yes           | Yes            | No    | Yes     | Yes          | Shows "Email must be at least 10 characters" error                              |
-| Email above maximum length                  | Yes       | Yes           | Yes            | No    | Yes     | Yes          | Shows "Email cannot exceed 100 characters" error                                |
-| Address invalid format                      | Yes       | Yes           | Yes            | Yes   | No      | Yes          | Shows "Only letters, spaces, numbers and (`/`,`,`,`.`,`-`,`#`) allowed" error               |
-| Address below minimum length                | Yes       | Yes           | Yes            | Yes   | No      | Yes          | Shows "Address must be at least 20 characters" error                            |
-| Address above maximum length                | Yes       | Yes           | Yes            | Yes   | No      | Yes          | Shows "Address cannot exceed 50 characters" error                               |
-| Postal Code invalid (India)                 | Yes       | Yes           | Yes            | Yes   | Yes     | No           | Shows "Postal code must be 6 numerical characters for India" error              |
-| Postal Code invalid (UK)                    | Yes       | Yes           | Yes            | Yes   | Yes     | No           | Shows "Postal code must be 6-8 alphanumeric characters with 1 space allowed for UK" error |
-
-### 4. Education Section
+| Test Case Description                        | Profile Image       | First Name                             | Last Name        | Country | Mobile Number  | Email                                           | Address        | Postal Code | Skills | Service Categories | Portfolio Link                                            | Amount   | Expected Result                                             |
+|---------------------------------------------|---------------------|----------------------------------------|------------------|---------|----------------|-------------------------------------------------|----------------|-------------|--------|--------------------|----------------------------------------------------------|---------|------------------------------------------------------------|
+| All fields valid                            | Yes *(200KB)*        | Yes <br> *(John)*                              | Yes <br> *(Smith)*      | Yes <br> *(India)* | Yes <br> *(9876543210)* | Yes  | Yes <br> *(123 Main St)* | Yes <br> *(110001)* | Yes    | Yes                | Yes  | Yes <br> *(50.00)* | Form submits successfully                                   |
+| Profile image invalid format               | No <br> *(pdf)*           | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Only valid JPEG, JPG and PNG format are allowed" error |
+| Profile image below minimum size           | No <br> *(45KB)*           | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Image must be at least 50KB" error                  |
+| Profile image above maximum size           | No <br> *(355KB)*          | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Image cannot exceed 350KB" error                    |
+| First name invalid format                  | Yes                 | No <br> *(John@Doe)*                          | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Special characters and numbers not allowed" error  |
+| First name below minimum length            | Yes                 | No <br> *(J)*                                 | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "First name must be at least 2 characters" error    |
+| First name above maximum length            | Yes                 | No <br> *(51+ chars)*                         | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "First name cannot exceed 50 characters" error      |
+| Last name invalid format                   | Yes                 | Yes                                    | No <br> *(Smith@Doe)*   | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Special characters and numbers not allowed" error  |
+| Last name below minimum length             | Yes                 | Yes                                    | No <br> *(S)*           | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | Yes     | Shows "Last name must be at least 2 characters" error     |
+| Postal code invalid (India)                | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | No <br> *(11A001)* | Yes    | Yes                | Yes                                                      | Yes     | Shows "Postal code must be 6 numerical characters for India" error |
+| Postal code invalid (UK)                   | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | No <br> *(SW1A1AA)* | Yes   | Yes                | Yes                                                      | Yes     | Shows "Postal code must be 6-8 alphanumeric characters with 1 space allowed for UK" error |
+| Skills not selected                        | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | No     | Yes                | Yes                                                      | Yes     | Shows "Skills must be selected" error                     |
+| Service categories not selected            | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | No                 | Yes                                                      | Yes     | Shows "Service categories must be selected" error         |
+| Portfolio link invalid format              | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | No <br> *(not-a-url)*                                           | Yes     | Shows "Portfolio link must be a valid URL" error          |
+| Portfolio link below minimum length        | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | No <br> *(a)*                                                  | Yes     | Shows "Portfolio link must be at least 10 characters" error |
+| Portfolio link above maximum length        | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | No <br> *(201+ chars)*                                          | Yes     | Shows "Portfolio link cannot exceed 200 characters" error |
+| Amount below minimum                       | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | No <br> *(0)*   | Shows "Amount must be at least 1" error                   |
+| Amount above maximum                       | Yes                 | Yes                                    | Yes              | Yes     | Yes            | Yes                                             | Yes            | Yes         | Yes    | Yes                | Yes                                                      | No <br> *(123456)* | Shows "Amount must not exceed 5 digit number" error     |
 
 
 
-| Test Case Description             | Education Level | Course | University | Major Subject | Passing Year | Expected Result                                                             |
-|----------------------------------|------------------|--------|------------|----------------|----------------|-------------------------------------------------------------------------------|
-| All fields valid                 | Yes              | Yes    | Yes        | Yes            | Yes            | Form submits successfully                                                     |
-| Education level not selected     | No               | Yes    | Yes        | Yes            | Yes            | Shows "Education level must be selected" error                               |
-| Course not selected              | Yes              | No     | Yes        | Yes            | Yes            | Shows "Course must be selected" error                                        |
-| University not selected          | Yes              | Yes    | No         | Yes            | Yes            | Shows "University must be selected" error                                    |
-| Major subject not selected       | Yes              | Yes    | Yes        | No             | Yes            | Shows "Major subject must be selected" error                                 |
-| Passing year invalid format      | Yes              | Yes    | Yes        | Yes            | No             | Shows "Passing year must contain only digits" error                          |
-| Passing year below minimum (1970)| Yes              | Yes    | Yes        | Yes            | No             | Shows "Passing year must be between 1970 and 2025" error                     |
-| Passing year above maximum (2025)| Yes              | Yes    | Yes        | Yes            | No             | Shows "Passing year must be between 1970 and 2025" error                     |
-| Passing year not 4 digits        | Yes              | Yes    | Yes        | Yes            | No             | Shows "Passing year must be 4 digits" error                                  |
 
-### 5. Skills and Tools Section
+### 7.3.3 Experience Details
 
+| Test Case Description | Current Designation          | Company/Employer            | Experience            | Resume/CV             | Expected Result                                         |
+|-----------------------|------------------------------|-----------------------------|------------------------|------------------------|---------------------------------------------------------|
+| All fields valid      | Yes <br> *(Senior Engineer)* | Yes <br> *(Tech Solutions)* | Yes <br> *(5 years)*  | Yes <br> *(200KB PDF)* | Form submits successfully                                |
+| Current designation invalid format        | No <br> *(Engineer@)*           | Yes                        | Yes                    | Yes                    | Shows "Only letters and spaces allowed" error           |
+| Current designation below minimum length  | No <br> *(SE)*                  | Yes                        | Yes                    | Yes                    | Shows "Current designation must be at least 2 characters" error |
+| Current designation above maximum length  | No <br> *(51+ chars)*           | Yes                        | Yes                    | Yes                    | Shows "Current designation cannot exceed 50 characters" error |
+| Company/employer invalid format           | Yes                             | No <br> *(Tech@Company)*   | Yes                    | Yes                    | Shows "Only letters, spaces, numbers and & - / . allowed" error |
+| Company/employer below minimum length     | Yes                             | No <br> *(ABC)*            | Yes                    | Yes                    | Shows "Company/Employer must be at least 4 characters" error |
+| Resume/CV invalid format                  | Yes                             | Yes                        | Yes                    | No <br> *(JPG)*        | Shows "Only valid PDF format are allowed" error         |
+| Resume/CV below minimum size              | Yes                             | Yes                        | Yes                    | No <br> *(45KB)*       | Shows "File must be at least 50KB" error                |
+| Resume/CV above maximum size              | Yes                             | Yes                        | Yes                    | No <br> *(355KB)*      | Shows "File cannot exceed 350KB" error                  |
 
+### 7.3.4 Background Verification
 
-| Test Case Description          | Skills Selected | Skill Limit Valid | Tools Selected | Tool Limit Valid | Expected Result                                                  |
-|-------------------------------|------------------|--------------------|------------------|--------------------|------------------------------------------------------------------|
-| All fields valid              | Yes              | Yes                | Yes              | Yes                | Form submits successfully                                        |
-| No skills selected            | No               | N/A                | Yes              | Yes                | Shows "At least one skill must be selected" error                |
-| More than 10 skills selected  | Yes              | No                 | Yes              | Yes                | Shows "Maximum 10 skills allowed" error                          |
-| No tools selected             | Yes              | Yes                | No               | N/A                | Shows "At least one tool must be selected" error                 |
-| More than 10 tools selected   | Yes              | Yes                | Yes              | No                 | Shows "Maximum 10 tools allowed" error                           |
-
-
-### 6. Experience Section
-
-
-| Test Case Description            | Designation | Employer | Work Location Type | Employment Type | Start Date | End Date | Expected Result                                                                 |
-|----------------------------------|-------------|----------|---------------------|------------------|-------------|-----------|----------------------------------------------------------------------------------|
-| All fields valid                 | Yes         | Yes      | Yes                 | Yes              | Yes         | Yes       | Form submits successfully                                                        |
-| Designation not selected         | No          | Yes      | Yes                 | Yes              | Yes         | Yes       | Shows "Designation must be selected" error                                      |
-| Employer invalid format          | Yes         | No       | Yes                 | Yes              | Yes         | Yes       | Shows "Employer may contain only letters, numbers, single spaces, and `/`,`&`,`-`,`.`" error |
-| Employer below minimum length    | Yes         | No       | Yes                 | Yes              | Yes         | Yes       | Shows "Employer name must be at least 4 characters" error                       |
-| Employer above maximum length    | Yes         | No       | Yes                 | Yes              | Yes         | Yes       | Shows "Employer name cannot exceed 50 characters" error                         |
-| Work location type not selected  | Yes         | Yes      | No                  | Yes              | Yes         | Yes       | Shows "Work location type must be selected" error                               |
-| Employment type not selected     | Yes         | Yes      | Yes                 | No               | Yes         | Yes       | Shows "Employment type must be selected" error                                  |
-| Start date before 1970           | Yes         | Yes      | Yes                 | Yes              | No          | Yes       | Shows "Start date must be between 1970 and current year" error                  |
-| Start date after current year    | Yes         | Yes      | Yes                 | Yes              | No          | Yes       | Shows "Start date must be between 1970 and current year" error                  |
-| End date before 1970             | Yes         | Yes      | Yes                 | Yes              | Yes         | No        | Shows "End date must be between 1970 and current year" error                    |
-| End date after current year      | Yes         | Yes      | Yes                 | Yes              | Yes         | No        | Shows "End date must be between 1970 and current year" error                    |
-
-### 7. Work Preference Section
+| Test Case Description          | Government ID            | Certificate              | Expected Result                                 |
+|-------------------------------|---------------------------|--------------------------|-------------------------------------------------|
+| All fields valid              | Yes <br> *(200KB PDF)*     | Yes <br> *(200KB PDF)*    | Form submits successfully                        |
+| Government ID invalid format  | No <br> *(JPG)*            | Yes                       | Shows "Only valid PDF format are allowed" error |
+| Government ID below minimum size | No <br> *(45KB)*         | Yes                       | Shows "File must be at least 50KB" error        |
+| Government ID above maximum size | No <br> *(355KB)*        | Yes                       | Shows "File cannot exceed 350KB" error          |
+| Certificate invalid format    | Yes                        | No <br> *(JPG)*           | Shows "Only valid PDF format are allowed" error |
+| Certificate below minimum size| Yes                        | No <br> *(45KB)*          | Shows "File must be at least 50KB" error        |
+| Certificate above maximum size| Yes                        | No <br> *(355KB)*         | Shows "File cannot exceed 350KB" error          |
 
 
-| Test Case Description                | Portfolio Link | Preferred Work Type | Service Categories | Hourly Rate | Expected Result                                                        |
-|-------------------------------------|----------------|----------------------|---------------------|--------------|------------------------------------------------------------------------|
-| All fields valid                    | Yes            | Yes                  | Yes                 | Yes          | Form submits successfully                                              |
-| Portfolio link invalid format       | No             | Yes                  | Yes                 | Yes          | Shows "Portfolio link must be a valid URL" error                       |
-| Portfolio link below minimum length | No             | Yes                  | Yes                 | Yes          | Shows "Portfolio link must be at least 10 characters" error            |
-| Portfolio link above maximum length | No             | Yes                  | Yes                 | Yes          | Shows "Portfolio link cannot exceed 200 characters" error              |
-| Preferred work type not selected    | Yes            | No                   | Yes                 | Yes          | Shows "Preferred work type must be selected" error                     |
-| Services categories not selected    | Yes            | Yes                  | No                  | Yes          | Shows "Services category must be selected" error                       |
-| Hourly rate below minimum (1)       | Yes            | Yes                  | Yes                 | No           | Shows "Hourly rate must be greater than 0" error                       |
-| Hourly rate above maximum (12345.24)   | Yes            | Yes                  | Yes                 | No           | Shows "Hourly rate must not exceed 5 digit number" error                        |
-
-### 8. Documents Section
+### 7.3.5 Documents Section
 
 
 | Test Case Description            | File Format Valid | File Size Valid | Expected Result                                   |
@@ -553,7 +765,7 @@ Edge Cases: Special characters, empty fields, null values, and unexpected format
 
 | **Field**            | **Valid Data**                          | **Invalid Data / Edge Cases**                                       |
 |-----------------------|------------------------------------------|--------------------------------------------------------------------|
-| **Email**             | `engineer@company.com`                     | engineer@company<br>`engineer@company.co` (min)<br>`engineer+verylongemailaddress@company.com` (max) |
+| **Email**             | `engineer@company.com`                     | `engineer@company `<br>`engineer@company.co` (min)<br>`engineer+verylongemailaddress@company.com` (max) |
 | **Password**          | SecureP@ss123                            | password<br>Secur3! (min)<br>SecureP@ss1234567890 (max)            |
 | **Mobile Number (UK)**| +447700900123                            | 44770090012<br>+4477009001234 (invalid length)                     |
 | **Mobile Number (India)** | +919876543210                        | 919876543210<br>+91987654321 (too short)                           |
