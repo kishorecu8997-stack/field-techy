@@ -9,6 +9,8 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { validateAddress, validateEmail, validateName } from "../../Validate";
 import type { EditProfileFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -58,7 +60,10 @@ const PersonalInformation: React.FC = ({}) => {
           required
           rules={{ validate: (v: string) => validateName(v) }}
         />
-        <PhoneInputField name="phoneNumber" required />
+        <VerifiedPhoneInputField name="phoneNumber" required />
+        <VerifiedEmailInputField name="emailId" required />
+
+        {/* <PhoneInputField name="phoneNumber" required />
         <InputField
           label="Email Address"
           isShowLabel={false}
@@ -68,7 +73,7 @@ const PersonalInformation: React.FC = ({}) => {
           leftIcon={<MdOutlineMailOutline className="text-lg text-gray-500" />}
           required
           rules={{ validate: (v: string) => validateEmail(v) }}
-        />
+        /> */}
         <InputField
           label="Address Location"
           isShowLabel={false}

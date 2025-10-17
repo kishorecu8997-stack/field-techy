@@ -21,7 +21,7 @@ export const AVATARS = [
   { id: "male5", url: male5 },
   { id: "female1", url: female1 },
   { id: "female2", url: female2 },
-  { id: "female3", url: female3 },
+  { id: "female3", url: female3 }, 
   { id: "female4", url: female4 },
   { id: "female5", url: female5 },
 ];
