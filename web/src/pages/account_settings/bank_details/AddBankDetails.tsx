@@ -2,6 +2,10 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import BankDetailsForm from "./BankDetailsForm";
 
+
+/**
+ * Page component for adding new bank details using a controlled form with React Hook Form.
+ */
 const AddBankDetails = ({}:{}) => {
   const fromCtx = useForm({
     mode:"onChange",

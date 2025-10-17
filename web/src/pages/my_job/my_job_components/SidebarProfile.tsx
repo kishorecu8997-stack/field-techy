@@ -1,6 +1,8 @@
 import { FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -69,6 +71,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
  */
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -96,12 +99,24 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("manageBankAccounts");
+            setISOpenSidebar(true);
+          }}
+        >
           Bank Details
-        </button>
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        </Button>
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("withdraw");
+            setISOpenSidebar(true);
+          }}
+        >
           Withdraw
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -11,9 +11,10 @@ export type MenuItems = {
   onClick?: () => void;
 };
 
-import React, { useState } from "react";
-import DrawerHeader from "./DrawerHeader";
 import { sectionConfig } from "@/config/sideBarPagesconfig";
+import React from "react";
+import useDrawerStore from "../store/useDrawerStore";
+import DrawerHeader from "./DrawerHeader";
 
 interface DrawerProps {
   isOpen: boolean;
@@ -25,26 +26,25 @@ interface DrawerProps {
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
+  const { activeKey, setActiveKey } = useDrawerStore();
   if (!isOpen) return null;
 
-  const [key, setKey] = useState<string>("myAccount");
-
   const commonProps = {
-    onMenuItemClick: (data: string) => setKey(data),
+    onMenuItemClick: (data: string) => setActiveKey(data),
     onClose: onClose,
   };
 
   const renderSection = (): React.ReactElement => {
-    const currentKey = key.split("-")[0];
+    const currentKey = activeKey.split("-")[0];
     const config = sectionConfig[currentKey] || sectionConfig.myAccount;
     const Component = config.component;
-    return <Component {...commonProps} id={key.split("-")[1]} />;
+    return <Component {...commonProps} id={activeKey.split("-")[1]} />;
   };
 
-  const currentKey = key.split("-")[0];
+  const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
   const onBack = config.parent
-    ? () => setKey(config.parent as string)
+    ? () => setActiveKey(config.parent as string)
     : undefined;
 
   return (

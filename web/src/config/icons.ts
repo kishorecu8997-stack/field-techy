@@ -14,6 +14,9 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { IoHeadsetSharp } from "react-icons/io5";
 import { BiSolidMessageRounded } from "react-icons/bi";
 
+/**
+ * Collection of commonly used icon components mapped to semantic keys for consistent UI usage.
+ */
 export const icons = {
   bookmark: FaRegBookmark,
   close: IoCloseSharp,

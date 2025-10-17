@@ -1,44 +1,50 @@
-import type { DrawerMenuProps } from "@/shared/components/Drawer"
+import { bankDetails } from "@/dummy_data/bankDetails";
+import type { DrawerMenuProps } from "@/shared/components/Drawer";
 
-const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick })=> {
+/**
+ * Displays a list of saved bank accounts with options to add or edit details.
+ * Uses dummy data and triggers navigation via `onMenuItemClick` callback.
+ */
+const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+  return (
+    <div className="flex flex-col gap-4 h-full">
+      <div className="flex justify-end">
+        <button
+          onClick={() => onMenuItemClick("addBankdetails")}
+           className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
+          aria-label="Add Bank"
+        >
+          Add Bank
+        </button>
+      </div>
 
-    const bankDetails = [
-        {
-            bankName: "Bank of America",
-            accountNumber: "1234567890",
-            swiftcode: "1234567890",
-            bankAddress: "1234 Main Street, Anytown, USA",
-            iban: "1234567890",
-            name: "John Doe",
-        }, {
-            bankName: "Bank of America",
-            accountNumber: "1234567890",
-            swiftcode: "1234567890",
-            bankAddress: "1234 Main Street, Anytown, USA",
-            iban: "1234567890",
-            name: "John Doe",
-        },  
-    ]
+      {bankDetails.map((bank, index) => (
+        <div
+          key={index}
+          className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {bank.bankName}
+            </h3>
+            <button
+              onClick={() => onMenuItemClick("editBankdetails")}
+              className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
+              aria-label={`Edit details for ${bank.bankName}`}
+            >
+              Edit details
+            </button>
+          </div>
 
-    return (
-        <div className="flex flex-col gap-2 h-full">
-            <div className=" text-right text-teal-700 hover:underline cursor-pointer" onClick={()=> onMenuItemClick('addBankdetails')}>Add Bank</div>
-            {
-                bankDetails.map((bank, index) => (
-                    <div key={index} className="flex flex-col bg-gray-200 p-4 rounded-xl">
-                        <div className="flex flex-row justify-between">
-                            <div className="text-lg font-semibold">{bank.bankName}</div>
-                            <div className="text-teal-900 cursor-pointer underline" onClick={()=> onMenuItemClick('editBankdetails')}>Edit details</div>
-                        </div>
-                        <div className="flex flex-row justify-between">Account Number: {bank.accountNumber}</div>
-                        <div className="flex flex-row justify-between">SWIFT Code: {bank.swiftcode}</div>
-                        <div className="flex flex-row justify-between">IBAN: {bank.iban}</div>
-                    </div>
-                ))
-            }
-
+          <div className="space-y-1 text-gray-600 dark:text-gray-400 text-sm">
+            <div>Account Number: <span className="font-mono">{bank.accountNumber}</span></div>
+            <div>SWIFT Code: <span className="font-mono">{bank.swiftcode}</span></div>
+            <div>IBAN: <span className="font-mono">{bank.iban}</span></div>
+          </div>
         </div>
-    )
-}
+      ))}
+    </div>
+  );
+};
 
-export default BankAccountList
+export default BankAccountList;

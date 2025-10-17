@@ -1,11 +1,16 @@
 import { icons } from "@/config/icons";
-import React from "react";
-import LogoutConfirmationPopup from "../auth/LogoutConfirmationPopup";
-import type { DrawerMenuProps } from "@/shared/components/Drawer";
-import SettingsMenu, { type MenuItem } from "./SettingsMenu";
-import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import type { DrawerMenuProps } from "@/shared/components/Drawer";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import LogoutConfirmationPopup from "../auth/LogoutConfirmationPopup";
+import SettingsMenu from "./SettingsMenu";
+import type { MenuItem } from "./types";
 
+/**
+ * Main account settings page displaying a list of configurable options including security, bank details,
+ * notifications toggle, support links, and logout. Integrates navigation, drawer control, and a logout confirmation modal.
+ */
 const AccountSettings: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,

@@ -1,20 +1,10 @@
-import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { AccordionItem, AccordionProps } from '../types';
 
-interface AccordionItem {
-  id: string | number;
-  label: string;
-  content: ReactNode;
-  icon?: ReactNode; // Optional icon to show next to the label
-}
-
-interface AccordionProps {
-  items: AccordionItem[];
-  className?: string;
-  titleClassName?: string;
-  contentClassName?: string;
-  iconPosition?: 'left' | 'right'; // Position of the chevron (not the label icon)
-}
-
+/**
+ * A reusable, animated accordion component that supports optional icons, customizable chevron position,
+ * and smooth height transitions. Only one item can be expanded at a time.
+ */
 const Accordion = ({
   items,
   className = '',
@@ -22,7 +12,7 @@ const Accordion = ({
   contentClassName = '',
   iconPosition = 'right'
 }: AccordionProps) => {
-  const [activeId, setActiveId] = useState<string | number | null>(null);
+  const [activeId, setActiveId] = useState<string | number | null>("1");
 
   const toggleItem = (id: string | number) => {
     setActiveId(activeId === id ? null : id);
@@ -71,21 +61,26 @@ const AccordionItemComponent = ({
   }, [isOpen, item.content]);
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0 overflow-hidden">
+    <div className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 overflow-hidden">
       <button
         onClick={toggle}
-        className={`flex w-full items-center justify-between p-4 text-left font-medium bg-white hover:bg-gray-50 transition-colors ${titleClassName}`}
+        className={`w-full flex items-center justify-between px-4 py-4 
+              transition-all duration-300 cursor-pointer text-gray-700 dark:text-gray-200 
+              hover:bg-gray-50 dark:hover:bg-gray-700 
+          ${titleClassName}`}
         aria-expanded={isOpen}
       >
         <div className="flex items-center min-w-0">
           {iconPosition === 'left' && (
-            <ChevronIcon isExpanded={isOpen} className="mr-3 flex-shrink-0" />
+            <ChevronIcon isExpanded={isOpen} className="mr-3 flex-shrink-0 text-gray-500 dark:text-gray-400" />
           )}
-          {item.icon && <span className="mr-3 flex-shrink-0">{item.icon}</span>}
+          {item.icon && <span className="mr-3 flex-shrink-0 text-gray-500 dark:text-gray-400">{item.icon}</span>}
           <span className="truncate">{item.label}</span>
         </div>
 
-        {iconPosition === 'right' && <ChevronIcon isExpanded={isOpen} />}
+        {iconPosition === 'right' && (
+          <ChevronIcon isExpanded={isOpen} className="text-gray-500 dark:text-gray-400" />
+        )}
       </button>
 
       <div
@@ -96,7 +91,7 @@ const AccordionItemComponent = ({
         }}
         aria-hidden={!isOpen}
       >
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300">
           {item.content}
         </div>
       </div>
@@ -118,11 +113,11 @@ const ChevronIcon = ({
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
+    strokeWidth={2}
   >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={2}
       d="M19 9l-7 7-7-7"
     />
   </svg>

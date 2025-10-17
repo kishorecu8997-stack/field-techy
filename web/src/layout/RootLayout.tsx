@@ -1,5 +1,6 @@
 import Footer from "@/shared/components/Footer";
 import Navbar from "@/shared/components/Navbar";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -23,7 +24,7 @@ import { Outlet } from "react-router-dom";
  * </RootLayout>
  */
 const RootLayout = (): JSX.Element => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -49,8 +50,11 @@ const RootLayout = (): JSX.Element => {
         >
           <div className="xl:container mx-auto px-6">
             <Navbar
-              onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
-              isDrawerOpen={isDrawerOpen}
+              onDrawerToggle={() => {
+                setISOpenSidebar(!isOpenSidebar);
+                setActiveKey("myAccount");
+              }}
+              isDrawerOpen={isOpenSidebar}
             />
           </div>
         </header>

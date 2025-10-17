@@ -2,6 +2,11 @@ import { icons } from "@/config/icons";
 import Accordion from "./Accordion";
 import ContactCard from "./ContactCard";
 
+
+/**
+ * Contact page featuring a header with a message icon and two expandable sections (Contact Us & Support)
+ * using an Accordion. Each section displays contact details via the ContactCard component.
+ */
 const contactDetails = [
   { id: "1", label: "Call", value: "+91 12345 67890", icon: <icons.phone className="text-white"/> },
   {

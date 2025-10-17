@@ -2,6 +2,9 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import BankDetailsForm from "./BankDetailsForm";
 
+/**
+ * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
+ */
 const EditBankDetails = () => {
   const fromCtx = useForm({
     mode: "onChange",
