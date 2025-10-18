@@ -1,10 +1,4 @@
-/**
- * Profile validators for the Profile Setup form.
- */
-
-/**
- * Validate name (first/last) - only letters allowed (no spaces), length 8-35
- */
+import xss from "xss";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -29,7 +23,6 @@ export const validateName = (value: string) => {
 
   return true;
 };
-
 
 /**
  * Validate email address - based on a more secure regex pattern.
@@ -234,9 +227,16 @@ export const validateExperience = (value: string) => {
  * - must be between 1970 and the current year
  */
 export const validatePassingYear = (value: string) => {
+  if (/^\s|\s$/.test(value || ""))
+    return "Passing Year must not start or end with a space";
+
   const yearStr = (value || "").trim();
   if (!yearStr) return "Passing Year is required";
 
+  // Disallow leading or trailing spaces
+
+  if (/\s/.test(yearStr))
+    return "Passing Year must not contain internal spaces";
   // Ensure the value contains only digits and is exactly 4 characters long.
   if (!/^\d{4}$/.test(yearStr) || /\D/.test(yearStr)) {
     return "Passing year must be a 4-digit number without symbols or letters";
@@ -282,36 +282,16 @@ export const validateDateRange = (
   return true;
 };
 
-// export const validateRate = (value: string) => {
-//   const v = (value || "").trim();
-
-//   if (!v) return "Rate is required";
-
-//   // Disallow '+' or any non-numeric characters except '.' for decimals
-//   if (/[^\d.]/.test(v)) {
-//     return "Rate must contain numbers only and no symbols";
-//   }
-
-//   // Accept integers or decimals with up to 2 digits after the decimal point
-//   if (!/^\d+(\.\d{1,2})?$/.test(v)) {
-//     return "Rate must be a number with up to 2 decimal places";
-//   }
-
-//   const num = Number(v);
-//   if (isNaN(num)) return "Rate must be a valid number";
-//   if (num < 1) return "Rate must be greater than or equal to 1";
-//   if (num >= 100000) return "Rate must not exceed 5 digits before decimal";
-
-//   return true;
-// };
-
 export const validateRate = (value: string) => {
+  if (/^\s|\s$/.test(value || ""))
+    return "Rate must not start or end with a space";
+
   const v = (value || "").trim();
 
   if (!v) return "Rate is required";
 
   // Block +, -, e, E and other non-numeric characters explicitly
-  if (/[+\-eE]/.test(v) || /[^\d.]/.test(v.replace('.', ''))) {
+  if (/[+\-eE]/.test(v) || /[^\d.]/.test(v.replace(".", ""))) {
     return "Rate must be a valid number and cannot contain symbols and letters";
   }
 
@@ -325,56 +305,116 @@ export const validateRate = (value: string) => {
   if (num < 1) return "Rate must be greater than or equal to 1";
 
   return true;
-};  
-
+};
 
 
 export const validatePortfolioLink = (value: string) => {
-  const v = (value || "").trim();
+  if (!value) return "Portfolio link is required";
 
-  if (!v) return "Portfolio link is required";  
-  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+  const original = value.trim();
+
+  // No leading/trailing whitespace
+  if (value !== original) {
+    return "Portfolio link must not start or end with whitespace";
+  }
+
+  // No internal whitespace
+  if (/\s/.test(original)) {
+    return "Portfolio link must not contain spaces";
+  }
+
+  // Basic character safety (RFC 3986 + no control chars)
+  if (!/^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]+$/.test(original)) {
+    return "Portfolio link contains invalid characters";
+  }
+
+  // XSS check
+  if (original !== xss(original)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  // Reject anything with:
+  // - query (?...)
+  // - fragment (#...)
+  // - userinfo (user:pass@...)
+  // - non-standard ports (:8080)
+  // - encoded sequences like %2F
+  if (/%[0-9a-fA-F]{2}|[?#]|:.+@|:\d{2,5}(?![/])/.test(original)) {
+    return "URL must not contain query parameters, fragments, encoded characters, ports, or credentials";
+  }
+
+  // // Reject any URL with path traversal, extra dots, or abnormal patterns
+  // if (/\/\.\.?\/|\/{2,}/.test(original)) {
+  //   return "URL must not contain redundant slashes, dots, or path traversal sequences";
+  // }
 
   try {
-    const url = new URL(v);
+    const url = new URL(original);
 
     if (!["http:", "https:"].includes(url.protocol)) {
-      return "Portfolio link must start with http:// or https://";
+      return "Portfolio link must use http:// or https://";
     }
 
+    // Enforce clean hostname
     const hostname = url.hostname.toLowerCase();
-    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+    if (!/^[a-z0-9.-]+$/.test(hostname)) {
+      return "Invalid domain format";
+    }
 
+    // Block dangerous or irrelevant domains
+    const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
+    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
+      return "Domain is not allowed";
+    }
 
-    const isGitHubProfile =
-      (hostname.includes("github.com") && /^\/[^\/]+$/.test(pathname));
+    // Normalize path: must be clean and minimal
+    const path = url.pathname;
 
-    const isLinkedInProfile =
-      (hostname.includes("linkedin.com") &&
-        /^\/in\/[^\/]+$/.test(pathname)); // LinkedIn profiles follow /in/username
+    // Remove trailing slash for comparison, but original must not have excess
+    const cleanPath = path === "/" ? "" : path;
+
+    // Define allowed profiles
+    const isGitHub =
+      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+
+    // Allow /in/username with an optional trailing slash
+    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+
+    const isExample = hostname === "example.com" && path === "/";
 
     const isPersonalSite =
-      !hostname.endsWith(".zip") &&
-      !hostname.endsWith(".exe") &&
-      !hostname.includes("malware") &&
-      !hostname.includes("phishing") &&
-      !hostname.includes("adult") &&
-      !hostname.includes("torrent") &&
-      pathname === ""; // homepage only
+      !["github.com", "www.linkedin.com", "example.com"].includes(hostname) &&
+      path === "/"; // Only root allowed
 
-    const isAllowed =
-      isGitHubProfile || isLinkedInProfile || isPersonalSite;
-
-    if (!isAllowed) {
-      return "Only GitHub, LinkedIn profile pages, or safe personal homepages are allowed";
+    if (isGitHub || isLinkedIn || isExample || isPersonalSite) {
+      return true;
     }
 
-    return true;
+    return "Only GitHub profiles, LinkedIn profiles (e.g., https://www.linkedin.com/in/username), or personal homepages are allowed";
   } catch {
     return "Portfolio link must be a valid URL";
   }
 };
 
+/**
+ * Validates if a field has been verified.
+ * @param verified - The verification status.
+ * @param fieldName - The name of the field being validated.
+ * @returns {true | string} - True if verified, otherwise an error message.
+ */
+export const validateIsVerified = (verified: boolean, fieldName: string) => {
+  return verified ? true : `${fieldName} must be verified.`;
+};
+
+/**
+ * Specific validator for phone number verification status.
+ * @param {boolean} verified - The verification status of the phone number.
+ * @returns {true | string} - True if verified, otherwise an error message.
+ */
+export const validateIsPhoneVerified = (verified: boolean) => {
+  return validateIsVerified(verified, "Phone number");
+};
 
 export default {
   validateName,
@@ -390,4 +430,6 @@ export default {
   validateDateRange,
   validateRate,
   validatePortfolioLink,
+  validateIsVerified,
+  validateIsPhoneVerified,
 };

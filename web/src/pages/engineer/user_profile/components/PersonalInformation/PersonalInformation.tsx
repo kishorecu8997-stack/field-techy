@@ -1,12 +1,15 @@
-import React from "react";
-import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
+import React, { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
-import { MdOutlineMailOutline } from "react-icons/md";
-import { validateAddress, validateEmail, validateName } from "../../Validate";
+import {
+  validateAddress,
+  validateIsPhoneVerified,
+  validateIsVerified,
+  validateName,
+} from "../../Validate";
 import type { EditProfileFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
@@ -19,6 +22,9 @@ import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/Verifie
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
 const PersonalInformation: React.FC = ({}) => {
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -43,6 +49,22 @@ const PersonalInformation: React.FC = ({}) => {
     mode: "onSubmit",
   });
 
+  const { trigger } = methods;
+
+  // When the phone number is verified, trigger validation to clear any "must be verified" error.
+  useEffect(() => {
+    if (isPhoneVerified) {
+      trigger("phoneNumber");
+    }
+  }, [isPhoneVerified, trigger]);
+
+  // When the email is verified, trigger validation to clear any "must be verified" error.
+  useEffect(() => {
+    if (isEmailVerified) {
+      trigger("emailId");
+    }
+  }, [isEmailVerified, trigger]);
+
   return (
     <FormContainer
       methods={methods}
@@ -60,20 +82,22 @@ const PersonalInformation: React.FC = ({}) => {
           required
           rules={{ validate: (v: string) => validateName(v) }}
         />
-        <VerifiedPhoneInputField name="phoneNumber" required />
-        <VerifiedEmailInputField name="emailId" required />
-
-        {/* <PhoneInputField name="phoneNumber" required />
-        <InputField
-          label="Email Address"
-          isShowLabel={false}
-          name="emailId"
-          type="email"
-          placeholder="Enter Email"
-          leftIcon={<MdOutlineMailOutline className="text-lg text-gray-500" />}
+        <VerifiedPhoneInputField
+          name="phoneNumber"
           required
-          rules={{ validate: (v: string) => validateEmail(v) }}
-        /> */}
+          rules={{
+            validate: () => validateIsPhoneVerified(isPhoneVerified),
+          }}
+          verified={isPhoneVerified}
+          setVerified={setIsPhoneVerified}
+        />
+        <VerifiedEmailInputField
+          name="emailId"
+          required
+          rules={{ validate: () => validateIsVerified(isEmailVerified, "Email") }}
+          verified={isEmailVerified}
+          setVerified={setIsEmailVerified}
+        />
         <InputField
           label="Address Location"
           isShowLabel={false}
