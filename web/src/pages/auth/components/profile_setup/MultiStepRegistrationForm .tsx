@@ -33,7 +33,6 @@ export type CompleteRegistrationData = {
   resume?: File;
 
   // Background Verification
-
   governmentId?: File;
   certificate?: File;
 
@@ -132,23 +131,22 @@ const MultiStepRegistrationForm = () => {
   };
 
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
-  setIsSubmitting(true);
-  try {
-    // 🔥 MOCK API CALL (replace with real fetch when backend is ready)
-    console.log("Submitting registration data:", data);
-    
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 800));
-    
-    // Simulate success
-    navigate("/engineer/auth");
-    
-  } catch (error) {
-    console.error("Network error:", error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    setIsSubmitting(true);
+    try {
+      // 🔥 MOCK API CALL (replace with real fetch when backend is ready)
+      console.log("Submitting registration data:", data);
+
+      // Simulate network delay
+      await new Promise((r) => setTimeout(r, 800));
+
+      // Simulate success
+      navigate("/engineer/auth");
+    } catch (error) {
+      console.error("Network error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const goToPreviousStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
@@ -177,6 +175,7 @@ const MultiStepRegistrationForm = () => {
         {currentStep > 1 && (
           <div>
             <button
+              type="button" // Prevents form submission
               onClick={goToPreviousStep}
               className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
               aria-label="Go back"
@@ -208,7 +207,11 @@ const MultiStepRegistrationForm = () => {
             />
           </div>
 
-          <div className="p-2 relative gap-3 overflow-auto max-h-[75vh] w-full justify-items-center">
+          {/* ✅ FIXED: Added key={currentStep} to force re-render on step change */}
+          <div
+            key={currentStep}
+            className="p-2 relative gap-3 overflow-auto max-h-[75vh] w-full justify-items-center"
+          >
             {renderStep()}
           </div>
 

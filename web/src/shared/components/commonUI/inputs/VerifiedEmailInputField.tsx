@@ -1,16 +1,10 @@
-// src/shared/components/commonUI/inputs/VerifiedEmailInputField.tsx
-
-import { useState, useMemo } from "react";
-import {
-  Controller,
-  useFormContext,
-  type RegisterOptions,
-} from "react-hook-form";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { MdOutlineMailOutline, MdCheckCircle } from "react-icons/md";
 import Popup from "../../Popup";
-import OTPPage from "@/pages/auth/components/OTPModal";
-import { validateEmail, validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import OTPPage from "@/shared/components/commonUI/inputs/OTPModal";
+import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "./type";
 
 export const VerifiedEmailInputField = ({
@@ -18,41 +12,45 @@ export const VerifiedEmailInputField = ({
   label = "Email ID",
   placeholder,
   required = false,
-  rules = validateEmailRules,
   disabled: externalDisabled = false,
   inputClassName = "w-full h-11 rounded-md border border-gray-300 dark:border-gray-600 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   onVerifySuccess,
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedEmailInputFieldProps) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, clearErrors, setValue, trigger } = useFormContext();
   const [showOTP, setShowOTP] = useState(false);
   const [localVerified, setLocalVerified] = useState(false);
 
   const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
-  // Unified disabled state: disable if verified OR externally disabled
-  const isInputDisabled = verified || externalDisabled;
+  // ✅ Track latest verified state
+  const verifiedRef = useRef(verified);
+  useEffect(() => {
+    verifiedRef.current = verified;
+  }, [verified]);
 
+  const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
 
   const isValidEmail = useMemo(() => {
     if (!emailValue || verified) return false;
-    const result = validateEmail(emailValue);
-    return result === true;
+    return validateEmail(emailValue) === true;
   }, [emailValue, verified]);
 
-  const validationRules: RegisterOptions = {
-    required: required ? `${label} is required` : false,
-    ...rules,
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (verified) {
+      setVerified(false);
+      clearErrors(name);
+    }
+    return newValue;
   };
 
-  // ✅ Apply grey style when verified — remove bg-white and replace with bg-gray-100
   const getInputClassName = () => {
     let baseClasses = inputClassName;
 
-    // Remove bg-white / dark:bg-gray-800 if disabled
     if (isInputDisabled) {
       baseClasses = baseClasses
         .replace(/bg-white/g, 'bg-gray-100')
@@ -61,7 +59,6 @@ export const VerifiedEmailInputField = ({
         .replace(/dark:text-gray-100/g, 'dark:text-gray-400');
     }
 
-    // Add padding and icon space
     baseClasses = `${baseClasses} pl-10 ${verified ? "pr-10" : ""}`;
 
     if (isInputDisabled) {
@@ -83,7 +80,22 @@ export const VerifiedEmailInputField = ({
         <Controller
           name={name}
           control={control}
-          rules={validationRules}
+          rules={{
+            validate: (value: string) => {
+              const trimmed = value?.trim();
+              if (!trimmed) {
+                return required ? `${label} is required` : true;
+              }
+
+              const emailValid = validateEmail(trimmed);
+              if (emailValid !== true) return emailValid;
+
+              // ✅ Use ref to get latest verified state
+              if (!verifiedRef.current) return "Please verify your email address";
+
+              return true;
+            },
+          }}
           render={({ field, fieldState: { error } }) => (
             <>
               <div className="flex items-center gap-3">
@@ -93,6 +105,11 @@ export const VerifiedEmailInputField = ({
                   </div>
                   <input
                     {...field}
+                    value={field.value ?? ""}
+                    onChange={(e) => {
+                      const newValue = handleEmailChange(e);
+                      field.onChange(newValue);
+                    }}
                     type="email"
                     placeholder={placeholder || "Enter your email"}
                     disabled={isInputDisabled}
@@ -136,6 +153,13 @@ export const VerifiedEmailInputField = ({
           onVerifySuccess={() => {
             setVerified(true);
             onVerifySuccess?.();
+
+            // ✅ Re-validate with updated verifiedRef
+            const currentValue = watch(name);
+            setValue(name, currentValue, { shouldValidate: true });
+            setValue("emailOTP", ""); // Clear the OTP field
+            clearErrors(name);
+            trigger(name);
             setShowOTP(false);
           }}
         />

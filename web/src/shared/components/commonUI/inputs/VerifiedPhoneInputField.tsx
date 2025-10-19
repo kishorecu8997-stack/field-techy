@@ -1,16 +1,16 @@
 // src/shared/components/commonUI/inputs/VerifiedPhoneInputField.tsx
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { CountrySelect } from "./CountrySelect";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { MdCheckCircle } from "react-icons/md";
 import Popup from "../../Popup";
-import OTPPage from "@/pages/auth/components/OTPModal";
+import OTPModal from "@/shared/components/commonUI/inputs/OTPModal";
+import { CountrySelect } from "./CountrySelect";
 import type { VerifiedPhoneInputFieldProps } from "./type";
 
 interface Country {
@@ -23,25 +23,28 @@ interface Country {
 export const VerifiedPhoneInputField = ({
   name,
   label = "Mobile Number",
+  isShowLabel = false,
   placeholder = "Enter mobile number",
   required = false,
-  rules,
   disabled: externalDisabled = false,
   inputClassName,
   onVerifySuccess,
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedPhoneInputFieldProps) => {
-  const { control, getValues, setValue, clearErrors, watch } = useFormContext();
+  const { control, getValues, setValue, clearErrors, watch, trigger } = useFormContext();
   const [showOTP, setShowOTP] = useState(false);
   const [localVerified, setLocalVerified] = useState(false);
 
   const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
-  // Visual & functional disabled state
-  const isInputDisabled = verified || externalDisabled;
+  const verifiedRef = useRef(verified);
+  useEffect(() => {
+    verifiedRef.current = verified;
+  }, [verified]);
 
+  const isInputDisabled = verified || externalDisabled;
   const phoneValue = watch(name);
 
   const countries: Country[] = [
@@ -64,11 +67,12 @@ export const VerifiedPhoneInputField = ({
     if (!currentValue) {
       setValue(name, `${countries[0].code} `, { shouldValidate: false });
     }
-  }, [name, getValues, setValue]);
+  }, [name, getValues, setValue, countries]);
 
+  // ✅ Full validation (used by RHF)
   const validatePhone = (fullValue: string): true | string => {
     if (!fullValue?.trim()) {
-      return required ? `${label || name} is required` : true;
+      return required ? `${label} is required` : true;
     }
 
     const parts = fullValue.trim().split(" ");
@@ -108,37 +112,30 @@ export const VerifiedPhoneInputField = ({
     return true;
   };
 
-  const isValidPhone = (() => {
-    if (!phoneValue || verified) return false;
+  // ✅ Simplified check for "Verify" button by reusing the main validator.
+  const canVerify = !verified && validatePhone(phoneValue) === true;
 
-    let validationKey = "india";
-    let countryCode = "+91";
-    for (const c of countries) {
-      if (phoneValue.startsWith(c.code)) {
-        validationKey = c.validationKey;
-        countryCode = c.code;
-        break;
-      }
-    }
-
-    const number = phoneValue.replace(countryCode, "").replace(/\s/g, "");
-    if (!/^\d+$/.test(number)) return false;
-
-    if (validationKey === "india") {
-      if (number.length !== 10) return false;
-      if (!/^[6-9]/.test(number)) return false;
-    }
-    if (validationKey === "uk") {
-      if (number.length !== 10) return false;
-      if (!/^[789]/.test(number)) return false;
-    }
-    return true;
-  })();
-
+  // ✅ Unified validation with verification enforcement
   const validationRules: RegisterOptions = {
-    required: required ? `${label} is required` : false,
-    validate: validatePhone,
-    ...rules,
+    validate: (value: string) => {
+      if (required && (!value || !value.trim())) {
+        return `${label} is required`;
+      }
+      if (!value || !value.trim()) {
+        return true;
+      }
+
+      const formatValid = validatePhone(value);
+      if (formatValid !== true) {
+        return formatValid;
+      }
+
+      if (!verifiedRef.current) {
+        return "Please verify your mobile number";
+      }
+
+      return true;
+    },
   };
 
   const getInputClassName = () => {
@@ -146,15 +143,15 @@ export const VerifiedPhoneInputField = ({
       inputClassName || ""
     } ${verified ? "pr-10" : ""}`;
     if (isInputDisabled) {
-      return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed`;
+      return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md`;
     }
-    return `${baseClasses} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`;
+    return `${baseClasses} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md`;
   };
 
   return (
     <div className="w-full">
       <div className="flex flex-col py-1">
-        {label && (
+        {isShowLabel && (
           <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
             {label} {required && <span className="text-red-600">*</span>}
           </label>
@@ -165,44 +162,46 @@ export const VerifiedPhoneInputField = ({
           control={control}
           rules={validationRules}
           render={({ field, fieldState: { error } }) => {
-            const [countryCode = countries[0].code, ...rest] = (
-              field.value || ""
-            ).split(" ");
+            const [countryCode = countries[0].code, ...rest] = (field.value || "").split(" ");
             const numberValue = rest.join(" ");
 
             return (
               <>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="relative">
-                      {/* Unified border container */}
+                <div className="flex items-center gap-3 w-full">
+                  <div className="flex flex-1 min-w-0">
+                    <div className="relative w-full">
                       <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600">
-                        <CountrySelect
-                          countries={countries}
-                          value={countryCode}
-                          onChange={(newCode) => {
-                            if (!isInputDisabled) {
-                              field.onChange(`${newCode} ${numberValue}`);
-                              clearErrors(name);
-                            }
-                          }}
-                          disabled={isInputDisabled}
-                        />
+                        <div className="shrink-0">
+                          <CountrySelect
+                            countries={countries}
+                            value={countryCode}
+                            onChange={(newCode) => {
+                              if (!isInputDisabled) {
+                                field.onChange(`${newCode} ${numberValue}`);
+                                clearErrors(name);
+                                setVerified(false);
+                              }
+                            }}
+                            disabled={isInputDisabled}
+                          />
+                        </div>
                         <input
                           type="tel"
                           value={numberValue}
                           disabled={isInputDisabled}
                           onChange={(e) => {
-                            if (!isInputDisabled && /^\d*$/.test(e.target.value)) {
-                              field.onChange(`${countryCode} ${e.target.value}`);
+                            const inputVal = e.target.value;
+                            if (/^\d*$/.test(inputVal)) {
+                              field.onChange(`${countryCode} ${inputVal}`);
+                              if (verified) setVerified(false);
                             }
                           }}
-                          onBlur={(e) => {
-                            const trimmed = e.target.value.trim();
-                            field.onChange(`${countryCode} ${trimmed}`);
+                          onBlur={() => {
+                            field.onChange(`${countryCode} ${numberValue.trim()}`);
                           }}
                           placeholder={placeholder}
                           className={getInputClassName()}
+                          style={{ minWidth: 0 }}
                         />
                       </div>
 
@@ -217,8 +216,8 @@ export const VerifiedPhoneInputField = ({
                   {!verified && (
                     <Button
                       type="button"
-                      className="h-[44px] min-w-[104px] px-5 rounded-lg bg-gradient-to-r from-teal-700 to-teal-900 text-white text-base font-semibold flex items-center justify-center disabled:from-gray-400 disabled:to-gray-500 disabled:text-gray-200 disabled:cursor-not-allowed"
-                      disabled={!isValidPhone}
+                      className="h-[44px] min-w-[104px] px-5 rounded-lg bg-gradient-to-r from-teal-700 to-teal-900 text-white text-base font-semibold flex items-center justify-center disabled:from-gray-400 disabled:to-gray-500 disabled:text-gray-200 disabled:cursor-not-allowed whitespace-nowrap"
+                      disabled={!canVerify}
                       onClick={() => setShowOTP(true)}
                     >
                       Verify
@@ -238,13 +237,16 @@ export const VerifiedPhoneInputField = ({
       </div>
 
       <Popup open={showOTP} onClose={() => setShowOTP(false)}>
-        <OTPPage
+        <OTPModal
           header="Verify Mobile Number"
           description="A verification OTP has been sent to your mobile. Please check your mobile."
           onClose={() => setShowOTP(false)}
           onVerifySuccess={() => {
             setVerified(true);
             onVerifySuccess?.();
+            // ✅ CRITICAL: Re-validate to clear "Please verify..." error
+            setValue("mobileOTP", ""); // Clear the OTP field
+            trigger(name);
             setShowOTP(false);
           }}
         />

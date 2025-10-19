@@ -189,6 +189,7 @@ export interface VerifiedEmailInputFieldProps {
 export interface VerifiedPhoneInputFieldProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
   rules?: RegisterOptions;
@@ -197,4 +198,18 @@ export interface VerifiedPhoneInputFieldProps {
   onVerifySuccess?: () => void;
   verified?: boolean;
   setVerified?: (val: boolean) => void;
+}
+
+export interface OTPValues {
+  otp: string;
+}
+
+interface VerifyEmailModalProps {
+  header?: string;
+  description?: string;
+  onClose?: () => void;
+  onVerifySuccess?: () => void;
+  buttonText?: string;
+  isSuccess?: boolean;
+  name?: string;
 }

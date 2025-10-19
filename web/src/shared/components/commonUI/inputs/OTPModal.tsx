@@ -3,20 +3,7 @@ import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-
-interface VerifyEmailModalProps {
-  header?: string;
-  description?: string;
-  onClose?: () => void;
-  onVerifySuccess?: () => void;
-  buttonText?: string;
-  isSuccess?: boolean;
-  name?: string;
-}
-
-export interface OTPValues {
-  otp: string;
-}
+import type { VerifyEmailModalProps } from "./type";
 
 const OTPModal: React.FC<VerifyEmailModalProps> = ({
   header,

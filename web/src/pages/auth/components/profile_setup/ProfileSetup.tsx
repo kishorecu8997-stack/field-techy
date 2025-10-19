@@ -1,6 +1,6 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { useFormContext, useWatch } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useFormContext, useWatch, Controller } from "react-hook-form";
+import { useEffect } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineLocationMarker } from "react-icons/hi";
@@ -12,10 +12,11 @@ import countries from "@/dummy_data/countries";
 import {
   validateZipcode,
   validateName,
-  validateAddress,
-  validatePortfolio,
+  validateAddress,  
   validateAmount,
   validateCompany,
+  validatePortfolio
+  //validatePortfolioLink
 } from "@/pages/auth/components/profile_setup/profileValidators";
 import {
   validateExperience,
@@ -30,7 +31,7 @@ import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/Verifie
 
 // Recommended: Place ProfileSetup inside a FormProvider
 const ProfileSetup = () => {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, trigger, watch } = useFormContext();
   const location = useLocation();
   const {
     signupEmail,
@@ -42,14 +43,28 @@ const ProfileSetup = () => {
   } = location.state || {};
   const country = useWatch({ control, name: "country" });
 
-  const [isMobileVerified, setIsMobileVerified] = useState(!!mobileVerified);
-  const [isEmailVerified, setIsEmailVerified] = useState(!!emailVerified);
-  
+  // Use react-hook-form to manage verification state
+  const isMobileVerified = watch("isMobileVerified");
+  const isEmailVerified = watch("isEmailVerified");
+
   // Set up the email and phone field on mount / when location.state changes
   useEffect(() => {
     if (signupEmail) setValue("email", signupEmail);
     if (signupPhone) setValue("phone", signupPhone);
-  }, [signupEmail, signupPhone, setValue]);
+    // Initialize verification status in the form state
+    if (emailVerified) setValue("isEmailVerified", true);
+    if (mobileVerified) setValue("isMobileVerified", true);
+  }, [signupEmail, signupPhone, setValue, emailVerified, mobileVerified]);
+
+  // When a field is verified, trigger validation to clear any "must be verified" error.
+  useEffect(() => {
+    if (isMobileVerified) {
+      trigger("phone");
+    }
+    if (isEmailVerified) {
+      trigger("email");
+    }
+  }, [isMobileVerified, isEmailVerified, trigger]);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
@@ -74,21 +89,34 @@ const ProfileSetup = () => {
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
-      <VerifiedPhoneInputField
-        name="phone"
-        required
-        verified={isMobileVerified}
-        setVerified={setIsMobileVerified}
-        disabled={disableMobile}
+      <Controller
+        name="isMobileVerified"
+        control={control}
+        defaultValue={!!mobileVerified}
+        render={({ field: { onChange, value } }) => (
+          <VerifiedPhoneInputField
+            name="phone"
+            required
+            verified={value}
+            setVerified={onChange}
+            disabled={disableMobile}
+          />
+        )}
       />
-      
 
-      <VerifiedEmailInputField
-        name="email"
-        required
-        verified={isEmailVerified}
-        setVerified={setIsEmailVerified}
-        disabled={disableEmail}
+      <Controller
+        name="isEmailVerified"
+        control={control}
+        defaultValue={!!emailVerified}
+        render={({ field: { onChange, value } }) => (
+          <VerifiedEmailInputField
+            name="email"
+            required
+            verified={value}
+            setVerified={onChange}
+            disabled={disableEmail}
+          />
+        )}
       />
 
       <InputField
@@ -137,6 +165,7 @@ const ProfileSetup = () => {
         placeholder="Portfolio Link"
         leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validatePortfolio(v, country) }}
+        //rules={{ validate: (v: string) => validatePortfolioLink(v) }}
       />
       <SelectField
         name="serviceCategory"

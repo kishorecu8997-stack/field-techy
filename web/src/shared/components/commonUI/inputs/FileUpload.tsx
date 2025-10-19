@@ -24,7 +24,7 @@ export const FileUpload = ({
   minPages = 1,
   maxPages = 5,
 }: InputFieldProps) => {
-  const { control } = useFormContext();
+  const { control, getValues } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number | null>(null);
@@ -37,6 +37,20 @@ export const FileUpload = ({
       pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
     }
   }, []);
+
+  // Initialize state from form context if a file already exists
+  useEffect(() => {
+    const existingFiles = getValues(name) as FileList | undefined;
+    if (existingFiles && existingFiles.length > 0) {
+      const file = existingFiles[0];
+      setFileName(file.name);
+      setFileSize(formatFileSize(file.size));
+      if (file.type === "application/pdf" && validatePDF) {
+        validatePdfPages(file).then(({ pages }) => setPageCount(pages));
+      }
+      setFileUrl(URL.createObjectURL(file));
+    }
+  }, [getValues, name, validatePDF]);
 
   // Cleanup object URL
   useEffect(() => {

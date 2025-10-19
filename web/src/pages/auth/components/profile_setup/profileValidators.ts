@@ -31,24 +31,52 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
  *   no leading/trailing space
  */
 export const validateZipcode = (value: string, country?: string) => {
-  const v = (value || '').trim();
+  const v = (value || '');
 
   if (country === 'in') {
-    return /^\d{6}$/.test(v) ? true : 'Enter a valid 6-digit PIN code for India';
+    // Reject leading/trailing spaces
+    if (v !== v.trim()) {
+      return 'PIN code must not start or end with a space';
+    }
+
+    // Must be exactly 6 digits
+    if (!/^\d{6}$/.test(v.trim())) {
+      return 'Enter a valid 6-digit PIN code for India';
+    }
+
+    return true;
   }
 
   if (country === 'uk') {
-    // 6 to 8 alphanumeric chars, maximum one internal space, no leading/trailing space    
-    const ukRegex = /^(?! )(?!.* $)(?!(?:.* ){2,})[A-Za-z0-9 ]{6,8}$/;
+    // Reject leading/trailing spaces
+    if (v !== v.trim()) {
+      return 'UK postcode must not start or end with a space';
+    }
 
-    return ukRegex.test(v)
-      ? true
-      : 'Enter a valid UK postcode (6-8 alphanumeric chars, max one internal space)';
+    // Reject more than one internal space
+    const spaceCount = (v.match(/ /g) || []).length;
+    if (spaceCount > 1) {
+      return 'UK postcode can contain at most one internal space';
+    }
+
+    // Must be 6–8 characters total (including space if present)
+    if (v.length < 6 || v.length > 8) {
+      return 'UK postcode must be 6–8 characters long';
+    }
+
+    // Must be alphanumeric with optional single space
+    const ukRegex = /^([A-Za-z0-9]{1,4} [A-Za-z0-9]{1,4}|[A-Za-z0-9]{6,8})$/;
+    if (!ukRegex.test(v)) {
+      return 'Enter a valid UK postcode (alphanumeric, optional single space)';
+    }
+
+    return true;
   }
 
-  // default: accept
+  // Default: accept anything
   return true;
 };
+
 
 /**
  * Validate address - allow letters, numbers and spaces only; length 20-50
@@ -224,8 +252,76 @@ export const validateExperience = (value: string) => {
   return true;
 };
 
+/**
+ * Validates if a field has been verified.
+ * @param verified - The verification status.
+ * @param fieldName - The name of the field being validated.
+ * @returns {true | string} - True if verified, otherwise an error message.
+ */
+export const validateIsVerified = (verified: boolean, fieldName: string) => {
+  return verified ? true : `${fieldName} must be verified.`;
+};
 
+/**
+ * Specific validator for phone number verification status.
+ * @param {boolean} verified - The verification status of the phone number.
+ * @returns {true | string} - True if verified, otherwise an error message.
+ */
+export const validateIsPhoneVerified = (verified: boolean) => {
+  return validateIsVerified(verified, "Phone number");
+};
 
+export const validatePortfolioLink = (value: string) => {
+  if (/^\s|\s$/.test(value || ""))
+    return "PortfolioLink must not start or end with a space";
+  const v = (value || "").trim();
+
+  if (!v) return "Portfolio link is required";
+  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+
+  try {
+    const url = new URL(v);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "Portfolio link must start with http:// or https://";
+    }
+
+    const hostname = url.hostname.toLowerCase();
+    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+
+    const isGitHubProfile =
+      hostname.includes("github.com") && /^\/[^/]+$/.test(pathname);
+
+    const isLinkedInProfile =
+      hostname.includes("linkedin.com") && /^\/in\/[^/]+$/.test(pathname); // LinkedIn profiles follow /in/username
+
+    const isExampleProfile =
+      hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
+
+    const isPersonalSite =
+      !hostname.includes("linkedin.com") && !hostname.includes("github.com") && !hostname.endsWith(".zip") &&
+      !hostname.endsWith(".exe") &&
+      !hostname.includes("malware") &&
+      !hostname.includes("phishing") &&
+      !hostname.includes("adult") &&
+      !hostname.includes("torrent") &&
+      pathname === ""; // homepage only
+
+    const isAllowed =
+      isGitHubProfile ||
+      isLinkedInProfile ||
+      isExampleProfile ||
+      isPersonalSite;
+
+    if (!isAllowed) {
+      return "Only GitHub, LinkedIn profile URL, or safe personal homepages are allowed";
+    }
+
+    return true;
+  } catch {
+    return "Portfolio link must be a valid URL";
+  }
+};
 
 export default {
   validateName,
@@ -235,5 +331,10 @@ export default {
   validateAmount,
   validateExperience,
   validateDesignation,
-  validateCompany
+  validateCompany,
+  validateIsVerified,
+  validateIsPhoneVerified,
+  validatePortfolioLink
 };
+
+
