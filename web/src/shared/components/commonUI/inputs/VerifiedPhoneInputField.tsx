@@ -20,6 +20,26 @@ interface Country {
   validationKey: "india" | "uk";
 }
 
+/**
+ * A composite input field for entering and verifying a mobile phone number with an OTP.
+ *
+ * This component combines a country code selector with a phone number input. It integrates
+ * with `react-hook-form` for validation and state management. It handles its own
+ * verification flow by displaying an OTP modal and can operate in both controlled
+ * (via `verified` and `setVerified` props) and uncontrolled modes.
+ *
+ * @param {VerifiedPhoneInputFieldProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label="Mobile Number"] - The text label for the input field.
+ * @param {boolean} [props.isShowLabel=false] - Toggles the visibility of the label.
+ * @param {string} [props.placeholder="Enter mobile number"] - The placeholder text for the input.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {boolean} [props.disabled=false] - Disables the input field externally.
+ * @param {string} [props.inputClassName] - Custom CSS classes for the input element.
+ * @param {() => void} [props.onVerifySuccess] - Callback executed on successful OTP verification.
+ * @param {boolean} [props.verified] - A boolean to control the verified state from a parent component.
+ * @param {(isVerified: boolean) => void} [props.setVerified] - A function to update the verified state in the parent.
+ */
 export const VerifiedPhoneInputField = ({
   name,
   label = "Mobile Number",

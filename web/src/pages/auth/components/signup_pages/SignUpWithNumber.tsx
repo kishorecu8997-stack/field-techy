@@ -18,12 +18,20 @@ export type LoginFormData = {
 };
 
 /**
- * Phone-based sign-up form that collects a phone number and terms acceptance,
- * then triggers OTP verification via modal. Includes toggle to email sign-up
- * and LinkedIn alternative.
+ * Renders a sign-up form for users to register with their phone number.
  *
- * @param {Object} props
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Toggles between phone/email sign-up flows
+ * This component captures the user's phone number and their agreement to the terms and conditions.
+ * Upon submission, it initiates an OTP verification process. If the OTP is verified
+ * successfully, it navigates the user to the profile setup page, passing along the
+ * verified phone number.
+ *
+ * It also provides options to switch to an email-based sign-up or to use social
+ * providers like LinkedIn.
+ *
+ * @param {object} props - The component props.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
+ *   passed from the parent to toggle the view to the email sign-up screen.
+ * @returns {JSX.Element} The rendered phone number sign-up form.
  */
 const SignUpWithNumber = ({
   setIsNumberLogin,

@@ -19,12 +19,22 @@ import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
+
 /**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
+ * Renders the primary login form for users to sign in with their email and password.
+ *
+ * This component provides a standard login interface, including fields for email and password,
+ * a "Remember me" checkbox, and a link to the "Forgot Password" page. It uses `react-hook-form`
+ * for form state management and validation.
+ *
+ * Upon successful form submission, it displays an OTP modal for two-factor authentication.
+ * It also provides UI options to switch to a phone-based login or to use social login providers
+ * like LinkedIn.
+ *
+ * @param {object} props - The component props.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
+ *   passed from the parent component to toggle the view to the phone number login screen.
+ * @returns {JSX.Element} The rendered login form component.
  */
 const Login = ({
   setIsNumberLogin,

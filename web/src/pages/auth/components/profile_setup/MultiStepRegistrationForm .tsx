@@ -44,6 +44,20 @@ export type CompleteRegistrationData = {
   emailOTP?: string;
 };
 
+/**
+ * A multi-step registration form component that guides users through
+ * profile setup, background verification, and password creation.
+ *
+ * This component manages the overall flow of the registration process,
+ * handling step navigation, form submission, and integration with
+ * `react-hook-form` for state management and validation across steps.
+ * It orchestrates the display of `ProfileSettingPage`, `BackgroundVerification`,
+ * and `SetPassword` components.
+ *
+ * Upon successful completion of all steps, it displays a success popup
+ * and navigates the user to the sign-in page.
+ *
+ */
 const MultiStepRegistrationForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);

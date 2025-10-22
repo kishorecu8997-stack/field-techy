@@ -19,27 +19,22 @@ export interface OTPValues {
 }
 
 /**
- * OTP verification page component for handling one-time password authentication.
- * Provides an input field for entering OTP, countdown timer, and resend functionality.
- * Used in email/phone verification processes during registration or login.
- * 
- * @component
- * @param {VerifyEmailModalProps} props - Component properties
- * @param {string} [props.header] - Header text for the OTP modal
- * @param {string} [props.description] - Description text for the OTP process
- * @param {() => void} [props.onClose] - Function to close the modal
- * @param {() => void} [props.handleNavigate] - Function to navigate after successful verification
- * @example
- * return (
- *   <OTPPage 
- *     header="Verify Email" 
- *     description="Enter the code sent to your email" 
- *     onClose={() => setShowOTP(false)}
- *     handleNavigate={() => navigate('/dashboard')}
- *   />
- * )
- * 
- * @returns {JSX.Element} The rendered OTP verification component
+ * A self-contained component for OTP (One-Time Password) verification, typically used within a modal or popup.
+ *
+ * This component provides a complete UI for OTP entry, including input fields, a countdown
+ * timer for resending the code, and a submit button. It manages its own form state using
+ * `react-hook-form`.
+ *
+ * It is used for various verification flows, such as email/phone confirmation during sign-up,
+ * password resets, or two-factor authentication at login.
+ *
+ * @param {VerifyEmailModalProps} props - The props for the component.
+ * @param {string} [props.header] - The main title displayed in the modal.
+ * @param {string} [props.description] - A descriptive text shown below the header.
+ * @param {() => void} [props.onClose] - Callback function to close the modal.
+ * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed.
+ * @param {string} [props.buttonText="Submit"] - The text for the submit button.
+ * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
  */
 const OTPPage: React.FC<VerifyEmailModalProps> = ({
   header,

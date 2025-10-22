@@ -19,26 +19,20 @@ export interface SignUpFormData {
 }
 
 /**
- * Sign-up form component for new engineer users.
- * Collects the user's email and consent to terms, then triggers an OTP verification flow
- * via a modal popup. Also provides alternative login options:
- * - Switch to phone number login
- * - Continue with LinkedIn
+ * Renders a sign-up form for users to register with their email address.
  *
- * Features:
- * - Form validation using `react-hook-form`
- * - Terms & Conditions acceptance enforcement (submit disabled until accepted)
- * - Navigation to Sign In page for existing users
- * - Modal-based OTP verification after form submission
+ * This component captures the user's email and their agreement to the terms and conditions.
+ * Upon submission, it initiates an OTP verification process. If the OTP is verified
+ * successfully, it navigates the user to the profile setup page, passing along the
+ * verified email address.
  *
- * @component
- * @param {Object} props - Component props
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Callback to switch to phone-based login flow
+ * It also provides options to switch to a phone-based sign-up or to use social
+ * providers like LinkedIn.
  *
- * @example
- * <SignUp setIsNumberLogin={setIsNumberLogin} />
- *
- * @returns {JSX.Element} The sign-up form UI with email input, terms checkbox, and action buttons.
+ * @param {object} props - The component props.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
+ *   passed from the parent to toggle the view to the phone number sign-up screen.
+ * @returns {JSX.Element} The rendered email sign-up form.
  */
 const SignUpWithEmail = ({
   setIsNumberLogin,

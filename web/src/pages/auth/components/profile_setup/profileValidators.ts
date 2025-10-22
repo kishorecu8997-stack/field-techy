@@ -1,9 +1,20 @@
 /**
- * Profile validators for the Profile Setup form.
+ * @file A collection of validation functions for the user profile setup form.
+ *
+ * This module provides a set of reusable validators designed to be used with
+ * `react-hook-form`. Each function targets a specific field (e.g., name, address,
+ * portfolio link) and returns `true` for valid input or a string with an
+ * error message for invalid input.
  */
 
 /**
- * Validate name (first/last) - only letters allowed (no spaces), length 8-35
+ * Validates a name field (first or last).
+ * - Must not contain any spaces.
+ * - Must contain only alphabetic characters.
+ * - Must be between 2 and 50 characters long.
+ * @param {string} value - The name string to validate.
+ * @param {string} [fieldLabel="Name"] - The label for the field, used in error messages.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateName = (value: string, fieldLabel = 'Name') => {
   // length requirement: 2 to 50 characters
@@ -25,10 +36,12 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
 };
 
 /**
- * Validate postcode/ZIP based on country rules.
- * - India (in): exactly 6 digits
- * - United Kingdom (uk): 6 to 8 alphanumeric chars, maximum one internal space,
- *   no leading/trailing space
+ * Validates a postal code based on the selected country.
+ * - For India ('in'): Must be exactly 6 digits.
+ * - For the UK ('uk'): Must be 6-8 alphanumeric characters with at most one internal space.
+ * @param {string} value - The postal code to validate.
+ * @param {string} [country] - The country code ('in' or 'uk') to apply specific rules.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateZipcode = (value: string, country?: string) => {
   const v = (value || '');
@@ -79,7 +92,12 @@ export const validateZipcode = (value: string, country?: string) => {
 
 
 /**
- * Validate address - allow letters, numbers and spaces only; length 20-50
+ * Validates a street address.
+ * - Must not start or end with a space.
+ * - Must be between 6 and 50 characters long.
+ * - Allows letters, numbers, spaces, and the characters /, . - #
+ * @param {string} value - The address string to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateAddress = (value: string) => {
   if (!value) return 'Address must be at least 6 characters';
@@ -100,22 +118,15 @@ export const validateAddress = (value: string) => {
 
 
 /**
- * Validate a portfolio/URL field:
- * - optional (if empty, valid)
- * - length 10-100
- * - no whitespace
- * - must be a valid URL (adds https:// if scheme missing)
- * - attempts a HEAD request to check reachability but gracefully
- *   degrades when CORS or network restrictions prevent verification.
- */
-/**
- * Validate a portfolio/URL field:
- * - optional (if empty, valid)
- * - length 10–100
- * - no whitespace
- * - must be a valid URL
- * - **only allows www.linkedin.com or www.github.com**
- * - skips reachability check (due to CORS), but validates domain strictly
+ * Validates a portfolio URL, with specific rules for LinkedIn and GitHub.
+ * - The field is optional.
+ * - Must be a valid URL format between 10 and 100 characters.
+ * - Must not contain spaces.
+ * - Only allows `linkedin.com` and `github.com` domains.
+ * - Enforces country-specific path rules for LinkedIn profiles (e.g., `/in/` for India).
+ * @param {string} value - The portfolio URL to validate.
+ * @param {string} [country] - The country code ('in' or 'uk') for region-specific rules.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validatePortfolio = (value: string, country?: string) => {
   const v = (value || "").trim();
@@ -167,10 +178,12 @@ export const validatePortfolio = (value: string, country?: string) => {
 
 
 /**
- * Validate amount field:
- * - required to be digits only
- * - length between 2 and 5 characters
- * - no letters or special characters allowed
+ * Validates a monetary amount.
+ * - The field is required.
+ * - Must be a valid number, allowing up to two decimal places.
+ * - The value must be between 1 and 99999.
+ * @param {string} value - The amount string to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateAmount = (value: string) => {
   const v = (value || '').trim();
@@ -192,7 +205,14 @@ export const validateAmount = (value: string) => {
 };
 
 
-
+/**
+ * Validates a job designation.
+ * - Must be between 2 and 50 characters.
+ * - Must not start or end with a space.
+ * - Allows only letters and single spaces between words.
+ * @param {string} value - The designation string to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
+ */
 export const validateDesignation = (value: string) => {
   if (!value) return 'Current Designation must be at least 2 characters';
 
@@ -212,6 +232,14 @@ export const validateDesignation = (value: string) => {
 };
 
 
+/**
+ * Validates a company name.
+ * - Must be between 4 and 50 characters.
+ * - Must not start or end with a space.
+ * - Allows letters, numbers, single spaces, and the characters / & - .
+ * @param {string} value - The company name to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
+ */
 export const validateCompany = (value: string) => {
   if (!value) return 'Company/Employer must be at least 4 characters';
 
@@ -231,10 +259,11 @@ export const validateCompany = (value: string) => {
 };
 
 /**
- * Validate experience field:
- * - required
- * - digits only
- * - length between 1 and 3 characters
+ * Validates years of experience.
+ * - The field is required.
+ * - Must be a whole number between 1 and 99.
+ * @param {string} value - The experience value to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateExperience = (value: string) => {
   if (!value) return 'Experience is required';
@@ -274,9 +303,11 @@ export const validateIsPhoneVerified = (verified: boolean) => {
 export const validatePortfolioLink = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "PortfolioLink must not start or end with a space";
+
   const v = (value || "").trim();
 
-  if (!v) return "Portfolio link is required";
+  if (!v) return true; // ✅ Field is optional now
+
   if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
 
   try {
@@ -299,7 +330,9 @@ export const validatePortfolioLink = (value: string) => {
       hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
 
     const isPersonalSite =
-      !hostname.includes("linkedin.com") && !hostname.includes("github.com") && !hostname.endsWith(".zip") &&
+      !hostname.includes("linkedin.com") &&
+      !hostname.includes("github.com") &&
+      !hostname.endsWith(".zip") &&
       !hostname.endsWith(".exe") &&
       !hostname.includes("malware") &&
       !hostname.includes("phishing") &&
@@ -323,6 +356,7 @@ export const validatePortfolioLink = (value: string) => {
   }
 };
 
+
 export default {
   validateName,
   validateZipcode,
@@ -336,5 +370,3 @@ export default {
   validateIsPhoneVerified,
   validatePortfolioLink
 };
-
-

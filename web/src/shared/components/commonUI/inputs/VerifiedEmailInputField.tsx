@@ -7,6 +7,25 @@ import OTPPage from "@/shared/components/commonUI/inputs/OTPModal";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "./type";
 
+/**
+ * A reusable and self-contained input field for email addresses that require OTP verification.
+ *
+ * This component integrates with `react-hook-form` and manages its own verification flow,
+ * including displaying an OTP modal and updating its verified status. It can be used in
+ * either a controlled manner (by passing `verified` and `setVerified` props) or an
+ * uncontrolled manner (managing its own internal state).
+ *
+ * @param {VerifiedEmailInputFieldProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label="Email ID"] - The text label for the input field.
+ * @param {string} [props.placeholder] - The placeholder text for the input.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {boolean} [props.disabled=false] - Disables the input field externally.
+ * @param {string} [props.inputClassName] - Custom CSS classes to apply to the input element.
+ * @param {() => void} [props.onVerifySuccess] - A callback function executed upon successful OTP verification.
+ * @param {boolean} [props.verified] - A boolean to control the verified state from a parent component.
+ * @param {(isVerified: boolean) => void} [props.setVerified] - A function to update the verified state in the parent component.
+ */
 export const VerifiedEmailInputField = ({
   name,
   label = "Email ID",

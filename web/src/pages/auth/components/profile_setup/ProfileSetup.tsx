@@ -15,8 +15,8 @@ import {
   validateAddress,  
   validateAmount,
   validateCompany,
-  validatePortfolio
-  //validatePortfolioLink
+  //validatePortfolio
+  validatePortfolioLink
 } from "@/pages/auth/components/profile_setup/profileValidators";
 import {
   validateExperience,
@@ -29,7 +29,19 @@ import { useLocation } from "react-router-dom";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 
-// Recommended: Place ProfileSetup inside a FormProvider
+/**
+ * A form component for collecting a user's detailed profile information.
+ *
+ * This component renders a series of input fields for capturing user details such as
+ * name, contact information (with verification), address, skills, and professional
+ * experience. It is designed to be used within a `FormProvider` from `react-hook-form`,
+ * as it relies on the form context for state management and validation.
+ *
+ * It also initializes fields like email and phone number from `location.state` if they
+ * are passed during navigation from a previous step (e.g., initial sign-up), and
+ * handles their pre-verified status accordingly.
+ * @returns {JSX.Element} The rendered form fields for the profile setup step.
+ */
 const ProfileSetup = () => {
   const { control, setValue, trigger, watch } = useFormContext();
   const location = useLocation();
@@ -156,7 +168,7 @@ const ProfileSetup = () => {
         placeholder="Add your skills"
         required
         options={skills}
-        maxTags={10}
+        maxTags={15}
       />
       <InputField
         name="portfolio"
@@ -164,8 +176,8 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Portfolio Link"
         leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validatePortfolio(v, country) }}
-        //rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+        //rules={{ validate: (v: string) => validatePortfolio(v, country) }}
+        rules={{ validate: (v: string) => validatePortfolioLink(v) }}
       />
       <SelectField
         name="serviceCategory"

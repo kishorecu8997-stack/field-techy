@@ -7,17 +7,13 @@ import {assetsConfig} from "@/assets";
 
 
 /**
- * Left Panel component with a carousel showcasing different sections/features.
- * Displays rotating slides with titles, descriptions, and images to highlight
- * platform benefits and features for users.
- * 
- * @component
- * @example
- * return (
- *   <LeftPanel />
- * )
- * 
- * @returns {JSX.Element} The rendered Left Panel carousel component
+ * A UI component for the left panel of authentication pages, featuring a carousel.
+ *
+ * This component uses `react-slick` to display a series of rotating slides. Each slide
+ * highlights a key platform feature with a title, description, and an illustrative image.
+ * It is designed to provide an engaging visual element during the sign-in or sign-up process.
+ *
+ * @returns {JSX.Element} The rendered left panel component with a feature carousel.
  */
 const LeftPanel: React.FC = () => {
   const sections = [

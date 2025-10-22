@@ -5,6 +5,22 @@ import { useFormContext } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import type { VerifyEmailModalProps } from "./type";
 
+/**
+ * A modal component for entering and verifying a One-Time Password (OTP).
+ *
+ * This component provides a user interface for OTP input, including a countdown
+ * timer for resending the code and a submit button. It integrates with
+ * `react-hook-form` for validation and is designed to be used within a `Popup`.
+ *
+ * @param {VerifyEmailModalProps} props - The props for the component.
+ * @param {string} props.header - The main title of the modal.
+ * @param {string} props.description - A descriptive text shown below the header.
+ * @param {() => void} props.onClose - Callback function to close the modal.
+ * @param {() => void} [props.onVerifySuccess] - Callback executed on successful OTP validation.
+ * @param {string} [props.buttonText="Submit"] - The text for the submit button.
+ * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
+ * @param {string} [props.name="otp"] - The name of the OTP field in the `react-hook-form` context.
+ */
 const OTPModal: React.FC<VerifyEmailModalProps> = ({
   header,
   description,

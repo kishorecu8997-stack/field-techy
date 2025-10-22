@@ -1,6 +1,14 @@
 import ImageUploaderField from '@/shared/components/commonUI/inputs/ImageUploaderField';
 import ProfileSetup from './ProfileSetup';
 
+/**
+ * A component that represents the first step of the user registration process, focusing on profile setup.
+ *
+ * This page serves as a container for the initial profile configuration, including
+ * a header, a profile image uploader, and the main `ProfileSetup` form which
+ * collects basic user details. It's designed to be displayed as the first view
+ * within the `MultiStepRegistrationForm`.
+ */
 const ProfileSettingPage = () => {
   return (
     <>
