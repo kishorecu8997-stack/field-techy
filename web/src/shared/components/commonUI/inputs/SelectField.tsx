@@ -30,6 +30,25 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
+/**
+ * A controlled select input component integrated with `react-hook-form`.
+ * Renders a styled `<select>` dropdown with optional label, placeholder, validation,
+ * and a customizable left icon. Supports dark mode styling and displays validation errors.
+ *
+ * @component
+ * @example
+ * <SelectField
+ *   name="country"
+ *   label="Country"
+ *   placeholder="Choose a country"
+ *   required
+ *   options={[
+ *     { value: "us", label: "United States" },
+ *     { value: "ca", label: "Canada" },
+ *   ]}
+ *   leftIcon={<GlobeIcon />}
+ * />
+ */
 export const SelectField = ({
   name,
   label,
