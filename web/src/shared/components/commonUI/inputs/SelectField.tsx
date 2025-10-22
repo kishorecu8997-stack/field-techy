@@ -49,7 +49,7 @@ export const SelectField = ({
   return (
     <div className="flex flex-col py-1">
       {label && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label htmlFor={name} className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
@@ -70,6 +70,7 @@ export const SelectField = ({
               <div className="relative w-full">
                 <select
                   {...field}
+                  id={name}
                   value={field.value ?? ""}
                   className={`w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-4 ${
                     leftIcon ? 'pl-10' : ''

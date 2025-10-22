@@ -14,13 +14,9 @@ interface RadioFieldProps {
   label?: string;
   required?: boolean;
   options: RadioOption[];
-  /** Additional react-hook-form validation rules */
   rules?: RegisterOptions;
-  /** Custom className for the container */
   containerClassName?: string;
-  /** Custom className for each radio item */
   radioItemClassName?: string;
-  /** Custom className for the radio input itself */
   radioInputClassName?: string;
 }
 
@@ -71,7 +67,7 @@ export const RadioField = ({
                     name={fieldName}
                     value={option.value}
                     checked={value === option.value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={() => onChange(option.value)}
                     onBlur={onBlur}
                     className={radioInputClassName}
                   />

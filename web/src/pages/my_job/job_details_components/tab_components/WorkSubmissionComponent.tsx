@@ -97,7 +97,7 @@ const WorkSubmissionComponent: React.FC<{
       {isWorkSubmitted ? (
         <FormContainer methods={FormCtx} onSubmit={handleSubmit}>
           <FileUpload name="file" label="Upload completed task File" required accept=".pdf" />
-          <TextareaInput name="notes" label="Technician notes (if any)" required />
+          <TextareaInput name="notes" label="Technician notes (if any)" />
           <Button className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
             Submit
           </Button>

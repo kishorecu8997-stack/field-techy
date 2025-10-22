@@ -28,7 +28,7 @@ const Home = () => {
     console.log("Page changed to: ", page);
   };
 
-  const fineNewJobs = sampleJobs.filter((job) => {
+  const findNewJobs = sampleJobs.filter((job) => {
     return job.status === "new";
   });
 
@@ -44,7 +44,7 @@ const Home = () => {
               onViewAll={handleExploreJobs}
             />
             <RecommendedJobs
-              jobs={fineNewJobs}
+              jobs={findNewJobs}
               onViewAll={handleExploreJobs}
               title="Recommended Jobs"
             />
