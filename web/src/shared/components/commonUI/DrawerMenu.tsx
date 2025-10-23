@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import LogoutConfirmationPopup from "@/pages/auth/LogoutConfirmationPopup";
+import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
 import React, { useState } from "react";
 import {
   FaBookmark,

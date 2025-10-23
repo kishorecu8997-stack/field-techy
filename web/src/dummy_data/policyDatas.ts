@@ -1,4 +1,4 @@
-import type { Section } from "@/pages/privacy_policy/types";
+import type { Section } from "@/pages/engineer/privacy_policy/types";
 
 export const termsAndCondition: Section[] = [
     {

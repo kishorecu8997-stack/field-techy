@@ -17,11 +17,11 @@ import {
   validateCompany,
   //validatePortfolio
   validatePortfolioLink
-} from "@/pages/auth/components/profile_setup/profileValidators";
+} from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import {
   validateExperience,
   validateDesignation,
-} from "@/pages/auth/components/profile_setup/profileValidators";
+} from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import { serviceCategories } from "@/dummy_data/serviceCategories";
 import skills from "@/dummy_data/skills";
