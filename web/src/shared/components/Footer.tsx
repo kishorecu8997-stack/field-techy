@@ -7,7 +7,7 @@ import { FaTwitter } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
-import ReportPage from "@/pages/report";
+import ReportPage from "@/pages/engineer/report";
 import { useState } from "react";
 import { assetsConfig } from "@/assets";
 

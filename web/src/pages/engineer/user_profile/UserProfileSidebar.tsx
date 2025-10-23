@@ -10,7 +10,7 @@ import {
   FaWrench,
 } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
-import LogoutConfirmationPopup from '@/pages/auth/LogoutConfirmationPopup';
+import LogoutConfirmationPopup from '@/pages/engineer/auth/LogoutConfirmationPopup';
 import { assetsConfig } from '@/assets';
 import { useForm } from 'react-hook-form';
 import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';

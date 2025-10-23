@@ -1,3 +1,5 @@
+import { client } from "@/dummy_data/jobDetails";
+
 /**
  * Application route URLs.
  *
@@ -10,6 +12,8 @@
  * - Use consistent naming
  */
 export const BASE = {
+  CLIENT: "/client",
+  CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
   AUTH: "/engineer/auth",
 } as const;
@@ -35,6 +39,10 @@ export const urls = {
       set_password: "set-password",
       background_verification: "background-verification",
     },
+  },
+  client: {
+    base: BASE.CLIENT,
+    privacy_policy: `${BASE.CLIENT}/policy`,
   },
 } as const;
 
