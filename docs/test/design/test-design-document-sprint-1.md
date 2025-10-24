@@ -6,7 +6,7 @@
 The Purpose of this **Test Design Document (TDD)** is to define the **strategy**, **objectives**, **scope**, environment, resources, and deliverables for the testing activities covering the **Engineer Web UI Implementation Part features** developed during **Sprint 1**. This document provides test viewpoints from a user story perspective to ensure comprehensive coverage and traceability.
 
 ### 1.2 Background and Context of the Project
-The focuses on implementing the **authentication module** and establishing **input validation standards** for the Engineer web application. This forms the foundation for user access and data integrity throughout the application. The testing effort is essential to validate the functional correctness and UI/UX quality of these critical initial modules.
+The document on implementing the **authentication module** and establishing **input validation standards** for the Engineer web application. This forms the foundation for user access and data integrity throughout the application. The testing effort is essential to validate the functional correctness and UI/UX quality of these critical initial modules.
 
 ### 1.3 Objectives of Testing
 The primary objectives of the testing phase are to:
@@ -398,9 +398,7 @@ The QA team must be granted the following access and permissions:
 
 ### 8.1 Data Requirements & Sources
 
-which focuses on the Engineer Web UI Implementation: Auth module and Web — Input Validation and UI Refinements, test data must simulate realistic 
-user scenarios to validate form submissions, input validation rules, and UI/UX flows. Since there is no backend integration in this phase, all test data will be manually created and 
-managed as mock inputs.
+which focuses on the Engineer Web UI Implementation: Auth module and Web — Input Validation and UI Refinements, test data must simulate realistic user scenarios to validate form submissions, input validation rules, and UI/UX flows. Since there is no backend integration in this phase, all test data will be manually created and managed as mock inputs.
 
 The test data requirements are derived from the following sources:
 
