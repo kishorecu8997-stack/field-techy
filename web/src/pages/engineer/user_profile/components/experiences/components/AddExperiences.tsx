@@ -2,15 +2,11 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm, Controller } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import {
-  designationData,
-  workLocationTypeData,
-  employmentTypeData,
-} from "@/dummy_data";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -59,9 +55,9 @@ const AddExperiences = () => {
           isShowLabel={false}
           name="designation"
           placeholder="Designation"
-          options={designationData.map((e) => ({
+          options={designationOptions.map((e) => ({
             value: e.id,
-            label: e.title,
+            label: e.title
           }))}
           required
         />
@@ -79,10 +75,7 @@ const AddExperiences = () => {
           isShowLabel={false}
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocationTypeData.map((e) => ({
-            value: e.id,
-            label: e.type,
-          }))}
+          options={workLocationTypeOptions}
           required
         />
 
@@ -91,10 +84,7 @@ const AddExperiences = () => {
           isShowLabel={false}
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypeData.map((e) => ({
-            value: e.id,
-            label: e.type,
-          }))}
+          options={employmentTypeOptions}
           required
         />
 
@@ -116,7 +106,7 @@ const AddExperiences = () => {
                 minDate={new Date(1970, 0, 1)}
                 maxDate={new Date()}
               />
-              {error && <p className="text-600 text-sm">{error.message}</p>}
+              {error && <p className="text-red-600 text-sm">{error.message}</p>}
             </>
           )}
         />

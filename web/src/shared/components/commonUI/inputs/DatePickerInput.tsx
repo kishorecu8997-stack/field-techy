@@ -10,20 +10,13 @@ import React, { useState, useEffect, useRef } from "react";
  * Props for the DatePickerInput component.
  */
 interface DatePickerInputProps {
-  /** Optional label to display above the input field. */
   label?: string;
-  /** The currently selected date. Can be `null` if no date is selected. */
   isShowLabel?: boolean;
   value: Date | null;
-  /** The minimum selectable date. Dates before this will be disabled. */
   minDate?: Date;
-  /** The maximum selectable date. Dates after this will be disabled. */
   maxDate?: Date;
-  /** Callback function triggered when a date is selected. */
   onChange: (date: Date | null) => void;
-  /** Placeholder text for the input field when no date is selected. */
   placeholder?: string;
-  /** Optional additional CSS classes to apply to the root container. */
   className?: string;
 }
 
@@ -46,16 +39,11 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   placeholder = "Select date",
   className = "",
 }) => {
-  /** State to manage the visibility of the date picker popover. */
   const [isOpen, setIsOpen] = useState(false);
-  /** State to track the month/year currently displayed in the calendar view. */
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  /** State to control the current view ('day', 'month', or 'year'). */
   const [view, setView] = useState<"day" | "month" | "year">("day");
-  /** Ref to the main date picker element for detecting outside clicks. */
   const datePickerRef = useRef<HTMLDivElement>(null);
 
-  /** Formats a Date object into a DD/MM/YYYY string. */
   const formatDate = (date: Date | null): string => {
     if (!date) return "";
     const day = String(date.getDate()).padStart(2, "0");

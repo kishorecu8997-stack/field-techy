@@ -13,6 +13,12 @@ export type AddSkillsFormData = {
   skills: string[];
 };
 
+/**
+ * The AddSkills component renders a form for adding new professional skills.
+ * It uses `react-hook-form` for form management and a `TagSelectField` for multi-selection.
+ *
+ * @returns {React.ReactElement} The rendered AddSkills form component.
+ */
 const AddSkills = () => {
   /**
    * Initializes `react-hook-form` with default values for the skills form.

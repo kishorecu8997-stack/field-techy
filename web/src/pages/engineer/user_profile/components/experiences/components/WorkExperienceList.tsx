@@ -1,25 +1,24 @@
 import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import {
+  type EmploymentType,
+  type WorkLocationType,
+  employmentTypeOptions,
+  workLocationTypeOptions,
+} from "./constants";
 
 /**
  * Represents a single work experience entry.
  * @interface WorkExperience
  */
-interface WorkExperience {
-  /** The unique identifier for the experience. */
-  id: number;
-  /** The job title or designation. */
+export interface WorkExperience {
+  id: string;
   title: string;
-  /** The name of the employer. */
   employer: string;
-  /** The type of work location (e.g., 'Remote', 'On-site'). */
-  workLocationType: string;
-  /** The type of employment (e.g., 'Full-time', 'Contract'). */
-  employmentType: string;
-  /** The start date of the employment, in string format. */
+  workLocationType: WorkLocationType;
+  employmentType: EmploymentType;
   startDate: string;
-  /** The end date of the employment, in string format. */
   endDate: string;
 }
 
@@ -28,16 +27,11 @@ interface WorkExperience {
  * @interface WorkExperienceListProps
  */
 interface WorkExperienceListProps {
-  /** The title to be displayed at the top of the list. */
   title: string;
-  /** An array of work experience objects to display. */
   items: WorkExperience[];
-  /** Optional callback function to handle adding a new experience. */
   onAddAction?: () => void;
-  /** Optional callback function to handle editing an experience, identified by its ID. */
-  onEditAction?: (id: number) => void;
-  /** Optional callback function to handle deleting an experience, identified by its ID. */
-  onDeleteAction?: (id: number) => void;
+  onEditAction?: (id: string) => void;
+  onDeleteAction?: (id: string) => void;
 }
 
 /**
@@ -53,6 +47,19 @@ const formatDate = (dateStr: string) => {
     year: "numeric",
   }); // e.g., 11-Feb-2016
 };
+
+/**
+ * Creates a lookup map from a value to its label from an options array.
+ * @param {Array<{value: string, label: string}>} options - The options array.
+ * @returns {Map<string, string>} A map where keys are option values and values are option labels.
+ */
+const createLabelMap = (
+  options: Readonly<Array<{ value: string; label: string }>>
+) => {
+  return new Map(options.map((opt) => [opt.value, opt.label]));
+};
+const employmentTypeLabelMap = createLabelMap(employmentTypeOptions);
+const workLocationTypeLabelMap = createLabelMap(workLocationTypeOptions);
 
 /**
  * Renders a styled list of work experiences, each with details and action buttons.
@@ -120,11 +127,11 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Work Location Type:</span>{" "}
-                    {item.workLocationType}
+                    {workLocationTypeLabelMap.get(item.workLocationType)}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Employment Type:</span>{" "}
-                    {item.employmentType}
+                    {employmentTypeLabelMap.get(item.employmentType)}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Start Date:</span>{" "}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
@@ -35,12 +35,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
       passingYear: "",
     },
     mode: "onSubmit",
-  });
-  useEffect(() => {
-    if (educationData) {
-      methods.reset(educationData);
-    }
-  }, [educationData, methods]);
+  });  
 
   return (
     <FormContainer

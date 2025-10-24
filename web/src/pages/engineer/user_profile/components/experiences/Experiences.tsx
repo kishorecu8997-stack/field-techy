@@ -1,6 +1,6 @@
 import React from "react";
 import { experienceData } from "@/dummy_data";
-import { WorkExperienceList } from "./components/WorkExperienceList";
+import { type WorkExperience, WorkExperienceList } from "./components/WorkExperienceList";
 import { toast } from "react-toastify";
 
 /**
@@ -22,21 +22,11 @@ interface DrawerMenuProps {
 const Experiences: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
 }) => {
-  /**
-   * The dummy experience data has string IDs, but the child component expects numbers.
-   * This maps the data to ensure the `id` property is a number.
-   * This transformation should be removed when data is fetched from a real API.
-   */
-  const itemsWithNumericId = experienceData.map((exp) => ({
-    ...exp,
-    id: Number(exp.id),
-  }));
-
   return (
     <div className="">
       <WorkExperienceList
         title="Experiences"
-        items={itemsWithNumericId}
+        items={experienceData as WorkExperience[]}
         onAddAction={() => onMenuItemClick(`addExperiences`)}
         onEditAction={(id) => onMenuItemClick(`editExperiences-${id}`)}
         // TODO: Implement a proper confirmation modal for deletion instead of a browser alert.
