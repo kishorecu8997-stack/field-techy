@@ -153,30 +153,6 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   const onBack = config.parent
     ? () => setKey(config.parent as string)
     : undefined;
-
-  // const drawerContent = (
-  //   <div className="h-full ">
-  //     <div
-  //       className="fixed inset-0 flex items-center justify-center p-4 bg-[rgba(61,63,66,0.6)] animate-fade-in "
-  //       onClick={onClose}
-  //       style={{ zIndex: 49 }} // Ensure backdrop is just below the drawer
-  //     />
-  //     <div className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl transform transition-transform duration-300 ease-in-out dark:bg-gray-500 h-full overflow-y-auto">
-  //       <div className="p-6">
-  //         <DrawerHeader
-  //           title={config.title}
-  //           onClose={onClose}
-  //           onBack={onBack}
-  //         />
-  //         {renderSection()}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
-  // // Render into a portal to attach to the body
-  // return ReactDOM.createPortal(drawerContent, document.body);
-
   return (
     <>
       <div
