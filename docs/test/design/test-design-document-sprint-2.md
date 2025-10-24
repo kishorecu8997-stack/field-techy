@@ -132,7 +132,7 @@ The following table outlines the necessary hardware, software, network, and tool
 
 | Hardware | Software | Network | Tools |
 | :--- | :--- | :--- | :--- |
-| Standard PC/Laptop, Mobile Devices (iOS and Android) | Windows, macOS | Secure HTTPS for deployment, localhost for development `http://localhost:5173/engineer/auth/login`, `http://localhost:5173/engineer` | GitHub for version control and issue tracking, Browser - Chromium, Edge, Firefox |
+| Standard PC/Laptop, Mobile Devices (iOS and Android) | Windows, macOS | Secure HTTPS for deployment, localhost for development | GitHub for version control and issue tracking, Browser - Chromium, Edge, Firefox |
 
 
 ### 6.2 Access Requirements
@@ -142,9 +142,9 @@ The following table outlines the necessary hardware, software, network, and tool
 
 ## 7. Test Cases and Test Scenarios:
 
-## User story 1: Engineer Web UI Implementation: My Account Module - Part 1
+## User story #10: Engineer Web UI Implementation: My Account Module - Part 1
 
-[LINK - User story 1](https://github.com/praxiodev/field-techy/issues/10)
+[LINK - User story #10](https://github.com/praxiodev/field-techy/issues/10)
 
 ## Test Scenarios
 
@@ -210,7 +210,7 @@ The following table outlines the necessary hardware, software, network, and tool
 - **Expected Results:**
   * User is logged out of the session.  
   * Redirected to the login page or public home page.  
-  * All protected routes (e.g., `/engineer/my-jobs`) are no longer accessible without re-login.
+  * All protected routes are no longer accessible without re-login.
 - **Coverage:**
   - Validates complete logout flow and session termination.
 
@@ -233,9 +233,9 @@ The following table outlines the necessary hardware, software, network, and tool
 
 
 
-## User Story 2: Engineer Web UI Implementation: My Account Module - Part 2
+## User Story #11: Engineer Web UI Implementation: My Account Module - Part 2
 
-[LINK - User story 2](https://github.com/praxiodev/field-techy/issues/11)
+[LINK - User story #11](https://github.com/praxiodev/field-techy/issues/11)
 
 ## Test Scenarios 
 
@@ -536,17 +536,15 @@ The following table outlines the necessary hardware, software, network, and tool
 
 
 
-## User Story 3: Engineer Web UI Implementation: Job module - Part 1
+## User Story #8: Engineer Web UI Implementation: Job module - Part 1
 
-[LINK - User story 3](https://github.com/praxiodev/field-techy/issues/8)
+[LINK - User story #8](https://github.com/praxiodev/field-techy/issues/8)
 
 ## 7.1.1 Job/ My Job Test Scenarios 
 
 **Scenario 1**: Verify Page Loads Successfully and Header Displays Correctly
 
-- **Preconditions:**
-  - User is logged in as an engineer.
-  - User navigates to `http://192.168.1.106:5173/engineer/my-jobs`.
+- **Preconditions:** User is logged in as an engineer.
 - **Steps:**
   1. Open the browser and navigate to the URL.  
   2. Wait for the page to fully load.  
@@ -776,7 +774,7 @@ The following table outlines the necessary hardware, software, network, and tool
   1. Enter a job keyword (e.g., `“UI/UX Designer”`) in the “Search Job” field.  
   2. Enter a location (e.g., “New York, USA”) in the “Location” field.  
   3. Click the “Search” button.  
-  4. Observe the redirected URL: `http://192.168.1.106:5173/engineer/search-result`.  
+  4. Observe the redirected URL.  
   5. Verify the page displays a count of jobs found (e.g., `“141 jobs found”)`.  
   6. Check that job cards match the searched keyword and location.  
   7. Validate structure and content of each job card:  

@@ -116,7 +116,7 @@ The following table outlines the necessary hardware, software, network, and tool
 
 | Hardware | Software | Network | Tools |
 | :--- | :--- | :--- | :--- |
-| Standard PC/Laptop , Mobile Devices (iOS and Android)| Windows macOS| Secure HTTPS for deployment, localhost for development `http://localhost:5173/engineer/auth/login`|  GitHub - Version control and issue tracking , Browser - Chromium, Edge and Firefox |
+| Standard PC/Laptop , Mobile Devices (iOS and Android)| Windows macOS| Secure HTTPS for deployment, localhost for development |  GitHub - Version control and issue tracking , Browser - Chromium, Edge and Firefox |
 
 ### 6.2 Access and Permissions
 The QA team must be granted the following access and permissions:
@@ -127,13 +127,13 @@ The QA team must be granted the following access and permissions:
 
 ## 7. Test Cases and Test Scenarios:
 
-## User Story 1: Engineer Web UI Implementation: Auth module  
+## User Story #7: Engineer Web UI Implementation: Auth module  
 
-[LINK - User story 1](https://github.com/praxiodev/field-techy/issues/7)
+[LINK - User story #7](https://github.com/praxiodev/field-techy/issues/7)
 
 ### Test Scenarios  
 **Scenario 1**: Verify that a user can successfully log in using a valid email and password, and is redirected to the appropriate next step (e.g., profile setup or dashboard).  
-- **Preconditions**: User is on the login page (`/engineer/auth/login`).  
+- **Preconditions**: User is on the login page
 - **Steps**:  
   1. Enter a valid email (e.g., `engineer@company.com`, 10–100 characters).  
   2. Enter a valid password meeting complexity rules (8–20 characters, with uppercase, lowercase, number, and special character).  
@@ -142,7 +142,7 @@ The QA team must be granted the following access and permissions:
 - **Coverage**: Validates successful authentication flow.
 
 **Scenario 2**: Verify that login fails with invalid email format and displays correct error message.  
-- **Preconditions**: User is on the login page (`/engineer/auth/login`).  
+- **Preconditions**: User is on the login page
 - **Steps**:  
   1. Enter an invalid email (e.g., `engineer@company` – missing domain).  
   2. Enter a valid password.  
@@ -170,7 +170,7 @@ The QA team must be granted the following access and permissions:
 - **Preconditions**: User is authenticated and on any protected screen.  
 - **Steps**:  
   1. Open account menu → click “Logout”.  
-- **Expected Result**: Session cleared; user redirected to `/engineer/auth/login`.  
+- **Expected Result**: Session cleared; user redirected to login page.  
 - **Coverage**: Validates state transition and session management.
 
 **Scenario 6**: Verify mobile number validation for country-specific formats (e.g., UK = 10 digits after +44).  
@@ -207,8 +207,8 @@ The QA team must be granted the following access and permissions:
 
 
 
-## User Story 2: Web — Input Validation and UI Refinements for Sprints 1 and 2  
-[LINK - User story 2](https://github.com/praxiodev/field-techy/issues/20)
+## User Story #20: Web — Input Validation and UI Refinements for Sprints 1 and 2  
+[LINK - User story #20](https://github.com/praxiodev/field-techy/issues/20)
 
 ## Test Scenarios  
 
@@ -303,7 +303,9 @@ The QA team must be granted the following access and permissions:
   1. Upload `profile.pdf` → error: “Only valid JPEG, JPG and PNG format are allowed”.  
   2. Upload `small.jpg` (45KB) → error: “Image must be at least 50KB”.  
   3. Upload `large.jpg` (355KB) → error: “Image cannot exceed 350KB”.  
-  4. Upload `valid.jpg` (200KB) → accepted.  
+  4. Upload `valid.jpg` (200KB) → accepted.
+  5. Upload `corrupted_image.jpg` (56KB) → error: “Uploaded file is corrupted are not a valid image”. 
+  6. Upload `corrupted_image.jpg` (23KB) → error: “Uploaded file is corrupted are not a valid image”. 
 - **Expected Result**: Strict enforcement of file constraints with user-friendly feedback.  
 - **Coverage**: Validates media upload rules.
 
@@ -320,9 +322,11 @@ The QA team must be granted the following access and permissions:
 - **Preconditions**: User is on Experience or Background Verification sections.
 - **Steps**:  
   1. Upload `resume.jpg` → error: “Only valid PDF format are allowed”.
-  2. Upload `id_small.pdf` (45KB) → error: “File must be at least 50KB”.
+  2. Upload `is_small.pdf` (45KB) → error: “File must be at least 50KB”.
   3. Upload `cert_large.pdf` (355KB) → error: “File cannot exceed 350KB”.
   4. Upload valid PDFs → accepted.
+  5. Upload `corrupted_file.pdf` (56KB) → error: “File is not a genuine PDF document”. 
+  6. Upload `corrupted_file.pdf` (23KB) → error: “File is not a genuine PDF document”. 
 - **Expected Result**: Consistent validation across all document types.
 - **Coverage**: Ensures document integrity and compliance.
 
@@ -398,7 +402,7 @@ The QA team must be granted the following access and permissions:
 
 ### 8.1 Data Requirements & Sources
 
-which focuses on the Engineer Web UI Implementation: Auth module and Web — Input Validation and UI Refinements, test data must simulate realistic user scenarios to validate form submissions, input validation rules, and UI/UX flows. Since there is no backend integration in this phase, all test data will be manually created and managed as mock inputs.
+The focus is on Engineer Web UI Implementation, specifically the Auth module and Web — Input Validation and UI Refinements. Test data will simulate realistic user scenarios to validate form submissions, input validation rules, and UI/UX flows. Since backend integration is not included in this phase, all test data will be manually created and managed as mock inputs.
 
 The test data requirements are derived from the following sources:
 
