@@ -54,12 +54,17 @@ export const FileUpload = ({
     }
   }, []);
 
-  // ✅ Validate PDF: signature + page count
+  // ✅ Validate PDF: signature + page count + corruption
   const validatePdfPages = useCallback(
     async (
       file: File
     ): Promise<{ error: string | null; pages: number | null }> => {
       if (!validatePDF) return { error: null, pages: null };
+
+      // Step 0: Minimum size check (corrupted/truncated PDFs often too small)
+      if (file.size < 100) {
+        return { error: "File is too small to be a valid PDF.", pages: null };
+      }
 
       // Step 1: Check %PDF header
       try {
@@ -101,6 +106,8 @@ export const FileUpload = ({
             message = "File is not a valid PDF document.";
           } else if (err.name === "MissingPDFException") {
             message = "PDF file is corrupted or incomplete.";
+          } else if (err.name === "UnexpectedResponseException") {
+            message = "PDF file is corrupted or could not be loaded.";
           }
         }
         return { error: message, pages: null };
