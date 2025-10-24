@@ -3,7 +3,7 @@
 ## 1. Introduction and Scope
 
 ### 1.1 Purpose of the Document
-This Test Design Document (TDD) defines the strategy, objectives, scope, environment, and deliverables for testing the **My Account Module (Parts 1 & 2)** and **Job Module (Part 1)** features developed in **Sprint 2**.It ensures comprehensive test coverage and traceability for all user stories, focusing on UI/UX compliance, navigation flows, and form validation.
+This Test Design Document (TDD) defines the strategy, objectives, scope, environment, and deliverables for testing the **My Account Module (Parts 1 & 2)** and **Job Module (Part 1)** features developed in **Sprint 2**. It ensures comprehensive test coverage and traceability for all user stories, focusing on UI/UX compliance, navigation flows, and form validation.
 
 ### 1.2 Background and Context
 Sprint 2 implements:
@@ -128,7 +128,7 @@ Testing is complete when the following project Definition of Done (DoD) criteria
 ## 6. Test Environment
 
 ### 6.1 Environment Setup and Configuration
-The following table outlines the necessary hardware, software, network, and tools required for executing the Sprint 1 testing activities:
+The following table outlines the necessary hardware, software, network, and tools required for executing the Sprint 2 testing activities:
 
 | Hardware | Software | Network | Tools |
 | :--- | :--- | :--- | :--- |
@@ -415,7 +415,7 @@ The following table outlines the necessary hardware, software, network, and tool
 **Scenario 17:** Validate Documents Upload with Invalid File
 - **Preconditions:** User is on Profile Sidebar → Documents page.  
 - **Steps:**
-1. Select invalid file type (e.g., `"image.jpg", "document.docx") OR PDF exceeding size limit (e.g., 400KB`).  
+1. Select invalid file type (e.g., `"image.jpg", "document.doc") OR PDF exceeding size limit (e.g., 400KB`).  
 2. Attempt to upload file.  
 
 - **Expected Results:** Error message appears; upload fails.  
@@ -530,7 +530,7 @@ The following table outlines the necessary hardware, software, network, and tool
 | **Test Case Description** | **Condition 1 (Input Type / Format)** | **Condition 2 (Length / Range)** | **Expected Result** |
 |----------------------------|--------------------------------------|----------------------------------|----------------------|
 | Valid Document Upload | PDF file | 50–350 KB | Upload successful; file listed |
-| Invalid Document Type | Non-PDF (e.g., .jpg, .docx) | Any | Error: "Only PDF files are allowed." |
+| Invalid Document Type | Non-PDF (e.g., .jpg, .doc) | Any | Error: "Only PDF files are allowed." |
 | Document too small | PDF file | < 50 KB | Error: "File size must be at least 50 KB." |
 | Document too large | PDF file | > 350 KB | Error: "File size cannot exceed 350 KB." |
 
@@ -762,7 +762,7 @@ The following table outlines the necessary hardware, software, network, and tool
 | Job Completed indicator                             | No               | No            | No                              | No                                     | Cannot verify                      | Completion indicator assumed for Completed jobs but content not provided |
 | Timeline (dates & tasks) displayed                  | Yes              | Yes           | Yes                             | Yes                                    | Yes                                | Timeline always displayed across all states |
 | File & image attachments                            | Yes              | Yes           | Yes                             | Yes                                    | Yes                                | Attachments are visible and clickable if available |
-| Profile sidebar with user info and earnings        | N/A              | N/A           | N/A                             | N/A                                    | N/A                                | Sidebar content not provided 
+| Profile sidebar with user info and earnings        | N/A              | N/A           | N/A                             | N/A                                    | N/A                               | Sidebar content not provided. 
 
 
 ## 7.1.2 Job/Search result Test Scenario:
@@ -806,7 +806,7 @@ The following table outlines the necessary hardware, software, network, and tool
   - *Data:* Accuracy of job title, client, time, posted time, location, pay, description.  
   - *UI/UX:* Consistent card layout, icon rendering, job count visibility.
 
-## Decision Tabel with Detailed Explanation
+## Decision Table with Detailed Explanation
 
 ### Table Context
 

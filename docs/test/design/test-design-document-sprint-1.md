@@ -310,20 +310,20 @@ The QA team must be granted the following access and permissions:
 **Scenario 10**: Verify that Experience section fields (Designation, Employer) enforce format and length rules.  
 - **Preconditions**: User is on Profile Setup → Experience section.  
 - **Steps**:  
-  1. Enter `Senior@Engineer` in Designation → error: “Only letters and spaces allowed”.  
-  2. Enter `ABC` in Employer → error: “Company/Employer must be at least 4 characters”.     
-  3. Enter `Tech Solutions Ltd.` → accepted.  
-- **Expected Result**: Inputs comply with business rules; invalid entries are blocked.  
+  1. Enter `Senior@Engineer` in Designation → error: “Only letters and spaces allowed”.
+  2. Enter `ABC` in Employer → error: “Company/Employer must be at least 4 characters”.
+  3. Enter `Tech Solutions Ltd.` → accepted.
+- **Expected Result**: Inputs comply with business rules; invalid entries are blocked.
 - **Coverage**: Validates professional information validation.
 
-**Scenario 11**: Verify that document uploads (`Resume, Government ID, Certificate`) accept only PDFs within 50KB–350KB.  
-- **Preconditions**: User is on Experience or Background Verification sections.  
+**Scenario 11**: Verify that document uploads (`Resume, Government ID, Certificate`) accept only PDFs within 50KB–350KB.
+- **Preconditions**: User is on Experience or Background Verification sections.
 - **Steps**:  
-  1. Upload `resume.jpg` → error: “Only valid PDF format are allowed”.  
-  2. Upload `id_small.pdf` (45KB) → error: “File must be at least 50KB”.  
-  3. Upload `cert_large.pdf` (355KB) → error: “File cannot exceed 350KB”.  
-  4. Upload valid PDFs → accepted.  
-- **Expected Result**: Consistent validation across all document types.  
+  1. Upload `resume.jpg` → error: “Only valid PDF format are allowed”.
+  2. Upload `id_small.pdf` (45KB) → error: “File must be at least 50KB”.
+  3. Upload `cert_large.pdf` (355KB) → error: “File cannot exceed 350KB”.
+  4. Upload valid PDFs → accepted.
+- **Expected Result**: Consistent validation across all document types.
 - **Coverage**: Ensures document integrity and compliance.
 
 ## Decision Table with Detailed Explanations:
