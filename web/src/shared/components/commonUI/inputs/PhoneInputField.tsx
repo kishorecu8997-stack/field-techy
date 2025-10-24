@@ -6,10 +6,26 @@ import {
 } from "react-hook-form";
 
 import { CountrySelect } from "./CountrySelect";
-import type { Country, PhoneInputFieldProps } from "./type";
+import type { PhoneInputFieldProps } from "./type";
+import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
 
-
-
+/**
+ * A reusable phone number input field with a country code selector.
+ *
+ * This component integrates with `react-hook-form` and provides a composite
+ * input for entering international phone numbers. It includes a dropdown for
+ * selecting the country code and validates the phone number format based on
+ * the selected country.
+ *
+ * @param {PhoneInputFieldProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label] - The text label displayed above the input field.
+ * @param {string} [props.placeholder="Enter mobile number"] - The placeholder text for the number input.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for `react-hook-form`.
+ * @param {boolean} [props.disabled] - Disables the entire input field.
+ * @param {string} [props.inputClassName] - Custom CSS classes for the phone number input element.
+ */
 export const PhoneInputField = ({
   name,
   label,
@@ -21,25 +37,10 @@ export const PhoneInputField = ({
 }: PhoneInputFieldProps) => {
   const { control, getValues, setValue, clearErrors } = useFormContext();
 
-  const countries: Country[] = [
-    {
-      code: "+91",
-      name: "India",
-      flag: "https://flagcdn.com/w40/in.png", // ✅ Removed trailing spaces
-      validationKey: "india",
-    },
-    {
-      code: "+44",
-      name: "UK",
-      flag: "https://flagcdn.com/w40/gb.png", // ✅ Removed trailing spaces
-      validationKey: "uk",
-    },
-  ];
-
   useEffect(() => {
     const currentValue = getValues(name);
     if (!currentValue) {
-      setValue(name, `${countries[0].code} `, { shouldValidate: false });
+      setValue(name, `${PHONE_COUNTRIES[0].code} `, { shouldValidate: false });
     }
   }, [name, getValues, setValue]);
 
@@ -56,7 +57,7 @@ export const PhoneInputField = ({
     const countryCode = parts[0];
     const phoneNumber = parts.slice(1).join("").trim();
 
-    const selectedCountry = countries.find((c) => c.code === countryCode);
+    const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
     if (!selectedCountry) {
       return "Invalid country code";
     }
@@ -105,7 +106,7 @@ export const PhoneInputField = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const [countryCode = countries[0].code, ...rest] = (
+          const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (
             field.value || ""
           ).split(" ");
           const numberValue = rest.join(" ");
@@ -114,7 +115,7 @@ export const PhoneInputField = ({
             <>
               <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600">
                 <CountrySelect
-                  countries={countries}
+                  countries={PHONE_COUNTRIES}
                   value={countryCode}
                   onChange={(newCode) => {
                     field.onChange(`${newCode} ${numberValue}`);

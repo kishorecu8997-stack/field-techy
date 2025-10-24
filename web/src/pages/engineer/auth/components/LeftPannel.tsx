@@ -50,9 +50,7 @@ const LeftPanel: React.FC = () => {
   };
 
  return (
-  <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">
-      <div className="w-full max-h-[calc(100vh-3rem)] md:max-h-[calc(100vh-4rem)] lg:max-h-[calc(100vh-6rem)] flex items-center justify-center">
-
+  <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">   
       <Slider {...settings} className="w-full">
         {sections.map((section, index) => (
           <div
@@ -78,8 +76,7 @@ const LeftPanel: React.FC = () => {
             </div>
           </div>
         ))}
-      </Slider>
-    </div>
+      </Slider>    
   </div>
 );
 }

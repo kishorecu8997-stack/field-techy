@@ -12,13 +12,8 @@ import Popup from "../../Popup";
 import OTPModal from "@/shared/components/commonUI/inputs/OTPModal";
 import { CountrySelect } from "./CountrySelect";
 import type { VerifiedPhoneInputFieldProps } from "./type";
+import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
 
-interface Country {
-  code: string;
-  name: string;
-  flag: string;
-  validationKey: "india" | "uk";
-}
 
 /**
  * A composite input field for entering and verifying a mobile phone number with an OTP.
@@ -67,27 +62,12 @@ export const VerifiedPhoneInputField = ({
   const isInputDisabled = verified || externalDisabled;
   const phoneValue = watch(name);
 
-  const countries: Country[] = [
-    {
-      code: "+91",
-      name: "India",
-      flag: "https://flagcdn.com/w40/in.png",
-      validationKey: "india",
-    },
-    {
-      code: "+44",
-      name: "UK",
-      flag: "https://flagcdn.com/w40/gb.png",
-      validationKey: "uk",
-    },
-  ];
-
   useEffect(() => {
     const currentValue = getValues(name);
     if (!currentValue) {
-      setValue(name, `${countries[0].code} `, { shouldValidate: false });
+      setValue(name, `${PHONE_COUNTRIES[0].code} `, { shouldValidate: false });
     }
-  }, [name, getValues, setValue, countries]);
+  }, [name, getValues, setValue]);
 
   // ✅ Full validation (used by RHF)
   const validatePhone = (fullValue: string): true | string => {
@@ -103,7 +83,7 @@ export const VerifiedPhoneInputField = ({
     const countryCode = parts[0];
     const phoneNumber = parts.slice(1).join("").trim();
 
-    const selectedCountry = countries.find((c) => c.code === countryCode);
+    const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
     if (!selectedCountry) {
       return "Invalid country code";
     }
@@ -182,7 +162,7 @@ export const VerifiedPhoneInputField = ({
           control={control}
           rules={validationRules}
           render={({ field, fieldState: { error } }) => {
-            const [countryCode = countries[0].code, ...rest] = (field.value || "").split(" ");
+            const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (field.value || "").split(" ");
             const numberValue = rest.join(" ");
 
             return (
@@ -193,7 +173,7 @@ export const VerifiedPhoneInputField = ({
                       <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600">
                         <div className="shrink-0">
                           <CountrySelect
-                            countries={countries}
+                            countries={PHONE_COUNTRIES}
                             value={countryCode}
                             onChange={(newCode) => {
                               if (!isInputDisabled) {
