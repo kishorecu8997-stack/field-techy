@@ -1,4 +1,4 @@
-import type { MyJobsHeaderProps } from "@/pages/my_job/types";
+import type { MyJobsHeaderProps } from "@/pages/engineer/my_job/types";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";

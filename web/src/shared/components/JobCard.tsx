@@ -4,7 +4,7 @@ import {
   WORKING_TYPES,
   type Job,
   type JobStatus,
-} from "@/pages/search_result/types";
+} from "@/pages/engineer/search_result/types";
 import { FaDollarSign } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";

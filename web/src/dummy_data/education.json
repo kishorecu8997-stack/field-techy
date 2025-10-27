@@ -1,0 +1,12 @@
+{
+  "education": [
+    {
+      "id": 1,
+      "level": "Post Graduate",
+      "course": "Master of Science",
+      "university": "Chandigarh University",
+      "major": "Computer Science",
+      "year": "2018"
+    }
+  ]
+}

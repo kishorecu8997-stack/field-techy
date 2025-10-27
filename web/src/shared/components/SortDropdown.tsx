@@ -1,4 +1,4 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/search_result/types";
+import { SORT_OPTIONS, type SortOption } from "@/pages/engineer/search_result/types";
 import React, { useState } from "react";
 
 interface SortDropdownProps {

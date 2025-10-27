@@ -1,0 +1,22 @@
+{
+  "addEditTools": [
+  { "id": "1", "label": "Visual Studio Code" },
+  { "id": "2", "label": "Git" },
+  { "id": "3", "label": "Docker" },
+  { "id": "4", "label": "Postman" },
+  { "id": "5", "label": "Figma" },
+  { "id": "6", "label": "Jira" },
+  { "id": "7", "label": "Slack" },
+  { "id": "8", "label": "GitHub" },
+  { "id": "9", "label": "Notion" },
+  { "id": "10", "label": "IntelliJ IDEA" },
+  { "id": "11", "label": "npm" },
+  { "id": "12", "label": "Yarn" },
+  { "id": "13", "label": "Webpack" },
+  { "id": "14", "label": "ESLint" },
+  { "id": "15", "label": "Prettier" },
+  { "id": "16", "label": "Kubernetes" },
+  { "id": "17", "label": "SSMS" },
+  { "id": "18", "label": "DBeaver" }
+]
+}

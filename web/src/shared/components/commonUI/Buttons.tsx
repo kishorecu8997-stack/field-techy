@@ -5,7 +5,7 @@ import Loader2 from "../Loader2";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline";
+  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline" | "link" | "text";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -53,6 +53,7 @@ export const Button: React.FC<ButtonProps> = ({
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     outline:
       "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
+    link: "bg-transparent underline-offset-4 hover:underline text-cyan-600 hover:text-cyan-700 ",
   };
 
   const sizeStyles: Record<string, string> = {
