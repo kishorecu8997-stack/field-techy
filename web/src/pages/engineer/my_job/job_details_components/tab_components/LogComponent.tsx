@@ -2,6 +2,7 @@ import React from "react";
 import { LOG_STATUSES } from "@/pages/engineer/search_result/types";
 import type { LogComponentProps, LogEntry } from "../../types";
 
+
 /**
  * Individual log item renderer (internal, not exported)
  */

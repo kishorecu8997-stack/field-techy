@@ -13,6 +13,7 @@ import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
+// import Proposal from "@/shared/components/Proposal";
 
 /**
  * Renders a tabbed section for job details based on the current job status.

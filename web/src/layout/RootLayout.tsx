@@ -1,6 +1,6 @@
 import Drawer from "@/shared/components/Drawer";
 import Footer from "@/shared/components/Footer";
-import Navbar from "@/shared/components/Navbar";
+import NavbarClient from "@/shared/components/client/NavbarClient";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -25,7 +25,8 @@ import { Outlet } from "react-router-dom";
  */
 const RootLayout = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);  
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,11 +48,13 @@ const RootLayout = (): JSX.Element => {
             : "bg-transparent dark:bg-transparent shadow-none"
         }`}
       >
-        <div className="xl:container mx-auto px-6">
-          <Navbar
+        <div className="xl:container mx-auto px-6">          
+          {/* TODO for engineer */}
+          < NavbarClient
             onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
             isDrawerOpen={isDrawerOpen}
           />
+
         </div>
       </header>
 

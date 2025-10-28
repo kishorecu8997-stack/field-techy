@@ -62,7 +62,7 @@ const Footer = () => {
                   href="#"
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
-                  Explore Jobs
+                  Explore Categories
                 </a>
               </li>
               <li>

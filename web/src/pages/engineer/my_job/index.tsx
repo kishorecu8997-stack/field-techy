@@ -1,8 +1,9 @@
 import { earningsData, userData } from "@/dummy_data/jobDetails";
-import MyJobsHeader from "../../../shared/components/MyJobsHeader";
+// import MyJobsHeader from "../../../shared/components/MyJobsHeader";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 import { SORT_OPTIONS } from "../search_result/types";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
