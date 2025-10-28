@@ -11,9 +11,9 @@ const AddBankDetails = ({}:{}) => {
     mode:"onChange",
     defaultValues: {
       bankName: "",
+      bankAddress: "",
       accountNumber: "",
       swiftcode: "",
-      bankAddress: "",
       iban: "",
       name: "",
     },

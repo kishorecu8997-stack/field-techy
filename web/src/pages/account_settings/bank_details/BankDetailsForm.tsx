@@ -12,29 +12,29 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
       <div className="flex flex-col">
         <SelectField
           name="bankName"
-          label="Bank Name"
+          label="Bank"
           isShowLabel={false}
           options={[{ value: "1", label: "Bank of America" }, { value: "2", label: "Citi" }]}
           placeholder="Select a bank"
           required
         />
+          <InputField
+            name="bankAddress"
+            label="Bank Address"
+            placeholder="Bank address"
+            required
+             isShowLabel={false}
+          />
+          <InputField name="name" label="Name" placeholder="Name"  isShowLabel={false}  required/>
         <InputField
           name="accountNumber"
           label="Account Number"
           isShowLabel={false}
-          placeholder="Enter account number"
+          placeholder="Account number"
           required
         />
-        <InputField name="swiftcode" label="Swift Code" placeholder="Enter swift code"  isShowLabel={false}  required/>
-        <InputField
-          name="bankAddress"
-          label="Bank Address"
-          placeholder="Enter bank address"
-          required
-           isShowLabel={false}
-        />
-        <InputField name="iban" label="IBAN" placeholder="Enter IBAN"  isShowLabel={false}  required/>
-        <InputField name="name" label="Name" placeholder="Enter name"  isShowLabel={false}  required/>
+        <InputField name="iban" label="IBAN" placeholder="IBAN"  isShowLabel={false}  required/>
+        <InputField name="swiftcode" label="Swift Code" placeholder="SWIFT code"  isShowLabel={false}  required/>
       </div>
       <div className="mt-auto flex justify-end">
         <Button

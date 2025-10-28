@@ -2,6 +2,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
+import { validatePassword } from "./validation";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -36,6 +37,7 @@ const ChangePasswordFields = () => {
           isShowLabel={false}
           placeholder="Enter your current password"
           required
+          rules={{ validate: (v: string) => validatePassword(v) }}
         />
         <PasswordInput
           label="New Password"
@@ -43,6 +45,7 @@ const ChangePasswordFields = () => {
           placeholder="Enter your new password"
           required
           isShowLabel={false}
+          rules={{ validate: (v: string) => validatePassword(v) }}
         />
         <PasswordInput
           label="Confirm Password"
@@ -50,6 +53,7 @@ const ChangePasswordFields = () => {
           placeholder="Confirm your new password"
           required
           isShowLabel={false}
+          rules={{ validate: (v: string) => validatePassword(v) }}
         />
       </div>
 

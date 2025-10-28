@@ -71,3 +71,77 @@ export const validatePhone = (value: string) => {
   // Fallback message when country code is not recognized
   return "Enter a valid phone number";
 };
+
+// IBAN validation rules(IBAN : INTERNATIONAL BANK ACCOUNT NUMBER)
+export interface IBANRule {
+  readonly len: number;
+  readonly bban: RegExp;
+}
+
+// Define the rules object
+export const IBAN_RULES_RAW = {
+  AD: { len: 24, bban: /^[0-9]{8}[A-Z0-9]{12}$/ },
+  AE: { len: 23, bban: /^[0-9]{19}$/ },
+  AL: { len: 28, bban: /^[0-9]{8}[A-Z0-9]{16}$/ },
+  AT: { len: 20, bban: /^[0-9]{16}$/ },
+  AZ: { len: 28, bban: /^[A-Z]{4}[A-Z0-9]{20}$/ },
+  BA: { len: 20, bban: /^[0-9]{16}$/ },
+  BE: { len: 16, bban: /^[0-9]{12}$/ },
+  BG: { len: 22, bban: /^[A-Z]{4}[0-9]{6}[A-Z0-9]{8}$/ },
+  BH: { len: 22, bban: /^[A-Z]{4}[A-Z0-9]{14}$/ },
+  BR: { len: 29, bban: /^[0-9]{23}[A-Z0-9]{2}$/ },
+  CH: { len: 21, bban: /^[0-9]{5}[A-Z0-9]{12}$/ },
+  CR: { len: 22, bban: /^[0-9]{18}$/ },
+  CY: { len: 28, bban: /^[0-9]{8}[A-Z0-9]{16}$/ },
+  CZ: { len: 24, bban: /^[0-9]{20}$/ },
+  DE: { len: 22, bban: /^[0-9]{18}$/ },
+  DK: { len: 18, bban: /^[0-9]{14}$/ },
+  DO: { len: 28, bban: /^[A-Z0-9]{4}[0-9]{20}$/ },
+  EE: { len: 20, bban: /^[0-9]{16}$/ },
+  ES: { len: 24, bban: /^[0-9]{20}$/ },
+  FI: { len: 18, bban: /^[0-9]{14}$/ },
+  FO: { len: 18, bban: /^[0-9]{14}$/ },
+  FR: { len: 27, bban: /^[0-9]{10}[A-Z0-9]{11}[0-9]{2}$/ },
+  GB: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ },
+  GE: { len: 22, bban: /^[A-Z]{2}[0-9]{16}$/ },
+  GI: { len: 23, bban: /^[A-Z]{4}[A-Z0-9]{15}$/ },
+  GL: { len: 18, bban: /^[0-9]{14}$/ },
+  GR: { len: 27, bban: /^[0-9]{7}[A-Z0-9]{16}$/ },
+  HR: { len: 21, bban: /^[0-9]{17}$/ },
+  HU: { len: 28, bban: /^[0-9]{24}$/ },
+  IE: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ },
+  IL: { len: 23, bban: /^[0-9]{19}$/ },
+  IS: { len: 26, bban: /^[0-9]{22}$/ },
+  IT: { len: 27, bban: /^[A-Z]{1}[0-9]{10}[A-Z0-9]{12}$/ },
+  JO: { len: 30, bban: /^[A-Z]{4}[0-9]{4}[A-Z0-9]{18}$/ },
+  KW: { len: 30, bban: /^[A-Z]{4}[A-Z0-9]{22}$/ },
+  KZ: { len: 20, bban: /^[0-9]{3}[A-Z0-9]{13}$/ },
+  LB: { len: 28, bban: /^[0-9]{4}[A-Z0-9]{20}$/ },
+  LI: { len: 21, bban: /^[0-9]{5}[A-Z0-9]{12}$/ },
+  LT: { len: 20, bban: /^[0-9]{16}$/ },
+  LU: { len: 20, bban: /^[0-9]{3}[A-Z0-9]{13}$/ },
+  LV: { len: 21, bban: /^[A-Z]{4}[A-Z0-9]{13}$/ },
+  MC: { len: 27, bban: /^[0-9]{10}[A-Z0-9]{11}[0-9]{2}$/ },
+  MD: { len: 24, bban: /^[A-Z0-9]{2}[A-Z0-9]{18}$/ },
+  ME: { len: 22, bban: /^[0-9]{18}$/ },
+  MK: { len: 19, bban: /^[0-9]{3}[A-Z0-9]{10}[0-9]{2}$/ },
+  MR: { len: 27, bban: /^[0-9]{23}$/ },
+  MT: { len: 31, bban: /^[A-Z]{4}[0-9]{5}[A-Z0-9]{18}$/ },
+  MU: { len: 30, bban: /^[A-Z]{4}[0-9]{19}[A-Z]{3}$/ },
+  NL: { len: 18, bban: /^[A-Z]{4}[0-9]{10}$/ },
+  NO: { len: 15, bban: /^[0-9]{11}$/ },
+  PK: { len: 24, bban: /^[A-Z]{4}[A-Z0-9]{16}$/ },
+  PL: { len: 28, bban: /^[0-9]{24}$/ },
+  PS: { len: 29, bban: /^[A-Z0-9]{4}[A-Z0-9]{21}$/ },
+  PT: { len: 25, bban: /^[0-9]{21}$/ },
+  QA: { len: 29, bban: /^[A-Z]{4}[A-Z0-9]{21}$/ },
+  RO: { len: 24, bban: /^[A-Z]{4}[A-Z0-9]{16}$/ },
+  RS: { len: 22, bban: /^[0-9]{18}$/ },
+  SA: { len: 24, bban: /^[0-9]{22}$/ },
+  SE: { len: 24, bban: /^[0-9]{20}$/ },
+  SI: { len: 19, bban: /^[0-9]{15}$/ },
+  SK: { len: 24, bban: /^[0-9]{20}$/ },
+  SM: { len: 27, bban: /^[A-Z]{1}[0-9]{10}[A-Z0-9]{12}$/ },
+  TN: { len: 24, bban: /^[0-9]{20}$/ },
+  TR: { len: 26, bban: /^[0-9]{5}[A-Z0-9]{17}$/ }
+} as const;
