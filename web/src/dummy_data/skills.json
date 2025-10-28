@@ -1,0 +1,27 @@
+{
+  "skills": [
+    { "id": 1, "label": "JavaScript" },
+    { "id": 2, "label": "React" },
+    { "id": 3, "label": "Node.js" },
+    { "id": 4, "label": "CSS" },
+    { "id": 5, "label": "TypeScript" },
+    { "id": 6, "label": "Python" },
+    { "id": 7, "label": "SQL" },
+    { "id": 8, "label": "C#" },
+    { "id": 9, "label": ".Net" },
+    { "id": 10, "label": "PostgreSQL" },
+    { "id": 11, "label": "MongoDB" },
+    { "id": 12, "label": "AWS" },
+    { "id": 13, "label": "Azure" },
+    { "id": 14, "label": "Docker" },
+    {"id": 15, "label":"HTML & CSS"},
+    {"id": 16, "label":"LAN Tester"},
+    {"id": 17, "label":"Data Recovery"},
+    {"id": 18, "label":"Basic Structure cabling"},
+    {"id": 19, "label":"Figma"},
+    {"id": 20, "label":"Adobe XD"},
+    {"id": 21, "label":"Photoshop"},
+    {"id": 22, "label":"Illustrator"},
+    {"id": 23, "label":"Prototype"}    
+  ]
+}

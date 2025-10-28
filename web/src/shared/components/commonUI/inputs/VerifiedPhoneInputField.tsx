@@ -240,6 +240,7 @@ export const VerifiedPhoneInputField = ({
         <OTPModal
           header="Verify Mobile Number"
           description="A verification OTP has been sent to your mobile. Please check your mobile."
+          name="mobileOTP"
           onClose={() => setShowOTP(false)}
           onVerifySuccess={() => {
             setVerified(true);

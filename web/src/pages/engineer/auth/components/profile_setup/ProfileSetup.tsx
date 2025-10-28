@@ -115,7 +115,6 @@ const ProfileSetup = () => {
           />
         )}
       />
-
       <Controller
         name="isEmailVerified"
         control={control}

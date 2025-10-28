@@ -51,7 +51,7 @@ export const PhoneInputField = ({
 
     const parts = fullValue.trim().split(" ");
     if (parts.length < 2) {
-      return "Please enter a valid phone number";
+      return "Please enter a valid mobile number";
     }
 
     const countryCode = parts[0];
@@ -63,21 +63,21 @@ export const PhoneInputField = ({
     }
 
     if (!/^\d+$/.test(phoneNumber)) {
-      return "Phone number must contain only digits (0-9)";
+      return "Mobile number must contain only digits (0-9)";
     }
     
     const { validationKey } = selectedCountry;
     if (validationKey === "india") {
       if (phoneNumber.length !== 10) {
-        return "Indian phone number must be exactly 10 digits long";
+        return "India mobile number must be exactly 10 digits long";
       }
       if (!/^[6-9]/.test(phoneNumber)) {
-        return "Indian mobile numbers must start with 6, 7, 8, or 9";
+        return "India mobile numbers must start with 6, 7, 8, or 9";
       }
     } else if (validationKey === "uk") {
       // ✅ CORRECTED: After +44, UK mobile = 10 digits, starting with 7, 8, or 9
       if (phoneNumber.length !== 10) {
-        return "UK phone number must be exactly 10 digits long";
+        return "UK mobile number must be exactly 10 digits long";
       }
       if (!/^[789]/.test(phoneNumber)) {
         return "UK mobile numbers must start with 7, 8, or 9";

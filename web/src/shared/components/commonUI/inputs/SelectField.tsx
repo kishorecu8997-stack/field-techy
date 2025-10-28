@@ -1,15 +1,18 @@
+import { Listbox, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import type { SelectFieldProps } from "./type";
+
+import type { SelectFieldProps } from "./types";
 
 // Custom chevron-down icon
-const ChevronDownIcon = () => (
+const ChevronDownIcon = ({ open }: { open: boolean }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 text-gray-500 pointer-events-none"
+    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -22,11 +25,13 @@ const ChevronDownIcon = () => (
 export const SelectField = ({
   name,
   label,
+  isShowLabel = true,
   placeholder = "Select",
   required = false,
   options = [],
   rules,
-  isShowLabel=true,
+  leftIcon,
+  disabled = false,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
 
@@ -42,7 +47,6 @@ export const SelectField = ({
     required: requiredMessage,
     ...rules,
   };
-
   return (
     <div className="flex flex-col py-1">
       {isShowLabel && (
@@ -50,43 +54,128 @@ export const SelectField = ({
           {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
+
       <Controller
         name={name}
         control={control}
         rules={validationRules}
-        render={({ field, fieldState: { error } }) => (
-          <>
-            <div className="relative w-full">
-              <select
-                {...field}
-                // Ensure empty value is truly empty string for placeholder to show
-                value={field.value ?? ""}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none"
-              >
-                {/* Placeholder option */}
-                <option value="" disabled hidden>
-                  {placeholder}
-                </option>
-                {options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+        render={({
+          field: { onChange, value, name: fieldName },
+          fieldState: { error },
+        }) => {
+          // Find selected option for display
+          const selectedOption =
+            options.find((opt) => opt.value === value) || null;
 
-              {/* Custom dropdown arrow */}
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <ChevronDownIcon />
-              </div>
-            </div>
+          return (
+            <Listbox
+              value={selectedOption}
+              onChange={opt => onChange(opt?.value || "")}
+              name={fieldName}
+              disabled={disabled}
+            >
+              {({ open }) => (
+                <>
+                  <div className="relative cursor-pointer">
+                    <Listbox.Button
+                      className={`w-full rounded-md border ${
+                        disabled
+                          ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                          : "bg-white dark:bg-gray-800 cursor-pointer"
+                      } ${
+                        error && !disabled
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 dark:border-gray-600 focus:ring-primary"
+                      } bg-white dark:bg-gray-800 py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
+                    >
+                      <div className="flex items-center">
+                        {leftIcon && (
+                          <span className="mr-3 flex-shrink-0 text-gray-400 dark:text-gray-500">
+                            {leftIcon}
+                          </span>
+                        )}
+                        <span
+                          className={`block truncate ${
+                            !value ? "text-gray-400 dark:text-gray-500 " : ""
+                          }`}
+                        >
+                          {value ? selectedOption?.label : placeholder}
+                        </span>
+                      </div>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                        <ChevronDownIcon open={open} />
+                      </span>
+                    </Listbox.Button>
 
-            {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
-                {error.message}
-              </p>
-            )}
-          </>
-        )}
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                      afterLeave={() => {}}
+                    >
+                      <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {options.length === 0 ? (
+                          <div className="relative cursor-default select-none py-2 px-4 text-gray-500">
+                            No options
+                          </div>
+                        ) : (
+                          options.map((option) => (
+                            <Listbox.Option
+                              key={option.value}
+                              className={({ active }) =>
+                                `relative select-none py-2 pl-10 pr-4 cursor-pointer ${
+                                  active
+                                    ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                    : "text-gray-900 dark:text-gray-100"
+                                }`
+                              }
+                              value={option}
+                            >
+                              {({ selected }) => (
+                                <>
+                                  <span
+                                    className={`block truncate ${
+                                      selected ? "font-medium" : "font-normal"
+                                    }`}
+                                  >
+                                    {option.label}
+                                  </span>
+                                  {selected ? (
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                    </span>
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))
+                        )}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+
+                  {error && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                      {error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            </Listbox>
+          );
+        }}
       />
     </div>
   );

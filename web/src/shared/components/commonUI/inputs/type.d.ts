@@ -225,6 +225,7 @@ interface TextareaInputProps {
 export interface VerifiedEmailInputFieldProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
   rules?: RegisterOptions;

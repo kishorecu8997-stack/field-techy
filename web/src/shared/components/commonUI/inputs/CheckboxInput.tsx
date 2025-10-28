@@ -3,9 +3,16 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import type { CheckboxInputProps } from "./type";
 
-
+interface CheckboxInputProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  required?: boolean;
+  secondaryLabel?: string;
+  /** Optional react-hook-form validation rules */
+  rules?: RegisterOptions;
+}
 
 /**
  * CheckboxInput - A reusable checkbox component for react-hook-form.
@@ -18,6 +25,7 @@ import type { CheckboxInputProps } from "./type";
 export const CheckboxInput = ({
   name,
   label,
+  isShowLabel = true,
   required = false,
   rules,
   secondaryLabel,
@@ -46,7 +54,7 @@ export const CheckboxInput = ({
                 checked={field.value || false}
                 className="accent-primary"
               />
-              {label && (
+              {isShowLabel && (
                 <label
                   htmlFor={name}
                   className="text-gray-700 font-bold dark:text-gray-300"

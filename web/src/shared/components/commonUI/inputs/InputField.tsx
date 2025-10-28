@@ -3,9 +3,32 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import type { InputFieldProps } from "./type";
+import React from "react";
 
-/** 
+interface InputFieldProps {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  isShowLabel?: boolean;
+  /**
+   * Set to true for default required message,
+   * or a string for a custom required error message.
+   */
+  required?: boolean | string;
+  type?: "text" | "email" | "number" | "date";
+  /**
+   * Additional validation rules (e.g., minLength, pattern, validate).
+   * Note: required can be set via the required prop instead.
+   */
+  rules?: RegisterOptions;
+  leftIcon?: React.ReactNode;
+  containerClassName?: string;
+  inputClassName?: string;
+  showValidationCheck?: boolean;
+  disabled?: boolean;
+}
+
+/**
  * InputField - A reusable input component for react-hook-form.
  *
  * Supports text, email, number, and date types.
@@ -17,6 +40,7 @@ export const InputField = ({
   name,
   label,
   placeholder,
+  isShowLabel = true,
   required = false,
   type = "text",
   rules,
@@ -28,13 +52,21 @@ export const InputField = ({
 }: InputFieldProps) => {
   const { control } = useFormContext();
 
-  // Default validation rules
+  // Build required validation message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required; // custom message
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
+
+  // Merge required with other rules
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: requiredMessage,
     ...rules,
   };
 
-  // Add email pattern validation if type is email
+  // Add email pattern validation if type is email (unless overridden in rules)
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -45,9 +77,10 @@ export const InputField = ({
 
   return (
     <div className={containerClassName}>
-      {label && (
+      {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -65,11 +98,12 @@ export const InputField = ({
               <input
                 {...field}
                 id={name}
+                // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled} 
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
-                  showValidationCheck && isDirty ? "pr-10" : ""
+                  showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 }`}
               />
               {showValidationCheck && isDirty && !invalid && (

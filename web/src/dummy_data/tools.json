@@ -1,0 +1,22 @@
+{
+  "tools": [
+    "Visual Studio Code",
+    "Git",
+    "Docker",
+    "Postman",
+    "Figma",
+    "Jira",
+    "Slack",
+    "GitHub",
+    "Notion",
+    "IntelliJ IDEA",
+    "npm",
+    "Yarn",
+    "Webpack",
+    "ESLint",
+    "Prettier",
+    "Kubernetes",
+    "SSMS",
+    "DBeaver"
+  ]
+}

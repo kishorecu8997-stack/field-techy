@@ -54,7 +54,7 @@ export const validateZipcode = (value: string, country?: string) => {
 
     // Must be exactly 6 digits
     if (!/^\d{6}$/.test(v.trim())) {
-      return 'Enter a valid 6-digit PIN code for India';
+      return 'Enter a valid 6-digit postal code for India';
     }
 
     return true;
@@ -63,24 +63,24 @@ export const validateZipcode = (value: string, country?: string) => {
   if (country === 'uk') {
     // Reject leading/trailing spaces
     if (v !== v.trim()) {
-      return 'UK postcode must not start or end with a space';
+      return 'UK postal code must not start or end with a space';
     }
 
     // Reject more than one internal space
     const spaceCount = (v.match(/ /g) || []).length;
     if (spaceCount > 1) {
-      return 'UK postcode can contain at most one internal space';
+      return 'UK postal code can contain at most one internal space';
     }
 
     // Must be 6–8 characters total (including space if present)
     if (v.length < 6 || v.length > 8) {
-      return 'UK postcode must be 6–8 characters long';
+      return 'UK postal code must be 6–8 characters long';
     }
 
     // Must be alphanumeric with optional single space
     const ukRegex = /^([A-Za-z0-9]{1,4} [A-Za-z0-9]{1,4}|[A-Za-z0-9]{6,8})$/;
     if (!ukRegex.test(v)) {
-      return 'Enter a valid UK postcode (alphanumeric, optional single space)';
+      return 'Enter a valid UK postal code (alphanumeric, optional single space)';
     }
 
     return true;

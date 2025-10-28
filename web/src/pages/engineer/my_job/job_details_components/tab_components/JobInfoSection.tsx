@@ -1,6 +1,6 @@
 import React from "react";
 import type { JobInfoSectionProps } from "../../types";
-import Proposal from "@/shared/components/Proposal";
+import Proposal from "../../../../../shared/components/Proposal";
 
 /**
  * Displays detailed job information including creation date, start date, tasks, and files.

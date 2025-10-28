@@ -1,0 +1,14 @@
+{
+  "designations": [
+    { "id": "1", "title": "Angular Developer" },
+    { "id": "2", "title": "React Developer" },
+    { "id": "3", "title": "Frontend Engineer" },
+    { "id": "4", "title": "Backend Developer" },
+    { "id": "5", "title": "Full Stack Developer" },
+    { "id": "6", "title": "UI/UX Designer" },
+    { "id": "7", "title": "DevOps Engineer" },
+    { "id": "8", "title": "Software Architect" },
+    { "id": "9", "title": "QA Engineer" },
+    { "id": "10", "title": "Project Manager" }
+  ]
+}

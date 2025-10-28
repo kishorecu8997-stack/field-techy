@@ -29,6 +29,7 @@ import type { VerifiedEmailInputFieldProps } from "./type";
 export const VerifiedEmailInputField = ({
   name,
   label = "Email ID",
+  isShowLabel = true,
   placeholder,
   required = false,
   disabled: externalDisabled = false,
@@ -90,7 +91,7 @@ export const VerifiedEmailInputField = ({
   return (
     <div className="w-full">
       <div className="flex flex-col py-1">
-        {label && (
+        {isShowLabel && (
           <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
             {label} {required && <span className="text-red-600">*</span>}
           </label>
@@ -168,6 +169,7 @@ export const VerifiedEmailInputField = ({
         <OTPPage
           header="Verify Email"
           description="A verification OTP has been sent to your email. Please check your inbox."
+          name="emailOTP"
           onClose={() => setShowOTP(false)}
           onVerifySuccess={() => {
             setVerified(true);

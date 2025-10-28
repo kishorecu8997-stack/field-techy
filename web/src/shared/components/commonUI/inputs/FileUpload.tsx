@@ -317,11 +317,11 @@ export const FileUpload = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const displayError = error?.message || fileError;
+          const displayError = error?.message || fileError;         
 
           return (
             <>
-              <div
+              <div               
                 className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
                   displayError
                     ? "border-red-500"
@@ -393,6 +393,8 @@ export const FileUpload = ({
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                       Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
                       {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
+                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}
@@ -404,8 +406,7 @@ export const FileUpload = ({
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
                 />
-              </div>
-
+              </div>              
               {displayError && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                   {displayError}
