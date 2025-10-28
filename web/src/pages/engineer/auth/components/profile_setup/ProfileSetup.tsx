@@ -15,13 +15,12 @@ import {
   validateAddress,  
   validateAmount,
   validateCompany,
-  //validatePortfolio
-  validatePortfolioLink
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import {
   validateExperience,
   validateDesignation,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
+import { validatePortfolioLink } from "@/shared/libs/utils";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import { serviceCategories } from "@/dummy_data/serviceCategories";
 import skills from "@/dummy_data/skills";

@@ -116,67 +116,6 @@ export const validateAddress = (value: string) => {
   return true;
 };
 
-
-/**
- * Validates a portfolio URL, with specific rules for LinkedIn and GitHub.
- * - The field is optional.
- * - Must be a valid URL format between 10 and 100 characters.
- * - Must not contain spaces.
- * - Only allows `linkedin.com` and `github.com` domains.
- * - Enforces country-specific path rules for LinkedIn profiles (e.g., `/in/` for India).
- * @param {string} value - The portfolio URL to validate.
- * @param {string} [country] - The country code ('in' or 'uk') for region-specific rules.
- * @returns {true | string} True if valid, otherwise an error message.
- */
-export const validatePortfolio = (value: string, country?: string) => {
-  const v = (value || "").trim();
-  if (!v) return true;
-
-  if (v.length < 10) return "Portfolio link must be at least 10 characters";
-  if (v.length > 100) return "Portfolio link must not exceed 100 characters";
-  if (/\s/.test(v)) return "Portfolio link must not contain spaces";
-
-  let urlStr = v;
-  try {
-    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(urlStr)) {
-      urlStr = `https://${urlStr}`;
-    }
-
-    const parsed = new URL(urlStr);
-
-    // ✅ Only allow GitHub and LinkedIn
-    const allowedDomains = [
-      "www.linkedin.com",
-      "linkedin.com",
-      "www.github.com",
-      "github.com"
-    ];
-
-    if (!allowedDomains.includes(parsed.hostname)) {
-      return "Only LinkedIn and GitHub links are allowed";
-    }
-
-    // ✅ Region-specific LinkedIn rules
-    if (country === "in" && parsed.hostname.includes("linkedin.com")) {
-      if (!parsed.pathname.startsWith("/in/")) {
-        return "Indian LinkedIn profiles should start with /in/";
-      }
-    }
-
-    if (country === "uk" && parsed.hostname.includes("linkedin.com")) {
-      if (!parsed.pathname.includes("-uk")) {
-        return "UK LinkedIn profiles should include '-uk' in the URL";
-      }
-    }
-
-  } catch {
-    return "Enter a valid URL";
-  }
-
-  return true;
-};
-
-
 /**
  * Validates a monetary amount.
  * - The field is required.
@@ -300,73 +239,15 @@ export const validateIsPhoneVerified = (verified: boolean) => {
   return validateIsVerified(verified, "Phone number");
 };
 
-export const validatePortfolioLink = (value: string) => {
-  if (/^\s|\s$/.test(value || ""))
-    return "PortfolioLink must not start or end with a space";
-
-  const v = (value || "").trim();
-
-  if (!v) return true; // ✅ Field is optional now
-
-  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
-
-  try {
-    const url = new URL(v);
-
-    if (!["http:", "https:"].includes(url.protocol)) {
-      return "Portfolio link must start with http:// or https://";
-    }
-
-    const hostname = url.hostname.toLowerCase();
-    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
-
-    const isGitHubProfile =
-      hostname.includes("github.com") && /^\/[^/]+$/.test(pathname);
-
-    const isLinkedInProfile =
-      hostname.includes("linkedin.com") && /^\/in\/[^/]+$/.test(pathname); // LinkedIn profiles follow /in/username
-
-    const isExampleProfile =
-      hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
-
-    const isPersonalSite =
-      !hostname.includes("linkedin.com") &&
-      !hostname.includes("github.com") &&
-      !hostname.endsWith(".zip") &&
-      !hostname.endsWith(".exe") &&
-      !hostname.includes("malware") &&
-      !hostname.includes("phishing") &&
-      !hostname.includes("adult") &&
-      !hostname.includes("torrent") &&
-      pathname === ""; // homepage only
-
-    const isAllowed =
-      isGitHubProfile ||
-      isLinkedInProfile ||
-      isExampleProfile ||
-      isPersonalSite;
-
-    if (!isAllowed) {
-      return "Only GitHub, LinkedIn profile URL, or safe personal homepages are allowed";
-    }
-
-    return true;
-  } catch {
-    return "Portfolio link must be a valid URL";
-  }
-};
-
 
 export default {
   validateName,
   validateZipcode,
-  validateAddress,
-  validatePortfolio,
+  validateAddress,  
   validateAmount,
   validateExperience,
   validateDesignation,
   validateCompany,
   validateIsVerified,
-  validateIsPhoneVerified,
-  validatePortfolioLink
+  validateIsPhoneVerified
 };

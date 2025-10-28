@@ -38,3 +38,63 @@ export const validatePassword = (value: string) => {
   }
   return true;
 };
+
+export const validatePortfolioLink = (value: string) => {
+  if (/^\s|\s$/.test(value || ""))
+    return "PortfolioLink must not start or end with a space";
+
+  const v = (value || "").trim();
+
+  if (!v) return true; // ✅ Field is optional now
+
+  // ✅ Enforce min 10 and max 200 characters
+  if (v.length < 10) return "Portfolio link must be at least 10 characters";
+  if (v.length > 200) return "Portfolio link must not exceed 200 characters";
+
+  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+
+  try {
+    const url = new URL(v);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "Portfolio link must start with http:// or https://";
+    }
+
+    const hostname = url.hostname.toLowerCase();
+    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+
+    const isGitHubProfile =
+      hostname.includes("github.com") && /^\/[^/]+$/.test(pathname);
+
+    const isLinkedInProfile =
+      hostname.includes("linkedin.com") && /^\/in\/[^/]+$/.test(pathname); // LinkedIn profiles follow /in/username
+
+    const isExampleProfile =
+      hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
+
+    const isPersonalSite =
+      !hostname.includes("linkedin.com") &&
+      !hostname.includes("github.com") &&
+      !hostname.endsWith(".zip") &&
+      !hostname.endsWith(".exe") &&
+      !hostname.includes("malware") &&
+      !hostname.includes("phishing") &&
+      !hostname.includes("adult") &&
+      !hostname.includes("torrent") &&
+      pathname === ""; // homepage only
+
+    const isAllowed =
+      isGitHubProfile ||
+      isLinkedInProfile ||
+      isExampleProfile ||
+      isPersonalSite;
+
+    if (!isAllowed) {
+      return "Only GitHub, LinkedIn profile URL, or safe personal homepages are allowed";
+    }
+
+    return true;
+  } catch {
+    return "Portfolio link must be a valid URL";
+  }
+};
