@@ -1,4 +1,4 @@
-import { JOB_STATUSES } from "@/pages/search_result/types";
+import { JOB_STATUSES } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
 import { FaRegCheckCircle } from "react-icons/fa";

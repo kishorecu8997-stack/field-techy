@@ -1,6 +1,6 @@
 import { sampleJobs } from "@/dummy_data/searchData";
 import { useEffect, useState } from "react";
-import MyJobsHeader from "../../shared/components/MyJobsHeader";
+import MyJobsHeader from "../../../shared/components/MyJobsHeader";
 import FilterPanel from "./components/FilterPanel";
 import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
