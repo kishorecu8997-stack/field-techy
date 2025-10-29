@@ -41,8 +41,24 @@ export const urls = {
     },
   },
   client: {
-    base: BASE.CLIENT,
-    privacy_policy: `${BASE.CLIENT}/policy`,
+    auth: {
+      login: `${BASE.CLIENT_AUTH}/login`,
+      signup: `${BASE.CLIENT_AUTH}/signup`,
+      account_type: `${BASE.CLIENT_AUTH}/select-role`,
+      profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
+      reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
+      set_password: `${BASE.CLIENT_AUTH}/set-password`,
+      background_verification: `${BASE.CLIENT_AUTH}/background-verification`,
+      privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
+    },
+    home: {
+      my_jobs: `${BASE.CLIENT}/my-jobs`,
+      search_result: `${BASE.CLIENT}/search-result`,
+      faq: `${BASE.CLIENT}/faq`,
+      terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
+      privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+    },
   },
 } as const;
 
@@ -65,6 +81,27 @@ export const absoluteUrls = {
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+    },
+  },
+
+  client: {
+    auth: {
+      login: `${BASE.CLIENT_AUTH}/login`,
+      signup: `${BASE.CLIENT_AUTH}/signup`,
+      account_type: `${BASE.CLIENT_AUTH}/select-role`,
+      profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
+      reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
+      set_password: `${BASE.CLIENT_AUTH}/set-password`,
+      background_verification: `${BASE.CLIENT_AUTH}/background-verification`,
+      privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
+    },
+    home: {
+      my_jobs: `${BASE.CLIENT}/my-jobs`,
+      search_result: `${BASE.CLIENT}/search-result`,
+      faq: `${BASE.CLIENT}/faq`,
+      terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
+      privacy_policy: `${BASE.CLIENT}/privacy-policy`,
     },
   },
 } as const;

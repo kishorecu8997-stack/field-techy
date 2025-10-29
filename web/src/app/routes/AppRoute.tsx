@@ -3,7 +3,7 @@ import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
 
-const Layout = React.lazy(() => import("@/pages/engineer/auth"));
+const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
@@ -11,7 +11,8 @@ const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
 const ProfileSettingPage = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
+  () =>
+    import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
 );
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
@@ -20,7 +21,10 @@ const ResetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ResetPassword")
 );
 const BackgroundVerification = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/BackgroundVerification")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/BackgroundVerification"
+    )
 );
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
@@ -39,6 +43,27 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+
+//client
+const ClientSignInPage = React.lazy(
+  () => import("@/pages/client/auth/components/signin_pages/SignInPage")
+);
+const ClientSignUpPage = React.lazy(
+  () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
+);
+const ClientForgetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ForgetPassword")
+);
+const ClientAccountType = React.lazy(
+  () => import("@/pages/client/auth/components/AccountType")
+);
+const ClientResetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ResetPassword")
+);
+const CorporateMultiStepRegistrationForm = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -108,6 +133,47 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+    ],
+  },
+
+  //client
+  {
+    path: BASE.CLIENT_AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { path: urls.client.auth.login, element: withSuspense(ClientSignInPage) },
+      {
+        path: urls.client.auth.signup,
+        element: withSuspense(ClientSignUpPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.account_type,
+        element: withSuspense(ClientAccountType),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: `${urls.client.auth.profile_setup}/role`,
+        element: withSuspense(CorporateMultiStepRegistrationForm),
+      },
+      {
+        path: `${urls.client.auth.set_password}`,
+        element: withSuspense(ClientResetPassword),
+      },
+    ],
+  },
+
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(RootLayout),
+    children: [
+      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
     ],
   },
 

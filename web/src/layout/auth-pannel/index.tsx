@@ -1,19 +1,19 @@
 import React from "react";
-import LeftPanel from "./components/LeftPannel";
-import RightPanel from "./components/RightPannel";
+import LeftPanel from "./LeftPannel";
+import RightPanel from "./RightPannel";
 
 /**
  * Main layout component that divides the screen into two panels.
  * On desktop, displays a left panel with 30% width and a right panel with 70% width.
  * On mobile, both panels stack vertically with full width.
  * Provides a responsive split-screen layout for authentication flows.
- * 
+ *
  * @component
  * @example
  * return (
  *   <Layout />
  * )
- * 
+ *
  * @returns {JSX.Element} The rendered Layout component with left and right panels
  */
 const Layout: React.FC = () => {
