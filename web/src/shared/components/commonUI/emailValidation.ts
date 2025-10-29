@@ -1,4 +1,20 @@
 // emailValidation.ts
+/**
+ * Performs a comprehensive validation of an email address string.
+ *
+ * This function checks for common email format errors, including presence,
+ * length, character validity, and structure of both the local and domain parts.
+ * It also validates the Top-Level Domain (TLD) against a predefined list of
+ * allowed TLDs, including multi-part TLDs like 'co.in'.
+ *
+ * @param {string} value - The email string to be validated.
+ * @returns {true | string} Returns `true` if the email is valid, otherwise a
+ *   string containing a specific error message indicating the reason for failure.
+ *
+ * @example
+ * validateEmail("test@example.com"); // returns true
+ * validateEmail("test@.com"); // returns "Domain contains empty label"
+ */
 export const validateEmail = (value: string): true | string => {
   if (!value) return "Email ID is required";
 
@@ -80,6 +96,10 @@ export const validateEmail = (value: string): true | string => {
 };
 
 
+/**
+ * A pre-configured rules object for `react-hook-form` that uses `validateEmail`.
+ * This can be passed directly to the `rules` prop of a `Controller` or `register` call.
+ */
 export const validateEmailRules = {
   required: "Email ID is required",
   maxLength: {

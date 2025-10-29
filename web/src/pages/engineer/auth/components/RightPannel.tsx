@@ -3,17 +3,13 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 /**
- * Right Panel component that serves as a container for dynamic content.
- * Renders the current route's component using React Router's Outlet,
- * providing a consistent layout structure with proper spacing and alignment.
+ * A layout component that serves as the main content area for authentication pages.
  *
- * @component
- * @example
- * return (
- *   <RightPanel />
- * )
+ * This component creates a consistent, centered layout for the right-hand side of the screen.
+ * It uses React Router's `<Outlet />` component to render the content of the currently
+ * active nested route (e.g., Login, SignUp, ResetPassword).
  *
- * @returns {JSX.Element} The rendered Right Panel container with outlet for routing
+ * @returns {JSX.Element} The rendered right panel containing the active route's component.
  */
 const RightPanel: React.FC = () => {
   return (

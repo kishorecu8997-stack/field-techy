@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import type { CountrySelectProps } from "./types";
+import type { CountrySelectProps } from "./type";
+
 
 export const CountrySelect = ({
   countries,

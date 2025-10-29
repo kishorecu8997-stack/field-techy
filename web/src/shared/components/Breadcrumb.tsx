@@ -1,10 +1,6 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-
-interface BreadcrumbProps {
-  homeLabel?: string;
-  customLabels?: Record<string, string>;
-}
+import type { BreadcrumbProps } from "./type";
 
 /**
  * Breadcrumb Component

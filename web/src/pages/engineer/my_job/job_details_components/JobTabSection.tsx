@@ -8,11 +8,12 @@ import {
 } from "@/dummy_data/jobDetails";
 import { JOB_STATUSES, type JobStatus } from "@/pages/engineer/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
-import Proposal from "../../../../shared/components/Proposal";
+
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
+import Proposal from "@/shared/components/Proposal";
 
 /**
  * Renders a tabbed section for job details based on the current job status.

@@ -1,11 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-
-interface TextareaInputProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-}
+import type { TextareaInputProps } from "./type";
 
 /**
  * TextareaInput - A reusable textarea component for react-hook-form.

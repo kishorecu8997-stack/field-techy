@@ -30,44 +30,71 @@ export const validatePassword = (value: string) => {
   if (!/\d/.test(value)) {
     return "Password must include at least one number";
   }
-  if (!/[@$!%*?&]/.test(value)) {
-    return "Password must include at least one special character (@$!%*?&)";
+  if (!/[^A-Za-z0-9]/.test(value)) {
+    return "Password must include at least one special character";
+  }
+  if (/\s/.test(value)) {
+    return "Password must not contain spaces";
   }
   return true;
 };
 
-/**
- * Map of phone validation rules by country code.
- * Add new country rules here to extend supported phone types.
- */
-export const phoneValidations: Record<
-  string,
-  { regex: RegExp; message: string }
-> = {
-  "+91": {
-    regex: /^[6-9]\d{9}$/,
-    message: "Enter a valid 10-digit Indian mobile number",
-  },
-  "+44": {
-    regex: /^\d{10}$/,
-    message: "Enter a valid 10-digit UK mobile number",
-  },
-};
+export const validatePortfolioLink = (value: string) => {
+  if (/^\s|\s$/.test(value || ""))
+    return "PortfolioLink must not start or end with a space";
 
-/**
- * validatePhone - reusable validator for react-hook-form.
- * Accepts the stored combined value (e.g. "+91 9876543210") and
- * returns true when valid or a string error message when invalid.
- */
-export const validatePhone = (value: string) => {
-  const [code, ...rest] = (value || "").split(" ");
-  const number = rest.join("").replace(/\D/g, "");
+  const v = (value || "").trim();
 
-  const rule = phoneValidations[code];
-  if (rule) {
-    return rule.regex.test(number) ? true : rule.message;
+  if (!v) return true; // ✅ Field is optional now
+
+  // ✅ Enforce min 10 and max 200 characters
+  if (v.length < 10) return "Portfolio link must be at least 10 characters";
+  if (v.length > 200) return "Portfolio link must not exceed 200 characters";
+
+  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+
+  try {
+    const url = new URL(v);
+
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "Portfolio link must start with http:// or https://";
+    }
+
+    const hostname = url.hostname.toLowerCase();
+    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+
+    const isGitHubProfile =
+      hostname.includes("github.com") && /^\/[^/]+$/.test(pathname);
+
+    const isLinkedInProfile =
+      hostname.includes("linkedin.com") && /^\/in\/[^/]+$/.test(pathname); // LinkedIn profiles follow /in/username
+
+    const isExampleProfile =
+      hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
+
+    const isPersonalSite =
+      !hostname.includes("linkedin.com") &&
+      !hostname.includes("github.com") &&
+      !hostname.endsWith(".zip") &&
+      !hostname.endsWith(".exe") &&
+      !hostname.includes("malware") &&
+      !hostname.includes("phishing") &&
+      !hostname.includes("adult") &&
+      !hostname.includes("torrent") &&
+      pathname === ""; // homepage only
+
+    const isAllowed =
+      isGitHubProfile ||
+      isLinkedInProfile ||
+      isExampleProfile ||
+      isPersonalSite;
+
+    if (!isAllowed) {
+      return "Only GitHub, LinkedIn profile URL, or safe personal homepages are allowed";
+    }
+
+    return true;
+  } catch {
+    return "Portfolio link must be a valid URL";
   }
-
-  // Fallback message when country code is not recognized
-  return "Enter a valid phone number";
 };

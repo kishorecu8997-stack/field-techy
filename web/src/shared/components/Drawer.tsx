@@ -39,10 +39,8 @@ interface DrawerProps {
  * @returns {JSX.Element | null} The rendered Drawer component or null if closed.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
-
   const [key, setKey] = useState<string>("myAccount");
-
+  if (!isOpen) return null;
   const commonProps = {
     onMenuItemClick: (data: string) => setKey(data),
     onClose: onClose,
@@ -51,6 +49,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   const sectionConfig: Record<
     string,
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       component: React.ComponentType<any>;
       title: string;
       parent?: string;

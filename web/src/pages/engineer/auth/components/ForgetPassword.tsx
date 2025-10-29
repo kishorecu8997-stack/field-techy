@@ -1,24 +1,30 @@
 import { assetsConfig } from "@/assets";
-import { absoluteUrls } from "@/config/urls";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { MdOutlineMailOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
-
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { absoluteUrls } from "@/config/urls";
 export type ForgetPasswordFormData = {
   email: string;
 };
 
 /**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
+ * Renders the "Forgot Password" form, allowing users to initiate a password reset.
+ *
+ * This component prompts the user to enter their email address. Upon submission,
+ * it displays an OTP verification modal (`OTPPage`). If the OTP is successfully
+ * verified, the user is then navigated to the "Reset Password" page to set a new password.
+ *
+ * It utilizes `react-hook-form` for form state management and validation,
+ * and a generic `Popup` component to display the OTP verification step.
+ *
+ * @returns {JSX.Element} The rendered Forgot Password form component.
  */
 const ForgetPassword = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +35,7 @@ const ForgetPassword = () => {
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
 
@@ -38,11 +44,15 @@ const ForgetPassword = () => {
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-md font-extralight ">
-            Enter your email address to reset your password.
+            Enter your email id address to reset your password.
           </h2>
         </div>
         <FormContainer
@@ -50,7 +60,16 @@ const ForgetPassword = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-10"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email ID"
+            type="text"
+            required
+            leftIcon={
+              <MdOutlineMailOutline className="text-lg text-gray-500" />
+            }
+            rules={validateEmailRules}
+          />
 
           <Button
             type="submit"

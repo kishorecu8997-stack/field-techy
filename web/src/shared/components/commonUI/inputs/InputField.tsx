@@ -25,6 +25,7 @@ interface InputFieldProps {
   containerClassName?: string;
   inputClassName?: string;
   showValidationCheck?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -47,6 +48,7 @@ export const InputField = ({
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   showValidationCheck = false,
+  disabled = false,  // Added disabled default to false
 }: InputFieldProps) => {
   const { control } = useFormContext();
 
@@ -66,12 +68,11 @@ export const InputField = ({
 
   // Add email pattern validation if type is email (unless overridden in rules)
   if (type === "email") {
-    if (!("pattern" in validationRules)) {
-      validationRules.pattern = {
-        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: "Please enter a valid email address",
-      };
-    }
+    validationRules.pattern = {
+      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      message: "Please enter a valid email address",
+      ...rules?.pattern, // merge with custom pattern if provided
+    };
   }
 
   return (
@@ -100,6 +101,7 @@ export const InputField = ({
                 // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
                 placeholder={placeholder || label}
+                disabled={disabled} 
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 }`}
