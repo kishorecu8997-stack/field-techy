@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
-import SortDropdown from "../SortDropdown";
+import SortDropdown from "./SortDropdown";
 
 interface HeaderProps {
   title?: string;
@@ -9,7 +9,7 @@ interface HeaderProps {
   showSearchBar?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ title,currentPath, showSearchBar=true }) => {
+const ClientHeader: React.FC<HeaderProps> = ({ title,currentPath, showSearchBar=true }) => {
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4 py-4">
@@ -38,4 +38,4 @@ const Header: React.FC<HeaderProps> = ({ title,currentPath, showSearchBar=true }
   );
 };
 
-export default Header;
+export default ClientHeader;

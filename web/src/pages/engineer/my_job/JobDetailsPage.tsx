@@ -5,7 +5,6 @@ import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
-// import MyJobsHeader from "@/shared/components/MyJobsHeader";
 
 /**
  * Page component displaying detailed information about a specific job.

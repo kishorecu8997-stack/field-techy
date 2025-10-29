@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import PaymentMethodSelector, {
   type PaymentCardOption,
 } from "@/shared/components/commonUI/PaymentMethodSelector";
+import { type CardFormData } from "@/shared/components/AddCard";
 
 interface JobReviewPageProps {
   onBack: () => void;
   onSubmit: () => void;
 }
 
-const paymentOptions: PaymentCardOption[] = [
+const initialPaymentOptions: PaymentCardOption[] = [
   {
     id: "card_1",
     last4: "5678",
@@ -25,6 +26,7 @@ const paymentOptions: PaymentCardOption[] = [
 
 const JobReviewPage: React.FC<JobReviewPageProps> = ({ onBack, onSubmit }) => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(initialPaymentOptions);
   const [consentChecked, setConsentChecked] = useState<boolean>(false);
 
   // Mock data — in real app, this would come from form state
@@ -47,6 +49,17 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({ onBack, onSubmit }) => {
         name: "Mobile App UI/UX Designer",
       },
     ],
+  };
+
+  const handleAddNewCard = (cardData: CardFormData) => {
+    const newCard: PaymentCardOption = {
+      id: `card_${Date.now()}`,
+      last4: cardData.cardNumber.slice(-4),
+      brand: "visa", // You might want to determine this dynamically
+      name: "New Card",
+    };
+    setPaymentOptions((prev) => [...prev, newCard]);
+    setSelectedCard(newCard.id);
   };
 
   return (
@@ -127,51 +140,12 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({ onBack, onSubmit }) => {
           Once the job is posted, an invoice will be auto-generated and sent to
           you. Payment will follow the standard billing cycle.
         </p>
-
-        
-        <div className="space-y-3">
-          {/* {jobData.cards.map((card) => (
-            <div
-              key={card.id}
-              className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
-                selectedCard === card.id
-                  ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
-                  : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-              }`}
-              onClick={() => setSelectedCard(card.id)}
-            >
-              <div className="flex items-center space-x-3">
-                <img
-                  src={`https://placehold.co/40x25?text=${card.type}`}
-                  alt={card.type}
-                  className="w-10 h-6 object-contain"
-                />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {card.number}
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {card.name}
-                  </p>
-                </div>
-              </div>
-              <input
-                type="radio"
-                name="paymentCard"
-                value={card.id}
-                checked={selectedCard === card.id}
-                onChange={() => setSelectedCard(card.id)}
-                className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
-              />
-            </div>
-          ))} */}
-
-          {/* Add New Card */}         
+        <div className="space-y-3">                 
           <PaymentMethodSelector
             options={paymentOptions}
             selectedId={selectedCard}
             onChange={setSelectedCard}
-            onAddNew={() => console.log("Add new card")}            
+            onAddNew={handleAddNewCard}
           />
         </div>
       </div>
@@ -179,12 +153,12 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({ onBack, onSubmit }) => {
       {/* Pay & Post Job Button */}
       <div className="pt-6">
         <div className="flex gap-4">
-          <button
+          {/* <button
             onClick={onBack}
             className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             Back to Edit
-          </button>
+          </button> */}
           <button
             onClick={onSubmit}
             disabled={!consentChecked || !selectedCard}

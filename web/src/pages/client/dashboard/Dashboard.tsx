@@ -7,7 +7,7 @@ import {
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import InProgressJobCard from "./components/InProgressJobCard";
-import SidebarJobPostWallet from "../../../shared/components/client/SidebarJobPostWallet";
+import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";

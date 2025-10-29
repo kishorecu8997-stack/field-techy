@@ -1,7 +1,7 @@
 import { rectangle } from "leaflet";
 import EngineerListPage from "./components/EngineerListPage";
-import Header from "@/shared/components/client/Header";
-import Filters from "@/shared/components/client/Filters";
+import Header from "@/shared/components/ClientHeader";
+import Filters from "@/shared/components/Filters";
 
 
 const ExploreEngineer = () => {

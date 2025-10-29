@@ -16,3 +16,4 @@ export interface Job {
   workMode: string;
   status: Exclude<JobStatus, "All Jobs">; // "All Jobs" is only for UI filter
 }
+

@@ -1,21 +1,20 @@
 import React, { useState,  useMemo } from "react";
 import JobFilter from "./components/JobFilter";
 import JobCard from "./components/JobCard";
-import Header from "@/shared/components/client/Header";
+import Header from "@/shared/components/ClientHeader";
 import type { Job } from "./types";
-import { myJobsData } from "@/dummy_data";
-import SidebarJobPostWallet from "@/shared/components/client/SidebarJobPostWallet";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
+import { jobData } from "@/dummy_data/myJobs";
 
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
 
-  // Use useMemo for derived data instead of useEffect + state
   const filteredJobs = useMemo(() => {
     if (activeFilter === "All Jobs") {
-      return myJobsData as Job[];
+      return jobData as Job[];
     }
-    return (myJobsData as Job[]).filter((job) => job.status === activeFilter);
+    return (jobData as Job[]).filter((job) => job.status === activeFilter);
   }, [activeFilter]);
 
   return (

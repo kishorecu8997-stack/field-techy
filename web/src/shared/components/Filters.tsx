@@ -1,4 +1,3 @@
-// src/components/Filters.tsx
 import React, { useState } from "react";
 import {
   LOCATION_OPTIONS,

@@ -13,59 +13,41 @@ import {
   JOB_VISIBILITY,
 } from "@/dummy_data/jobFormOptions";
 import JobReviewPage from "./JobReviewPage";
-
-interface FormData {
-  jobTitle: string;
-  jobDescription: string;
-  jobType: string;
-  country: string;
-  state: string;
-  city: string;
-  startDate: string;
-  startTime: string;
-  numberOfVacancy: string;
-  timePeriod: string;
-  skillsRequired: string;
-  requirements: string;
-  otherInfo: string;
-  toolName: string;
-  toolImage: File | null;
-  additionalBudget: string;
-  requiredSkill: string;
-  experienceLevel: string;
-  engagementModel: string;
-  projectDeadline: string;
-  milestoneStructure: string;
-  attachments: File | null;
-  jobVisibility: string;
-}
+import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
 const JobPostForm: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    jobTitle: "",
-    jobDescription: "",
-    jobType: "",
-    country: "",
-    state: "",
-    city: "",
-    startDate: "",
-    startTime: "",
-    numberOfVacancy: "",
-    timePeriod: "",
-    skillsRequired: "",
-    requirements: "",
-    otherInfo: "",
-    toolName: "",
-    toolImage: null,
-    additionalBudget: "",
-    requiredSkill: "",
-    experienceLevel: "",
-    engagementModel: "",
-    projectDeadline: "",
-    milestoneStructure: "",
-    attachments: null,
-    jobVisibility: "",
+  // FormData type is defined here
+
+  const method = useForm<FormData>({
+    defaultValues: {
+      jobTitle: "",
+      jobDescription: "",
+      jobType: "",
+      country: "",
+      state: "",
+      city: "",
+      startDate: "",
+      startTime: "",
+      numberOfVacancy: "",
+      timePeriod: "",
+      skillsRequired: "",
+      requirements: "",
+      otherInfo: "",
+      toolName: "",
+      toolImage: null,
+      additionalBudget: "",
+      experienceLevel: "",
+      engagementModel: "",
+      projectDeadline: "",
+      milestoneStructure: "",
+      attachments: null,
+      jobVisibility: "",
+    },
+    mode: "onSubmit",
   });
+
   const [showReview, setShowReview] = useState<boolean>(false);
 
   const handleChange = (
@@ -86,146 +68,101 @@ const JobPostForm: React.FC = () => {
     setShowReview(true);
   };
 
-  const inputClass = (isError = false) => `
-    w-full px-4 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800
-    ${isError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}
-    bg-white dark:bg-gray-800 text-gray-800 dark:text-white
-    focus:border-emerald-500 dark:focus:border-emerald-500
-  `;
+  const inputClass = () =>
+    "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
 
-  const selectClass = (isError = false) => `
-    w-full px-4 py-2 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800
-    ${isError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}
-    bg-white dark:bg-gray-800 text-gray-800 dark:text-white
-    focus:border-emerald-500 dark:focus:border-emerald-500
-  `;
+  const selectClass = () =>
+    "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
+
+  if (showReview) {
+    return (
+      <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+        <JobReviewPage
+          formData={formData}
+          onBack={() => setShowReview(false)}
+          onSubmit={() => {
+            alert("Job posted successfully!");
+            // TODO: Add actual submission logic
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
-      <form onSubmit={handleSubmit}>
-        {!showReview && (<><FormSection title="Basic Information">
+    <FormContainer
+      methods={method}
+      onSubmit={handleSubmit}
+      className="flex flex-col h-full"
+    >
+      <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+        {/* Basic Information */}
+        <FormSection title="Basic Information">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Job Title<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
+              <InputField
                 name="jobTitle"
-                value={formData.jobTitle}
+                label="Job Title"
+                placeholder="e.g. Field Technician, HVAC Specialist"
                 onChange={handleChange}
-                placeholder="e.g Field Technician, HVAC Specialist"
-                className={inputClass()}
-                // required
+                inputClassName={inputClass()}
+                required
               />
             </div>
 
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Job Description<span className="text-red-500">*</span>
-              </label>
-              <textarea
+              <TextareaInput
                 name="jobDescription"
-                value={formData.jobDescription}
-                onChange={handleChange}
+                label="Job Description"
                 placeholder="Describe the job responsibilities, expectations, and requirements..."
-                className={`${inputClass()} min-h-[100px]`}
-                // required
+                onChange={handleChange}
+                inputClassName={inputClass()}
+                required
               />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Job Type<span className="text-red-500">*</span>
-              </label>
-              <select
+              <SelectField
+                label="Job Type"
                 name="jobType"
-                value={formData.jobType}
+                placeholder="Select Job Type"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {JOB_TYPES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={JOB_TYPES}
+              />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Country<span className="text-red-500">*</span>
-              </label>
-              <select
+              <SelectField
+                label="Country"
                 name="country"
-                value={formData.country}
+                placeholder="Select a Country"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {COUNTRIES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={COUNTRIES}
+              />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                State<span className="text-red-500">*</span>
-              </label>
-              <select
+              <SelectField
+                label="State"
                 name="state"
-                value={formData.state}
+                placeholder="Select a State"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {STATES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={STATES}
+              />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                City<span className="text-red-500">*</span>
-              </label>
-              <select
-                name="city"
-                value={formData.city}
+              <SelectField
+                label="City"
+                name="city" // ✅ lowercase to match formData
+                placeholder="Select a City"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {CITIES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={CITIES}
+              />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                 Start Date<span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -236,7 +173,6 @@ const JobPostForm: React.FC = () => {
                   onChange={handleChange}
                   placeholder="DD/MM/YYYY"
                   className={inputClass()}
-                  // required
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <svg
@@ -258,9 +194,7 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                 Start Time<span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -271,7 +205,6 @@ const JobPostForm: React.FC = () => {
                   onChange={handleChange}
                   placeholder="Select Time"
                   className={inputClass()}
-                  // required
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <svg
@@ -293,124 +226,73 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Number of vacancy<span className="text-red-500">*</span>
-              </label>
-              <select
+              <SelectField
+                label="Number of Vacancies"
                 name="numberOfVacancy"
-                value={formData.numberOfVacancy}
+                placeholder="Select number"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {VACANCIES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={VACANCIES}
+              />
             </div>
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Time period of Job<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
+              <InputField
                 name="timePeriod"
-                value={formData.timePeriod}
+                label="Time Period of Job"
+                placeholder="e.g. 8 hours"
                 onChange={handleChange}
-                placeholder="8 hours"
-                className={inputClass()}
-                // required
+                inputClassName={inputClass()}
+                required
               />
             </div>
 
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Skills Required<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
+              <InputField
                 name="skillsRequired"
-                value={formData.skillsRequired}
-                onChange={handleChange}
+                label="Skills Required"
                 placeholder="e.g. Electrical, Plumbing, HVAC"
-                className={inputClass()}
-                // required
-              />
-            </div>
-          </div>
-        </FormSection>
-
-        {/* REQUIREMENTS */}
-        <FormSection title="Requirement">
-          <div>
-            <label
-              className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-            >
-              Requirements/Deliverable<span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="requirements"
-              value={formData.requirements}
-              onChange={handleChange}
-              placeholder="Describe here.."
-              className={`${inputClass()} min-h-[150px]`}
-              // required
-            />
-          </div>
-        </FormSection>
-
-        {/* OTHER DETAILS */}
-        <FormSection title="Other Details">
-          <div>
-            <label
-              className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-            >
-              Other Information<span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="otherInfo"
-              value={formData.otherInfo}
-              onChange={handleChange}
-              placeholder="Describe here.."
-              className={`${inputClass()} min-h-[150px]`}
-              // required
-            />
-          </div>
-        </FormSection>
-
-        {/* HARDWARE TOOLS REQUIRED */}
-        <FormSection title="Add Hardware Tools Required">
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Tool Name<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="toolName"
-                value={formData.toolName}
                 onChange={handleChange}
-                placeholder="e.g Field Technician, HVAC Specialist"
-                className={inputClass()}
-                // required
+                inputClassName={inputClass()}
+                required
               />
             </div>
+          </div>
+        </FormSection>
+
+        {/* Requirements */}
+        <FormSection title="Requirements">
+          <TextareaInput
+            label="Requirements / Deliverables"
+            name="requirements"
+            placeholder="Describe here..."
+            onChange={handleChange}
+          />
+        </FormSection>
+
+        {/* Other Details */}
+        <FormSection title="Other Details">
+          <TextareaInput
+            label="Other Information"
+            name="otherInfo"
+            placeholder="Describe here..."
+            onChange={handleChange}
+          />
+        </FormSection>
+
+        {/* Hardware Tools Required */}
+        <FormSection title="Hardware Tools Required">
+          <div className="grid grid-cols-1 gap-6">
+            <InputField
+              name="toolName"
+              label="Tool Name"
+              placeholder="e.g. Multimeter, Pipe Wrench"
+              onChange={handleChange}
+              inputClassName={inputClass()}
+              required
+            />
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                 Tool Image<span className="text-red-500">*</span>
               </label>
               <FileUploadArea
@@ -420,96 +302,46 @@ const JobPostForm: React.FC = () => {
               />
             </div>
 
-            <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Additional budget for the tool
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="additionalBudget"
-                value={formData.additionalBudget}
-                onChange={handleChange}
-                placeholder="Set budget"
-                className={inputClass()}
-                // required
-              />
-            </div>
+            <InputField
+              name="additionalBudget"
+              label="Additional Budget for the Tool"
+              placeholder="e.g. $50"
+              onChange={handleChange}
+              inputClassName={inputClass()}
+              required
+            />
           </div>
         </FormSection>
 
-        {/* RATE CARD */}
+        {/* Rate Card */}
         <FormSection title="Rate Card">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Required Skill<span className="text-red-500">*</span>
-              </label>
-              <select
-                name="requiredSkill"
-                value={formData.requiredSkill}
-                onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {SKILLS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <SelectField
+              label="Skill"
+              name="skillsRequired"
+              placeholder="Select a Skill"
+              onChange={handleChange}
+              options={SKILLS}
+            />
+
+            <SelectField
+              label="Experience Level"
+              name="experienceLevel"
+              placeholder="Experience Level"
+              onChange={handleChange}
+              options={EXPERIENCE_LEVELS}
+            />
+
+            <SelectField
+              label="Engagement Model"
+              name="engagementModel"
+              placeholder="Engagement Model"
+              onChange={handleChange}
+              options={ENGAGEMENT_MODELS}
+            />
 
             <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Experience Level<span className="text-red-500">*</span>
-              </label>
-              <select
-                name="experienceLevel"
-                value={formData.experienceLevel}
-                onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {EXPERIENCE_LEVELS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Engagement Model<span className="text-red-500">*</span>
-              </label>
-              <select
-                name="engagementModel"
-                value={formData.engagementModel}
-                onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {ENGAGEMENT_MODELS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                 Project Deadline<span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -518,9 +350,8 @@ const JobPostForm: React.FC = () => {
                   name="projectDeadline"
                   value={formData.projectDeadline}
                   onChange={handleChange}
-                  placeholder="mm/dd/yyyy"
+                  placeholder="MM/DD/YYYY"
                   className={inputClass()}
-                  // required
                 />
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <svg
@@ -542,77 +373,48 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Milestone Structure<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
+              <InputField
                 name="milestoneStructure"
-                value={formData.milestoneStructure}
+                label="Milestone Structure"
+                placeholder="e.g. 50% upfront, 50% on completion"
                 onChange={handleChange}
-                placeholder="E.g 50% upfront"
-                className={inputClass()}
-                // required
+                inputClassName={inputClass()}
+                required
               />
             </div>
 
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
                 Attachments (Guidelines, Docs)
                 <span className="text-red-500">*</span>
               </label>
               <FileUploadArea
-                title="Attachments (Guidelines, Docs)"
+                title="Upload Attachments"
                 acceptedFormats="PDF, JPG, PNG"
                 onFileSelect={(file) => handleFileChange("attachments", file)}
               />
             </div>
 
             <div className="md:col-span-2">
-              <label
-                className="block mb-1 font-medium text-gray-700 dark:text-gray-200"
-              >
-                Job Visibility<span className="text-red-500">*</span>
-              </label>
-              <select
+              <SelectField
+                label="Job Visibility"
                 name="jobVisibility"
-                value={formData.jobVisibility}
+                placeholder="Job Visibility"
                 onChange={handleChange}
-                className={selectClass()}
-                // required
-              >
-                {JOB_VISIBILITY.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                options={JOB_VISIBILITY}
+              />
             </div>
-          </div></FormSection></>)}
-         {showReview ? (
-          <JobReviewPage
-            onBack={() => setShowReview(false)}
-            onSubmit={() => {
-              alert("Job posted successfully!");
-              // Redirect or reset form here
-              // e.g., navigate('/jobs') or reset form state
-            }}
-          />
-        ) : (
-          <button
-            type="submit"
-            className="px-6 py-3 rounded-lg font-medium bg-emerald-700 hover:bg-emerald-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
-          >
-            Review Job Posting
-          </button>
-        )}
-       
-      </form>
-    </div>
+          </div>
+        </FormSection>
+
+        <button
+          type="submit"
+          className="mt-6 px-6 py-3 rounded-lg font-medium bg-emerald-700 hover:bg-emerald-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
+        >
+          Review Job Posting
+        </button>
+      </div>
+    </FormContainer>
   );
 };
 

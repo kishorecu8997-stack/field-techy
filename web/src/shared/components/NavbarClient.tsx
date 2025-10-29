@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
-import Drawer from "../Drawer";
-import { JobSearchBar } from "../JobSearchBar";
+import Drawer from "./Drawer";
+import { JobSearchBar } from "./JobSearchBar";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -68,12 +68,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
           >
             My Jobs
           </NavLink>
-          <NavLink
-            to={absoluteUrls.client.home.my_jobs}
+          <div
+            // onClick={onDrawerToggle('clientWallet') }
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
             Wallet
-          </NavLink>
+          </div>
         </nav>
       </div>
 
@@ -105,7 +105,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
                 </div>
               </div>
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div className="flex items-center space-x-3">Earning</div>
+                <div className="flex items-center space-x-3">Wallet</div>
               </div>
               <div
                 className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"

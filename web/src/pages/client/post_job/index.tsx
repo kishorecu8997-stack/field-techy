@@ -1,6 +1,6 @@
-import Header from "@/shared/components/client/Header";
+import Header from "@/shared/components/ClientHeader";
 import JobPostForm from "./components/JobPostForm";
-import SidebarJobPostWallet from "@/shared/components/client/SidebarJobPostWallet";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 
 const PostJob = () => {

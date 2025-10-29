@@ -1,6 +1,6 @@
 import Drawer from "@/shared/components/Drawer";
 import Footer from "@/shared/components/Footer";
-import NavbarClient from "@/shared/components/client/NavbarClient";
+import NavbarClient from "@/shared/components/NavbarClient";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 

@@ -11,10 +11,6 @@ import AddEditTools from "./addEditTools.json";
 import initialDocument from "./initialDocument.json";
 
 
-
-
-
-
 export const educationFieldData = educationField;
 export const educationData = education.education;
 export const jobSkillsData = jobSkills.jobSkills;
@@ -25,9 +21,4 @@ export const servicesCategoriesData = servicesCategories.servicesCategories;
 export const preferredWorkTypesData = preferredWorkTypes.preferredWorkTypes;
 export const skillsData = Skills.skills;
 export const addEditToolsData = AddEditTools.addEditTools;
-export const initialDocumentData = initialDocument.documents;import jobOverview from "./JobOverview.json"
-import myJobs from "./jobs.json"
-
-
-export const jobOverviewData=jobOverview.JobOverview;
-export const myJobsData=myJobs.MyJobs;
+export const initialDocumentData = initialDocument.documents;

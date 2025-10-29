@@ -8,7 +8,7 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useClientHomeNavigation } from "@/shared/hooks/useClientHomeNavigation";
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -29,7 +29,7 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToMyJobs } = useClientHomeNavigation();
+  const { goToMyJobs } = useHomeNavigation();
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({

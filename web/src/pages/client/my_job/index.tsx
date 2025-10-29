@@ -2,7 +2,7 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import JobList from "./my_job_components/JobList";
 import { SORT_OPTIONS } from "../search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import SidebarJobPostWallet from "@/shared/components/client/SidebarJobPostWallet";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
