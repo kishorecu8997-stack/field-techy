@@ -18,7 +18,7 @@ import RightPanel from "./RightPannel";
  */
 const Layout: React.FC = () => {
   return (
-    <div className="flex flex-col md:flex-row md:min-h-screen overflow-hidden bg-white  md:bg-gradient-to-b from-emerald-800 to-blue-950">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-white  md:bg-gradient-to-b from-emerald-800 to-blue-950">
       <div className="w-full hidden md:block  md:w-[30%] flex-shrink-0">
         <LeftPanel />
       </div>

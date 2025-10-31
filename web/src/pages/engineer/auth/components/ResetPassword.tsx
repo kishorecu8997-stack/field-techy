@@ -12,11 +12,17 @@ export type ResetPasswordFormData = {
 };
 
 /**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
+ * Renders the "Reset Password" form, allowing a user to set a new password.
+ *
+ * This component is typically accessed after a user has successfully verified
+ * their identity (e.g., via OTP from the "Forgot Password" flow). It provides
+ * input fields for a new password and its confirmation, leveraging the
+ * `PasswordSection` component for the actual input elements.
+ *
+ * It uses `react-hook-form` for managing the form state and validation.
+ * Upon successful submission, the user is navigated to the login page.
+ *
+ * @returns {JSX.Element} The rendered Reset Password form component.
  */
 const ResetPassword = () => {
   const navigate = useNavigate();

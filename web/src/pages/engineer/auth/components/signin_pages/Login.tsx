@@ -1,7 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
@@ -9,6 +9,7 @@ import {
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { validatePassword } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -16,13 +17,24 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
+import { Button } from "@/shared/components/commonUI/Buttons";
+
 
 /**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
+ * Renders the primary login form for users to sign in with their email and password.
+ *
+ * This component provides a standard login interface, including fields for email and password,
+ * a "Remember me" checkbox, and a link to the "Forgot Password" page. It uses `react-hook-form`
+ * for form state management and validation.
+ *
+ * Upon successful form submission, it displays an OTP modal for two-factor authentication.
+ * It also provides UI options to switch to a phone-based login or to use social login providers
+ * like LinkedIn.
+ *
+ * @param {object} props - The component props.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
+ *   passed from the parent component to toggle the view to the phone number login screen.
+ * @returns {JSX.Element} The rendered login form component.
  */
 const Login = ({
   setIsNumberLogin,
@@ -45,8 +57,8 @@ const Login = ({
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img
@@ -75,13 +87,22 @@ const Login = ({
         >
           <InputField
             name="email"
-            label="Email Address"
-            type="email"
+            label="Email ID"
+            type="text"
             required
+            rules={validateEmailRules}
           />
-          <PasswordInput name="password" label="Password" required />
+          <PasswordInput
+            name="password"
+            label="Password"
+            required
+            rules={{
+              required: "Password is required",
+              validate: validatePassword,
+            }}
+          />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
+            <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={absoluteUrls.engineer.auth.forget_password}

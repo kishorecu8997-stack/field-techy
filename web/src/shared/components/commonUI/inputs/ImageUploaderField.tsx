@@ -6,15 +6,60 @@ import {
 import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { AVATARS } from "@/dummy_data/avatars";
+import type { ImageUploadFieldProps } from "./type";
 
-interface ImageUploadFieldProps {
-  name: string;
-  label?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  maxSize?: number;
-  accept?: string;
-}
+// Helper: Validate if image is truly decodable (not corrupted)
+const validateImageDecodable = (file: File): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(img.src);
+      resolve(img.naturalWidth > 0 && img.naturalHeight > 0);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(img.src);
+      resolve(false);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+// Full image validation: signature + decodability
+const validateImageFile = async (
+  file: File
+): Promise<{ valid: boolean; type: "jpeg" | "png" | null }> => {
+  // Step 1: Validate magic bytes
+  const buffer = await file.slice(0, 8).arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let detectedType: "jpeg" | "png" | null = null;
+
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) {
+    detectedType = "jpeg";
+  } else if (
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47 &&
+    bytes[4] === 0x0d &&
+    bytes[5] === 0x0a &&
+    bytes[6] === 0x1a &&
+    bytes[7] === 0x0a
+  ) {
+    detectedType = "png";
+  }
+
+  if (!detectedType) {
+    return { valid: false, type: null };
+  }
+
+  // Step 2: Validate actual image decodability (catches corruption)
+  const isDecodable = await validateImageDecodable(file);
+  if (!isDecodable) {
+    return { valid: false, type: null };
+  }
+
+  return { valid: true, type: detectedType };
+};
 
 export const ImageUploaderField = ({
   name,
@@ -22,7 +67,7 @@ export const ImageUploaderField = ({
   required = false,
   rules = {},
   maxSize = 350 * 1024, // 350 KB
-  accept = ".jpeg,.jpg",
+  accept = ".jpeg,.jpg,.png",
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -30,7 +75,6 @@ export const ImageUploaderField = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
 
-  // Cleanup object URL on unmount
   useEffect(() => {
     return () => {
       if (objectUrl) {
@@ -38,12 +82,6 @@ export const ImageUploaderField = ({
       }
     };
   }, [objectUrl]);
-
-  const validateJPEGSignature = async (file: File): Promise<boolean> => {
-    const buffer = await file.slice(0, 2).arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    return bytes[0] === 0xff && bytes[1] === 0xd8;
-  };
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
@@ -58,14 +96,24 @@ export const ImageUploaderField = ({
     validate: {
       fileType: async (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
-        const isJPEGMime = value.type === "image/jpeg";
-        const hasCorrectExtension =
-          value.name.toLowerCase().endsWith(".jpeg") ||
-          value.name.toLowerCase().endsWith(".jpg");
-        const isValidSignature = await validateJPEGSignature(value);
-        if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
-          return "Only genuine JPEG files with .jpeg or .jpg extension are allowed.";
+        const name = value.name.toLowerCase();
+        const hasAllowedExt =
+          name.endsWith(".jpeg") || name.endsWith(".jpg") || name.endsWith(".png");
+        if (!hasAllowedExt) {
+          return "Only .jpeg, .jpg, or .png extensions are allowed.";
         }
+
+        const { valid, type } = await validateImageFile(value);
+        if (!valid) {
+          return "Only genuine and uncorrupted JPEG/PNG files are allowed.";
+        }
+
+        const isJPEG = value.type === "image/jpeg";
+        const isPNG = value.type === "image/png";
+        if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
+          return "File type mismatch. Please upload a valid JPEG or PNG.";
+        }
+
         return true;
       },
       fileSize: (value: File | string | null) => {
@@ -93,11 +141,9 @@ export const ImageUploaderField = ({
         control={control}
         rules={validationRules}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          // Determine what to display
           let displaySrc: string | null = null;
 
           if (typeof value === "string") {
-            // Avatar URL (local or remote)
             displaySrc = value;
             if (objectUrl) {
               URL.revokeObjectURL(objectUrl);
@@ -105,7 +151,6 @@ export const ImageUploaderField = ({
               prevFileRef.current = null;
             }
           } else if (value instanceof File) {
-            // Uploaded file
             if (value !== prevFileRef.current) {
               if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
@@ -123,16 +168,26 @@ export const ImageUploaderField = ({
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const isJPEGMime = file.type === "image/jpeg";
-            const hasCorrectExtension =
-              file.name.toLowerCase().endsWith(".jpeg") ||
-              file.name.toLowerCase().endsWith(".jpg");
-            const isValidSignature = await validateJPEGSignature(file);
+            const nameLc = file.name.toLowerCase();
+            const hasAllowedExt =
+              nameLc.endsWith(".jpeg") ||
+              nameLc.endsWith(".jpg") ||
+              nameLc.endsWith(".png");
+            if (!hasAllowedExt) {
+              toast.error("Only .jpeg, .jpg, or .png extensions are allowed.");
+              return;
+            }
 
-            if (!isJPEGMime || !hasCorrectExtension || !isValidSignature) {
-              toast.error(
-                `Only genuine JPEG files with .jpeg or .jpg extension are allowed.`
-              );
+            const { valid, type } = await validateImageFile(file);
+            if (!valid) {
+              toast.error("Uploaded file is corrupted or not a valid image.");
+              return;
+            }
+
+            const isJPEG = file.type === "image/jpeg";
+            const isPNG = file.type === "image/png";
+            if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
+              toast.error("File type mismatch. Please upload a valid JPEG or PNG.");
               return;
             }
 

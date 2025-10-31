@@ -3,17 +3,13 @@ import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPass
 import { validatePassword } from "@/shared/libs/utils";
 
 /**
- * Password Section component containing password and confirm password input fields.
- * Provides a secure password input and a confirm password field with validation
- * to ensure both passwords match. Used in forms where password creation is required.
- * 
- * @component
- * @example
- * return (
- *   <PasswordSection />
- * )
- * 
- * @returns {JSX.Element} The rendered Password Section component with password fields
+ * A reusable component that groups password and confirm password input fields for creation or updates.
+ *
+ * This component renders a `PasswordInput` for entering a new password and a `ConfirmPassword`
+ * input that validates against the first field to ensure they match. It is designed to be
+ * used within a `react-hook-form` `FormProvider` as its child components rely on the form context.
+ *
+ * @returns {JSX.Element} The rendered section containing the password and confirm password fields.
  */
 const PasswordSection = () => {
   return (
