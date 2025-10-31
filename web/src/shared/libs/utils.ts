@@ -71,3 +71,63 @@ export const validatePhone = (value: string) => {
   // Fallback message when country code is not recognized
   return "Enter a valid phone number";
 };
+
+export const validateName = (value: string) => {
+  const raw = value || "";
+
+  // Reject leading or trailing spaces
+  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
+
+  // Reject if contains anything other than letters and single spaces
+  if (!/^[A-Za-z ]+$/.test(raw))
+    return `${value} must contain only alphabetic characters and single spaces`;
+
+  // Reject if more than 10 spaces
+  const spaceCount = (raw.match(/ /g) || []).length;
+  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+
+  // Length requirement: 2 to 50 characters
+  if (raw.length < 2) return `${value} must be at least 2 characters`;
+  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+
+  return true;
+};
+
+export const cardNumberValidation = (value: string) => {
+  const raw = value || "";
+  const cleanedValue = raw.replace(/\s/g, "");
+  if (!cleanedValue) return "Card number is required.";
+  if (!/^\d{13,19}$/.test(cleanedValue)) {
+    return "Card number must be 13 to 19 digits.";
+  }
+  return true;
+};
+
+export const expiryDateValidation = (value: string) => {
+  const raw = value || "";
+  if (!raw) return "Expiry date is required.";
+  if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
+    return "Invalid date format. Use MM/YY.";
+  }
+  const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
+  if (!match) return true; // Let pattern handle format errors
+  const [, month, year] = match;
+  const expiryDate = new Date(Number(`20${year}`), Number(month) - 1); // Month is 0-indexed
+  const now = new Date();
+  // Set current date to first of the month for fair comparison
+  now.setDate(1);
+  return expiryDate >= now || "Card has expired.";
+};
+
+export const cvvValidation = (value: string) => {
+  const raw = value || "";
+  if (!raw) return "CVV is required.";
+  if (!/^\d{3,4}$/.test(raw)) {
+    return "CVV must be 3 or 4 digits.";
+  }
+  return true;
+};
+

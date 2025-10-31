@@ -39,6 +39,18 @@ const SignUpWithNumber = ({
     },
   });
 
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    navigate(absoluteUrls.client.auth.account_type, {
+      state: {
+        signupPhone: method.getValues("phone"),
+        mobileVerified: true,
+        disableMobile: true, // Lock mobile in ProfileSetup
+        disableEmail: false, // Email should be editable in ProfileSetup
+      },
+    });
+  };
+
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
@@ -124,9 +136,7 @@ const SignUpWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() =>
-              navigate(absoluteUrls.client.auth.account_type)
-            }
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>

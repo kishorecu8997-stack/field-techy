@@ -8,7 +8,6 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -16,6 +15,7 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import type { LoginFormData } from "../../../../engineer/auth/components/types";
+import AllowAccessPopup from "../AccessPopup";
 
 /**
  * Type representing the data structure for the Login form.
@@ -29,7 +29,8 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToMyJobs } = useHomeNavigation();
+  // const { goToMyJobs } = useHomeNavigation();
+  const [accessPopup, setAccessPopup] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
@@ -124,9 +125,19 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToMyJobs}
+            handleNavigate={() => {
+              setIsOpen(false);
+              setAccessPopup(true);
+            }}
           />
         </Popup>
+
+        {accessPopup && (
+          <AllowAccessPopup
+            accessPopup={accessPopup}
+            setAccessPopup={setAccessPopup}
+          />
+        )}
       </div>
     </div>
   );

@@ -3,12 +3,13 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import BackgroundVerification from "./BackgroundVerification";
 import SetPassword from "./SetPassword";
 import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import { FaAngleLeft } from "react-icons/fa";
 import AllowAccessPopup from "../AccessPopup";
+import { useParams } from "react-router-dom";
+import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
 
 // Types (without Zod)
 export type CompleteRegistrationData = {
@@ -49,11 +50,12 @@ export type CompleteRegistrationData = {
  * and navigates the user to the sign-in page.
  *
  */
-const CorporateMultiStepRegistrationForm = () => {
+const CorporateMultiStepRegistration = () => {
   // const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [accessPopup, setAccessPopup] = useState<boolean>(false);
+  const { role } = useParams<{ role?: string }>();
 
   const methods = useForm<CompleteRegistrationData>({
     mode: "onSubmit",
@@ -89,6 +91,7 @@ const CorporateMultiStepRegistrationForm = () => {
   const handleStepSubmit: SubmitHandler<CompleteRegistrationData> = async (
     data
   ) => {
+    console.log("vall");
     let isValid = false;
 
     switch (currentStep) {
@@ -153,17 +156,15 @@ const CorporateMultiStepRegistrationForm = () => {
   };
 
   const goToPreviousStep = () => {
-    console.log("Going back from step", currentStep);
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      console.log("New step:", currentStep - 1);
     }
   };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <ProfileSetup />;
+        return <ProfileSetup role={role} />;
       case 2:
         return <PaymentMethod />;
       case 3:
@@ -185,6 +186,7 @@ const CorporateMultiStepRegistrationForm = () => {
         {currentStep > 1 && (
           <div className="flexed absolute top-6 left-6 md:left-[20rem] lg:left-[40rem] z-10">
             <button
+              type="button"
               onClick={goToPreviousStep}
               className="p-2 rounded-full cursor-pointer hover:bg-teal-700 text-gray-700 hover:text-white bg-white shadow-md transition-colors"
               aria-label="Go back"
@@ -206,7 +208,7 @@ const CorporateMultiStepRegistrationForm = () => {
           {/*FIXED: Added key={currentStep} to force re-render on step change */}
           <div
             key={currentStep}
-            className="p-2 relative gap-3 overflow-auto max-h-[75vh] w-full justify-items-center"
+            className="relative overflow-auto p-0 mx-auto max-h-[75vh] justify-items-center"
             style={{
               msOverflowStyle: "none",
               scrollbarWidth: "none",
@@ -240,4 +242,4 @@ const CorporateMultiStepRegistrationForm = () => {
   );
 };
 
-export default CorporateMultiStepRegistrationForm;
+export default CorporateMultiStepRegistration;

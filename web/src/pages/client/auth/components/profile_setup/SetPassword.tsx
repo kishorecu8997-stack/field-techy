@@ -28,13 +28,7 @@ const ClientSetPassword = () => {
             Please create a secure password for your account for safety reason.
           </h2>
         </div>
-        {/* <FormContainer
-          methods={methods}
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2"
-        > */}
         <PasswordSection />
-        {/* </FormContainer> */}
       </div>
     </div>
   );

@@ -76,7 +76,7 @@ export default function AllowAccessPopup({
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
               onClick={() => {
                 setAccessPopup(false);
-                navigate("/client/dashboard");
+                // navigate("/client/dashboard");
               }}
             >
               Allow Access

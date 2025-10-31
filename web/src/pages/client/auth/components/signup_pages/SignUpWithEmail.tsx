@@ -52,6 +52,19 @@ const SignUp = ({
     },
   });
 
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    // navigate(absoluteUrls.client.auth.account_type);
+    navigate(absoluteUrls.client.auth.account_type, {
+      state: {
+        signupEmail: methods.getValues("email"),
+        emailVerified: true, // Pre-verified
+        disableEmail: true, // Lock email in ProfileSetup
+        disableMobile: false, // Mobile should be editable in ProfileSetup
+      },
+    });
+  };
+
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = () => {
@@ -141,9 +154,7 @@ const SignUp = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() =>
-              navigate(absoluteUrls.client.auth.account_type)
-            }
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>

@@ -27,16 +27,25 @@ const ResetPassword = () => {
     },
   });
 
-  const handleSubmit = () => {    
-    navigate(absoluteUrls.engineer.auth.login);
+  const handleSubmit = () => {
+    if (location.pathname.includes("engineer")) {
+      navigate(absoluteUrls.engineer.auth.login);
+    } else if (location.pathname.includes("client")) {
+      navigate(absoluteUrls.client.auth.login);
+    }
   };
+
 
   return (
     <div className="flex items-center justify-center w-lg">
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Reset Password</h2>
           <h2 className="text-md font-extralight ">

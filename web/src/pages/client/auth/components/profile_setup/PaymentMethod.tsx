@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import AddCard, { type CardFormData } from "../Addcard";
 import Popup from "@/shared/components/Popup";
 import { cards } from "@/dummy_data/cardDetails";
+import { HiOutlinePlusSm } from "react-icons/hi";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 export interface PaymentCardOption {
   id: string;
@@ -20,7 +22,6 @@ interface PaymentMethodSelectorProps {
 
 const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
   selectedId,
-  onChange,
   onAddNew,
 }) => {
   // Helper to get card logo
@@ -50,11 +51,9 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
 
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 w-[30rem]">
         <div className="space-y-4">
-          {/* Existing Cards */}
           {cards?.map((card, index) => (
             <div
               key={card.id}
-              onClick={() => onChange?.(card?.id)}
               className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${
                 selectedId === card.id
                   ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
@@ -65,8 +64,7 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
                   : ""
               }`}
             >
-              <div className="flex items-center space-x-3">
-                {/* Card Brand Logo */}
+              <label className="flex items-center space-x-3 w-full cursor-pointer">
                 <div className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-700 rounded px-1">
                   <span className="text-xs font-bold text-gray-800 dark:text-white">
                     {getCardLogo(card.type)}
@@ -82,51 +80,21 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
                     {card.title}
                   </p>
                 </div>
-              </div>
-
-              {/* Radio Button */}
-              {/* <input
-                type="radio"
-                name="payment-method"
-                checked={selectedId === card.id}
-                onChange={() => onChange?.(card.id)}
-                className="h-5 w-5 text-emerald-600 border-gray-300 focus:ring-emerald-500"
-                aria-label={`Select ${card.type} ending in ${card.number}`}
-              /> */}
+              </label>
             </div>
           ))}
 
           {/* Add New Card */}
-          <div
+          <Button
+            variant="outline"
             onClick={() => setIsOpen(true)}
-            className="border-2 border-dotted rounded-lg p-4 text-center cursor-pointer transition-all duration-200
-    border-gray-300 hover:border-emerald-400 dark:border-gray-600 dark:hover:border-emerald-500
-    hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+            className="flex mt-4 w-full py-3 border-2 border-dashed hover:text-white border-teal-700 text-teal-700 font-medium rounded-md hover:bg-teal-700 transition"
           >
-            <button
-              type="button"
-              className="text-sm font-medium flex items-center justify-center w-full
-      text-emerald-700 dark:text-emerald-400
-      hover:text-emerald-800 dark:hover:text-emerald-300
-      transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              Add New Card
-            </button>
-          </div>
+            <div className="flex gap-1 items-center">
+              <HiOutlinePlusSm className="text-lg" /> Add New Card
+            </div>
+          </Button>
+
           <Popup open={isOpen} onClose={() => setIsOpen(false)}>
             <AddCard
               onClose={() => setIsOpen(false)}
