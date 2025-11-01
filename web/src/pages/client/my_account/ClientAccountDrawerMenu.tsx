@@ -8,7 +8,7 @@ import {
   FaWallet,
 } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
-import LogoutConfirmationPopup from '@/pages/engineer/auth/LogoutConfirmationPopup';
+import LogoutConfirmationPopup from '@/pages/client/auth/LogoutConfirmationPopup';
 import ProfileCard from '@/shared/components/commonUI/ProfileCard';
 import { assetsConfig } from '@/assets';
 import { useForm } from 'react-hook-form';
@@ -67,13 +67,14 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     { label: 'Documents', icon: FaWallet, key: 'document' },
     { label: 'Payment Methods', icon: FaWallet, key: 'payment' },
     { label: 'Change Password', icon: FaWallet, key: 'changePwd' },
-    { label: 'Account Details', icon: FaCog, key: 'account' },    
+    { label: 'Account Details', icon: FaCog, key: 'clientAcc' },    
     {
       label: 'Logout',
       icon: FaSignOutAlt,
       key: "logout",
       isLogout: true,
       onClick: () => {
+        console.log("Logout clicked");
         setIsOpen(true);
       },
     },
@@ -92,10 +93,15 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
             completionPercentage={39}
           />
         </div>
+        <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
         {menuItems.map((item, index, array) => (
           <React.Fragment key={item.key}>
             <button
               onClick={() => {
+                if(item.key === "logout") {
+                  setIsOpen(true);
+                  return;
+                }
                 onMenuItemClick(item.key);
                 item.onClick?.();
               }}
@@ -154,6 +160,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
           onConfirm={() => console.log("confirm")}
           onCancel={() => setIsOpen(false)}
         />
+        </div>
       </FormContainer>
     </>
   );

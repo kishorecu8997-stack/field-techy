@@ -4,6 +4,7 @@
  * It supports day, month, and year views, date range constraints (min/max), and does not rely on any external date libraries.
  */
 
+import type { RegisterOptions } from "node_modules/react-hook-form/dist/types/validator";
 import React, { useState, useEffect, useRef } from "react";
 
 /**
@@ -18,6 +19,8 @@ interface DatePickerInputProps {
   onChange: (date: Date | null) => void;
   placeholder?: string;
   className?: string;
+  required?: boolean | string;
+  rules?: RegisterOptions;
 }
 
 /**
@@ -38,6 +41,8 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   onChange,
   placeholder = "Select date",
   className = "",
+  required = false,
+  rules,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -286,12 +291,23 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     "Nov",
     "Dec",
   ];
+ let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required;
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
 
+  const validationRules: RegisterOptions = {
+    required: requiredMessage,
+    ...rules,
+  };
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
       {isShowLabel && (
-        <label className="block text-base font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {label}
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+           {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
 

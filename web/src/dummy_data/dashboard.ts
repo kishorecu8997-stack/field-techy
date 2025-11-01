@@ -1,5 +1,11 @@
 import type { JobOverview, ServiceCategory, InProgressJob } from "@/pages/client/dashboard/type";
 
+// Local image assets from src/assets/category
+import categoryCloud from "@/assets/category/category_cloud.jpg";
+import categoryNetworks from "@/assets/category/category_networks.jpg";
+import categorySupport from "@/assets/category/category_support.jpg";
+
+
 // Dummy data
 
 export const jobOverviewData: JobOverview[] = [
@@ -35,31 +41,31 @@ export const jobOverviewData: JobOverview[] = [
       id: 1,
       name: "Networks",
       engineers: "20+ Engineers",
-      image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      image: categoryNetworks
     },
     {
       id: 2,
       name: "Support",
       engineers: "50+ Engineers",
-      image: "https://images.unsplash.com/photo-1581091580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      image: categorySupport      
     },
     {
       id: 3,
       name: "Cloud",
       engineers: "26+ Engineers",
-      image: "https://images.unsplash.com/photo-1581091580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      image: categoryCloud
     },
     {
       id: 4,
       name: "Networks",
       engineers: "20+ Engineers",
-      image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      image: categoryNetworks
     },
     {
       id: 5,
       name: "Support",
       engineers: "50+ Engineers",
-      image: "https://images.unsplash.com/photo-1581091580497-e0d23cbdf1dc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
+      image: categorySupport
     }
   ];
   

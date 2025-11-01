@@ -1,10 +1,20 @@
-import { Controller, useFormContext } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
+import React from "react";
 
 interface TextareaInputProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
+  rules?: RegisterOptions;
+  showValidationCheck?: boolean;
+  minLength?: number;
+  maxLength?: number;
 }
 
 /**
@@ -23,20 +33,49 @@ interface TextareaInputProps {
  * @example
  * <TextareaInput name="bio" label="Bio" placeholder="Tell us about yourself" required />
  */
-export const TextareaInput = ({ name, label, placeholder, required = false }: TextareaInputProps) => {
+export const TextareaInput = ({
+  name,
+  label,
+  isShowLabel = true,
+  placeholder,
+  required = false,
+  rules,
+  showValidationCheck = false,
+  minLength,
+  maxLength,
+}: TextareaInputProps) => {
   const { control } = useFormContext();
+  // Build required validation message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required; // custom message
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
 
+  // Merge required with other rules
+  const validationRules: RegisterOptions = {
+    required: requiredMessage,
+    minLength: minLength
+      ? { value: minLength, message: `${label || name} must be at least ${minLength} characters` }
+      : undefined,
+    maxLength: maxLength
+      ? { value: maxLength, message: `${label || name} must not exceed ${maxLength} characters` }
+      : undefined,
+    ...rules,
+  };
   return (
     <div className="flex flex-col py-4 gap-2">
-      {label && (
-        <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-          {label}
+      {isShowLabel && (
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
         name={name}
         control={control}
-        rules={{ required }}
+        rules={validationRules}
         render={({ field, fieldState: { error } }) => (
           <>
             <textarea
@@ -45,6 +84,8 @@ export const TextareaInput = ({ name, label, placeholder, required = false }: Te
               placeholder={placeholder || label}
               className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition"
               required={required}
+              minLength={minLength}
+              maxLength={maxLength}
             />
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">{`${label} is required`}</p>

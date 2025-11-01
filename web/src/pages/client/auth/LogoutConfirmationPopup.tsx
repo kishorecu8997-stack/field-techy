@@ -43,7 +43,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
               </p>
             </div>
             <button
-              onClick={onCancel}
+              onClick={onClose}
               className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             >
               <IoCloseSharp className="h-6 w-6 cursor-pointer" />

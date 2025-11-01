@@ -3,11 +3,10 @@ import React from 'react';
 interface JobFilterProps {
   activeFilter: string;
   onFilterChange: (filter: string) => void;
+  filters: string[];
 }
 
-const JobFilter: React.FC<JobFilterProps> = ({ activeFilter, onFilterChange }) => {
-  const filters = ['All Jobs', 'In-Progress', 'Completed', 'Posted', 'Hold'];
-  
+const JobFilter: React.FC<JobFilterProps> = ({ activeFilter, onFilterChange, filters }) => {
   return (
     <div className="mb-6 overflow-x-auto">
       <div className="flex space-x-2 pb-2 pt-4">

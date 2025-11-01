@@ -18,7 +18,9 @@ import Documents from "@/pages/engineer/user_profile/components/documents/Docume
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
 import DrawerHeader from "./DrawerHeader";
 import ClientAccountDrawerMenu from "@/pages/client/my_account/ClientAccountDrawerMenu";
-import ClientWalletComponent from "@/pages/client/my_wallet";
+import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
+import ClientAddFund from "@/pages/client/my_wallet/components/AddFund";
+import ClientRecentTransactions from "@/pages/client/my_wallet/components/RecentTransactionsList";
 
 
 /**
@@ -32,19 +34,25 @@ interface DrawerProps {
   isOpen: boolean;
   /** Function to close the drawer */
   onClose: () => void;
+  /** The key for the component to display */
+  componentKey?: string;
 }
 
 /**
  * Drawer component that slides in from the right when opened.
  * Contains user profile info and action buttons.
  *
- * @param {DrawerProps} props - The props for the Drawer component.
+ * @param {DrawerProps} props - The props for the Drawer component. 
  * @returns {JSX.Element | null} The rendered Drawer component or null if closed.
  */
-const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
+const Drawer: React.FC<DrawerProps> = ({
+  isOpen,
+  onClose,
+  componentKey = "clientAccount",
+}) => {
   if (!isOpen) return null;
 
-  const [key, setKey] = useState<string>("clientAccount");
+  const [key, setKey] = useState<string>(componentKey);
 
   const commonProps = {
     onMenuItemClick: (data: string) => setKey(data),
@@ -145,8 +153,10 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     document: { component: () => <div>Documents</div>, title: "Documents", parent: "clientAccount" },
     payment: { component: () => <div>Payment Methods</div>, title: "Payment Methods", parent: "clientAccount" },
     changePwd: { component: () => <div>Change Password</div>, title: "Change Password", parent: "clientAccount" },      
+    clientAcc: { component: () => <div>Account</div>, title: "Account Setting", parent: "clientAccount" },      
     clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
-
+    clientAddFund: { component:  ClientAddFund, title: "Add Fund", parent: "clientWallet" },
+    recentTransactions: { component:  ClientRecentTransactions, title: "Recent Transactions", parent: "clientWallet" },
   };
 
   /**

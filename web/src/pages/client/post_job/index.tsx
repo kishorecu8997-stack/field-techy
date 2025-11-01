@@ -1,7 +1,8 @@
-import Header from "@/shared/components/ClientHeader";
+
 import JobPostForm from "./components/JobPostForm";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
+import ClientHeader from "@/shared/components/ClientHeader";
 
 const PostJob = () => {
   return (
@@ -11,7 +12,7 @@ const PostJob = () => {
           {/* Main Content - spans 2 columns on lg */}
           <div className="lg:col-span-2">
             <div className="sticky top-[80px] z-10 bg-gray-50 dark:bg-gray-900">
-              <Header title="Post Job" currentPath="Post A Job" showSearchBar={false}/>
+              <ClientHeader title="Post Job" currentPath="Post A Job" showSearchBar={false}/>
             </div>
             <div className="space-y-10">
               <JobPostForm />

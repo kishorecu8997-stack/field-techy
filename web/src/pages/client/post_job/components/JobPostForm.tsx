@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import FileUploadArea from "./FileUploadArea";
 import FormSection from "./FormSection";
 import {
   JOB_TYPES,
@@ -16,6 +15,19 @@ import JobReviewPage from "./JobReviewPage";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
+import { Controller, useForm } from "react-hook-form";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import type { FormData } from "../types";
+import { TimeInput } from "@/shared/components/commonUI/inputs/TimeInput";
+import {
+  validateJobTitile,
+  validateDateRange,
+  validateJobTimePeriod,
+  validateAlphabeticText,
+  validateCurrencyText,
+  validateProjectDeadline,
+} from "../validates";
 
 const JobPostForm: React.FC = () => {
   // FormData type is defined here
@@ -28,7 +40,7 @@ const JobPostForm: React.FC = () => {
       country: "",
       state: "",
       city: "",
-      startDate: "",
+      startDate: null,
       startTime: "",
       numberOfVacancy: "",
       timePeriod: "",
@@ -40,7 +52,7 @@ const JobPostForm: React.FC = () => {
       additionalBudget: "",
       experienceLevel: "",
       engagementModel: "",
-      projectDeadline: "",
+      projectDeadline: null,
       milestoneStructure: "",
       attachments: null,
       jobVisibility: "",
@@ -50,21 +62,8 @@ const JobPostForm: React.FC = () => {
 
   const [showReview, setShowReview] = useState<boolean>(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (field: keyof FormData, file: File | null) => {
-    setFormData((prev) => ({ ...prev, [field]: file }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (data: FormData) => {
+    console.log("Form Data:", data);
     setShowReview(true);
   };
 
@@ -78,7 +77,7 @@ const JobPostForm: React.FC = () => {
     return (
       <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         <JobReviewPage
-          formData={formData}
+          formData={method.getValues()}
           onBack={() => setShowReview(false)}
           onSubmit={() => {
             alert("Job posted successfully!");
@@ -95,7 +94,7 @@ const JobPostForm: React.FC = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
-      <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+      <div className="w-full p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         {/* Basic Information */}
         <FormSection title="Basic Information">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,9 +103,9 @@ const JobPostForm: React.FC = () => {
                 name="jobTitle"
                 label="Job Title"
                 placeholder="e.g. Field Technician, HVAC Specialist"
-                onChange={handleChange}
                 inputClassName={inputClass()}
                 required
+                rules={{ validate: (v: string) => validateJobTitile(v) }}
               />
             </div>
 
@@ -115,9 +114,9 @@ const JobPostForm: React.FC = () => {
                 name="jobDescription"
                 label="Job Description"
                 placeholder="Describe the job responsibilities, expectations, and requirements..."
-                onChange={handleChange}
-                inputClassName={inputClass()}
                 required
+                minLength={50}
+                maxLength={2000}
               />
             </div>
 
@@ -126,8 +125,8 @@ const JobPostForm: React.FC = () => {
                 label="Job Type"
                 name="jobType"
                 placeholder="Select Job Type"
-                onChange={handleChange}
                 options={JOB_TYPES}
+                required
               />
             </div>
 
@@ -136,8 +135,8 @@ const JobPostForm: React.FC = () => {
                 label="Country"
                 name="country"
                 placeholder="Select a Country"
-                onChange={handleChange}
                 options={COUNTRIES}
+                required
               />
             </div>
 
@@ -146,8 +145,8 @@ const JobPostForm: React.FC = () => {
                 label="State"
                 name="state"
                 placeholder="Select a State"
-                onChange={handleChange}
                 options={STATES}
+                required
               />
             </div>
 
@@ -156,73 +155,39 @@ const JobPostForm: React.FC = () => {
                 label="City"
                 name="city" // ✅ lowercase to match formData
                 placeholder="Select a City"
-                onChange={handleChange}
                 options={CITIES}
+                required
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                Start Date<span className="text-red-500">*</span>
-              </label>
               <div className="relative">
-                <input
-                  type="text"
+                <Controller
                   name="startDate"
-                  value={formData.startDate}
-                  onChange={handleChange}
-                  placeholder="DD/MM/YYYY"
-                  className={inputClass()}
+                  rules={{
+                    validate: (value) =>
+                      validateDateRange(value, method.getValues("startDate")),
+                  }}
+                  control={method.control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <DatePickerInput
+                        label="Start Date"
+                        placeholder="Select start date"
+                        {...field}
+                        required
+                      />
+                      {error && (
+                        <p className="text-red-600 text-sm">{error.message}</p>
+                      )}
+                    </>
+                  )}
                 />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14"
-                    />
-                  </svg>
-                </div>
               </div>
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                Start Time<span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleChange}
-                  placeholder="Select Time"
-                  className={inputClass()}
-                />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <TimeInput label="Start Time" name="startTime" required />
             </div>
 
             <div>
@@ -230,8 +195,8 @@ const JobPostForm: React.FC = () => {
                 label="Number of Vacancies"
                 name="numberOfVacancy"
                 placeholder="Select number"
-                onChange={handleChange}
                 options={VACANCIES}
+                required
               />
             </div>
 
@@ -240,9 +205,9 @@ const JobPostForm: React.FC = () => {
                 name="timePeriod"
                 label="Time Period of Job"
                 placeholder="e.g. 8 hours"
-                onChange={handleChange}
                 inputClassName={inputClass()}
                 required
+                rules={{ validate: (v: string) => validateJobTimePeriod(v) }}
               />
             </div>
 
@@ -251,8 +216,16 @@ const JobPostForm: React.FC = () => {
                 name="skillsRequired"
                 label="Skills Required"
                 placeholder="e.g. Electrical, Plumbing, HVAC"
-                onChange={handleChange}
                 inputClassName={inputClass()}
+                rules={{
+                  validate: (v: string) =>
+                    validateAlphabeticText(v, {
+                      minLength: 2,
+                      maxLength: 500,
+                      required: true,
+                      maxSpaces: 10,
+                    }),
+                }}
                 required
               />
             </div>
@@ -265,7 +238,9 @@ const JobPostForm: React.FC = () => {
             label="Requirements / Deliverables"
             name="requirements"
             placeholder="Describe here..."
-            onChange={handleChange}
+            minLength={50}
+            maxLength={2000}
+            required
           />
         </FormSection>
 
@@ -275,30 +250,41 @@ const JobPostForm: React.FC = () => {
             label="Other Information"
             name="otherInfo"
             placeholder="Describe here..."
-            onChange={handleChange}
+            minLength={50}
+            maxLength={2000}
+            required
           />
         </FormSection>
 
         {/* Hardware Tools Required */}
-        <FormSection title="Hardware Tools Required">
+        <FormSection title="Add Hardware Tools Required">
           <div className="grid grid-cols-1 gap-6">
             <InputField
               name="toolName"
               label="Tool Name"
               placeholder="e.g. Multimeter, Pipe Wrench"
-              onChange={handleChange}
               inputClassName={inputClass()}
+              rules={{
+                  validate: (v: string) =>
+                    validateAlphabeticText(v, {
+                      minLength: 2,
+                      maxLength: 50,
+                      required: true,
+                      maxSpaces: 10,
+                    }),
+                }}
               required
             />
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                Tool Image<span className="text-red-500">*</span>
-              </label>
-              <FileUploadArea
-                title="Upload Tool Image"
-                acceptedFormats="PDF, JPG, PNG"
-                onFileSelect={(file) => handleFileChange("toolImage", file)}
+              <FileUpload
+                name="toolImage"
+                label="Document"
+                placeholder="Upload Tool Image"
+                accept=".pdf,.jpg,.png"
+                maxPages={5}
+                validatePDF={true}
+                required
               />
             </div>
 
@@ -306,8 +292,16 @@ const JobPostForm: React.FC = () => {
               name="additionalBudget"
               label="Additional Budget for the Tool"
               placeholder="e.g. $50"
-              onChange={handleChange}
               inputClassName={inputClass()}
+              rules={{
+                  validate: (v: string) =>
+                    validateCurrencyText(v, {
+                      minLength: 2,
+                      maxLength: 50,
+                      required: true,
+                      maxSpaces: 10,
+                    }),
+                }}
               required
             />
           </div>
@@ -320,78 +314,76 @@ const JobPostForm: React.FC = () => {
               label="Skill"
               name="skillsRequired"
               placeholder="Select a Skill"
-              onChange={handleChange}
               options={SKILLS}
+              required
             />
 
             <SelectField
               label="Experience Level"
               name="experienceLevel"
               placeholder="Experience Level"
-              onChange={handleChange}
               options={EXPERIENCE_LEVELS}
+              required
             />
 
             <SelectField
               label="Engagement Model"
               name="engagementModel"
               placeholder="Engagement Model"
-              onChange={handleChange}
               options={ENGAGEMENT_MODELS}
+              required
             />
 
             <div>
-              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                Project Deadline<span className="text-red-500">*</span>
-              </label>
               <div className="relative">
-                <input
-                  type="text"
+                <Controller
                   name="projectDeadline"
-                  value={formData.projectDeadline}
-                  onChange={handleChange}
-                  placeholder="MM/DD/YYYY"
-                  className={inputClass()}
+                  rules={{
+                    validate: (value) =>
+                      validateProjectDeadline(value, method.getValues("startDate")),
+                  }}
+                  control={method.control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <DatePickerInput
+                        label="Project Deadline"
+                        placeholder="Select project deadline"
+                        required
+                        {...field}
+                      />
+                      {error && (
+                        <p className="text-red-600 text-sm">{error.message}</p>
+                      )}
+                    </>
+                  )}
                 />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14"
-                    />
-                  </svg>
-                </div>
               </div>
             </div>
 
             <div className="md:col-span-2">
-              <InputField
-                name="milestoneStructure"
+             
+              <SelectField
                 label="Milestone Structure"
+                name="milestoneStructure"
                 placeholder="e.g. 50% upfront, 50% on completion"
-                onChange={handleChange}
-                inputClassName={inputClass()}
+                options={[
+              { value: "1", label: "Option1" },
+              { value: "2", label: "Option2" },
+              { value: "3", label: "Option3" },
+            ]}
                 required
               />
+
             </div>
 
             <div className="md:col-span-2">
-              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
-                Attachments (Guidelines, Docs)
-                <span className="text-red-500">*</span>
-              </label>
-              <FileUploadArea
-                title="Upload Attachments"
-                acceptedFormats="PDF, JPG, PNG"
-                onFileSelect={(file) => handleFileChange("attachments", file)}
+              <FileUpload
+                name="attachments"
+                label="Attachments (Guidelines, Docs)"
+                accept=".pdf,.jpg,.png"
+                maxPages={5}
+                validatePDF={true}
+                required
               />
             </div>
 
@@ -400,8 +392,8 @@ const JobPostForm: React.FC = () => {
                 label="Job Visibility"
                 name="jobVisibility"
                 placeholder="Job Visibility"
-                onChange={handleChange}
                 options={JOB_VISIBILITY}
+                required
               />
             </div>
           </div>

@@ -9,3 +9,12 @@
   background-size: 50px 50px;
   background-position: 0 0, 25px 25px;
 }
+/* Optional: Add subtle right padding via appearance adjustment */
+input[type="time"] {
+  padding-right: 1.25rem; /* ~20px – adjust as needed */
+}
+
+/* Ensure consistent height and alignment */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  margin-right: -8px; /* Pull icon slightly left if needed */
+}

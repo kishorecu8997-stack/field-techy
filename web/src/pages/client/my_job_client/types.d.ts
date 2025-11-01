@@ -17,3 +17,11 @@ export interface Job {
   status: Exclude<JobStatus, "All Jobs">; // "All Jobs" is only for UI filter
 }
 
+export interface JobCardHeaderProps {
+  title: string;
+  hours: number;
+  client: string;
+  status: 'On Site' | 'Remote' | 'Pending';
+  onApprove: () => void;
+  onRequestRevision: () => void;
+}

@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">Job Overview</h1>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ">
               {jobOverviewData.map((job) => (
                 <JobOverviewCard key={job.id} {...job} />
               ))}
@@ -34,27 +34,38 @@ const Dashboard: React.FC = () => {
                     to={absoluteUrls.client.home.explore_engineers}
                     className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                   >
-                    <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                    <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
                       View all
                     </button>
                   </NavLink>
                 </nav>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {serviceCategoriesData.map((category) => (
+            
+                  <NavLink
+                    to={absoluteUrls.client.home.explore_engineers}
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 cursor-pointer hover:text-teal-800 text-[1rem] whitespace-nowrap"
+                  >
+                     {serviceCategoriesData.map((category) => (
                   <ServiceCategoryCard key={category.id} {...category} />
                 ))}
-              </div>
+                  </NavLink>
+             
             </div>
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
-
-                <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                  View all
-                </button>
+                <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <NavLink
+                    to={absoluteUrls.client.home.my_jobs}
+                    className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+                  >
+                    <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                      View all
+                    </button>
+                  </NavLink>
+                </nav>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
                 {inProgressJobsData.map((job) => (
                   <InProgressJobCard key={job.id} {...job} />
                 ))}

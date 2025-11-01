@@ -31,8 +31,8 @@ interface FormData {
   country: string;
   state: string;
   city: string;
-  startDate: string;
-  startTime: string;
+  startDate: Date | null;
+  startTime?: string;
   numberOfVacancy: string;
   timePeriod: string;
   skillsRequired: string;
@@ -43,8 +43,16 @@ interface FormData {
   additionalBudget: string;
   experienceLevel: string;
   engagementModel: string;
-  projectDeadline: string;
+  projectDeadline: Date | null;
   milestoneStructure: string;
   attachments: File | null;
   jobVisibility: string;
 }
+
+export interface PaymentCardOption {
+  id: string;
+  last4: string;
+  brand: "visa" | "mastercard" | "amex" | "discover" | string;
+  name: string;
+}
+

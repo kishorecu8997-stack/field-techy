@@ -1,4 +1,4 @@
-import React from "react";
+import { useForm } from "react-hook-form";
 import type { Job } from "../types";
 import { IoMdTime } from "react-icons/io";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -37,7 +37,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           {job.title}

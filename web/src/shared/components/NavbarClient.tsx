@@ -4,13 +4,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
-import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
 
 interface NavbarClientProps {
-  onDrawerToggle: () => void;
+  onDrawerToggle: (componentName: string) => void;
   isDrawerOpen: boolean;
 }
+
+const DRAWER_COMPONENTS = {
+  WALLET: "clientWallet",
+  ACCOUNT: "clientAccount",
+};
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -31,6 +35,8 @@ interface NavbarClientProps {
 const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const [activeDrawerComponent, setActiveDrawerComponent] = useState(DRAWER_COMPONENTS.ACCOUNT);
+  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,6 +58,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleDrawerToggle = (componentName: string) => {
+    setActiveDrawerComponent(componentName);
+    onDrawerToggle(componentName);
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
       <div className="flex items-center space-x-8 ">       
@@ -69,8 +80,8 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
             My Jobs
           </NavLink>
           <div
-            // onClick={onDrawerToggle('clientWallet') }
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+            onClick={() => handleDrawerToggle(DRAWER_COMPONENTS.WALLET)}
+            className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
           >
             Wallet
           </div>
@@ -104,12 +115,14 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
                   <span>My Jobs</span>
                 </div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+              onClick={()=>handleDrawerToggle(DRAWER_COMPONENTS.WALLET)}
+              >
                 <div className="flex items-center space-x-3">Wallet</div>
               </div>
               <div
                 className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
-                onClick={onDrawerToggle}
+                onClick={() => handleDrawerToggle(DRAWER_COMPONENTS.ACCOUNT)}
               >
                 <div className="flex items-center space-x-3">My Account</div>
               </div>
@@ -148,7 +161,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
           <FaBell size={20} />
         </button>
         <button
-          onClick={onDrawerToggle}
+          onClick={() => handleDrawerToggle(DRAWER_COMPONENTS.ACCOUNT)}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
@@ -160,9 +173,6 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
           />
         </button>
       </div>
-
-      {/* Drawer */}
-      <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />
     </header>
   );
 };

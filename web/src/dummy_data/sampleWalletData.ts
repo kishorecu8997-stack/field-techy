@@ -1,4 +1,4 @@
-import { WalletData, Transaction } from '@/pages/client/my_wallet/types';
+import type { WalletData, Transaction } from '@/pages/client/my_wallet/types';
 
 const today = new Date();
 const yesterday = new Date(today);
@@ -12,7 +12,7 @@ export const sampleWalletData: WalletData = {
       description: 'Installation Of CCTV',
       amount: 15.75,
       type: 'credit',
-      date: new Date('2024-02-27T11:54:00'),
+      date: new Date('2025-10-31T11:54:00'),
     },
     {
       id: '2',
@@ -20,14 +20,14 @@ export const sampleWalletData: WalletData = {
       amount: 50.00,
       type: 'debit',
       status: 'processing',
-      date: new Date('2024-02-26T10:30:00'),
+      date: new Date('2025-11-01T10:30:00'),
     },
     {
       id: '3',
       description: 'Maintenance of CCTC',
       amount: 20.65,
       type: 'credit',
-      date: new Date('2024-02-27T11:54:00'),
+      date: new Date('2025-11-01T11:54:00'),
     },
     {
       id: '4',

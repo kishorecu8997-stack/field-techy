@@ -16,7 +16,7 @@ const MyJobsClient: React.FC = () => {
     }
     return (jobData as Job[]).filter((job) => job.status === activeFilter);
   }, [activeFilter]);
-
+const jobFilters = ['All Jobs', 'In-Progress', 'Completed', 'Posted', 'Hold'];
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
@@ -25,10 +25,11 @@ const MyJobsClient: React.FC = () => {
             <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
               <Header currentPath="My Jobs" />
             </div>
-            <div className="space-xy-10 ">
+            <div className="space-y-6">
               <JobFilter
                 activeFilter={activeFilter}
                 onFilterChange={setActiveFilter}
+                filters={jobFilters}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredJobs.length > 0 ? (

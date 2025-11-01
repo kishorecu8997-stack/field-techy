@@ -2,7 +2,7 @@ import Drawer from "@/shared/components/Drawer";
 import Footer from "@/shared/components/Footer";
 import NavbarClient from "@/shared/components/NavbarClient";
 import { useEffect, useState, type JSX } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 
 /**
  * Root layout component that wraps all authenticated/engineer-facing pages.
@@ -23,9 +23,26 @@ import { Outlet } from "react-router-dom";
  *   <MyJobsPage />
  * </RootLayout>
  */
+
+type ContextType = { onDrawerToggle: (componentName: string) => void };
+export function useDrawer() {
+  return useOutletContext<ContextType>();
+}
+
 const RootLayout = (): JSX.Element => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);  
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [drawerContentKey, setDrawerContentKey] = useState("clientAccount");
+
+  const handleDrawerToggle = (componentName: string) => {
+    setDrawerContentKey(componentName);
+    // If the drawer is already open with the same content, close it. Otherwise, open/switch content.
+    if (isDrawerOpen && drawerContentKey === componentName) {
+      setIsDrawerOpen(false);
+    } else {
+      setIsDrawerOpen(true);
+    }
+  };
 
 
   useEffect(() => {
@@ -51,15 +68,15 @@ const RootLayout = (): JSX.Element => {
         <div className="xl:container mx-auto px-6">          
           {/* TODO for engineer */}
           < NavbarClient
-            onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
-            isDrawerOpen={isDrawerOpen}
+            onDrawerToggle={handleDrawerToggle}
+            isDrawerOpen={isDrawerOpen}            
           />
 
         </div>
       </header>
 
       <main className="flex-1 container mx-auto px-6 py-4">
-        <Outlet />
+        <Outlet context={{ onDrawerToggle: handleDrawerToggle } satisfies ContextType} />
       </main>
 
       <footer className="bg-teal-900 text-white py-12 mt-12">
@@ -74,7 +91,11 @@ const RootLayout = (): JSX.Element => {
         </div>
       </footer>
       <Footer />
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+      <Drawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        componentKey={drawerContentKey}
+      />
     </div>
   );
 };
