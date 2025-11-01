@@ -9,7 +9,7 @@ import LoginWithNumber from "./LoginWithNumber";
  * @component
  * @example
  * return (
- *   <SignInpage />
+ *   <ClientSignInPage />
  * )
  *
  * @returns {JSX.Element} The rendered Sign In page component with conditional rendering

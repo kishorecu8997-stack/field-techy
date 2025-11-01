@@ -2,9 +2,7 @@ import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-
 interface AllowAccessPopupProps {
   accessPopup: boolean;
   setAccessPopup: Dispatch<SetStateAction<boolean>>;
@@ -15,7 +13,6 @@ export default function AllowAccessPopup({
   setAccessPopup,
 }: AllowAccessPopupProps) {
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   if (!accessPopup) return null;
 
@@ -48,12 +45,13 @@ export default function AllowAccessPopup({
             >
               Allow Access
             </Button>
-            <text
-              className="hover:underline text-gray-600 cursor-pointer"
+            <button
+              type="button"
+              className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
               onClick={() => setAccessPopup(false)}
             >
               Deny Access
-            </text>
+            </button>
           </div>
         </>
       ) : (
@@ -81,12 +79,13 @@ export default function AllowAccessPopup({
             >
               Allow Access
             </Button>
-            <text
-              className="hover:underline text-gray-600 cursor-pointer"
+            <button
+              type="button"
+              className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
               onClick={() => setAccessPopup(false)}
             >
               Deny Access
-            </text>
+            </button>
           </div>
         </>
       )}

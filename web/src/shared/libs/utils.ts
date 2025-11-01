@@ -97,19 +97,19 @@ export const validatePortfolioLink = (value: string) => {
   } catch {
     return "Portfolio link must be a valid URL";
   }
-
-  // Fallback message when country code is not recognized
-  return "Enter a valid phone number";
 };
 
 export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
+  if (raw !== raw.trim())
+    return "Input must not have leading or trailing spaces";
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw)) {
+    return "Input must not contain consecutive spaces";
+  }
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
@@ -160,4 +160,3 @@ export const cvvValidation = (value: string) => {
   }
   return true;
 };
-
