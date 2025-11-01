@@ -10,7 +10,17 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { AiOutlineClose } from "react-icons/ai";
 import { validateAddress } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
+import countries from "@/dummy_data/countries";
 
+/**
+ * Represents the Add Card form values.
+ *
+ * @property {string} cardNumber - Card number as entered by the user.
+ * @property {string} expDate - Expiry date in MM/YY format.
+ * @property {string} cvv - CVV/CVC code for the card.
+ * @property {string} country - Selected country value/label.
+ * @property {string} address - Billing address for the card.
+ */
 export interface CardFormData {
   cardNumber: string;
   expDate: string;
@@ -19,11 +29,23 @@ export interface CardFormData {
   address: string;
 }
 
+/**
+ * Props passed to the AddCard component.
+ *
+ * @property {() => void} onClose - Called when the dialog should be closed.
+ * @property {(cardData: CardFormData) => void} onAddCard - Called with validated card data when user submits.
+ */
 interface AddCardProps {
   onClose: () => void;
   onAddCard: (cardData: CardFormData) => void;
 }
 
+/**
+ * AddCard component
+ *
+ * Renders a small form for adding a payment card. When the form is
+ * validated successfully, `onAddCard` is invoked with the typed values.
+ */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   const methods = useForm<CardFormData>({
     defaultValues: {
@@ -35,18 +57,11 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
     },
   });
 
-  const countries = [
-    { code: "UAE", name: "United Arab Emirates", flag: "🇦🇪" },
-    { code: "US", name: "United States", flag: "🇺🇸" },
-    { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
-    { code: "CA", name: "Canada", flag: "🇨🇦" },
-    { code: "AU", name: "Australia", flag: "🇦🇺" },
-    { code: "DE", name: "Germany", flag: "🇩🇪" },
-    { code: "FR", name: "France", flag: "🇫🇷" },
-    { code: "JP", name: "Japan", flag: "🇯🇵" },
-  ];
-
-  //form submission
+  // form submission
+  /**
+   * Validate the form and call `onAddCard` with the collected values when valid.
+   * Uses react-hook-form's `trigger` to run validation for all registered fields.
+   */
   const handleAddCard = async () => {
     const isValid = await methods.trigger();
     if (isValid) {
@@ -98,8 +113,8 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             name="country"
             placeholder="Country"
             options={countries.map((c) => ({
-              value: c.code,
-              label: c.name,
+              value: c.value,
+              label: c.label,
             }))}
             required
           />

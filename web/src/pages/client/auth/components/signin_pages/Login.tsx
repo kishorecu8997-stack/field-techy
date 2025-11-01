@@ -24,12 +24,23 @@ import AllowAccessPopup from "../AccessPopup";
  * @property {string} password - User's password.
  * @property {boolean} rememberMe - Whether to remember the user.
  */
+
+/**
+ * Login component
+ *
+ * Renders the client sign-in form (email/password) with options to sign in
+ * via phone number or LinkedIn. Submitting opens the OTP dialog in this
+ * implementation; after OTP success the access popup is shown.
+ *
+ * Props:
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - A single prop used to switch to number-based login UI.
+ * @returns {JSX.Element} Login form UI
+ */
 const Login = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  // const { goToMyJobs } = useHomeNavigation();
   const [accessPopup, setAccessPopup] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +52,14 @@ const Login = ({
     },
   });
 
+  /**
+   * handleSubmit
+   *
+   * Called by the form when the user submits credentials. Current behaviour
+   * opens the OTP popup (simulating second-factor or phone flow). Real
+   * implementations should validate credentials against an API and only
+   * open the OTP/modal on success.
+   */
   const handleSubmit = () => {
     setIsOpen(true);
   };

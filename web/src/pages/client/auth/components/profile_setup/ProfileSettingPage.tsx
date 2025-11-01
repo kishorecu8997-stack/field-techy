@@ -10,31 +10,7 @@ import { FaAngleLeft } from "react-icons/fa";
 import AllowAccessPopup from "../AccessPopup";
 import { useParams } from "react-router-dom";
 import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
-
-// Types (without Zod)
-export type CompleteRegistrationData = {
-  // Profile Setup
-  profileImage?: File;
-  companyName: string;
-  contactPersonName: string;
-  phoneNumber: string;
-  businessType: string;
-  industry: string;
-  address: string;
-  state: string;
-  city: string;
-  vatRegistrationNumber: string;
-  // Background Verification
-  governmentId?: File;
-  certificate?: File;
-  vat: string;
-  // Set Password
-  password: string;
-  confirmPassword: string;
-
-  mobileOTP?: string;
-  emailOTP?: string;
-};
+import type { CompleteRegistrationData } from "./types";
 
 /**
  * A multi-step registration form component that guides users through
@@ -51,7 +27,6 @@ export type CompleteRegistrationData = {
  *
  */
 const CorporateMultiStepRegistration = () => {
-  // const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [accessPopup, setAccessPopup] = useState<boolean>(false);
@@ -88,6 +63,16 @@ const CorporateMultiStepRegistration = () => {
 
   const { trigger } = methods;
 
+  /**
+   * handleStepSubmit
+   *
+   * Submission handler used by the `FormContainer`. Validates the current
+   * step's fields (using react-hook-form's `trigger`) and advances the
+   * step when validation succeeds. On the final step it calls
+   * `submitCompleteForm` to perform the final submission.
+   *
+   * @param {CompleteRegistrationData} data - The collected form data across all steps
+   */
   const handleStepSubmit: SubmitHandler<CompleteRegistrationData> = async (
     data
   ) => {
@@ -136,6 +121,16 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
+
+  /**
+   * submitCompleteForm
+   *
+   * Final submission routine called when the user completes the last step.
+   * This toggles the `isSubmitting` state, performs the network call (here
+   * simulated), and shows the success popup on completion.
+   *
+   * @param {CompleteRegistrationData} data - The fully collected registration data
+   */
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
     setIsSubmitting(true);
     try {
@@ -155,12 +150,25 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
+  /**
+   * goToPreviousStep
+   *
+   * Move the flow back one step if possible. Used by the back button in the UI.
+   */
   const goToPreviousStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
+  /**
+   * renderStep
+   *
+   * Returns the JSX for the currently active step of the registration flow.
+   * Centralizes which step component should be displayed for the `currentStep` value.
+   *
+   * @returns {JSX.Element} The step component to render
+   */
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -205,7 +213,6 @@ const CorporateMultiStepRegistration = () => {
             />
           </div>
 
-          {/*FIXED: Added key={currentStep} to force re-render on step change */}
           <div
             key={currentStep}
             className="relative overflow-auto p-0 mx-auto max-h-[75vh] justify-items-center"

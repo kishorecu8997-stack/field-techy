@@ -1,14 +1,31 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
+import type { JSX } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function ClientAccountType() {
+/**
+ * ClientAccountType
+ *
+ * Renders two selectable account types for clients: Corporate and Home.
+ * When a type is selected the user is navigated to the appropriate
+ * profile setup route. Any router state from the previous step
+ * (for example OTP step) is forwarded.
+ *
+ * @returns {JSX.Element} Account type selection UI
+ */
+export default function ClientAccountType(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
+  /**
+   * Navigate to the provided path while forwarding the current location.state
+   * (used to carry data from the OTP step into the profile setup flow).
+   *
+   * @param {string} path - destination route path
+   */
   const handleSelectType = (path: string) => {
     navigate(path, {
-      state: location.state, //Forward the state from OTP step
+      state: location.state, // Forward the state from OTP step
     });
   };
 

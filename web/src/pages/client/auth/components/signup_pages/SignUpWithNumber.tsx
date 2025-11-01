@@ -18,12 +18,15 @@ export type LoginFormData = {
 };
 
 /**
+ * SignUpWithNumber
+ *
  * Phone-based sign-up form that collects a phone number and terms acceptance,
  * then triggers OTP verification via modal. Includes toggle to email sign-up
  * and LinkedIn alternative.
  *
- * @param {Object} props
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - Props object
  * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Toggles between phone/email sign-up flows
+ * @returns {JSX.Element} Phone sign-up UI
  */
 const SignUpWithNumber = ({
   setIsNumberLogin,
@@ -45,18 +48,33 @@ const SignUpWithNumber = ({
       state: {
         signupPhone: method.getValues("phone"),
         mobileVerified: true,
-        disableMobile: true, // Lock mobile in ProfileSetup
-        disableEmail: false, // Email should be editable in ProfileSetup
+        disableMobile: true,
+        disableEmail: false,
       },
     });
   };
 
+  /**
+   * handleOTPVerified
+   *
+   * Called when the OTP flow completes successfully. Closes the OTP modal
+   * and navigates to the account type setup route carrying the verified
+   * phone number in the navigation state.
+   */
+
   const termsAccepted = method.watch("terms");
 
-  const handleSubmit = (data: LoginFormData) => {
-    console.log(data, "data from Login Form");
+  const handleSubmit = () => {
     setIsOpen(true);
   };
+
+  /**
+   * handleSubmit
+   *
+   * Triggered when the phone sign-up form is submitted. Opens the OTP
+   * verification modal. In a production flow this should first call the
+   * backend to request an OTP and then open the modal on success.
+   */
 
   return (
     <div className="flex items-center justify-center max-w-lg">

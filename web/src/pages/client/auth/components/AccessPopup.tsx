@@ -3,15 +3,35 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+/**
+ * Props for the AllowAccessPopup component.
+ *
+ * @property {boolean} accessPopup - Whether the access popup is visible.
+ * @property {Dispatch<SetStateAction<boolean>>} setAccessPopup - Setter to toggle popup visibility.
+ */
 interface AllowAccessPopupProps {
   accessPopup: boolean;
   setAccessPopup: Dispatch<SetStateAction<boolean>>;
 }
 
+/**
+ * AllowAccessPopup
+ *
+ * A small two-step permission popup shown to clients:
+ * - First step: ask for location access (shows location icon and description).
+ * - Second step: when the user clicks "Allow Access" on the first step, show
+ *   the notifications permission step.
+ *
+ * The component renders nothing when `accessPopup` is false.
+ *
+ * @param {AllowAccessPopupProps} props - Component props
+ * @returns {JSX.Element | null} The popup element when visible or null when hidden
+ */
 export default function AllowAccessPopup({
   accessPopup,
   setAccessPopup,
 }: AllowAccessPopupProps) {
+  // Local state: whether to show the notifications step instead of location step
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
 
   if (!accessPopup) return null;
@@ -74,7 +94,6 @@ export default function AllowAccessPopup({
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
               onClick={() => {
                 setAccessPopup(false);
-                // navigate("/client/dashboard");
               }}
             >
               Allow Access

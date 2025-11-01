@@ -6,7 +6,15 @@ import { cards } from "@/dummy_data/cardDetails";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
-export interface PaymentCardOption {
+/**
+ * Represents a payment card option displayed in the selector.
+ *
+ * @property {string} id - Unique identifier for the card
+ * @property {string} last4 - Last 4 digits of the card number
+ * @property {string} brand - Card brand (visa, mastercard, amex, discover, etc.)
+ * @property {string} name - Cardholder or card display name
+ */
+ export interface PaymentCardOption {
   id: string;
   last4: string;
   brand: "visa" | "mastercard" | "amex" | "discover" | string;
@@ -20,11 +28,25 @@ interface PaymentMethodSelectorProps {
   onAddNew?: (cardData: CardFormData) => void;
 }
 
+/**
+ * Props for the PaymentMethod selector component.
+ *
+ * @property {PaymentCardOption[]} [options] - Optional array of payment cards to display. If omitted, the component falls back to default dummy data.
+ * @property {string | null} [selectedId] - Currently selected card id, if any.
+ * @property {(id: string) => void} [onChange] - Optional callback invoked when the selected card changes.
+ * @property {(cardData: CardFormData) => void} [onAddNew] - Optional callback invoked when a new card is added via the AddCard dialog.
+ */
 const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
   selectedId,
   onAddNew,
 }) => {
-  // Helper to get card logo
+  /**
+   * PaymentMethod
+   *
+   * Displays available payment cards and an option to add a new card. Uses
+   * the `cards` dummy data when no `options` prop is provided. The AddCard
+   * dialog is shown in a Popup; when a new card is submitted `onAddNew` is called.
+   */
   const getCardLogo = (brand: string) => {
     const brandLower = brand.toLowerCase();
     if (brandLower.includes("visa")) return "VISA";
@@ -39,6 +61,15 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
     onAddNew?.(cardData);
     setIsOpen(false);
   };
+  
+  /**
+   * handleAddCard
+   *
+   * Called when the AddCard dialog returns validated card data. Forwards the
+   * data to the optional `onAddNew` prop and closes the popup.
+   *
+   * @param {CardFormData} cardData - validated card form values
+   */
 
   return (
     <div>
@@ -71,7 +102,6 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
                   </span>
                 </div>
 
-                {/* Card Details */}
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
                     xxxx xxxx xxxx {card.number}
@@ -84,7 +114,6 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
             </div>
           ))}
 
-          {/* Add New Card */}
           <Button
             variant="outline"
             onClick={() => setIsOpen(true)}
