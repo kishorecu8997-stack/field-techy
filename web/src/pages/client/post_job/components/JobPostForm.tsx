@@ -28,9 +28,16 @@ import {
   validateCurrencyText,
   validateProjectDeadline,
 } from "../validates";
-
+/**
+ * `JobPostForm` is a comprehensive form for clients to post new jobs.
+ * It is structured into multiple sections covering basic information, requirements,
+ * hardware tools, and rate details.
+ * The form uses `react-hook-form` for state management and validation.
+ * On successful validation and submission, it transitions to a `JobReviewPage`
+ * to allow the user to review the details before final posting.
+ * @returns {React.ReactElement} The rendered job posting form.
+ */
 const JobPostForm: React.FC = () => {
-  // FormData type is defined here
 
   const method = useForm<FormData>({
     defaultValues: {

@@ -1,9 +1,14 @@
-// src/components/EngineerListPage.tsx
-
 import React, { useState, useEffect } from "react";
 import EngineerCard from "./EngineerCard";
 import { mockEngineers } from "@/dummy_data/engineers";
 
+/**
+ * `EngineerListPage` is a component that displays a paginated list of engineers.
+ * It includes functionality for filtering engineers by category and supports both
+ * light and dark themes, which are automatically detected from system preferences.
+ * The component manages its own state for theme, category selection, and pagination.
+ * @returns {React.ReactElement} The rendered engineer list page.
+ */
 const EngineerListPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] =
@@ -33,10 +38,8 @@ const EngineerListPage: React.FC = () => {
     "Security",
   ];
 
-  // Filtered engineers (mock — in real app, filter by category)
-  const filteredEngineers = mockEngineers; // Add actual filtering logic if needed
-
-  // Pagination
+  
+  const filteredEngineers = mockEngineers; // Add actual filtering logic if needed  
   const totalPages = Math.ceil(filteredEngineers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEngineers = filteredEngineers.slice(

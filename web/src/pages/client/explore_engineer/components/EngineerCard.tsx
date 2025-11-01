@@ -11,6 +11,15 @@ interface EngineerCardProps {
   isDarkMode: boolean;
 }
 
+/**
+ * `EngineerCard` is a component that displays a summary of an engineer's profile.
+ * It shows their name, rating, review count, title, and profile picture.
+ * It includes a button to invite the engineer to a job.
+ * The component supports both light and dark themes.
+ * @param {EngineerCardProps} props The properties for the component.
+ * @param {object} props.engineer An object containing the engineer's details.
+ * @param {boolean} props.isDarkMode A flag to determine if the card should render in dark mode.
+ */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer, isDarkMode }) => {
   return (
     <div 

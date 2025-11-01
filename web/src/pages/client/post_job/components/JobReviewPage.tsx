@@ -20,6 +20,17 @@ const jobData = {
   total: 218.75,
 };
 
+/**
+ * `JobReviewPage` is a component that allows a client to review their job posting details before final submission.
+ * It displays an estimated cost, allows setting an urgency level, handles payment method selection,
+ * and requires consent before posting.
+ *
+ * @param {JobReviewPageProps} props The properties for the component.
+ * @param {JobFormData} props.formData The job data collected from the previous form step.
+ * @param {() => void} props.onBack A callback function to return to the job editing form.
+ * @param {() => void} props.onSubmit A callback function to handle the final job submission.
+ * @returns {React.ReactElement} The rendered job review page.
+ */
 const JobReviewPage: React.FC<JobReviewPageProps> = ({
   formData,
   onBack,

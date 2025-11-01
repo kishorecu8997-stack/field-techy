@@ -8,6 +8,20 @@ import {
 } from "react-icons/io5";
 import React from "react";
 
+/**
+ * `InProgressJobCard` component displays a summary of a job that is currently in progress.
+ * It shows details like job title, date, location, duration, service type, price, and assigned engineers.
+ * @param {InProgressJob} props The properties for the component.
+ * @param {string} props.title The title of the job.
+ * @param {string} props.date The scheduled date of the job.
+ * @param {string} props.location The job location.
+ * @param {string} props.duration The estimated duration of the job.
+ * @param {string} props.serviceType The category of service.
+ * @param {string} props.price The payment for the job.
+ * @param {number} props.engineers The number of engineers assigned.
+ * @param {string[]} props.engineerAvatars URLs for the engineer avatars.
+ * @param {'On Site' | 'Remote'} props.WorkLocationType The type of work location.
+ */
 const InProgressJobCard: React.FC<InProgressJob> = ({
   title,
   date,
@@ -19,7 +33,11 @@ const InProgressJobCard: React.FC<InProgressJob> = ({
   engineerAvatars,
   WorkLocationType,
 }) => {
-  // Determine work mode color
+  /**
+   * Returns a CSS class string for the work mode badge based on the work location type.
+   * @param {string} workMode - The work location type (e.g., "On Site").
+   * @returns {string} The CSS classes for styling the badge.
+   */
   const getWorkModeColor = (workMode: string) => {
     return workMode === "On Site"
       ? "bg-blue-600 text-white"

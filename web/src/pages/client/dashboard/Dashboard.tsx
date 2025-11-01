@@ -12,6 +12,11 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * `Dashboard` component serves as the main dashboard for the client user.
+ * It displays an overview of jobs, service categories, and in-progress jobs.
+ * It also includes a sidebar with wallet and job posting information.
+ */
 const Dashboard: React.FC = () => {
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

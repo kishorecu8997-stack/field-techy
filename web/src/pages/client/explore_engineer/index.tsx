@@ -1,9 +1,12 @@
-import { rectangle } from "leaflet";
 import EngineerListPage from "./components/EngineerListPage";
 import Header from "@/shared/components/ClientHeader";
 import Filters from "@/shared/components/Filters";
 
-
+/**
+ * `ExploreEngineer` is the main page component for browsing and finding engineers.
+ * It renders a layout with a header, a list of engineers (`EngineerListPage`),
+ * and a set of filters (`Filters`) in a sidebar.
+ */
 const ExploreEngineer = () => {
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">

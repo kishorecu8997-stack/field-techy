@@ -4,6 +4,18 @@ import { NavLink } from "react-router-dom";
 import React from "react";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * `JobOverviewCard` is a component that displays a summary of job statistics.
+ * It shows a title, a count, and an optional button to view related jobs.
+ * The card's appearance is customizable through color props.
+ * @param {JobOverview} props The properties for the component.
+ * @param {string} props.title The title of the job overview (e.g., "Completed Jobs").
+ * @param {number} props.count The numerical value for the overview (e.g., number of jobs).
+ * @param {string} props.color The background color class for the card.
+ * @param {string} props.textColor The text color class for the card.
+ * @param {string} props.buttonColor The background color class for the button.
+ * @param {boolean} props.buttonShow A boolean to determine if the "View Jobs" button is displayed.
+ */
 const JobOverviewCard: React.FC<JobOverview> = ({
   title,
   count,

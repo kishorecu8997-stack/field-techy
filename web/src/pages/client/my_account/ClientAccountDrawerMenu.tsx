@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import {
-  FaBookmark,
-  FaBriefcase,
   FaCog,
   FaSignOutAlt,
   FaUser,
@@ -15,6 +13,8 @@ import { useForm } from 'react-hook-form';
 import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from '@/config/urls';
+import { RiLockPasswordFill } from "react-icons/ri";
+import { IoDocumentText } from "react-icons/io5";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -30,16 +30,21 @@ export type ClientMenuItems = {
 };
 
 /**
- * DrawerMenu component displays a vertical list of menu items with borders.
- * Features dark mode support, each item has an icon, label, and right-chevron arrow.
- * Borders separate items and frame the container. Logout item opens a confirmation popup.
+ * `ClientAccountDrawerMenu` component displays a side drawer menu for the client's account.
+ * It includes a user profile card and a list of menu items for navigation within account settings.
+ * It handles navigation for some items and calls a callback for others.
+ * It also manages a logout confirmation popup.
  *
- * @component
- * @param {Object} props - Component props
- * @param {Function} props.onMenuItemClick - Function called when a menu item is clicked
+ * @param {ClientDrawerMenuProps} props The properties for the component.
+ * @param {(key: string) => void} props.onMenuItemClick A callback function that is triggered when a menu item is clicked. It receives the item's key.
+ * @param {() => void} props.onClose A callback function to close the drawer, used after certain actions like navigation.
+ * @returns {React.ReactElement} The rendered client account drawer menu.
  *
  * @example
- * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
+ * <ClientAccountDrawerMenu
+ *   onMenuItemClick={(key) => console.log(`Clicked: ${key}`)}
+ *   onClose={() => console.log('Drawer closed')}
+ * />
  */
 const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onMenuItemClick,
@@ -56,17 +61,17 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   const menuItems: ClientMenuItems[] = [
     { 
       label: 'Manage Proposal', 
-      icon: FaUser, 
+      icon: IoDocumentText , 
       key: 'proposal' ,
       onClick:()=> {
         navigate(absoluteUrls.client.home.manage_proposal);
         onClose();
       },
     },
-    { label: 'Company Information', icon: FaBriefcase, key: 'company' },
-    { label: 'Documents', icon: FaWallet, key: 'document' },
+    { label: 'Company Information', icon: FaUser, key: 'company' },
+    { label: 'Documents', icon: IoDocumentText , key: 'document' },
     { label: 'Payment Methods', icon: FaWallet, key: 'payment' },
-    { label: 'Change Password', icon: FaWallet, key: 'changePwd' },
+    { label: 'Change Password', icon: RiLockPasswordFill, key: 'changePwd' },
     { label: 'Account Details', icon: FaCog, key: 'clientAcc' },    
     {
       label: 'Logout',

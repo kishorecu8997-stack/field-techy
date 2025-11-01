@@ -1,7 +1,16 @@
 import React from 'react';
 
 
-
+/**
+ * `ProposalCard` displays information about an engineer who has submitted a proposal.
+ * It shows the engineer's profile picture, name, rating, and title.
+ * It includes a button to invite the engineer to the job.
+ * The card supports both light and dark themes.
+ * 
+ * @param {EngineerCardProps} props The properties for the component.
+ * @param {object} props.engineer An object containing the engineer's details.
+ * @param {boolean} props.isDarkMode A flag to determine if the card should render in dark mode.
+ */
 const ProposalCard: React.FC<EngineerCardProps> = ({ engineer, isDarkMode }) => {
   return (
     <div 

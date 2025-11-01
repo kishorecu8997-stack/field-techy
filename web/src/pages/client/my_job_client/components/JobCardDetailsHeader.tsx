@@ -12,6 +12,19 @@ interface JobCardProps {
   onRequestRevision: () => void;
 }
 
+/**
+ * `JobCardDetailsHeader` is a component that displays a header for a job details card.
+ * It shows the job title, hours, client name, and status.
+ * It includes action buttons to approve work or request a revision, and a kebab menu for more options.
+ *
+ * @param {JobCardProps} props The properties for the component.
+ * @param {string} props.title The title of the job.
+ * @param {number} props.hours The total hours for the job.
+ * @param {string} props.client The name of the client.
+ * @param {'On Site' | 'Remote' | 'Pending'} props.status The current status of the job.
+ * @param {() => void} props.onApprove A callback function triggered when the "Approve Work" button is clicked.
+ * @param {() => void} props.onRequestRevision A callback function triggered when the "Request Revision" button is clicked.
+ */
 const JobCardDetailsHeader: React.FC<JobCardProps> = ({
   title,
   hours,
@@ -118,20 +131,3 @@ const JobCardDetailsHeader: React.FC<JobCardProps> = ({
 };
 
 export default JobCardDetailsHeader;
-// // Example usage
-// const App = () => {
-//   return (
-//     <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-//       <JobCard 
-//         title="Mobile App UI/UX Designer and Product Designer"
-//         hours={8}
-//         client="TechNova Co"
-//         status="On Site"
-//         onApprove={() => console.log('Work approved')}
-//         onRequestRevision={() => console.log('Revision requested')}
-//       />
-//     </div>
-//   );
-// };
-
-// export default App;

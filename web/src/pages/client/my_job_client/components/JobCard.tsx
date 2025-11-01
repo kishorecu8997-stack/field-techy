@@ -1,4 +1,3 @@
-import { useForm } from "react-hook-form";
 import type { Job } from "../types";
 import { IoMdTime } from "react-icons/io";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -12,8 +11,14 @@ interface JobCardProps {
   job: Job;
 }
 
+/**
+ * `JobCard` component displays a summary of a single job.
+ * It shows details like title, date, location, duration, service type, price, and status.
+ * The appearance of the status and work mode indicators is styled based on their values.
+ * @param {JobCardProps} props The properties for the component.
+ * @param {Job} props.job An object containing the details of the job to display.
+ */
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
-  // Determine status color based on job status
   const getStatusColor = (status: string) => {
     switch (status) {
       case "In Progress":
@@ -29,7 +34,6 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
   };
 
-  // Determine work mode color
   const getWorkModeColor = (workMode: string) => {
     return workMode === "On Site"
       ? "bg-blue-600 text-white"

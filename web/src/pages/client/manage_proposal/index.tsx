@@ -2,7 +2,12 @@ import Header from "@/shared/components/ClientHeader";
 import Filters from "@/shared/components/Filters";
 import ProposalListPage from "./components/ProposalListPage";
 
-
+/**
+ * `ManageProposal` is the main page component for clients to view and manage job proposals.
+ * It renders a layout with a header, a list of proposals (`ProposalListPage`),
+ * and a set of filters (`Filters`) in a sidebar.
+ * @returns {React.ReactElement} The rendered "Manage Proposal" page.
+ */
 const ManageProposal = () => {
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">

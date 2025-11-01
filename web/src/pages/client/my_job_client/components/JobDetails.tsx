@@ -5,6 +5,12 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
 
+/**
+ * `JobsDetails` is a page component that displays detailed information about a specific job.
+ * It features a header with job status and actions, a filterable section for different job aspects
+ * (like logs, submissions, etc.), and a sidebar with wallet information.
+ * @returns {React.ReactElement} The rendered job details page.
+ */
 const JobsDetails: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
 

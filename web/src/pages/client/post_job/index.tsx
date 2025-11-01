@@ -4,12 +4,18 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import ClientHeader from "@/shared/components/ClientHeader";
 
+/**
+ * `PostJob` is the main page component that allows clients to post a new job.
+ * It features a two-column layout: the main content area contains the `JobPostForm`,
+ * and the sidebar contains the `SidebarJobPostWallet` component.
+ *
+ * @returns {React.ReactElement} The rendered "Post Job" page.
+ */
 const PostJob = () => {
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content - spans 2 columns on lg */}
           <div className="lg:col-span-2">
             <div className="sticky top-[80px] z-10 bg-gray-50 dark:bg-gray-900">
               <ClientHeader title="Post Job" currentPath="Post A Job" showSearchBar={false}/>
@@ -18,8 +24,6 @@ const PostJob = () => {
               <JobPostForm />
             </div>
           </div>
-
-          {/* Sidebar - takes 1 column on lg */}
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarJobPostWallet earnings={earningsData}  />

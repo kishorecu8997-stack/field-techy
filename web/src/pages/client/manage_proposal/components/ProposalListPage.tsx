@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { mockEngineers } from "@/dummy_data/engineers";
 import ProposalCard from "./ProposalCard";
 
+/**
+ * `ProposalListPage` is a component that displays a paginated list of proposals from engineers.
+ * It uses the `ProposalCard` to render each individual proposal.
+ * The component supports both light and dark themes, automatically detected from system preferences,
+ * and manages its own state for theme and pagination.
+ * @returns {React.ReactElement} The rendered list of proposals with pagination.
+ */
 const ProposalListPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] =

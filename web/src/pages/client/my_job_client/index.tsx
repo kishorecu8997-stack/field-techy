@@ -7,6 +7,12 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { jobData } from "@/dummy_data/myJobs";
 
+/**
+ * `MyJobsClient` is the main page component for a client to view their jobs.
+ * It displays a list of jobs that can be filtered by status (e.g., "All Jobs", "In-Progress").
+ * The layout includes a main content area for job listings and a sidebar with wallet information.
+ * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
+ */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
 

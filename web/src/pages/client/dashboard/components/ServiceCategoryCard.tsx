@@ -1,6 +1,13 @@
 import type { ServiceCategory } from "../type";
 
-
+/**
+ * `ServiceCategoryCard` displays a card for a specific service category.
+ * It shows the category name, an image, and a description of available engineers.
+ * @param {ServiceCategory} props The properties for the component.
+ * @param {string} props.name The name of the service category.
+ * @param {string} props.engineers A string describing the number of engineers (e.g., "50+ Engineers").
+ * @param {string} props.image The URL for the category's background image.
+ */
 const ServiceCategoryCard: React.FC<ServiceCategory> = ({ name, engineers, image }) => {
   return (
     <div className="relative rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:scale-105">

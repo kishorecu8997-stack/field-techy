@@ -6,6 +6,15 @@ interface JobFilterProps {
   filters: string[];
 }
 
+/**
+ * `JobFilter` is a component that displays a horizontal list of filter buttons.
+ * It highlights the currently active filter and allows users to switch between different filters.
+ *
+ * @param {JobFilterProps} props The properties for the component.
+ * @param {string} props.activeFilter The currently selected filter string.
+ * @param {(filter: string) => void} props.onFilterChange A callback function that is triggered when a filter button is clicked. It receives the selected filter string.
+ * @param {string[]} props.filters An array of strings representing the filter options to display.
+ */
 const JobFilter: React.FC<JobFilterProps> = ({ activeFilter, onFilterChange, filters }) => {
   return (
     <div className="mb-6 overflow-x-auto">
