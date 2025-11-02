@@ -1,109 +1,308 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
+  type ControllerRenderProps,
 } from "react-hook-form";
-import React, { useState } from "react";
-
-interface InputFieldProps {
-  name: string;
-  label?: string; // e.g., "Upload Resume/CV"
-  required?: boolean;
-  accept?: string; // default: ".pdf,.jpg,.png"
-  maxSize?: number; // default: 350 * 1024 (350KB)
-  containerClassName?: string;
-  placeholder?: string;
-}
+import React, { useState, useEffect, useCallback } from "react";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
+import { toast } from "react-toastify";
+import type { FileUploadProps } from "./type";
 
 /**
- * FileUploadField - Upload box that matches your preview design exactly.
+ * A robust file upload component with a drag-and-drop style interface.
  *
- * Features:
- * - Dashed border box with upload icon (both upload & preview states)
- * - In preview: Shows "Uploaded: filename", size, "Re-upload" + "Remove" buttons
- * - Validates file size (≤ 350KB) and type
- * - Integrates with react-hook-form via Controller
+ * This component handles file selection, validation (type, size, and content signature),
+ * and previewing. For PDFs, it can also validate the page count. It integrates
+ * with `react-hook-form` and provides clear user feedback through state changes
+ * and toast notifications.
+ *
+ * @param {FileUploadProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label="Upload Document"] - The text label for the input field.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {string} [props.accept=".pdf,.jpeg,.jpg,.png"] - Comma-separated list of allowed file extensions.
+ * @param {number} [props.maxSize=358400] - Maximum file size in bytes (default 350 KB).
+ * @param {boolean} [props.validatePDF=true] - Whether to perform PDF-specific validation.
+ * @param {number} [props.minPages=1] - Minimum number of pages for a PDF.
+ * @param {number} [props.maxPages=5] - Maximum number of pages for a PDF.
  */
 export const FileUpload = ({
   name,
-  label,
+  label = "Upload Document",
   required = false,
-  placeholder = "Upload Resume/CV",
-  accept = ".pdf,.jpg,.png",
-  maxSize = 350 * 1024, // 350 KB
+  accept = ".pdf,.jpeg,.jpg,.png",
+  maxSize = 350 * 1024,
   containerClassName = "flex flex-col py-1",
-}: InputFieldProps) => {
-  const { control } = useFormContext();
+  placeholder = "Upload Resume/CV",
+  validatePDF = true,
+  minPages = 1,
+  maxPages = 5,
+}: FileUploadProps) => {
+  const { control, getValues } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
+  const [pageCount, setPageCount] = useState<number | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+
+  // Set PDF.js worker on component mount (client-side only)
+  useEffect(() => {
+    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+    }
+  }, []);
+
+  // ✅ Validate PDF: signature + page count + corruption
+  const validatePdfPages = useCallback(
+    async (
+      file: File
+    ): Promise<{ error: string | null; pages: number | null }> => {
+      if (!validatePDF) return { error: null, pages: null };
+
+      // Step 0: Minimum size check (corrupted/truncated PDFs often too small)
+      if (file.size < 100) {
+        return { error: "File is too small to be a valid PDF.", pages: null };
+      }
+
+      // Step 1: Check %PDF header
+      try {
+        const headerBuffer = await file.slice(0, 4).arrayBuffer();
+        const headerBytes = new Uint8Array(headerBuffer);
+        const isGenuinePDF =
+          headerBytes[0] === 0x25 && // '%'
+          headerBytes[1] === 0x50 && // 'P'
+          headerBytes[2] === 0x44 && // 'D'
+          headerBytes[3] === 0x46; // 'F'
+
+        if (!isGenuinePDF) {
+          return { error: "File is not a genuine PDF document.", pages: null };
+        }
+      } catch (sigError) {
+        console.error("PDF signature check failed:", sigError);
+        return { error: "Unable to verify PDF file integrity.", pages: null };
+      }
+
+      // Step 2: Parse and validate pages
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const numPages = pdf.numPages;
+
+        if (numPages < minPages || numPages > maxPages) {
+          return {
+            error: `PDF must have between ${minPages} and ${maxPages} pages.`,
+            pages: numPages,
+          };
+        }
+
+        return { error: null, pages: numPages };
+      } catch (err: unknown) {
+        console.error("PDF parsing error:", err);
+        let message = "Unable to process PDF. Please upload a valid PDF file.";
+        if (err instanceof Error) {
+          if (err.name === "InvalidPDFException") {
+            message = "File is not a valid PDF document.";
+          } else if (err.name === "MissingPDFException") {
+            message = "PDF file is corrupted or incomplete.";
+          } else if (err.name === "UnexpectedResponseException") {
+            message = "PDF file is corrupted or could not be loaded.";
+          }
+        }
+        return { error: message, pages: null };
+      }
+    },
+    [validatePDF, minPages, maxPages]
+  );
+
+  // Initialize state from form context if a file already exists
+  useEffect(() => {
+    const existingFiles = getValues(name) as FileList | undefined;
+    if (existingFiles && existingFiles.length > 0) {
+      const file = existingFiles[0];
+      setFileName(file.name);
+      setFileSize(formatFileSize(file.size));
+      if (file.type === "application/pdf" && validatePDF) {
+        validatePdfPages(file).then(({ pages }) => setPageCount(pages));
+      }
+      setFileUrl(URL.createObjectURL(file));
+    }
+  }, [getValues, name, validatePDF, validatePdfPages]);
+
+  // Cleanup object URL
+  useEffect(() => {
+    return () => {
+      if (fileUrl) URL.revokeObjectURL(fileUrl);
+    };
+  }, [fileUrl]);
+
+  // Format file size
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  // Get allowed extensions
+  const getAcceptExtensions = (): string[] => {
+    return accept
+      .split(",")
+      .map((ext) => ext.trim().replace(/^\.?/, ""))
+      .map((ext) => ext.toLowerCase());
+  };
+
+  // Format allowed types for display
+  const formatAllowedTypes = (): string => {
+    const types = getAcceptExtensions().map(ext => ext.toUpperCase());
+    return types.length > 1 ? types.join(", ") : types[0];
+  };
+
+  // Check if file type is allowed by extension
+  const isFileTypeAllowed = (file: File): boolean => {
+    const allowedExts = getAcceptExtensions();
+    return allowedExts.some((ext) =>
+      file.name.toLowerCase().endsWith(`.${ext}`)
+    );
+  };
+
+  // ✅ Validate genuine JPEG
+  const validateJpegSignature = async (file: File): Promise<boolean> => {
+    const buffer = await file.slice(0, 2).arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    return bytes[0] === 0xff && bytes[1] === 0xd8;
+  };
+
+  // ✅ Validate genuine PNG
+  const validatePngSignature = async (file: File): Promise<boolean> => {
+    const buffer = await file.slice(0, 8).arrayBuffer();
+    const header = new Uint8Array(buffer);
+    const expected = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    return expected.every((val, i) => val === header[i]);
+  };
+
+  // ✅ Handle file change with full validation
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: ControllerRenderProps
+  ) => {
+    const files = e.target.files;
+    if (!files?.[0]) return;
+
+    const file = files[0];
+
+    // Reset state
+    setFileName(null);
+    setFileSize(null);
+    setPageCount(null);
+    setFileError(null);
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
+      setFileUrl(null);
+    }
+
+    // 1. Validate extension
+    if (!isFileTypeAllowed(file)) {
+      const errorMsg = `Only ${formatAllowedTypes()} files are allowed.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+
+    // 2. Validate size
+    if (file.size > maxSize) {
+      const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+
+    let finalPageCount: number | null = null;
+    let isValid = true;
+    let validationError = "";
+
+    const lowerName = file.name.toLowerCase();
+
+    // 3. Validate by file type
+    if (lowerName.endsWith(".pdf")) {
+      const { error, pages } = await validatePdfPages(file);
+      finalPageCount = pages;
+      if (error) {
+        validationError = error;
+        isValid = false;
+      }
+    } else if (lowerName.endsWith(".jpeg") || lowerName.endsWith(".jpg")) {
+      const isJpeg = await validateJpegSignature(file);
+      if (!isJpeg) {
+        validationError = "File is not a genuine JPEG image.";
+        isValid = false;
+      }
+    } else if (lowerName.endsWith(".png")) {
+      const isPng = await validatePngSignature(file);
+      if (!isPng) {
+        validationError = "File is not a genuine PNG image.";
+        isValid = false;
+      }
+    }
+
+    if (!isValid) {
+      setFileError(validationError);
+      toast.error(validationError);
+      field.onChange(null);
+      return;
+    }
+
+    // Set preview
+    setFileName(file.name);
+    setFileSize(formatFileSize(file.size));
+    if (finalPageCount !== null) {
+      setPageCount(finalPageCount);
+    }
+    const url = URL.createObjectURL(file);
+    setFileUrl(url);
+    field.onChange(files);
+  };
+
+  // Remove file
+  const handleRemove = (field: ControllerRenderProps) => {
+    field.onChange(null);
+    setFileName(null);
+    setFileSize(null);
+    setPageCount(null);
+    setFileError(null);
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
+      setFileUrl(null);
+    }
+    const input = document.getElementById(name) as HTMLInputElement;
+    if (input) input.value = "";
+  };
+
+  // Re-upload
+  const handleReupload = () => {
+    document.getElementById(name)?.click();
+  };
+
+  // Preview
+  const handlePreview = () => {
+    if (fileUrl) {
+      window.open(fileUrl, "_blank");
+    }
+  };
 
   // Validation rules
   const validationRules: RegisterOptions = {
     required: required ? `${label} is required` : false,
     validate: {
-      fileSize: (files: FileList) => {
-        if (!files || files.length === 0)
+      hasFile: (files: FileList | null) => {
+        if (!files || files.length === 0) {
           return required ? "File is required" : true;
-        const file = files[0];
-        if (file.size > maxSize)
-          return `File must be under ${maxSize / 1024} KB`;
-        setFileSize(formatFileSize(file.size));
-        setFileName(file.name);
+        }
         return true;
       },
-      fileType: (files: FileList) => {
-        if (!files || files.length === 0) return true;
-        const file = files[0];
-        const acceptedExtensions = accept
-          .split(",")
-          .map((ext) => ext.trim().toLowerCase());
-
-        const fileExtension = file.name.split(".").pop()?.toLowerCase();
-        const isValidExtension =
-          fileExtension && acceptedExtensions.includes(`.${fileExtension}`);
-
-        return (
-          isValidExtension ||
-          `Only ${acceptedExtensions
-            .map((ext) => ext.replace(".", "").toUpperCase())
-            .join(", ")} files are allowed`
-        );
-      },
     },
-  };
-
-  // Helper: Format file size (KB/MB)
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + " B";
-    else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    else return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-  };
-
-  // Handle file change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      field.onChange(files);
-      setFileName(files[0].name);
-      setFileSize(formatFileSize(files[0].size));
-    }
-  };
-
-  // Handle remove file
-  const handleRemove = (field: any) => {
-    field.onChange(null); // Clear form value
-    setFileName(null);
-    setFileSize(null);
-    // Reset input so user can re-select same file if needed
-    const input = document.getElementById(name) as HTMLInputElement;
-    if (input) input.value = "";
-  };
-
-  // Handle "Re-upload" click
-  const handleReupload = () => {
-    const input = document.getElementById(name) as HTMLInputElement;
-    if (input) input.click();
   };
 
   return (
@@ -118,17 +317,18 @@ export const FileUpload = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
+          const displayError = error?.message || fileError;         
+
           return (
             <>
-              <div
-                className={`relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md p-6 text-center cursor-pointer transition ${
-                  error ? "border-red-400" : ""
+              <div               
+                className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
+                  displayError
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                 }`}
-                onClick={() =>
-                  !fileName && document.getElementById(name)?.click()
-                }
+                onClick={() => !fileName && document.getElementById(name)?.click()}
               >
-                {/* Always show upload icon */}
                 <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +347,6 @@ export const FileUpload = ({
                 </div>
 
                 {fileName ? (
-                  // ✅ PREVIEW MODE: Show uploaded info + buttons
                   <div className="mt-4">
                     <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                       Uploaded: <span className="font-normal">{fileName}</span>
@@ -157,41 +356,49 @@ export const FileUpload = ({
                         Size: {fileSize}
                       </p>
                     )}
-
-                    <div className="flex justify-center space-x-3 mt-4">
+                    {pageCount !== null && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Pages: {pageCount}
+                      </p>
+                    )}
+                    <div className="flex justify-center space-x-2 mt-4">
+                      <button
+                        type="button"
+                        onClick={handlePreview}
+                        className="px-3 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded"
+                      >
+                        Preview
+                      </button>
                       <button
                         type="button"
                         onClick={handleReupload}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded"
+                        className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded"
                       >
                         Re-upload
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRemove(field)}
-                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded"
+                        className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded"
                       >
                         Remove
                       </button>
                     </div>
                   </div>
                 ) : (
-                  // ❌ UPLOAD MODE: Show label + format hint
                   <>
                     <p className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format:{" "}
-                      {accept
-                        .replace(/\./g, "")
-                        .replace(/,/g, ", ")
-                        .toUpperCase()}
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
+                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
+                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}
 
-                {/* Hidden File Input */}
                 <input
                   id={name}
                   type="file"
@@ -199,12 +406,10 @@ export const FileUpload = ({
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
                 />
-              </div>
-
-              {/* Error Message */}
-              {error && (
+              </div>              
+              {displayError && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-500">
-                  {error.message}
+                  {displayError}
                 </p>
               )}
             </>
@@ -214,3 +419,5 @@ export const FileUpload = ({
     </div>
   );
 };
+
+export default FileUpload;

@@ -1,0 +1,11 @@
+{
+  "preferredWorkTypes": [
+    { "id": "1", "type": "Full-Time", "description": "Standard full working hours, typically 35–40 hours per week." },
+    { "id": "2", "type": "Part-Time", "description": "Fewer hours than full-time, often flexible or scheduled shifts." },
+    { "id": "3", "type": "Contract", "description": "Fixed-term employment based on a contract agreement." },
+    { "id": "4", "type": "Freelance", "description": "Project-based or hourly work as an independent contributor." },
+    { "id": "5", "type": "Internship", "description": "Temporary position for students or trainees to gain experience." },
+    { "id": "6", "type": "Remote", "description": "Work performed entirely from a remote location." },
+    { "id": "7", "type": "Hybrid", "description": "Combination of remote and on-site work." }
+  ]
+}

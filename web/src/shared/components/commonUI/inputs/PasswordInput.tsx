@@ -2,15 +2,7 @@ import { useState } from "react";
 import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
-
-interface PasswordInputProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean | string;
-  isShowLabel?:boolean;
-  rules?: RegisterOptions;
-}
+import type { PasswordInputProps } from "./type";
 
 /**
  * PasswordInput - A reusable password input component for react-hook-form.
@@ -65,7 +57,7 @@ export const PasswordInput = ({
                 id={name}
                 type={showPassword ? "text" : "password"}
                 placeholder={placeholder || label}
-                autoComplete="off"
+                autoComplete="new-password"
                 className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 pr-12 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition"
               />
               <button

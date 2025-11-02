@@ -1,0 +1,40 @@
+{
+  "workExperience": [
+     {
+      "id": "1",
+      "title": "Angular Developer",
+      "employer": "Zoho Corp",
+      "workLocationType": "on-site",
+      "employmentType": "full-time",
+      "startDate": "2021-06-10",
+      "endDate": "2023-06-10"
+    },
+    {
+      "id": "2",
+      "title": "Angular Developer",
+      "employer": "Freshworks",
+      "workLocationType": "hybrid",
+      "employmentType": "full-time",
+      "startDate": "2022-08-01",
+      "endDate": "2024-08-01"
+    },
+    {
+      "id": "3",
+      "title": "Angular Developer",
+      "employer": "Accenture",
+      "workLocationType": "remote",
+      "employmentType": "full-time",
+      "startDate": "2023-09-15",
+      "endDate": "2025-09-15"
+    },
+    {
+      "id": "4",
+      "title": "Angular Developer",
+      "employer": "TCS",
+      "workLocationType": "remote",
+      "employmentType": "full-time",
+      "startDate": "2023-09-15",
+      "endDate": "2025-09-15"
+    }
+  ]
+}

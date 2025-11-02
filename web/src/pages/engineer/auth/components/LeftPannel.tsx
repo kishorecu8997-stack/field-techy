@@ -7,17 +7,13 @@ import {assetsConfig} from "@/assets";
 
 
 /**
- * Left Panel component with a carousel showcasing different sections/features.
- * Displays rotating slides with titles, descriptions, and images to highlight
- * platform benefits and features for users.
- * 
- * @component
- * @example
- * return (
- *   <LeftPanel />
- * )
- * 
- * @returns {JSX.Element} The rendered Left Panel carousel component
+ * A UI component for the left panel of authentication pages, featuring a carousel.
+ *
+ * This component uses `react-slick` to display a series of rotating slides. Each slide
+ * highlights a key platform feature with a title, description, and an illustrative image.
+ * It is designed to provide an engaging visual element during the sign-in or sign-up process.
+ *
+ * @returns {JSX.Element} The rendered left panel component with a feature carousel.
  */
 const LeftPanel: React.FC = () => {
   const sections = [
@@ -54,12 +50,7 @@ const LeftPanel: React.FC = () => {
   };
 
  return (
-  <div className="h-screen flex flex-col text-white">
-    {/* Header or fixed top content */}
-    <div className="flex-shrink-0 h-12 md:h-16 lg:h-24"></div>
-
-    {/* Main content area that takes remaining height */}
-    <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-6 md:p-8 lg:p-12">
+  <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">   
       <Slider {...settings} className="w-full">
         {sections.map((section, index) => (
           <div
@@ -85,8 +76,7 @@ const LeftPanel: React.FC = () => {
             </div>
           </div>
         ))}
-      </Slider>
-    </div>
+      </Slider>    
   </div>
 );
 }

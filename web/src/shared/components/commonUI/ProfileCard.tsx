@@ -1,4 +1,5 @@
 import React from "react";
+import { ImageUploaderField } from "./inputs/ImageUploaderField";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -30,6 +31,8 @@ const ProfileCard = ({
   rating,
   reviewCount,
   completionPercentage,
+  flex = 'row',
+  backgroundcolor =true,
 }: {
   avatarUrl: string;
   name: string;
@@ -37,14 +40,23 @@ const ProfileCard = ({
   rating: number;
   reviewCount: number;
   completionPercentage: number;
+  flex?: 'row' | 'col';
+  backgroundcolor?: boolean;
 }) => {
   return (
-    <div className="flex items-center space-x-4 mb-6 p-4 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl">
+    <div 
+  className={`flex 
+    ${flex === 'row' ? 'flex-row' : 'flex-col'} 
+    items-center 
+    space-x-4 
+    mb-6 
+    p-4 
+    ${backgroundcolor 
+      ? 'bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900' 
+      : ''}`}
+>
       <div className="relative">
-        <ProfileAvatarProgress
-          avatarUrl={avatarUrl}
-          completionPercentage={completionPercentage}
-        />
+        <ImageUploaderField name="profileImage" />
       </div>
       <div>
         <h2 className="font-bold text-lg text-gray-800">{name}</h2>

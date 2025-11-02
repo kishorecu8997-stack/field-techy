@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
@@ -8,6 +9,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
+import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
 
@@ -17,28 +19,22 @@ export interface SignUpFormData {
 }
 
 /**
- * Sign-up form component for new engineer users.
- * Collects the user's email and consent to terms, then triggers an OTP verification flow
- * via a modal popup. Also provides alternative login options:
- * - Switch to phone number login
- * - Continue with LinkedIn
+ * Renders a sign-up form for users to register with their email address.
  *
- * Features:
- * - Form validation using `react-hook-form`
- * - Terms & Conditions acceptance enforcement (submit disabled until accepted)
- * - Navigation to Sign In page for existing users
- * - Modal-based OTP verification after form submission
+ * This component captures the user's email and their agreement to the terms and conditions.
+ * Upon submission, it initiates an OTP verification process. If the OTP is verified
+ * successfully, it navigates the user to the profile setup page, passing along the
+ * verified email address.
  *
- * @component
- * @param {Object} props - Component props
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Callback to switch to phone-based login flow
+ * It also provides options to switch to a phone-based sign-up or to use social
+ * providers like LinkedIn.
  *
- * @example
- * <SignUp setIsNumberLogin={setIsNumberLogin} />
- *
- * @returns {JSX.Element} The sign-up form UI with email input, terms checkbox, and action buttons.
+ * @param {object} props - The component props.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
+ *   passed from the parent to toggle the view to the phone number sign-up screen.
+ * @returns {JSX.Element} The rendered email sign-up form.
  */
-const SignUp = ({
+const SignUpWithEmail = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -51,19 +47,35 @@ const SignUp = ({
       terms: false,
     },
   });
+  // Inside handleOTPVerified in SignUp
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    navigate(absoluteUrls.engineer.auth.profile_setup, {
+      state: {
+        signupEmail: methods.getValues("email"),
+        emailVerified: true, // Pre-verified
+        disableEmail: true, // Lock email in ProfileSetup
+        disableMobile: false, // Mobile should be editable in ProfileSetup
+      },
+    });
+  };
 
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = () => {
-        setIsOpen(true);
+    setIsOpen(true);
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">
@@ -81,7 +93,16 @@ const SignUp = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email ID"
+            type="text"
+            required
+            leftIcon={
+              <MdOutlineMailOutline className="text-lg text-gray-500" />
+            }
+            rules={validateEmailRules}
+          />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
               name="terms"
@@ -91,14 +112,16 @@ const SignUp = ({
               className="text-teal-900 underline font-semibold pl-1"
               to={absoluteUrls.engineer.auth.signup}
             >
-              Terms and Services
+              Terms and Conditions
             </NavLink>
           </div>
           <Button
             type="submit"
             disabled={!termsAccepted}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              !termsAccepted
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
             }`}
           >
             Create Account
@@ -109,7 +132,7 @@ const SignUp = ({
           onClick={() => setIsNumberLogin(true)}
         >
           <LuPhone />
-          Sign in with Phone Number
+          Sign in with Mobile Number
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />
@@ -130,7 +153,7 @@ const SignUp = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.engineer.auth.profile_setup)}
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>
@@ -138,4 +161,4 @@ const SignUp = ({
   );
 };
 
-export default SignUp;
+export default SignUpWithEmail;

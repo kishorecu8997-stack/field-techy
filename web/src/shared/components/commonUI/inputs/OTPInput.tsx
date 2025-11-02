@@ -4,14 +4,7 @@ import {
   type RegisterOptions,
 } from "react-hook-form";
 import { useEffect, useRef } from "react";
-
-interface OTPInputProps {
-  name: string;
-  length?: number;
-  required?: boolean;
-  rules?: RegisterOptions;
-  errorAlign?: "left" | "right" | "center";
-}
+import type { OTPInputProps } from "./type";
 
 /**
  * OTPInput is a controlled React component that renders a set of single-digit input fields

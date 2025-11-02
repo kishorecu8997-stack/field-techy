@@ -7,11 +7,8 @@ import { Link, NavLink } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
+import type { NavbarProps } from "./type";
 
-interface NavbarProps {
-  onDrawerToggle: () => void;
-  isDrawerOpen: boolean;
-}
 
 /**
  * Header component with navigation, search bar, and user profile.
