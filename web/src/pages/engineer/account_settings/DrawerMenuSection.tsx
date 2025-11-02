@@ -33,7 +33,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
  * Renders a styled settings menu with interactive items that can be either clickable actions or toggle switches.
  * Supports icons, hover effects, accessibility attributes, and disabled states.
  */
-const SettingsMenu: React.FC<SettingsMenuProps> = ({
+const DrawerMenuSection: React.FC<SettingsMenuProps> = ({
   items,
   className = "",
   ariaLabel = "Settings Menu",
@@ -97,4 +97,4 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
   );
 };
 
-export default SettingsMenu;
+export default DrawerMenuSection;

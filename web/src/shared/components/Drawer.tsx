@@ -3,10 +3,24 @@ import { useEffect } from "react";
 import useDrawerStore from "../store/useDrawerStore";
 import DrawerHeader from "./DrawerHeader";
 
-interface DrawerProps {
+export interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+export interface DrawerMenuProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
+
+export type MenuItems = {
+  label: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  key: string;
+  isLogout?: boolean;
+  onClick?: () => void;
+};
+
 
 /**
  * Drawer component that slides in from the right when opened.

@@ -4,7 +4,7 @@ import type { DrawerMenuProps } from "@/shared/components/Drawer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
-import SettingsMenu from "./SettingsMenu";
+import DrawerMenuSection from "./DrawerMenuSection";
 import type { MenuItem } from "./types";
 
 /**
@@ -84,7 +84,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
 
   return (
     <div>
-      <SettingsMenu items={menuItems} className="h-full" />
+      <DrawerMenuSection items={menuItems} className="h-full" />
       <LogoutConfirmationPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

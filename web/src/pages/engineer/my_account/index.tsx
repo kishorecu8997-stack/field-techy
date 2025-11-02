@@ -1,11 +1,10 @@
-    import { assetsConfig } from '@/assets';
-import { icons } from '@/config/icons';
-import LogoutConfirmationPopup from '@/pages/engineer/auth/LogoutConfirmationPopup';
-import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
-import ProfileCard from '@/shared/components/commonUI/ProfileCard';
-import type { DrawerMenuProps, MenuItems } from '@/shared/components/Drawer';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { assetsConfig } from "@/assets";
+import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import ProfileCard from "@/shared/components/commonUI/ProfileCard";
+import type { DrawerMenuProps } from "@/shared/components/Drawer";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   FaBookmark,
   FaBriefcase,
@@ -13,9 +12,9 @@ import {
   FaSignOutAlt,
   FaUser,
   FaWallet,
-} from 'react-icons/fa';
-
-
+} from "react-icons/fa";
+import DrawerMenuSection from "../account_settings/DrawerMenuSection";
+import type { MenuItem } from "../account_settings/types";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -39,17 +38,21 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
     },
   });
 
-  const menuItems: MenuItems[] = [
-    { label: 'My Profile', icon: FaUser, key: 'profile' },
-    { label: 'My Jobs', icon: FaBriefcase, key: 'jobs' },
-    { label: 'My Earning', icon: FaWallet, key: 'earning' },
-    { label: 'Saved Jobs', icon: FaBookmark, key: 'saved' },
-    { label: 'Settings', icon: FaCog, key: 'settings' },
+  const menuItems: MenuItem[] = [
+    { label: "My Profile", icon: FaUser, id: "profile" },
+    { label: "My Jobs", icon: FaBriefcase, id: "jobs" },
+    { label: "My Earning", icon: FaWallet, id: "earning" },
+    { label: "Saved Jobs", icon: FaBookmark, id: "saved" },
     {
-      label: 'Logout',
+      label: "Settings",
+      icon: FaCog,
+      id: "settings",
+      onClick: () => onMenuItemClick("settings"),
+    },
+    {
+      label: "Logout",
       icon: FaSignOutAlt,
-      key: "logout",
-      isLogout: true,
+      id: "logout",
       onClick: () => {
         setIsOpen(true);
       },
@@ -59,7 +62,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   return (
     <>
       <FormContainer methods={methods}>
-        <div >
+        <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
             name="Michel Brown"
@@ -69,62 +72,11 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
             completionPercentage={39}
           />
         </div>
-        {menuItems.map((item, index, array) => (
-          <React.Fragment key={item.key}>
-            <button
-              onClick={() => {
-                onMenuItemClick(item.key);
-                item.onClick?.();
-              }}
-              className={`
-              w-full flex items-center justify-between px-4 py-4 
-              transition-all duration-300 cursor-pointer 
-              text-gray-700 dark:text-gray-200 
-              hover:bg-gray-50 dark:hover:bg-gray-700 
-              hover:pl-6 
-              hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
-              }
-            `}
-            >
-              <div className="flex items-center space-x-3">
-                <item.icon
-                  className={`
-                  h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
-                  }
-                `}
-                />
-                <span
-                  className={`
-                ${
-                  item.isLogout
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200"
-                }
-                `}
-                >
-                  {item.label}
-                </span>
-              </div>
-              <icons.chevronRight
-                className={`
-                text-gray-400 dark:text-gray-500 
-                transition-colors
-              `}
-              />
-            </button>
-            {index < array.length - 1 && (
-              <div className="border-t border-gray-200 dark:border-gray-700"></div>
-            )}
-          </React.Fragment>
-        ))}
+        <DrawerMenuSection
+          items={menuItems}
+          key={"myAccount"}
+          className="h-full"
+        />
         <LogoutConfirmationPopup
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
