@@ -52,3 +52,14 @@ export const transactions: Transaction[] = [
     date: "2024-02-25T11:54:00",
   },
 ];
+
+// Define your bank list (for name lookup)
+export const bankList = [
+  { value: "state-bank-of-india", label: "State Bank of India" },
+  { value: "hdfc-bank", label: "HDFC Bank" },
+  { value: "icici-bank", label: "ICICI Bank" },
+  { value: "axis-bank", label: "Axis Bank" },
+  { value: "bank-of-america", label: "Bank of America" },
+  { value: "citi", label: "Citi" },
+  { value: "hsbc", label: "HSBC" },
+];

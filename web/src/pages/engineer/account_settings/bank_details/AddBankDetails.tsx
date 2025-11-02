@@ -8,7 +8,7 @@ import BankDetailsForm from "./BankDetailsForm";
  */
 const AddBankDetails = ({}:{}) => {
   const fromCtx = useForm({
-    mode:"onChange",
+    mode:"onSubmit",
     defaultValues: {
       bankName: "",
       bankAddress: "",

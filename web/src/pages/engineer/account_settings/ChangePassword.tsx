@@ -34,7 +34,6 @@ const ChangePasswordFields = () => {
         <PasswordInput
           label="Current Password"
           name="currentPassword"
-          isShowLabel={false}
           placeholder="Enter your current password"
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
@@ -44,7 +43,6 @@ const ChangePasswordFields = () => {
           name="newPassword"
           placeholder="Enter your new password"
           required
-          isShowLabel={false}
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
         <PasswordInput
@@ -52,7 +50,6 @@ const ChangePasswordFields = () => {
           name="confirmPassword"
           placeholder="Confirm your new password"
           required
-          isShowLabel={false}
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
       </div>

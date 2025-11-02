@@ -47,7 +47,7 @@ export const SelectField = ({
   return (
     <div className="flex flex-col py-1">
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label className="block mb-1 text-[1rem] font-semibold text-gray-700 dark:text-gray-300">
           {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}

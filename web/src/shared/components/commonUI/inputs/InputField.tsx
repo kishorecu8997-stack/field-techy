@@ -9,17 +9,9 @@ interface InputFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  /** 
-   * Set to `true` for default required message, 
-   * or a string for a custom required error message.
-   */
   required?: boolean | string;
   type?: "text" | "email" | "number" | "date";
   isShowLabel?:boolean;
-  /** 
-   * Additional validation rules (e.g., minLength, pattern, validate).
-   * Note: `required` can be set via the `required` prop instead.
-   */
   rules?: RegisterOptions;
   leftIcon?: React.ReactNode;
   containerClassName?: string;
@@ -77,7 +69,7 @@ export const InputField = ({
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label className="block mb-1 text-[1rem] font-semibold text-gray-700 dark:text-gray-300">
           {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}

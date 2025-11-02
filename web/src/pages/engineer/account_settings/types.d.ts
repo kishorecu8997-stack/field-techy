@@ -1,3 +1,5 @@
+import type { bankList } from "@/dummy_data/bankDetails";
+
 export interface ContactItem {
   id: string;
   label: string;
@@ -74,3 +76,8 @@ export interface ToggleSwitchProps {
   disabled?: boolean;
   className?: string;
 }
+
+export type BankKey = (typeof bankList)[number]["value"];
+
+// Derive country code type from rules
+export type CountryCode = keyof typeof IBAN_RULES;
