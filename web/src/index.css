@@ -9,3 +9,10 @@
   background-size: 50px 50px;
   background-position: 0 0, 25px 25px;
 }
+
+html.drawer-open,
+body.drawer-open,
+.drawer-open .main-layout,
+.drawer-open #main-container {
+  overflow: hidden !important;
+}

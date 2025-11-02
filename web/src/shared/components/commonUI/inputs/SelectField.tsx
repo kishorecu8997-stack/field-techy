@@ -62,7 +62,7 @@ export const SelectField = ({
                 {...field}
                 // Ensure empty value is truly empty string for placeholder to show
                 value={field.value ?? ""}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none  transition appearance-none"
               >
                 {/* Placeholder option */}
                 <option value="" disabled hidden>

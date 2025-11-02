@@ -1,18 +1,5 @@
-export interface DrawerMenuProps {
-  onMenuItemClick: (key: string) => void;
-  onClose: () => void;
-}
-
-export type MenuItems = {
-  label: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  key: string;
-  isLogout?: boolean;
-  onClick?: () => void;
-};
-
 import { sectionConfig } from "@/config/sideBarPagesconfig";
-import React from "react";
+import { useEffect } from "react";
 import useDrawerStore from "../store/useDrawerStore";
 import DrawerHeader from "./DrawerHeader";
 
@@ -27,11 +14,33 @@ interface DrawerProps {
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { activeKey, setActiveKey } = useDrawerStore();
+
+  // Escape key & scroll lock effect
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      // Lock scroll & enable Escape
+      document.documentElement.classList.add("drawer-open");
+      document.addEventListener("keydown", handleEsc);
+    }
+
+    return () => {
+      // Clean up: unlock scroll & remove listener
+      document.documentElement.classList.remove("drawer-open");
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const commonProps = {
     onMenuItemClick: (data: string) => setActiveKey(data),
-    onClose: onClose,
+    onClose,
   };
 
   const renderSection = (): React.ReactElement => {
@@ -49,12 +58,20 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
+      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 bg-[rgba(61,63,66,0.6)] animate-fade-in"
         onClick={onClose}
+        aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800">
+      {/* Drawer Panel */}
+      <div
+        className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800"
+        role="dialog"
+        aria-modal="true"
+        aria-label={config.title}
+      >
         <div className="flex h-screen flex-col">
           <div className="shrink-0 py-6 px-6">
             <DrawerHeader
