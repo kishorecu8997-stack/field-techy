@@ -1,4 +1,4 @@
-import type { NotificationProps } from "@/pages/account_settings/types";
+import type { NotificationProps } from "@/pages/engineer/account_settings/types";
 
 export const mockNotifications: NotificationProps[] = [
   {

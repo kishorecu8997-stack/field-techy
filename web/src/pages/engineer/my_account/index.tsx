@@ -1,6 +1,6 @@
     import { assetsConfig } from '@/assets';
 import { icons } from '@/config/icons';
-import LogoutConfirmationPopup from '@/pages/auth/LogoutConfirmationPopup';
+import LogoutConfirmationPopup from '@/pages/engineer/auth/LogoutConfirmationPopup';
 import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
 import ProfileCard from '@/shared/components/commonUI/ProfileCard';
 import type { DrawerMenuProps, MenuItems } from '@/shared/components/Drawer';
@@ -31,7 +31,6 @@ import {
  */
 const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
-  onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({

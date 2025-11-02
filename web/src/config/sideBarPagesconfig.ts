@@ -1,13 +1,13 @@
-import AccountSettings from "@/pages/account_settings";
-import AddBankDetails from "@/pages/account_settings/bank_details/AddBankDetails";
-import BankAccountList from "@/pages/account_settings/bank_details/BankAccountList";
-import EditBankDetails from "@/pages/account_settings/bank_details/EditBankDetails";
-import MyEarning from "@/pages/account_settings/bank_details/MyEarning";
-import Withdraw from "@/pages/account_settings/bank_details/Withdraw";
-import ChangePassword from "@/pages/account_settings/ChangePassword";
-import ContactUs from "@/pages/account_settings/contect_us/ContactUs";
-import NotofocationPage from "@/pages/account_settings/notification/NotofocationPage";
-import MyAccountDrawerMenu from "@/pages/my_account";
+import AccountSettings from "@/pages/engineer/account_settings";
+import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBankDetails";
+import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
+import EditBankDetails from "@/pages/engineer/account_settings/bank_details/EditBankDetails";
+import MyEarning from "@/pages/engineer/account_settings/bank_details/MyEarning";
+import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
+import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
+import ContactUs from "@/pages/engineer/account_settings/contect_us/ContactUs";
+import NotofocationPage from "@/pages/engineer/account_settings/notification/NotofocationPage";
+import MyAccountDrawerMenu from "@/pages/engineer/my_account";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.

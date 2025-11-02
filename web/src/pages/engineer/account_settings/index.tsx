@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import type { DrawerMenuProps } from "@/shared/components/Drawer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import LogoutConfirmationPopup from "../auth/LogoutConfirmationPopup";
+import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
 import SettingsMenu from "./SettingsMenu";
 import type { MenuItem } from "./types";
 
