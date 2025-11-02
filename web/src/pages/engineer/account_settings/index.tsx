@@ -1,11 +1,11 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import type { DrawerMenuProps } from "@/shared/components/Drawer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
-import DrawerMenuSection from "./DrawerMenuSection";
+import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "./types";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 
 /**
  * Main account settings page displaying a list of configurable options including security, bank details,

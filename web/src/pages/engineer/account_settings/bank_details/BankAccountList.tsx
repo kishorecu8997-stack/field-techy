@@ -1,5 +1,5 @@
 import { bankDetails } from "@/dummy_data/bankDetails";
-import type { DrawerMenuProps } from "@/shared/components/Drawer";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 
 /**
  * Displays a list of saved bank accounts with options to add or edit details.

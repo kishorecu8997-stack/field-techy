@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
-import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
+import Drawer from "./drawer/Drawer";
 
 interface NavbarProps {
   onDrawerToggle: () => void;

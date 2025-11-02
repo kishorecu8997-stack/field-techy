@@ -1,6 +1,6 @@
 import { icons } from "@/config/icons";
 import React from "react";
-import type { MenuItem, SettingsMenuProps, ToggleSwitchProps } from "./types";
+import type { MenuItem, SettingsMenuProps, ToggleSwitchProps } from "../../../pages/engineer/account_settings/types";
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   checked,

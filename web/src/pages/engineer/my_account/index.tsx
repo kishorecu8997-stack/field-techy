@@ -2,7 +2,6 @@ import { assetsConfig } from "@/assets";
 import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import type { DrawerMenuProps } from "@/shared/components/Drawer";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -13,8 +12,9 @@ import {
   FaUser,
   FaWallet,
 } from "react-icons/fa";
-import DrawerMenuSection from "../account_settings/DrawerMenuSection";
+import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../account_settings/types";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
