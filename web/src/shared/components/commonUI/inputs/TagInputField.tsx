@@ -5,23 +5,24 @@ import {
 } from "react-hook-form";
 import { useState } from "react";
 import type { KeyboardEvent } from "react";
+import type { TagInputFieldProps } from "./type";
 
-interface TagInputFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  leftIcon?: React.ReactNode;
-  containerClassName?: string;
-  inputClassName?: string;
-  maxTags?: number;
-}
+
 
 /**
- * TagInputField - A reusable tag/chip input component for react-hook-form.
- * Users can type a value and press Enter to create a tag.
- * Tags are displayed as pills with an '×' to remove.
+ * A reusable tag/chip input component for react-hook-form.
+ * It allows users to type a value and press Enter to create a tag.
+ * Tags are displayed as dismissible pills. It prevents duplicate and empty tags.
+ *
+ * @component
+ * @param {object} props - The component props.
+ * @param {string} props.name - The name of the form field.
+ * @param {string} [props.label] - The label for the input field.
+ * @param {string} [props.placeholder="Add a tag..."] - The placeholder for the input.
+ * @param {boolean} [props.required=false] - Whether the field is required.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for react-hook-form.
+ * @param {React.ReactNode} [props.leftIcon] - An optional icon to display inside the input.
+ * @param {number} [props.maxTags=10] - The maximum number of tags allowed.
  */
 export const TagInputField = ({
   name,
@@ -50,9 +51,10 @@ export const TagInputField = ({
   ) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
-      if (maxTags && value.length >= maxTags) return;
+      const trimmedValue = inputValue.trim();
+      if (value.length >= maxTags || value.includes(trimmedValue)) return;
 
-      const newValue = [...value, inputValue.trim()];
+      const newValue = [...value, trimmedValue];
       onChange(newValue);
       setInputValue("");
     }

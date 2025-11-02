@@ -1,10 +1,8 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/search_result/types";
+import { SORT_OPTIONS, type SortOption } from "@/pages/engineer/search_result/types";
 import React, { useState } from "react";
+import type { SortDropdownProps } from "./type";
 
-interface SortDropdownProps {
-  currentSort?: SortOption;
-  onSortChange?: (sort: SortOption) => void;
-}
+
 
 /**
  * SortDropdown Component

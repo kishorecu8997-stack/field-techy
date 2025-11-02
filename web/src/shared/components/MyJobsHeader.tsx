@@ -1,5 +1,5 @@
-import type { MyJobsHeaderProps } from "@/pages/my_job/types";
-import ReportPage from "@/pages/report";
+import type { MyJobsHeaderProps } from "@/pages/engineer/my_job/types";
+import ReportPage from "@/pages/engineer/report";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";

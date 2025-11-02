@@ -3,7 +3,7 @@ import type {
   LogEntry,
   ProposalTermsProps,
   WorkSubmissionComponentProps,
-} from "@/pages/my_job/types";
+} from "@/pages/engineer/my_job/types";
 
 export const logs: LogEntry[] = [
   {

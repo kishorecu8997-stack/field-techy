@@ -6,11 +6,8 @@ import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
 import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
+import type { NavbarProps } from "./type";
 
-interface NavbarProps {
-  onDrawerToggle: () => void;
-  isDrawerOpen: boolean;
-}
 
 /**
  * Header component with navigation, search bar, and user profile.

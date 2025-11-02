@@ -1,26 +1,18 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
-import type { ReactNode } from "react";
+import { Listbox, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
-interface Option {
-  value: string;
-  label: string;
-}
-
-interface SelectFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  options?: Option[];
-  rules?: RegisterOptions;
-  leftIcon?: ReactNode;
-}
+import type { SelectFieldProps } from "./types";
 
 // Custom chevron-down icon
-const ChevronDownIcon = () => (
+const ChevronDownIcon = ({ open }: { open: boolean }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 text-gray-500 pointer-events-none"
+    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -30,93 +22,160 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-/**
- * A controlled select input component integrated with `react-hook-form`.
- * Renders a styled `<select>` dropdown with optional label, placeholder, validation,
- * and a customizable left icon. Supports dark mode styling and displays validation errors.
- *
- * @component
- * @example
- * <SelectField
- *   name="country"
- *   label="Country"
- *   placeholder="Choose a country"
- *   required
- *   options={[
- *     { value: "us", label: "United States" },
- *     { value: "ca", label: "Canada" },
- *   ]}
- *   leftIcon={<GlobeIcon />}
- * />
- */
 export const SelectField = ({
   name,
   label,
+  isShowLabel = true,
   placeholder = "Select",
   required = false,
   options = [],
   rules,
   leftIcon,
+  disabled = false,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
 
+  // Handle required: boolean → default message, string → custom message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required;
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
+
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: requiredMessage,
     ...rules,
   };
-
   return (
     <div className="flex flex-col py-1">
-      {label && (
-        <label htmlFor={name} className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+      {isShowLabel && (
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+          {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
+
       <Controller
         name={name}
         control={control}
         rules={validationRules}
-        render={({ field, fieldState: { error } }) => (
-          <>
-            <div className="relative w-full flex items-center">
-              {leftIcon && (
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  {leftIcon}
-                </div>
+        render={({
+          field: { onChange, value, name: fieldName },
+          fieldState: { error },
+        }) => {
+          // Find selected option for display
+          const selectedOption =
+            options.find((opt) => opt.value === value) || null;
+
+          return (
+            <Listbox
+              value={selectedOption}
+              onChange={opt => onChange(opt?.value || "")}
+              name={fieldName}
+              disabled={disabled}
+            >
+              {({ open }) => (
+                <>
+                  <div className="relative cursor-pointer">
+                    <Listbox.Button
+                      className={`w-full rounded-md border ${
+                        disabled
+                          ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                          : "bg-white dark:bg-gray-800 cursor-pointer"
+                      } ${
+                        error && !disabled
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 dark:border-gray-600 focus:ring-primary"
+                      } bg-white dark:bg-gray-800 py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
+                    >
+                      <div className="flex items-center">
+                        {leftIcon && (
+                          <span className="mr-3 flex-shrink-0 text-gray-400 dark:text-gray-500">
+                            {leftIcon}
+                          </span>
+                        )}
+                        <span
+                          className={`block truncate ${
+                            !value ? "text-gray-400 dark:text-gray-500 " : ""
+                          }`}
+                        >
+                          {value ? selectedOption?.label : placeholder}
+                        </span>
+                      </div>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                        <ChevronDownIcon open={open} />
+                      </span>
+                    </Listbox.Button>
+
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                      afterLeave={() => {}}
+                    >
+                      <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {options.length === 0 ? (
+                          <div className="relative cursor-default select-none py-2 px-4 text-gray-500">
+                            No options
+                          </div>
+                        ) : (
+                          options.map((option) => (
+                            <Listbox.Option
+                              key={option.value}
+                              className={({ active }) =>
+                                `relative select-none py-2 pl-10 pr-4 cursor-pointer ${
+                                  active
+                                    ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                    : "text-gray-900 dark:text-gray-100"
+                                }`
+                              }
+                              value={option}
+                            >
+                              {({ selected }) => (
+                                <>
+                                  <span
+                                    className={`block truncate ${
+                                      selected ? "font-medium" : "font-normal"
+                                    }`}
+                                  >
+                                    {option.label}
+                                  </span>
+                                  {selected ? (
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                          clipRule="evenodd"
+                                        />
+                                      </svg>
+                                    </span>
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))
+                        )}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+
+                  {error && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                      {error.message}
+                    </p>
+                  )}
+                </>
               )}
-
-              {/* Select wrapper for custom arrow */}
-              <div className="relative w-full">
-                <select
-                  {...field}
-                  id={name}
-                  value={field.value ?? ""}
-                  className={`w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-4 ${
-                    leftIcon ? 'pl-10' : ''
-                  } pr-10 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition appearance-none`}
-                >
-                  <option value="" disabled>
-                    {placeholder}
-                  </option>
-                  {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Custom dropdown arrow */}
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <ChevronDownIcon />
-                </div>
-              </div>
-            </div>
-
-            {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">{error.message}</p>
-            )}
-          </>
-        )}
+            </Listbox>
+          );
+        }}
       />
     </div>
   );
