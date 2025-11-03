@@ -25,3 +25,13 @@ export interface JobCardHeaderProps {
   onApprove: () => void;
   onRequestRevision: () => void;
 }
+
+
+export interface JobCardProps {
+  title: string;
+  hours: number;
+  client: string;
+  status: 'On Site' | 'Remote' | 'Pending';
+  onApprove: () => void;
+  onRequestRevision: () => void;
+}

@@ -8,8 +8,8 @@ import type {
   BudgetValue,
   RatingValue,
 } from "@/shared/libs/constants/filterOptions";
-import { type Skill, initialSkills } from "@/dummy_data/skills";
 import type { LocationValue } from "@/shared/libs/constants/filterOptions";
+import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
 
 const Filters: React.FC = () => {
   const [location, setLocation] = useState<LocationValue>("all");

@@ -1,5 +1,3 @@
-import type { client } from "@/dummy_data/jobDetails";
-
 /**
  * Application route URLs.
  *
@@ -15,9 +13,7 @@ export const BASE = {
   CLIENT: "/client",
   CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
-  AUTH: "/engineer/auth",
-  CLIENT: "/client",
-  CLIENT_AUTH: "/client/auth",  
+  AUTH: "/engineer/auth", 
 } as const;
 
 export const urls = {

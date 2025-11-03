@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import JobFilter from "./JobFilter";
 import ClientHeader from "@/shared/components/ClientHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
+import FilterButton from "@/shared/components/commonUI/FilterButton";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -42,7 +42,7 @@ const JobsDetails: React.FC = () => {
               />
             </div>
             <div className="space-y-6">
-              <JobFilter
+              <FilterButton
                 activeFilter={activeFilter}
                 onFilterChange={setActiveFilter}
                 filters={jobFilters}
