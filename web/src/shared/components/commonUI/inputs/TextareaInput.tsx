@@ -3,19 +3,7 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import React from "react";
-
-interface TextareaInputProps {
-  name: string;
-  label?: string;
-  isShowLabel?: boolean;
-  placeholder?: string;
-  required?: boolean;
-  rules?: RegisterOptions;
-  showValidationCheck?: boolean;
-  minLength?: number;
-  maxLength?: number;
-}
+import type { TextareaInputProps } from "./type";
 
 /**
  * TextareaInput - A reusable textarea component for react-hook-form.

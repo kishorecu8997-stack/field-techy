@@ -1,10 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-
-interface SwitchInputProps {
-  name: string;
-  label?: string;
-  required?: boolean;
-}
+import type { SwitchInputProps } from "./type";
 
 /**
  * SwitchInput - A reusable toggle switch component for react-hook-form.

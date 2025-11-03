@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react';
+import type { PopupProps } from './type';
 
-type PopupProps = {
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-};
+
 
 /**
  * Popup Component

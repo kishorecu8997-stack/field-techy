@@ -1,39 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
+  type ControllerRenderProps,
 } from "react-hook-form";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 import { toast } from "react-toastify";
-
-interface InputFieldProps {
-  name: string;
-  label?: string;
-  required?: boolean;
-  accept?: string;
-  maxSize?: number;
-  containerClassName?: string;
-  placeholder?: string;
-  validatePDF?: boolean;
-  minPages?: number;
-  maxPages?: number;
-}
+import type { FileUploadProps } from "./type";
 
 /**
- * A reusable file upload component for react-hook-form.
- * It provides an interface for uploading files, showing a preview of the file name, size, and page count (for PDFs).
- * Includes robust validation for file type, size, and genuine PDF signatures and page counts.
+ * A robust file upload component with a drag-and-drop style interface.
  *
- * @component
- * @param {object} props - The component props.
- * @param {string} props.name - The name of the form field.
- * @param {string} [props.label="Upload Document"] - The label for the input field.
- * @param {boolean} [props.required=false] - Whether the field is required.
- * @param {string} [props.accept=".pdf"] - Comma-separated string of allowed file extensions (e.g., ".pdf,.docx").
- * @param {number} [props.maxSize=358400] - Maximum file size in bytes (defaults to 350 KB).
- * @param {string} [props.containerClassName] - Tailwind CSS classes for the container.
- * @param {string} [props.placeholder="Upload Resume/CV"] - Placeholder text.
+ * This component handles file selection, validation (type, size, and content signature),
+ * and previewing. For PDFs, it can also validate the page count. It integrates
+ * with `react-hook-form` and provides clear user feedback through state changes
+ * and toast notifications.
+ *
+ * @param {FileUploadProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label="Upload Document"] - The text label for the input field.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {string} [props.accept=".pdf,.jpeg,.jpg,.png"] - Comma-separated list of allowed file extensions.
+ * @param {number} [props.maxSize=358400] - Maximum file size in bytes (default 350 KB).
  * @param {boolean} [props.validatePDF=true] - Whether to perform PDF-specific validation.
  * @param {number} [props.minPages=1] - Minimum number of pages for a PDF.
  * @param {number} [props.maxPages=5] - Maximum number of pages for a PDF.
@@ -42,33 +32,119 @@ export const FileUpload = ({
   name,
   label = "Upload Document",
   required = false,
-  accept = ".pdf",
+  accept = ".pdf,.jpeg,.jpg,.png",
   maxSize = 350 * 1024,
   containerClassName = "flex flex-col py-1",
   placeholder = "Upload Resume/CV",
   validatePDF = true,
   minPages = 1,
   maxPages = 5,
-}: InputFieldProps) => {
-  const { control } = useFormContext();
+}: FileUploadProps) => {
+  const { control, getValues } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string | null>(null);
-  const [pageCount, setPageCount] = useState<number | null>(null); // ✅ New state
+  const [pageCount, setPageCount] = useState<number | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
 
+  // Set PDF.js worker on component mount (client-side only)
+  useEffect(() => {
+    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+    }
+  }, []);
+
+  // ✅ Validate PDF: signature + page count + corruption
+  const validatePdfPages = useCallback(
+    async (
+      file: File
+    ): Promise<{ error: string | null; pages: number | null }> => {
+      if (!validatePDF) return { error: null, pages: null };
+
+      // Step 0: Minimum size check (corrupted/truncated PDFs often too small)
+      if (file.size < 100) {
+        return { error: "File is too small to be a valid PDF.", pages: null };
+      }
+
+      // Step 1: Check %PDF header
+      try {
+        const headerBuffer = await file.slice(0, 4).arrayBuffer();
+        const headerBytes = new Uint8Array(headerBuffer);
+        const isGenuinePDF =
+          headerBytes[0] === 0x25 && // '%'
+          headerBytes[1] === 0x50 && // 'P'
+          headerBytes[2] === 0x44 && // 'D'
+          headerBytes[3] === 0x46; // 'F'
+
+        if (!isGenuinePDF) {
+          return { error: "File is not a genuine PDF document.", pages: null };
+        }
+      } catch (sigError) {
+        console.error("PDF signature check failed:", sigError);
+        return { error: "Unable to verify PDF file integrity.", pages: null };
+      }
+
+      // Step 2: Parse and validate pages
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const numPages = pdf.numPages;
+
+        if (numPages < minPages || numPages > maxPages) {
+          return {
+            error: `PDF must have between ${minPages} and ${maxPages} pages.`,
+            pages: numPages,
+          };
+        }
+
+        return { error: null, pages: numPages };
+      } catch (err: unknown) {
+        console.error("PDF parsing error:", err);
+        let message = "Unable to process PDF. Please upload a valid PDF file.";
+        if (err instanceof Error) {
+          if (err.name === "InvalidPDFException") {
+            message = "File is not a valid PDF document.";
+          } else if (err.name === "MissingPDFException") {
+            message = "PDF file is corrupted or incomplete.";
+          } else if (err.name === "UnexpectedResponseException") {
+            message = "PDF file is corrupted or could not be loaded.";
+          }
+        }
+        return { error: message, pages: null };
+      }
+    },
+    [validatePDF, minPages, maxPages]
+  );
+
+  // Initialize state from form context if a file already exists
+  useEffect(() => {
+    const existingFiles = getValues(name) as FileList | undefined;
+    if (existingFiles && existingFiles.length > 0) {
+      const file = existingFiles[0];
+      setFileName(file.name);
+      setFileSize(formatFileSize(file.size));
+      if (file.type === "application/pdf" && validatePDF) {
+        validatePdfPages(file).then(({ pages }) => setPageCount(pages));
+      }
+      setFileUrl(URL.createObjectURL(file));
+    }
+  }, [getValues, name, validatePDF, validatePdfPages]);
+
+  // Cleanup object URL
   useEffect(() => {
     return () => {
       if (fileUrl) URL.revokeObjectURL(fileUrl);
     };
   }, [fileUrl]);
 
+  // Format file size
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
+  // Get allowed extensions
   const getAcceptExtensions = (): string[] => {
     return accept
       .split(",")
@@ -76,11 +152,13 @@ export const FileUpload = ({
       .map((ext) => ext.toLowerCase());
   };
 
+  // Format allowed types for display
   const formatAllowedTypes = (): string => {
     const types = getAcceptExtensions().map(ext => ext.toUpperCase());
     return types.length > 1 ? types.join(", ") : types[0];
   };
 
+  // Check if file type is allowed by extension
   const isFileTypeAllowed = (file: File): boolean => {
     const allowedExts = getAcceptExtensions();
     return allowedExts.some((ext) =>
@@ -88,135 +166,119 @@ export const FileUpload = ({
     );
   };
 
-  // ✅ Lazy load PDF.js to reduce initial bundle size
-  const getPDFJS = async () => {
-    const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf");    
-    const pdfWorker = (await import("pdfjs-dist/legacy/build/pdf.worker.min?url")).default;
-
-    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
-    }
-
-    return pdfjsLib;
+  // ✅ Validate genuine JPEG
+  const validateJpegSignature = async (file: File): Promise<boolean> => {
+    const buffer = await file.slice(0, 2).arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    return bytes[0] === 0xff && bytes[1] === 0xd8;
   };
 
-  // ✅ Return both error AND page count
-  // ✅ Enhanced: Genuine PDF validation + page count
-const validatePdfPages = async (file: File): Promise<{ error: string | null; pages: number | null }> => {
-  if (!validatePDF) return { error: null, pages: null };
+  // ✅ Validate genuine PNG
+  const validatePngSignature = async (file: File): Promise<boolean> => {
+    const buffer = await file.slice(0, 8).arrayBuffer();
+    const header = new Uint8Array(buffer);
+    const expected = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    return expected.every((val, i) => val === header[i]);
+  };
 
-  // ✅ Step 1: Check genuine PDF signature (%PDF in first 4 bytes)
-  try {
-    const headerBuffer = await file.slice(0, 4).arrayBuffer();
-    const headerBytes = new Uint8Array(headerBuffer);
-    const isGenuinePDF =
-      headerBytes[0] === 0x25 && // '%'
-      headerBytes[1] === 0x50 && // 'P'
-      headerBytes[2] === 0x44 && // 'D'
-      headerBytes[3] === 0x46;   // 'F'
+  // ✅ Handle file change with full validation
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: ControllerRenderProps
+  ) => {
+    const files = e.target.files;
+    if (!files?.[0]) return;
 
-    if (!isGenuinePDF) {
-      return { error: "File is not a genuine PDF document.", pages: null };
-    }
-  } catch (sigError) {
-    console.error("PDF signature check failed:", sigError);
-    return { error: "Unable to verify PDF file integrity.", pages: null };
-  }
+    const file = files[0];
 
-  // ✅ Step 2: Validate structure and page count
-  try {
-    const pdfjsLib = await getPDFJS();
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const numPages = pdf.numPages;
-
-    if (numPages < minPages || numPages > maxPages) {
-      return {
-        error: `PDF must have between ${minPages} and ${maxPages} pages.`,
-        pages: numPages,
-      };
+    // Reset state
+    setFileName(null);
+    setFileSize(null);
+    setPageCount(null);
+    setFileError(null);
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
+      setFileUrl(null);
     }
 
-    return { error: null, pages: numPages };
-  } catch (err: any) {
-    console.error("PDF parsing error:", err);
-    let message = "Unable to process PDF. Please upload a valid PDF file.";
-    if (err?.name === "InvalidPDFException") {
-      message = "File is not a valid PDF document.";
-    } else if (err?.name === "MissingPDFException") {
-      message = "PDF file is corrupted or incomplete.";
-    }
-    return { error: message, pages: null };
-  }
-};
-
- const handleChange = async (
-  e: React.ChangeEvent<HTMLInputElement>,
-  field: any
-) => {
-  const files = e.target.files;
-  if (!files?.[0]) return;
-
-  const file = files[0];
-
-  // ✅ Clear all preview state immediately
-  setFileName(null);
-  setFileSize(null);
-  setPageCount(null);
-  setFileError(null);
-  if (fileUrl) {
-    URL.revokeObjectURL(fileUrl);
-    setFileUrl(null);
-  }
-
-  // 1. Validate file type
-  if (!isFileTypeAllowed(file)) {
-    const errorMsg = `Only ${formatAllowedTypes()} files are allowed.`;
-    setFileError(errorMsg);
-    toast.error(errorMsg); // ✅ Show toast
-    field.onChange(null);
-    return;
-  }
-
-  // 2. Validate file size
-  if (file.size > maxSize) {
-    const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
-    setFileError(errorMsg);
-    toast.error(errorMsg); // ✅ Show toast
-    field.onChange(null);
-    return;
-  }
-
-  let finalPageCount: number | null = null;
-
-  // 3. Validate PDF (if applicable)
-  if (accept.toLowerCase().includes("pdf") && file.name.toLowerCase().endsWith(".pdf")) {
-    const { error, pages } = await validatePdfPages(file);
-    finalPageCount = pages;
-    if (error) {
-      setFileError(error);
-      toast.error(error); // ✅ Show toast for PDF errors (including "not genuine")
+    // 1. Validate extension
+    if (!isFileTypeAllowed(file)) {
+      const errorMsg = `Only ${formatAllowedTypes()} files are allowed.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
       field.onChange(null);
       return;
     }
-  }
 
-  // ✅ Set preview data
-  setFileName(file.name);
-  setFileSize(formatFileSize(file.size));
-  if (finalPageCount !== null) {
-    setPageCount(finalPageCount);
-  }
-  const url = URL.createObjectURL(file);
-  setFileUrl(url);
-  field.onChange(files);
-};
-  
-  const handleRemove = (field: any) => {
+    // 2. Validate size - Updated to reject files below 50KB and above 350KB
+    if (file.size < 50 * 1024) {
+      const errorMsg = `File size must be at least 50 KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+    
+    if (file.size > maxSize) {
+      const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+
+    let finalPageCount: number | null = null;
+    let isValid = true;
+    let validationError = "";
+
+    const lowerName = file.name.toLowerCase();
+
+    // 3. Validate by file type
+    if (lowerName.endsWith(".pdf")) {
+      const { error, pages } = await validatePdfPages(file);
+      finalPageCount = pages;
+      if (error) {
+        validationError = error;
+        isValid = false;
+      }
+    } else if (lowerName.endsWith(".jpeg") || lowerName.endsWith(".jpg")) {
+      const isJpeg = await validateJpegSignature(file);
+      if (!isJpeg) {
+        validationError = "File is not a genuine JPEG image.";
+        isValid = false;
+      }
+    } else if (lowerName.endsWith(".png")) {
+      const isPng = await validatePngSignature(file);
+      if (!isPng) {
+        validationError = "File is not a genuine PNG image.";
+        isValid = false;
+      }
+    }
+
+    if (!isValid) {
+      setFileError(validationError);
+      toast.error(validationError);
+      field.onChange(null);
+      return;
+    }
+
+    // Set preview
+    setFileName(file.name);
+    setFileSize(formatFileSize(file.size));
+    if (finalPageCount !== null) {
+      setPageCount(finalPageCount);
+    }
+    const url = URL.createObjectURL(file);
+    setFileUrl(url);
+    field.onChange(files);
+  };
+
+  // Remove file
+  const handleRemove = (field: ControllerRenderProps) => {
     field.onChange(null);
     setFileName(null);
     setFileSize(null);
-    setPageCount(null); // ✅ Clear on remove
+    setPageCount(null);
     setFileError(null);
     if (fileUrl) {
       URL.revokeObjectURL(fileUrl);
@@ -226,20 +288,23 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
     if (input) input.value = "";
   };
 
+  // Re-upload
   const handleReupload = () => {
     document.getElementById(name)?.click();
   };
 
+  // Preview
   const handlePreview = () => {
     if (fileUrl) {
       window.open(fileUrl, "_blank");
     }
   };
 
+  // Validation rules
   const validationRules: RegisterOptions = {
     required: required ? `${label} is required` : false,
     validate: {
-      hasFile: (files: FileList) => {
+      hasFile: (files: FileList | null) => {
         if (!files || files.length === 0) {
           return required ? "File is required" : true;
         }
@@ -260,11 +325,11 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const displayError = error?.message || fileError;
+          const displayError = error?.message || fileError;         
 
           return (
             <>
-              <div
+              <div               
                 className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
                   displayError
                     ? "border-red-500"
@@ -299,7 +364,6 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
                         Size: {fileSize}
                       </p>
                     )}
-                    {/* ✅ Show page count only for PDFs */}
                     {pageCount !== null && (
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         Pages: {pageCount}
@@ -337,6 +401,8 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                       Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
                       {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
+                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}
@@ -348,8 +414,7 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
                 />
-              </div>
-
+              </div>              
               {displayError && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                   {displayError}
@@ -362,3 +427,5 @@ const validatePdfPages = async (file: File): Promise<{ error: string | null; pag
     </div>
   );
 };
+
+export default FileUpload;

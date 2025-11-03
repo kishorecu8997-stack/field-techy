@@ -21,7 +21,7 @@ import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/Verifie
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const PersonalInformation: React.FC = ({}) => {
+const PersonalInformation: React.FC = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
@@ -82,8 +82,11 @@ const PersonalInformation: React.FC = ({}) => {
           required
           rules={{ validate: (v: string) => validateName(v) }}
         />
+        
         <VerifiedPhoneInputField
           name="phoneNumber"
+          label="Phone Number"
+          isShowLabel={false}
           required
           rules={{
             validate: () => validateIsPhoneVerified(isPhoneVerified),
@@ -91,8 +94,11 @@ const PersonalInformation: React.FC = ({}) => {
           verified={isPhoneVerified}
           setVerified={setIsPhoneVerified}
         />
+
         <VerifiedEmailInputField
-          name="emailId"
+          name="emailId"     
+          label="Email ID"     
+          isShowLabel={false}
           required
           rules={{ validate: () => validateIsVerified(isEmailVerified, "Email") }}
           verified={isEmailVerified}

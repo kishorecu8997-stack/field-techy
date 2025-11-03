@@ -90,6 +90,7 @@ export interface SelectFieldProps {
   options: SelectOption[];
   rules?: RegisterOptions;
   leftIcon?: React.ReactNode;
+  disabled ?: boolean;
 }
 
 interface CountrySelectProps {

@@ -31,7 +31,9 @@ import ClientRecentTransactions from "@/pages/client/my_wallet/components/Recent
  */
 interface DrawerProps {
   /** Whether the drawer is open */
+  /** Whether the drawer is open */
   isOpen: boolean;
+  /** Function to close the drawer */
   /** Function to close the drawer */
   onClose: () => void;
   /** The key for the component to display */

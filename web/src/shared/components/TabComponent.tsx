@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-
-interface TabItem {
-  label: string;
-  content: React.ReactNode;
-  hide?: boolean; // Optional: if true, tab won't be rendered
-}
-
-interface TabComponentProps {
-  tabs: TabItem[];
-  defaultActiveTab?: string;
-}
+import type { TabComponentProps } from "./type";
 
 /**
  * A reusable tab component that allows switching between different content panels.

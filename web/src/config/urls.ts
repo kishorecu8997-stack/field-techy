@@ -12,6 +12,8 @@ import type { client } from "@/dummy_data/jobDetails";
  * - Use consistent naming
  */
 export const BASE = {
+  CLIENT: "/client",
+  CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
   AUTH: "/engineer/auth",
   CLIENT: "/client",

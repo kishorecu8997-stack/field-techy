@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DocumentsList from "./components/DocumentsList";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify/unstyled";
 import { initialDocuments } from "@/dummy_data/documents";
 
 /**
