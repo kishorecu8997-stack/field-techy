@@ -6,10 +6,10 @@ import { withSuspense } from "./WithSuspense";
 // const Layout = React.lazy(() => import("@/pages/engineer/auth"));
 const Layout = React.lazy(() => import("@/pages/client/auth"));
 const SignInPage = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/signin_pages/SignInPage")
+  () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
 const SignUpPage = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/signup_pages/SignUpPage")
+  () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
 // const ProfileSettingPage = React.lazy(
 //   () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
@@ -18,29 +18,29 @@ const MultiStepRegistrationForm = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm ")
 );
 const ForgetPassword = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/ForgetPassword")
+  () => import("@/pages/engineer/auth/components/ForgetPassword")
 );
 const ResetPassword = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/ResetPassword")
+  () => import("@/pages/engineer/auth/components/ResetPassword")
 );
 const BackgroundVerification = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/profile_setup/BackgroundVerification")
+  () => import("@/pages/engineer/auth/components/profile_setup/BackgroundVerification")
 );
 const SetPassword = React.lazy(
-  () => import("@/pages/engineer/engineer/auth/components/profile_setup/SetPassword")
+  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
-const MyJobsPage = React.lazy(() => import("@/pages/engineer/engineer/my_job"));
+const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
-  () => import("@/pages/engineer/engineer/my_job/JobDetailsPage")
+  () => import("@/pages/engineer/my_job/JobDetailsPage")
 );
-const SearchResult = React.lazy(() => import("@/pages/engineer/engineer/search_result"));
+const SearchResult = React.lazy(() => import("@/pages/engineer/search_result"));
 const PrivacyPolicy = React.lazy(
-  () => import("@/pages/engineer/engineer/privacy_policy/PolicyPage")
+  () => import("@/pages/engineer/privacy_policy/PolicyPage")
 );
 const TermsAndConditions = React.lazy(
-  () => import("@/pages/engineer/engineer/privacy_policy/TermsAndConditions")
+  () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
 
