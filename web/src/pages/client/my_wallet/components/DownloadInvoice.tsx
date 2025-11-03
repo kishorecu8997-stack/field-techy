@@ -1,12 +1,8 @@
 import React from 'react';
 import { GoDownload } from "react-icons/go";
 import { IoCloseSharp } from 'react-icons/io5';
+import type { DownloadInvoiceModalProps } from '../types';
 
-interface DownloadInvoiceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onDownload: () => void;
-}
 
 const DownloadInvoiceModal: React.FC<DownloadInvoiceModalProps> = ({ 
   isOpen, 

@@ -6,5 +6,4 @@ interface EngineerCardProps {
     title: string;
     imageUrl: string;
   };
-  isDarkMode: boolean;
 }

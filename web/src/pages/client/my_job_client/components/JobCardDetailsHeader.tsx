@@ -2,15 +2,7 @@ import { Button } from '@/shared/components/commonUI/Buttons';
 import React, { useState, useRef, useEffect } from 'react';
 import { VscKebabVertical } from "react-icons/vsc";
 import { TbClockHour4 } from "react-icons/tb";
-
-interface JobCardProps {
-  title: string;
-  hours: number;
-  client: string;
-  status: 'On Site' | 'Remote' | 'Pending';
-  onApprove: () => void;
-  onRequestRevision: () => void;
-}
+import type { JobCardProps } from '../types';
 
 /**
  * `JobCardDetailsHeader` is a component that displays a header for a job details card.

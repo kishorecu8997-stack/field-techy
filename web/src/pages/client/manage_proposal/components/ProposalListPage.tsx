@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { mockEngineers } from "@/dummy_data/engineers";
 import ProposalCard from "./ProposalCard";
+import Pagination from "../../search_result/components/Pagination";
 
 /**
  * `ProposalListPage` is a component that displays a paginated list of proposals from engineers.
@@ -51,65 +52,19 @@ const ProposalListPage: React.FC = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
       } transition-colors duration-300`}
     >
-         {/* Engineer Cards Grid */}
+      {/* Engineer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {currentEngineers.map((engineer) => (
-          <ProposalCard
-            key={engineer.id}
-            engineer={engineer}
-            isDarkMode={isDarkMode}
-          />
+          <ProposalCard key={engineer.id} engineer={engineer} />
         ))}
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-2">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 rounded ${
-            currentPage === 1
-              ? "opacity-50 cursor-not-allowed"
-              : isDarkMode
-              ? "bg-gray-700 hover:bg-gray-600 text-white"
-              : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-          }`}
-        >
-          &lt;
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-3 py-1 rounded ${
-              page === currentPage
-                ? isDarkMode
-                  ? "bg-emerald-600 text-white border border-emerald-500"
-                  : "bg-white text-emerald-700 border border-emerald-500"
-                : isDarkMode
-                ? "bg-gray-700 hover:bg-gray-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1 rounded ${
-            currentPage === totalPages
-              ? "opacity-50 cursor-not-allowed"
-              : isDarkMode
-              ? "bg-gray-700 hover:bg-gray-600 text-white"
-              : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-          }`}
-        >
-          &gt;
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

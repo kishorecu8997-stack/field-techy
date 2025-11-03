@@ -98,3 +98,46 @@ export const validatePortfolioLink = (value: string) => {
     return "Portfolio link must be a valid URL";
   }
 };
+
+/**
+ * Generates an array of page numbers with optional ellipsis ("...") for large ranges.
+ * Example: [1, '...', 4, 5, 6, '...', 10] when currentPage = 5, totalPages = 10
+ */
+export const generatePageRange = (
+  currentPage: number,
+  totalPages: number,
+  delta: number = 2
+): (number | '...')[] => {
+  if (totalPages <= 1) return [1];
+
+  const range: (number | '...')[] = [];
+
+  // Always include first page
+  range.push(1);
+
+  const left = currentPage - delta;
+  const right = currentPage + delta;
+
+  // Ellipsis after first if needed
+  if (left > 2) {
+    range.push('...');
+  }
+
+  // Add pages around current
+  for (let i = Math.max(2, left); i <= Math.min(totalPages - 1, right); i++) {
+    range.push(i);
+  }
+
+  // Ellipsis before last if needed
+  if (right < totalPages - 1) {
+    range.push('...');
+  }
+
+  // Always include last page (if more than 1)
+  if (totalPages > 1) {
+    range.push(totalPages);
+  }
+
+  // Remove duplicates (e.g., when totalPages=2)
+  return Array.from(new Set(range));
+};

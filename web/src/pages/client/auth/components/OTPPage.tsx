@@ -5,13 +5,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 
-interface VerifyEmailModalProps {
-  header?: string;
-  description?: string;
-  onClose?: () => void;
-  handleNavigate?: () => void;
-}
-
 export interface OTPValues {
   otp: string;
 }

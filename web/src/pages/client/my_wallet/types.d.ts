@@ -20,3 +20,9 @@ export interface TransactionInfo {
   type: 'credit' | 'debit';
   status?: string;
 }
+
+export interface DownloadInvoiceModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onDownload: () => void;
+}
