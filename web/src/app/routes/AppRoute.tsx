@@ -14,7 +14,10 @@ const SignUpPage = React.lazy(
 //   () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
 // );
 const MultiStepRegistrationForm = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm ")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
+    )
 );
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
@@ -23,7 +26,10 @@ const ResetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ResetPassword")
 );
 const BackgroundVerification = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/BackgroundVerification")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/BackgroundVerification"
+    )
 );
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
@@ -42,6 +48,24 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+
+//admin-dashboard-layout
+const AdminLayout = React.lazy(() => import("@/layout/admin/AdminLayout"));
+// const AdminLogin = React.lazy(() => import("@/pages/admin/auth/login"));
+const AdminDashboard = React.lazy(() => import("@/pages/admin/dashboard"));
+const AdminManageEngineer = React.lazy(() => import("@/pages/admin/engineer"));
+const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
+const AdminManageJobCategory = React.lazy(() => import("@/pages/admin/job_category"));
+const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
+const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
+const AdminManagePayment = React.lazy(() => import("@/pages/admin/payment"));
+const AdminManageTransactions = React.lazy(() => import("@/pages/admin/transactions"));
+const WalletOverview = React.lazy(() => import("@/pages/admin/wallet_management/wallet_overview"));
+const WalletTransactionRequests = React.lazy(() => import("@/pages/admin/wallet_management/transaction_requests"));
+const ManageNotification = React.lazy(() => import("@/pages/admin/notification"));
+const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
+const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
+const Settings = React.lazy(() => import("@/pages/admin/settings"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -120,4 +144,58 @@ export const routes = createBrowserRouter([
   },
 
   { path: "*", element: withSuspense(NotFound) },
+
+  //Admin
+  {
+    path: "/admin", // base path for admin layout
+    element: withSuspense(AdminLayout),
+    children: [
+      { index: true, element: withSuspense(AdminDashboard) },
+      { path: urls.admin.dashbaord, element: withSuspense(AdminDashboard) },
+      {
+        path: urls.admin.manage_engineer,
+        element: withSuspense(AdminManageEngineer),
+      },
+      {
+        path: urls.admin.manage_client,
+        element: withSuspense(AdminManageClient),
+      },
+      { path: urls.admin.manage_jobs, element: withSuspense(AdminManageJobs) },
+      {
+        path: urls.admin.manage_categories,
+        element: withSuspense(AdminManageJobCategory),
+      },
+      {
+        path: urls.admin.manage_rate_card,
+        element: withSuspense(AdminManageRateCard),
+      },
+      {
+        path: urls.admin.manage_payment,
+        element: withSuspense(AdminManagePayment),
+      },
+      {
+        path: urls.admin.manage_transactions,
+        element: withSuspense(AdminManageTransactions),
+      },
+      {
+        path: urls.admin.wallet_overview,
+        element: withSuspense(WalletOverview),
+      },
+      {
+        path: urls.admin.wallet_transaction_requests,
+        element: withSuspense(WalletTransactionRequests),
+      },
+      {
+        path: urls.admin.manage_notification,
+        element: withSuspense(ManageNotification),
+      },
+      {
+        path: urls.admin.manage_sub_admin,
+        element: withSuspense(ManageSubAdmin),
+      },
+      { path: urls.admin.manage_cms, element: withSuspense(ManageCMS) },
+      { path: urls.admin.settings, element: withSuspense(Settings) },
+    ],
+  },
+  { path: "/admin/login", element: <Navigate to="login" replace /> },
 ]);

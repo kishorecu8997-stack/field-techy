@@ -16,6 +16,7 @@ export const BASE = {
   CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
   AUTH: "/engineer/auth",
+  ADMIN: "/admin",
 } as const;
 
 export const urls = {
@@ -44,6 +45,23 @@ export const urls = {
     base: BASE.CLIENT,
     privacy_policy: `${BASE.CLIENT}/policy`,
   },
+  admin: {
+    base: BASE.ADMIN,
+    dashbaord: `${BASE.ADMIN}/dashboard`,
+    manage_engineer: `${BASE.ADMIN}/users`,
+    manage_client: `${BASE.ADMIN}/client`,
+    manage_jobs: `${BASE.ADMIN}/jobs`,
+    manage_categories: `${BASE.ADMIN}/categories`,
+    manage_rate_card: `${BASE.ADMIN}/rate-card`,
+    manage_payment: `${BASE.ADMIN}/revenue`,
+    manage_transactions: `${BASE.ADMIN}/transaction`,
+    wallet_overview: `${BASE.ADMIN}/wallet-overview`,
+    wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
+    manage_notification: `${BASE.ADMIN}/notifications`,
+    manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
+    manage_cms: `${BASE.ADMIN}/cms`,
+    settings: `${BASE.ADMIN}/settings`,
+  },
 } as const;
 
 // ✅ Helper for absolute paths (for navigation/linking)
@@ -65,6 +83,30 @@ export const absoluteUrls = {
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+    },
+  },
+
+  //Admin absolute URLs
+  admin: {
+    auth: {
+      login: "login",
+    },
+    home: {
+      base: BASE.ADMIN,
+      dashbaord: `${BASE.ADMIN}/dashboard`,
+      manage_engineer: `${BASE.ADMIN}/users`,
+      manage_client: `${BASE.ADMIN}/client`,
+      manage_jobs: `${BASE.ADMIN}/jobs`,
+      manage_categories: `${BASE.ADMIN}/categories`,
+      manage_rate_card: `${BASE.ADMIN}/rate-card`,
+      manage_payment: `${BASE.ADMIN}/revenue`,
+      manage_transactions: `${BASE.ADMIN}/transaction`,
+      wallet_overview: `${BASE.ADMIN}/wallet-overview`,
+      wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
+      manage_notification: `${BASE.ADMIN}/notifications`,
+      manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
+      manage_cms: `${BASE.ADMIN}/cms`,
+      settings: `${BASE.ADMIN}/settings`,
     },
   },
 } as const;
