@@ -16,7 +16,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification }) => 
     if (!jobTitle) return null;
     return (
       <div className="mt-2 space-y-1 text-sm text-gray-700">
-        {jobTitle && <p><strong>Job Title:</strong> {jobTitle}</p>}
+        <p><strong>Job Title:</strong> {jobTitle}</p>
         {location && <p><strong>Location:</strong> {location}</p>}
         {client && <p><strong>Client:</strong> {client}</p>}
         {payment && duration && <p><strong>Payment:</strong> {payment} | <strong>Duration:</strong> {duration}</p>}

@@ -3,7 +3,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 
 /**
- * FAQ page displaying frequently asked questions using static dummy data.
+ * About App page displaying information about the application using static dummy data.
  * Renders a header and content section via reusable components.
  */
 const AboutApp = () => {
