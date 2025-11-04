@@ -1,15 +1,13 @@
 import { menuItems } from "@/config/adminMenuItems";
 import { useEffect, useState } from "react";
 import { HiChevronDown, HiOutlineLogout } from "react-icons/hi";
-import { NavLink, useLocation } from "react-router-dom";
-
-interface SidebarProps {
-  isCollapsed: boolean;
-}
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import type { SidebarProps } from "./types";
 
 export default function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const navigate = useNavigate();
 
   // Auto-expand if any child is active
   useEffect(() => {
@@ -28,8 +26,8 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   return (
     <div
-      className={`text-white transition-all text-sm duration-200 ${
-        isCollapsed ? "w-20" : "w-64"
+      className={`text-white flex flex-col transition-all text-sm duration-300 ease-out space-y-1 ${
+        isCollapsed ? "w-16" : "w-64"
       } p-3`}
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
@@ -43,8 +41,8 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
               {/* Parent Toggle */}
               <button
                 onClick={() => toggle(item.name)}
-                className={`flex items-center justify-between w-full px-3 py-2 rounded-lg hover:bg-white/10 transition-colors ${
-                  isCollapsed ? "justify-center pl-0" : ""
+                className={`flex items-center justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
+                  isCollapsed ? "justify-center pl-0" : "px-3"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -70,7 +68,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2 rounded-lg ${
                           isActive
-                            ? "bg-white text-gray-800 font-medium"
+                            ? "bg-[#ffffff] text-gray-800 font-medium"
                             : "text-white hover:bg-white/10"
                         }`
                       }
@@ -103,16 +101,18 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
           </NavLink>
         );
       })}
+
       <div className="absolute bottom-0 w-58 mb-2">
-        <NavLink
-          to="/admin/login"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-white font-semibold hover:bg-white/10 transition-colors mt-auto ${
-            isCollapsed ? "justify-center px-2" : ""
+        <button
+          onClick={() => navigate("/admin/auth/login")}
+          className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors mt-auto ${
+            isCollapsed ? "justify-center px-2" : "w-58"
           }`}
+          aria-label="Logout"
         >
-          <HiOutlineLogout className="text-xl" />
-          Logout
-        </NavLink>
+          <HiOutlineLogout className="text-lg" />
+          {!isCollapsed && <span>Logout</span>}
+        </button>
       </div>
     </div>
   );

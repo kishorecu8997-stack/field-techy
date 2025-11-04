@@ -45,22 +45,34 @@ export const urls = {
     base: BASE.CLIENT,
     privacy_policy: `${BASE.CLIENT}/policy`,
   },
+
+  //Admin urls
   admin: {
     base: BASE.ADMIN,
-    dashbaord: `${BASE.ADMIN}/dashboard`,
-    manage_engineer: `${BASE.ADMIN}/users`,
-    manage_client: `${BASE.ADMIN}/client`,
-    manage_jobs: `${BASE.ADMIN}/jobs`,
-    manage_categories: `${BASE.ADMIN}/categories`,
-    manage_rate_card: `${BASE.ADMIN}/rate-card`,
-    manage_payment: `${BASE.ADMIN}/revenue`,
-    manage_transactions: `${BASE.ADMIN}/transaction`,
-    wallet_overview: `${BASE.ADMIN}/wallet-overview`,
-    wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
-    manage_notification: `${BASE.ADMIN}/notifications`,
-    manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
-    manage_cms: `${BASE.ADMIN}/cms`,
-    settings: `${BASE.ADMIN}/settings`,
+    auth: {
+      login: "login",
+      forget_password: "forget-password",
+      reset_password: "reset-password",
+      otp: "otp",
+    },
+    home: {
+      dashbaord: `${BASE.ADMIN}/dashboard`,
+      manage_engineer: `${BASE.ADMIN}/users`,
+      manage_client: `${BASE.ADMIN}/client`,
+      manage_jobs: `${BASE.ADMIN}/jobs`,
+      manage_categories: `${BASE.ADMIN}/categories`,
+      manage_rate_card: `${BASE.ADMIN}/rate-card`,
+      manage_payment: `${BASE.ADMIN}/revenue`,
+      manage_transactions: `${BASE.ADMIN}/transaction`,
+      wallet_overview: `${BASE.ADMIN}/wallet-overview`,
+      wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
+      manage_notification: `${BASE.ADMIN}/notifications`,
+      manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
+      manage_cms: `${BASE.ADMIN}/cms`,
+      settings: `${BASE.ADMIN}/settings`,
+      profile: `${BASE.ADMIN}/profile`,
+      received_notification: `${BASE.ADMIN}/receoved-notification`,
+    },
   },
 } as const;
 
@@ -89,7 +101,10 @@ export const absoluteUrls = {
   //Admin absolute URLs
   admin: {
     auth: {
-      login: "login",
+      login: `${BASE.ADMIN}/auth/login`,
+      forget_password: `${BASE.ADMIN}/auth/forget-password`,
+      reset_password: `${BASE.ADMIN}/auth/reset-password`,
+      otp: `${BASE.ADMIN}/auth/otp`,
     },
     home: {
       base: BASE.ADMIN,
@@ -107,6 +122,8 @@ export const absoluteUrls = {
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
+      profile: `${BASE.ADMIN}/profile`,
+      received_notification: `${BASE.ADMIN}/receoved-notification`,
     },
   },
 } as const;
