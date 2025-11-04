@@ -1,7 +1,8 @@
 import { sectionConfig } from "@/config/sideBarPagesconfig";
 import { useEffect } from "react";
-import useDrawerStore from "../store/useDrawerStore";
+
 import DrawerHeader from "./DrawerHeader";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 export interface DrawerProps {
   isOpen: boolean;

@@ -1,12 +1,13 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import BankDetailsForm from "./BankDetailsForm";
+import type { bankDetails } from "../types";
 
 /**
  * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
  */
 const EditBankDetails = () => {
-  const fromCtx = useForm({
+  const formCtx = useForm<bankDetails>({ // ✅ Typed correctly
     mode: "onChange",
     delayError: 500,
     defaultValues: {
@@ -15,19 +16,21 @@ const EditBankDetails = () => {
       swiftcode: "1234567890",
       bankAddress: "1234 Main Street, Anytown, USA",
       iban: "1234567890",
-      name: "John Doe",
+      name: "JohnDoe",
     },
   });
-  const handleSubmit = (data: any) => {
-    console.log(data);
+
+  const handleSubmit = (data: bankDetails) => {
+    console.log("Submitted bank details:", data);
   };
+
   return (
     <FormContainer
-      methods={fromCtx}
+      methods={formCtx}
       onSubmit={handleSubmit}
       className="flex h-full flex-col"
     >
-      <BankDetailsForm key="edit"/>
+      <BankDetailsForm formType="edit" />
     </FormContainer>
   );
 };

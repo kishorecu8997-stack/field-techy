@@ -5,7 +5,6 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-
 import type { SelectFieldProps } from "./types";
 
 // Custom chevron-down icon
@@ -47,6 +46,7 @@ export const SelectField = ({
     required: requiredMessage,
     ...rules,
   };
+
   return (
     <div className="flex flex-col py-1">
       {isShowLabel && (
@@ -63,14 +63,13 @@ export const SelectField = ({
           field: { onChange, value, name: fieldName },
           fieldState: { error },
         }) => {
-          // Find selected option for display
           const selectedOption =
             options.find((opt) => opt.value === value) || null;
 
           return (
             <Listbox
               value={selectedOption}
-              onChange={opt => onChange(opt?.value || "")}
+              onChange={(opt) => onChange(opt?.value ?? "")}
               name={fieldName}
               disabled={disabled}
             >
@@ -86,7 +85,7 @@ export const SelectField = ({
                         error && !disabled
                           ? "border-red-500 focus:ring-red-500"
                           : "border-gray-300 dark:border-gray-600 focus:ring-primary"
-                      } bg-white dark:bg-gray-800 py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
+                      } py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
                     >
                       <div className="flex items-center">
                         {leftIcon && (
@@ -96,10 +95,10 @@ export const SelectField = ({
                         )}
                         <span
                           className={`block truncate ${
-                            !value ? "text-gray-400 dark:text-gray-500 " : ""
+                            !selectedOption ? "text-gray-400 dark:text-gray-500" : ""
                           }`}
                         >
-                          {value ? selectedOption?.label : placeholder}
+                          {selectedOption?.label || placeholder}
                         </span>
                       </div>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
@@ -112,7 +111,6 @@ export const SelectField = ({
                       leave="transition ease-in duration-100"
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
-                      afterLeave={() => {}}
                     >
                       <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                         {options.length === 0 ? (
@@ -182,3 +180,5 @@ export const SelectField = ({
 };
 
 export default SelectField;
+
+

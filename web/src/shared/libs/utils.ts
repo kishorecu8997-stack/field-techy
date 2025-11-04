@@ -1,5 +1,6 @@
 
 import { bankList } from "@/dummy_data/bankDetails";
+import xss from "xss";
 
 /**
  * Utility function to join multiple class names into a single string,
@@ -43,60 +44,89 @@ export const validatePassword = (value: string) => {
 };
 
 export const validatePortfolioLink = (value: string) => {
-  if (/^\s|\s$/.test(value || ""))
-    return "PortfolioLink must not start or end with a space";
+  if (!value) return "Portfolio link is required";
 
-  const v = (value || "").trim();
+  const original = value.trim();
 
-  if (!v) return true; // ✅ Field is optional now
+  // No leading/trailing whitespace
+  if (value !== original) {
+    return "Portfolio link must not start or end with whitespace";
+  }
 
-  // ✅ Enforce min 10 and max 200 characters
-  if (v.length < 10) return "Portfolio link must be at least 10 characters";
-  if (v.length > 200) return "Portfolio link must not exceed 200 characters";
+  // No internal whitespace
+  if (/\s/.test(original)) {
+    return "Portfolio link must not contain spaces";
+  }
 
-  if (/<\s*script/gi.test(v)) return "Scripting tags are not allowed";
+  // Basic character safety (RFC 3986 + no control chars)
+  if (!/^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]+$/.test(original)) {
+    return "Portfolio link contains invalid characters";
+  }
+
+  // XSS check
+  if (original !== xss(original)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  // Reject anything with:
+  // - query (?...)
+  // - fragment (#...)
+  // - userinfo (user:pass@...)
+  // - non-standard ports (:8080)
+  // - encoded sequences like %2F
+  if (/%[0-9a-fA-F]{2}|[?#]|:.+@|:\d{2,5}(?![/])/.test(original)) {
+    return "URL must not contain query parameters, fragments, encoded characters, ports, or credentials";
+  }
+
+  // // Reject any URL with path traversal, extra dots, or abnormal patterns
+  // if (/\/\.\.?\/|\/{2,}/.test(original)) {
+  //   return "URL must not contain redundant slashes, dots, or path traversal sequences";
+  // }
 
   try {
-    const url = new URL(v);
+    const url = new URL(original);
 
     if (!["http:", "https:"].includes(url.protocol)) {
-      return "Portfolio link must start with http:// or https://";
+      return "Portfolio link must use http:// or https://";
     }
 
+    // Enforce clean hostname
     const hostname = url.hostname.toLowerCase();
-    const pathname = url.pathname.replace(/\/+$/, ""); // remove trailing slashes
+    if (!/^[a-z0-9.-]+$/.test(hostname)) {
+      return "Invalid domain format";
+    }
 
-    const isGitHubProfile =
-      hostname.includes("github.com") && /^\/[^/]+$/.test(pathname);
+    // Block dangerous or irrelevant domains
+    const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
+    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
+      return "Domain is not allowed";
+    }
 
-    const isLinkedInProfile =
-      hostname.includes("linkedin.com") && /^\/in\/[^/]+$/.test(pathname); // LinkedIn profiles follow /in/username
+    // Normalize path: must be clean and minimal
+    const path = url.pathname;
 
-    const isExampleProfile =
-      hostname.includes("example.com") && /^\/[^/]+$/.test(pathname); // Example profiles follow /username
+    // Remove trailing slash for comparison, but original must not have excess
+    // const cleanPath = path === "/" ? "" : path;
+
+    // Define allowed profiles
+    const isGitHub =
+      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+
+    // Allow /in/username with an optional trailing slash
+    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+
+    const isExample = hostname === "example.com" && path === "/";
 
     const isPersonalSite =
-      !hostname.includes("linkedin.com") &&
-      !hostname.includes("github.com") &&
-      !hostname.endsWith(".zip") &&
-      !hostname.endsWith(".exe") &&
-      !hostname.includes("malware") &&
-      !hostname.includes("phishing") &&
-      !hostname.includes("adult") &&
-      !hostname.includes("torrent") &&
-      pathname === ""; // homepage only
+      !["github.com", "www.linkedin.com", "example.com"].includes(hostname) &&
+      path === "/"; // Only root allowed
 
-    const isAllowed =
-      isGitHubProfile ||
-      isLinkedInProfile ||
-      isExampleProfile ||
-      isPersonalSite;
-
-    if (!isAllowed) {
-      return "Only GitHub, LinkedIn profile URL, or safe personal homepages are allowed";
+    if (isGitHub || isLinkedIn || isExample || isPersonalSite) {
+      return true;
     }
 
-    return true;
+    return "Only GitHub profiles, LinkedIn profiles (e.g., https://www.linkedin.com/in/username), or personal homepages are allowed";
   } catch {
     return "Portfolio link must be a valid URL";
   }

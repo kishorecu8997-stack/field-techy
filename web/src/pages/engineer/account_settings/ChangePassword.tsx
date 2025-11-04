@@ -3,6 +3,8 @@ import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { validatePassword } from "./validation";
+import type { bankDetails } from "./types";
+import PasswordSection from "../auth/components/PasswordSection";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -19,9 +21,10 @@ const ChangePassword = () => {
 export default ChangePassword;
 
 const ChangePasswordFields = () => {
-  const FormCtx = useForm();
-  const handleSubmit = (data: any) => {
-    console.log(data);
+  const FormCtx = useForm<bankDetails>();
+
+  const handleSubmit = (data: bankDetails) => {
+    console.log("Submitted data:", data);
   };
 
   return (
@@ -38,20 +41,8 @@ const ChangePasswordFields = () => {
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-        <PasswordInput
-          label="New Password"
-          name="newPassword"
-          placeholder="Enter your new password"
-          required
-          rules={{ validate: (v: string) => validatePassword(v) }}
-        />
-        <PasswordInput
-          label="Confirm Password"
-          name="confirmPassword"
-          placeholder="Confirm your new password"
-          required
-          rules={{ validate: (v: string) => validatePassword(v) }}
-        />
+
+        <PasswordSection />
       </div>
 
       <div className="mt-auto flex justify-end">

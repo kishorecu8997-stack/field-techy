@@ -1,12 +1,13 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import BankDetailsForm from "./BankDetailsForm";
+import type { bankDetails } from "../types";
 
 
 /**
  * Page component for adding new bank details using a controlled form with React Hook Form.
  */
-const AddBankDetails = ({}:{}) => {
+const AddBankDetails = () => {
   const fromCtx = useForm({
     mode:"onSubmit",
     defaultValues: {
@@ -18,7 +19,7 @@ const AddBankDetails = ({}:{}) => {
       name: "",
     },
   });
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: bankDetails) => {
     console.log(data);
   };
   return (

@@ -88,6 +88,7 @@ interface FileUploadProps {
   label?: string;
   required?: boolean;
   accept?: string;
+  minSize?: number;
   maxSize?: number;
   containerClassName?: string;
   placeholder?: string;

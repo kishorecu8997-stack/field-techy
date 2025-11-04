@@ -7,12 +7,16 @@ export interface ContactItem {
   icon: React.ReactNode;
 }
 
-
 // types.ts
 
 export interface NotificationProps {
   id: number;
-  type: 'job_offer' | 'invitation' | 'revision' | 'payment_released' | 'withdrawal';
+  type:
+    | "job_offer"
+    | "invitation"
+    | "revision"
+    | "payment_released"
+    | "withdrawal";
   title: string;
   message: string;
   jobTitle?: string;
@@ -40,15 +44,13 @@ export interface AccordionProps {
   className?: string;
   titleClassName?: string;
   contentClassName?: string;
-  iconPosition?: 'left' | 'right'; // Position of the chevron (not the label icon)
+  iconPosition?: "left" | "right"; // Position of the chevron (not the label icon)
 }
-
 
 export interface ContactCardProps {
   items: ContactItem[];
   className?: string; // optional for extra styling flexibility
 }
-
 
 // Define types for menu items
 export interface MenuItem {
@@ -81,3 +83,12 @@ export type BankKey = (typeof bankList)[number]["value"];
 
 // Derive country code type from rules
 export type CountryCode = keyof typeof IBAN_RULES;
+
+export interface bankDetails {
+  name: string;
+  bankName: string;
+  bankAddress: string;
+  accountNumber: string;
+  swiftcode: string;
+  iban: string;
+}

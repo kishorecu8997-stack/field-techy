@@ -75,6 +75,43 @@ const rule = IBAN_RULES[upperCountryCode as keyof typeof IBAN_RULES];
 }
 
 
+export function validateIBANForCountrywise(iban: string): true | string {
+  if (!iban) {
+    return "IBAN is required";
+  }
+
+  // 1. Reject leading, trailing, or internal spaces
+  if (/^\s|\s$/.test(iban)) {
+    return "IBAN must not start or end with a space";
+  }
+  if (/\s/.test(iban)) {
+    return "IBAN must not contain spaces";
+  }
+
+  // 2. Normalize: convert to uppercase
+  const normalizedIBAN = iban.toUpperCase();
+
+  // 3. Strict alphanumeric check — no special characters allowed
+  if (!/^[A-Z0-9]+$/.test(normalizedIBAN)) {
+    return "IBAN must contain only letters and digits (no commas or special characters)";
+  }
+
+  // 4. Length check
+  if (normalizedIBAN.length < 8) {
+    return "IBAN must be at least 8 characters long";
+  }
+
+  if (normalizedIBAN.length > 34) {
+    return "IBAN must not exceed 34 characters";
+  }
+
+  // ✅ Valid
+  return true;
+}
+
+
+
+
 // Your password validation function
 export const validatePassword = (value: string) => {
   if (value.length < 8) {
@@ -162,6 +199,43 @@ export function validateSWIFTForBank(
   return true;
 }
 
+
+export function validateSWIFTBank(swift: string): true | string {
+  // 1. Required check
+  if (!swift) {
+    return "SWIFT/BIC code is required";
+  }
+
+  // 2. Reject leading/trailing/internal spaces
+  if (/^\s|\s$/.test(swift)) {
+    return "SWIFT/BIC must not start or end with a space";
+  }
+  if (/\s/.test(swift)) {
+    return "SWIFT/BIC must not contain spaces";
+  }
+
+  // 3. Normalize
+  const normalized = swift.toUpperCase();
+
+  // 4. Length check: must be between 8 and 11 characters
+  if (normalized.length < 8) {
+    return "SWIFT/BIC must be at least 8 characters long";
+  }
+  if (normalized.length > 11) {
+    return "SWIFT/BIC must not exceed 11 characters";
+  }
+
+  // 5. Alphanumeric check
+  if (!/^[A-Z0-9]+$/.test(normalized)) {
+    return "SWIFT/BIC must contain only letters and digits";
+  }
+
+  // ✅ Valid
+  return true;
+}
+
+
+
 // ✅ Your requested function signature
 export function validateAccountNumber(
   value: string,
@@ -178,7 +252,7 @@ export function validateAccountNumber(
   }
 
   // 3. Normalize (remove hyphens, spaces — though spaces already blocked)
-  const normalized = value.replace(/[\s\-]/g, "");
+  const normalized = value.replace(/[\s-]/g, "");
 
   // 4. Get bank name for error message
   const bankName = getBankName(bankValue);
@@ -214,3 +288,71 @@ export function validateAccountNumber(
   return true;
 }
 
+
+export function validateAccNumber(value: string): true | string {
+  // 1. Required check
+  if (!value) {
+    return "Account number is required";
+  }
+
+  // 2. No spaces allowed
+  if (/\s/.test(value)) {
+    return "Account number must not contain spaces";
+  }
+
+  // 3. Digit-only check (no letters or symbols)
+  if (!/^\d+$/.test(value)) {
+    return "Account number must contain only digits (0–9)";
+  }
+
+  // 4. Minimum length check
+  if (value.length < 9) {
+    return "Account number must be at least 9 digits";
+  }
+
+  // 5. Maximum length check
+  if (value.length > 18) {
+    return "Account number must not exceed 18 digits";
+  }
+
+  // 6. All good!
+  return true;
+}
+
+
+
+export const validateAddress = (value: string) => {
+  if (!value) return 'Address must be at least 6 characters';
+
+  // Disallow leading or trailing spaces
+  if (/^\s|\s$/.test(value)) return 'Address must not start or end with a space';
+
+  const v = value.trim();
+  if (v.length < 6) return 'Address must be at least 6 characters';
+  if (v.length > 50) return 'Address must not exceed 50 characters';
+  // Allow letters, numbers, spaces, and / , . - #
+  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
+    return 'Address may contain only letters, numbers, spaces, and / , . - #';
+  }
+
+  return true;
+};
+
+export const validateName = (value: string, fieldLabel = 'Name') => {
+  // length requirement: 2 to 50 characters
+  const raw = value || "";
+
+    // Reject any whitespace (leading/trailing/internal)
+    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
+
+    // Only letters allowed (A-Z)
+    if (!/^[A-Za-z]+$/.test(raw))
+      return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
+
+    // length requirement: 2 to 50 characters
+    if (raw.length < 2) return `${fieldLabel} must be at least 2 characters`;
+    if (raw.length > 50) return `${fieldLabel} must not exceed 50 characters`;
+
+
+  return true;
+};
