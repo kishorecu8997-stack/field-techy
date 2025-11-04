@@ -74,9 +74,6 @@ const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashbo
 const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
 const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
 const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
-const ClientJobDetailsPage = React.lazy(
-  () => import("@/pages/client/my_job/JobDetailsPage")
-);
 const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
 
 /**
@@ -207,11 +204,6 @@ export const routes = createBrowserRouter([
       { path: urls.client.home.explore_engineers, element: withSuspense(ClientExploreEngineers) },
       { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
       { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
-            
-      {
-        path: `${urls.client.home.my_jobs}/:jobId`,
-        element: withSuspense(ClientJobDetailsPage),
-      },
       { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
     ],
   },

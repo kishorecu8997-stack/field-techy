@@ -32,10 +32,9 @@ const DRAWER_COMPONENTS = {
  *   isDrawerOpen={isDrawerOpen}
  * />
  */
-const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpen }) => {
+const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const [activeDrawerComponent, setActiveDrawerComponent] = useState(DRAWER_COMPONENTS.ACCOUNT);
   
 
   useEffect(() => {
@@ -59,7 +58,6 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle, isDrawerOpe
   };
 
   const handleDrawerToggle = (componentName: string) => {
-    setActiveDrawerComponent(componentName);
     onDrawerToggle(componentName);
   };
 

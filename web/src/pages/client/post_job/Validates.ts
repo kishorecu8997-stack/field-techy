@@ -1,4 +1,6 @@
 
+import xss from "xss";
+
 export const validateName = (value: string) => {
   const raw = value || "";
 
@@ -50,22 +52,16 @@ export const validateDateRange = (
 };
 
 export const validateProjectDeadline = (
-  startDate: Date | null,
-  endDate: Date | null
+  startDate: Date | null,  
 ) => {
-  if (!startDate) {
-    return "Project Deadline date is required";
+ if (!startDate) {
+    return "Start date is required";
   }
 
   if (startDate < new Date(new Date().setHours(0, 0, 0, 0))) {
-    return "Project Deadline date cannot be in the past";
-  }
-
-  if (endDate && startDate > endDate) {
-    return "Project Deadline date must be after the start date";
-  }
-
-  return true;
+    return "Start date cannot be in the past";
+  }  
+  return true;  
 };
 
 
@@ -263,7 +259,55 @@ export const validateCurrencyText = (
   return true;
 };
 
-export const validatePaymentMethod = (value: string | null | undefined) => {
+export const validatePaymentMethods = (value: string | null | undefined) => {
   if (!value) return "Please select a payment method";
+  return true;
+};
+
+
+export const validateAlphabeticTextArea = (
+  value: string,
+  options: TextValidationOptions = {}
+): string | true => {
+  const {
+    minLength = 1,
+    maxLength = Infinity,
+    required = true,
+  } = options;
+
+  const v = value || "";
+
+  // Required check
+  if (required && !v) {
+    return "This field is required";
+  }
+
+  if (!required && !v) {
+    return true;
+  }
+
+  // ❌ No leading or trailing spaces
+  if (v.startsWith(" ") || v.endsWith(" ")) {
+    return "Leading or trailing spaces are not allowed";
+  }
+
+  // ❌ No consecutive spaces (e.g., "a  b")
+  if (/ {2,}/.test(v)) {
+    return "Consecutive spaces are not allowed";
+  }  
+
+  // Cross-Site Scripting (XSS) check
+  if (v !== xss(v)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  // Length validation
+  if (v.length < minLength) {
+    return `Minimum length is ${minLength} characters`;
+  }
+  if (v.length > maxLength) {
+    return `Maximum length is ${maxLength} characters`;
+  }
+
   return true;
 };

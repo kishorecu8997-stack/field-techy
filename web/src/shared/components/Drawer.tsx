@@ -20,8 +20,12 @@ import DrawerHeader from "./DrawerHeader";
 import ClientAccountDrawerMenu from "@/pages/client/my_account/ClientAccountDrawerMenu";
 import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
 import ClientAddFund from "@/pages/client/my_wallet/components/AddFund";
-import ClientRecentTransactions from "@/pages/client/my_wallet/components/RecentTransactionsList";
-
+import ClientRecentTransactions from "@/pages/client/my_wallet/components/RecentTransactionsList"; // Corrected import path
+import { IoDownload } from "react-icons/io5";
+import { HiFilter } from "react-icons/hi";
+import Popup from "./Popup";
+import DownloadInvoice from "@/pages/client/my_wallet/components/DownloadInvoice";
+import Filter from "@/pages/client/my_wallet/components/Filter";
 
 /**
  * Props for the Drawer component.
@@ -30,13 +34,8 @@ import ClientRecentTransactions from "@/pages/client/my_wallet/components/Recent
  * @property {() => void} onClose - Function to close the drawer.
  */
 interface DrawerProps {
-  /** Whether the drawer is open */
-  /** Whether the drawer is open */
   isOpen: boolean;
-  /** Function to close the drawer */
-  /** Function to close the drawer */
   onClose: () => void;
-  /** The key for the component to display */
   componentKey?: string;
 }
 
@@ -44,7 +43,7 @@ interface DrawerProps {
  * Drawer component that slides in from the right when opened.
  * Contains user profile info and action buttons.
  *
- * @param {DrawerProps} props - The props for the Drawer component. 
+ * @param {DrawerProps} props - The props for the Drawer component.
  * @returns {JSX.Element | null} The rendered Drawer component or null if closed.
  */
 const Drawer: React.FC<DrawerProps> = ({
@@ -55,17 +54,51 @@ const Drawer: React.FC<DrawerProps> = ({
   if (!isOpen) return null;
 
   const [key, setKey] = useState<string>(componentKey);
+  const [isInvoicePopupOpen, setIsInvoicePopupOpen] = useState<boolean>(false);
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState<boolean>(false);
 
   const commonProps = {
     onMenuItemClick: (data: string) => setKey(data),
     onClose: onClose,
   };
 
+  // Placeholder functions for filter and download actions specific to RecentTransactionsList
+  // In a real application, these would likely interact with the ClientRecentTransactions
+  // component's state or methods, possibly via a ref or a shared context/store.
+
+  const actionButtonsForRecentTransactions = (
+    <>
+      <button
+        onClick={
+          isInvoicePopupOpen
+            ? () => setIsInvoicePopupOpen(false)
+            : () => setIsInvoicePopupOpen(true)
+        }
+        aria-label="Download"
+        className="text-gray-700 hover:text-gray-900"
+      >
+        <IoDownload className="h-6 w-6 cursor-pointer" />
+      </button>
+      <button
+        onClick={
+          isFilterPopupOpen
+            ? () => setIsFilterPopupOpen(false)
+            : () => setIsFilterPopupOpen(true)
+        }
+        aria-label="Filter"
+        className="text-gray-700 hover:text-gray-900"
+      >
+        <HiFilter className="h-6 w-6 cursor-pointer" />
+      </button>
+    </>
+  );
+
   const sectionConfig: Record<
     string,
     {
       component: React.ComponentType<any>;
       title: string;
+      actions?: React.ReactNode;
       parent?: string;
     }
   > = {
@@ -149,16 +182,49 @@ const Drawer: React.FC<DrawerProps> = ({
     },
     saved: { component: () => <div>Saved Section</div>, title: "Saved Jobs" },
     //client
-    clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },    
-    proposal: { component: () => <div>Manage Proposal</div>, title: "Manage Proposal", parent: "clientAccount" },
-    company: { component: () => <div>Company Information</div>, title: "Company Information", parent: "clientAccount" },
-    document: { component: () => <div>Documents</div>, title: "Documents", parent: "clientAccount" },
-    payment: { component: () => <div>Payment Methods</div>, title: "Payment Methods", parent: "clientAccount" },
-    changePwd: { component: () => <div>Change Password</div>, title: "Change Password", parent: "clientAccount" },      
-    clientAcc: { component: () => <div>Account</div>, title: "Account Setting", parent: "clientAccount" },      
+    clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
+    proposal: {
+      component: () => <div>Manage Proposal</div>,
+      title: "Manage Proposal",
+      parent: "clientAccount",
+    },
+    company: {
+      component: () => <div>Company Information</div>,
+      title: "Company Information",
+      parent: "clientAccount",
+    },
+    document: {
+      component: () => <div>Documents</div>,
+      title: "Documents",
+      parent: "clientAccount",
+    },
+    payment: {
+      component: () => <div>Payment Methods</div>,
+      title: "Payment Methods",
+      parent: "clientAccount",
+    },
+    changePwd: {
+      component: () => <div>Change Password</div>,
+      title: "Change Password",
+      parent: "clientAccount",
+    },
+    clientAcc: {
+      component: () => <div>Account</div>,
+      title: "Account Setting",
+      parent: "clientAccount",
+    },
     clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
-    clientAddFund: { component:  ClientAddFund, title: "Add Fund", parent: "clientWallet" },
-    recentTransactions: { component:  ClientRecentTransactions, title: "Recent Transactions", parent: "clientWallet" },
+    clientAddFund: {
+      component: ClientAddFund,
+      title: "Add Fund",
+      parent: "clientWallet",
+    },
+    recentTransactions: {
+      component: ClientRecentTransactions,
+      title: "Recent Transactions",
+      actions: actionButtonsForRecentTransactions,
+      parent: "clientWallet",
+    },
   };
 
   /**
@@ -183,7 +249,6 @@ const Drawer: React.FC<DrawerProps> = ({
         className="fixed inset-0 z-40 bg-[rgba(61,63,66,0.6)] animate-fade-in"
         onClick={onClose}
       />
-
       <div className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800">
         <div className="flex h-screen flex-col">
           <div className="shrink-0 py-5 px-6">
@@ -191,6 +256,7 @@ const Drawer: React.FC<DrawerProps> = ({
               title={config.title}
               onClose={onClose}
               onBack={onBack}
+              actions={config.actions}
             />
           </div>
 
@@ -199,6 +265,34 @@ const Drawer: React.FC<DrawerProps> = ({
           </div>
         </div>
       </div>
+      <Popup
+        open={isInvoicePopupOpen}
+        onClose={() => setIsInvoicePopupOpen(false)}
+      >
+        <DownloadInvoice
+          isOpen={isInvoicePopupOpen}
+          onClose={() => setIsInvoicePopupOpen(false)}
+          onDownload={() => {
+            console.log("Downloading invoice...");
+            setIsInvoicePopupOpen(false);
+          }}
+        />
+      </Popup>
+      ;
+      <Popup
+        open={isFilterPopupOpen}
+        onClose={() => setIsFilterPopupOpen(false)}
+      >        
+        <Filter
+          isOpen={isFilterPopupOpen}
+          onClose={() => setIsFilterPopupOpen(false)}
+          onFilter={() => {
+            console.log("Applying filters...");
+            setIsFilterPopupOpen(false);
+          }}
+        />       
+      </Popup>
+      ;
     </>
   );
 };

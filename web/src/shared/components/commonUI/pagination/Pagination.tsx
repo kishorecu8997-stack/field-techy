@@ -54,7 +54,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
             key={`ellipsis-${index}`}
             className="px-2 py-1 text-gray-500 dark:text-gray-400"
             aria-hidden="true"
-          > &#8230;
+          > &gt;
             {page}
           </span>
         )

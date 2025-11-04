@@ -26,3 +26,9 @@ export interface DownloadInvoiceModalProps {
   onClose: () => void;
   onDownload: () => void;
 }
+
+
+export type FilterData = {  
+  startDate: Date | null;
+  endDate: Date | null;
+};

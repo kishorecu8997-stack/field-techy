@@ -70,7 +70,7 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
     return type === 'credit'
       ? 'text-emerald-600 dark:text-emerald-400'
       : 'text-red-600 dark:text-red-400';
-  };
+  };  
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm">

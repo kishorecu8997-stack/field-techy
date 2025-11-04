@@ -1,5 +1,5 @@
 import xss from "xss";
-
+import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -308,7 +308,6 @@ export const validateRate = (value: string) => {
   return true;
 };
 
-
 export const validatePortfolioLink = (value: string) => {
   if (!value) return "Portfolio link is required";
 
@@ -364,7 +363,8 @@ export const validatePortfolioLink = (value: string) => {
 
     // Block dangerous or irrelevant domains
     const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
-    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    const suspiciousKeywords =
+      /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
     if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
       return "Domain is not allowed";
     }
@@ -372,15 +372,16 @@ export const validatePortfolioLink = (value: string) => {
     // Normalize path: must be clean and minimal
     const path = url.pathname;
 
-    // Remove trailing slash for comparison, but original must not have excess
-    const cleanPath = path === "/" ? "" : path;
-
     // Define allowed profiles
     const isGitHub =
-      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+      hostname === "github.com" &&
+      /^\/[a-zA-Z0-9._-]+$/.test(path) &&
+      !path.includes("..");
 
     // Allow /in/username with an optional trailing slash
-    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+    const isLinkedIn =
+      hostname === "www.linkedin.com" &&
+      /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
 
     const isExample = hostname === "example.com" && path === "/";
 
@@ -418,20 +419,20 @@ export const validateIsPhoneVerified = (verified: boolean) => {
 };
 
 export const cardNumberValidation = (value: string) => {
-     const raw = value || "";
-    const cleanedValue = raw.replace(/\s/g, '');
-    if (!cleanedValue) return 'Card number is required.';
-    if (!/^\d{13,19}$/.test(cleanedValue)) {
-      return 'Card number must be 13 to 19 digits.';
-    }
-    return true;
-  };
+  const raw = value || "";
+  const cleanedValue = raw.replace(/\s/g, "");
+  if (!cleanedValue) return "Card number is required.";
+  if (!/^\d{13,19}$/.test(cleanedValue)) {
+    return "Card number must be 13 to 19 digits.";
+  }
+  return true;
+};
 
 export const expiryDateValidation = (value: string) => {
   const raw = value || "";
-  if (!raw) return 'Expiry date is required.';
+  if (!raw) return "Expiry date is required.";
   if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
-    return 'Invalid date format. Use MM/YY.';
+    return "Invalid date format. Use MM/YY.";
   }
   const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
   if (!match) return true; // Let pattern handle format errors
@@ -440,40 +441,48 @@ export const expiryDateValidation = (value: string) => {
   const now = new Date();
   // Set current date to first of the month for fair comparison
   now.setDate(1);
-  return expiryDate >= now || 'Card has expired.';
+  return expiryDate >= now || "Card has expired.";
 };
 
 export const cvvValidation = (value: string) => {
   const raw = value || "";
-  if (!raw) return 'CVV is required.';
+  if (!raw) return "CVV is required.";
   if (!/^\d{3,4}$/.test(raw)) {
-    return 'CVV must be 3 or 4 digits.';
+    return "CVV must be 3 or 4 digits.";
   }
   return true;
-};                                                          
+};
 export const countryValidation = (value: string) => {
   const raw = value || "";
-  if (!raw) return 'Country is required.';
+  if (!raw) return "Country is required.";
   return true;
 };
 
 export const addressRequiredValidation = (value: string) => {
   const raw = value || "";
-  if (!raw) return 'Address is required.';
+  if (!raw) return "Address is required.";
   return true;
 };
 
-
 export const validateJobDescription = (value: string) => {
-
   const v = value.trim();
-  if (v.length < 20) return "Address must be at least 20 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
+  if (v.length < 20) return "Job description must be at least 20 characters";
+  if (v.length > 50) return "Job description must not exceed 50 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
-    return "Address may contain only letters, numbers, spaces, and / , . - #";
+    return "Job description may contain only letters, numbers, spaces, and / , . - #";
   }
   return true;
+};
+
+/**
+ * Validates that a payment method has been selected.
+ * The value is expected to be a `SelectOption` object.
+ * @param {SelectOption} value - The selected payment method object.
+ * @returns {true | string} - True if valid, otherwise an error message.
+ */
+export const validatePaymentMethods = (value: SelectOption): true | string => {
+  return value && value.value ? true : "Payment method is required";
 };
 
 export default {

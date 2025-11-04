@@ -27,7 +27,8 @@ import {
   validateAlphabeticText,
   validateCurrencyText,
   validateProjectDeadline,
-} from "../validates";
+  validateAlphabeticTextArea,
+} from "../Validates";
 /**
  * `JobPostForm` is a comprehensive form for clients to post new jobs.
  * It is structured into multiple sections covering basic information, requirements,
@@ -38,7 +39,6 @@ import {
  * @returns {React.ReactElement} The rendered job posting form.
  */
 const JobPostForm: React.FC = () => {
-
   const method = useForm<FormData>({
     defaultValues: {
       jobTitle: "",
@@ -75,9 +75,6 @@ const JobPostForm: React.FC = () => {
   };
 
   const inputClass = () =>
-    "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
-
-  const selectClass = () =>
     "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
 
   if (showReview) {
@@ -121,9 +118,15 @@ const JobPostForm: React.FC = () => {
                 name="jobDescription"
                 label="Job Description"
                 placeholder="Describe the job responsibilities, expectations, and requirements..."
-                required
-                minLength={50}
-                maxLength={2000}
+                rules={{
+                  validate: (v: string) =>
+                    validateAlphabeticTextArea(v, {
+                      minLength: 50,
+                      maxLength: 2000,
+                      required: true,                      
+                    }),
+                }}  
+                required               
               />
             </div>
 
@@ -220,7 +223,7 @@ const JobPostForm: React.FC = () => {
 
             <div className="md:col-span-2">
               <InputField
-                name="skillsRequired"
+                name="skillsRequire"
                 label="Skills Required"
                 placeholder="e.g. Electrical, Plumbing, HVAC"
                 inputClassName={inputClass()}
@@ -244,9 +247,15 @@ const JobPostForm: React.FC = () => {
           <TextareaInput
             label="Requirements / Deliverables"
             name="requirements"
-            placeholder="Describe here..."
-            minLength={50}
-            maxLength={2000}
+            placeholder="Describe here..."  
+            rules={{
+                  validate: (v: string) =>
+                    validateAlphabeticTextArea(v, {
+                      minLength: 50,
+                      maxLength: 2000,
+                      required: true,
+                    }),
+                }}          
             required
           />
         </FormSection>
@@ -257,8 +266,14 @@ const JobPostForm: React.FC = () => {
             label="Other Information"
             name="otherInfo"
             placeholder="Describe here..."
-            minLength={50}
-            maxLength={2000}
+            rules={{
+                  validate: (v: string) =>
+                    validateAlphabeticTextArea(v, {
+                      minLength: 50,
+                      maxLength: 2000,
+                      required: true,
+                    }),
+                }}  
             required
           />
         </FormSection>
@@ -272,14 +287,14 @@ const JobPostForm: React.FC = () => {
               placeholder="e.g. Multimeter, Pipe Wrench"
               inputClassName={inputClass()}
               rules={{
-                  validate: (v: string) =>
-                    validateAlphabeticText(v, {
-                      minLength: 2,
-                      maxLength: 50,
-                      required: true,
-                      maxSpaces: 10,
-                    }),
-                }}
+                validate: (v: string) =>
+                  validateAlphabeticText(v, {
+                    minLength: 2,
+                    maxLength: 50,
+                    required: true,
+                    maxSpaces: 10,
+                  }),
+              }}
               required
             />
 
@@ -301,14 +316,14 @@ const JobPostForm: React.FC = () => {
               placeholder="e.g. $50"
               inputClassName={inputClass()}
               rules={{
-                  validate: (v: string) =>
-                    validateCurrencyText(v, {
-                      minLength: 2,
-                      maxLength: 50,
-                      required: true,
-                      maxSpaces: 10,
-                    }),
-                }}
+                validate: (v: string) =>
+                  validateCurrencyText(v, {
+                    minLength: 2,
+                    maxLength: 50,
+                    required: true,
+                    maxSpaces: 10,
+                  }),
+              }}
               required
             />
           </div>
@@ -347,7 +362,9 @@ const JobPostForm: React.FC = () => {
                   name="projectDeadline"
                   rules={{
                     validate: (value) =>
-                      validateProjectDeadline(value, method.getValues("startDate")),
+                      validateProjectDeadline(
+                        value,                     
+                      ),
                   }}
                   control={method.control}
                   render={({ field, fieldState: { error } }) => (
@@ -368,19 +385,17 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div className="md:col-span-2">
-             
               <SelectField
                 label="Milestone Structure"
                 name="milestoneStructure"
                 placeholder="e.g. 50% upfront, 50% on completion"
                 options={[
-              { value: "1", label: "Option1" },
-              { value: "2", label: "Option2" },
-              { value: "3", label: "Option3" },
-            ]}
+                  { value: "1", label: "Option1" },
+                  { value: "2", label: "Option2" },
+                  { value: "3", label: "Option3" },
+                ]}
                 required
               />
-
             </div>
 
             <div className="md:col-span-2">

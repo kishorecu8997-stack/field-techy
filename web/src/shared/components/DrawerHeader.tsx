@@ -1,4 +1,4 @@
-import { IoCloseSharp, IoChevronBack, IoDownload, IoFilter } from "react-icons/io5";
+import { IoCloseSharp, IoChevronBack } from "react-icons/io5";
 import React from "react";
 
 /**
@@ -15,11 +15,7 @@ type DrawerHeaderProps = {
   onClose: () => void;
   title: string;
   onBack?: (key: string) => void;
-  actions?: {
-    icon: React.ElementType;
-    onClick: () => void;
-    ariaLabel: string;
-  }[];
+  actions?: React.ReactNode;
 };
 
 /**
@@ -35,7 +31,12 @@ type DrawerHeaderProps = {
  * The component keeps markup minimal and relies on the parent to manage drawer
  * state. Title text is required and displayed prominently.
  */
-const DrawerHeader: React.FC<DrawerHeaderProps> = ({ onClose, title = "title", onBack, actions }) => {
+const DrawerHeader: React.FC<DrawerHeaderProps> = ({
+  onClose,
+  title = "title",
+  onBack,
+  actions,
+}) => {
   const handleBack = () => {
     if (onBack) onBack("back");
     else onClose();
@@ -45,7 +46,11 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({ onClose, title = "title", o
     <div className="flex items-center gap-3 mb-6">
       {/* Back Button */}
       {onBack && (
-        <button onClick={handleBack} aria-label="Back" className="text-gray-700 hover:text-gray-900">
+        <button
+          onClick={handleBack}
+          aria-label="Back"
+          className="text-gray-700 hover:text-gray-900"
+        >
           <IoChevronBack className="h-6 w-6 cursor-pointer" />
         </button>
       )}
@@ -55,19 +60,14 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({ onClose, title = "title", o
 
       {/* Action Buttons or Close Button */}
       <div className="ml-auto flex items-center gap-2">
-        {actions && actions.length > 0 ? (
-          actions.map((action, index) => (
-            <button
-              key={index}
-              onClick={action.onClick}
-              aria-label={action.ariaLabel}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <action.icon className="h-6 w-6 cursor-pointer" />
-            </button>
-          ))
+        {actions ? (
+          actions
         ) : (
-          <button onClick={onClose} aria-label="Close" className="text-gray-500 hover:text-gray-700">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="text-gray-500 hover:text-gray-700"
+          >
             <IoCloseSharp className="h-6 w-6 cursor-pointer" />
           </button>
         )}

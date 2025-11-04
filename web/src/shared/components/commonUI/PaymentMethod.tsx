@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 import Popup from "@/shared/components/Popup";
 import AddCard, { type CardFormData } from "../AddCard";
 import { initialPaymentOptions } from "@/dummy_data/cardDetails";
-import { IoAdd } from "react-icons/io5";
 import { Button } from "./Buttons";
 import { HiOutlinePlusSmall } from "react-icons/hi2";
 
@@ -14,18 +18,33 @@ export interface PaymentCardOption {
 }
 
 interface PaymentMethodSelectorProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  isShowRadio?: boolean;
+  required?: boolean;
+  rules?: RegisterOptions;
   options?: PaymentCardOption[];
-  selectedId?: string | null;
-  onChange?: (id: string) => void;
   onAddNew?: (cardData: CardFormData) => void;
 }
 
 const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
+  name,
+  label,
+  isShowLabel = true,
+  isShowRadio = false,
+  required = false,
+  rules,
   options = initialPaymentOptions,
-  selectedId,
-  onChange,
   onAddNew,
 }) => {
+  const { control } = useFormContext();
+  
+  const validationRules: RegisterOptions = {
+    required: required ? `${label || name} is required` : false,
+    ...rules,
+  };
+
   const getCardLogo = (brand: string) => {
     const brandLower = brand.toLowerCase();
     if (brandLower.includes("visa")) return "VISA";
@@ -44,71 +63,108 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
 
   return (
     <>
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-        <div className="space-y-4">
-          {options.length > 0 ? (
-            options.map((card, index) => (
-              <div
-                key={card.id}
-                onClick={() => onChange?.(card.id)}
-                className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${
-                  selectedId === card.id
-                    ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
-                    : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
-                } ${
-                  index !== 0
-                    ? "mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
-                    : ""
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-700 rounded px-1">
-                    <span className="text-xs font-bold text-gray-800 dark:text-white">
-                      {getCardLogo(card.brand)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      xxxx xxxx xxxx {card.last4}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {card.name}
-                    </p>
-                  </div>
-                </div>
+      <Controller
+        name={name}
+        control={control}
+        rules={validationRules}
+        render={({
+          field: { onChange, value },
+          fieldState: { error },
+        }) => (
+          <div className="flex flex-col">
+            {isShowLabel && (
+              <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+                {label}{" "}
+                {required && <span className="text-red-600">*</span>}
+              </label>
+            )}
+            <div className=" bg-gray-50 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div className="space-y-1">
+                {options.length > 0 ? (
+                  options.map((card, index) => (
+                    <div
+                      key={card.id}
+                      onClick={() =>
+                        onChange({
+                          value: card.id,
+                          label: `xxxx xxxx xxxx ${card.last4}`,
+                        })
+                      }
+                      className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors 
+                        ${
+                          value?.value === card.id
+                          ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
+                          : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      } 
+                        ${
+                          index !== 0
+                          ? "border-t border-gray-200 dark:border-gray-700"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-700 rounded px-1">
+                          <span className="text-xs font-bold text-gray-800 dark:text-white">
+                            {getCardLogo(card.brand)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">
+                            xxxx xxxx xxxx {card.last4}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {card.name}
+                          </p>
+                        </div>
+                      </div>
 
-                <input
-                  type="radio"
-                  name="payment-method"
-                  checked={selectedId === card.id}
-                  className="h-5 w-5 text-emerald-600 border-gray-300 focus:ring-emerald-500"
-                  aria-label={`Select ${card.brand} ending in ${card.last4}`}
-                />
+                      {isShowRadio && (
+                        <input
+                          type="radio"
+                          name={name}
+                          checked={value?.value === card.id}
+                          onChange={() =>
+                            onChange({
+                              value: card.id,
+                              label: `xxxx xxxx xxxx ${card.last4}`,
+                            })
+                          }
+                          className="h-5 w-5 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                          aria-label={`Select ${card.brand} ending in ${card.last4}`}
+                        />
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center py-4">
+                    No payment methods added yet.
+                  </p>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={() => setIsOpen(true)}
+                  className="flex mt-2 w-full py-3 border-2 border-dashed hover:text-white border-teal-700 text-teal-700 font-medium rounded-md hover:bg-teal-700 transition"
+                >
+                  <div className="flex gap-1 items-center">
+                    <HiOutlinePlusSmall className="text-lg" /> Add New Card
+                  </div>
+                </Button>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-500 text-center py-4">
-              No payment methods added yet.
-            </p>
-          )}
-          <Button
-            variant="outline"
-            onClick={() => setIsOpen(true)}
-            className="flex mt-4 w-full py-3 border-2 border-dashed hover:text-white border-teal-700 text-teal-700 font-medium rounded-md hover:bg-teal-700 transition"
-          >
-            <div className="flex gap-1 items-center">
-              <HiOutlinePlusSmall className="text-lg" /> Add New Card
             </div>
-          </Button>
-
-          <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-            <AddCard
-              onClose={() => setIsOpen(false)}
-              onAddCard={handleAddCard}
-            />
-          </Popup>
-        </div>
-      </div>
+            {error && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                {error.message}
+              </p>
+            )}
+            <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+              <AddCard
+                onClose={() => setIsOpen(false)}
+                onAddCard={handleAddCard}
+              />
+            </Popup>
+          </div>
+        )}
+      />
     </>
   );
 };

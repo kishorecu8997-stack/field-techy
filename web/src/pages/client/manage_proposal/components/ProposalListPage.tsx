@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { mockEngineers } from "@/dummy_data/engineers";
 import ProposalCard from "./ProposalCard";
 import Pagination from "../../search_result/components/Pagination";
@@ -11,23 +11,8 @@ import Pagination from "../../search_result/components/Pagination";
  * @returns {React.ReactElement} The rendered list of proposals with pagination.
  */
 const ProposalListPage: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("All Engineer");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
-
-  // Detect system theme
-  useEffect(() => {
-    const prefersDark =
-      window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-    setIsDarkMode(prefersDark);
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   // Filtered engineers (mock — in real app, filter by category)
   const filteredEngineers = mockEngineers; // Add actual filtering logic if needed
@@ -40,18 +25,8 @@ const ProposalListPage: React.FC = () => {
     startIndex + itemsPerPage
   );
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   return (
-    <div
-      className={`p-4 md:p-6 ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
-      } transition-colors duration-300`}
-    >
+    <div>
       {/* Engineer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {currentEngineers.map((engineer) => (

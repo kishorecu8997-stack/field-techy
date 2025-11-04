@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import EngineerCard from "./EngineerCard";
 import { mockEngineers } from "@/dummy_data/engineers";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
@@ -35,16 +35,10 @@ const EngineerListPage: React.FC = () => {
     startIndex + itemsPerPage
   );
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   return (
-    <div className="p-4 md:p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white transition-colors duration-300">
+    <div className="p-4 md:p-2 transition-colors duration-300">
       {/* Category Filters */}
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         <FilterButton
           activeFilter={selectedCategory}
           onFilterChange={setSelectedCategory}

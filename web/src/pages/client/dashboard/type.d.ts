@@ -1,13 +1,14 @@
 // Types
+
+type JobOverViewStatus = "inprogress" | "completed" | "cancelled";
 export interface JobOverview {
   id: number;
   title: string;
-  count: number;  
-  color: string;
-  textColor: string;
-  buttonColor: string;
+  count: number;
+  status: JobOverViewStatus;
   buttonShow?:boolean;
 }
+
 
 export interface ServiceCategory {
   id: number;

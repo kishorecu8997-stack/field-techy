@@ -5,20 +5,13 @@ import type { FormData as JobFormData, PaymentCardOption } from "../types";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
-
 import TaxInformationCard from "@/shared/components/commonUI/TaxInformationCard";
-import { validatePaymentMethod } from "../validates";
-
+import { validatePaymentMethods } from "../Validates";
 interface JobReviewPageProps {
   formData: JobFormData;
   onBack: () => void;
   onSubmit: () => void;
 }
-
-const jobData = {
-  tax: 18.75,
-  total: 218.75,
-};
 
 /**
  * `JobReviewPage` is a component that allows a client to review their job posting details before final submission.
@@ -32,14 +25,12 @@ const jobData = {
  * @returns {React.ReactElement} The rendered job review page.
  */
 const JobReviewPage: React.FC<JobReviewPageProps> = ({
-  formData,
   onBack,
   onSubmit,
 }) => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
-    initialPaymentOptions
-  );
+  const [paymentOptions, setPaymentOptions] =
+    useState<PaymentCardOption[]>(initialPaymentOptions);
   const [consentChecked, setConsentChecked] = useState<boolean>(false);
 
   // Mock cost data - this would likely be calculated based on formData in a real app
@@ -55,21 +46,20 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({
   const {
     register,
     setValue,
+    watch,
     formState: { errors },
   } = methods;
 
   useEffect(() => {
     register("paymentMethod", {
-      validate: validatePaymentMethod,
+      validate: validatePaymentMethods,
     });
   }, [register]);
 
   useEffect(() => {
-    setValue("paymentMethod", selectedCard || "", {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  }, [selectedCard, setValue]);
+    const subscription = watch((value) => setSelectedCard(value.paymentMethod || null));
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const handleAddNewCard = (cardData: { cardNumber: string }) => {
     const newCard: PaymentCardOption = {
@@ -79,7 +69,10 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({
       name: "New Card",
     };
     setPaymentOptions((prev) => [...prev, newCard]);
-    setSelectedCard(newCard.id);
+    setValue("paymentMethod", newCard.id, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   return (
@@ -166,9 +159,13 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({
           </p>
           <div className="space-y-3">
             <PaymentMethod
-              selectedId={selectedCard}
-              onChange={setSelectedCard}
+              name="paymentMethod"
+              label="Select Payment Method"
+              required
+              options={paymentOptions}
               onAddNew={handleAddNewCard}
+              isShowRadio={true}
+              rules={{ validate: validatePaymentMethods }}
             />
             {errors.paymentMethod && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
@@ -181,17 +178,17 @@ const JobReviewPage: React.FC<JobReviewPageProps> = ({
         {/* Pay & Post Job Button */}
         <div className="pt-6">
           <div className="flex gap-4">
-            {/* <Button
-            onClick={onBack}
-            className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            Back to Edit
-          </Button> */}
+            <Button
+              onClick={onBack}      
+              className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"        
+            >
+              Back to Edit
+            </Button>
             <Button
               type="submit"
               variant={consentChecked && selectedCard ? "primary" : "secondary"}
-              disabled={!consentChecked || !selectedCard}
-              className="px-6 py-3 rounded-lg text-sm font-medium"
+              disabled={!consentChecked || !selectedCard}    
+              className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"          
             >
               Pay & Post Job
             </Button>

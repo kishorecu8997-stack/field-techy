@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import PaymentMethod, { type PaymentCardOption } from '@/shared/components/commonUI/PaymentMethod';
+import PaymentMethod, {
+  type PaymentCardOption,
+} from "@/shared/components/commonUI/PaymentMethod";
 import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
-import { validateAmount } from "@/utils/validate";
+import { validateAmount, validatePaymentMethods } from "@/utils/validate";
+import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
 
 export interface AddFundFormData {
-    amount: string;
-    cardId: string;    
-  }
+  amount: string;
+  cardId: string;
+}
 
-const AddFund= () => {
+const AddFund = () => {
   const handleSubmit = (data: AddFundFormData) => {
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
@@ -21,15 +24,16 @@ const AddFund= () => {
   const methods = useForm<AddFundFormData>({
     defaultValues: {
       amount: "",
-      cardId: "",
+      cardId: initialPaymentOptions[0]?.id || "",
     },
     mode: "onSubmit",
   });
 
-  const [selectedCard, setSelectedCard] = useState<string | null>(null);
-    const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(initialPaymentOptions);
-    
- const handleAddNewCard = (cardData: { cardNumber: string }) => {
+  const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
+    initialPaymentOptions
+  );
+
+  const handleAddNewCard = (cardData: { cardNumber: string }) => {
     const newCard: PaymentCardOption = {
       id: `card_${Date.now()}`,
       last4: cardData.cardNumber.slice(-4),
@@ -37,7 +41,7 @@ const AddFund= () => {
       name: "New Card",
     };
     setPaymentOptions((prev) => [...prev, newCard]);
-    setSelectedCard(newCard.id);
+    methods.setValue("cardId", newCard.id);
   };
   return (
     <FormContainer
@@ -49,27 +53,22 @@ const AddFund= () => {
         <InputField
           label="Amount"
           name="amount"
-          placeholder="Amount"
+          placeholder="Enter Amount e.g., $10"
           required
           rules={{ validate: (v: string) => validateAmount(v) }}
-        />  
-         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          Select Payment Method <span className="text-red-600">*</span>
-        </label>
-        <div className="space-y-3">                 
+        />
+        <div className="space-y-3">
           <PaymentMethod
+            name="cardId"
+            label="Select Payment Method"
+            required
             options={paymentOptions}
-            selectedId={selectedCard}
-            onChange={(id) => {
-              if (id) {
-                setSelectedCard(id);
-              }
-            }}
             onAddNew={handleAddNewCard}
+            isShowRadio={true}
+            rules={{ validate: (v: SelectOption) => validatePaymentMethods(v) }}
           />
-        </div>      
+        </div>
       </div>
-      
 
       <div className="bg-white ">
         <Button

@@ -13,26 +13,20 @@ export const jobOverviewData: JobOverview[] = [
       id: 1,
       title: "Active Jobs",
       count: 12,      
-      color: "bg-teal-800 dark:bg-teal-900/40",
-      textColor: "text-white dark:text-gray-900",
-      buttonColor: "bg-blue-200 dark:bg-blue-800/60",
+      status: "inprogress",      
       buttonShow:true
     },
     {
       id: 2,
       title: "Completed Jobs",
       count: 5,
-      color: "bg-green-100 dark:bg-green-900/40",
-      textColor: "text-green-800 dark:text-green-300",
-      buttonColor: "bg-green-200 dark:bg-green-800/60",
+      status: "completed"      
     },
     {
       id: 3,
       title: "Jobs Cancelled",
       count: 2,
-      color: "bg-slate-200 dark:bg-slate-900/40",
-      textColor: "text-slate-800 dark:text-slate-300",
-      buttonColor: "bg-slate-300 dark:bg-slate-800/60"
+      status: "cancelled"      
     }
   ];
   

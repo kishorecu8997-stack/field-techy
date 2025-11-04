@@ -3,7 +3,7 @@ import React from 'react';
 const ProposalCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   return (
     <div 
-      className="p-4 rounded-lg flex items-center gap-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300"
+      className="p-4 rounded-lg flex items-center gap-4 bg-teal-50 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300"
     >
       <img 
         src={engineer.imageUrl} 

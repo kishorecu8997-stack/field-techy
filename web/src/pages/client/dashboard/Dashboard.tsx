@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ">
               {jobOverviewData.map((job) => (
-                <JobOverviewCard key={job.id} {...job} />
+                <JobOverviewCard key={job.id} id={job.id} title={job.title} count={job.count} status={job.status} buttonShow={job.buttonShow} />
               ))}
             </div>
             <div className="mb-8">

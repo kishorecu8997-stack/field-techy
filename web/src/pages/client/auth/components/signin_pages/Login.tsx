@@ -29,7 +29,6 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  // const { goToMyJobs } = useClientHomeNavigation();
    const { goToDashboard } = useClientHomeNavigation();
 
   const [isOpen, setIsOpen] = useState(false);
