@@ -11,12 +11,12 @@ const EditBankDetails = () => {
     mode: "onChange",
     delayError: 500,
     defaultValues: {
-      bankName: "Bank of America",
-      accountNumber: "1234567890",
-      swiftcode: "1234567890",
-      bankAddress: "1234 Main Street, Anytown, USA",
-      iban: "1234567890",
-      name: "JohnDoe",
+      bankName: "",
+      accountNumber: "",
+      swiftcode: "",
+      bankAddress: "",
+      iban: "",
+      name: "",
     },
   });
 

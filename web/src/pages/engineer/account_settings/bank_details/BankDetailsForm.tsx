@@ -17,15 +17,16 @@ import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
  */
 const BankDetailsForm = ({ formType }: { formType?: string }) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-4">
       <div className="flex flex-col overflow-auto flex-grow gap-4">
+        <div className="p-4">
         <SelectField
           name="bankName"
           label="Bank"
           options={bankList}
           placeholder="Select a bank"
           required
-        />
+          />          
         <InputField
           name="bankAddress"
           label="Bank Address"
@@ -64,7 +65,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           rules={{ validate: validateSWIFTBank }}
         />
       </div>
-
+</div>
       <div className="mt-auto flex justify-end">
         <Button
           type="submit"
