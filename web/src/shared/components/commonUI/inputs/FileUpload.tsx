@@ -221,7 +221,6 @@ export const FileUpload = ({
       field.onChange(null);
       return;
     }
-
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);

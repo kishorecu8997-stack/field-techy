@@ -1,7 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type { PopupProps } from './type';
-
-
+import { useEffect, useRef } from "react";
+import type { PopupProps } from "./type";
 
 /**
  * Popup Component
@@ -29,17 +27,17 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
     if (open) {
-      document.addEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEsc);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = '';
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
     };
   }, [open, onClose]);
 
@@ -58,11 +56,12 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
     <div
       ref={modalRef}
       className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[rgba(61,63,66,0.6)] animate-fade-in"
-      style={{ backdropFilter: 'blur(1px)' }}
+      style={{ backdropFilter: "blur(1px)" }}
       onClick={handleBackdropClick}
     >
       {/* Modal */}
-      <div className="
+      <div
+        className="
           w-full 
           sm:max-w-md sm:rounded-lg sm:shadow-xl
           max-h-screen 
@@ -74,7 +73,8 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
           sm:relative
           h-full 
           sm:h-auto
-        ">
+        "
+      >
         {children}
       </div>
     </div>

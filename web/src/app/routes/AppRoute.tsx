@@ -11,10 +11,13 @@ const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
 // const ProfileSettingPage = React.lazy(
-//   () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
+//   () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
 // );
 const MultiStepRegistrationForm = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm ")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
+    )
 );
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
@@ -46,7 +49,8 @@ const TermsAndConditions = React.lazy(
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
 
-//client
+// Client Pages
+// const ClientAuthLayout = React.lazy(() => import("@/pages/client/auth"));
 const ClientSignInPage = React.lazy(
   () => import("@/pages/client/auth/components/signin_pages/SignInPage")
 );
@@ -60,6 +64,41 @@ const CorporateMultiStepRegistration = React.lazy(
   () =>
     import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
 );
+const ClientProfileSettingPage = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+const ClientForgetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ForgetPassword")
+);
+const ClientResetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ResetPassword")
+);
+const ClientBackgroundVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/BackgroundVerification"
+    )
+);
+const ClientSetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/profile_setup/SetPassword")
+);
+const ClientMyJobsPage = React.lazy(
+  () => import("@/pages/client/my_job_client")
+);
+const ClientDashboard = React.lazy(
+  () => import("@/pages/client/dashboard/Dashboard")
+);
+const ClientExploreEngineers = React.lazy(
+  () => import("@/pages/client/explore_engineer")
+);
+const ClientManageProposal = React.lazy(
+  () => import("@/pages/client/manage_proposal")
+);
+const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
+const ClientSearchResult = React.lazy(
+  () => import("@/pages/client/search_result")
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -69,6 +108,7 @@ const CorporateMultiStepRegistration = React.lazy(
  * Routes are grouped under:
  * - Authentication flow (`/auth`)
  * - Engineer dashboard (`/engineer`)
+ * - Client dashboard (`/client`)
  * - Standalone public pages (e.g., Privacy Policy)
  * - Catch-all 404 route
  *
@@ -76,6 +116,13 @@ const CorporateMultiStepRegistration = React.lazy(
  * @see {@link https://reactrouter.com|React Router Documentation}
  */
 export const routes = createBrowserRouter([
+  // Default route redirecting to client login
+  {
+    path: "/",
+    element: <Navigate to={absoluteUrls.client.auth.login} replace />,
+  },
+
+  // Engineer Auth Routes
   {
     path: BASE.AUTH,
     element: withSuspense(Layout),
@@ -106,6 +153,7 @@ export const routes = createBrowserRouter([
     ],
   },
 
+  // Engineer Main Routes
   {
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
@@ -143,6 +191,26 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientSignUpPage),
       },
       {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(ClientProfileSettingPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(ClientSetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(ClientBackgroundVerification),
+      },
+      {
         path: urls.client.auth.forget_password,
         element: withSuspense(ForgetPassword),
       },
@@ -161,11 +229,36 @@ export const routes = createBrowserRouter([
     ],
   },
 
+  // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout),
+    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
     children: [
-      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
+      { index: true, element: withSuspense(ClientMyJobsPage) },
+      {
+        path: urls.client.home.my_jobs,
+        element: withSuspense(ClientMyJobsPage),
+      },
+      {
+        path: urls.client.home.dashboard,
+        element: withSuspense(ClientDashboard),
+      },
+      {
+        path: urls.client.home.explore_engineers,
+        element: withSuspense(ClientExploreEngineers),
+      },
+      {
+        path: urls.client.home.post_JobPage,
+        element: withSuspense(ClientPostJobPage),
+      },
+      {
+        path: urls.client.home.manage_proposal,
+        element: withSuspense(ClientManageProposal),
+      },
+      {
+        path: urls.client.home.search_result,
+        element: withSuspense(ClientSearchResult),
+      },
     ],
   },
 

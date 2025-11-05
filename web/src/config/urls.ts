@@ -1,5 +1,3 @@
-import { client } from "@/dummy_data/jobDetails";
-
 /**
  * Application route URLs.
  *
@@ -15,7 +13,7 @@ export const BASE = {
   CLIENT: "/client",
   CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
-  AUTH: "/engineer/auth",
+  AUTH: "/engineer/auth", 
 } as const;
 
 export const urls = {
@@ -41,23 +39,29 @@ export const urls = {
     },
   },
   client: {
-    auth: {
-      login: `${BASE.CLIENT_AUTH}/login`,
-      signup: `${BASE.CLIENT_AUTH}/signup`,
-      account_type: `${BASE.CLIENT_AUTH}/select-role`,
-      profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
-      forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
-      reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
-      set_password: `${BASE.CLIENT_AUTH}/set-password`,
-      background_verification: `${BASE.CLIENT_AUTH}/background-verification`,
-      privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
-    },
+    base: BASE.CLIENT,
+    privacy_policy: `${BASE.CLIENT}/policy`,
+
     home: {
-      my_jobs: `${BASE.CLIENT}/my-jobs`,
-      search_result: `${BASE.CLIENT}/search-result`,
-      faq: `${BASE.CLIENT}/faq`,
-      terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
-      privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      dashboard: "dashboard",
+      my_jobs: "my-jobs",
+      explore_engineers: "explore-engineers",
+      manage_proposal: "manage-proposals",
+      post_JobPage: "post-job",
+      search_result: "search-result",
+      faq: "faq",
+      terms_and_conditions: "terms-and-conditions",
+      privacy_policy: "privacy-policy",
+    },
+    auth: {
+      login: "login",
+      signup: "signup",
+      account_type: "account-type",
+      profile_setup: "profile-setup",
+      forget_password: "forget-password",
+      reset_password: "reset-password",
+      set_password: "set-password",
+      background_verification: "background-verification",
     },
   },
 } as const;
@@ -83,13 +87,12 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
     },
   },
-
   client: {
     auth: {
       login: `${BASE.CLIENT_AUTH}/login`,
       signup: `${BASE.CLIENT_AUTH}/signup`,
-      account_type: `${BASE.CLIENT_AUTH}/select-role`,
       profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      account_type: `${BASE.CLIENT_AUTH}/account-type`,
       forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
       reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
       set_password: `${BASE.CLIENT_AUTH}/set-password`,
@@ -97,7 +100,11 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
     },
     home: {
+      dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
+      explore_engineers: `${BASE.CLIENT}/explore-engineers`,
+      manage_proposal: `${BASE.CLIENT}/manage-proposals`,
+      post_JobPage: `${BASE.CLIENT}/post-job`,
       search_result: `${BASE.CLIENT}/search-result`,
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,

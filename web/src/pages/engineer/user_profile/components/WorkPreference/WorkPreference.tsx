@@ -7,8 +7,7 @@ import { CiWallet } from "react-icons/ci";
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
-import { validateRate } from "../../Validate";
-import { validatePortfolioLink } from "@/shared/libs/utils";
+import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 

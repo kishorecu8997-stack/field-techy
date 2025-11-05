@@ -109,7 +109,6 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
           <SelectField
             label="Country"
-            isShowLabel={false}
             name="country"
             placeholder="Country"
             options={countries.map((c) => ({

@@ -15,6 +15,7 @@ import {
   validateZipcode,
 } from "@/pages/engineer/user_profile/Validate";
 import countries from "@/dummy_data/countries";
+import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 
 interface ProfileSetupProps {
   role?: string;
@@ -76,7 +77,7 @@ const ProfileSetup = ({ role }: ProfileSetupProps) => {
               placeholder="Company Name"
               leftIcon={<FaRegUser className="text-lg text-gray-500" />}
               label="Company Name"
-              rules={{ validate: (v: string) => validateName(v) }}
+              rules={{ validate: (v: string) => validateCompany(v) }}
             />
 
             <InputField

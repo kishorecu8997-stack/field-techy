@@ -121,7 +121,6 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
-
   /**
    * submitCompleteForm
    *
