@@ -208,10 +208,10 @@ export function validateSWIFTBank(swift: string): true | string {
 
   // 2. Reject leading/trailing/internal spaces
   if (/^\s|\s$/.test(swift)) {
-    return "SWIFT must not start or end with a space";
+    return "SWIFT code must not start or end with a space";
   }
   if (/\s/.test(swift)) {
-    return "SWIFT must not contain spaces";
+    return "SWIFT code must not contain spaces";
   }
 
   // 3. Normalize
@@ -219,15 +219,15 @@ export function validateSWIFTBank(swift: string): true | string {
 
   // 4. Length check: must be between 8 and 11 characters
   if (normalized.length < 8) {
-    return "SWIFT must be at least 8 characters long";
+    return "SWIFT code must be at least 8 characters long";
   }
   if (normalized.length > 11) {
-    return "SWIFT must not exceed 11 characters";
+    return "SWIFT code must not exceed 11 characters";
   }
 
   // 5. Alphanumeric check
   if (!/^[A-Z0-9]+$/.test(normalized)) {
-    return "SWIFT must contain only letters and digits";
+    return "SWIFT code must contain only letters and digits";
   }
 
   // ✅ Valid
