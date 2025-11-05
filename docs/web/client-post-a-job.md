@@ -1,4 +1,4 @@
-# Post A Job Form Specification
+TransactionType# Post A Job Form Specification
 
 | Page | Fields | Input Type | Required (Yes/No) | Rule | Validation Rule | Lower Limit | Upper Limit |
 |------|--------|------------|-------------------|------|------------------|-------------|-------------|
@@ -11,10 +11,10 @@
 | Post A Job | Start Date | Date Picker | Yes | Select Date | Select date Current date to feature date | Select any one date (can be present or future date but cannot be a past date) | Select any one date (can be present or future date but cannot be a past date.) |
 | Post A Job | Start Time | Time Picker | Yes | Select Time | Select time | 1 Selection | 1 Selection |
 | Post A Job | Number Of vacancy | Dropdown | Yes | Select value | Number Of vacancy must be selected (Drop down) | 1 Selection | 1 Selection |
-| Post A Job | Time period Of Job | Text | Yes | Enter the time period | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 1 char (min. value 1 hour) | 1 char (max. value 8 hour) |
+| Post A Job | Time period Of Job | Text | Yes | Enter the time period | Single digit number (min. value 1 hour and max. value 8 hour)| 1 char (min. value 1 hour) | 1 char (max. value 8 hour) |
 | Post A Job | Skills Required | Text | Yes | Enter the skill req | Alphabets (Capital & Small) only are allowed with commas and spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 500 Characters |
-| Post A Job | Requirements/Deliverable | Text Area | Yes | Text | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 50 Characters | 2000 Characters |
-| Post A Job | Other Information | Text Area | Yes | Text | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 50 Characters | 2000 Characters |
+| Post A Job | Requirements/Deliverable | Text Area | Yes | Text | All Capital & Small ,Numbers and symbols are allowed,Don't allow scripting. (No leading and trailing spaces are allowed) | 50 Characters | 2000 Characters |
+| Post A Job | Other Information | Text Area | Yes | Text | All Capital & Small ,Numbers and symbols are allowed,Don't allow scripting. (No leading and trailing spaces are allowed) | 50 Characters | 2000 Characters |
 | Post A Job | Tool Name | Text | Yes | Education level required | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
 | Post A Job | Tool Image | File Upload | Yes | Upload Tool image | Upload PDF, JPG, PNG format | 1 | 1 |
 | Post A Job | Additional budget for the tool | Text | Yes | University required | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed). Only currency symbols (special chars) are allowed. | 2 Characters | 20 Characters |
