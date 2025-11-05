@@ -17,6 +17,7 @@ export const BASE = {
   ENGINEER: "/engineer",
   AUTH: "/engineer/auth",
   ADMIN: "/admin",
+  ADMIN_AUTH: "/admin/auth",
 } as const;
 
 export const urls = {
@@ -48,7 +49,6 @@ export const urls = {
 
   //Admin urls
   admin: {
-    base: BASE.ADMIN,
     auth: {
       login: "login",
       forget_password: "forget-password",
@@ -101,13 +101,12 @@ export const absoluteUrls = {
   //Admin absolute URLs
   admin: {
     auth: {
-      login: `${BASE.ADMIN}/auth/login`,
-      forget_password: `${BASE.ADMIN}/auth/forget-password`,
-      reset_password: `${BASE.ADMIN}/auth/reset-password`,
-      otp: `${BASE.ADMIN}/auth/otp`,
+      login: `${BASE.ADMIN_AUTH}/login`,
+      forget_password: `${BASE.ADMIN_AUTH}/forget-password`,
+      reset_password: `${BASE.ADMIN_AUTH}/reset-password`,
+      otp: `${BASE.ADMIN_AUTH}/otp`,
     },
     home: {
-      base: BASE.ADMIN,
       dashbaord: `${BASE.ADMIN}/dashboard`,
       manage_engineer: `${BASE.ADMIN}/users`,
       manage_client: `${BASE.ADMIN}/client`,

@@ -3,9 +3,24 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
 
+/**
+ * AdminLayout
+ * 
+ * Root layout component for the admin section. Renders a responsive layout with
+ * collapsible sidebar navigation, header bar, and main content area using
+ * React Router's Outlet for child route rendering.
+ *
+ * @returns {JSX.Element} Admin dashboard layout structure
+ */
 export default function AdminLayout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  /**
+   * toggleSidebar
+   * 
+   * Toggles the sidebar's collapsed state. Used by the Header component
+   * to allow users to expand/collapse the navigation sidebar.
+   */
   const toggleSidebar = () => {
     setIsSidebarCollapsed((prev) => !prev);
   };

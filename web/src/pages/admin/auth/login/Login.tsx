@@ -13,6 +13,21 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * AdminLogin
+ *
+ * Admin authentication page component providing a login form with email and password fields.
+ * Features form validation, remember me functionality, and forgot password link.
+ *
+ * Form Features:
+ * - Email validation with custom rules
+ * - Password validation with custom rules
+ * - Remember me checkbox
+ * - Forgot password link
+ * - Responsive styling with dark mode support
+ *
+ * @returns {JSX.Element} Admin login form with branding and validation
+ */
 export default function AdminLogin() {
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -24,9 +39,14 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
 
+  /**
+   * Handles the login form submission.
+   * Currently implements a basic navigation to dashboard.
+   * TODO: Add actual authentication logic.
+   */
   const handleSubmit = () => {
     // console.log("Admin Login Submitted");
-    navigate("/admin/dashboard");
+    navigate(`${absoluteUrls.admin.home.dashbaord}`);
   };
 
   return (
@@ -51,7 +71,7 @@ export default function AdminLogin() {
         >
           <InputField
             name="email"
-            label="Email Email Address"
+            label="Email Address"
             type="text"
             required
             rules={validateEmailRules}

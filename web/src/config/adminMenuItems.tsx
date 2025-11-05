@@ -9,6 +9,16 @@ import { RiBankCardLine } from "react-icons/ri";
 import { BiFile } from "react-icons/bi";
 import { MdCurrencyExchange } from "react-icons/md";
 
+/**
+ * Represents a single item in the admin navigation menu.
+ * Can be either a direct link or a parent item with nested children.
+ * 
+ * @interface MenuItem
+ * @property {string} name - Display name of the menu item
+ * @property {string} path - URL path or route for the menu item
+ * @property {React.ReactNode} [icon] - Optional icon component to display next to the name
+ * @property {MenuItem[]} [children] - Optional array of nested menu items for dropdowns
+ */
 export interface MenuItem {
   name: string;
   path: string;
@@ -16,6 +26,20 @@ export interface MenuItem {
   children?: MenuItem[];
 }
 
+/**
+ * Configuration array defining the admin dashboard's navigation structure.
+ * Contains all available menu items for the admin sidebar navigation.
+ * 
+ * Menu structure includes:
+ * - Dashboard overview
+ * - User management (Engineers, Clients, Sub-Admins)
+ * - Content management (Jobs, Categories, CMS)
+ * - Financial tools (Payments, Transactions, Rate Cards)
+ * - System features (Notifications, Settings)
+ * 
+ * Icons are imported from various icon libraries (react-icons) and
+ * paths are defined in the absoluteUrls configuration.
+ */
 export const menuItems: MenuItem[] = [
   {
     name: "Dashboard",

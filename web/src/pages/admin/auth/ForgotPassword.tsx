@@ -8,15 +8,32 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { ForgotPasswordFormData } from "./types";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * ForgotPassword component renders a form for users to request a password reset link.
+ * Utilizes react-hook-form for form state management and validation.
+ * Navigates to OTP page upon successful submission.
+ *
+ * @component
+ */
 export default function ForgotPassword() {
+  /**
+   * React Hook Form methods for managing form state and validation.
+   */
   const methods = useForm<ForgotPasswordFormData>({
     defaultValues: {
       email: "",
     },
   });
 
+  /**
+   * React Router navigation function.
+   */
   const navigate = useNavigate();
 
+  /**
+   * Handles form submission. Navigates to the OTP page after submit.
+   * @returns {void}
+   */
   const handleSubmit = () => {
     // console.log("Admin Login Submitted");
     navigate(`${absoluteUrls.admin.auth.otp}`);

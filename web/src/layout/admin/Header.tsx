@@ -3,21 +3,44 @@ import { useEffect, useRef, useState } from "react";
 import { BsChevronDown, BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import type { NavbarProps } from "./types";
+import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 
-const notifications = [{ id: 1 }, { id: 2 }, { id: 3 }];
-
+/**
+ * Header
+ * 
+ * Top navigation component for the admin dashboard. Provides navigation controls,
+ * region selection, notifications panel, and user profile access.
+ * 
+ * Features:
+ * - Sidebar toggle control
+ * - Region selection dropdown
+ * - Notifications panel with click-outside behavior
+ * - User profile section with avatar and role display
+ * 
+ * @param {NavbarProps} props - Component props
+ * @param {Function} props.onToggleSidebar - Callback to toggle the sidebar visibility
+ * @returns {JSX.Element} Header component with navigation controls and user interface
+ */
 export default function Header({ onToggleSidebar }: NavbarProps) {
   const [region, setRegion] = useState("Select Region");
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const bellRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * Handles clicks outside of the notification panel to close it
+   * Checks both the notification dropdown and bell icon ref to determine if click was outside
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (
+        isNotificationOpen &&
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        bellRef.current &&
+        !bellRef.current.contains(target)
       ) {
         setIsNotificationOpen(false);
       }
@@ -27,7 +50,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isNotificationOpen]);
 
   return (
     <header
@@ -37,7 +60,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
       }}
     >
       <div className="flex items-center space-x-4">
-        <Link to="/admin" className="">
+        <Link to="/admin/dashboard" className="">
           <img
             src={assetsConfig.logos.ftLogoWhite}
             alt="FT Logo"
@@ -72,7 +95,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           </div>
         </div>
 
-        <div className="text-xl cursor-pointer">
+        <div className="text-xl cursor-pointer" ref={bellRef}>
           <FaRegBell onClick={() => setIsNotificationOpen((prev) => !prev)} />
         </div>
 
@@ -119,14 +142,14 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                   <div className="flex justify-between items-start">
                     <div className="grid">
                       <span className="font-medium text-gray-900 dark:text-white">
-                        John Doe
+                        {notification.name}
                       </span>
                       <span className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        Lorem ipsum dolor sit amet
+                        {notification.message}
                       </span>
                     </div>
                     <span className="text-xs text-gray-500 dark:text-gray-400 ml-2 whitespace-nowrap">
-                      1 day ago
+                      {notification.timestamp}
                     </span>
                   </div>
                 </div>

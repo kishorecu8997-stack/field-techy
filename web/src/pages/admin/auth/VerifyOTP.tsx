@@ -4,11 +4,32 @@ import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 
+/**
+ * AdminVerifyOTP component renders a form for entering and verifying a One Time Passcode (OTP).
+ * Utilizes react-hook-form for form state management and validation.
+ * Navigates to the reset password page upon successful OTP verification.
+ *
+ * @component
+ */
 export default function AdminVerifyOTP() {
+  /**
+   * State to track OTP verification status.
+   */
   const [, setVerified] = React.useState<boolean>(false);
+
+  /**
+   * Name of the OTP input field.
+   */
   const name = "admin_verify_otp";
+
+  /**
+   * React Router navigation function.
+   */
   const navigate = useNavigate();
 
+  /**
+   * React Hook Form methods for managing form state and validation.
+   */
   const methods = useForm({
     defaultValues: {
       [name]: "",
@@ -18,6 +39,10 @@ export default function AdminVerifyOTP() {
 
   const { setValue, trigger } = methods;
 
+  /**
+   * Handles successful OTP verification. Navigates to the reset password page.
+   * @returns {void}
+   */
   const onVerifySuccess = React.useCallback(() => {
     // console.log("OTP Verified Successfully!");
     navigate(`${absoluteUrls.admin.auth.reset_password}`);
