@@ -12,12 +12,15 @@ export interface WalletData {
   transactions: Transaction[];
 }
 
+export type TransactionType = 'credit' | 'debit';
+
+
 export interface TransactionInfo {
   id: number;
   title: string;
   date: string;
   amount: number;
-  type: 'credit' | 'debit';
+  type: TransactionType;
   status?: string;
 }
 
