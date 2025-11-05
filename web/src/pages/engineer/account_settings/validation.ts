@@ -133,7 +133,7 @@ export const validatePassword = (value: string) => {
     return "Password must include at least one special character";
   }
   if (/\s/.test(value)) {
-    return "Password must not contain spaces";
+    return "Password must not start or end with a space";
   }
   return true;
 };
@@ -297,7 +297,7 @@ export function validateAccNumber(value: string): true | string {
 
   // 2. No spaces allowed
   if (/\s/.test(value)) {
-    return "Account number must not contain spaces";
+    return "Account number must not start or end with a space";
   }
 
   // 3. Digit-only check (no letters or symbols)
@@ -343,7 +343,7 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
   const raw = value || "";
 
     // Reject any whitespace (leading/trailing/internal)
-    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
+    if (/\s/.test(raw)) return `${fieldLabel} must not start or end with a space`;
 
     // Only letters allowed (A-Z)
     if (!/^[A-Za-z]+$/.test(raw))

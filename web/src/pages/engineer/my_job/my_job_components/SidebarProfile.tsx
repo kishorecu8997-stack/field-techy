@@ -1,8 +1,7 @@
-import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
-import useDrawerStore from "@/shared/store/useDrawerStore";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { FaUser } from "react-icons/fa";
+import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -79,12 +78,15 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <h3 className="font-semibold text-gray-900 dark:text-white">
           My Earnings
         </h3>
-        <Link
-          to="#"
+        <div
+          onClick={() => {
+            setActiveKey("myEarning");
+            setISOpenSidebar(true);
+          }}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline"
         >
           View all
-        </Link>
+        </div>
       </div>
       <div className="text-center mb-4">
         <div className="text-xs text-gray-500 dark:text-gray-400">
