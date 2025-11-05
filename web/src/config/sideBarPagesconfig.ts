@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import ClientAccountDrawerMenu from "@/pages/client/my_account/ClientAccountDrawerMenu";
+import ClientAddFund from "@/pages/client/my_wallet/components/AddFund";
+import ClientRecentTransactions, { ActionButtonsForRecentTransactions } from "@/pages/client/my_wallet/components/RecentTransactionsList";
+import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
 import AccountSettings from "@/pages/engineer/account_settings";
 import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBankDetails";
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
@@ -9,6 +13,23 @@ import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
 import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
+import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
+import Documents from "@/pages/engineer/user_profile/components/documents/Documents";
+import AddEducation from "@/pages/engineer/user_profile/components/education/AddEducation";
+import EditEducation from "@/pages/engineer/user_profile/components/education/EditEducation";
+import Education from "@/pages/engineer/user_profile/components/education/Education";
+import AddExperiences from "@/pages/engineer/user_profile/components/experiences/components/AddExperiences";
+import EditExperiences from "@/pages/engineer/user_profile/components/experiences/components/EditExperiences";
+import Experiences from "@/pages/engineer/user_profile/components/experiences/Experiences";
+import PersonalInformation from "@/pages/engineer/user_profile/components/PersonalInformation/PersonalInformation";
+import AddSkills from "@/pages/engineer/user_profile/components/skills_and_tools/components/AddSkills";
+import AddTools from "@/pages/engineer/user_profile/components/skills_and_tools/components/AddTools";
+import EditSkills from "@/pages/engineer/user_profile/components/skills_and_tools/components/EditSkills";
+import EditTools from "@/pages/engineer/user_profile/components/skills_and_tools/components/EditTools";
+import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools";
+import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
+import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
+
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -30,82 +51,75 @@ import MyAccountDrawerMenu from "@/pages/engineer/my_account";
       component: React.ComponentType<any> | string;
       title: string;
       parent?: string;
+      actions?: React.ReactNode | React.ComponentType;
     }
   > = {
     myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
-    profile: { component: () => "test", title: "My Profile" },
+    profile: { component: UserProfileSidebar, title: "My Profile" },
     personalInfo: {
-      component: "test",
+      component: PersonalInformation,
       title: "Personal Information",
       parent: "profile",
     },
-    education: {
-      component: "test",
-      title: "Education",
-      parent: "profile",
-    },
+    education: { component: Education, title: "Education", parent: "profile" },
     addEducation: {
-      component: () => "test",
+      component: AddEducation,
       title: "Add Education",
       parent: "education",
     },
     editEducation: {
-      component: () => "test",
+      component: EditEducation,
       title: "Edit Education",
       parent: "education",
     },
     skillsAndTools: {
-      component: () => "test",
+      component: SkillsAndTools,
       title: "Skills & Tools",
       parent: "profile",
     },
     addSkills: {
-      component: () => "test",
+      component: AddSkills,
       title: "Add Skills",
       parent: "skillsAndTools",
     },
     editSkills: {
-      component: () => "test",
+      component: EditSkills,
       title: "Edit Skills",
       parent: "skillsAndTools",
     },
     addTools: {
-      component: () => "test",
+      component: AddTools,
       title: "Add Tools",
       parent: "skillsAndTools",
     },
     editTools: {
-      component: () => "test",
+      component: EditTools,
       title: "Edit Tools",
       parent: "skillsAndTools",
     },
     experiences: {
-      component: () => "test",
+      component: Experiences,
       title: "Experiences",
       parent: "profile",
     },
     addExperiences: {
-      component: () => "test",
+      component: AddExperiences,
       title: "Add Experience",
       parent: "experiences",
     },
     editExperiences: {
-      component: () => "test",
+      component: EditExperiences,
       title: "Edit Experience",
       parent: "experiences",
     },
     workPreference: {
-      component: () => "test",
+      component: WorkPreference,
       title: "Work Preference",
       parent: "profile",
     },
-    documents: {
-      component: () => "test",
-      title: "Documents",
-      parent: "profile",
-    },
+    documents: { component: Documents, title: "Documents", parent: "profile" },
     editDocument: {
-      component: () => "test",
+      component: EditDocument,
       title: "Edit Document",
       parent: "documents",
     },
@@ -140,4 +154,50 @@ import MyAccountDrawerMenu from "@/pages/engineer/my_account";
     myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
     withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
     notification: { component: NotofocationPage, title: "Notification", parent: "settings" },
+
+    //client
+    clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
+    proposal: {
+      component: "test",
+      title: "Manage Proposal",
+      parent: "clientAccount",
+    },
+    company: {
+      component: "test",
+      title: "Company Information",
+      parent: "clientAccount",
+    },
+    document: {
+      component: "test",
+      title: "Documents",
+      parent: "clientAccount",
+    },
+    payment: {
+      component: "test",
+      title: "Payment Methods",
+      parent: "clientAccount",
+    },
+    changePwd: {
+      component: "test",
+      title: "Change Password",
+      parent: "clientAccount",
+    },
+    clientAcc: {
+      component: "test",
+      title: "Account Setting",
+      parent: "clientAccount",
+    },
+    clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
+    clientAddFund: {
+      component: ClientAddFund,
+      title: "Add Fund",
+      parent: "clientWallet",
+    },
+    recentTransactions: {
+      component: ClientRecentTransactions,
+      title: "Recent Transactions",
+      actions: ActionButtonsForRecentTransactions,
+      parent: "clientWallet",
+    },
+
   };

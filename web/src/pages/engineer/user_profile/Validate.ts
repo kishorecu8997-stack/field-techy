@@ -282,6 +282,25 @@ export const validateDateRange = (
   return true;
 };
 
+export const validateFilterDateRange = (
+  startDate: Date | null,
+  endDate: Date | null
+) => {
+  if (!startDate) {
+    return "Start date is required";
+  }
+
+  if (startDate > new Date()) {
+    return "Start date cannot be in the future";
+  }
+
+  if (endDate && startDate > endDate) {
+    return "Start date must be before the end date";
+  }
+
+  return true;
+};
+
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "Rate must not start or end with a space";
@@ -370,9 +389,6 @@ export const validatePortfolioLink = (value: string) => {
 
     // Normalize path: must be clean and minimal
     const path = url.pathname;
-
-    // Remove trailing slash for comparison, but original must not have excess
-    const cleanPath = path === "/" ? "" : path;
 
     // Define allowed profiles
     const isGitHub =

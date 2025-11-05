@@ -3,7 +3,8 @@ import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
 
-const Layout = React.lazy(() => import("@/pages/engineer/auth"));
+// const Layout = React.lazy(() => import("@/pages/engineer/auth"));
+const Layout = React.lazy(() => import("@/pages/client/auth"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
@@ -11,7 +12,7 @@ const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
 // const ProfileSettingPage = React.lazy(
-//   () => import("@/pages/auth/components/profile_setup/ProfileSettingPage")
+//   () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
 // );
 const MultiStepRegistrationForm = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm ")
@@ -28,7 +29,12 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
+
+// Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
+
+
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
@@ -44,6 +50,38 @@ const TermsAndConditions = React.lazy(
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
 const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutApp"));
 
+
+// Client Pages
+const ClientAuthLayout = React.lazy(() => import("@/pages/client/auth"));
+const ClientSignInPage = React.lazy(
+  () => import("@/pages/client/auth/components/signin_pages/SignInPage")
+);
+const ClientSignUpPage = React.lazy(
+  () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
+);
+const ClientProfileSettingPage = React.lazy(
+  () => import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+const ClientForgetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ForgetPassword")
+);
+const ClientResetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ResetPassword")
+);
+const ClientBackgroundVerification = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/BackgroundVerification")
+);
+const ClientSetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/profile_setup/SetPassword")
+);
+const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
+const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
+const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
+const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
+const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
+const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -52,6 +90,7 @@ const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutA
  * Routes are grouped under:
  * - Authentication flow (`/auth`)
  * - Engineer dashboard (`/engineer`)
+ * - Client dashboard (`/client`)
  * - Standalone public pages (e.g., Privacy Policy)
  * - Catch-all 404 route
  *
@@ -59,6 +98,13 @@ const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutA
  * @see {@link https://reactrouter.com|React Router Documentation}
  */
 export const routes = createBrowserRouter([
+  // Default route redirecting to client login
+  {
+    path: "/",
+    element: <Navigate to={absoluteUrls.client.auth.login} replace />,
+  },
+
+  // Engineer Auth Routes
   {
     path: BASE.AUTH,
     element: withSuspense(Layout),
@@ -89,6 +135,7 @@ export const routes = createBrowserRouter([
     ],
   },
 
+  // Engineer Main Routes
   {
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
@@ -113,6 +160,58 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+    ],
+  },
+
+  // Client Auth Routes
+  {
+    path: BASE.CLIENT_AUTH,
+    element: withSuspense(ClientAuthLayout),
+    children: [
+      { index: true, element: <Navigate to="login" replace /> },
+      {
+        path: urls.client.auth.login,
+        element: withSuspense(ClientSignInPage),
+      },
+      {
+        path: urls.client.auth.signup,
+        element: withSuspense(ClientSignUpPage),
+      },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(ClientProfileSettingPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(ClientSetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(ClientBackgroundVerification),
+      },
+    ],
+  },
+
+  // Client Main Routes
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
+    children: [
+      { index: true, element: withSuspense(ClientMyJobsPage) },
+      { path: urls.client.home.my_jobs, element: withSuspense(ClientMyJobsPage) },
+      { path: urls.client.home.dashboard, element: withSuspense(ClientDashboard) },
+      { path: urls.client.home.explore_engineers, element: withSuspense(ClientExploreEngineers) },
+      { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
+      { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
+      { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
     ],
   },
 

@@ -218,8 +218,13 @@ interface TagSelectFieldProps {
 interface TextareaInputProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
+  rules?: RegisterOptions;
+  showValidationCheck?: boolean;
+  minLength?: number;
+  maxLength?: number;
 }
 
 /**

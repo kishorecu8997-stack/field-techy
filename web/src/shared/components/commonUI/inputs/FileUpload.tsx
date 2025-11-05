@@ -210,7 +210,15 @@ export const FileUpload = ({
       return;
     }
 
-    // 2. Validate size
+    // 2. Validate size - Updated to reject files below 50KB and above 350KB
+    if (file.size < 50 * 1024) {
+      const errorMsg = `File size must be at least 50 KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+    
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);

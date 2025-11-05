@@ -93,6 +93,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
               title={config.title}
               onClose={onClose}
               onBack={onBack}
+              actions={config.actions}
             />
           </div>
           <div className="flex-1 overflow-y-auto px-6 pb-4">
