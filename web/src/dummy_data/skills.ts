@@ -1,4 +1,3 @@
-// types.ts or skills.ts
 export interface SkillOption {
   value: string;
   label: string;
