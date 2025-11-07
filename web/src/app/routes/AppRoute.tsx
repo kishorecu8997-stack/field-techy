@@ -36,7 +36,6 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
-const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
@@ -52,6 +51,11 @@ const TermsAndConditions = React.lazy(
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
 const Home = React.lazy(() => import("@/pages/engineer/home"));
 const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
+
+
+// Layouts
+const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
 
 
 //admin-dashboard-layout
@@ -194,7 +198,7 @@ export const routes = createBrowserRouter([
   // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
       {

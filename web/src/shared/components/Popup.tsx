@@ -64,8 +64,9 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
       {/* Modal */}
       <div className="
           w-full 
-          sm:max-w-xl sm:rounded-lg sm:shadow-xl
-          max-h-screen 
+          sm:max-w-md sm:rounded-lg sm:shadow-xl
+          max-h-[98%]
+          overflow-auto
           flex flex-col
           bg-white dark:bg-gray-800
           inset-0 
