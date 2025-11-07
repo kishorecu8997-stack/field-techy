@@ -13,8 +13,8 @@ interface SignatureUploadProps {
   label?: string;
   required?: boolean;
   accept?: string;
-  minSize?: number; // 👈 Added minSize prop
-  maxSize?: number;
+  minSize?: number; // minimum file size (e.g. 2 KB)
+  maxSize?: number; // maximum file size (e.g. 350 KB)
   containerClassName?: string;
 }
 
@@ -23,16 +23,18 @@ export const SignatureUpload = ({
   label = "Technician Signature",
   required = false,
   accept = ".png,.jpg,.jpeg",
-  minSize = 2 * 1024, // 👈 2 KB minimum (prevents blank/corrupt files)
-  maxSize = 350 * 1024, // 350 KB default
+  minSize = 2 * 1024, // 2 KB minimum (avoid blank or corrupt signatures)
+  maxSize = 350 * 1024, // 350 KB maximum
   containerClassName = "flex flex-col py-1 w-full",
 }: SignatureUploadProps) => {
   const { control } = useFormContext();
+
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
-  // ✅ Helper: Format file size
+  // ✅ Format file size
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -55,11 +57,10 @@ export const SignatureUpload = ({
   };
 
   // ✅ Allowed extensions
-  const getAcceptExtensions = (): string[] => {
-    return accept
+  const getAcceptExtensions = (): string[] =>
+    accept
       .split(",")
       .map((ext) => ext.trim().replace(/^\.?/, "").toLowerCase());
-  };
 
   // ✅ Display types like “PNG, JPG”
   const formatAllowedTypes = (): string => {
@@ -83,8 +84,10 @@ export const SignatureUpload = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Reset previous state
     setFileError(null);
     setFileName(null);
+    setFileSize(null);
     setFileUrl(null);
 
     // 1️⃣ Extension validation
@@ -98,7 +101,7 @@ export const SignatureUpload = ({
 
     // 2️⃣ Size validation
     if (file.size < minSize) {
-      const msg = `File must be at least ${(minSize / 1024).toFixed(0)} KB.`;
+      const msg = `File size must be at least ${(minSize / 1024).toFixed(0)} KB.`;
       setFileError(msg);
       toast.error(msg);
       field.onChange(null);
@@ -106,38 +109,43 @@ export const SignatureUpload = ({
     }
 
     if (file.size > maxSize) {
-      const msg = `File must be under ${(maxSize / 1024).toFixed(0)} KB.`;
+      const msg = `File size must not exceed ${(maxSize / 1024).toFixed(0)} KB.`;
       setFileError(msg);
       toast.error(msg);
       field.onChange(null);
       return;
     }
 
-    // 3️⃣ File signature validation
+    // 3️⃣ Signature validation (genuine image check)
     const lowerName = file.name.toLowerCase();
+    let isValid = true;
+    let validationError = "";
+
     if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) {
       const isJpeg = await validateJpegSignature(file);
       if (!isJpeg) {
-        const msg = "Invalid JPEG file format.";
-        setFileError(msg);
-        toast.error(msg);
-        field.onChange(null);
-        return;
+        validationError = "File is not a genuine JPEG image.";
+        isValid = false;
       }
     } else if (lowerName.endsWith(".png")) {
       const isPng = await validatePngSignature(file);
       if (!isPng) {
-        const msg = "Invalid PNG file format.";
-        setFileError(msg);
-        toast.error(msg);
-        field.onChange(null);
-        return;
+        validationError = "File is not a genuine PNG image.";
+        isValid = false;
       }
     }
 
-    // ✅ Success — show preview
+    if (!isValid) {
+      setFileError(validationError);
+      toast.error(validationError);
+      field.onChange(null);
+      return;
+    }
+
+    // ✅ Success — show preview and update form
     const url = URL.createObjectURL(file);
     setFileName(file.name);
+    setFileSize(formatFileSize(file.size)); // ✅ now using helper like FileUpload
     setFileUrl(url);
     field.onChange(file);
   };
@@ -146,6 +154,7 @@ export const SignatureUpload = ({
   const handleRemove = (field: ControllerRenderProps) => {
     field.onChange(null);
     setFileName(null);
+    setFileSize(null);
     setFileUrl(null);
     setFileError(null);
     const input = document.getElementById(name) as HTMLInputElement;
@@ -190,9 +199,14 @@ export const SignatureUpload = ({
                       alt="Signature Preview"
                       className="max-h-24 border border-emerald-700 rounded-md"
                     />
-                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                       {fileName}
                     </p>
+                    {fileSize && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Size: {fileSize}
+                      </p>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleRemove(field)}

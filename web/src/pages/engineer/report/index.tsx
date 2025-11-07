@@ -74,9 +74,9 @@ const ReportPage = ({
               name="file"
               label="Attach File (If any)"
               required
-              validatePDF
-              accept="pdf"
-              maxSize={350}
+              accept=".pdf, .jpg, .png"
+              maxPages={5}
+              validatePDF={true}
             />
           </div>
 

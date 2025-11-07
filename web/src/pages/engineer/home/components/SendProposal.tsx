@@ -61,8 +61,8 @@ const SendProposal = () => {
         label="Attachments"
         required
         accept=".pdf"
-        validatePDF
-        maxSize={350}
+        maxPages={5}
+        validatePDF={true}
       />
       <SelectField
         name="availability"

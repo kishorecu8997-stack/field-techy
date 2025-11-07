@@ -131,8 +131,20 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
             { label: "Completed", value: "completed" },
           ]}
         />
-        <TextareaInput name="remarks" label="Remarks" required rules={validateDescription(50, 2000, "remarks")} />
-        <FileUpload name="workScreenShot" label="Work Screenshot" required accept="pdf" validatePDF maxSize={350}/>
+        <TextareaInput
+          name="remarks"
+          label="Remarks"
+          required
+          rules={validateDescription(50, 2000, "remarks")}
+        />
+        <FileUpload
+          name="workScreenShot"
+          label="Work Screenshot"
+          required
+          accept=".pdf"
+          maxPages={5}
+          validatePDF={true}
+        />
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
