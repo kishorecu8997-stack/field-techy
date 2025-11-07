@@ -4,6 +4,7 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
+import { validateDescription, validateNumericInput } from "../validation";
 
 /**
  * A form component for submitting a job proposal.
@@ -35,6 +36,7 @@ const SendProposal = () => {
         label="Job Description"
         required
         placeholder="Write your pitch to the client here..."
+        rules={validateDescription(50, 2000, "Description")}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
         <InputField
@@ -42,6 +44,7 @@ const SendProposal = () => {
           label="Expected Pay"
           placeholder="e.g 3000"
           required
+          rules={validateNumericInput(3000, "Expected Pay")}
         />
         <SelectField
           name="type"
@@ -53,7 +56,14 @@ const SendProposal = () => {
           ]}
         />
       </div>
-      <FileUpload name="attachment" label="Attachment" required />
+      <FileUpload
+        name="attachment"
+        label="Attachments"
+        required
+        accept=".pdf"
+        validatePDF
+        maxSize={350}
+      />
       <SelectField
         name="availability"
         label="Availability"
@@ -71,14 +81,19 @@ const SendProposal = () => {
         label="Why do you think you're a good fit for this job?"
         placeholder="Write your pitch to the client here..."
         required
+        rules={validateDescription(50, 2000, "question")}
       />
       <TextareaInput
-        name="Describe"
+        name="describe"
         label="Describe a similar project you've worked on"
         placeholder="Write your pitch to the client here..."
         required
+        rules={validateDescription(50, 2000, "describe")}
       />
-      <Button className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
+      <Button
+        type="submit"
+        className="w-fit bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
+      >
         Submit Proposal
       </Button>
     </FormContainer>

@@ -1,13 +1,18 @@
-import { JOB_STATUSES, WORKING_TYPES } from "@/pages/engineer/search_result/types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import React from "react";
-import type { JobHeaderCardProps } from "../types";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
-import Popup from "@/shared/components/Popup";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { icons } from "@/config/icons";
+import { validateDescription } from "@/pages/engineer/home/validation";
+import {
+  JOB_STATUSES,
+  WORKING_TYPES,
+} from "@/pages/engineer/search_result/types";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import Popup from "@/shared/components/Popup";
+import React from "react";
+import { useForm } from "react-hook-form";
+import type { JobHeaderCardProps } from "../types";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -48,7 +53,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 className="bg-teal-800 text-white px-6 py-2 rounded-full font-medium border border-gray-300"
                 onClick={() => setOpen(true)}
               >
-                Upload Logs
+                Update Log
               </Button>
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-full font-medium border border-gray-300"
@@ -117,10 +122,21 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
         Update Status
       </div>
       <FormContainer methods={FormCtx} onSubmit={handleSubmit}>
-        <InputField name="status" label="Status" required />
-        <TextareaInput name="description" label="Description" required />
-        <FileUpload name="file" label="Upload File" required />
-        <Button className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
+        <SelectField
+          name="status"
+          label="Status"
+          required
+          options={[
+            { label: "In Progress", value: "in-progress" },
+            { label: "Completed", value: "completed" },
+          ]}
+        />
+        <TextareaInput name="remarks" label="Remarks" required rules={validateDescription(50, 2000, "remarks")} />
+        <FileUpload name="workScreenShot" label="Work Screenshot" required accept="pdf" validatePDF maxSize={350}/>
+        <Button
+          type="submit"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
+        >
           Submit
         </Button>
       </FormContainer>

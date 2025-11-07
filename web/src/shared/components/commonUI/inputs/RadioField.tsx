@@ -1,7 +1,7 @@
 import {
-    Controller,
-    useFormContext,
-    type RegisterOptions,
+  Controller,
+  useFormContext,
+  type RegisterOptions,
 } from "react-hook-form";
 
 interface RadioOption {
@@ -15,6 +15,7 @@ interface RadioFieldProps {
   required?: boolean;
   options: RadioOption[];
   rules?: RegisterOptions;
+  direction?: "vertical" | "horizontal"; // 👈 new prop
   containerClassName?: string;
   radioItemClassName?: string;
   radioInputClassName?: string;
@@ -23,6 +24,7 @@ interface RadioFieldProps {
 /**
  * RadioField - A reusable radio group component for react-hook-form.
  *
+ * Supports both vertical and horizontal layouts.
  * Accepts an array of options (label/value).
  * Integrates with react-hook-form using Controller.
  * Shows a * if required.
@@ -34,6 +36,7 @@ export const RadioField = ({
   required = false,
   options,
   rules,
+  direction = "vertical", // 👈 default layout
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",
   radioInputClassName = "h-4 w-4 text-blue-600 dark:text-blue-500 focus:ring-blue-500 focus:ring-2",
@@ -46,6 +49,12 @@ export const RadioField = ({
     ...rules,
   };
 
+  // Dynamically set layout direction
+  const layoutClass =
+    direction === "horizontal"
+      ? "flex flex-row flex-wrap gap-4" // horizontal
+      : "flex flex-col"; // vertical
+
   return (
     <div className={containerClassName}>
       {label && (
@@ -57,9 +66,12 @@ export const RadioField = ({
         name={name}
         control={control}
         rules={validationRules}
-        render={({ field: { onChange, onBlur, value, name: fieldName }, fieldState: { error } }) => (
+        render={({
+          field: { onChange, onBlur, value, name: fieldName },
+          fieldState: { error },
+        }) => (
           <>
-            <div>
+            <div className={layoutClass}>
               {options.map((option) => (
                 <label key={option.value} className={radioItemClassName}>
                   <input
@@ -71,7 +83,9 @@ export const RadioField = ({
                     onBlur={onBlur}
                     className={radioInputClassName}
                   />
-                  <span className="ml-2 text-gray-700 dark:text-gray-300">{option.label}</span>
+                  <span className="ml-2 text-gray-700 dark:text-gray-300">
+                    {option.label}
+                  </span>
                 </label>
               ))}
             </div>

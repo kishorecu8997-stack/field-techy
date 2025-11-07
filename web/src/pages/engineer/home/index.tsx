@@ -7,6 +7,8 @@ import { RecommendedJobs } from "./components/RecommendedJobs";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import Pagination from "../search_result/components/Pagination";
+import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import { useEffect, useState } from "react";
 
 /**
  * Home page component.
@@ -16,6 +18,7 @@ import Pagination from "../search_result/components/Pagination";
  */
 const Home = () => {
   const navigate = useNavigate();
+  const [accessPopup, setAccessPopup] = useState(false);
 
   const handleExploreJobs = () => {
     navigate(absoluteUrls.engineer.home.explore_jobs);
@@ -31,6 +34,11 @@ const Home = () => {
   const findNewJobs = sampleJobs.filter((job) => {
     return job.status === "new";
   });
+
+
+  useEffect(() => {
+    setAccessPopup(true);
+  }, []);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -61,6 +69,9 @@ const Home = () => {
               <SidebarProfile user={userData} earnings={earningsData} />
             </div>
           </div>
+
+          {/* Allow access popup */}
+          <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />
         </div>
       </div>
     </div>

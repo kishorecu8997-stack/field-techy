@@ -28,7 +28,7 @@ const JobDetailsPage = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="My Jobs"
+          title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />

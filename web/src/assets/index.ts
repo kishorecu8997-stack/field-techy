@@ -1,3 +1,5 @@
+import location from "./location.svg";
+import notification from "./notification_big.svg";
 import securePayments from "./secure-payments.png";
 import skillsMatching from "./skills-matching.png";
 import workTracking from "./work-tracking.png";
@@ -21,8 +23,13 @@ export const assetsConfig = {
       skillsMatching,
       workTracking,
     },
-    dashboard:{
-      attachment
-    }
+    dashboard: {
+      attachment,
+    },
+  },
+  icons: {
+    location,
+    notification,
   },
 };
+

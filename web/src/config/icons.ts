@@ -14,6 +14,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaFileAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { MdOutlineImageNotSupported } from "react-icons/md";
+import { IoMdAdd } from "react-icons/io";
 
 export const icons = {
   bookmark: FaRegBookmark,
@@ -32,4 +34,6 @@ export const icons = {
   checkCircle: FaRegCheckCircle,
   file: FaFileAlt,
   check: IoMdCheckmarkCircleOutline,
+  noImage: MdOutlineImageNotSupported,
+  add: IoMdAdd,
 };
