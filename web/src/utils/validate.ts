@@ -485,6 +485,43 @@ export const validatePaymentMethods = (value: SelectOption): true | string => {
   return value && value.value ? true : "Payment method is required";
 };
 
+export const CommissionValidation = (value: string): true | string => {
+  const raw = (value || "").trim();
+
+  // Required check
+  if (!raw) {
+    return "Commission is required.";
+  }
+
+  // Check if it's a valid number format (allowing decimals)
+  if (!/^\d*\.?\d+$/.test(raw)) {
+    return "Commission must be a valid number.";
+  }
+
+  const num = parseFloat(raw);
+
+  // Check if parsing succeeded
+  if (isNaN(num)) {
+    return "Commission must be a valid number.";
+  }
+
+  // Range check: 0 <= commission <= 100
+  if (num < 0) {
+    return "Commission cannot be less than 0.";
+  }
+  if (num > 100) {
+    return "Commission cannot be more than 100.";
+  }
+
+  // Decimal precision: allow up to 2 decimal places
+  const decimalPart = raw.includes(".") ? raw.split(".")[1] : "";
+  if (decimalPart.length > 2) {
+    return "Commission cannot have more than 2 decimal places.";
+  }
+
+  return true; // valid
+};
+
 export default {
   validateName,
   validateEmail,
@@ -506,4 +543,5 @@ export default {
   cvvValidation,
   countryValidation,
   addressRequiredValidation,
+  CommissionValidation,
 };
