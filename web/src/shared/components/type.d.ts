@@ -81,4 +81,5 @@ interface TabItem {
 interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
+  onTabChange?: (activeTab: string) => void;
 }
