@@ -1,0 +1,70 @@
+{
+  "MyJobs": [
+    {
+      "id": 1,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "On Site",
+      "status": "In Progress"
+    },
+    {
+      "id": 2,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "On Site",
+      "status": "Completed"
+    },
+    {
+      "id": 3,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "Remote",
+      "status": "In Progress"
+    },
+    {
+      "id": 4,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "On Site",
+      "status": "Posted"
+    },
+    {
+      "id": 5,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "On Site",
+      "status": "In Progress"
+    },
+    {
+      "id": 6,
+      "title": "Network Engineer",
+      "date": "20 Jan, 2025, 06:32 PM",
+      "location": "Dubai Marina, UAE",
+      "duration": "3 Days",
+      "serviceType": "Infrastructure Setup",
+      "price": "$5000",
+      "workMode": "On Site",
+      "status": "Posted"
+    }
+  ]
+}

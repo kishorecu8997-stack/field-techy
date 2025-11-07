@@ -215,8 +215,13 @@ interface TagSelectFieldProps {
 interface TextareaInputProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
+  rules?: RegisterOptions;
+  showValidationCheck?: boolean;
+  minLength?: number;
+  maxLength?: number;
 }
 
 /**
@@ -271,4 +276,6 @@ interface VerifyEmailModalProps {
   buttonText?: string;
   isSuccess?: boolean;
   name?: string;
+  isClose?: boolean;
+  footer?: React.ReactNode;
 }
