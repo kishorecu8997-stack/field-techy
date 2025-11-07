@@ -1,6 +1,14 @@
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import Commission from "./Commission";
 
+/**
+ * Settings page for admin. Presents settings in tabbed sections using
+ * `AdminTabComponent`. Currently includes the `Commission` tab where
+ * commission values can be configured.
+ *
+ * @component
+ * @returns {JSX.Element} Settings page with tabbed settings sections.
+ */
 export default function Settings() {
   const tabs = [
     {

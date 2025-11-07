@@ -6,16 +6,34 @@ import { toast } from "react-toastify";
 import type { SettingsFormData } from "./types";
 import { CommissionValidation } from "@/utils/validate";
 
+/**
+ * Commission settings page component.
+ * Renders a simple form to set the commission percentage/value.
+ * Uses react-hook-form for form state and validation, and shows a toast
+ * on successful submit.
+ *
+ * @component
+ * @returns {JSX.Element} The Commission settings form.
+ */
 export default function Commission() {
+  /**
+   * React Hook Form methods for managing the commission form state.
+   */
   const methods = useForm<SettingsFormData>({
     defaultValues: {
       commission: "",
     },
   });
+
+  /**
+   * Handle form submit. Displays a success toast when the commission is saved.
+   * @returns {void}
+   */
   const handleSubmit = () => {
     // console.log("Profile Submitted");
     toast.success("Added Successfully!");
   };
+
   return (
     <div>
       <FormContainer
