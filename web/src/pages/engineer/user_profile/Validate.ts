@@ -372,7 +372,7 @@ export const validatePortfolioLink = (value: string) => {
     const path = url.pathname;
 
     // Remove trailing slash for comparison, but original must not have excess
-    const cleanPath = path === "/" ? "" : path;
+    
 
     // Define allowed profiles
     const isGitHub =

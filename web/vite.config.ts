@@ -2,12 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({
   plugins: [react(), tailwindcss()],
-  base: command === 'build' ? '/engineer/auth/login/' : '/',
+  base: '/',
   server:{
     allowedHosts:true,
-    open: '/engineer/auth/login',
+    open: '/client/auth/login',
   },
   resolve: {
     alias: {

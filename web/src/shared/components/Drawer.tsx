@@ -18,6 +18,9 @@ import Documents from "@/pages/engineer/user_profile/components/documents/Docume
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
 import DrawerHeader from "./DrawerHeader";
 
+
+
+
 /**
  * Props for the Drawer component.
  * @typedef {Object} DrawerProps
@@ -39,7 +42,10 @@ interface DrawerProps {
  * @returns {JSX.Element | null} The rendered Drawer component or null if closed.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  const [key, setKey] = useState<string>("myAccount");
+  const [key, setKey] = useState<string>(" clientNotification");
+
+  // Escape key & scroll lock effect
+
   if (!isOpen) return null;
   const commonProps = {
     onMenuItemClick: (data: string) => setKey(data),
@@ -54,7 +60,8 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
       title: string;
       parent?: string;
     }
-  > = {
+  > = {   
+
     myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
     profile: { component: UserProfileSidebar, title: "My Profile" },
     personalInfo: {

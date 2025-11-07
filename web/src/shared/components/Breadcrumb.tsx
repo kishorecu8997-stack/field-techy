@@ -22,7 +22,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   const allSegments = location.pathname.split("/").filter(Boolean);
 
   // Find index of 'engineer' in the path
-  const engineerIndex = allSegments.indexOf("engineer");
+  const engineerIndex = allSegments.indexOf("client");
 
   // If 'engineer' is not in the path, show nothing or fallback
   if (engineerIndex === -1) {
@@ -48,7 +48,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
         {/* Home link points to /engineer */}
         <li>
           <NavLink
-            to="/engineer"
+            to="/client"
             className="hover:text-emerald-600 transition-colors"
           >
             {homeLabel}
@@ -57,7 +57,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
         {breadcrumbSegments.map((value, index) => {
           // Build path: /engineer + segments up to current
-          const to = `/engineer/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
+          const to = `/client/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
           const isLast = index === breadcrumbSegments.length - 1;
 
           return (

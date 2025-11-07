@@ -12,8 +12,8 @@ export const useHomeNavigation = () => {
     goToMyJobs: () => navigate(absoluteUrls.engineer.home.my_jobs),
     goToSearchResult: () => navigate(absoluteUrls.engineer.home.search_result),
     goToJobDetails: (jobId: string) => navigate(`${absoluteUrls.engineer.home.my_jobs}/${jobId}`),
-    goToFAQ: () => navigate(absoluteUrls.engineer.home.faq),
-    goToTerms: () => navigate(absoluteUrls.engineer.home.terms_and_conditions),
-    goToPrivacyPolicy: () => navigate(absoluteUrls.engineer.home.privacy_policy),
+    goToFAQ: () => navigate(absoluteUrls.client.home.faq),
+    goToTerms: () => navigate(absoluteUrls.client.home.terms_and_conditions),
+    goToPrivacyPolicy: () => navigate(absoluteUrls.client.home.privacy_policy),
   };
 };

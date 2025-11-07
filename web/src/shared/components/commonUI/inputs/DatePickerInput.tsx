@@ -18,6 +18,7 @@ interface DatePickerInputProps {
   onChange: (date: Date | null) => void;
   placeholder?: string;
   className?: string;
+  required?: boolean | string;
 }
 
 /**
@@ -38,6 +39,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   onChange,
   placeholder = "Select date",
   className = "",
+  required = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -53,24 +55,23 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   };
 
   /** Parses a DD/MM/YYYY string into a Date object. Returns null on failure. */
-  const parseDate = (dateString: string): Date | null => {
-    if (!dateString) return null;
-    const parts = dateString.split("/");
-    if (parts.length !== 3) return null;
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1;
-    const year = parseInt(parts[2], 10);
+  // const parseDate = (dateString: string): Date | null => {
+  //   if (!dateString) return null;
+  //   const parts = dateString.split("/");
+  //   if (parts.length !== 3) return null;
+  //   const day = parseInt(parts[0], 10);
+  //   const month = parseInt(parts[1], 10) - 1;
+  //   const year = parseInt(parts[2], 10);
 
-    const date = new Date(year, month, day);
-    if (isNaN(date.getTime())) return null;
-    return date;
-  };
+  //   const date = new Date(year, month, day);
+  //   if (isNaN(date.getTime())) return null;
+  //   return date;
+  // };
 
   /** Generates an array of Date objects for each day in the given month. */
   const getDaysInMonth = (date: Date): Date[] => {
     const year = date.getFullYear();
     const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
 
@@ -105,7 +106,6 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     const month = date.getMonth();
     const lastDay = new Date(year, month + 1, 0);
     const lastDayOfWeek = lastDay.getDay();
-    const daysInMonth = lastDay.getDate();
 
     const days = [];
     for (let i = 1; i <= 6 - lastDayOfWeek; i++) {
@@ -166,11 +166,6 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   /** Switches the calendar display to the year selection view. */
   const goToYearView = () => {
     setView("year");
-  };
-
-  /** Switches the calendar display back to the default day view. */
-  const goToDayView = () => {
-    setView("day");
   };
 
   /** Sets the selected month and switches back to the day view. */
@@ -286,12 +281,12 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     "Nov",
     "Dec",
   ];
-
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
       {isShowLabel && (
-        <label className="block text-base font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {label}
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+           {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
 
