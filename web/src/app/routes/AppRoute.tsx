@@ -170,6 +170,7 @@ export const routes = createBrowserRouter([
     element: withSuspense(RootLayout),
     children: [
       { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
       { path: urls.engineer.home.explore_jobs, element: withSuspense(ExploreJobs) },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
