@@ -33,10 +33,10 @@ const SendProposal = () => {
     <FormContainer methods={formCtx} onSubmit={handleSubmit}>
       <TextareaInput
         name="description"
-        label="Job Description"
+        label="Proposal Description"
         required
         placeholder="Write your pitch to the client here..."
-        rules={validateDescription(50, 2000, "Description")}
+        rules={validateDescription(50, 2000, "Proposal Description")}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
         <InputField
@@ -81,14 +81,14 @@ const SendProposal = () => {
         label="Why do you think you're a good fit for this job?"
         placeholder="Write your pitch to the client here..."
         required
-        rules={validateDescription(50, 2000, "question")}
+        rules={validateDescription(50, 2000, "Screening Questions")}
       />
       <TextareaInput
         name="describe"
         label="Describe a similar project you've worked on"
         placeholder="Write your pitch to the client here..."
         required
-        rules={validateDescription(50, 2000, "describe")}
+        rules={validateDescription(50, 2000, "Screening Questions")}
       />
       <Button
         type="submit"

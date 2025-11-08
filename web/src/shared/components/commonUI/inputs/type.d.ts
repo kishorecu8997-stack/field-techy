@@ -88,6 +88,7 @@ interface FileUploadProps {
   required?: boolean;
   accept?: string;
   maxSize?: number;
+  minSize?: number;
   containerClassName?: string;
   placeholder?: string;
   validatePDF?: boolean;
