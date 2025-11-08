@@ -278,10 +278,10 @@ const Drawer: React.FC<DrawerProps> = ({
           }}
         />
       </Popup>
-      ;
       <Popup
         open={isFilterPopupOpen}
         onClose={() => setIsFilterPopupOpen(false)}
+        inputClassName="sm:max-w-xl sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto"
       >        
         <Filter
           isOpen={isFilterPopupOpen}
@@ -289,7 +289,7 @@ const Drawer: React.FC<DrawerProps> = ({
           onFilter={() => {
             console.log("Applying filters...");
             setIsFilterPopupOpen(false);
-          }}
+          }}          
         />       
       </Popup>
       ;

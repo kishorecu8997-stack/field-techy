@@ -7,6 +7,7 @@ import defaultProfileImage from "./default_profile_img.jpg";
 import user from "./user-image/user.png";
 import circle_tick from "./circle_tick_icon.svg";
 
+import ftLogoWhite from "./ft_logo_white.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -14,6 +15,7 @@ export const assetsConfig = {
     ftLogo,
     companyLogo,
     circle_tick,
+    ftLogoWhite,
   },
   images: {
     profile: {
