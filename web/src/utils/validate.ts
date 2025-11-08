@@ -79,7 +79,8 @@ export const validateAddress = (value: string) => {
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
     return "Address must not start or end with a space";
-
+// Reject consecutive spaces
+  if (/ {2,}/.test(value)) return `Address must not contain consecutive spaces`;
   const v = value.trim();
   if (v.length < 20) return "Address must be at least 20 characters";
   if (v.length > 50) return "Address must not exceed 50 characters";
