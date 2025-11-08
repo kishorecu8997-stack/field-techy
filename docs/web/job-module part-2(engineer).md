@@ -18,4 +18,4 @@
 | Submit Work | Work submission | Radio Button | Yes | Required | Select radio button (Yes, No) | 1 Selection | 1 Selection |
 | Submit Work | Work submission | Upload completed task File | Yes | Required | Allow PDF, corrupted file | 50 KB size | 350 KB size |
 | Submit Work | Work submission | Technician notes (if any) | Yes | Required | Only letters, spaces, numbers and special characters such as / ( ) , . - # are allowed. | 50 Chars | 2000 Chars |
-| Submit Work | Work submission | Technician signature | Yes | Required | Allow JPG, JPEG, PNG format | 50 KB size | 350 KB size |
+| Submit Work | Work submission | Technician signature | Yes | Required | Allow JPG, JPEG, PNG format | 5 KB size | 350 KB size |
