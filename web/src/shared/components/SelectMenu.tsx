@@ -1,4 +1,3 @@
-// SimpleSelect.tsx
 import { useState, useRef, useEffect } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
@@ -9,7 +8,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
  * @property {string} label - The display label shown in the list.
  */
 interface Option {
-  value: string; // ✅ only string
+  value: string;
   label: string;
 }
 
@@ -43,7 +42,7 @@ interface SimpleSelectProps {
  * @param {SimpleSelectProps} props
  * @returns {JSX.Element}
  */
-const SimpleSelect = ({
+const SelectMenu = ({
   options,
   placeholder = "Select an option",
   onChange,
@@ -73,11 +72,10 @@ const SimpleSelect = ({
    * @returns {void}
    */
   const handleSelect = (option: Option) => {
-    onChange?.(option.value); // always string
+    onChange?.(option.value);
     setIsOpen(false);
   };
 
-  /** Toggle the open/closed state of the dropdown. */
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
@@ -124,4 +122,4 @@ const SimpleSelect = ({
   );
 };
 
-export default SimpleSelect;
+export default SelectMenu;

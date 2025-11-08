@@ -126,3 +126,9 @@ export const status = [
   { id: 2, value: "inProgress", label: "In Progress" },
   { id: 3, value: "completed", label: "Completed" },
 ];
+export const countries = [
+  { id: 1, value: "us", label: "US" },
+  { id: 2, value: "europe", label: "Europe" },
+  { id: 3, value: "canada", label: "Canada" },
+  { id: 4, value: "asiaPacific", label: "Asia Pacific" },
+];

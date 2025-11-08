@@ -3,7 +3,7 @@ import Users from "./Users";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
-import SimpleSelect from "@/shared/components/AdminSelect";
+import SimpleSelect from "@/shared/components/SelectMenu";
 import { useState } from "react";
 import { days, client, status } from "@/dummy_data/adminDashboard";
 import JobsMetrics from "./JobMetrics";
@@ -21,9 +21,6 @@ import DisputeManagement from "./DisputeManagement";
  * @returns {JSX.Element} Admin dashboard with metrics and charts.
  */
 export default function Dashboard() {
-  /**
-   * Tabs to render inside the `AdminTabComponent`.
-   */
   const tabs = [
     {
       label: "Users",
@@ -47,7 +44,6 @@ export default function Dashboard() {
     },
   ];
 
-  // Local state for the chart filters
   const [selected, setSelected] = useState<string | null>();
   const [selectedDay, setSelectedDay] = useState<string | null>();
   const [selectedStatus, setSelectedStatus] = useState<string | null>();
@@ -70,12 +66,12 @@ export default function Dashboard() {
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
         <div className=" bg-white dark:bg-gray-700 rounded-lg p-2 ">
           <div className="grid">
-            <div className="flex justify-between p-4">
+            <div className="grid md:flex justify-between p-4">
               <h3 className="text-lg font-semibold">Total Users</h3>
-              <div className="flex gap-4">
+              <div className="grid mt-2 md:md-0 md:flex gap-4">
                 <SimpleSelect
                   placeholder="Filter By"
-                  className="w-32"
+                  className="md:w-32"
                   options={days}
                   value={selectedDay}
                   onChange={setSelectedDay}
@@ -93,6 +89,7 @@ export default function Dashboard() {
               data={chartData}
               chartType="line"
               xAxisDataKey="name"
+              aspectRatio={2}
               series={[
                 {
                   dataKey: "users",
@@ -112,10 +109,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className=" bg-white dark:bg-gray-700 rounded-lg p-2 ">
-          <div className="flex justify-between p-4">
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-2 ">
+          <div className="grid md:flex justify-between p-4">
             <h3 className="text-lg font-semibold">Total Jobs</h3>
-            <div className="flex gap-4">
+            <div className="grid mt-4 md:mt-0 md:flex gap-4">
               <SimpleSelect
                 placeholder="Filter By"
                 className="w-32"
@@ -136,6 +133,7 @@ export default function Dashboard() {
             data={chartData}
             chartType="bar"
             xAxisDataKey="name"
+            aspectRatio={2}
             series={[
               {
                 dataKey: "jobs",

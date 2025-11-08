@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import {
   LineChart,
   Line,
@@ -12,85 +10,46 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import type { GeneralChartProps } from "./type";
 
 /**
- * Chart type enum (string union) - selects which Recharts component to render.
- */
-type ChartType = "line" | "bar";
-
-/**
- * Configuration for a single data series rendered on the chart.
+ * GeneralChart - A flexible wrapper around Recharts that supports both line and bar charts.
  *
- * - dataKey: key in the data objects to read values from
- * - name: legend/label for the series
- * - stroke/fill: color values for line/bar
- * - strokeWidth: line thickness
- * - dot/activeDot: configuration for line chart markers
- */
-interface SeriesConfig {
-  dataKey: string;
-  name: string;
-  stroke?: string;
-  fill?: string;
-  strokeWidth?: number;
-  dot?: boolean | { r: number };
-  activeDot?: boolean | { r: number };
-}
-
-/**
- * Optional legend configuration passed to Recharts `Legend` component.
- */
-interface LegendConfig {
-  verticalAlign?: "top" | "bottom" | "middle";
-  align?: "left" | "center" | "right";
-  wrapperStyle?: React.CSSProperties;
-}
-
-/**
- * Props for the `GeneralChart` component.
+ * Features:
+ * - Responsive container with customizable height and aspect ratio
+ * - Supports both line and bar chart types with consistent API
+ * - Configurable grid, legend, and tooltip visibility
+ * - Custom styling through className prop
+ * - Customizable Y-axis domain
+ * - Series configuration with sensible defaults for colors and dimensions
+ * - Empty state handling
  *
- * Generic over the data row shape `T` so callers can pass typed arrays.
- * - data: array of data points
- * - chartType: "line" or "bar"
- * - xAxisDataKey: key in `T` used for X axis labels
- * - series: array of SeriesConfig describing which keys to plot
+ * @component
+ * @template T - Type of data items in the chart (must be a record/object)
+ * @param {Object} props - Component props
+ * @param {T[]} props.data - Array of data points to plot
+ * @param {'line' | 'bar'} props.chartType - Type of chart to render
+ * @param {keyof T} props.xAxisDataKey - Key in T to use for X-axis values
+ * @param {number} [props.height=300] - Chart height in pixels
+ * @param {number} [props.aspectRatio] - Optional aspect ratio for responsive container
+ * @param {boolean} [props.showLegend=true] - Whether to show the chart legend
+ * @param {boolean} [props.showTooltip=true] - Whether to show tooltips on hover
+ * @param {boolean} [props.showGrid=true] - Whether to show grid lines
+ * @param {[string | number, string | number]} [props.yAxisDomain=["auto", "auto"]] - Y-axis domain bounds
+ * @param {React.ComponentType} [props.customTooltip] - Optional custom tooltip component
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {SeriesConfig[]} props.series - Array of series configurations
+ * @param {LegendConfig} [props.legend] - Optional legend configuration
+ * @returns {JSX.Element} The chart component or an empty state message
  */
-interface GeneralChartProps<T = any> {
-  data: T[];
-  chartType: ChartType;
-  xAxisDataKey: keyof T;
-  height?: number;
-  showLegend?: boolean;
-  showTooltip?: boolean;
-  showGrid?: boolean;
-  yAxisDomain?: [
-    number | "auto" | "dataMin" | "dataMax",
-    number | "auto" | "dataMin" | "dataMax"
-  ];
-  customTooltip?: React.ComponentType<any>;
-  className?: string;
-  series: SeriesConfig[];
-  legend?: LegendConfig;
-}
-
-/**
- * GeneralChart
- *
- * A thin, typed wrapper around Recharts `LineChart` and `BarChart` that
- * accepts a simple `series` configuration to render multiple series and
- * supports optional tooltip, legend and grid settings. The component is
- * generic in the shape of the data rows (T) so callers can provide
- * typed data arrays.
- *
- * @template T - data row type
- */
-const GeneralChart = <T extends Record<string, any>>({
+const GeneralChart = <T extends Record<string, unknown>>({
   data,
   chartType,
   xAxisDataKey,
   height = 300,
   showLegend = true,
   showTooltip = true,
+  aspectRatio,
   showGrid = true,
   yAxisDomain = ["auto", "auto"],
   customTooltip: CustomTooltip,
@@ -109,18 +68,22 @@ const GeneralChart = <T extends Record<string, any>>({
     );
   }
 
-  // Choose chart component
   const ChartComponent = chartType === "line" ? LineChart : BarChart;
   const SeriesComponent = chartType === "line" ? Line : Bar;
 
   return (
-    <ResponsiveContainer width="100%" height={height} className={className}>
+    <ResponsiveContainer
+      width="100%"
+      height={height}
+      className={className}
+      {...(aspectRatio !== undefined ? { aspectRatio } : {})}
+    >
       <ChartComponent data={data}>
         {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#eee" />}
 
         <XAxis dataKey={xAxisDataKey as string} tick={{ fontSize: 12 }} />
 
-        <YAxis domain={yAxisDomain as any} tick={{ fontSize: 12 }} />
+        <YAxis domain={yAxisDomain} tick={{ fontSize: 12 }} />
 
         {showTooltip &&
           (CustomTooltip ? (
@@ -145,7 +108,7 @@ const GeneralChart = <T extends Record<string, any>>({
               dataKey={s.dataKey}
               name={s.name}
               stroke={s.stroke || (chartType === "line" ? "#555" : undefined)}
-              fill={s.fill || (chartType === "bar" ? "#d1d5db" : undefined)} // 👈 default gray for bar
+              fill={s.fill || (chartType === "bar" ? "#d1d5db" : undefined)}
               strokeWidth={
                 s.strokeWidth || (chartType === "line" ? 2 : undefined)
               }
