@@ -63,6 +63,9 @@ const AdminResetPassword = React.lazy(
 const AdminVerifyOTP = React.lazy(() => import("@/pages/admin/auth/VerifyOTP"));
 const AdminDashboard = React.lazy(() => import("@/pages/admin/dashboard"));
 const AdminManageEngineer = React.lazy(() => import("@/pages/admin/engineer"));
+const AdminManageEngineerAdd = React.lazy(
+  () => import("@/pages/admin/engineer/addEngineer/AddEngineer")
+);
 const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
@@ -259,6 +262,10 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_engineer,
             element: withSuspense(AdminManageEngineer),
+          },
+          {
+            path: urls.admin.home.manage_engineer_add,
+            element: withSuspense(AdminManageEngineerAdd),
           },
           {
             path: urls.admin.home.manage_client,

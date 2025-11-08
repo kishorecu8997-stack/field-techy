@@ -77,6 +77,7 @@ export const urls = {
     home: {
       dashbaord: `${BASE.ADMIN}/dashboard`,
       manage_engineer: `${BASE.ADMIN}/users`,
+      manage_engineer_add: `${BASE.ADMIN}/users/add`,
       manage_client: `${BASE.ADMIN}/client`,
       manage_jobs: `${BASE.ADMIN}/jobs`,
       manage_categories: `${BASE.ADMIN}/categories`,
@@ -151,6 +152,7 @@ export const absoluteUrls = {
     home: {
       dashbaord: `${BASE.ADMIN}/dashboard`,
       manage_engineer: `${BASE.ADMIN}/users`,
+      manage_engineer_add: `${BASE.ADMIN}/users/add`,
       manage_client: `${BASE.ADMIN}/client`,
       manage_jobs: `${BASE.ADMIN}/jobs`,
       manage_categories: `${BASE.ADMIN}/categories`,
