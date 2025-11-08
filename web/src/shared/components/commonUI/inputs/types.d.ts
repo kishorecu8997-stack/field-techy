@@ -216,3 +216,4 @@ interface VerifyEmailModalProps {
   isSuccess?: boolean;
   name?: string;
 }
+

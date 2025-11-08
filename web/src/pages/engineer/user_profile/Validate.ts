@@ -326,7 +326,6 @@ export const validateRate = (value: string) => {
   return true;
 };
 
-
 export const validatePortfolioLink = (value: string) => {
   if (!value) return "Portfolio link is required";
 
@@ -382,23 +381,24 @@ export const validatePortfolioLink = (value: string) => {
 
     // Block dangerous or irrelevant domains
     const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
-    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    const suspiciousKeywords =
+      /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
     if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
       return "Domain is not allowed";
     }
-
     // Normalize path: must be clean and minimal
     const path = url.pathname;
 
-    // Remove trailing slash for comparison, but original must not have excess
-    const cleanPath = path === "/" ? "" : path;
-
     // Define allowed profiles
     const isGitHub =
-      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+      hostname === "github.com" &&
+      /^\/[a-zA-Z0-9._-]+$/.test(path) &&
+      !path.includes("..");
 
     // Allow /in/username with an optional trailing slash
-    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+    const isLinkedIn =
+      hostname === "www.linkedin.com" &&
+      /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
 
     const isExample = hostname === "example.com" && path === "/";
 

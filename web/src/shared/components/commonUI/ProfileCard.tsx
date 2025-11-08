@@ -25,12 +25,10 @@ import { ImageUploaderField } from "./inputs/ImageUploaderField";
  * />
  */
 const ProfileCard = ({
-  avatarUrl,
   name,
   title,
   rating,
   reviewCount,
-  completionPercentage,
   flex = 'row',
   backgroundcolor =true,
 }: {

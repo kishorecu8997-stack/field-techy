@@ -1,4 +1,5 @@
-import type { Job } from "@/pages/search_result/types";
+import type { Job } from "@/pages/engineer/search_result/types";
+
 
   export const sampleJobs: Job[] = [
     {

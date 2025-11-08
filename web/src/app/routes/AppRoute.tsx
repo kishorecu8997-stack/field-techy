@@ -71,10 +71,13 @@ const ClientSetPassword = React.lazy(
 );
 const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
 const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
-const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
 const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
-const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
+const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job/MultiStepPostJob"));
 const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
+const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
+const ClientExploreEngDetails = React.lazy(() => import("@/pages/client/explore_engineer/components/profile/EngineerProfile"));
+const ClientJobInvite = React.lazy(() => import("@/pages/client/explore_engineer/components/invite_job/InviteJob"));
+
 
 /**
  * Configures the application's routing structure using React Router.
@@ -205,6 +208,8 @@ export const routes = createBrowserRouter([
       { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
       { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
       { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
+      { path: urls.client.home.explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
+      {path: urls.client.home.ClientJobInvite, element: withSuspense(ClientJobInvite)},      
     ],
   },
 

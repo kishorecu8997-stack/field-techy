@@ -264,6 +264,12 @@ export const validatePaymentMethods = (value: string | null | undefined) => {
   return true;
 };
 
+export const validateConsent = (value: boolean) => {
+  console.log("Consent value:", value); 
+  if (!value) return "You must agree to the terms and conditions";
+  return true;
+};
+
 
 export const validateAlphabeticTextArea = (
   value: string,

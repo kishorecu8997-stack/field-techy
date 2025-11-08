@@ -82,3 +82,44 @@ interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
 }
+export interface Category {
+  id: string;
+  items: string;
+}
+interface CategoryTagProps {
+  category: Category[]; 
+  label?: string;  
+  isShowLabel?: boolean;
+  required?: boolean;
+}
+
+interface InformationCardProps {
+  title: string;
+  description: string;
+  details: {
+    label: string;
+    value: string;
+  }[];
+  className?: string;
+}
+
+interface InformationCardPropsTools {
+  title: string;
+  description: string;
+  category: string[]; 
+  className?: string;
+}
+
+
+interface PaymentMethodSelectorProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  isShowRadio?: boolean;
+  required?: boolean;
+  rules?: RegisterOptions;
+  options?: PaymentCardOption[];
+  onAddNew?: (cardData: CardFormData) => void;
+  isOpen?: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}

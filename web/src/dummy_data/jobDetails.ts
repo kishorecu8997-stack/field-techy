@@ -4,7 +4,8 @@ import type {
   JobInfoSectionProps,
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
-import type { Job } from "@/pages/search_result/types";
+import type { Job } from "@/pages/engineer/search_result/types";
+
 
 export const logs: LogEntry[] = [
   {

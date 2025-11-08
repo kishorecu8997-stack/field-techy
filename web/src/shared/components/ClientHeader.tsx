@@ -2,14 +2,25 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import SortDropdown from "./SortDropdown";
+import { Button } from "./commonUI/Buttons";
 
 interface HeaderProps {
   title?: string;
   currentPath: string;
   showSearchBar?: boolean;
+  showButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
 }
 
-const ClientHeader: React.FC<HeaderProps> = ({ title,currentPath, showSearchBar=true }) => {
+const ClientHeader: React.FC<HeaderProps> = ({
+  title,
+  currentPath,
+  showSearchBar = true,
+  showButton = false,
+  buttonText = "Invite To Job",
+  onClick,
+}) => {
   return (
     <header className=" border-b border-gray-200 dark:border-gray-700">
       <div className="container mx-auto px-4 py-4">
@@ -29,8 +40,11 @@ const ClientHeader: React.FC<HeaderProps> = ({ title,currentPath, showSearchBar=
             </nav>
           </div>
 
-          {showSearchBar && (
-            <SortDropdown />
+          {showSearchBar && <SortDropdown />}
+          {showButton && (
+            <Button onClick={onClick} variant="primary" type="submit">
+              {buttonText}
+            </Button>
           )}
         </div>
       </div>
