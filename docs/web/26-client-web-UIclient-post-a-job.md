@@ -2,7 +2,7 @@
 
 | Page | Fields | Input Type | Required (Yes/No) | Rule | Validation Rule | Lower Limit | Upper Limit |
 |------|--------|------------|-------------------|------|------------------|-------------|-------------|
-| Post A Job | Job Title | Text | Yes | Albhabets only | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
+| Post A Job | Job Title | Text | Yes | Albhabets only | Job title may contain only letters, spaces, and / , . - with spaces (max 10) between the words and . (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
 | Post A Job | Job Description | Text Area | Yes | Text | Enter the Job description | 50 min Char | 2000 min Char |
 | Post A Job | Job Type | Dropdown | Yes | Select value | Job Type must be selected (Drop down) | 1 Selection | 1 Selection |
 | Post A Job | Country | Dropdown | Yes | Select value | Country must be selected (Drop down) | 1 Selection | 1 Selection |
@@ -12,7 +12,7 @@
 | Post A Job | Start Time | Time Picker | Yes | Select Time | Select time | 1 Selection | 1 Selection |
 | Post A Job | Number Of vacancy | Dropdown | Yes | Select value | Number Of vacancy must be selected (Drop down) | 1 Selection | 1 Selection |
 | Post A Job | Time period Of Job | Text | Yes | Enter the time period | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
-| Post A Job | Skills Required | Text | Yes | Enter the skill req | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
+| Post A Job | Skills Required | Text | Yes | Enter the skill req | Only alphabets, commas, hashes, plus signs, and spaces are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
 | Post A Job | Requirements/Deliverable | Text Area | Yes | Text | Enter the Requirements/Deliverable | 50 min Char | 2000 min Char |
 | Post A Job | Other Information | Text Area | Yes | Text | Other Information | 50 min Char | 2000 min Char |
 | Post A Job | Tool Name | Text | Yes | Education level required | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |

@@ -191,7 +191,7 @@ const MultiStepPostJobForm = () => {
                 <div>
                   <div
                     key={currentStep}
-                    className="p-2 relative gap-3 overflow-auto w-full "
+                    className="p-2 relative gap-3 w-full "
                   >
                     {renderStep()}
                   </div>

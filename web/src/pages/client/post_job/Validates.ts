@@ -26,6 +26,23 @@ export const validateName = (value: string) => {
 };
 
 /**
+ * Validates that a date is the current date or a future date.
+ * @param date The date to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
+ */
+export const validateCurrentOrFutureDate = (date: Date | null): true | string => {
+  if (!date) {
+    return "Date must be selected";
+  }
+
+  if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+    return "Date cannot be in the past";
+  }
+
+  return true;
+};
+
+/**
  * Validate a date range.
  * - Start date must not be in the future.
  * - Start date must be before the end date.
@@ -193,11 +210,11 @@ export const validateAlphabeticText = (
   }
 
   // Allowed characters: letters, commas, and single spaces only
-  const defaultPattern = /^[a-zA-Z, ]+$/;
+  const defaultPattern = /^[a-zA-Z,+# ]+$/;
   const pattern = regex ?? defaultPattern;
 
   if (!pattern.test(v)) {
-    return "Only alphabets, commas, and spaces are allowed";
+    return "Only alphabets, commas, hashes, plus signs, and spaces are allowed";
   }
 
   // Length validation

@@ -14,18 +14,15 @@ import {
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { Controller, useForm } from "react-hook-form";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import type { FormData } from "../types";
 import { TimeInput } from "@/shared/components/commonUI/inputs/TimeInput";
 import {
   validateJobTitile,
-  validateDateRange,
   validateJobTimePeriod,
   validateAlphabeticText,
   validateCurrencyText,
-  validateProjectDeadline,
   validateAlphabeticTextArea,
+  validateCurrentOrFutureDate,
 } from "../Validates";
 
 /**
@@ -39,33 +36,7 @@ const JobPostForm: React.FC = () => {
    * @description Initializes `react-hook-form` with default values and submission mode.
    * This hook provides methods for form registration, submission, and state management.
    */
-  const method = useForm<FormData>({
-    defaultValues: {
-      jobTitle: "",
-      jobDescription: "",
-      jobType: "",
-      country: "",
-      state: "",
-      city: "",
-      startDate: null,
-      startTime: "",
-      numberOfVacancy: "",
-      timePeriod: "",
-      skillsRequired: "",
-      requirements: "",
-      otherInfo: "",
-      toolName: "",
-      toolImage: null,
-      additionalBudget: "",
-      experienceLevel: "",
-      engagementModel: "",
-      projectDeadline: null,
-      milestoneStructure: "",
-      attachments: null,
-      jobVisibility: "",
-    },
-    mode: "onSubmit",
-  });
+ 
 
   /**
    * @description A helper function to generate consistent CSS classes for form inputs.
@@ -149,29 +120,16 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div>
-              <div className="relative">
-                <Controller
-                  name="startDate"
-                  rules={{
-                    validate: (value) =>
-                      validateDateRange(value, method.getValues("startDate")),
-                  }}
-                  control={method.control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <DatePickerInput
-                        label="Start Date"
-                        placeholder="Select start date"
-                        {...field}
-                        required
-                      />
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
+              <DatePickerInput
+                name="startDate"
+                label="Start Date"
+                required
+                minDate={new Date(1970, 0, 1)}
+                // maxDate={new Date(2030, 11, 31)}
+                rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
+              />
             </div>
 
             <div>
@@ -335,28 +293,17 @@ const JobPostForm: React.FC = () => {
             />
 
             <div>
-              <div className="relative">
-                <Controller
-                  name="projectDeadline"
-                  rules={{
-                    validate: (value) => validateProjectDeadline(value),
-                  }}
-                  control={method.control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <DatePickerInput
-                        label="Project Deadline"
-                        placeholder="Select project deadline"
-                        required
-                        {...field}
-                      />
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
+              <DatePickerInput
+                name="projectDeadline"
+                label="Project Deadline"
+                placeholder="Project Deadline"
+                required
+                minDate={new Date(1970, 0, 1)}
+                // maxDate={new Date(2030, 11, 31)}
+                rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
+              />
             </div>
 
             <div className="md:col-span-2">
@@ -395,13 +342,6 @@ const JobPostForm: React.FC = () => {
             </div>
           </div>
         </FormSection>
-
-        {/* <button
-          type="submit"
-          className="mt-6 px-6 py-3 rounded-lg font-medium bg-emerald-700 hover:bg-emerald-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
-        >
-          Review Job Posting
-        </button> */}
       </div>
     </>
   );
