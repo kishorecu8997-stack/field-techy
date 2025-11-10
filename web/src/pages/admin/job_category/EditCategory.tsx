@@ -64,14 +64,10 @@ export default function EditCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
         >
-          <div className="mb-6 mt-2 w-fit">
-            <ImageUploaderField
-              label="Category Image"
-              name="categoryImage"
-              required
-            />
+          <div className="mb-6 mt-2 w-26">
+            <ImageUploaderField name="categoryImage" required />
           </div>
-          <div className="flex w-1/2">
+          <div className="flex md:w-1/2">
             <InputField
               name="categoryName"
               label="Category Name"
