@@ -4,18 +4,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React from "react";
-
-export interface PaymentProps {
-  id: string;
-  clientDetails: string;
-  jobTitle: string;
-  jobDescription: string;
-  amount: string;
-  engineerDetails: string;
-  clientStatus: string;
-  adminStatus: string;
-}
-
+import type { PaymentProps } from "./types";
 
 /**
  * ManagePayment Component

@@ -1,6 +1,6 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { NotificationProps } from "@/pages/admin/manage_notification";
-import type { PaymentProps } from "@/pages/admin/payment";
+import type { PaymentProps } from "@/pages/admin/payment/types";
 import type { RateCardProps } from "@/pages/admin/rate_card";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
@@ -40,8 +40,6 @@ export const serviceCategoriesData: ServerCategoryProps[] = [
     status: true,
   },
 ];
-
-
 
 export const RateCardData: RateCardProps[] = [
   {
@@ -106,7 +104,8 @@ export const PaymentData: PaymentProps[] = [
     id: "RC-001",
     clientDetails: "TechnoBuild Pvt. Ltd.",
     jobTitle: "Electrical Maintenance",
-    jobDescription: "Routine inspection and repair of industrial electrical systems.",
+    jobDescription:
+      "Routine inspection and repair of industrial electrical systems.",
     amount: "₹15,000",
     engineerDetails: "Rahul Mehta (ENG-1021)",
     clientStatus: "Approved",
@@ -126,7 +125,8 @@ export const PaymentData: PaymentProps[] = [
     id: "RC-003",
     clientDetails: "BlueLine Apartments",
     jobTitle: "Plumbing Overhaul",
-    jobDescription: "Replacement of old water lines and fixtures across 12 units.",
+    jobDescription:
+      "Replacement of old water lines and fixtures across 12 units.",
     amount: "₹28,500",
     engineerDetails: "Vikram Rao (ENG-1009)",
     clientStatus: "In Progress",
@@ -146,7 +146,8 @@ export const PaymentData: PaymentProps[] = [
     id: "RC-005",
     clientDetails: "Urban Spaces Ltd.",
     jobTitle: "HVAC System Installation",
-    jobDescription: "Air conditioning and ventilation setup for office floors 3–6.",
+    jobDescription:
+      "Air conditioning and ventilation setup for office floors 3–6.",
     amount: "₹55,000",
     engineerDetails: "Amit Verma (ENG-1035)",
     clientStatus: "Cancelled",
@@ -154,12 +155,12 @@ export const PaymentData: PaymentProps[] = [
   },
 ];
 
-
 export const notificationData: NotificationProps[] = [
   {
     id: "PAY-001",
     title: "Payment Released",
-    message: "Payment of ₹15,000 has been successfully released to Engineer Rahul Mehta.",
+    message:
+      "Payment of ₹15,000 has been successfully released to Engineer Rahul Mehta.",
     type: "Credit",
     sendTo: "Rahul Mehta (ENG-1021)",
     createdDate: "2024-11-01",
@@ -167,7 +168,8 @@ export const notificationData: NotificationProps[] = [
   {
     id: "PAY-002",
     title: "Invoice Generated",
-    message: "Invoice INV-5647 for ₹42,000 has been generated for Green Energy Co.",
+    message:
+      "Invoice INV-5647 for ₹42,000 has been generated for Green Energy Co.",
     type: "Invoice",
     sendTo: "Green Energy Co.",
     createdDate: "2024-10-27",
@@ -183,7 +185,8 @@ export const notificationData: NotificationProps[] = [
   {
     id: "PAY-004",
     title: "Payment Pending",
-    message: "Awaiting admin approval for ₹28,000 to be credited to Sneha Patel.",
+    message:
+      "Awaiting admin approval for ₹28,000 to be credited to Sneha Patel.",
     type: "Pending",
     sendTo: "Sneha Patel (ENG-1078)",
     createdDate: "2024-09-29",
