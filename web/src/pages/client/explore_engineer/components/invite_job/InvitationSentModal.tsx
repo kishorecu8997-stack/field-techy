@@ -8,6 +8,13 @@ interface InvitationSentProps {
   onClose: () => void;
 }
 
+/**
+ * A modal component that confirms a job invitation has been successfully sent.
+ * It provides a button to navigate back to the home/dashboard page.
+ *
+ * @param {InvitationSentProps} props - The props for the component.
+ * @returns {React.ReactElement} A React functional component that renders the invitation sent confirmation modal.
+ */
 const InvitationSentModal: React.FC<InvitationSentProps> = ({ onClose }) => {
   const navigate = useNavigate();
   return (

@@ -1,14 +1,14 @@
 import React from 'react';
+import type { JobCardProps } from '../types';
 
-interface JobCardProps {
-  title: string;
-  hours: number;
-  client: string;
-  status: string;
-  onApprove: () => void;
-  onRequestRevision: () => void;
-}
 
+/**
+ * A card component that displays the header details of a job, including title, hours,
+ * client, and status, along with action buttons to approve or request revision.
+ *
+ * @param {JobCardProps} props - The props for the component.
+ * @returns {React.ReactElement} A React functional component that renders the job card header.
+ */
 const JobCard: React.FC<JobCardProps> = ({ 
   title, 
   hours, 

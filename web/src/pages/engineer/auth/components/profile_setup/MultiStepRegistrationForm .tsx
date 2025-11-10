@@ -1,4 +1,3 @@
-// components/MultiStepRegistrationForm.tsx
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";

@@ -12,17 +12,26 @@ import informationCards from "@/dummy_data/informationCardData";
 import {
   categoriesSkills,
   categoriesTools,
+  portfoloioLink,
 } from "@/dummy_data/categoryTagData";
 import InformationCardTools from "@/shared/components/InformationCardTools";
 
-const portfolioLink = "https://www.dribbble.com/Apptunix.com";
+const portfolioLink = portfoloioLink;
 
+/**
+ * A page component that displays a detailed profile of an engineer.
+ * It aggregates various components like `EngineerProfileCard`, `CategoryTag`,
+ * `InformationCard`, and `SidebarJobPostWallet` to build the page layout.
+ * The data is currently sourced from dummy data files.
+ *
+ * @returns {React.ReactElement} A React functional component that renders the engineer's profile page.
+ */
 const EngineerProfile: React.FC = () => {
   const navigate = useNavigate();
   const handleInviteClick = () => {
     navigate(absoluteUrls.client.home.ClientJobInvite);
   };
- 
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
@@ -31,7 +40,7 @@ const EngineerProfile: React.FC = () => {
             <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
               <ClientHeader
                 currentPath="Explore Engineers"
-                showSearchBar={false}                
+                showSearchBar={false}
               />
             </div>
             <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">

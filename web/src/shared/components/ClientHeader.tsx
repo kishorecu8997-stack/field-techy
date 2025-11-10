@@ -3,16 +3,21 @@ import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import SortDropdown from "./SortDropdown";
 import { Button } from "./commonUI/Buttons";
+import type { HeaderProps } from "./type";
 
-interface HeaderProps {
-  title?: string;
-  currentPath: string;
-  showSearchBar?: boolean;
-  showButton?: boolean;
-  buttonText?: string;
-  onClick?: () => void;
-}
-
+/**
+ * A reusable header component for client-facing pages.
+ * It displays a title, breadcrumb navigation, and optional search/sort and action button.
+ *
+ * @param {object} props - The props for the component.
+ * @param {string} [props.title] - The main title to display. If not provided, `currentPath` is used.
+ * @param {string} props.currentPath - The name of the current page, used in the breadcrumb.
+ * @param {boolean} [props.showSearchBar=true] - Whether to display the search/sort dropdown.
+ * @param {boolean} [props.showButton=false] - Whether to display the action button.
+ * @param {string} [props.buttonText='Invite To Job'] - The text to display on the action button.
+ * @param {() => void} [props.onClick] - The function to call when the action button is clicked.
+ * @returns {React.ReactElement} A React functional component that renders the page header.
+ */
 const ClientHeader: React.FC<HeaderProps> = ({
   title,
   currentPath,

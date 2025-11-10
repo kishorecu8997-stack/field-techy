@@ -3,7 +3,17 @@ import type { InformationCardPropsTools } from './type';
 import CategoryTag from './CategoryTag';
 
 
-const InformationCardTools: React.FC<InformationCardPropsTools> = ({ 
+/**
+ * A reusable card component to display tool information.
+ *
+ * @param {object} props - The props for the component.
+ * @param {string} props.title - The title to be displayed in the card header.
+ * @param {string} props.description - The description or label for the category tag.
+ * @param {string} props.category - The category of the tool, used by the CategoryTag component.
+ * @param {string} [props.className=''] - Optional additional CSS classes to apply to the card container.
+ * @returns {React.ReactElement} A React functional component that renders an information card for tools.
+ */
+const InformationCardTools: React.FC<InformationCardPropsTools> = ({
   title, 
   description,
   category, 

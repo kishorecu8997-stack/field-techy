@@ -1,12 +1,16 @@
 import React from 'react';
+import type { CategoryTagProps } from './type';
 
-interface CategoryTagProps {
-  category: string[]; 
-  label?: string;  
-  isShowLabel?: boolean;
-  required?: boolean;
-}
-
+/**
+ * A component to display a list of categories as tags, with an optional label.
+ *
+ * @param {object} props - The props for the component.
+ * @param {string[]} props.category - An array of strings, where each string is a category to be displayed as a tag.
+ * @param {string} [props.label] - An optional label to display above the tags.
+ * @param {boolean} [props.isShowLabel=true] - Whether to show the label. Defaults to true.
+ * @param {boolean} [props.required] - If not explicitly false, displays a red asterisk next to the label to indicate it's a required field.
+ * @returns {React.ReactElement} A React functional component that renders a set of category tags.
+ */
 const CategoryTag: React.FC<CategoryTagProps> = ({  category, label, isShowLabel=true, required }) => {
   return (    
     <div className="mb-6">

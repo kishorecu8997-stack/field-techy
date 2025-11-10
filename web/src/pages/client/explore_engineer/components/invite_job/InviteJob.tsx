@@ -16,6 +16,13 @@ interface SelectJobCardProps {
  
 }
 
+/**
+ * A component that allows a client to select one or more jobs to invite an engineer to.
+ * It displays a list of available jobs as selectable cards and handles the invitation logic.
+ *
+ * @param {SelectJobCardProps} props - The props for the component.
+ * @returns {React.ReactElement} A React functional component that renders the job invitation page.
+ */
 const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -29,8 +36,7 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
   const { control,  setValue, getValues, formState: { errors } } = methods;
 
   const handleInviteClick = (data: SelectedJobCardId) => {
-    console.log("Valid card data:", data);
-    toast.success("Invitation sent successfully.");
+    toast.success(`${data.id} Invitation sent successfully.`);
     setIsOpen(true);
     // onInviteJobCard(data); // This can be called if needed
   };

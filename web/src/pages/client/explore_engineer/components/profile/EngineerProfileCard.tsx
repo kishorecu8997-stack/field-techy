@@ -2,6 +2,16 @@ import React from 'react';
 import { assetsConfig } from '@/assets';
 import type { ProfileCardProps } from '../../types';
 
+/**
+ * A card component to display a summary of an engineer's profile.
+ * It includes their name, photo, rating, job title, and location,
+ * along with a button to invite them to a job.
+ *
+ * @param {object} props - The props for the component.
+ * @param {ProfileCardProps['profile']} props.profile - An object containing the engineer's profile details.
+ * @param {() => void} props.onInviteClick - Callback function to be executed when the "Invite To Job" button is clicked.
+ * @returns {React.ReactElement} A React functional component that renders the engineer's profile card.
+ */
 const EngineerProfileCard: React.FC<ProfileCardProps> = ({profile, onInviteClick}) => {
   return (
     <div className="bg-emerald-900 dark:bg-emerald-800 rounded-2xl p-6 shadow-lg transition-colors duration-300">
@@ -47,4 +57,3 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({profile, onInviteClick
   );
 };
 export default EngineerProfileCard;
-

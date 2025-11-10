@@ -10,6 +10,7 @@ import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
 import { validateAmount, validatePaymentMethods } from "@/utils/validate";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
+import { toast } from "react-toastify/unstyled";
 
 /**
  * @description Defines the shape of the form data for adding funds to the wallet.
@@ -28,9 +29,9 @@ const AddFund = () => {
    * @description Handles the submission of the add fund form.
    * @param {AddFundFormData} data - The data from the form.
    */
-  const handleSubmit = (data: AddFundFormData) => {
-    console.log("Form submitted with data:", data);
+  const handleSubmit = (data: AddFundFormData) => {    
     // TODO: Replace with actual submission logic (e.g., API call)
+    toast.success(`Funds ${data.amount} added successfully!`);
   };
 
  const [isOpen, setIsOpen] = useState(false);

@@ -1,2 +1,8 @@
-
-"Engineers Logs","Work Submissions","Job Information","Requirement","SPOC","Other","Proposal's"
+export interface JobCardProps {
+  title: string;
+  hours: number;
+  client: string;
+  status: string;
+  onApprove: () => void;
+  onRequestRevision: () => void;
+}

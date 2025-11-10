@@ -28,7 +28,6 @@ const Popup = ({
   children,
   inputClassName = "sm:max-w-md sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto",
 }: PopupProps) => {
-  console.log("Popup input class name:", inputClassName);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

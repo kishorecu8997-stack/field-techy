@@ -1,6 +1,16 @@
 import React from 'react';
 import type { InformationCardProps } from './type';
 
+/**
+ * A reusable card component to display information in a structured key-value format.
+ *
+ * @param {object} props - The props for the component.
+ * @param {string} props.title - The title to be displayed in the card header.
+ * @param {string} props.description - A secondary header or description for the card content.
+ * @param {Array<{label: string, value: string}>} props.details - An array of objects, where each object represents a row with a label and a value.
+ * @param {string} [props.className=''] - Optional additional CSS classes to apply to the card container.
+ * @returns {React.ReactElement} A React functional component that renders a structured information card.
+ */
 const InformationCard: React.FC<InformationCardProps> = ({ 
   title, 
   description,

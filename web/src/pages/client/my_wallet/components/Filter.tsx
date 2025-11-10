@@ -16,6 +16,13 @@ interface FilterProps {
   onFilter?: (data: FilterFormData) => void;
 }
 
+/**
+ * A component that provides a date range filter UI.
+ * It allows users to select a start and end date and apply it as a filter.
+ *
+ * @param {FilterProps} props - The props for the component.
+ * @returns {React.ReactElement | null} A React element representing the filter UI, or null if `isOpen` is false.
+ */
 const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
   if (!isOpen) return null;
 

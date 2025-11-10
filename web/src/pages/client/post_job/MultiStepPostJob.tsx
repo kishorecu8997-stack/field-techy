@@ -109,7 +109,7 @@ const MultiStepPostJobForm = () => {
   const submitCompleteForm = async (data: FormDataPostJob) => {
     setIsSubmitting(true);
     try {
-      // 🔥 MOCK API CALL (replace with real fetch when backend is ready)
+      // MOCK API CALL (replace with real fetch when backend is ready)
       console.log("Submitting Post a job data:", data);
 
       // Simulate network delay

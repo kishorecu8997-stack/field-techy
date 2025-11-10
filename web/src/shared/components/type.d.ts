@@ -87,12 +87,6 @@ export interface Category {
   id: string;
   items: string;
 }
-interface CategoryTagProps {
-  category: Category[]; 
-  label?: string;  
-  isShowLabel?: boolean;
-  required?: boolean;
-}
 
 interface InformationCardProps {
   title: string;
@@ -104,15 +98,14 @@ interface InformationCardProps {
   className?: string;
 }
 
-interface InformationCardPropsTools {
+export interface InformationCardPropsTools {
   title: string;
   description: string;
-  category: string[]; 
+  category: string[];
   className?: string;
 }
 
-
-interface PaymentMethodSelectorProps {
+export interface PaymentMethodSelectorProps {
   name: string;
   label?: string;
   isShowLabel?: boolean;
@@ -123,4 +116,20 @@ interface PaymentMethodSelectorProps {
   onAddNew?: (cardData: CardFormData) => void;
   isOpen?: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface HeaderProps {
+  title?: string;
+  currentPath: string;
+  showSearchBar?: boolean;
+  showButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
+}
+
+export interface CategoryTagProps {
+  category: string[];
+  label?: string;
+  isShowLabel?: boolean;
+  required?: boolean;
 }
