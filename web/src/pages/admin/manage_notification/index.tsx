@@ -1,5 +1,71 @@
-import React from 'react'
+import { notificationData } from "@/dummy_data/admin";
+import type { Column } from "@/shared/components/commonUI/custom_table";
+import CustomTable from "@/shared/components/commonUI/custom_table";
+import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import React from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
-export default function ManageNotification() {
-  return <div>ManageNotification</div>;
+export interface NotificationProps {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  sendTo: string;
+  createdDate: string;
 }
+
+/**
+ * ManageNotification Component
+ *
+ * Provides an administrative dashboard view for managing notifications.
+ * Displays notification records in a searchable and paginated table,
+ * with options to delete specific notifications.
+ *
+ * @component
+ * @example
+ * return (
+ *   <ManageNotification />
+ * );
+ *
+ * @returns {JSX.Element} The rendered ManageNotification component.
+ */
+const ManageNotification: React.FC = () => {
+  const columns: Column<NotificationProps>[] = [
+    { key: "id", label: "Request ID" },
+    { key: "title", label: "Title" },
+    { key: "message", label: "Message" },
+    { key: "type", label: "Type" },
+    { key: "sendTo", label: "Send To" },
+    { key: "createdDate", label: "Created Date" },
+    {
+      key: "action",
+      label: "Actions",
+      renderCell: (row: NotificationProps) => (
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-red-100 rounded-md">
+            <RiDeleteBin6Line className="text-red-600" />
+          </div>
+        </div>
+      ),
+    },
+  ];
+  return (
+    <div className="w-full h-full flex flex-col p-3 gap-3 ">
+      <h1 className="text-xl font-semibold ">Manage Rate Cards</h1>
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+        <div>
+          <SearchInput />
+        </div>
+        <div className="h-full flex-1 overflow-y-auto ">
+          <CustomTable<NotificationProps>
+            columns={columns}
+            data={notificationData}
+            initialPageSize={10}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ManageNotification;

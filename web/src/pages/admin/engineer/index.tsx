@@ -79,13 +79,26 @@ const columns: Column<ManageEngineerProps>[] = [
   },
 ];
 
-
-
-
+/**
+ * ManageEngineer Component
+ * 
+ * Displays a management dashboard for engineers, including:
+ * - A search input for filtering results.
+ * - A customizable table for viewing detailed engineer data.
+ * - Actionable buttons for viewing document details.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <ManageEngineer />
+ * );
+ * 
+ * @returns {JSX.Element} The rendered ManageEngineer component.
+ */
 const ManageEngineer: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
-      <h1 className="text-xl font-semibold ">Booked Requests</h1>
+      <h1 className="text-xl font-semibold ">Manage Engineers</h1>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
         <div><SearchInput/></div>
         <div className="h-full flex-1 overflow-y-auto ">
