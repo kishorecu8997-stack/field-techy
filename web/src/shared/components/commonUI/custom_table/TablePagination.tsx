@@ -8,6 +8,16 @@ interface TablePaginationProps {
   onPageSizeChange?: (size: number) => void;
 }
 
+/**
+ * Pagination component for tables with navigation and optional page size selector.
+ *
+ * @param {number} total - Total number of records.
+ * @param {number} pageSize - Number of records per page.
+ * @param {number} currentPage - Current active page.
+ * @param {(page: number) => void} onPageChange - Handles page change.
+ * @param {(size: number) => void} [onPageSizeChange] - Handles page size change.
+ * @returns {JSX.Element} Pagination UI with controls.
+ */
 const TablePagination: React.FC<TablePaginationProps> = ({
   total,
   pageSize,
