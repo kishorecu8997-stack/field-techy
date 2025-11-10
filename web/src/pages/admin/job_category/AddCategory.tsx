@@ -64,7 +64,11 @@ export default function AddCategory() {
           className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
         >
           <div className="mb-6 mt-2 w-fit">
-            <ImageUploaderField label="Profile Image" name="profileImage" />
+            <ImageUploaderField
+              label="Category Image"
+              name="profileImage"
+              required
+            />
           </div>
           <div className="flex w-1/2">
             <InputField
