@@ -475,6 +475,23 @@ export const validateJobDescription = (value: string) => {
   return true;
 };
 
+export const validateCategoryName = (value: string) => {
+  const v = value.trim();
+
+  if (v.length < 3) {
+    return "Category name must be at least 3 characters";
+  }
+  if (v.length > 50) {
+    return "Category name must not exceed 50 characters";
+  }
+  // Allow only letters (A-Z, a-z) and spaces
+  if (!/^[A-Za-z\s]+$/.test(v)) {
+    return "Category name may contain only letters and spaces";
+  }
+
+  return true;
+};
+
 /**
  * Validates that a payment method has been selected.
  * The value is expected to be a `SelectOption` object.
@@ -544,4 +561,5 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validateCategoryName,
 };

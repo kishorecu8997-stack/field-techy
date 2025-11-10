@@ -5,6 +5,7 @@ import companyLogo from "./company-logo.png";
 import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
 import ftLogoWhite from "./ft_logo_white.svg";
+import placeholderImage from "./placeholder_img.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -23,4 +24,5 @@ export const assetsConfig = {
       workTracking,
     },
   },
+  placeholder: placeholderImage,
 };

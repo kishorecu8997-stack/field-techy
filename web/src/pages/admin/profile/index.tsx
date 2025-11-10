@@ -5,7 +5,6 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
-
 /**
  * Profile component renders the admin profile page with tabbed navigation for personal details and password change.
  * Utilizes AdminTabComponent for tabbed UI and react-router for navigation.
@@ -34,7 +33,7 @@ export default function Profile() {
     },
   ];
   return (
-    <div>
+    <div className="w-full p-4 h-full">
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">My Profile</p>
         <Button
