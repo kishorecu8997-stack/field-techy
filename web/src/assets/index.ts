@@ -8,12 +8,14 @@ import suitcase from "./suitcase.svg";
 import people from "./people.svg";
 import location from "./location.svg";
 import notification from "./notification_big.svg";
+import ftLogoWhite from "./ft_logo_white.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
   logos: {
     ftLogo,
     companyLogo,
+    ftLogoWhite,
   },
   images: {
     profile: {

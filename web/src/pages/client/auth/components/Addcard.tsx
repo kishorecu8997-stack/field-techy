@@ -1,16 +1,16 @@
-import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import countries from "@/dummy_data/countries";
+import { validateAddress } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import {
   cardNumberValidation,
   cvvValidation,
   expiryDateValidation,
 } from "@/shared/libs/utils";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
-import { validateAddress } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
-import countries from "@/dummy_data/countries";
 
 /**
  * Represents the Add Card form values.
@@ -26,7 +26,7 @@ export interface CardFormData {
   expDate: string;
   cvv: string;
   country: string;
-  address: string;
+  cardAddress: string;
 }
 
 /**
@@ -52,8 +52,8 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
       cardNumber: "",
       expDate: "",
       cvv: "",
-      country: "UAE",
-      address: "",
+      country: "",
+      cardAddress: "",
     },
   });
 
@@ -80,61 +80,59 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
         <AiOutlineClose onClick={onClose} className="cursor-pointer" />
       </div>
 
-      <FormProvider {...methods}>
-        <div className="space-y-6">
+      <div className="space-y-6">
+        <InputField
+          label="Card Number"
+          name="cardNumber"
+          placeholder="9999 9999 9999 9999"
+          rules={{ validate: (v: string) => cardNumberValidation(v) }}
+          required
+        />
+
+        <div className="grid grid-cols-2 gap-4">
           <InputField
-            label="Card Number"
-            name="cardNumber"
-            placeholder="9999 9999 9999 9999"
-            rules={{ validate: (v: string) => cardNumberValidation(v) }}
+            label="Expiry Date"
+            name="expDate"
+            placeholder="MM/YY"
+            rules={{ validate: (v: string) => expiryDateValidation(v) }}
             required
           />
-
-          <div className="grid grid-cols-2 gap-4">
-            <InputField
-              label="Expiry Date"
-              name="expDate"
-              placeholder="MM/YY"
-              rules={{ validate: (v: string) => expiryDateValidation(v) }}
-              required
-            />
-            <InputField
-              label="CVV"
-              name="cvv"
-              placeholder="Enter CVV"
-              rules={{ validate: (v: string) => cvvValidation(v) }}
-              required
-            />
-          </div>
-
-          <SelectField
-            label="Country"
-            name="country"
-            placeholder="Country"
-            options={countries.map((c) => ({
-              value: c.value,
-              label: c.label,
-            }))}
-            required
-          />
-
           <InputField
-            label="Address"
-            name="address"
-            placeholder="Enter Address"
+            label="CVV"
+            name="cvv"
+            placeholder="Enter CVV"
+            rules={{ validate: (v: string) => cvvValidation(v) }}
             required
-            rules={{ validate: (v: string) => validateAddress(v) }}
           />
-
-          <Button
-            type="button"
-            onClick={handleAddCard}
-            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          >
-            Add Card
-          </Button>
         </div>
-      </FormProvider>
+
+        <SelectField
+          label="Country"
+          name="country"
+          placeholder="Country"
+          options={countries.map((c) => ({
+            value: c.value,
+            label: c.label,
+          }))}
+          required
+        />
+
+        <InputField
+          label="Address"
+          name="cardAddress"
+          placeholder="Enter Address"
+          required
+          rules={{ validate: (v: string) => validateAddress(v) }}
+        />
+
+        <Button
+          type="button"
+          onClick={handleAddCard}
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+        >
+          Add Card
+        </Button>
+      </div>
     </div>
   );
 };
