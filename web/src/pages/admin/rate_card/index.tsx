@@ -31,7 +31,13 @@ import type { RateCardProps } from "./types";
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
   const columns: Column<RateCardProps>[] = [
-        { key: "id", label: "Request ID", renderCell: (row: RateCardProps) => <div className="whitespace-nowrap">{row.id}</div> },
+    {
+      key: "id",
+      label: "Request ID",
+      renderCell: (row: RateCardProps) => (
+        <div className="whitespace-nowrap">{row.id}</div>
+      ),
+    },
     { key: "skillSet", label: "Skill Set" },
     { key: "region", label: "Region" },
     { key: "location", label: "Location" },
