@@ -31,7 +31,7 @@ interface StatCardProps {
  * @param {StatCardProps} props - Component props
  * @returns {JSX.Element} Rendered statistic card
  */
-const StatCard: React.FC<StatCardProps> = ({
+const StateCard: React.FC<StatCardProps> = ({
   title,
   value,
   alt = "Icon",
@@ -61,4 +61,4 @@ const StatCard: React.FC<StatCardProps> = ({
   );
 };
 
-export default StatCard;
+export default StateCard;

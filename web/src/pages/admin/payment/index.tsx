@@ -5,6 +5,10 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React from "react";
 import type { PaymentProps } from "./types";
+import { FaUserCircle } from "react-icons/fa";
+import SelectMenu from "@/shared/components/SelectMenu";
+import { options } from "@/dummy_data/admin/paymentData";
+import StateCard from "@/shared/components/AdminCard";
 
 /**
  * ManagePayment Component
@@ -25,31 +29,81 @@ import type { PaymentProps } from "./types";
  */
 const ManagePayment: React.FC = () => {
   const columns: Column<PaymentProps>[] = [
-    { key: "id", label: "Request ID" },
-    { key: "clientDetails", label: "Client Details" },
+    {
+      key: "id",
+      label: "Request ID",
+      renderCell: (row: PaymentProps) => (
+        <div className="text-nowrap w-full">{row.id}</div>
+      ),
+    },
+    {
+      key: "clientDetails",
+      label: "Client Details",
+      renderCell: (row: PaymentProps) => (
+        <div className="flex items-center gap-2">
+          <div>
+            <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          </div>
+          <div>
+            <div className="font-semibold">{row.clientDetails.name}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.clientDetails.email}
+            </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.clientDetails.phone}
+            </div>
+          </div>
+        </div>
+      ),
+    },
     { key: "jobTitle", label: "Job Title" },
-    { key: "jobDescription", label: "Job Description" },
+    {
+      key: "jobDescription",
+      label: "Job Description",
+      renderCell: (row: PaymentProps) => (
+        <div className="text-sm w-70 ">{row.jobDescription}</div>
+      ),
+    },
     { key: "amount", label: "Amount" },
     { key: "engineerDetails", label: "Engineer Details" },
-    { key: "clientStatus", label: "Client Status" },
-    { key: "adminStatus", label: "Admin Status" },
+    {
+      key: "clientStatus",
+      label: "Client Status",
+      renderCell: (row: PaymentProps) => (
+        <div>
+          {row.clientStatus.charAt(0).toUpperCase() + row.clientStatus.slice(1)}
+        </div>
+      ),
+    },
+    {
+      key: "adminStatus",
+      label: "Admin Status",
+      renderCell: (row: PaymentProps) => <AdminStatus row={row.adminStatus} />,
+    },
 
     {
       key: "action",
       label: "Payment",
       renderCell: (row: PaymentProps) => (
         <div className="flex items-center gap-2">
-          <Button className="whitespace-nowrap">Send Payment</Button>
+          <Button className="whitespace-nowrap bg-emerald-900">
+            Send Payment
+          </Button>
         </div>
       ),
     },
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
-      <h1 className="text-xl font-semibold ">Manage Rate Cards</h1>
+      <div className="flex justify-between">
+        <h1 className="text-lg font-semibold ">Manage Rate Cards</h1>
+        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500">
+          Export CSV
+        </Button>
+      </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <div>
-          <SearchInput />
+        <div className="max-w-80">
+          <StateCard title="Total Payment" value={5000} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<PaymentProps>
@@ -64,3 +118,21 @@ const ManagePayment: React.FC = () => {
 };
 
 export default ManagePayment;
+
+const AdminStatus = ({ row }: { row: string }) => {
+  const handleChangeStatus = (value: string) => {
+    console.log(value);
+  };
+
+  return (
+    <div className="text-sm ">
+      <SelectMenu
+        placeholder="Select Region"
+        className="w-36"
+        options={options}
+        value={row}
+        onChange={() => handleChangeStatus}
+      />
+    </div>
+  );
+};
