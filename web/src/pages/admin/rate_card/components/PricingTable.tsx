@@ -23,7 +23,7 @@ const PricingTable: React.FC<{
   const fields = ["hourly", "halfDay", "fullDay", "weekly", "monthly"];
 
   return (
-    <div className="overflow-x-auto mt-2 border rounded-lg">
+    <div className="overflow-x-auto mt-2 rounded-lg">
       <table className="w-full text-sm text-left border-collapse">
         <thead className="bg-gray-100 text-gray-700">
           <tr>
@@ -36,8 +36,8 @@ const PricingTable: React.FC<{
         </thead>
         <tbody>
           {tiers.map((tier, tierIdx) => (
-            <tr key={tier.level} className="border-t">
-              <td className="px-4 py-2 font-medium">
+            <tr key={tier.level} className="border-t border-gray-200">
+              <td className="px-4 py-1 font-medium">
                 {tier.level} – {tier.description}
               </td>
               {fields.map((field) => (

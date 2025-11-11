@@ -11,6 +11,7 @@ const RateCardForm = () => {
       <SelectField
         name="rateType"
         label="Rate Card Type"
+        required
         options={[
           { label: "Master Rate Card", value: "masterRateCard" },
           {
@@ -67,6 +68,7 @@ const RateCardForm = () => {
       )}
       <SelectField
         name="country"
+        required
         label="Country"
         options={[
           { label: "Country 1", value: "country1" },

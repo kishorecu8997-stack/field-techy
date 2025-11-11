@@ -10,7 +10,7 @@ export const Accordion: React.FC<{ title: string; children: React.ReactNode }> =
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b rounded-md">
+    <div className="border-b border-gray-300">
       <button
         type="button"
         onClick={() => setOpen(!open)}
