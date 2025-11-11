@@ -12,25 +12,25 @@ import { useNavigate } from "react-router-dom";
 
 /**
  * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
- * 
+ *
  * Features:
  * - Multi-tab form with Basic Information, Experience Details, and Documents sections
  * - Form validation at each step before proceeding
  * - File upload capability for documents and profile image
  * - Progressive form completion with Next/Save buttons
  * - Form state management using react-hook-form
- * 
+ *
  * The form is divided into three main sections:
  * 1. Basic Information: Personal and professional details
  * 2. Experience Details: Work history and qualifications
  * 3. Documents: Required documentation and certificates
- * 
+ *
  * @component
  * @example
  * ```tsx
  * <AddEngineer />
  * ```
- * 
+ *
  * @returns {JSX.Element} A multi-step form component for adding new engineers
  */
 export default function AddEngineer() {
@@ -123,9 +123,9 @@ export default function AddEngineer() {
   const isLastTab = activeTab === "Documents";
 
   return (
-    <div>
+    <div className="w-full px-4 h-full mt-6">
       <div className="flex justify-between gap-4">
-        <h2 className="mt-2 mb-6 font-semibold">Add Engineer</h2>
+        <h2 className="mt-2 mb-4 font-semibold">Add Engineer</h2>
         <Button
           variant="solid"
           className=""

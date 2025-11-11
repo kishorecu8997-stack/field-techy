@@ -1,0 +1,124 @@
+import {
+  transactions,
+  type TransactionProps,
+} from "@/dummy_data/admin/manageEngineer";
+import {
+  CustomTable,
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
+
+/**
+ * Wallet Component
+ *
+ * Displays an engineer's financial details in two main sections:
+ * Also displays the current **Wallet Balance** above the transaction table.
+ * Uses dummy transaction data from `transactions` and a shared `CustomTable` component.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Wallet />
+ * );
+ *
+ * @returns {JSX.Element} The rendered Wallet panel showing bank details, balance, and transaction history.
+ */
+export default function Wallet() {
+  const columns: Column<TransactionProps>[] = [
+    { key: "id", label: "Sr. No." },
+    { key: "date", label: "Date & Time" },
+    { key: "transactionId", label: "Transaction ID" },
+    { key: "type", label: "Transaction Type" },
+    { key: "amount", label: "Amount" },
+    {
+      key: "status",
+      label: "Status",
+      renderCell: (row: TransactionProps) => {
+        const statusClass =
+          row.status === "Success"
+            ? "text-green-600 bg-green-100"
+            : row.status === "Failed"
+            ? "text-red-600 bg-red-100"
+            : "text-yellow-600 bg-yellow-100";
+
+        return (
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${statusClass}`}
+          >
+            {row.status}
+          </span>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div className="p-8">
+      <div className="border border-gray-200 rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
+        <h3 className="font-semibold text-gray-700 dark:text-white mb-4">
+          Card Detail
+        </h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Bank Name
+              </label>
+              <p className="font-semibold">ENDB Bank</p>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Card Number
+              </label>
+              <p className="font-semibold">9876541320</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Bank Address
+              </label>
+              <p className="text-sm leading-tight">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut,
+                modi animikishore et distinctio ipsam corrupti.
+              </p>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                IBAN Number
+              </label>
+              <p className="font-semibold">456789</p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Card Holder Name
+              </label>
+              <p className="font-semibold text-gray-500">—</p>{" "}
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Swift Code
+              </label>
+              <p className="font-semibold">AHGFH456</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-2 mt-6 items-center">
+        <p className="text-gray-500">Wallet Balance : </p>
+        <span className="font-semibold text-[#666666]">AED 500</span>
+      </div>
+
+      <div className="h-full flex-1 overflow-y-auto">
+        <CustomTable<TransactionProps>
+          columns={columns}
+          data={transactions}
+          initialPageSize={10}
+        />
+      </div>
+    </div>
+  );
+}
