@@ -1,12 +1,12 @@
 import { engineerData } from "@/dummy_data/admin";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
+import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import type { EngineerPage } from "../types";
-import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 
 /**
  * Engineer Component
@@ -42,7 +42,7 @@ const EngineerWallet: React.FC = () => {
       key: "action",
       label: "Action",
       align: "center",
-      renderCell: (row: EngineerPage) => (
+      renderCell: () => (
         <div className="flex items-center justify-center gap-2">
           <div className="p-2 bg-blue-100 rounded-md">
             <CiEdit className="text-blue-600" />

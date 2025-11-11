@@ -7,10 +7,10 @@ import { FaUserCircle } from "react-icons/fa";
 import type { TransactionRequest } from "../wallet_overview/types";
 
 /**
- * Engineer Component
+ * ApprovedTable Component
  *
- * Renders a table of engineer payment transactions with client info, job details, and actions.
- * @returns {JSX.Element} The engineer management view.
+ * Renders a table of transaction requests with client info, job details, and actions.
+ * @returns {JSX.Element} The transaction requests management view.
  */
 const ApprovedTable: React.FC = () => {
 

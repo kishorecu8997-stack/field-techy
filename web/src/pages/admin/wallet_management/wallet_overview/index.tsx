@@ -3,14 +3,11 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import EngineerWallet from "./engineer_pages";
 
 /**
- * ManageTransactions Component
+ * WalletOverview Component
  *
  * @component
  * @description Displays and manages different types of transaction tabs including
  * Engineer Payouts, Milestone Approvals, Dispute Resolutions, and Refunds.
- * Includes an option to export data as CSV.
- *
- * @returns {JSX.Element} The Manage Transactions admin panel.
  */
 export default function WalletOverview() {
   const tabs = [
