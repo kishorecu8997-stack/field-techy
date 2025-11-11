@@ -29,10 +29,10 @@ export default function AdminLayout() {
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
       <Header onToggleSidebar={toggleSidebar} />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden h-screen ">
         <Sidebar isCollapsed={isSidebarCollapsed} />
 
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-100 dark:bg-gray-800">
+        <main className="flex flex-1 overflow-y-auto bg-gray-200 dark:bg-gray-800 h-full w-full justify-center items-center">
           <Outlet />
         </main>
       </div>

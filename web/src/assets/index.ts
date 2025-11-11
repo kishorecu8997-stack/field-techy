@@ -8,6 +8,7 @@ import user from "./user-image/user.png";
 import circle_tick from "./circle_tick_icon.svg";
 
 import ftLogoWhite from "./ft_logo_white.svg";
+import adminCard from "./admin-card-icon.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -28,6 +29,9 @@ export const assetsConfig = {
     },
     users: {
       user,
+    },
+    admin: {
+      adminCard,
     },
   },
 };
