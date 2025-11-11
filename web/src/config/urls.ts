@@ -91,6 +91,9 @@ export const urls = {
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;
@@ -165,6 +168,9 @@ export const absoluteUrls = {
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;

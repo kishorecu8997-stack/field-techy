@@ -69,10 +69,15 @@ const AdminManageJobCategory = React.lazy(
 );
 const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
+const EditAdminRateCard = React.lazy(() => import("@/pages/admin/rate_card/components/EditRateCard"));
+const ViewAdminRateCard = React.lazy(() => import("@/pages/admin/rate_card/components/EditRateCard"));
+const AddAdminRateCard = React.lazy(() => import("@/pages/admin/rate_card/components/AddRateCard"));
+
 const AdminManagePayment = React.lazy(() => import("@/pages/admin/payment"));
 const AdminManageTransactions = React.lazy(
   () => import("@/pages/admin/transactions")
 );
+
 const WalletOverview = React.lazy(
   () => import("@/pages/admin/wallet_management/wallet_overview")
 );
@@ -276,6 +281,9 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.manage_rate_card,
             element: withSuspense(AdminManageRateCard),
           },
+          { path: urls.admin.home.edit_rate_card, element: withSuspense(EditAdminRateCard) },
+          { path: urls.admin.home.view_rate_card, element: withSuspense(ViewAdminRateCard) },
+          { path: urls.admin.home.add_rate_card, element: withSuspense(AddAdminRateCard) },
           {
             path: urls.admin.home.manage_payment,
             element: withSuspense(AdminManagePayment),
