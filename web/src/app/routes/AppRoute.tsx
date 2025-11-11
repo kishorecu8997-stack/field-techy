@@ -82,6 +82,9 @@ const WalletTransactionRequests = React.lazy(
 const ManageNotification = React.lazy(
   () => import("@/pages/admin/manage_notification")
 );
+const ManageNotificationAdd = React.lazy(
+  () => import("@/pages/admin/manage_notification/AddNotification")
+);
 const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
@@ -295,6 +298,10 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_notification,
             element: withSuspense(ManageNotification),
+          },
+          {
+            path: urls.admin.home.manage_notification_add,
+            element: withSuspense(ManageNotificationAdd),
           },
           {
             path: urls.admin.home.manage_sub_admin,
