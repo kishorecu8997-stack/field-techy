@@ -2,6 +2,7 @@ import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { NotificationProps } from "@/pages/admin/manage_notification";
 import type { PaymentProps } from "@/pages/admin/payment/types";
 import type { RateCardProps } from "@/pages/admin/rate_card";
+import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -198,5 +199,100 @@ export const notificationData: NotificationProps[] = [
     type: "Credit",
     sendTo: "Amit Verma (ENG-1035)",
     createdDate: "2024-09-10",
+  },
+];
+
+
+
+export const engineerData: EngineerPage[] = [
+  {
+    sno: 1,
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+    },
+    walletBalance: 12500.75,
+  },
+  {
+    sno: 2,
+    details: {
+      name: "Priya Sharma",
+      phone: "+91 99887 65432",
+    },
+    walletBalance: 8450.0,
+  },
+  {
+    sno: 3,
+    details: {
+      name: "Rohit Verma",
+      phone: "+91 91234 56789",
+    },
+    walletBalance: 15780.5,
+  },
+  {
+    sno: 4,
+    details: {
+      name: "Sneha Iyer",
+      phone: "+91 90011 22334",
+    },
+    walletBalance: 11200.25,
+  },
+  {
+    sno: 5,
+    details: {
+      name: "Karan Patel",
+      phone: "+91 90909 11122",
+    },
+    walletBalance: 9800.0,
+  },
+];
+
+
+
+export const transactionRequest: TransactionRequest[] = [
+  {
+    sno: 1,
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+    },
+    status:"approved",
+    walletBalance: 12500.75,
+  },
+  {
+    sno: 2,
+    details: {
+      name: "Priya Sharma",
+      phone: "+91 99887 65432",
+    },
+    status:"approved",
+    walletBalance: 8450.0,
+  },
+  {
+    sno: 3,
+    details: {
+      name: "Rohit Verma",
+      phone: "+91 91234 56789",
+    },
+    status:"rejected",
+    walletBalance: 15780.5,
+  },
+  {
+    sno: 4,
+    details: {
+      name: "Sneha Iyer",
+      phone: "+91 90011 22334",
+    },
+    status:"approved",
+    walletBalance: 11200.25,
+  },
+  {
+    sno: 5,
+    details: {
+      name: "Karan Patel",
+      phone: "+91 90909 11122",
+    },
+    status:"rejected",
+    walletBalance: 9800.0,
   },
 ];
