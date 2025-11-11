@@ -1,5 +1,4 @@
-import { PaymentData } from "@/dummy_data/admin";
-import { options } from "@/dummy_data/admin/paymentData";
+import { options, PaymentData } from "@/dummy_data/admin";
 import StateCard from "@/shared/components/AdminCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";

@@ -220,3 +220,15 @@ export const notificationData: NotificationProps[] = [
     createdDate: "2024-09-10",
   },
 ];
+
+
+export const options = [
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
+];
