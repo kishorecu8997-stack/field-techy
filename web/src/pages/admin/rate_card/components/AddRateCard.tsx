@@ -2,6 +2,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import RateCardForm from "./RateCardForm";
 import PricingModel from "./PricingModel";
+import { Button } from "@headlessui/react";
 
 /**
  * AddRateCard Component
@@ -38,6 +39,11 @@ const AddRateCard = () => {
       >
         <RateCardForm />
         <PricingModel />
+        <div className="flex justify-end">
+          <Button className="bg-emerald-600 text-white px-4 py-2 rounded-md">
+            Submit
+          </Button>
+        </div>
       </FormContainer>
     </div>
   );

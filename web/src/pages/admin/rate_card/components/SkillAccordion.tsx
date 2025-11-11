@@ -33,7 +33,7 @@ const SkillAccordion: React.FC<{
 
       {!isView && (
         <div className="flex justify-end mt-4 space-x-2">
-          <Button type="submit">Save</Button>
+            <Button className="bg-emerald-600 text-white px-4 py-2 rounded-md">Save</Button>
         </div>
       )}
     </Accordion>
