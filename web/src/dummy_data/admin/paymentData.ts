@@ -13,22 +13,6 @@ export const options = [
     label: "Verified",
   },
   {
-    value: "cancelled",
-    label: "Cancelled",
-  },
-  {
-    value: "pending",
-    label: "Pending",
-  },
-  {
-    value: "inProgress",
-    label: "In Progress",
-  },
-  {
-    value: "completed",
-    label: "Completed",
-  },
-  {
     value: "rejected",
     label: "Rejected",
   },

@@ -1,14 +1,13 @@
 import { PaymentData } from "@/dummy_data/admin";
+import { options } from "@/dummy_data/admin/paymentData";
+import StateCard from "@/shared/components/AdminCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
-import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React from "react";
-import type { PaymentProps } from "./types";
-import { FaUserCircle } from "react-icons/fa";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { options } from "@/dummy_data/admin/paymentData";
-import StateCard from "@/shared/components/AdminCard";
+import React, { useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import type { PaymentProps } from "./types";
 
 /**
  * ManagePayment Component
@@ -120,8 +119,11 @@ const ManagePayment: React.FC = () => {
 export default ManagePayment;
 
 const AdminStatus = ({ row }: { row: string }) => {
+
+  const [status, setStatus] = useState<string>(row);
+
   const handleChangeStatus = (value: string) => {
-    console.log(value);
+    setStatus(value);
   };
 
   return (
@@ -130,7 +132,7 @@ const AdminStatus = ({ row }: { row: string }) => {
         placeholder="Select Region"
         className="w-36"
         options={options}
-        value={row}
+        value={status}
         onChange={() => handleChangeStatus}
       />
     </div>
