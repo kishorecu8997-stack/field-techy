@@ -8,6 +8,7 @@ import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
 import attachment from "./attachment_01.png";
 import ftLogoWhite from "./ft_logo_white.svg";
+import adminCard from "./admin-card-icon.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -32,6 +33,9 @@ export const assetsConfig = {
   icons: {
     location,
     notification,
+    admin: {
+      adminCard,
+    },
   },
 };
 

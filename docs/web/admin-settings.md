@@ -1,0 +1,3 @@
+| Page          | Fields     | Input Type | Required (Yes/No) | Rule                    | Validation Rule                                                                          | Lower Limit  | Upper Limit   |
+|---------------|------------|------------|-------------------|-------------------------|------------------------------------------------------------------------------------------|--------------|---------------|
+| Settings page | Commission | number     | Yes               | Commission verification | Commission must be a number between 0 and 100, with up to 2 decimal places (e.g., 12.50) | 1 Characters | 6 Characters  |
