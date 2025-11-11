@@ -82,4 +82,53 @@ interface TabItem {
 interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
+  onTabChange?: (activeTab: string) => void;
 }
+
+//Notification popover
+export interface NotificationDropdownProps {
+  title?: string;
+  seeAllLink?: string;
+  onClose?: () => void;
+  children: React.ReactNode;
+  className?: string;
+}
+
+//chart
+export interface SeriesConfig {
+  dataKey: string;
+  name: string;
+  stroke?: string;
+  fill?: string;
+  strokeWidth?: number;
+  dot?: boolean | { r: number };
+  activeDot?: boolean | { r: number };
+}
+export interface LegendConfig {
+  verticalAlign?: "top" | "bottom" | "middle";
+  align?: "left" | "center" | "right";
+  wrapperStyle?: React.CSSProperties;
+}
+
+export interface GeneralChartProps<
+  T extends Record<string, unknown> = Record<string, unknown>
+> {
+  data: T[];
+  chartType: ChartType;
+  xAxisDataKey: keyof T;
+  height?: number;
+  showLegend?: boolean;
+  showTooltip?: boolean;
+  showGrid?: boolean;
+  aspectRatio?: number;
+  yAxisDomain?: [
+    number | "auto" | "dataMin" | "dataMax",
+    number | "auto" | "dataMin" | "dataMax"
+  ];
+  customTooltip?: React.ComponentType<TooltipProps<number, string>>;
+  className?: string;
+  series: SeriesConfig[];
+  legend?: LegendConfig;
+}
+
+export type ChartType = "line" | "bar";

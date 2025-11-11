@@ -29,6 +29,8 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
   buttonText,
   isSuccess,
   name = "otp",
+  isClose,
+  footer,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -58,10 +60,12 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
   return (
     <div className="flex items-center justify-center">
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3">
-        <IoClose
-          className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
-          onClick={onClose}
-        />
+        {!isClose && (
+          <IoClose
+            className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
+            onClick={onClose}
+          />
+        )}
         <div className="p-2 flex flex-col gap-2 items-center justify-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
             {header}
@@ -96,6 +100,7 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
         >
           {buttonText || "Submit"}
         </Button>
+        {footer}
       </div>
     </div>
   );
