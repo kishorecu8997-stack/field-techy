@@ -1,14 +1,14 @@
 import { transactions } from "@/dummy_data/admin/Transaction";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { FiDownload } from "react-icons/fi";
 import type { TransactionProps } from "./types";
 
 /**
  * EngineerPayout Component
- * 
+ *
  * Renders a table of engineer payment transactions with client info, job details, and actions.
  * @returns {JSX.Element} The engineer payout management view.
  */
@@ -50,12 +50,31 @@ const EngineerPayout: React.FC = () => {
       ),
     },
     { key: "amount", label: "Amount" },
-    { key: "engineerDetails", label: "Engineer Details" },
+    {
+      key: "engineerDetails",
+      label: "Engineer Details",
+      renderCell: (row: TransactionProps) => (
+        <div className="flex items-center gap-2">
+          <div>
+            <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          </div>
+          <div>
+            <div className="font-semibold">{row.engineerDetails.name}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.engineerDetails.email}
+            </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.engineerDetails.phone}
+            </div>
+          </div>
+        </div>
+      ),
+    },
     {
       key: "paymentStatus",
       label: "Payment",
       renderCell: (row: TransactionProps) => (
-        <div>
+        <div className="whitespace-nowrap">
           {row.paymentStatus.charAt(0).toUpperCase() +
             row.paymentStatus.slice(1)}
         </div>
@@ -63,12 +82,10 @@ const EngineerPayout: React.FC = () => {
     },
     {
       key: "action",
-      label: "Payment",
+      label: "Download Invoice",
       renderCell: (row: TransactionProps) => (
-        <div className="flex items-center gap-2">
-          <Button className="whitespace-nowrap bg-emerald-900">
-            Send Payment
-          </Button>
+        <div className="flex items-center gap-2 justify-center">
+          <FiDownload className="text-emerald-600 hover:text-emerald-700" />
         </div>
       ),
     },
