@@ -1,7 +1,7 @@
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { IoCloseSharp } from "react-icons/io5";
 import { useForm } from "react-hook-form";
-import { validateDateRange, validateFilterDateRange } from "@/pages/engineer/user_profile/Validate";
+import { validateFilterDateRange } from "@/pages/engineer/user_profile/Validate";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
@@ -39,65 +39,73 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
   };
 
   return (
-    <div className="inset-0 z-50 items-center justify-center p-4 w-full">      
-        {/* Modal Content */}
-        <div className="bg-white dark:bg-gray-900 p-6 relative w-full">
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-          </button>
-          
-          {/* Title */}
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-            Filters
-          </h2>
+    <div className="inset-0 z-50 items-center justify-center p-4 w-full">
+      {/* Modal Content */}
+      <div className="bg-white dark:bg-gray-900 p-6 relative w-full">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          <IoCloseSharp className="h-6 w-6 cursor-pointer" />
+        </button>
 
-          <FormContainer methods={methods} onSubmit={handleFilter}>
-            {/* Date Fields Row */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
-              {/* Start Date */}
-              <div className="flex-1">
-                <DatePickerInput
+        {/* Title */}
+        <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
+          Filters
+        </h2>
+
+        <FormContainer methods={methods} onSubmit={handleFilter}>
+          {/* Date Fields Row */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full">
+            {/* Start Date */}
+            <div className="flex-1">
+              <DatePickerInput
                 name="startDate"
                 label="Start Date"
                 required
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
                 rules={{
-                  validate: (value) => validateFilterDateRange(methods.getValues("startDate"), value),
+                  validate: (value) =>
+                    validateFilterDateRange(
+                      methods.getValues("startDate"),
+                      value
+                    ),
                 }}
               />
-              </div>
+            </div>
 
-              {/* End Date */}
-              <div className="flex-1">
-                <DatePickerInput
+            {/* End Date */}
+            <div className="flex-1">
+              <DatePickerInput
                 name="endDate"
                 label="End Date"
                 required
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
                 rules={{
-                  validate: (value) => validateFilterDateRange(methods.getValues("startDate"), value),
+                  validate: (value) =>
+                    validateFilterDateRange(
+                      methods.getValues("startDate"),
+                      value
+                    ),
                 }}
               />
-              </div>
             </div>
+          </div>
 
-            {/* Apply Filter Button */}
-            <Button 
-              type="submit" 
-              variant="primary"
-              className="w-full py-3 text-lg font-medium rounded-lg"
-            >
-              Apply filter
-            </Button>
-          </FormContainer>
-        </div>
-     </div>    
+          {/* Apply Filter Button */}
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full py-3 text-lg font-medium rounded-lg"
+          >
+            Apply filter
+          </Button>
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 
