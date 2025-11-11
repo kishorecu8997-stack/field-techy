@@ -56,7 +56,6 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         if (hasChildren) {
           return (
             <div key={item.name} className="w-full">
-              {/* Parent Toggle */}
               <button
                 onClick={() => toggle(item.name)}
                 className={`flex items-center justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
