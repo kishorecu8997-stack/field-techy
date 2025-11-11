@@ -113,7 +113,7 @@ export const PaymentData: PaymentProps[] = [
     amount: "₹15,000",
     engineerDetails: "Rahul Mehta (ENG-1021)",
     clientStatus: "approved",
-    adminStatus: "verified",
+    adminStatus: "approved",
   },
   {
     id: "RC-002",
@@ -127,7 +127,7 @@ export const PaymentData: PaymentProps[] = [
     amount: "₹42,000",
     engineerDetails: "Priya Sharma (ENG-1044)",
     clientStatus: "pending",
-    adminStatus: "underReview",
+    adminStatus: "approved",
   },
   {
     id: "RC-003",

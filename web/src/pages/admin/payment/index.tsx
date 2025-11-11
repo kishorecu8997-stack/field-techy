@@ -30,7 +30,7 @@ const ManagePayment: React.FC = () => {
   const columns: Column<PaymentProps>[] = [
     {
       key: "id",
-      label: "Request ID",
+      label: "Payment ID",
       renderCell: (row: PaymentProps) => (
         <div className="text-nowrap w-full">{row.id}</div>
       ),
@@ -99,7 +99,7 @@ const ManagePayment: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
-        <h1 className="text-lg font-semibold ">Manage Rate Cards</h1>
+        <h1 className="text-lg font-semibold ">Manage Payments</h1>
         <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500">
           Export CSV
         </Button>
