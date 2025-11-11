@@ -44,7 +44,7 @@ const ManagePayment: React.FC = () => {
             <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
           </div>
           <div>
-            <div className="font-semibold">{row.clientDetails.name}</div>
+            <div className="font-semibold whitespace-nowrap">{row.clientDetails.name}</div>
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
               {row.clientDetails.email}
             </div>
@@ -55,7 +55,11 @@ const ManagePayment: React.FC = () => {
         </div>
       ),
     },
-    { key: "jobTitle", label: "Job Title" },
+    { key: "jobTitle", label: "Job Title",
+       renderCell: (row: PaymentProps) => (
+        <div className="text-sm w-30 ">{row.jobTitle}</div>
+      ),
+     },
     {
       key: "jobDescription",
       label: "Job Description",
@@ -86,7 +90,7 @@ const ManagePayment: React.FC = () => {
       renderCell: (row: PaymentProps) => (
         <div className="flex items-center gap-2">
           <Button className="whitespace-nowrap bg-emerald-900">
-            Send Payment
+            Send Payout
           </Button>
         </div>
       ),
