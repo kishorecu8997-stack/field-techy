@@ -282,24 +282,45 @@ export const validateDateRange = (
   return true;
 };
 
+
+
 export const validateFilterDateRange = (
   startDate: Date | null,
   endDate: Date | null
-) => {
+): true | string => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Optional: normalize to start of day for comparison
+
   if (!startDate) {
     return "Start date is required";
   }
 
-  if (startDate > new Date()) {
+  if (!endDate) {
+    return "End date is required";
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Normalize time part if you only care about dates (optional)
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  if (start > today) {
     return "Start date cannot be in the future";
   }
 
-  if (endDate && startDate > endDate) {
-    return "Start date must be before the end date";
+  if (end > today) {
+    return "End date cannot be in the future";
+  }
+
+  if (start > end) {
+    return "Start date cannot be after end date";
   }
 
   return true;
 };
+
 
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))

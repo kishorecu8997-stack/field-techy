@@ -1,7 +1,7 @@
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { IoCloseSharp } from "react-icons/io5";
 import { useForm } from "react-hook-form";
-import { validateDateRange } from "@/pages/engineer/user_profile/Validate";
+import { validateDateRange, validateFilterDateRange } from "@/pages/engineer/user_profile/Validate";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
@@ -67,7 +67,7 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
                 rules={{
-                  validate: (value) => validateDateRange(value, methods.getValues("endDate")),
+                  validate: (value) => validateFilterDateRange(methods.getValues("startDate"), value),
                 }}
               />
               </div>
@@ -81,7 +81,7 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
                 rules={{
-                  validate: (value) => validateDateRange(value, methods.getValues("startDate")),
+                  validate: (value) => validateFilterDateRange(methods.getValues("startDate"), value),
                 }}
               />
               </div>
