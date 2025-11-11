@@ -25,7 +25,7 @@ import type { PaymentProps } from "./types";
  */
 const ManagePayment: React.FC = () => {
   const columns: Column<PaymentProps>[] = [
-    { key: "id", label: "Request ID" },
+    { key: "id", label: "Payment ID" },
     { key: "clientDetails", label: "Client Details" },
     { key: "jobTitle", label: "Job Title" },
     { key: "jobDescription", label: "Job Description" },

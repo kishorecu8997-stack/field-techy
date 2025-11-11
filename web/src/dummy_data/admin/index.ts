@@ -1,7 +1,7 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { NotificationProps } from "@/pages/admin/manage_notification";
 import type { PaymentProps } from "@/pages/admin/payment/types";
-import type { RateCardProps } from "@/pages/admin/rate_card";
+import type { RateCardProps } from "@/pages/admin/rate_card/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -43,7 +43,7 @@ export const serviceCategoriesData: ServerCategoryProps[] = [
 
 export const RateCardData: RateCardProps[] = [
   {
-    id: "RC-001",
+    id: "1",
     skillSet: "Electrical Maintenance",
     region: "West",
     location: "Mumbai, India",
@@ -54,7 +54,7 @@ export const RateCardData: RateCardProps[] = [
     status: true,
   },
   {
-    id: "RC-002",
+    id: "2",
     skillSet: "HVAC Technician",
     region: "South",
     location: "Bangalore, India",
@@ -65,7 +65,7 @@ export const RateCardData: RateCardProps[] = [
     status: true,
   },
   {
-    id: "RC-003",
+    id: "3",
     skillSet: "Plumbing",
     region: "North",
     location: "Delhi, India",
@@ -76,7 +76,7 @@ export const RateCardData: RateCardProps[] = [
     status: false,
   },
   {
-    id: "RC-004",
+    id: "4",
     skillSet: "Solar Panel Installation",
     region: "West",
     location: "Pune, India",
@@ -87,7 +87,7 @@ export const RateCardData: RateCardProps[] = [
     status: true,
   },
   {
-    id: "RC-005",
+    id: "5",
     skillSet: "Painting & Finishing",
     region: "South",
     location: "Chennai, India",

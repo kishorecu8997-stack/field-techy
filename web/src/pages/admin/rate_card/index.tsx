@@ -33,7 +33,7 @@ const ManageRateCards: React.FC = () => {
   const columns: Column<RateCardProps>[] = [
     {
       key: "id",
-      label: "Request ID",
+      label: "SR. NO",
       renderCell: (row: RateCardProps) => (
         <div className="whitespace-nowrap">{row.id}</div>
       ),
