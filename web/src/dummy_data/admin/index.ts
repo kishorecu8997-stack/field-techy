@@ -296,3 +296,15 @@ export const transactionRequest: TransactionRequest[] = [
     walletBalance: 9800.0,
   },
 ];
+
+
+export const options = [
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
+];

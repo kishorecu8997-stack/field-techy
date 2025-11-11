@@ -1,5 +1,4 @@
-import { transactionRequest } from "@/dummy_data/admin";
-import { options } from "@/dummy_data/admin/paymentData";
+import { options, transactionRequest } from "@/dummy_data/admin";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
