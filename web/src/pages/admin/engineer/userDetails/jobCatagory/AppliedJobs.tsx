@@ -10,7 +10,7 @@ import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import SelectMenu from "@/shared/components/Selectmenu";
+import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
@@ -91,16 +91,16 @@ const AppliedJob: React.FC = () => {
         const currentStatus = getStatus(row);
         const isOn = currentStatus === "On";
         return (
-          <button
+          <div
             onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`px-3 py-1 rounded-md text-sm font-medium ${
+            className={`px-3 py-1 rounded-md text-sm font-medium cursor-pointer ${
               isOn
                 ? "bg-white text-gray-700 border border-gray-300"
                 : "bg-gray-100 text-gray-700 border border-gray-300"
             }`}
           >
             {currentStatus}
-          </button>
+          </div>
         );
       },
     },
@@ -112,9 +112,7 @@ const AppliedJob: React.FC = () => {
           <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
             <FiEye
               className="text-yellow-600"
-              onClick={() =>
-                navigate(`${absoluteUrls.admin.home.manage_jobs}`)
-              }
+              onClick={() => navigate(`${absoluteUrls.admin.home.manage_jobs}`)}
             />
           </div>
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">

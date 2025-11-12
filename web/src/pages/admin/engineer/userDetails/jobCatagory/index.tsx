@@ -1,5 +1,4 @@
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
-import React from "react";
 import AppliedJob from "./AppliedJobs";
 import InvitedJob from "./InvitedJob";
 import CompletedJob from "./CompletedJob";

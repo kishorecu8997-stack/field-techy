@@ -65,8 +65,7 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
     <div className="w-full">
       <div className="flex border-b-1 md:border-b-2 border-gray-200 mb-4 gap-4 overflow-x-auto">
         {visibleTabs.map((tab) => (
-          <button
-            type="button"
+          <div
             key={tab.label}
             onClick={() => handleTabClick(tab.label)}
             className={`px-1 py-2 font-medium transition-colors cursor-pointer relative ${
@@ -76,7 +75,7 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
             }`}
           >
             {tab.label}
-          </button>
+          </div>
         ))}
       </div>
 
