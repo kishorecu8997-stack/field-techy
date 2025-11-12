@@ -2,8 +2,8 @@
 
 | Page | Fields | Input Type | Required (Yes/No) | Rule | Validation Rule | Lower Limit | Upper Limit |
 |------|--------|------------|-------------------|------|------------------|-------------|-------------|
-| Post A Job | Job Title | Text | Yes | Albhabets only | Job title may contain only letters, spaces, and / , . - with spaces (max 10) between the words and . (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
-| Post A Job | Job Description | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , . are allowed. | 50 min Char | 2000 min Char |
+| Post A Job | Job Title | Text | Yes | Alphabets only | Job title may contain only letters, spaces, and / , . - with spaces (max 10) between the words and . (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
+| Post A Job | Job Description | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , .# are allowed. | 50 min Char | 2000 min Char |
 | Post A Job | Job Type | Dropdown | Yes | Select value | Job Type must be selected (Drop down) | 1 Selection | 1 Selection |
 | Post A Job | Country | Dropdown | Yes | Select value | Country must be selected (Drop down) | 1 Selection | 1 Selection |
 | Post A Job | State | Dropdown | Yes | Select value | State must be selected (Drop down) | 1 Selection | 1 Selection |
@@ -13,8 +13,8 @@
 | Post A Job | Number Of vacancy | Dropdown | Yes | Select value | Number Of vacancy must be selected (Drop down) | 1 Selection | 1 Selection |
 | Post A Job | Time period Of Job | Text | Yes | Enter the time period | Numbers only allowed(1 to 8). | 1 digit | 1 digit |
 | Post A Job | Skills Required | Text | Yes | Enter the skill req | Only alphabets, commas, hashes, plus signs, and spaces are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
-| Post A Job | Requirements/Deliverable | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , . are allowed. | 50 min Char | 2000 min Char |
-| Post A Job | Other Information | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , . are allowed | 50 min Char | 2000 min Char |
+| Post A Job | Requirements/Deliverable | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , . # are allowed. | 50 min Char | 2000 min Char |
+| Post A Job | Other Information | Text Area | Yes | Text | Only letters, spaces,numbers and special characters such as /( ) , . # are allowed | 50 min Char | 2000 min Char |
 | Post A Job | Tool Name | Text | Yes | Education level required | Alphabets (Capital & Small) only are allowed with spaces (max 10) between the words. (No leading and trailing spaces are allowed) | 2 Characters | 50 Characters |
 | Post A Job | Tool Image | File Upload | Yes | Upload Tool image | Upload PDF, JPG, PNG format | 1 upload | 1 upload |
 | Post A Job | Additional budget for the tool | Text | Yes | required | Numbers only allowed.| 2 digit | 5 Digit |

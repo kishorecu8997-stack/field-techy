@@ -320,11 +320,11 @@ export const validateAlphabeticTextArea = (
   }  
 
    // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
-  const defaultPattern = /^[a-zA-Z0-9 /().,]+$/;
+  const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
   const pattern = defaultPattern;
 
   if (!pattern.test(v)) {
-    return "Only letters, spaces, numbers, and special characters such as / ( ) , . are allowed";
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
   }
 
 
