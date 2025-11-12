@@ -476,22 +476,32 @@ export const validateJobDescription = (value: string) => {
 };
 
 export const validateCategoryName = (value: string) => {
-  const v = value.trim();
+  const trimmed = value.trim();
 
-  if (v.length < 3) {
+  // Reject if original had leading or trailing spaces
+  if (trimmed !== value) {
+    return "Category name must not have leading or trailing spaces";
+  }
+
+  if (trimmed.length < 3) {
     return "Category name must be at least 3 characters";
   }
-  if (v.length > 50) {
+  if (trimmed.length > 50) {
     return "Category name must not exceed 50 characters";
   }
-  // Allow only letters (A-Z, a-z) and spaces
-  if (!/^[A-Za-z\s]+$/.test(v)) {
-    return "Category name may contain only letters and spaces";
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(trimmed)) {
+    return "Category name must not contain consecutive spaces";
+  }
+
+  // Allow only letters, spaces, underscores, and hyphens
+  if (!/^[A-Za-z _-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-)";
   }
 
   return true;
 };
-
 /**
  * Validates that a payment method has been selected.
  * The value is expected to be a `SelectOption` object.
