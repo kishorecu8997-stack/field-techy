@@ -4,11 +4,14 @@ import {
   NotificationTypes,
   NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
-import { validateAlphabeticTextArea } from "@/pages/client/post_job/Validates";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import {
+  validateNotificationMessage,
+  validateNotificationTitle,
+} from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -73,9 +76,11 @@ export default function AddNotification() {
                 name="title"
                 label="Notification Title"
                 type="text"
-                placeholder="Enter Name"
+                placeholder="Enter Notification Title"
                 required
-                //   rules={{ validate: (v: string) => validateName(v) }}
+                rules={{
+                  validate: (v: string) => validateNotificationTitle(v),
+                }}
               />
             </div>
             <div className="md:w-1/2">
@@ -93,7 +98,7 @@ export default function AddNotification() {
               <SelectField
                 label="Send To"
                 name="sendTo"
-                placeholder="send To"
+                placeholder="Send To"
                 options={NotificationSendTo}
                 required
               />
@@ -114,12 +119,7 @@ export default function AddNotification() {
               label="Notification Message"
               placeholder="Enter Notification Message"
               rules={{
-                validate: (v: string) =>
-                  validateAlphabeticTextArea(v, {
-                    minLength: 50,
-                    maxLength: 2000,
-                    required: true,
-                  }),
+                validate: (v: string) => validateNotificationMessage(v),
               }}
               required
             />
@@ -127,7 +127,7 @@ export default function AddNotification() {
           <div className="flex justify-end mt-2">
             <Button
               type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              className="w-fit bg-linear-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               Save
             </Button>

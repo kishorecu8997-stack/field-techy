@@ -522,6 +522,55 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+export const validateNotificationTitle = (value: string) => {
+  const raw = value || "";
+
+  // Length checks
+  if (raw.length < 5) return "Title must be at least 5 characters";
+  if (raw.length > 100) return "Title must not exceed 100 characters";
+
+  // Disallow any digits (0-9)
+  if (/\d/.test(raw)) return "Title must not contain numbers";
+
+  const allowedPattern = /^[\p{L}\p{Emoji_Presentation} ]+$/u;
+
+  if (!allowedPattern.test(raw)) {
+    return "Title must contain only letters, spaces, and emojis";
+  }
+
+  return true;
+};
+
+export const validateNotificationMessage = (value: string) => {
+  const raw = value || "";
+
+  // Trim check: reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Reject if contains double (or more) consecutive spaces
+  if (/ {2,}/.test(raw)) {
+    return "Message must not contain consecutive spaces";
+  }
+
+  // Length check
+  if (raw.length < 10) {
+    return "Message must be at least 10 characters";
+  }
+  if (raw.length > 500) {
+    return "Message must not exceed 500 characters";
+  }
+
+  const allowedPattern = /^[A-Za-z0-9 /.,#()-]+$/;
+
+  if (!allowedPattern.test(raw)) {
+    return "Message contains disallowed special characters";
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -544,4 +593,6 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validateNotificationTitle,
+  validateNotificationMessage,
 };
