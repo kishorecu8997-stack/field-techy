@@ -63,3 +63,9 @@ export const bankList = [
   { value: "citi", label: "Citi" },
   { value: "hsbc", label: "HSBC" },
 ];
+
+
+  export const bankListData = [
+    { value: "SBI", label: "SBI" },
+    { value: "ICICI", label: "ICICI" },
+  ];

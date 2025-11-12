@@ -1,3 +1,4 @@
+import { formatCurrency, formatDate } from '@/shared/libs/utils';
 import React from 'react';
 
 // Define TypeScript interfaces
@@ -22,18 +23,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   transactions,
   onViewAllClick,
 }) => {
-  // Helper to format date as "DD MMM, YYYY | HH:MM AM/PM"
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleString('en-US', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
 
   // Group transactions by day (Today / Yesterday / Older)
   const groupTransactionsByDay = (txs: Transaction[]) => {
@@ -61,13 +50,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
   const { todayTxs, yesterdayTxs, olderTxs } = groupTransactionsByDay(transactions);
 
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
+
 
   // Render transaction item
   const renderTransaction = (tx: Transaction) => {

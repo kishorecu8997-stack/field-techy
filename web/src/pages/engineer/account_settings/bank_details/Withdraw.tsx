@@ -1,20 +1,26 @@
+import { bankListData } from "@/dummy_data/bankDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
 import type { bankDetails } from "../types";
-import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
 const Withdraw = () => {
-  const FormCtx = useForm<bankDetails>(); // ✅ Typed correctly
-
+  const FormCtx = useForm<bankDetails>({
+    mode: "onSubmit",
+  });
+  
+const availableBalance = 1000;
   const handleSubmit = (data: bankDetails) => {
     console.log(data);
   };
+
+
 
   return (
     <div className="flex flex-col h-full">
@@ -31,10 +37,7 @@ const Withdraw = () => {
             name="bank"
             label="Bank"
             required
-            options={[
-              { value: "SBI", label: "SBI" },
-              { value: "ICICI", label: "ICICI" },
-            ]}
+            options={bankListData}
           />
           <InputField
             name="amount"
@@ -44,7 +47,7 @@ const Withdraw = () => {
               validate: (value: string) => {
                 const numeric = parseFloat(value);
                 if (isNaN(numeric)) return "Please enter a valid amount";
-                if (numeric > 1000) return "Amount cannot exceed available balance ($1000)";
+                if (numeric > availableBalance) return `Amount cannot exceed available balance $${(availableBalance)}`;
                 return true;
               },
             }}

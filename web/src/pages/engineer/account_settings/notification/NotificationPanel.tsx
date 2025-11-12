@@ -33,7 +33,7 @@ const NotificationPanel: React.FC = () => {
         {Object.entries(grouped).map(([dateGroup, notifs]) => (
           <div key={dateGroup}>
             {dateGroup !== 'Today' && (
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">{dateGroup}</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 dark:text-gray-200">{dateGroup}</h3>
             )}
             {notifs.map((notif) => (
               <NotificationItem key={notif.id} notification={notif} />

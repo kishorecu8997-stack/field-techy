@@ -263,3 +263,27 @@ export const generatePageRange = (
   // Remove duplicates (e.g., when totalPages=2)
   return Array.from(new Set(range));
 };
+
+
+  // Format currency
+  export const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+
+
+    // Helper to format date as "DD MMM, YYYY | HH:MM AM/PM"
+   export  const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr);
+      return date.toLocaleString('en-US', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+    };
+  
