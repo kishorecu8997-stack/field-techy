@@ -111,14 +111,9 @@ const JobReviewPage = ({
         />
       </div>
 
-      {/* Tax Information Card */}
       <TaxInformationCard
         tax={jobData.tax}
         total={jobData.total}
-        // Optional: customize labels or currency
-        // currencySymbol="$"
-        // taxLabel="VAT (5%)"
-        // totalLabel="Grand Total"
       />
 
       {/* Consent Checkbox */}

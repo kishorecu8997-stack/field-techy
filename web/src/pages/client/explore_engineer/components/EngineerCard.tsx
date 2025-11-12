@@ -2,6 +2,7 @@ import React from "react";
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { NavLink } from "react-router-dom";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -34,11 +35,11 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
             to={absoluteUrls.client.home.explore_engineers_details}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
-            <button
+            <Button
               className={`px-3 py-1 rounded-full text-xs font-medium bg-teal-200 dark:bg-teal-800 transition-colors duration-200 hover:opacity-90 cursor-pointer`}
             >
               Invite to Job
-            </button>
+            </Button>
           </NavLink>
         </nav>
       </div>

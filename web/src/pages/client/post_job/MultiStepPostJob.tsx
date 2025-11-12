@@ -64,7 +64,6 @@ const MultiStepPostJobForm = () => {
 
     switch (currentStep) {
       case 1:
-        // Trigger validation for step 1 fields
         isValid = await trigger([
           "jobTitle",
           "jobDescription",
@@ -93,7 +92,6 @@ const MultiStepPostJobForm = () => {
         break;
 
       case 2:
-        // Trigger validation for step 2 fields
         isValid = await trigger(["urgencyLevel", "consent", "paymentMethod"]);
         if (isValid) {
           await submitCompleteForm(data);
@@ -102,20 +100,12 @@ const MultiStepPostJobForm = () => {
     }
   };
 
-  /**
-   * Submits the complete form data to the server.
-   * @param {FormDataPostJob} data - The complete form data.
-   */
   const submitCompleteForm = async (data: FormDataPostJob) => {
     setIsSubmitting(true);
     try {
       // MOCK API CALL (replace with real fetch when backend is ready)
       console.log("Submitting Post a job data:", data);
-
-      // Simulate network delay
       await new Promise((r) => setTimeout(r, 800));
-
-      // Simulate success
       navigate(absoluteUrls.client.home.dashboard);
     } catch (error) {
       console.error("Network error:", error);
@@ -124,17 +114,10 @@ const MultiStepPostJobForm = () => {
     }
   };
 
-  /**
-   * Navigates the user to the previous step in the form.
-   */
   const goToPreviousStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  /**
-   * Renders the component for the current step of the form.
-   * @returns {JSX.Element} The component for the current step.
-   */
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -165,7 +148,7 @@ const MultiStepPostJobForm = () => {
               >
                 {currentStep > 1 && (
                   <div>
-                    <button
+                    <Button
                       type="button" // Prevents form submission
                       onClick={goToPreviousStep}
                       className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
@@ -185,7 +168,7 @@ const MultiStepPostJobForm = () => {
                           d="M15 19l-7-7 7-7"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 )}
                 <div>
