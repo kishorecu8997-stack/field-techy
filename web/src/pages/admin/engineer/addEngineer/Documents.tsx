@@ -1,7 +1,4 @@
-import { useFormContext } from "react-hook-form";
 import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import type { EngineerFormData } from "../types";
 
 /**
  * Documents component handles the document upload section of the engineer registration form.
@@ -31,11 +28,10 @@ import type { EngineerFormData } from "../types";
  * @returns {JSX.Element} A form section component with document upload fields
  */
 export default function Documents() {
-  const methods = useFormContext<EngineerFormData>();
 
   return (
     <div>
-      <FormContainer methods={methods} className="flex p-2 gap-4">
+      {/* <FormContainer methods={methods} className="flex p-2 gap-4"> */}
         <div className="grid md:flex mb-6 mt-2 md:w-8/12 gap-8 justify-between">
           <div className="w-60">
             <FileUpload
@@ -54,7 +50,7 @@ export default function Documents() {
             />
           </div>
         </div>
-      </FormContainer>
+      {/* </FormContainer> */}
     </div>
   );
 }

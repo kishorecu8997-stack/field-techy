@@ -1,4 +1,10 @@
-import { chartData, days, jobs, type JobProps } from "@/dummy_data/admin/manageEngineer";
+import { absoluteUrls } from "@/config/urls";
+import {
+  chartData,
+  days,
+  jobs,
+  type JobProps,
+} from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -9,6 +15,7 @@ import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 /**
  * CompletedJob
@@ -34,6 +41,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 const CompletedJob: React.FC = () => {
   const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const getStatus = (row: JobProps) => {
     return statuses[row.id] ?? row.status;
@@ -103,7 +111,10 @@ const CompletedJob: React.FC = () => {
       renderCell: () => (
         <div className="flex items-center gap-2">
           <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
-            <FiEye className="text-yellow-600" />
+            <FiEye
+              className="text-yellow-600"
+              onClick={() => navigate(`${absoluteUrls.admin.home.manage_jobs}`)}
+            />
           </div>
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit className="text-blue-600" />

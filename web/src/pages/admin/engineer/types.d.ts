@@ -4,8 +4,8 @@ export interface BasicInformation {
   phoneNumber: string;
   profileImage: File | null;
   address: string;
-  skills: string;
-  price: number;
+  skills: string[] | string;
+  price: string | null;
   serviceCategory: string;
   portfolio: string;
 }

@@ -522,6 +522,54 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+export const validatePricePerHour = (value: string) => {
+  const raw = value || "";
+
+  // Reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Price must not have leading or trailing spaces";
+  }
+
+  const trimmed = raw.trim();
+
+  // Must not be empty
+  if (trimmed === "") {
+    return "Price is required";
+  }
+
+  // Must match a valid number format: optional decimals, max 2 digits after .
+  if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) {
+    return "Price must be a valid number with up to 2 decimal places";
+  }
+
+  // Parse as float for numeric validation
+  const num = parseFloat(trimmed);
+
+  // Reject if zero or negative
+  if (num <= 0) {
+    return "Price must be greater than zero";
+  }
+
+  return true;
+};
+export const validateLocation = (value: string) => {
+  if (!value) return "Location must be at least 3 characters";
+
+  // Disallow leading or trailing spaces
+  if (/^\s|\s$/.test(value))
+    return "Location must not start or end with a space";
+
+  const v = value.trim();
+  if (v.length < 3) return "Location must be at least 3 characters";
+  if (v.length > 50) return "Location must not exceed 50 characters";
+
+  // Allow letters, numbers, spaces, and / , . - #
+  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
+    return "Location may contain only letters, numbers, spaces, and / , . - #";
+  }
+
+  return true;
+};
 export default {
   validateName,
   validateEmail,
@@ -544,4 +592,6 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validatePricePerHour,
+  validateLocation,
 };

@@ -168,7 +168,7 @@ const ManageEngineer: React.FC = () => {
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer_add}`)
+              navigate(`${absoluteUrls.admin.home.manage_engineer_edit}`)
             }
           >
             <CiEdit className="text-blue-600" />

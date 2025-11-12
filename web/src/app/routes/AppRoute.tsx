@@ -69,6 +69,9 @@ const AdminManageEngineerAdd = React.lazy(
 const AdminManageEngineerView = React.lazy(
   () => import("@/pages/admin/engineer/userDetails")
 );
+const AdminManageEngineerEdit = React.lazy(
+  () => import("@/pages/admin/engineer/editEngineer/EditEngineer")
+);
 const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
@@ -273,6 +276,10 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_engineer_view,
             element: withSuspense(AdminManageEngineerView),
+          },
+          {
+            path: urls.admin.home.manage_engineer_edit,
+            element: withSuspense(AdminManageEngineerEdit),
           },
           {
             path: urls.admin.home.manage_client,

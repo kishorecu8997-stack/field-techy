@@ -1,60 +1,42 @@
 import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { EngineerFormData } from "../types";
-import BasicInformation from "./BasicInformation";
-import Documents from "./Documents";
-import ExperienceDetails from "./ExperienceDetails";
+import BasicInformation from "../addEngineer/BasicInformation";
+import Documents from "../addEngineer/Documents";
+import ExperienceDetails from "../addEngineer/ExperienceDetails";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
 /**
- * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
- *
- * Features:
- * - Multi-tab form with Basic Information, Experience Details, and Documents sections
- * - Form validation at each step before proceeding
- * - File upload capability for documents and profile image
- * - Progressive form completion with Next/Save buttons
- * - Form state management using react-hook-form
- *
- * The form is divided into three main sections:
- * 1. Basic Information: Personal and professional details
- * 2. Experience Details: Work history and qualifications
- * 3. Documents: Required documentation and certificates
- *
- * @component
- * @example
- * ```tsx
- * <AddEngineer />
- * ```
- *
- * @returns {JSX.Element} A multi-step form component for adding new engineers
+ * EditEngineer component for editing an existing engineer.
+ * Pre-filled with dummy data for development/testing.
  */
-export default function AddEngineer() {
+export default function EditEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const methods = useForm<EngineerFormData>({
     defaultValues: {
-      name: "",
-      email: "",
-      phoneNumber: "",
+      name: "Alex Johnson",
+      email: "alex.johnson@example.com",
+      phoneNumber: "+91 9876576512",
       profileImage: null,
-      address: "",
-      skills: "",
-      price: null,
-      serviceCategory: "",
-      portfolio: "",
+      address: "123 Tech Street, San Francisco, CA",
+      skills: ["React", "TypeScript", "Next.js"],
+      price: "75.5",
+      serviceCategory: "Legal Services",
+      portfolio: "https://alexj.dev",
+      designation: "Senior Frontend Engineer",
+      location: "San Francisco, CA",
+      employer: "Tech Innovators Inc.",
+      experience:
+        "5 years of professional experience in full-stack development.",
       resume: "",
-      designation: "",
-      location: "",
-      employer: "",
-      experience: "",
       governmentId: "",
       certificate: "",
     },
@@ -62,10 +44,10 @@ export default function AddEngineer() {
 
   const { trigger } = methods;
 
+  // Handle Next button navigation between tabs
   const handleNext = async () => {
     let isValid = false;
-    const data = methods.getValues();
-    console.log("data :", data);
+
     if (activeTab === "Basic Information") {
       isValid = await trigger([
         "name",
@@ -89,14 +71,15 @@ export default function AddEngineer() {
     }
   };
 
+  // Handle form submission
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
       setIsSubmitting(true);
       try {
         const data = methods.getValues();
-        console.log("Full form ", data);
-        toast.success("Engineer added successfully!");
+        console.log("Full form data:", data);
+        toast.success("Engineer details updated successfully!");
         methods.reset();
       } finally {
         setIsSubmitting(false);
@@ -127,24 +110,22 @@ export default function AddEngineer() {
   return (
     <div className="w-full px-4 h-full mt-6">
       <div className="flex justify-between gap-4">
-        <h2 className="mt-2 mb-4 font-semibold">Add Engineer</h2>
+        <h2 className="mt-2 mb-4 text-xl font-semibold">Edit Engineer</h2>
         <Button
           variant="solid"
-          className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer}`)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
         >
           Back
         </Button>
       </div>
-      <FormContainer
-        methods={methods}
-        className="bg-white dark:bg-gray-700 rounded-lg p-2 mx-auto"
-      >
+
+      <FormContainer methods={methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg p-2 mx-auto">
+          {/* FIX: Use controlled props for tab switching */}
           <AdminTabComponent
-            key={activeTab}
             tabs={tabs}
-            defaultActiveTab={activeTab}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
 
           <div className="flex justify-end mt-6 px-4 pb-4">
@@ -152,7 +133,7 @@ export default function AddEngineer() {
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
               disabled={isSubmitting}
-              className="px-6 py-2 bg-linear-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
             >
               {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
             </Button>
