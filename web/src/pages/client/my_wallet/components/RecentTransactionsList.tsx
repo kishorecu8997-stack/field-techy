@@ -138,7 +138,7 @@ export const ActionButtonsForRecentTransactions=()=>{
 
 return(
   <>
-      <button
+      <div
         onClick={
           isInvoicePopupOpen
             ? () => setIsInvoicePopupOpen(false)
@@ -148,8 +148,8 @@ return(
         className="text-gray-700 hover:text-gray-900"
       >
         <IoDownload className="h-6 w-6 cursor-pointer" />
-      </button>
-      <button
+      </div>
+      <div
         onClick={
           isFilterPopupOpen
             ? () => setIsFilterPopupOpen(false)
@@ -159,7 +159,7 @@ return(
         className="text-gray-700 hover:text-gray-900"
       >
         <HiFilter className="h-6 w-6 cursor-pointer" />
-      </button>
+      </div>
 
        <Popup
         open={isInvoicePopupOpen}
