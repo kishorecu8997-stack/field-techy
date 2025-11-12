@@ -1,6 +1,0 @@
-| Page          | Fields         | Input Type  | Required (Yes/No) | Rule                        | Validation Rule                                                                             | Lower Limit  | Upper Limit   |
-|---------------|----------------|-------------|-------------------|-----------------------------|---------------------------------------------------------------------------------------------|--------------|---------------|
-| Add category  | Category image | File Upload | yes               | Image Upload                | Only valid JPEG, JPG and PNG format are allowed.                                            | 50 KB size   | 350 KB        |
-| Add category  | Category Name  | text        | yes               | Letters and Spaces Only<br> | Category name must contain only letters and spaces.<br>Must be between 3 and 50 characters. | 3 Characters | 50 Characters |
-| Edit category | Category image | File Upload | yes               | Image Upload                | Only valid JPEG, JPG and PNG format are allowed.                                            | 50 KB size   | 350 KB        |
-| Edit category | Category Name  | text        | yes               | Letters and Spaces Only<br> | Category name must contain only letters and spaces.<br>Must be between 3 and 50 characters. | 3 Characters | 50 Characters |
