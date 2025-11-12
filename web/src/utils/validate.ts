@@ -525,6 +525,11 @@ export const CommissionValidation = (value: string): true | string => {
 export const validateNotificationTitle = (value: string) => {
   const raw = value || "";
 
+  // Trim check: reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
   // Length checks
   if (raw.length < 5) return "Title must be at least 5 characters";
   if (raw.length > 100) return "Title must not exceed 100 characters";
