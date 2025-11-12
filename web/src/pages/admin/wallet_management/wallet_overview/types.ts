@@ -15,3 +15,13 @@ export interface TransactionRequest {
   walletBalance: number;
   status: string;
 }
+
+// statusTypes.ts
+export const StatusTypes = {
+  approved: "approved",
+  pending: "pending",
+  rejected: "rejected",
+} as const;
+
+export type TransactionRequestStatus =
+  (typeof StatusTypes)[keyof typeof StatusTypes];

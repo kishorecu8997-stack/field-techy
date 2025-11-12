@@ -4,7 +4,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
-import type { TransactionRequest } from "../wallet_overview/types";
+import { StatusTypes, type TransactionRequest } from "../wallet_overview/types";
 
 /**
  * ApprovedTable Component
@@ -13,9 +13,10 @@ import type { TransactionRequest } from "../wallet_overview/types";
  * @returns {JSX.Element} The transaction requests management view.
  */
 const ApprovedTable: React.FC = () => {
-
   const getRejectedData = () => {
-    return transactionRequest.filter((item) => item.status === "approved");
+    return transactionRequest.filter(
+      (item) => item.status === StatusTypes.approved
+    );
   };
 
   const columns: Column<TransactionRequest>[] = [

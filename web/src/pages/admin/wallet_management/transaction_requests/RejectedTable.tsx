@@ -4,7 +4,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
-import type { TransactionRequest } from "../wallet_overview/types";
+import { StatusTypes, type TransactionRequest } from "../wallet_overview/types";
 
 /**
  * RejectedTable Component
@@ -14,7 +14,7 @@ import type { TransactionRequest } from "../wallet_overview/types";
  */
 const RejectedTable: React.FC = () => {
   const getRejectedData = () => {
-    return transactionRequest.filter((item) => item.status === "rejected");
+    return transactionRequest.filter((item) => item.status === StatusTypes.rejected);
   };
 
   const columns: Column<TransactionRequest>[] = [
