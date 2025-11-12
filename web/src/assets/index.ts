@@ -4,6 +4,10 @@ import workTracking from "./work-tracking.png";
 import companyLogo from "./company-logo.png";
 import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
+import suitcase from "./suitcase.svg";
+import people from "./people.svg";
+import location from "./location.svg";
+import notification from "./notification_big.svg";
 import ftLogoWhite from "./ft_logo_white.svg";
 import adminCard from "./admin-card-icon.svg";
 
@@ -26,5 +30,11 @@ export const assetsConfig = {
     admin: {
       adminCard,
     },
+  },
+  icons: {
+    suitcase,
+    people,
+    location,
+    notification
   },
 };
