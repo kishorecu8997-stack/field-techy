@@ -43,6 +43,8 @@ const Popup = ({
     return () => {
       document.removeEventListener("keydown", handleEsc);
       document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
     };
   }, [open, onClose]);
 

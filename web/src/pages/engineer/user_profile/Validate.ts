@@ -455,6 +455,22 @@ export const validateIsVerified = (verified: boolean, fieldName: string) => {
 export const validateIsPhoneVerified = (verified: boolean) => {
   return validateIsVerified(verified, "Phone number");
 };
+export const validateFormat = (
+  value: string,
+  regex: RegExp,
+  message: string
+): true | string => {
+  if (!value) return true; // Optional: let 'required' handle emptiness
+  return regex.test(value.trim()) ? true : message;
+};
+
+export const validateVatNumber = (vatNumber: string): true | string => {
+  return validateFormat(
+    vatNumber,
+    /^[A-Za-z0-9\-/ ]{2,16}$/,
+    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces."
+  );
+};
 
 export default {
   validateName,
@@ -472,4 +488,5 @@ export default {
   validatePortfolioLink,
   validateIsVerified,
   validateIsPhoneVerified,
+  validateVatNumber,
 };

@@ -4,13 +4,13 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
-import { useClientHomeNavigation } from "@/shared/hooks/useClientHomeNavigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import { NavLink } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import AllowAccessPopup from "../AccessPopup";
 
 export type LoginFormData = {
   phone: string;
@@ -35,7 +35,10 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToMyJobs } = useClientHomeNavigation();
+  // const { goToMyJobs } = useHomeNavigation();
+
+  const [accessPopup, setAccessPopup] = useState<boolean>(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -108,9 +111,19 @@ const LoginWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToMyJobs}
+            handleNavigate={() => {
+              setIsOpen(false);
+              setAccessPopup(true);
+            }}
           />
         </Popup>
+
+        {accessPopup && (
+          <AllowAccessPopup
+            accessPopup={accessPopup}
+            setAccessPopup={setAccessPopup}
+          />
+        )}
       </div>
     </div>
   );

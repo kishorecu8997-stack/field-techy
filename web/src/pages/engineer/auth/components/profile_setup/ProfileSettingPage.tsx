@@ -1,5 +1,5 @@
-import ImageUploaderField from '@/shared/components/commonUI/inputs/ImageUploaderField';
-import ProfileSetup from './ProfileSetup';
+import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
+import ProfileSetup from "./ProfileSetup";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -28,6 +28,6 @@ const ProfileSettingPage = () => {
       </div>
     </>
   );
-}
+};
 
 export default ProfileSettingPage;

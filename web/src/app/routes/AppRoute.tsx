@@ -4,8 +4,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
 // import AdminProtectedRoute from "@/layout/admin/AdminProtectedRoute";
 
-// const Layout = React.lazy(() => import("@/pages/engineer/auth"));
-const Layout = React.lazy(() => import("@/pages/client/auth"));
+const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
@@ -50,6 +49,41 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+//client
+const ClientSignInPage = React.lazy(
+  () => import("@/pages/client/auth/components/signin_pages/SignInPage")
+);
+const ClientSignUpPage = React.lazy(
+  () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
+);
+const ClientProfileSettingPage = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+const ClientForgetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ForgetPassword")
+);
+const ClientResetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ResetPassword")
+);
+
+const ClientAccountType = React.lazy(
+  () => import("@/pages/client/auth/components/AccountType")
+);
+const CorporateMultiStepRegistration = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+
+const ClientBackgroundVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/BackgroundVerification"
+    )
+);
+const ClientSetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/profile_setup/SetPassword")
+);
 
 //admin-dashboard-layout
 const AdminLayout = React.lazy(() => import("@/layout/admin/AdminLayout"));
@@ -89,6 +123,7 @@ const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 const ReceviedNotification = React.lazy(
   () => import("@/pages/admin/recevied_notification")
 );
+
 const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
 const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
 const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
@@ -176,6 +211,55 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+    ],
+  },
+
+  //client
+  {
+    path: BASE.CLIENT_AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { path: urls.client.auth.login, element: withSuspense(ClientSignInPage) },
+      {
+        path: urls.client.auth.signup,
+        element: withSuspense(ClientSignUpPage),
+      },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(ClientProfileSettingPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(ClientSetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(ClientBackgroundVerification),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.client.auth.account_type,
+        element: withSuspense(ClientAccountType),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: `${urls.client.auth.profile_setup}/:role`,
+        element: withSuspense(CorporateMultiStepRegistration),
+      },
     ],
   },
 

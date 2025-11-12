@@ -49,7 +49,10 @@ export const FileUpload = ({
 
   // Set PDF.js worker on component mount (client-side only)
   useEffect(() => {
-    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    if (
+      typeof window !== "undefined" &&
+      !pdfjsLib.GlobalWorkerOptions.workerSrc
+    ) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
     }
   }, []);
@@ -154,7 +157,7 @@ export const FileUpload = ({
 
   // Format allowed types for display
   const formatAllowedTypes = (): string => {
-    const types = getAcceptExtensions().map(ext => ext.toUpperCase());
+    const types = getAcceptExtensions().map((ext) => ext.toUpperCase());
     return types.length > 1 ? types.join(", ") : types[0];
   };
 
@@ -218,7 +221,6 @@ export const FileUpload = ({
       field.onChange(null);
       return;
     }
-    
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);
@@ -325,17 +327,19 @@ export const FileUpload = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const displayError = error?.message || fileError;         
+          const displayError = error?.message || fileError;
 
           return (
             <>
-              <div               
+              <div
                 className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
                   displayError
                     ? "border-red-500"
                     : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                 }`}
-                onClick={() => !fileName && document.getElementById(name)?.click()}
+                onClick={() =>
+                  !fileName && document.getElementById(name)?.click()
+                }
               >
                 <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
                   <svg
@@ -412,7 +416,7 @@ export const FileUpload = ({
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
                 />
-              </div>              
+              </div>
               {displayError && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                   {displayError}

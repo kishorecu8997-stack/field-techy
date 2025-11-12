@@ -60,6 +60,7 @@ export const urls = {
     auth: {
       login: "login",
       signup: "signup",
+      account_type: "account-type",
       profile_setup: "profile-setup",
       forget_password: "forget-password",
       reset_password: "reset-password",
@@ -123,6 +124,7 @@ export const absoluteUrls = {
       login: `${BASE.CLIENT_AUTH}/login`,
       signup: `${BASE.CLIENT_AUTH}/signup`,
       profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      account_type: `${BASE.CLIENT_AUTH}/account-type`,
       forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
       reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
       set_password: `${BASE.CLIENT_AUTH}/set-password`,
