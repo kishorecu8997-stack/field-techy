@@ -17,17 +17,6 @@ import type { CategoryFormData } from "./types";
  * - Submit the form and show user feedback (toast) on success.
  * - Provide navigation back to the categories list.
  *
- * Usage:
- * ```tsx
- * <AddCategory />
- * ```
- *
- * Notes:
- * - Uses `react-hook-form` for form state management via `useForm`.
- * - `ImageUploaderField` is used for image selection and preview.
- * - This component lives under the admin job category pages and expects
- *   to be mounted inside the admin layout which provides authentication and styling.
- *
  * @component
  * @returns {JSX.Element} Form UI for adding a job category
  */
@@ -79,7 +68,7 @@ export default function AddCategory() {
           <div className="flex justify-end mt-2">
             <Button
               type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              className="w-fit bg-linear-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               Save
             </Button>

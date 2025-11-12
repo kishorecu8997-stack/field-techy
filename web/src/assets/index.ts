@@ -6,6 +6,7 @@ import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
 import ftLogoWhite from "./ft_logo_white.svg";
 import placeholderImage from "./placeholder_img.svg";
+import adminCard from "./admin-card-icon.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -22,6 +23,9 @@ export const assetsConfig = {
       securePayments,
       skillsMatching,
       workTracking,
+    },
+    admin: {
+      adminCard,
     },
   },
   placeholder: placeholderImage,
