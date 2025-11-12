@@ -255,9 +255,8 @@ const JobPostForm: React.FC = () => {
                 validate: (v: string) =>
                   validateCurrencyText(v, {
                     minLength: 2,
-                    maxLength: 50,
+                    maxLength: 5,
                     required: true,
-                    maxSpaces: 10,
                   }),
               }}
               required

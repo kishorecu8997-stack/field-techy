@@ -264,9 +264,9 @@ export const validateCurrencyText = (
   }
 
   // Allowed characters: letters + common currency symbols + space
-  const allowedPattern = /^[a-zA-Z0-9 $€£¥₹¢₩₽₴₵₦₱₺]+$/;
+  const allowedPattern = /^[0-9 $€£¥₹¢₩₽₴₵₦₱₺]+$/;
   if (!allowedPattern.test(v)) {
-    return "Only letters, numbers, spaces, and currency symbols are allowed";
+    return "Only numbers and currency symbols are allowed";
   }
 
   // Length checks
@@ -318,6 +318,15 @@ export const validateAlphabeticTextArea = (
   if (/ {2,}/.test(v)) {
     return "Consecutive spaces are not allowed";
   }  
+
+   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  const defaultPattern = /^[a-zA-Z0-9 /().,]+$/;
+  const pattern = defaultPattern;
+
+  if (!pattern.test(v)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . are allowed";
+  }
+
 
   // Cross-Site Scripting (XSS) check
   if (v !== xss(v)) {
