@@ -110,7 +110,7 @@ export default function EditEngineer() {
   return (
     <div className="w-full px-4 h-full mt-6">
       <div className="flex justify-between gap-4">
-        <h2 className="mt-2 mb-4 text-xl font-semibold">Edit Engineer</h2>
+        <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
         <Button
           variant="solid"
           onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
