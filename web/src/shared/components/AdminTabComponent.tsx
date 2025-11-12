@@ -63,8 +63,7 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
 
   return (
     <div className="w-full">
-      {/* Tab Navigation */}
-      <div className="flex border-b-2 border-gray-200 mb-4 gap-4">
+      <div className="flex border-b-1 md:border-b-2 border-gray-200 mb-4 gap-4 overflow-x-auto">
         {visibleTabs.map((tab) => (
           <button
             type="button"
@@ -81,7 +80,6 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
         ))}
       </div>
 
-      {/* Tab Content */}
       <div className="mt-4">
         {visibleTabs.find((tab) => tab.label === activeTab)?.content || (
           <div className="p-6 bg-gray-50 rounded-lg text-gray-500">

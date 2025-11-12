@@ -93,7 +93,7 @@ export const urls = {
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
-      received_notification: `${BASE.ADMIN}/receoved-notification`,
+      received_notification: `${BASE.ADMIN}/received-notification`,
     },
   },
 } as const;
@@ -170,7 +170,7 @@ export const absoluteUrls = {
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
-      received_notification: `${BASE.ADMIN}/receoved-notification`,
+      received_notification: `${BASE.ADMIN}/received-notification`,
     },
   },
 } as const;

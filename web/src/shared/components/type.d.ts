@@ -84,6 +84,14 @@ interface TabComponentProps {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
 }
+//Notification popover
+export interface NotificationDropdownProps {
+  title?: string;
+  seeAllLink?: string;
+  onClose?: () => void;
+  children: React.ReactNode;
+  className?: string;
+}
 
 //chart
 export interface SeriesConfig {
