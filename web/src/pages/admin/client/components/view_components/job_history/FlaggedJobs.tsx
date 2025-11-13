@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * FlaggedJobs component displays a table of flagged jobs and a chart visualizing related data.
+ * It provides functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The FlaggedJobs component.
+ */
 const FlaggedJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the flagged jobs table.
+   * @type {Column<FlaggedJobsProps>[]}
+   */
   const columns: Column<FlaggedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const FlaggedJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

@@ -8,18 +8,19 @@ import DeclinedJobs from "./DeclinedJobs";
 import CompletedJobs from "./CompletedJobs";
 
 /**
- * ManageClient Component
+ * JobHistory Component
  *
- * This component serves as the main page for managing clients within the admin dashboard.
- * It utilizes a tabbed interface to separate and display different categories of clients,
- * specifically "Corporate" and "Home" clients.
+ * This component displays the job history for a client, organized into different status categories using a tabbed interface.
+ * It utilizes the `AdminTabComponent` to render tabs for various job statuses.
  *
- * - Renders a main title for the page.
- * - Implements `AdminTabComponent` to create a tabbed navigation.
- * - The "Corporate" tab displays the `<CorporateClient />` component.
- * - The "Home" tab displays the `<HomeClient />` component.
+ * - The "Posted Jobs" tab displays the `<PostedJobs />` component.
+ * - The "In Progress Jobs" tab displays the `<InProgressJobs />` component.
+ * - The "Completed Jobs" tab displays the `<CompletedJobs />` component.
+ * - The "Hold Jobs" tab displays the `<HoldJobs />` component.
+ * - The "Flagged Jobs" tab displays the `<FlaggedJobs />` component.
+ * - The "Declined Jobs" tab displays the `<DeclinedJobs />` component.
  * @component
- * @returns {JSX.Element} The rendered ManageClient page with tabbed navigation.
+ * @returns {JSX.Element} The rendered JobHistory component with tabbed navigation for different job statuses.
  */
 const JobHistory: React.FC = () => {
   const tabs = [

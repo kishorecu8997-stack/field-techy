@@ -2,6 +2,27 @@ import React from 'react';
 import type { CompanyInfo } from '../../types';
 
 
+/**
+ * BasicInformation component displays the basic information of a company.
+ * It shows details like company name, contact person, address, and other business-related information.
+ *
+ * @component
+ * @param {CompanyInfo} props - The props for the component.
+ * @param {string} [props.profileImage="https://via.placeholder.com/100"] - The URL of the profile image.
+ * @param {string} props.companyName - The name of the company.
+ * @param {string} props.businessType - The type of business.
+ * @param {string} props.country - The country where the company is located.
+ * @param {string} props.postalCode - The postal code of the company's address.
+ * @param {string} props.contactPersonName - The name of the contact person.
+ * @param {string} props.industry - The industry the company belongs to.
+ * @param {string} props.state - The state where the company is located.
+ * @param {string} props.taxDocument - The type or name of the tax document.
+ * @param {string} props.phoneNumber - The phone number of the company.
+ * @param {string} props.address - The address of the company.
+ * @param {string} props.city - The city where the company is located.
+ * @param {string} props.vatRegistrationNumber - The VAT registration number of the company.
+ * @returns {JSX.Element} The rendered BasicInformation component.
+ */
 const BasicInformation: React.FC<CompanyInfo> = ({
   profileImage = "https://via.placeholder.com/100",
   companyName,

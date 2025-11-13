@@ -1,7 +1,21 @@
-// BankCardDetail.tsx
 import React from "react";
 import type { BankCardData } from "../../types";
 
+/**
+ * BankCardDetail component displays the bank and card information for a client.
+ * It presents details in a structured layout and also shows the client's wallet balance.
+ *
+ * @component
+ * @param {BankCardData} props - The props for the component.
+ * @param {string} props.bankName - The name of the bank.
+ * @param {string} props.cardNumber - The masked card number.
+ * @param {string} props.bankAddress - The address of the bank.
+ * @param {string} props.ibanNumber - The IBAN number.
+ * @param {string} props.cardHolderName - The name of the cardholder.
+ * @param {string} props.swiftCode - The SWIFT code of the bank.
+ * @param {string} props.walletBalance - The current wallet balance of the client.
+ * @returns {JSX.Element} The rendered BankCardDetail component.
+ */
 const BankCardDetail: React.FC<BankCardData> = ({
   bankName,
   cardNumber,

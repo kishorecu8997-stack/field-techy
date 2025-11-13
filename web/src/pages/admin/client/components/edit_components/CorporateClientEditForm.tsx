@@ -9,11 +9,22 @@ import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
 
+/**
+ * CorporateClientEditForm component for editing existing corporate client information.
+ * It provides a multi-step form with "Basic Information" and "Documents" tabs.
+ * Form state and validation are managed using react-hook-form.
+ */
 const CorporateClientEditForm: React.FC = () => {
+   /**
+    * State to manage the currently active tab in the form.
+    * @type {string}
+    */
    const [activeTab, setActiveTab] = useState("Basic Information");
+    /** State to indicate if the form is currently being submitted. */
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-const methods = useForm<ClientFormData>({
+    /** react-hook-form methods for form management and validation. */
+    const methods = useForm<ClientFormData>({
   defaultValues:{
     profileImage: null,
     companyName: "",
@@ -35,6 +46,10 @@ const methods = useForm<ClientFormData>({
 
 const { trigger } = methods;
 
+/**
+ * Handles the "Next" button click.
+ * Validates the fields in the "Basic Information" tab and moves to the "Documents" tab if validation is successful.
+ */
 const handleNext = async () => {
   let isValid = false;
 
@@ -59,6 +74,10 @@ const handleNext = async () => {
   }
 };
 
+/**
+ * Handles the "Save" button click.
+ * Triggers validation for the entire form. If valid, it simulates form submission, shows a success toast, and resets the form.
+ */
 const handleSave = async () => {
   const isValid = await trigger();
   if (isValid) {
@@ -78,6 +97,9 @@ const handleSave = async () => {
   }
 };
 
+  /**
+   * Defines the tabs for the AdminTabComponent.
+   */
   const tabs = [
     {
       label: "Basic Information",
@@ -88,7 +110,8 @@ const handleSave = async () => {
       content: <ClientDocuments />,
     },
   ];
-  const isLastTab = activeTab === "Documents"
+  /** Determines if the current active tab is the last tab ("Documents"). */
+  const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">

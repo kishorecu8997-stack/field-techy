@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * DeclinedJobs component displays a table of declined jobs and a chart visualizing related data.
+ * It provides functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The DeclinedJobs component.
+ */
 const DeclinedJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the declined jobs table.
+   * @type {Column<DeclinedJobsProps>[]}
+   */
   const columns: Column<DeclinedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const DeclinedJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

@@ -4,7 +4,16 @@ import type { walletViewData } from "../../types";
 import BankCardDetail from "./BankCardDetail";
 import { bankCardData, walletData} from "@/dummy_data/ClientViewData";
 
+/**
+ * WalletTab component displays the client's financial information.
+ * It includes the client's bank and card details via the `<BankCardDetail />` component
+ * and a table of their wallet transaction history using the `<CustomTable />` component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered WalletTab component.
+ */
 const WalletTab: React.FC = () => {
+  /** Column definitions for the wallet transaction history table. */
   const columns: Column<walletViewData>[] = [
     { key: "id", label: "Sr. NO" },
     { key: "dateTime", label: "Date & Time" },

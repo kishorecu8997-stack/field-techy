@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * CompletedJobs component displays a table of completed jobs and a chart visualizing job completion data.
+ * It includes functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The CompletedJobs component.
+ */
 const CompletedJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the completed jobs table.
+   * @type {Column<CompletedJobsProps>[]}
+   */
   const columns: Column<CompletedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const CompletedJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

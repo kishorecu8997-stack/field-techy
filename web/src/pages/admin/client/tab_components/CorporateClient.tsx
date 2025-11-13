@@ -24,6 +24,10 @@ import { useNavigate } from "react-router-dom";
  */
 const CorporateClient: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the corporate client table.
+   * @type {Column<ManageClientProps>[]}
+   */
   const columns: Column<ManageClientProps>[] = [
     { key: "id", label: "Sr. NO" },
     {

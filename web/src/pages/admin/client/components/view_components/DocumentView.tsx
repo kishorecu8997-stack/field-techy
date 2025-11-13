@@ -1,6 +1,14 @@
 import Certificate from "@/assets/document/Certificate.jpg";
 import QualificationCertificate from"@/assets/document/QualificationCertificate.jpg"
 
+/**
+ * DocumentView component displays the client's uploaded documents.
+ * Currently, it shows placeholders for "Government ID Proof" and "Qualification Certificate".
+ * The image sources are hardcoded for demonstration purposes.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered DocumentView component.
+ */
 export default function DocumentView() {
     
   return (

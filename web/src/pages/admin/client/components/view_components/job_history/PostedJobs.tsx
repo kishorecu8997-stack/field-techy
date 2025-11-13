@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * PostedJobs component displays a table of posted jobs and a chart visualizing related data.
+ * It provides functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The PostedJobs component.
+ */
 const PostedJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the posted jobs table.
+   * @type {Column<PostedJobsProps>[]}
+   */
   const columns: Column<PostedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const PostedJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

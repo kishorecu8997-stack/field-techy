@@ -9,6 +9,11 @@ import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
 
+/**
+ * CorporateClientForm component for adding new corporate client information.
+ * It manages a multi-step form with "Basic Information" and "Documents" tabs.
+ * Utilizes react-hook-form for form management and validation.
+ */
 const CorporateClientForm: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +40,10 @@ const CorporateClientForm: React.FC = () => {
 
   const { trigger } = methods;
 
+  /**
+   * Handles the "Next" button click.
+   * Validates the current tab's fields and, if valid, moves to the next tab.
+   */
   const handleNext = async () => {
     let isValid = false;
 
@@ -59,6 +68,10 @@ const CorporateClientForm: React.FC = () => {
     }
   };
 
+  /**
+   * Handles the "Save" button click.
+   * Validates all form fields, and if valid, simulates form submission, shows a toast, and resets the form.
+   */
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {

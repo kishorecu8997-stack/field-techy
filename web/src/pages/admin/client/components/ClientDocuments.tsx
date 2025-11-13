@@ -4,33 +4,32 @@ import type { ClientFormData } from "../types";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 
 /**
- * Documents component handles the document upload section of the engineer registration form.
- * It provides interfaces for uploading required legal and educational documents.
+ * ClientDocuments component handles the document upload section of the client creation/editing form.
+ * It provides file upload inputs for required client documents.
  *
  * Required Documents:
- * - Government ID Proof: Legal identification document
- * - Qualification Certificate: Educational or professional certifications
+ * - Government ID Proof
+ * - Qualification Certificate
  *
  * Features:
  * - File upload functionality for both document types
- * - Input validation for required documents
- * - Responsive layout with grid/flex arrangement
+ * - Relies on `react-hook-form` for validation, which is expected to be provided by a parent component.
  *
  * @component
  * @example
- * tsx
+ * ```tsx
  * <FormProvider {...methods}>
- *   <Documents />
+ *   <ClientDocuments />
  * </FormProvider>
- *
+ * ```
  *
  * @remarks
- * This component must be used within a FormProvider context as it relies on
- * form context for file upload handling and validation.
+ * This component must be used within a `FormProvider` context from `react-hook-form`
+ * as it uses `useFormContext` to register the file upload fields.
  *
- * @returns {JSX.Element} A form section component with document upload fields
+ * @returns {JSX.Element} A form section for document uploads.
  */
-export default function UserDocuments() {
+export default function ClientDocuments() {
   const methods = useFormContext<ClientFormData>();
   const handleSubmit = (data: ClientFormData) => {
     console.log("Documents submitted:", data);

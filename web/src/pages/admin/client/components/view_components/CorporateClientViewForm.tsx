@@ -10,6 +10,19 @@ import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
 
 
+/**
+ * CorporateClientViewForm component displays detailed information about a corporate client.
+ * It uses a tabbed interface to organize client data into several sections:
+ * Basic Information, Job History, Wallet, and Documents.
+ *
+ * - The "Basic Information" tab shows general company details via the `<BasicInformation />` component.
+ * - The "Job History" tab displays the client's past and present jobs using the `<JobHistory />` component.
+ * - The "Wallet" tab shows financial details through the `<WalletTab />` component.
+ * - The "Documents" tab displays client-related documents via the `<DocumentView />` component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered CorporateClientViewForm component.
+ */
 const CorporateClientViewForm: React.FC = () => {
   const tabs = [
     {

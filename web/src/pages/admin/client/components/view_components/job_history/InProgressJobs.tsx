@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * InProgressJobs component displays a table of jobs that are currently in progress and a chart visualizing related data.
+ * It includes functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The InProgressJobs component.
+ */
 const InProgressJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the in-progress jobs table.
+   * @type {Column<InProgressJobsProps>[]}
+   */
   const columns: Column<InProgressJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const InProgressJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

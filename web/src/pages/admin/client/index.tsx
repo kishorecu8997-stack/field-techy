@@ -19,6 +19,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} The rendered ManageClient page with tabbed navigation.
  */
 const ManageClient: React.FC = () => {
+  /**
+   * Defines the tabs for the AdminTabComponent, separating "Corporate" and "Home" clients.
+   * @type {{label: string, content: JSX.Element}[]}
+   */
   const tabs = [
     {
       label: "Corporate",

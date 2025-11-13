@@ -17,8 +17,18 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * HoldJobs component displays a table of jobs on hold and a chart visualizing related data.
+ * It provides functionalities for searching, viewing, editing, and deleting jobs.
+ *
+ * @returns {React.FC} The HoldJobs component.
+ */
 const HoldJobs: React.FC = () => {
   const navigate = useNavigate();
+  /**
+   * Column definitions for the hold jobs table.
+   * @type {Column<HoldJobsProps>[]}
+   */
   const columns: Column<HoldJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -83,6 +93,10 @@ const HoldJobs: React.FC = () => {
     },
   ];
 
+  /**
+   * State to hold the selected day for filtering the chart data.
+   * @type {(string | null)}
+   */
   const [selectedDay, setSelectedDay] = useState<string | null>();
 
   return (

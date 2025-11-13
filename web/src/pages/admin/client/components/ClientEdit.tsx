@@ -19,6 +19,18 @@ import {
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 
+/**
+ * ClientEdit component renders the form fields for editing the basic information of a client.
+ * It is designed to be nested within a `FormProvider` from `react-hook-form`.
+ * This component includes fields for profile image, company details, contact information, and address.
+ * It utilizes custom input components like `InputField`, `SelectField`, `ImageUploaderField`, and `PhoneInputField`,
+ * and applies validation rules to them.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered form fields for editing a client's basic information.
+ * @remarks This component is nearly identical to `ClientAdd` and could be refactored for reusability.
+ * It expects to be populated with existing client data via the `react-hook-form` context.
+ */
 const ClientEdit: React.FC = () => {
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
