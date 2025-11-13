@@ -42,16 +42,13 @@ import {
 export default function ExperienceDetails() {
   return (
     <div>
-      {/* <FormContainer
-        methods={methods} // ✅
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
-      > */}
       <div className="w-60">
         <FileUpload
           name="resume"
           label="Resume"
-          placeholder="Government ID"
+          placeholder="Resume"
           required
+          accept=".pdf"
         />
       </div>
       <div className="grid md:flex gap-4 w-full">
@@ -91,7 +88,6 @@ export default function ExperienceDetails() {
           />
         </div>
       </div>
-      {/* </FormContainer> */}
     </div>
   );
 }

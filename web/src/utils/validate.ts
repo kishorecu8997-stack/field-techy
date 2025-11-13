@@ -74,19 +74,27 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  if (!value) return "Address must be at least 20 characters";
+  if (!value) return "Address must be at least 6 characters";
 
   // Disallow leading or trailing spaces
-  if (/^\s|\s$/.test(value))
+  if (/^\s|\s$/.test(value)) {
     return "Address must not start or end with a space";
+  }
 
-  const v = value.trim();
-  if (v.length < 20) return "Address must be at least 20 characters";
+  // Disallow multiple consecutive spaces
+  if (/\s{2,}/.test(value)) {
+    return "Address must not contain consecutive spaces";
+  }
+
+  const v = value.trim(); // technically redundant now, but safe
+  if (v.length < 6) return "Address must be at least 6 characters";
   if (v.length > 50) return "Address must not exceed 50 characters";
-  // Allow letters, numbers, spaces, and / , . - #
+
+  // Allow only letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
+
   return true;
 };
 
@@ -537,21 +545,21 @@ export const validatePricePerHour = (value: string) => {
     return "Price is required";
   }
 
-  // Must match a valid number format: optional decimals, max 2 digits after .
-  if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) {
-    return "Price must be a valid number with up to 2 decimal places";
+  // Regex: up to 5 digits before decimal, optional decimal with 1–2 digits after
+  if (!/^\d{1,5}(\.\d{1,2})?$/.test(trimmed)) {
+    return "Price must be a valid number with up to 5 digits before the decimal and up to 2 decimal places";
   }
 
-  // Parse as float for numeric validation
   const num = parseFloat(trimmed);
 
-  // Reject if zero or negative
+  // Must be greater than zero (already ensured by regex, but kept for safety/clarity)
   if (num <= 0) {
     return "Price must be greater than zero";
   }
 
   return true;
 };
+
 export const validateLocation = (value: string) => {
   if (!value) return "Location must be at least 3 characters";
 
