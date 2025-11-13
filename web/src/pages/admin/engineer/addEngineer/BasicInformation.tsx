@@ -103,7 +103,7 @@ export default function BasicInformation() {
             name="price"
             label="Price per/hour"
             type="text"
-            placeholder="Enter Name"
+            placeholder="Enter Price per/hour"
             required
             rules={{ validate: (v: string) => validatePricePerHour(v) }}
           />
