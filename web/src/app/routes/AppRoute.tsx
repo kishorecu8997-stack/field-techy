@@ -89,6 +89,25 @@ const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 const ReceviedNotification = React.lazy(
   () => import("@/pages/admin/recevied_notification")
 );
+const corporateClientAdd = React.lazy(
+  () => import("@/pages/admin/client/components/add_components/CorporateClientForm")
+);
+const homeClientAdd=React.lazy(
+  () => import("@/pages/admin/client/components/add_components/HomeClientForm")
+);
+const corporateClientEdit = React.lazy(
+  () => import("@/pages/admin/client/components/edit_components/CorporateClientEditForm")
+);
+const homeClientEdit=React.lazy(
+  () => import("@/pages/admin/client/components/edit_components/HomeClientEditForm")
+);
+
+const corporateClientView = React.lazy(
+  () => import("@/pages/admin/client/components/view_components/CorporateClientViewForm")
+);
+const homeClientView=React.lazy(
+  () => import("@/pages/admin/client/components/view_components/HomeClientViewForm")
+);
 
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
@@ -313,6 +332,32 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.received_notification,
             element: withSuspense(ReceviedNotification),
           },
+          {
+            path: urls.admin.home.corporateClientAdd,
+            element: withSuspense(corporateClientAdd),
+          },
+             {
+            path: urls.admin.home.homeClientAdd,
+            element: withSuspense(homeClientAdd),
+          },  
+          {
+            path: urls.admin.home.corporateClientEdit,
+            element: withSuspense(corporateClientEdit),
+          },
+             {
+            path: urls.admin.home.homeClientEdit,
+            element: withSuspense(homeClientEdit),
+          },  
+          {
+            path: urls.admin.home.corporateClientView,
+            element: withSuspense(corporateClientView),
+          },
+             {
+            path: urls.admin.home.homeClientView,
+            element: withSuspense(homeClientView),
+          },  
+             
+
         ],
       },
     ],

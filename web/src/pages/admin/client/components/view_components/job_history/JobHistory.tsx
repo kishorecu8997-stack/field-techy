@@ -1,8 +1,11 @@
 import React from "react";
-import CorporateClient from "./tab_components/CorporateClient";
-import HomeClient from "./tab_components/HomeClient";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import PostedJobs from "./PostedJobs";
+import InProgressJobs from "./InProgressJobs";
+import HoldJobs from "./HoldJobs";
+import FlaggedJobs from "./FlaggedJobs";
+import DeclinedJobs from "./DeclinedJobs";
+import CompletedJobs from "./CompletedJobs";
 
 /**
  * ManageClient Component
@@ -18,36 +21,40 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @component
  * @returns {JSX.Element} The rendered ManageClient page with tabbed navigation.
  */
-const ManageClient: React.FC = () => {
+const JobHistory: React.FC = () => {
   const tabs = [
     {
-      label: "Corporate",
-      content: <CorporateClient />,
+      label: "Posted Jobs",
+      content: <PostedJobs />,
     },
     {
-      label: "Home",
-      content: <HomeClient />,
+      label: "In Progress Jobs",
+      content: <InProgressJobs />,
+    },
+    {
+      label: "Completed Jobs",
+      content: <CompletedJobs />,
+    },
+    {
+      label: "Hold Jobs",
+      content: <HoldJobs />,
+    },
+    {
+      label: "Flagged Jobs",
+      content: <FlaggedJobs />,
+    },
+    {
+      label: "Declined Jobs",
+      content: <DeclinedJobs />,
     },
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Manage Clients</h1>
-        <Button
-          variant="primary"
-          size="sm"
-          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
-          onClick={() => alert("Export CSV")}
-        >
-          Export CSV
-        </Button>
-      </div>
-
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate" />
+        <AdminTabComponent tabs={tabs} defaultActiveTab="Posted Jobs" />
       </div>
     </div>
   );
 };
 
-export default ManageClient;
+export default JobHistory;

@@ -34,7 +34,7 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
 
   return (
     <div className="w-full">
-      <div className="flex border-b-1 md:border-b-2 border-gray-200 mb-4 gap-4 overflow-x-auto">
+      <div className="flex border-b-1 md:border-b-2 border-gray-200 mb-4 gap-4 overflow-x-auto ">
         {visibleTabs.map((tab) => (
           <button
             key={tab.label}
