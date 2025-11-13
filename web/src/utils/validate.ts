@@ -545,14 +545,15 @@ export const validatePricePerHour = (value: string) => {
     return "Price is required";
   }
 
-  // Regex: up to 5 digits before decimal, optional decimal with 1–2 digits after
-  if (!/^\d{1,5}(\.\d{1,2})?$/.test(trimmed)) {
-    return "Price must be a valid number with up to 5 digits before the decimal and up to 2 decimal places";
+  // Must match a valid number format: optional decimals, max 2 digits after .
+  if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) {
+    return "Price must be a valid number with up to 2 decimal places";
   }
 
+  // Parse as float for numeric validation
   const num = parseFloat(trimmed);
 
-  // Must be greater than zero (already ensured by regex, but kept for safety/clarity)
+  // Reject if zero or negative
   if (num <= 0) {
     return "Price must be greater than zero";
   }
