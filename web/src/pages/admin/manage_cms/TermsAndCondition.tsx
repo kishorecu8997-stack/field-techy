@@ -4,7 +4,7 @@ import { useQuillEditor } from "@/shared/components/commonUI/text_editor";
 import { useState } from "react";
 
 /**
- * ManageCMS Component
+ * TermsAndCondition Component
  *
  * Renders a simple CMS management editor that uses a custom Quill text editor hook (`useQuillEditor`).
  * Users can edit HTML content directly in the editor and save (or preview) the current content value.
@@ -12,10 +12,10 @@ import { useState } from "react";
  * @component
  * @example
  * return (
- *   <ManageCMS />
+ *   <TermsAndCondition />
  * );
  *
- * @returns {JSX.Element} The rendered ManageCMS component.
+ * @returns {JSX.Element} The rendered TermsAndCondition component.
  */
 export default function TermsAndCondition() {
   const [value, setValue] = useState("<p>Hello world</p>");
