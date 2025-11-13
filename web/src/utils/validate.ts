@@ -525,7 +525,7 @@ export const CommissionValidation = (value: string): true | string => {
 export const validateNotificationTitle = (value: string) => {
   const raw = value || "";
 
-  // Trim check: reject if has leading or trailing spaces
+  // Reject if has leading or trailing spaces
   if (raw !== raw.trim()) {
     return "Message must not have leading or trailing spaces";
   }
@@ -537,10 +537,9 @@ export const validateNotificationTitle = (value: string) => {
   // Disallow any digits (0-9)
   if (/\d/.test(raw)) return "Title must not contain numbers";
 
-  const allowedPattern = /^[\p{L}\p{Emoji_Presentation} ]+$/u;
-
-  if (!allowedPattern.test(raw)) {
-    return "Title must contain only letters, spaces, and emojis";
+  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
+  if (!/^[A-Za-z\s]+$/.test(raw)) {
+    return "Title must contain only letters and spaces";
   }
 
   return true;
@@ -567,10 +566,10 @@ export const validateNotificationMessage = (value: string) => {
     return "Message must not exceed 500 characters";
   }
 
-  const allowedPattern = /^[A-Za-z0-9 /.,#()-]+$/;
+  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
 
   if (!allowedPattern.test(raw)) {
-    return "Message contains disallowed special characters";
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
   }
 
   return true;
