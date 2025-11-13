@@ -41,6 +41,7 @@ const RateCardForm = () => {
             <SelectField
               name="projectName"
               label="Project Name"
+              required
               options={[
                 { label: "Project 1", value: "project1" },
                 { label: "Project 2", value: "project2" },

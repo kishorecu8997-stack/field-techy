@@ -522,6 +522,25 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+
+export const validatePricingModel = (value: string) => {
+  const v = (value || "").trim();
+  if (!v) return "";
+  if (/\s/.test(v)) return "Price must not contain spaces";
+
+  // Allow numbers with optional decimal part (up to 2 digits)
+  if (!/^\d+(\.\d{1,2})?$/.test(v))
+    return "Price must be a valid number with up to two decimal places";
+
+  // Extract integer part for length checks
+  const [integerPart] = v.split(".");
+  if (integerPart.length < 2) return "Price must be at least 2 digits before decimal";
+  if (integerPart.length > 5) return "Price must not exceed 5 digits before decimal";
+
+  return true;
+};
+
+
 export default {
   validateName,
   validateEmail,

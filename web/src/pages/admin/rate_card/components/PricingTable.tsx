@@ -1,7 +1,8 @@
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { validatePricingModel } from "@/utils/validate";
 import React from "react";
 import { Controller, type Control } from "react-hook-form";
 import type { PricingTier } from "../types";
-import { InputField } from "@/shared/components/commonUI/inputs";
 
 /**
  * Table for displaying/editing tiered pricing
@@ -45,9 +46,9 @@ const PricingTable: React.FC<{
                   {editable ? (
                     <InputField
                       name={`skills.${index}.tiers.${tierIdx}.${field}`}
-                      type="number"
                       placeholder="$"
-                      inputClassName="h-8 border border-neutral-700 rounded-md p-1"
+                      rules={{ validate: (v: string) => validatePricingModel(v) }}
+                      inputClassName="h-8 border border-neutral-700 dark:border-neutral-400 rounded-md p-1"
                     />
                   ) : (
                     <Controller

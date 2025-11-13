@@ -15,15 +15,20 @@ const SkillAccordion: React.FC<{
   control: Control<any>;
   index: number;
   update: (index: number, value: SkillPricing) => void;
-}> = ({ skill, control, index }) => {
+  removeSkill: () => void;
+}> = ({ skill, control, index,  removeSkill }) => {
   const isView = useMemo(() => useLocation().pathname.includes("/view"), []);
   const { fields } = useFieldArray({
     control,
     name: `skills.${index}.tiers`,
   });
 
+  const handleRemove = () => {
+    removeSkill();
+  };
+
   return (
-    <Accordion title={skill.name}>
+    <Accordion title={skill.name} remove={() => handleRemove()}>
       <PricingTable
         control={control}
         index={index}
@@ -33,7 +38,9 @@ const SkillAccordion: React.FC<{
 
       {!isView && (
         <div className="flex justify-end mt-4 space-x-2">
-            <Button className="bg-emerald-600 text-white px-4 py-2 rounded-md">Save</Button>
+          <Button variant="secondary" >
+            Save
+          </Button>
         </div>
       )}
     </Accordion>
