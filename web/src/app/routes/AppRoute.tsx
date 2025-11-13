@@ -132,6 +132,12 @@ const ManageNotification = React.lazy(
   () => import("@/pages/admin/manage_notification")
 );
 const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
+const AddSubAdmin = React.lazy(
+  () => import("@/pages/admin/sub_admin/AddSubAdmin")
+);
+const EditSubAdmin = React.lazy(
+  () => import("@/pages/admin/sub_admin/EditSubAdmin")
+);
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
@@ -380,6 +386,14 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_sub_admin,
             element: withSuspense(ManageSubAdmin),
+          },
+          {
+            path: urls.admin.home.manage_sub_admin_add,
+            element: withSuspense(AddSubAdmin),
+          },
+          {
+            path: urls.admin.home.manage_sub_admin_edit,
+            element: withSuspense(EditSubAdmin),
           },
           {
             path: urls.admin.home.manage_cms,
