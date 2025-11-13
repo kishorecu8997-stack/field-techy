@@ -1,0 +1,6 @@
+| Page     | Fields                 | Input Type | Required (Yes/No) | Rule                  | Validation Rule                                                                           | Lower Limit   | Upper Limit     |
+|----------|------------------------|------------|-------------------|-----------------------|-------------------------------------------------------------------------------------------|---------------|-----------------|
+| Add Faq  | Add your Question <br> | Text       | yes               | Question validation   | Only letters, spaces, numbers and special characters such as / ( ) , . - # ? are allowed. | 5 Characters  | 200 Characters  |
+| Add Faq  | Add your Answer        | text area  | yes               | Answer validation<br> | Only letters, spaces, numbers and special characters such as / ( ) , . - # are allowed.   | 50 Characters | 2000 Characters |
+| Edit Faq | Add your Question <br> | Text       | yes               | Question validation   | Only letters, spaces, numbers and special characters such as / ( ) , . - # ? are allowed. | 5 Characters  | 200 Characters  |
+| Edit Faq | Add your Answer        | text area  | yes               | Answer validation<br> | Only letters, spaces, numbers and special characters such as / ( ) , . - # are allowed.   | 50 Characters | 2000 Characters |

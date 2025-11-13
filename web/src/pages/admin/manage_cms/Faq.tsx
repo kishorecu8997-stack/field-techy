@@ -4,8 +4,6 @@ import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
@@ -13,6 +11,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import type { FaqAddFormData } from "./types";
 import { useForm } from "react-hook-form";
+import AddFaq from "./AddFaq";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
 /**
  * @component Faq
@@ -61,10 +61,12 @@ export default function Faq() {
       ),
     },
   ];
+
   const handleSubmit = (data: FaqAddFormData) => {
     console.log("Faq Form Submitted", data);
-    toast.success("Saved Successfully!");
+    toast.success("Added Successfully!");
   };
+
   return (
     <div>
       <div className="mb-3 flex justify-end">
@@ -93,48 +95,13 @@ export default function Faq() {
       </div>
       {isModalOpen && (
         <Popup onClose={() => setIsModalOpen(false)} open={isModalOpen}>
-          <div className="p-4">
-            <div className="flex justify-between items-center">
-              <p className="text-lg font-bold">
-                {faqMode === "Add" ? "Add" : "Edit"} FAQ
-              </p>
-              <div
-                onClick={() => setIsModalOpen(false)}
-                className="cursor-pointer text-xl"
-              >
-                x
-              </div>
-            </div>
-            <FormContainer
-              methods={methods}
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
-            >
-              <div className="grid gap-4 w-full">
-                <InputField
-                  name="Enter Question"
-                  label="Add your Question"
-                  type="text"
-                  required
-                />
-
-                <TextareaInput
-                  name="Enter Answer"
-                  label="Add your Answer"
-                  required
-                />
-              </div>
-
-              <div className="flex justify-end mt-2">
-                <Button
-                  type="submit"
-                  className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-                >
-                  Submit
-                </Button>
-              </div>
-            </FormContainer>
-          </div>
+          <FormContainer
+            methods={methods}
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+          >
+            <AddFaq faqMode={faqMode} setIsModalOpen={setIsModalOpen} />
+          </FormContainer>
         </Popup>
       )}
     </div>

@@ -522,6 +522,86 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+export const validateQuestion = (value: string): string | true => {
+  if (!value) return "Question is required";
+
+  if (/^\s|\s$/.test(value)) {
+    return "Question must not start or end with a space";
+  }
+
+  if (/\s{2,}/.test(value)) {
+    return "Question must not contain consecutive spaces";
+  }
+
+  if (value.length < 5) return "Question must be at least 5 characters";
+  if (value.length > 200) return "Question must not exceed 200 characters";
+
+  // Allow: letters, numbers, spaces, and / , . - # ( ) ?
+  if (!/^[A-Za-z0-9\s/,.#()?()-]+$/.test(value)) {
+    return "Only letters, numbers, spaces, and special characters such as / ( ) , . - # ? are allowed.";
+  }
+
+  return true;
+};
+export interface TextValidationOptions {
+  minLength?: number;
+  maxLength?: number;
+  maxSpaces?: number; // total spaces allowed (default: 10)
+  regex?: RegExp; // optional custom base regex
+  required?: boolean; // default: true
+}
+
+export const validateAlphabeticTextArea = (
+  value: string,
+  options: TextValidationOptions = {}
+): string | true => {
+  const { minLength = 1, maxLength = Infinity, required = true } = options;
+
+  const v = value || "";
+
+  // Required check
+  if (required && !v) {
+    return "This field is required";
+  }
+
+  if (!required && !v) {
+    return true;
+  }
+
+  // ❌ No leading or trailing spaces
+  if (v.startsWith(" ") || v.endsWith(" ")) {
+    return "Leading or trailing spaces are not allowed";
+  }
+
+  // ❌ No consecutive spaces (e.g., "a  b")
+  if (/ {2,}/.test(v)) {
+    return "Consecutive spaces are not allowed";
+  }
+
+  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
+  const pattern = defaultPattern;
+
+  if (!pattern.test(v)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
+  }
+
+  // Cross-Site Scripting (XSS) check
+  if (v !== xss(v)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  // Length validation
+  if (v.length < minLength) {
+    return `Minimum length is ${minLength} characters`;
+  }
+  if (v.length > maxLength) {
+    return `Maximum length is ${maxLength} characters`;
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -544,4 +624,6 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validateQuestion,
+  validateAlphabeticTextArea,
 };
