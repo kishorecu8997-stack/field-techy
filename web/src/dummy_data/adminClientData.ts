@@ -13,21 +13,23 @@ export const industries = [
   { value: "retail", label: "Retail" },
 ];
 
-export const countries = [
-  { value: "us", label: "United States" },
-  { value: "ca", label: "Canada" },
-  { value: "de", label: "Germany" },
-  { value: "jp", label: "Japan" },
-  { value: "au", label: "Australia" },
+export const countries = [  
+  { value: "in", label: "India" },
+  { value: "uk", label: "United Kingdom" },
 ];
 
-export const cities = [
-  { value: "new-york", label: "New York" },
-  { value: "toronto", label: "Toronto" },
-  { value: "berlin", label: "Berlin" },
-  { value: "tokyo", label: "Tokyo" },
-  { value: "sydney", label: "Sydney" },
-];
+export const citiesByCountry: Record<string, { value: string; label: string }[]> = { 
+  in: [
+    { value: "mumbai", label: "Mumbai" },
+    { value: "delhi", label: "Delhi" },
+    { value: "bangalore", label: "Bangalore" },
+  ],
+  uk: [
+    { value: "london", label: "London" },
+    { value: "manchester", label: "Manchester" },
+    { value: "birmingham", label: "Birmingham" },
+  ],
+};
 
 export const businessTypes = [
   { value: "llc", label: "LLC" },
@@ -43,13 +45,18 @@ export const taxDocuments = [
   { value: "other", label: "Other" },
 ];
 
-export const stateOptions = [
-  { value: '', label: 'Select State' },
-  { value: 'CA', label: 'California' },
-  { value: 'NY', label: 'New York' },
-  { value: 'TX', label: 'Texas' },
-  { value: 'FL', label: 'Florida' },
-  { value: 'IL', label: 'Illinois' },
-  { value: 'WA', label: 'Washington' },
-  { value: 'CO', label: 'Colorado' },
-];
+export const statesByCountry: Record<string, { value: string; label: string }[]> = {
+  in: [
+    { value: "maharashtra", label: "Maharashtra" },
+    { value: "delhi", label: "Delhi" },
+    { value: "karnataka", label: "Karnataka" },
+    { value: "tamil-nadu", label: "Tamil Nadu" },
+    { value: "uttar-pradesh", label: "Uttar Pradesh" },
+  ],
+  uk: [
+    { value: "england", label: "England" },
+    { value: "scotland", label: "Scotland" },
+    { value: "wales", label: "Wales" },
+    { value: "northern-ireland", label: "Northern Ireland" },
+  ],
+};

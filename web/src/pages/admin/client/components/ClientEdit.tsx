@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   businessTypes,
-  cities,
+  citiesByCountry,
   countries,
   industries,
-  stateOptions,
+  statesByCountry,
   taxDocuments,
 } from "@/dummy_data/adminClientData";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
@@ -18,22 +18,36 @@ import {
   validateZipcode,
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import { useFormContext } from "react-hook-form";
 
 /**
- * ClientEdit component renders the form fields for editing the basic information of a client.
+ * `ClientEdit` component renders the form fields for editing the basic information of a client.
  * It is designed to be nested within a `FormProvider` from `react-hook-form`.
+ *
  * This component includes fields for profile image, company details, contact information, and address.
- * It utilizes custom input components like `InputField`, `SelectField`, `ImageUploaderField`, and `PhoneInputField`,
- * and applies validation rules to them.
+ * It features dynamic form behavior: the 'City' and 'State' select options are dependent on the
+ * selected 'Country'. When the country is changed, the city and state fields are reset.
+ *
+ * It utilizes custom UI components (`InputField`, `SelectField`, etc.) and applies validation rules.
  *
  * @component
  * @returns {JSX.Element} The rendered form fields for editing a client's basic information.
- * @remarks This component is nearly identical to `ClientAdd` and could be refactored for reusability.
- * It expects to be populated with existing client data via the `react-hook-form` context.
  */
 const ClientEdit: React.FC = () => {
+  const { watch, setValue } = useFormContext();
+  const selectedCountry = watch("country");
+
+  const cityOptions = selectedCountry ? citiesByCountry[selectedCountry] || [] : [];
+  const stateOptions = selectedCountry ? statesByCountry[selectedCountry] || [] : [];
+
+  useEffect(() => {
+    // Reset city and state fields when country changes
+    setValue("city", "");
+    setValue("state", "");
+  }, [selectedCountry, setValue]);
+
   return (
-    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
+    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
       {/* Profile Image */}
       <div className="mb-8">
         <label className="block mb-3 font-medium">Profile Image</label>
@@ -78,16 +92,18 @@ const ClientEdit: React.FC = () => {
             label="City"
             name="city"
             placeholder="Select city"
-            options={cities}
+            options={cityOptions}
             required
           />
-          <SelectField
-            label="Tax Document (VAT)"
-            name="taxDocument"
-            placeholder="Select tax document"
-            options={taxDocuments}
-            required
-          />
+          <div className="relative overflow-y-auto">
+            <SelectField
+              label="Tax Document (VAT)"
+              name="taxDocument"
+              placeholder="Select tax document"
+              options={taxDocuments}
+              required
+            />
+          </div>
         </div>
 
         {/* Right Column */}
@@ -128,7 +144,7 @@ const ClientEdit: React.FC = () => {
             placeholder="Enter Postal Code"
             required
             rules={{
-              validate: (value: string) => validateZipcode(value),
+              validate: (value: string) => validateZipcode(value, selectedCountry),
             }}
           />
           <InputField

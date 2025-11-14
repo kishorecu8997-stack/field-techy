@@ -115,7 +115,7 @@ const handleSave = async () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Add Clients</h1>
+        <h1 className="text-xl font-semibold ">Add Client</h1>
         <Button
                   variant="solid"
                   className=""

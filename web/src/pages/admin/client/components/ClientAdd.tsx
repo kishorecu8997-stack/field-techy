@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   businessTypes,
-  cities,
+  citiesByCountry,
   countries,
   industries,
-  stateOptions,
+  statesByCountry,
   taxDocuments,
 } from "@/dummy_data/adminClientData";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
@@ -18,6 +18,7 @@ import {
   validateZipcode,
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import { useFormContext } from "react-hook-form";
 
 /**
  * ClientAdd component renders the form fields for adding or editing the basic information of a client.
@@ -30,8 +31,20 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
 const ClientAdd: React.FC = () => {
+  const { watch, setValue } = useFormContext();
+  const selectedCountry = watch("country");
+
+  const cityOptions = selectedCountry ? citiesByCountry[selectedCountry] || [] : [];
+  const stateOptions = selectedCountry ? statesByCountry[selectedCountry] || [] : [];
+
+  useEffect(() => {
+    // Reset city and state fields when country changes
+    setValue("city", "");
+    setValue("state", "");
+  }, [selectedCountry, setValue]);
+
   return (
-    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
+    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
       {/* Profile Image */}
       <div className="mb-8">
         <label className="block mb-3 font-medium">Profile Image</label>
@@ -76,10 +89,10 @@ const ClientAdd: React.FC = () => {
             label="City"
             name="city"
             placeholder="Select city"
-            options={cities}
+            options={cityOptions}
             required
           />
-          <div className="relative">
+          <div className="relative overflow-y-auto">
             <SelectField
               label="Tax Document (VAT)"
               name="taxDocument"
@@ -128,7 +141,7 @@ const ClientAdd: React.FC = () => {
             placeholder="Enter Postal Code"
             required
             rules={{
-              validate: (value: string) => validateZipcode(value),
+              validate: (value: string) => validateZipcode(value, selectedCountry),
             }}
           />
           <InputField

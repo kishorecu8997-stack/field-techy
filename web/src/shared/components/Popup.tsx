@@ -1,7 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type { PopupProps } from './type';
-
-
+import { useEffect, useRef } from "react";
+import type { PopupProps } from "./type";
 
 /**
  * Popup Component
@@ -24,22 +22,29 @@ import type { PopupProps } from './type';
  * @param props - {@link PopupProps} The properties for configuring the popup.
  * @returns {JSX.Element} The rendered popup element when open.
  */
-const Popup = ({ open, onClose, children }: PopupProps) => {
+const Popup = ({
+  open,
+  onClose,
+  children,
+  inputClassName = "sm:max-w-md sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto",
+}: PopupProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
     if (open) {
-      document.addEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEsc);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = '';
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
     };
   }, [open, onClose]);
 
@@ -58,23 +63,13 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
     <div
       ref={modalRef}
       className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[rgba(61,63,66,0.6)] animate-fade-in"
-      style={{ backdropFilter: 'blur(1px)' }}
+      style={{ backdropFilter: "blur(1px)" }}
       onClick={handleBackdropClick}
     >
       {/* Modal */}
-      <div className="
-          w-full 
-          sm:max-w-xl sm:rounded-lg sm:shadow-xl
-          max-h-screen 
-          flex flex-col
-          bg-white dark:bg-gray-800
-          inset-0 
-          sm:inset-auto 
-          fixed 
-          sm:relative
-          h-full 
-          sm:h-auto
-        ">
+      <div
+        className={`${inputClassName}`}
+      >
         {children}
       </div>
     </div>

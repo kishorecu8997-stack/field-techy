@@ -35,41 +35,37 @@ export default function ClientDocuments() {
     console.log("Documents submitted:", data);
   };
   return (
-    <div>
+    <div className="bg-white dark:bg-gray-800">
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
         className="flex p-2 gap-4"
       >
-        <div className="grid md:flex mb-6 mt-2 md:w-8/12 gap-8 justify-between">
+        <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 md:w-8/12">
           {/* Government ID Proof */}
-          <div className="w-120">
-            <div>
-              <FileUpload
-                name="governmentIDProof"
-                label="Government ID Proof"
-                placeholder="Upload Government ID Proof"
-                accept=".pdf,.jpg,.png"
-                maxPages={5}
-                validatePDF={true}
-                required
-              />
-            </div>
+          <div className="w-full">
+            <FileUpload
+              name="governmentIDProof"
+              label="Government ID Proof"
+              placeholder="Upload Government ID Proof"
+              accept=".pdf"
+              maxPages={5}
+              validatePDF={true}
+              required
+            />
           </div>
 
           {/* Qualification Certificate */}
-          <div className="w-120">
-            <div>
-              <FileUpload
-                name="qualificationCertificate"
-                label="Qualification Certificate"
-                placeholder="Upload Qualification Certificate"
-                accept=".pdf,.jpg,.png"
-                maxPages={5}
-                validatePDF={true}
-                required
-              />
-            </div>
+          <div className="w-full">
+            <FileUpload
+              name="qualificationCertificate"
+              label="Qualification Certificate"
+              placeholder="Upload Qualification Certificate"
+              accept=".pdf"
+              maxPages={5}
+              validatePDF={true}
+              required
+            />
           </div>
         </div>
       </FormContainer>

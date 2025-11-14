@@ -8,9 +8,9 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
-import { LuPhone } from "react-icons/lu";
+import { LuMail } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import OTPPage from "../../../../engineer/auth/components/OTPPage";
 
 export type LoginFormData = {
   phone: string;
@@ -18,12 +18,15 @@ export type LoginFormData = {
 };
 
 /**
+ * SignUpWithNumber
+ *
  * Phone-based sign-up form that collects a phone number and terms acceptance,
  * then triggers OTP verification via modal. Includes toggle to email sign-up
  * and LinkedIn alternative.
  *
- * @param {Object} props
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - Props object
  * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Toggles between phone/email sign-up flows
+ * @returns {JSX.Element} Phone sign-up UI
  */
 const SignUpWithNumber = ({
   setIsNumberLogin,
@@ -39,19 +42,50 @@ const SignUpWithNumber = ({
     },
   });
 
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    navigate(absoluteUrls.client.auth.account_type, {
+      state: {
+        signupPhone: method.getValues("phone"),
+        mobileVerified: true,
+        disableMobile: true,
+        disableEmail: false,
+      },
+    });
+  };
+
+  /**
+   * handleOTPVerified
+   *
+   * Called when the OTP flow completes successfully. Closes the OTP modal
+   * and navigates to the account type setup route carrying the verified
+   * phone number in the navigation state.
+   */
+
   const termsAccepted = method.watch("terms");
 
-  const handleSubmit = (data: LoginFormData) => {
-    console.log(data, "data from Login Form");
+  const handleSubmit = () => {
     setIsOpen(true);
   };
+
+  /**
+   * handleSubmit
+   *
+   * Triggered when the phone sign-up form is submitted. Opens the OTP
+   * verification modal. In a production flow this should first call the
+   * backend to request an OTP and then open the modal on success.
+   */
 
   return (
     <div className="flex items-center justify-center max-w-lg">
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">
@@ -60,7 +94,7 @@ const SignUpWithNumber = ({
               to={absoluteUrls.client.auth.login}
               className="text-teal-900 hover:underline font-semibold"
             >
-              Sign In
+              Login
             </NavLink>
           </h2>
         </div>
@@ -86,7 +120,9 @@ const SignUpWithNumber = ({
             type="submit"
             disabled={!termsAccepted}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              !termsAccepted
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
             }`}
           >
             Create Account
@@ -96,7 +132,7 @@ const SignUpWithNumber = ({
           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(false)}
         >
-          <LuPhone />
+          <LuMail />
           Sign up with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
@@ -118,7 +154,7 @@ const SignUpWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.client.auth.profile_setup)}
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>

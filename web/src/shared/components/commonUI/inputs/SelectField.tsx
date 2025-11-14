@@ -1,5 +1,5 @@
-import { Listbox, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Listbox, Transition, Portal } from "@headlessui/react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import {
   Controller,
   useFormContext,
@@ -12,7 +12,9 @@ import type { SelectFieldProps } from "./types";
 const ChevronDownIcon = ({ open }: { open: boolean }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+      open ? "rotate-180" : ""
+    }`}
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -34,6 +36,24 @@ export const SelectField = ({
   disabled = false,
 }: SelectFieldProps) => {
   const { control } = useFormContext();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+
+  const updatePosition = () => {
+    if (buttonRef.current) {
+      setButtonRect(buttonRef.current.getBoundingClientRect());
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, []);
 
   // Handle required: boolean → default message, string → custom message
   let requiredMessage: string | false = false;
@@ -47,6 +67,7 @@ export const SelectField = ({
     required: requiredMessage,
     ...rules,
   };
+
   return (
     <div className="flex flex-col py-1">
       {isShowLabel && (
@@ -63,116 +84,140 @@ export const SelectField = ({
           field: { onChange, value, name: fieldName },
           fieldState: { error },
         }) => {
-          // Find selected option for display
+          const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
           const selectedOption =
             options.find((opt) => opt.value === value) || null;
 
           return (
             <Listbox
               value={selectedOption}
-              onChange={opt => onChange(opt?.value || "")}
+              onChange={(opt) => onChange(opt?.value || "")}
               name={fieldName}
               disabled={disabled}
             >
-              {({ open }) => (
-                <>
-                  <div className="relative cursor-pointer">
-                    <Listbox.Button
-                      className={`w-full rounded-md border ${
-                        disabled
-                          ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 cursor-pointer"
-                      } ${
-                        error && !disabled
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 dark:border-gray-600 focus:ring-primary"
-                      } bg-white dark:bg-gray-800 py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
-                    >
-                      <div className="flex items-center">
-                        {leftIcon && (
-                          <span className="mr-3 flex-shrink-0 text-gray-400 dark:text-gray-500">
-                            {leftIcon}
+              {({ open }: { open: boolean }) => {
+                // Effect to handle reactive positioning ONLY when the dropdown is open
+                useEffect(() => {
+                  if (!open) return;
+
+                  const updatePosition = () => {
+                    if (buttonRef.current) {
+                      setButtonRect(
+                        buttonRef.current.getBoundingClientRect()
+                      );
+                    }
+                  };
+
+                  updatePosition(); // Set initial position
+
+                  window.addEventListener("resize", updatePosition);
+                  window.addEventListener("scroll", updatePosition, true);
+
+                  return () => {
+                    window.removeEventListener("resize", updatePosition);
+                    window.removeEventListener("scroll", updatePosition, true);
+                  };
+                }, [open]);
+
+                return (
+                  <>
+                    {/* INPUT BUTTON */}
+                    <div className="relative cursor-pointer">
+                      <Listbox.Button
+                        ref={buttonRef}
+                        className={`w-full rounded-md border ${
+                          disabled
+                            ? "bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+                            : "bg-white dark:bg-gray-800 cursor-pointer"
+                        } ${
+                          error && !disabled
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-300 dark:border-gray-600 focus:ring-primary"
+                        } py-3 px-4 text-left text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 transition shadow-sm`}
+                      >
+                        <div className="flex items-center">
+                          {leftIcon && (
+                            <span className="mr-3 flex-shrink-0 text-gray-400 dark:text-gray-500">
+                              {leftIcon}
+                            </span>
+                          )}
+
+                          <span
+                            className={`block truncate ${
+                              !value ? "text-gray-400 dark:text-gray-500" : ""
+                            }`}
+                          >
+                            {value ? selectedOption?.label : placeholder}
                           </span>
-                        )}
-                        <span
-                          className={`block truncate ${
-                            !value ? "text-gray-400 dark:text-gray-500 " : ""
-                          }`}
-                        >
-                          {value ? selectedOption?.label : placeholder}
+                        </div>
+
+                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                          <ChevronDownIcon open={open} />
                         </span>
-                      </div>
-                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <ChevronDownIcon open={open} />
-                      </span>
-                    </Listbox.Button>
+                      </Listbox.Button>
+                    </div>
 
-                    <Transition
-                      as={Fragment}
-                      leave="transition ease-in duration-100"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                      afterLeave={() => {}}
-                    >
-                      <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {options.length === 0 ? (
-                          <div className="relative cursor-default select-none py-2 px-4 text-gray-500">
-                            No options
-                          </div>
-                        ) : (
-                          options.map((option) => (
-                            <Listbox.Option
-                              key={option.value}
-                              className={({ active }) =>
-                                `relative select-none py-2 pl-10 pr-4 cursor-pointer ${
-                                  active
-                                    ? "bg-primary/10 text-primary dark:bg-primary/20"
-                                    : "text-gray-900 dark:text-gray-100"
-                                }`
-                              }
-                              value={option}
-                            >
-                              {({ selected }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium" : "font-normal"
-                                    }`}
-                                  >
-                                    {option.label}
-                                  </span>
-                                  {selected ? (
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                          clipRule="evenodd"
-                                        />
-                                      </svg>
+                    {/* DROPDOWN (PORTALLED, REACTIVE POSITIONING) */}
+                    {open && buttonRect && (
+                      <Portal>
+                        <Listbox.Options
+                          static
+                          className="fixed z-50 max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                          style={{
+                            top: buttonRect.bottom + 4,
+                            left: buttonRect.left,
+                            width: buttonRect.width,
+                          }}
+                        >
+                          {options.length === 0 ? (
+                            <div className="cursor-default select-none py-2 px-4 text-gray-500">
+                              No options
+                            </div>
+                          ) : (
+                            options.map((option) => (
+                              <Listbox.Option
+                                key={option.value}
+                                className={({ active }) =>
+                                  `cursor-pointer select-none py-2 pl-10 pr-4 ${
+                                    active
+                                      ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                      : "text-gray-900 dark:text-gray-100"
+                                  }`
+                                }
+                                value={option}
+                              >
+                                {({ selected }) => (
+                                  <>
+                                    <span
+                                      className={`block truncate ${
+                                        selected ? "font-medium" : "font-normal"
+                                      }`}
+                                    >
+                                      {option.label}
                                     </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))
-                        )}
-                      </Listbox.Options>
-                    </Transition>
-                  </div>
 
-                  {error && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-500">
-                      {error.message}
-                    </p>
-                  )}
-                </>
-              )}
+                                    {selected ? (
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                                        ✔
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            ))
+                          )}
+                        </Listbox.Options>
+                      </Portal>
+                    )}
+
+                    {error && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                        {error.message}
+                      </p>
+                    )}
+                  </>
+                );
+              }}
             </Listbox>
           );
         }}

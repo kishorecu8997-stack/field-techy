@@ -29,7 +29,7 @@
 | Edit Corporate client => Basic information | Address | Text | Yes | Address field should allow flexible input with character limit | Only letters, spaces, numbers and special characters such as / , . - # are allowed. | 6 Characters | 50 Characters |
 | Edit Corporate client => Basic information | State | Select | Yes | Must be select one | Select state from the Drop down list | N/A | N/A |
 | Edit Corporate client => Basic information | Postal Code | Text | Yes | — | Enter a valid 6-digit postal code for India<br>UK postal code must be 6–8 characters long<br>Enter a valid UK postal code (alphanumeric, optional single space) | 6 Characters | 8 Characters |
-| Edit Corporate client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 9 Characters | 15 Characters |
+| Edit Corporate client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 2 Characters | 16 Characters |
 | Edit Corporate client => Documents | Government Id | File Upload | Yes | Govt. ID validation | Only valid PDF format are allowed | 50 KB size | 350 KB |
 | Edit Corporate client => Documents | Qualification Certificate | File Upload | Yes | Certificate validation | Only valid PDF format are allowed | 50 KB size | 350 KB |
 | Add Home client => Basic information | Profile image | File Upload | No | Image Upload | Only valid JPEG, JPG and PNG format are allowed. | 50 KB size | 350 KB |
@@ -44,7 +44,7 @@
 | Add Home client => Basic information | Address | Text | Yes | Address field should allow flexible input with character limit | Only letters, spaces, numbers and special characters such as / , . - # are allowed. | 6 Characters | 50 Characters |
 | Add Home client => Basic information | State | Select | Yes | Must be select one | Select state from the Drop down list | N/A | N/A |
 | Add Home client => Basic information | Postal Code | Text | Yes | — | Enter a valid 6-digit postal code for India<br>UK postal code must be 6–8 characters long<br>Enter a valid UK postal code (alphanumeric, optional single space) | 6 Characters | 8 Characters |
-| Add Home client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 9 Characters | 15 Characters |
+| Add Home client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 2 Characters | 16 Characters |
 | Add Home client => Documents | Government Id | File Upload | Yes | Govt. ID validation | Only valid PDF format are allowed | 50 KB size | 350 KB |
 | Add Home client => Documents | Qualification Certificate | File Upload | Yes | Certificate validation | Only valid PDF format are allowed | 50 KB size | 350 KB |
 | Edit Home client => Basic information | Profile image | File Upload | No | Image Upload | Only valid JPEG, JPG and PNG format are allowed. | 50 KB size | 350 KB |
@@ -59,6 +59,6 @@
 | Edit Home client => Basic information | Address | Text | Yes | Address field should allow flexible input with character limit | Only letters, spaces, numbers and special characters such as / , . - # are allowed. | 6 Characters | 50 Characters |
 | Edit Home client => Basic information | State | Select | Yes | Must be select one | Select state from the Drop down list | N/A | N/A |
 | Edit Home client => Basic information | Postal Code | Text | Yes | — | Enter a valid 6-digit postal code for India<br>UK postal code must be 6–8 characters long<br>Enter a valid UK postal code (alphanumeric, optional single space) | 6 Characters | 8 Characters |
-| Edit Home client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 9 Characters | 15 Characters |
+| Edit Home client => Basic information | VAT registration number | Text | Yes | Validate the text | Alphanumeric digits | 2 Characters | 16 Characters |
 | Edit Home client => Documents | Government Id | File Upload | Yes | Govt. ID validation | Only valid PDF format are allowed | 50 KB size | 350 KB |
 | Edit Home client => Documents | Qualification Certificate | File Upload | Yes | Certificate validation | Only valid PDF format are allowed | 50 KB size | 350 KB |

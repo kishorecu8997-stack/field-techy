@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CompanyInfo } from '../../types';
+import placeholdr_user from "@/assets/user-image/placeholdr_user.svg"
 
 
 /**
@@ -24,7 +25,7 @@ import type { CompanyInfo } from '../../types';
  * @returns {JSX.Element} The rendered BasicInformation component.
  */
 const BasicInformation: React.FC<CompanyInfo> = ({
-  profileImage = "https://via.placeholder.com/100",
+  profileImage = placeholdr_user,
   companyName,
   businessType,
   country,
@@ -42,9 +43,9 @@ const BasicInformation: React.FC<CompanyInfo> = ({
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
       {/* Profile Image Section */}
         <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">Profile Image</div>
-         <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full mb-4 overflow-hidden">
+         <div className="w-24 h-24 bg-transparent rounded-full mb-4 overflow-hidden border border-gray-300 dark:border-gray-700">
             <img 
-              src={profileImage} 
+              src={placeholdr_user} 
               alt="Profile" 
               className="w-full h-full object-cover"
             />
@@ -130,24 +131,3 @@ const BasicInformation: React.FC<CompanyInfo> = ({
 };
 
 export default BasicInformation;
-// // Example usage with sample data
-// const SampleCompanyProfile: React.FC = () => {
-//   return (
-//     <CompanyProfileCard
-//       companyName="ABC Pvt Ltd"
-//       businessType="Retail"
-//       country="India"
-//       postalCode="110001"
-//       contactPersonName="John Doe"
-//       industry="E-commerce"
-//       state="Delhi"
-//       taxDocument="VAT Type A"
-//       phoneNumber="+91 9876543210"
-//       address="123 Business Street, Sector 45"
-//       city="New Delhi"
-//       vatRegistrationNumber="VAT12345678"
-//     />
-//   );
-// };
-
-// export default SampleCompanyProfile;
