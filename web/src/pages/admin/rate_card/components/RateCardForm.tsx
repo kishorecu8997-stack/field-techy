@@ -29,6 +29,7 @@ const RateCardForm = () => {
           <SelectField
             name="clientName"
             label="Client Name"
+            required
             options={[
               { label: "Client 1", value: "client1" },
               { label: "Client 2", value: "client2" },
@@ -51,6 +52,7 @@ const RateCardForm = () => {
             <SelectField
               name="clientNameOfProject"
               label="Client Name of Project"
+              required  
               options={[
                 { label: "Client 1", value: "client1" },
                 { label: "Client 2", value: "client2" },

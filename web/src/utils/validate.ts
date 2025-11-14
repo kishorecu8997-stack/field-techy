@@ -528,17 +528,23 @@ export const validatePricingModel = (value: string) => {
   if (!v) return "";
   if (/\s/.test(v)) return "Price must not contain spaces";
 
+  // Must not be zero
+  if (Number(v) === 0) return "Price must not be zero";
+
   // Allow numbers with optional decimal part (up to 2 digits)
   if (!/^\d+(\.\d{1,2})?$/.test(v))
     return "Price must be a valid number with up to two decimal places";
 
   // Extract integer part for length checks
   const [integerPart] = v.split(".");
-  if (integerPart.length < 2) return "Price must be at least 2 digits before decimal";
-  if (integerPart.length > 5) return "Price must not exceed 5 digits before decimal";
+  if (integerPart.length < 1)
+    return "Price must be at least 1 digits before decimal";
+  // if (integerPart.length > 5)
+  //   return "Price must not exceed 5 digits before decimal";
 
   return true;
 };
+
 
 
 export default {
