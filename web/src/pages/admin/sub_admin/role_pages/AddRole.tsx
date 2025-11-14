@@ -24,12 +24,12 @@ const AddRole = () => {
   });
 
   return (
-    <div className="h-full w-full flex flex-col bg-white">
+    <div className="h-full w-full flex flex-col bg-white rounded-md">
       <FormContainer
         methods={formCtx}
         className="flex items-center gap-3 flex-wrap w-full"
       >
-        <div className="flex flex-col w-full flex-1">
+        <div className="flex flex-col w-full flex-1 p-2">
           <div className="flex flex-col sm:flex-row px-3 w-full gap-3 items-end sm:items-center sm:max-w-[30rem] flex-1">
             <InputField
               name="moduleName"
