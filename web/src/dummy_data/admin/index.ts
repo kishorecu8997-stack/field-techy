@@ -2,6 +2,7 @@ import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { NotificationProps } from "@/pages/admin/manage_notification";
 import type { PaymentProps } from "@/pages/admin/payment/types";
 import type { RateCardProps } from "@/pages/admin/rate_card";
+import type { PermissionListType, RoleListType } from "@/pages/admin/sub_admin/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -200,3 +201,169 @@ export const notificationData: NotificationProps[] = [
     createdDate: "2024-09-10",
   },
 ];
+
+export const permissionList: PermissionListType[] = [
+  {
+    id: "1",
+    moduleName: "Rate Card",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+  {
+    id: "2",
+    moduleName: "Notification",
+    addAndEdit: true,
+    view: false,
+    delete: true,
+  },
+  {
+    id: "3",
+    moduleName: "Job Category",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+  {
+    id: "4",
+    moduleName: "Sub Admin",
+    addAndEdit: true,
+    view: true,
+    delete: true,
+  },
+  {
+    id: "5",
+    moduleName: "Payment",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+];
+
+
+export const roleData:RoleListType[] = [
+  {
+    id: "1",
+    roleName:'Manage Clients',
+    status:true,
+    permissionList:[
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "4",
+        moduleName: "Sub Admin",
+        addAndEdit: true,
+        view: true,
+        delete: true,
+      },
+    ],
+  },{
+    id: "2",
+    roleName:'Manage Payment',
+    status:true,
+    permissionList:[
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+    ],
+  },{
+    id: "3",
+    roleName:'Manage Rate Card',
+    status:true,
+    permissionList:[
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+    ],
+  },
+  {
+    id: "4",
+    roleName:'Manage Clients',
+    status:true,
+    permissionList:[
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "4",
+        moduleName: "Sub Admin",
+        addAndEdit: true,
+        view: true,
+        delete: true,
+      },
+    ],
+  },
+] 
