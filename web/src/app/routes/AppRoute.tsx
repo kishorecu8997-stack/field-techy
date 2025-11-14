@@ -138,6 +138,9 @@ const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 const ReceviedNotification = React.lazy(
   () => import("@/pages/admin/recevied_notification")
 );
+const adminEditRolePage = React.lazy(
+  () => import("@/pages/admin/sub_admin/role_pages/PermissionList")
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -394,6 +397,10 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.received_notification,
             element: withSuspense(ReceviedNotification),
           },
+          {
+            path: urls.admin.home.edit_role,
+            element: withSuspense(adminEditRolePage),
+          }
         ],
       },
     ],

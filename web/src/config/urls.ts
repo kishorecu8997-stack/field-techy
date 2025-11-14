@@ -92,6 +92,7 @@ export const urls = {
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_role: `${BASE.ADMIN}/edit-role`,
     },
   },
 } as const;
@@ -167,6 +168,7 @@ export const absoluteUrls = {
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_role: `${BASE.ADMIN}/edit-role`,
     },
   },
 } as const;

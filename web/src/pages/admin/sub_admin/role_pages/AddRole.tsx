@@ -2,13 +2,14 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import RoleTable from "./RoleTable";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * AddRole Component
- * 
+ *
  * Renders a form for creating or editing a role.
  * Includes sections for role details and permissions.
- *  
+ *
  * @component
  * @returns {JSX.Element} The rendered AddRole component.
  */
@@ -38,6 +39,11 @@ const AddRole = () => {
             />
           </div>
           <RoleTable />
+          <div className="px-3">
+            <Button type="submit" className="w-fit bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
+              Submit
+            </Button>
+          </div>
         </div>
       </FormContainer>
     </div>
