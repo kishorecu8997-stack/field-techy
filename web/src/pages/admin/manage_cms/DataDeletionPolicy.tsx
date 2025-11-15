@@ -4,7 +4,7 @@ import { useQuillEditor } from "@/shared/components/commonUI/text_editor";
 import { useState } from "react";
 
 /**
- * DataDelectionPolicy Component
+ * DataDeletionPolicy Component
  *
  * Renders a simple CMS management editor that uses a custom Quill text editor hook (`useQuillEditor`).
  * Users can edit HTML content directly in the editor and save (or preview) the current content value.
@@ -12,12 +12,12 @@ import { useState } from "react";
  * @component
  * @example
  * return (
- *   <DataDelectionPolicy />
+ *   <DataDeletionPolicy />
  * );
  *
- * @returns {JSX.Element} The rendered DataDelectionPolicy component.
+ * @returns {JSX.Element} The rendered DataDeletionPolicy component.
  */
-export default function DataDelectionPolicy() {
+export default function DataDeletionPolicy() {
   const [value, setValue] = useState("<p>Hello world</p>");
   const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
 

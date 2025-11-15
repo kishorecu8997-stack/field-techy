@@ -43,18 +43,25 @@ export default function Faq() {
       key: "action",
       label: "Action",
       align: "center",
-      renderCell: () => (
+      renderCell: (row: FaqItem) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() => {
               setFaqMode("Edit");
               setIsModalOpen(true);
+              methods.reset({
+                question: row.question,
+                answer: row.answer,
+              });
             }}
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => console.log("Delete confirmation")}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -75,6 +82,10 @@ export default function Faq() {
           onClick={() => {
             setIsModalOpen(true);
             setFaqMode("Add");
+             methods.reset({
+               question: "",
+               answer: "",
+             });
           }}
           className="w-fit bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
         >

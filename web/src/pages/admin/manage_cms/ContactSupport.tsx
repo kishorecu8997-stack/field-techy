@@ -49,7 +49,7 @@ export default function ContactSupport() {
           </div>
 
           <div className="flex-1">
-            <PhoneInputField name="phone" label="Mobile Number" required />
+            <PhoneInputField name="phoneNumber" label="Mobile Number" required />
           </div>
         </div>
         <div className="flex justify-end mt-2">

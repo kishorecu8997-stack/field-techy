@@ -5,8 +5,8 @@ import Faq from "./Faq";
 import TermsAndCondition from "./TermsAndCondition";
 import CustomerPrivacyPolicy from "./CustomerPrivacyPolicy";
 import AboutUs from "./AboutUs";
-import DataDelectionPolicy from "./DataDelectionPolicy";
 import ContactSupport from "./ContactSupport";
+import DataDeletionPolicy from "./DataDeletionPolicy";
 
 /**
  * @component ManageCMS
@@ -57,8 +57,8 @@ export default function ManageCMS() {
       hide: false,
     },
     {
-      label: "Data Delection Policy",
-      content: <DataDelectionPolicy />,
+      label: "Data Deletion Policy",
+      content: <DataDeletionPolicy />,
       hide: false,
     },
   ];

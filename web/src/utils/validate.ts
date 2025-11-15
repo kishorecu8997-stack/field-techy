@@ -559,7 +559,6 @@ export const validateAlphabeticTextArea = (
 
   const v = value || "";
 
-  // Required check
   if (required && !v) {
     return "This field is required";
   }
@@ -568,19 +567,18 @@ export const validateAlphabeticTextArea = (
     return true;
   }
 
-  // ❌ No leading or trailing spaces
   if (v.startsWith(" ") || v.endsWith(" ")) {
     return "Leading or trailing spaces are not allowed";
   }
 
-  // ❌ No consecutive spaces (e.g., "a  b")
   if (/ {2,}/.test(v)) {
     return "Consecutive spaces are not allowed";
   }
 
   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
   const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
-  const pattern = defaultPattern;
+  const pattern =
+    options?.regex instanceof RegExp ? options.regex : defaultPattern;;
 
   if (!pattern.test(v)) {
     return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
@@ -591,7 +589,6 @@ export const validateAlphabeticTextArea = (
     return "Potentially malicious content is not allowed";
   }
 
-  // Length validation
   if (v.length < minLength) {
     return `Minimum length is ${minLength} characters`;
   }
