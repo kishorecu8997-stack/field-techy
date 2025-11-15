@@ -140,7 +140,7 @@ const DeclinedJob: React.FC = () => {
         />
       </div>
       <div className="w-1/2">
-        <div className="flex justify-between items-center mt-2 md:md-0 md:flex gap-4">
+        <div className="flex justify-between items-center mt-2 md:mb-2 md:flex gap-4">
           <p className="font-bold">Total Jobs Completed</p>
           <SelectMenu
             placeholder="Filter By"

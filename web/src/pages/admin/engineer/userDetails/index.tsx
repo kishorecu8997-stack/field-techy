@@ -7,7 +7,7 @@ import UserDocuments from "./Documents";
 import { FormProvider, useForm } from "react-hook-form";
 import type { EngineerFormData } from "../types";
 import DisputeReports from "./DisputeReports";
-import Previlage from "./Previlege";
+import Previlage from "./Privilege";
 import Wallet from "./Wallet";
 import EngineerJobCatagory from "./jobCatagory";
 /**
@@ -57,7 +57,7 @@ export default function UserDetails() {
       hide: false,
     },
     {
-      label: "Previleges",
+      label: "Privilages",
       content: <Previlage />,
       hide: false,
     },

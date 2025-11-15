@@ -34,7 +34,7 @@ export default function Documents() {
         <div className="w-60">
           <FileUpload
             name="governmentId"
-            label="Goverment ID Proof"
+            label="Government ID Proof"
             placeholder="Government ID"
             required
             accept=".pdf"

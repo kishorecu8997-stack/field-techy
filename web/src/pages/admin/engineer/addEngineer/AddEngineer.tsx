@@ -142,9 +142,9 @@ export default function AddEngineer() {
       >
         <div className="bg-white dark:bg-gray-700 rounded-lg p-2 mx-auto">
           <AdminTabComponent
-            key={activeTab}
             tabs={tabs}
-            defaultActiveTab={activeTab}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
 
           <div className="flex justify-end mt-6 px-4 pb-4">
@@ -152,7 +152,7 @@ export default function AddEngineer() {
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
               disabled={isSubmitting}
-              className="px-6 py-2 bg-linear-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
             >
               {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
             </Button>

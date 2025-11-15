@@ -363,7 +363,7 @@ export const days = [
   { id: 1, value: "daily", label: "Daily" },
   { id: 2, value: "weekly", label: "Weekly" },
   { id: 3, value: "monthly", label: "Monthly" },
-  { id: 3, value: "yearly", label: "Yearly" },
+  { id: 4, value: "yearly", label: "Yearly" },
 ];
 
 export const chartData = [
@@ -379,7 +379,7 @@ export const chartData = [
 export const EngineerStatus = [
   { value: "pending", label: "Pending" },
   { value: "approve", label: "Approve" },
-  { value: "pending", label: "Pending" },
+  { value: "reject", label: "Reject" },
 ];
 
 export const Employement = [

@@ -10,7 +10,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import SelectMenu from "@/shared/components/Selectmenu";
+import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
@@ -115,10 +115,6 @@ const ManageEngineer: React.FC = () => {
       label: "Wallet Balance",
     },
     {
-      key: "walletBalance",
-      label: "Wallet Balance",
-    },
-    {
       key: "kycStatus",
       label: "KYC Status",
     },
@@ -204,14 +200,14 @@ const ManageEngineer: React.FC = () => {
         <div className="flex gap-4">
           <SearchInput />
           <SelectMenu
-            className="absolute z-100"
+            className="absolute z-20"
             placeholder="Filter by"
             value={status}
             onChange={setStatus}
             options={EngineerStatus}
           />
           <SelectMenu
-            className="absolute z-100"
+            className="absolute z-20"
             placeholder="Employement Type"
             options={Employement}
             value={employementType}

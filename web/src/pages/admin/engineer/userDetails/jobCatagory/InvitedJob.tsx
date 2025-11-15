@@ -18,25 +18,13 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 /**
- * InvitedJob
+ * @component InvitedJob
+ * @description This component displays jobs to which an engineer has been invited. It features a
+ * searchable table of jobs with actions like view, edit, and delete. It also includes a
+ * chart to visualize job completion data over time. The status of each job can be
+ * toggled directly within the table.
  *
- * Shows a searchable table of declined jobs associated with an engineer,
- * along with a compact analytics chart summarizing declined/completed jobs
- * across selectable time ranges.
- *
- * Features:
- * - Search input to filter table rows
- * - Custom table with job metadata and action buttons (view/edit/delete)
- * - Local status toggle per row (On/Off) stored in component state
- * - Chart summary using `GeneralChart` with a custom tooltip component
- *
- * Notes:
- * - Uses static dummy data from `@/dummy_data/admin/manageEngineer` for demo purposes.
- * - Currently doesn't accept props; consider passing `data` and handlers
- *   for toggling and actions to make it reusable.
- *
- * @component
- * @returns {JSX.Element} Declined jobs table with chart summary
+ * @returns {React.FC} The rendered component for managing invited jobs.
  */
 const InvitedJob: React.FC = () => {
   const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
@@ -140,7 +128,7 @@ const InvitedJob: React.FC = () => {
         />
       </div>
       <div className="w-1/2">
-        <div className="flex justify-between items-center mt-2 md:md-0 md:flex gap-4">
+        <div className="flex justify-between items-center mt-2 md:mb-2 md:flex gap-4">
           <p className="font-bold">Total Jobs Completed</p>
           <SelectMenu
             placeholder="Filter By"

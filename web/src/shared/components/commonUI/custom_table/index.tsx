@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
@@ -118,7 +117,7 @@ export function CustomTable<T>({
               {/* Desktop Table */}
               <div className="hidden md:block w-full">
                 <table className="w-full border-collapse">
-                  <thead className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-20 ">
+                  <thead className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10">
                     <tr>
                       {columns.map((col) => (
                         <th

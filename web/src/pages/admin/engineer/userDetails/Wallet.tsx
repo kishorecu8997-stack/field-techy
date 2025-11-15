@@ -8,19 +8,15 @@ import {
 } from "@/shared/components/commonUI/custom_table";
 
 /**
- * Wallet Component
+ * @component Wallet
+ * @description Renders the financial details for an engineer in three main sections:
+ * 1. Bank and card details (including bank name, address, IBAN, SWIFT code, and card number),
+ * 2. Current wallet balance,
+ * 3. A table of recent transactions with status indicators.
  *
- * Displays an engineer's financial details in two main sections:
- * Also displays the current **Wallet Balance** above the transaction table.
- * Uses dummy transaction data from `transactions` and a shared `CustomTable` component.
+ * This component uses dummy data for demonstration purposes.
  *
- * @component
- * @example
- * return (
- *   <Wallet />
- * );
- *
- * @returns {JSX.Element} The rendered Wallet panel showing bank details, balance, and transaction history.
+ * @returns {JSX.Element} The rendered wallet page section.
  */
 export default function Wallet() {
   const columns: Column<TransactionProps>[] = [
