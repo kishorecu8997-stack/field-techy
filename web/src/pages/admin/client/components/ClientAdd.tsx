@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   businessTypes,
   citiesByCountry,
@@ -31,17 +31,10 @@ import { useFormContext } from "react-hook-form";
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
 const ClientAdd: React.FC = () => {
-  const { watch, setValue } = useFormContext();
+  const { watch } = useFormContext();
   const selectedCountry = watch("country");
-
   const cityOptions = selectedCountry ? citiesByCountry[selectedCountry] || [] : [];
   const stateOptions = selectedCountry ? statesByCountry[selectedCountry] || [] : [];
-
-  useEffect(() => {
-    // Reset city and state fields when country changes
-    setValue("city", "");
-    setValue("state", "");
-  }, [selectedCountry, setValue]);
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import ClientAdd from "../ClientAdd";
 import ClientDocuments from "../ClientDocuments"; 
 import { FormProvider, useForm } from "react-hook-form";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
+import ClientEdit from "../ClientEdit";
 
 /**
  * CorporateClientEditForm component for editing existing corporate client information.
@@ -103,7 +103,7 @@ const handleSave = async () => {
   const tabs = [
     {
       label: "Basic Information",
-      content: <ClientAdd />,
+      content: <ClientEdit />,
     },
     {
       label: "Documents",
