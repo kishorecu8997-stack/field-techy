@@ -576,7 +576,7 @@ export const validateAlphabeticTextArea = (
   }
 
   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
-  const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
+  const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
   const pattern =
     options?.regex instanceof RegExp ? options.regex : defaultPattern;;
 
