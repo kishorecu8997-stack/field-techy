@@ -537,7 +537,7 @@ export const validateQuestion = (value: string): string | true => {
   if (value.length > 200) return "Question must not exceed 200 characters";
 
   // Allow: letters, numbers, spaces, and / , . - # ( ) ?
-  if (!/^[A-Za-z0-9\s/,.#()?()-]+$/.test(value)) {
+  if (!/^[A-Za-z0-9\s/,.#()?-]+$/.test(value)) {
     return "Only letters, numbers, spaces, and special characters such as / ( ) , . - # ? are allowed.";
   }
 
@@ -546,9 +546,8 @@ export const validateQuestion = (value: string): string | true => {
 export interface TextValidationOptions {
   minLength?: number;
   maxLength?: number;
-  maxSpaces?: number; // total spaces allowed (default: 10)
-  regex?: RegExp; // optional custom base regex
-  required?: boolean; // default: true
+  regex?: RegExp;
+  required?: boolean;
 }
 
 export const validateAlphabeticTextArea = (
@@ -578,7 +577,7 @@ export const validateAlphabeticTextArea = (
   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
   const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
   const pattern =
-    options?.regex instanceof RegExp ? options.regex : defaultPattern;;
+    options?.regex instanceof RegExp ? options.regex : defaultPattern;
 
   if (!pattern.test(v)) {
     return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
