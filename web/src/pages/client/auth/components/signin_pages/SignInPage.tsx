@@ -5,16 +5,16 @@ import LoginWithNumber from "./LoginWithNumber";
 /**
  * Sign In page component that provides both email and phone number login options.
  * Manages the state to toggle between email login and phone number login components.
- * 
+ *
  * @component
  * @example
  * return (
- *   <SignInpage />
+ *   <ClientSignInPage />
  * )
- * 
+ *
  * @returns {JSX.Element} The rendered Sign In page component with conditional rendering
  */
-const SignInPage = () => {
+const ClientSignInPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
   return (
@@ -28,4 +28,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default ClientSignInPage;

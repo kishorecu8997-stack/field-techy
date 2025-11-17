@@ -18,22 +18,31 @@ export const PasswordInput = ({
   label,
   placeholder,
   required = false,
+  isShowLabel=true,
   rules,
 }: PasswordInputProps) => {
   const { control } = useFormContext();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Merge default rules (required) with custom rules
+  // Build required validation message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required;
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
+
+  // Merge with custom rules
   const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
+    required: requiredMessage,
     ...rules,
   };
 
   return (
     <div className="flex flex-col py-1">
-      {label && (
+      {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+          {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -55,6 +64,7 @@ export const PasswordInput = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
                   <IoIosEyeOff className="text-xl h-6 w-6" />

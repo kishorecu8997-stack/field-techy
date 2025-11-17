@@ -5,14 +5,13 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-
 import type { SelectFieldProps } from "./types";
 
 // Chevron icon with rotation
 const ChevronDownIcon = ({ open }: { open: boolean }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
       open ? "rotate-180" : ""
     }`}
     fill="none"
@@ -96,7 +95,7 @@ export const SelectField = ({
           return (
             <Listbox
               value={selectedOption}
-              onChange={(opt) => onChange(opt?.value || "")}
+              onChange={(opt) => onChange(opt?.value ?? "")}
               name={fieldName}
               disabled={disabled}
             >
@@ -131,7 +130,7 @@ export const SelectField = ({
                               : "text-gray-900 dark:text-gray-100"
                           }`}
                         >
-                          {value ? selectedOption?.label : placeholder}
+                          {selectedOption?.label || placeholder}
                         </span>
                       </div>
                       <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -157,7 +156,7 @@ export const SelectField = ({
                               className={({ active }) =>
                                 `relative select-none py-2 pl-10 pr-4 cursor-pointer transition ${
                                   active
-                                    ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                    ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
                                     : "text-gray-900 dark:text-gray-100"
                                 }`
                               }

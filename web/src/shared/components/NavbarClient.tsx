@@ -5,9 +5,11 @@ import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
+import Drawer from "./drawer/Drawer";
+import useDrawerStore from "../store/useDrawerStore";
 
 interface NavbarClientProps {
-  onDrawerToggle: (componentName: string) => void;
+  onDrawerToggle: () => void;
   isDrawerOpen: boolean;
 }
 
@@ -32,10 +34,13 @@ const DRAWER_COMPONENTS = {
  *   isDrawerOpen={isDrawerOpen}
  * />
  */
-const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle }) => {
+const NavbarClient: React.FC<NavbarClientProps> = ({
+  onDrawerToggle,
+  isDrawerOpen,
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  
+  const { setActiveKey } = useDrawerStore();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,18 +63,23 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle }) => {
   };
 
   const handleDrawerToggle = (componentName: string) => {
-    onDrawerToggle(componentName);
+    onDrawerToggle();
+    setActiveKey(componentName);
   };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
-      <div className="flex items-center space-x-8 ">       
+      <div className="flex items-center space-x-8 ">
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
-           <NavLink
+          <NavLink
             to={absoluteUrls.client.home.dashboard}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
-            <img src={assetsConfig.logos.ftLogo} alt="FT Logo" className="h-12 w-auto cursor-pointer" />
+            <img
+              src={assetsConfig.logos.ftLogo}
+              alt="FT Logo"
+              className="h-12 w-auto cursor-pointer"
+            />
           </NavLink>
           <NavLink
             to={absoluteUrls.client.home.my_jobs}
@@ -113,8 +123,9 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle }) => {
                   <span>My Jobs</span>
                 </div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
-              onClick={()=>handleDrawerToggle(DRAWER_COMPONENTS.WALLET)}
+              <div
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleDrawerToggle(DRAWER_COMPONENTS.WALLET)}
               >
                 <div className="flex items-center space-x-3">Wallet</div>
               </div>
@@ -171,6 +182,9 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ onDrawerToggle }) => {
           />
         </button>
       </div>
+
+      {/* Drawer */}
+      <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />
     </header>
   );
 };

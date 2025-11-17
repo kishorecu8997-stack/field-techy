@@ -1,5 +1,6 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 
 /**
@@ -69,6 +70,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
  */
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -76,12 +78,15 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <h3 className="font-semibold text-gray-900 dark:text-white">
           My Earnings
         </h3>
-        <Link
-          to="#"
+        <div
+          onClick={() => {
+            setActiveKey("myEarning");
+            setISOpenSidebar(true);
+          }}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline"
         >
           View all
-        </Link>
+        </div>
       </div>
       <div className="text-center mb-4">
         <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -96,12 +101,24 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("manageBankAccounts");
+            setISOpenSidebar(true);
+          }}
+        >
           Bank Details
-        </button>
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        </Button>
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("withdraw");
+            setISOpenSidebar(true);
+          }}
+        >
           Withdraw
-        </button>
+        </Button>
       </div>
     </div>
   );
