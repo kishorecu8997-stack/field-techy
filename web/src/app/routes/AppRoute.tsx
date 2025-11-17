@@ -49,6 +49,10 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const Home = React.lazy(() => import("@/pages/engineer/home"));
+const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
+
 //client
 const ClientSignInPage = React.lazy(
   () => import("@/pages/client/auth/components/signin_pages/SignInPage")
@@ -197,7 +201,9 @@ export const routes = createBrowserRouter([
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
     children: [
-      { index: true, element: withSuspense(MyJobsPage) },
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
+      { path: urls.engineer.home.explore_jobs, element: withSuspense(ExploreJobs) },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
@@ -271,7 +277,7 @@ export const routes = createBrowserRouter([
   // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
       {

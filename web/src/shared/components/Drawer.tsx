@@ -278,7 +278,6 @@ const Drawer: React.FC<DrawerProps> = ({
           }}
         />
       </Popup>
-      ;
       <Popup
         open={isFilterPopupOpen}
         onClose={() => setIsFilterPopupOpen(false)}

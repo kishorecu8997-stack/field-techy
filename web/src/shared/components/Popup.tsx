@@ -64,7 +64,8 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
         className="
           w-full 
           sm:max-w-md sm:rounded-lg sm:shadow-xl
-          max-h-screen 
+          max-h-[98%]
+          overflow-auto
           flex flex-col
           bg-white dark:bg-gray-800
           inset-0 

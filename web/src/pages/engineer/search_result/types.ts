@@ -1,31 +1,35 @@
-// ✅ Replace enums with string literal types + const objects
-
-export type BudgetType = "hourly" | "fixed";
 export const BUDGET_TYPES = {
   Hourly: "hourly",
   Fixed: "fixed",
 } as const;
+export type BudgetType = (typeof BUDGET_TYPES)[keyof typeof BUDGET_TYPES];
 
-export type JobStatus = "completed" | "applied" | "inprogress";
 export const JOB_STATUSES = {
   completed: "completed",
   applied: "applied",
   inprogress: "inprogress",
+  new: "new",
 } as const;
+export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
-export type WorkingType = "on-site" | "remote";
 export const WORKING_TYPES = {
   onsite: "on-site",
   remote: "remote",
 } as const;
+export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
-export type LogStatus = "check-in" | "in-progress" | "delayed" | "approved";
+export const WORKING_TYPES_PROPERTY = {
+  onsite: "On Site",
+  remote: "Remote",
+}
+
 export const LOG_STATUSES = {
   checkIn: "check-in",
   inProgress: "in-progress",
   delayed: "delayed",
   approved: "approved",
 } as const;
+export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
 
 /**
  * Represents a job listing
@@ -49,6 +53,9 @@ export interface Job {
   pay?: string;
   status?: JobStatus;
   type?: WorkingType;
+  companyLogo?: string;
+  company?: string;
+  employmentType?: string;
 }
 
 /**
@@ -63,12 +70,11 @@ export interface Filters {
   skills: string[];
 }
 
-// Sort options
-export type SortOption = "newest" | "oldest";
 export const SORT_OPTIONS = {
   NEWEST: "newest",
   OLDEST: "oldest",
 } as const;
+export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 
 export interface Options {
   label: string;
