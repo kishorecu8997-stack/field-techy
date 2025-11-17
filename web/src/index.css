@@ -9,6 +9,15 @@
   background-size: 50px 50px;
   background-position: 0 0, 25px 25px;
 }
+
+html.drawer-open,
+body.drawer-open,
+.drawer-open .main-layout,
+.drawer-open #main-container {
+  overflow: hidden !important;
+}
+
+
 /* Optional: Add subtle right padding via appearance adjustment */
 input[type="time"] {
   padding-right: 1.25rem; /* ~20px – adjust as needed */

@@ -35,7 +35,12 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
+
+// Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
+
+
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
@@ -49,9 +54,9 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutApp"));
 const Home = React.lazy(() => import("@/pages/engineer/home"));
 const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
-const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
 
 //client
 const ClientSignInPage = React.lazy(
@@ -222,6 +227,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
     ],
   },
 

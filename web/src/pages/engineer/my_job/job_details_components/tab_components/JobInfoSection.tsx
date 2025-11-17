@@ -1,5 +1,5 @@
 import React from "react";
-import type { JobInfoSectionProps } from "@/pages/engineer/my_job/types";
+import type { JobInfoSectionProps } from "../../types";
 import Proposal from "@/shared/components/Proposal";
 
 /**

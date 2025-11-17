@@ -23,7 +23,6 @@ import { Outlet } from "react-router-dom";
  *   <MyJobsPage />
  * </RootLayout>
  */
-
 const ClientLayout = (): JSX.Element => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [isScrolled, setIsScrolled] = useState(false);

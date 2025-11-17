@@ -30,6 +30,7 @@ export const urls = {
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
+      about_app: "about-app",
       explore_jobs: "explore-jobs",
     },
     auth: {
@@ -110,6 +111,7 @@ export const absoluteUrls = {
       set_password: `${BASE.AUTH}/set-password`,
       background_verification: `${BASE.AUTH}/background-verification`,
       privacy_policy: `${BASE.AUTH}/policy`,
+      about_app: `${BASE.AUTH}/about-app`,
     },
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
@@ -118,6 +120,7 @@ export const absoluteUrls = {
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+      about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
     },
   },
