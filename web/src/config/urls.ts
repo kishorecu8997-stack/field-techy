@@ -8,6 +8,8 @@
  * - Use relative paths only for route definitions
  * - Group related routes under common base
  * - Use consistent naming
+ * 
+ * this should be use to app routes definitions etc.
  */
 export const BASE = {
   CLIENT: "/client",
@@ -98,7 +100,7 @@ export const urls = {
   },
 } as const;
 
-// ✅ Helper for absolute paths (for navigation/linking)
+// ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
 export const absoluteUrls = {
   engineer: {
     auth: {
