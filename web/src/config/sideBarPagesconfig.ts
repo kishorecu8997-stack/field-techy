@@ -55,7 +55,7 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
     }
   > = {
     myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
-    profile: { component: UserProfileSidebar, title: "My Profile" },
+    profile: { component: UserProfileSidebar, title: "My Profile", parent: "myAccount"  },
     personalInfo: {
       component: PersonalInformation,
       title: "Personal Information",
@@ -156,7 +156,7 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
     notification: { component: NotofocationPage, title: "Notification", parent: "settings" },
 
     //client
-    clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
+    clientAccount: { component: ClientAccountDrawerMenu, title: "My Profile" },
     proposal: {
       component: "test",
       title: "Manage Proposal",

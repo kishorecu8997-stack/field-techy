@@ -47,8 +47,8 @@ const navigate = useNavigate();
     setIsOpen(true);
   };
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className=" p-10 w-full">
+    <div className="flex items-center justify-center max-w-lg md:w-lg ">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img

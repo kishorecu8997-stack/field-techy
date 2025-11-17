@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: "/",
   server: {
-    open: `/engineer/auth/login`,
+     open: `/engineer/auth/login`,
   },
   resolve: {
     alias: {

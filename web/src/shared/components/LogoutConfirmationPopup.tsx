@@ -1,12 +1,13 @@
-import { icons } from "@/config/icons";
 import Popup from "@/shared/components/Popup";
 import React from "react";
+import { IoCloseSharp } from "react-icons/io5";
+import { Button } from "./commonUI/Buttons";
 
 interface LogoutProps {
   onConfirm: () => void;
   onCancel: () => void;
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () => void;  
 }
 
 /**
@@ -29,8 +30,10 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   onClose,
   onConfirm,
   onCancel,
+  
 }) => {
-  return (
+
+  return (    
     <Popup open={isOpen} onClose={onClose}>
     <div className="flex items-center justify-center z-50">
       <div className="relative w-full max-w-md  dark:from-gray-800 dark:via-gray-700 dark:to-gray-900 rounded-lg shadow-xl overflow-hidden">
@@ -42,30 +45,34 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
                 Are you sure you want to log out of your Field Techy account?
               </p>
             </div>
-            <button
-              onClick={onCancel}
+            <Button
+              onClick={onClose}
               className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             >
-              <icons.close className="w-6 h-6" />
-            </button>
+              <IoCloseSharp className="h-6 w-6 cursor-pointer" />
+            </Button>
           </div>
         </div>
 
         {/* Body & Buttons */}
         <div className="p-6 pt-4">
           <div className="flex space-x-3">
-            <button
+            <Button
+              type="button"
+              variant="secondary"
               onClick={onCancel}
               className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
               onClick={onConfirm}
               className="flex-1 px-4 py-2 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors cursor-pointer"
             >
               Logout
-            </button>
+            </Button>
           </div>
         </div>
       </div>
