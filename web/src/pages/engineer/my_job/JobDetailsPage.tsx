@@ -1,4 +1,6 @@
-import { client, jobHeaderData, jobs } from "@/dummy_data/jobDetails";
+import { client, jobHeaderData } from "@/dummy_data/jobDetails";
+import { sampleJobs } from "@/dummy_data/searchData";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
@@ -12,11 +14,13 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
  * @returns {JSX.Element} Job details page layout.
  */
 const JobDetailsPage = () => {
-  const { jobId } = useParams();
+  const params = useParams();
+  const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
+  const [isSendProposal, setIsSendProposal] = useState(false);
 
   const filter = () => {
-    return jobs.filter((job) => {
-      return job.id === jobId;
+    return sampleJobs.find((job) => {
+      return job.id === Number(params.jobId);
     });
   };
 
@@ -24,7 +28,7 @@ const JobDetailsPage = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
-          title="My Jobs"
+          title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
         />
@@ -34,10 +38,17 @@ const JobDetailsPage = () => {
               title={jobHeaderData.title}
               client={jobHeaderData.client}
               duration={jobHeaderData.duration}
-              type={filter()[0].type}
-              status={filter()[0].status}
+              type={filter()?.type}
+              status={filter()?.status}
+              setIsWorkSubmitted={setIsWorkSubmitted}
+              setSendProposal={setIsSendProposal}
+              isSendProposal={isSendProposal}
             />
-            <JobTabSection status={filter()[0].status as JobStatus} />
+            <JobTabSection
+              status={filter()?.status as JobStatus}
+              isWorkSubmitted={isWorkSubmitted}
+              isSendProposal={isSendProposal}
+            />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard

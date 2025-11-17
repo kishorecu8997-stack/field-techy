@@ -22,7 +22,7 @@ import type { PopupProps } from "./type";
  * @param props - {@link PopupProps} The properties for configuring the popup.
  * @returns {JSX.Element} The rendered popup element when open.
  */
-const Popup = ({ open, onClose, children }: PopupProps) => {
+const Popup = ({ open, onClose, children ,width}: PopupProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +64,8 @@ const Popup = ({ open, onClose, children }: PopupProps) => {
         className="
           w-full 
           sm:max-w-md sm:rounded-lg sm:shadow-xl
-          max-h-screen 
+          max-h-[98%]
+          overflow-auto
           flex flex-col
           bg-white dark:bg-gray-800
           inset-0 

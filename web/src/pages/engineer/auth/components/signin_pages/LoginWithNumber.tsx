@@ -7,10 +7,9 @@ import Popup from "@/shared/components/Popup";
 import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BiLogoLinkedin } from "react-icons/bi";
-import { MdEmail } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
+import { icons } from "@/config/icons";
 
 export type LoginFormData = {
   phone: string;
@@ -84,7 +83,7 @@ const LoginWithNumber = ({
           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(false)}
         >
-          <MdEmail />
+          <icons.email className="text-lg text-gray-500" />
           Sign in with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
@@ -96,7 +95,7 @@ const LoginWithNumber = ({
           <Button
             className="w-full "
             variant="outline"
-            leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
+            leftIcon={<icons.linkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap">LinkedIn</span>
           </Button>

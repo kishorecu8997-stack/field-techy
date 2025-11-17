@@ -24,11 +24,14 @@ export const urls = {
     privacy_policy: `${BASE.ENGINEER}/policy`,
 
     home: {
+      dashboard: "dashboard",
       my_jobs: "my-jobs",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
+      about_app: "about-app",
+      explore_jobs: "explore-jobs",
     },
     auth: {
       login: "login",
@@ -110,13 +113,17 @@ export const absoluteUrls = {
       set_password: `${BASE.AUTH}/set-password`,
       background_verification: `${BASE.AUTH}/background-verification`,
       privacy_policy: `${BASE.AUTH}/policy`,
+      about_app: `${BASE.AUTH}/about-app`,
     },
     home: {
+      dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
       search_result: `${BASE.ENGINEER}/search-result`,
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
+      about_app: `${BASE.ENGINEER}/about-app`,
+      explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
     },
   },
   client: {
