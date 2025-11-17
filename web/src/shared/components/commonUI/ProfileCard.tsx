@@ -24,11 +24,11 @@ import { ImageUploaderField } from "./inputs/ImageUploaderField";
  *   completionPercentage={85}
  * />
  */
-const ProfileCard = ({
+const ProfileCard = ({  
   name,
   title,
   rating,
-  reviewCount,
+  reviewCount,  
   flex = 'row',
   backgroundcolor =true,
 }: {

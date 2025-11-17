@@ -57,6 +57,7 @@ type PopupProps = {
   onClose: () => void;
   children: React.ReactNode;
   inputClassName?: string;
+  width?: string;  
 };
 
 /**

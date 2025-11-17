@@ -1,10 +1,9 @@
 import type {
+  JobInfoSectionProps,
   LogEntry,
   ProposalTermsProps,
-  JobInfoSectionProps,
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
-import type { Job } from "@/pages/engineer/search_result/types";
 
 
 export const logs: LogEntry[] = [
@@ -130,53 +129,6 @@ export const requirements: ProposalTermsProps = {
   },
 };
 
-export const jobs: Job[] = [
-  {
-    id: "1",
-    title: "Install Security System at Client.",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "completed",
-    type: "on-site",
-  },
-  {
-    id: "2",
-    title: "Mobile App UI/UX Designer and Product Designer",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "applied",
-    type: "remote",
-  },
-  {
-    id: "3",
-    title: "Mobile App UI/UX Designer and Product Designer",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "inprogress",
-    type: "remote",
-  },
-  {
-    id: "4",
-    title: "Install Security System at Client.",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "completed",
-    type: "on-site",
-  },
-];
-
 export const jobHeaderData = {
   title: "Mobile App UI/UX Designer and Product Designer",
   client: "TechNova Co",
@@ -218,3 +170,37 @@ export const userData = {
 export const earningsData = {
   balance: 8250.56,
 };
+
+// Example usage
+export const jobData = [
+  {
+    title: "Software Engineer",
+    company: "Google",
+    companyLogo: "/logos/google.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+  {
+    title: "Python Engineer",
+    company: "Facebook",
+    companyLogo: "/logos/facebook.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+  {
+    title: "Project Manager",
+    company: "Google",
+    companyLogo: "/logos/google.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+];
