@@ -1,24 +1,18 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { validateCategoryName } from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
+import JobCategoryForm from "./JobCategoryForm";
+
 /**
- * AddCategory component provides a simple form to create a new job category in the admin panel.
+ * `AddCategory` component renders a page with a form to add a new job category.
+ * It uses `react-hook-form` for form state management and provides UI for creating
+ * a new category, including a name and an image.
  *
- * Responsibilities:
- * - Render a small form for category name and image upload.
- * - Validate the category name using shared validation rules.
- * - Submit the form and show user feedback (toast) on success.
- * - Provide navigation back to the categories list.
- *
- * @component
- * @returns {JSX.Element} Form UI for adding a job category
+ * @returns {JSX.Element} The rendered component for adding a category.
  */
 export default function AddCategory() {
   const methods = useForm<CategoryFormData>({
@@ -30,7 +24,7 @@ export default function AddCategory() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    toast.success("Category added successfully!");
+    toast.success("Job category added successfully!");
   };
   return (
     <div className="w-full h-full p-4">
@@ -38,10 +32,7 @@ export default function AddCategory() {
         <h1 className="font-semibold ">Add Category</h1>
         <Button
           variant="solid"
-          className=""
-          onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_categories}`)
-          }
+          onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
         >
           Back
         </Button>
@@ -52,19 +43,7 @@ export default function AddCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
         >
-          <div className="mb-6 mt-2 w-26">
-            <ImageUploaderField name="profileImage" required />
-          </div>
-          <div className="flex md:w-1/2">
-            <InputField
-              name="categoryName"
-              label="Category Name"
-              type="text"
-              placeholder="Enter Name"
-              required
-              rules={{ validate: (v: string) => validateCategoryName(v) }}
-            />
-          </div>
+          <JobCategoryForm />
           <div className="flex justify-end mt-2">
             <Button
               type="submit"

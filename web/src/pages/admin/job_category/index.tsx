@@ -80,7 +80,7 @@ const ManageJobCategory: React.FC = () => {
             <CiEdit
               className="text-blue-600"
               onClick={() =>
-                navigate(`${absoluteUrls.admin.home.manage_categories_edit}`)
+                navigate(absoluteUrls.admin.home.manage_categories_edit)
               }
             />
           </div>

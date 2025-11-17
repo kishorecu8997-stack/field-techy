@@ -1,36 +1,21 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { validateCategoryName } from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
+import JobCategoryForm from "./JobCategoryForm";
 
 /**
- * EditCategory component provides a form interface to update an existing job category.
+ * `EditCategory` component renders a page with a form to edit an existing job category.
+ * It uses `react-hook-form` for form state management and reuses the `JobCategoryForm`.
  *
- * Responsibilities:
- * - Render a form for editing category name and image.
- * - Validate the category name using shared validation rules.
- * - Submit the form and show user feedback (toast) on success.
- * - Provide navigation back to the categories list.
+ * **Note:** This component currently initializes with empty default values. In a real-world
+ * application, it should fetch the specific category's data (e.g., using a category ID from
+ * the URL) and use it to populate the form's default values.
  *
- * Usage:
- * ```tsx
- * <EditCategory />
- * ```
- *
- * Notes:
- * - Uses `react-hook-form` for form state management via `useForm`.
- * - `ImageUploaderField` is used for image selection and preview.
- * - This component is intended to be used within the admin layout and expects
- *   routing to provide the category context (id, pre-filled values) in a future enhancement.
- *
- * @component
- * @returns {JSX.Element} Form UI for editing a job category
+ * @returns {JSX.Element} The rendered component for editing a category.
  */
 export default function EditCategory() {
   const methods = useForm<CategoryFormData>({
@@ -42,7 +27,7 @@ export default function EditCategory() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    toast.success("Category updated successfully!");
+    toast.success("Job category updated successfully!");
   };
   return (
     <div className="w-full h-full p-4">
@@ -51,9 +36,7 @@ export default function EditCategory() {
         <Button
           variant="solid"
           className=""
-          onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_categories}`)
-          }
+          onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
         >
           Back
         </Button>
@@ -64,19 +47,7 @@ export default function EditCategory() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
         >
-          <div className="mb-6 mt-2 w-26">
-            <ImageUploaderField name="categoryImage" required />
-          </div>
-          <div className="flex md:w-1/2">
-            <InputField
-              name="categoryName"
-              label="Category Name"
-              type="text"
-              placeholder="Enter Name"
-              required
-              rules={{ validate: (v: string) => validateCategoryName(v) }}
-            />
-          </div>
+          <JobCategoryForm />
           <div className="flex justify-end mt-2">
             <Button
               type="submit"

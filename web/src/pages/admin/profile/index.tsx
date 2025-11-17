@@ -12,14 +12,7 @@ import { absoluteUrls } from "@/config/urls";
  * @component
  */
 export default function Profile() {
-  /**
-   * React Router navigation function.
-   */
   const navigate = useNavigate();
-
-  /**
-   * Tab configuration for profile sections.
-   */
   const tabs = [
     {
       label: "Personal Details",
@@ -39,7 +32,7 @@ export default function Profile() {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.dashbaord}`)}
+          onClick={() => navigate(absoluteUrls.admin.home.dashbaord)}
         >
           Back
         </Button>
