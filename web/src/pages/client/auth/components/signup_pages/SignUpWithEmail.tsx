@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import OTPPage from "../../../../engineer/auth/components/OTPPage";
 
 export interface SignUpFormData {
   email: string;
@@ -52,10 +52,23 @@ const SignUp = ({
     },
   });
 
+  const handleOTPVerified = () => {
+    setIsOpen(false);
+    // navigate(absoluteUrls.client.auth.account_type);
+    navigate(absoluteUrls.client.auth.account_type, {
+      state: {
+        signupEmail: methods.getValues("email"),
+        emailVerified: true, // Pre-verified
+        disableEmail: true, // Lock email in ProfileSetup
+        disableMobile: false, // Mobile should be editable in ProfileSetup
+      },
+    });
+  };
+
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = () => {
-        setIsOpen(true);
+    setIsOpen(true);
   };
 
   return (
@@ -63,7 +76,11 @@ const SignUp = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Sign Up</h2>
           <h2 className="text-md font-extralight">
@@ -72,7 +89,7 @@ const SignUp = ({
               to={absoluteUrls.client.auth.login}
               className="text-teal-900 hover:underline font-semibold"
             >
-              Sign In
+              Log In
             </NavLink>
           </h2>
         </div>
@@ -81,7 +98,12 @@ const SignUp = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email Address"
+            type="email"
+            required
+          />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
               name="terms"
@@ -98,7 +120,9 @@ const SignUp = ({
             type="submit"
             disabled={!termsAccepted}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+              !termsAccepted
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
             }`}
           >
             Create Account
@@ -109,7 +133,7 @@ const SignUp = ({
           onClick={() => setIsNumberLogin(true)}
         >
           <LuPhone />
-          Sign in with Phone Number
+          Sign up with Phone Number
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300" />
@@ -130,7 +154,7 @@ const SignUp = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.client.auth.profile_setup)}
+            handleNavigate={handleOTPVerified}
           />
         </Popup>
       </div>

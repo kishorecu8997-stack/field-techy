@@ -154,7 +154,7 @@ export const FileUpload = ({
   // ✅ Format allowed types for UI
   const formatAllowedTypes = (): string => {
     const types = getAcceptExtensions().map((ext) => ext.toUpperCase());
-    return types.join(", ");
+    return types.length > 1 ? types.join(", ") : types[0];
   };
 
   // ✅ Check if file type is allowed
@@ -208,11 +208,16 @@ export const FileUpload = ({
       return;
     }
 
-    // 2️⃣ Size validation
-    if (file.size < minSize) {
-      const errorMsg = `File size must be at least ${(minSize / 1024).toFixed(
-        0
-      )} KB.`;
+    // 2. Validate size - Updated to reject files below 50KB and above 350KB
+    if (file.size < 50 * 1024) {
+      const errorMsg = `File size must be at least 50 KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+    if (file.size > maxSize) {
+      const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);
       toast.error(errorMsg);
       field.onChange(null);
@@ -393,9 +398,11 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()} • Size:{" "}
-                      {(minSize / 1024).toFixed(0)}–
-                      {(maxSize / 1024).toFixed(0)} KB
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
+                      {validatePDF &&
+                        accept.toLowerCase().includes("pdf") &&
+                        ` • ${minPages}–${maxPages} pages`}
+                      Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
                       {validatePDF &&
                         accept.toLowerCase().includes("pdf") &&
                         ` • ${minPages}–${maxPages} pages`}

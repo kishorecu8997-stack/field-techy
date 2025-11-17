@@ -99,6 +99,68 @@ export const validatePortfolioLink = (value: string) => {
   }
 };
 
+export const validateName = (value: string) => {
+  const raw = value || "";
+
+  // Reject leading or trailing spaces
+  if (raw !== raw.trim())
+    return "Input must not have leading or trailing spaces";
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(raw)) {
+    return "Input must not contain consecutive spaces";
+  }
+
+  // Reject if contains anything other than letters and single spaces
+  if (!/^[A-Za-z ]+$/.test(raw))
+    return `${value} must contain only alphabetic characters and single spaces`;
+
+  // Reject if more than 10 spaces
+  const spaceCount = (raw.match(/ /g) || []).length;
+  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+
+  // Length requirement: 2 to 50 characters
+  if (raw.length < 2) return `${value} must be at least 2 characters`;
+  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+
+  return true;
+};
+
+export const cardNumberValidation = (value: string) => {
+  const raw = value || "";
+  const cleanedValue = raw.replace(/\s/g, "");
+  if (!cleanedValue) return "Card number is required.";
+  if (!/^\d{13,19}$/.test(cleanedValue)) {
+    return "Card number must be 13 to 19 digits.";
+  }
+  return true;
+};
+
+export const expiryDateValidation = (value: string) => {
+  const raw = value || "";
+  if (!raw) return "Expiry date is required.";
+  if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
+    return "Invalid date format. Use MM/YY.";
+  }
+  const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
+  if (!match) return true; // Let pattern handle format errors
+  const [, month, year] = match;
+  const expiryDate = new Date(Number(`20${year}`), Number(month) - 1); // Month is 0-indexed
+  const now = new Date();
+  // Set current date to first of the month for fair comparison
+  now.setDate(1);
+  return expiryDate >= now || "Card has expired.";
+};
+
+export const cvvValidation = (value: string) => {
+  const raw = value || "";
+  if (!raw) return "CVV is required.";
+  if (!/^\d{3,4}$/.test(raw)) {
+    return "CVV must be 3 or 4 digits.";
+  }
+  return true;
+};
+
 /**
  * Generates an array of page numbers with optional ellipsis ("...") for large ranges.
  * Example: [1, '...', 4, 5, 6, '...', 10] when currentPage = 5, totalPages = 10
@@ -107,10 +169,10 @@ export const generatePageRange = (
   currentPage: number,
   totalPages: number,
   delta: number = 2
-): (number | '...')[] => {
+): (number | "...")[] => {
   if (totalPages <= 1) return [1];
 
-  const range: (number | '...')[] = [];
+  const range: (number | "...")[] = [];
 
   // Always include first page
   range.push(1);
@@ -120,7 +182,7 @@ export const generatePageRange = (
 
   // Ellipsis after first if needed
   if (left > 2) {
-    range.push('...');
+    range.push("...");
   }
 
   // Add pages around current
@@ -130,7 +192,7 @@ export const generatePageRange = (
 
   // Ellipsis before last if needed
   if (right < totalPages - 1) {
-    range.push('...');
+    range.push("...");
   }
 
   // Always include last page (if more than 1)
