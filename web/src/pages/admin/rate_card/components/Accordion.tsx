@@ -12,7 +12,7 @@ export const Accordion: React.FC<{
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-gray-300">
+    <div className="border-b border-gray-300 dark:border-gray-600">
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -24,7 +24,6 @@ export const Accordion: React.FC<{
             className=" text-red-400 cursor-pointer hover:text-red-500 "
             size={20}
             onClick={(e) => {
-              console.log("deleted");
               remove?.();
               e.stopPropagation();
             }}

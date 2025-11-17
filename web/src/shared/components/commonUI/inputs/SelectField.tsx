@@ -76,7 +76,9 @@ export const SelectField = ({
       {isShowLabel && (
         <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
           {label}{" "}
-          {required !== false && <span className="text-red-600">*</span>}
+          {(required === true || typeof required === "string") && (
+            <span className="text-red-600">*</span>
+          )}
         </label>
       )}
 

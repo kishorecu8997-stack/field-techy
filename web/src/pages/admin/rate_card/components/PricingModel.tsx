@@ -19,7 +19,6 @@ const PricingModel: React.FC = () => {
   const {
     fields: skills,
     append,
-    update,
     remove,
   } = useFieldArray({
     control,
@@ -69,7 +68,6 @@ const PricingModel: React.FC = () => {
             removeSkill={() => remove(index)}
             control={control}
             index={index}
-            update={update}
           />
         ))}
       </div>

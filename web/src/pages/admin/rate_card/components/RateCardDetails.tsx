@@ -1,5 +1,6 @@
 import React from "react";
 import type { InfoGridProps } from "../types";
+import { getMdGridColsClass } from "@/utils/styles";
 
 /**
  * RateCardDetails Component
@@ -59,9 +60,10 @@ const InfoGrid: React.FC<InfoGridProps> = ({
   className = "",
 }) => {
   return (
-    <div
-      className={`grid gap-x-8 gap-y-4 sm:gap-y-6 md:gap-x-10 lg:gap-x-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-${columns} ${className}`}
-    >
+     <div
+  className={`grid gap-x-8 gap-y-4 sm:gap-y-6 md:gap-x-10 lg:gap-x-16 
+  grid-cols-1 sm:grid-cols-2 ${getMdGridColsClass(columns)} ${className}`}
+>
       {items.map((item, idx) => (
         <div key={idx} className="flex flex-col">
           <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">

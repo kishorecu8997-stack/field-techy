@@ -1,8 +1,8 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import RateCardForm from "./RateCardForm";
 import PricingModel from "./PricingModel";
-import { Button } from "@headlessui/react";
+import RateCardForm from "./RateCardForm";
 
 /**
  * AddRateCard Component

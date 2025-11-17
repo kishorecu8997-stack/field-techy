@@ -41,3 +41,13 @@ export interface RateCardProps {
 export interface PricingFormValues {
   skills: SkillPricing[];
 }
+
+export type PricingRelations = {
+  hourly?: number;
+  halfDay?: number;
+  fullDay?: number;
+  weekly?: number;
+  monthly?: number;
+};
+
+export type PricingField = keyof PricingRelations; 
