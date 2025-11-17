@@ -30,6 +30,7 @@ const RateCardForm = () => {
             name="clientName"
             label="Client Name"
             required
+            multiple
             options={[
               { label: "Client 1", value: "client1" },
               { label: "Client 2", value: "client2" },
