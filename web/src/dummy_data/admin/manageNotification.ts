@@ -2,8 +2,8 @@ export interface NotificationProps {
   id: number;
   title: string;
   message: string;
-  type: "broadcast";
-  sendTo: "Users";
+  type: "email" | "broadcast" | "notification";
+  sendTo: "subAdmin" | "client" | "engineer" | "both" | "Users";
   createdDate: string;
 }
 
@@ -66,7 +66,7 @@ export const notifications: NotificationProps[] = [
 
 export const NotificationTypes = [
   { value: "email", label: "Email" },
-  { value: "boardcast", label: "Boardcast" },
+  { value: "broadCost", label: "BroadCost" },
   { value: "notification", label: "Notification" },
 ];
 
@@ -83,4 +83,49 @@ export const NotificationUsers = [
   { value: "user3", label: "User3" },
   { value: "user4", label: "User4" },
   { value: "user5", label: "User5" },
+];
+
+//received notifications
+export interface ReceivedNotificationProps {
+  id: number;
+  name: string;
+  message: string;
+  time: string;
+}
+
+export const receivedNotifications: ReceivedNotificationProps[] = [
+  {
+    id: 1,
+    name: "John Doe",
+    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    time: "2 hours ago",
+  },
+  {
+    id: 2,
+    name: "Alice Smith",
+    message:
+      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    time: "1 day ago",
+  },
+  {
+    id: 3,
+    name: "Michael Johnson",
+    message:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+    time: "3 days ago",
+  },
+  {
+    id: 4,
+    name: "Sophia Brown",
+    message:
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+    time: "5 days ago",
+  },
+  {
+    id: 5,
+    name: "David Wilson",
+    message:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.",
+    time: "1 week ago",
+  },
 ];

@@ -39,13 +39,10 @@ const ManageNotification: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: (row: NotificationProps) => (
+      renderCell: () => (
         <div className="flex items-center gap-2">
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">
-            <RiDeleteBin6Line
-              className="text-red-600"
-              onClick={() => console.log("id..", row.id)}
-            />
+            <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
       ),

@@ -89,8 +89,8 @@ const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
-const ReceviedNotification = React.lazy(
-  () => import("@/pages/admin/recevied_notification")
+const ReceivedNotification = React.lazy(
+  () => import("@/pages/admin/received_notification")
 );
 
 const ClientMyJobsPage = React.lazy(
@@ -318,7 +318,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: urls.admin.home.received_notification,
-            element: withSuspense(ReceviedNotification),
+            element: withSuspense(ReceivedNotification),
           },
         ],
       },

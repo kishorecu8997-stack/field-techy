@@ -127,7 +127,7 @@ export default function AddNotification() {
           <div className="flex justify-end mt-2">
             <Button
               type="submit"
-              className="w-fit bg-linear-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               Save
             </Button>

@@ -538,7 +538,7 @@ export const validateNotificationTitle = (value: string) => {
   if (/\d/.test(raw)) return "Title must not contain numbers";
 
   // Allow only letters and spaces (no emojis, no symbols, no punctuation)
-  if (!/^[A-Za-z\s]+$/.test(raw)) {
+  if (!/^[A-Za-z ]+$/.test(raw)) {
     return "Title must contain only letters and spaces";
   }
 
