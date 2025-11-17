@@ -1,6 +1,11 @@
-import React from 'react';
-import type { TransactionInfo } from '../types';
 import { sampleTransactions } from '@/dummy_data/invoiceData';
+import React, { useState } from 'react';
+import { HiFilter } from "react-icons/hi";
+import { IoDownload } from "react-icons/io5";
+import type { TransactionInfo } from '../types';
+import Popup from '@/shared/components/Popup';
+import DownloadInvoice from './DownloadInvoice';
+import Filter from './Filter';
 
 interface TransactionListProps {
   transactions: TransactionInfo[];
@@ -125,3 +130,65 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
 };
 
 export default RecentTransactionsList;
+
+
+export const ActionButtonsForRecentTransactions=()=>{
+  const [isInvoicePopupOpen, setIsInvoicePopupOpen] = useState<boolean>(false);
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState<boolean>(false);
+
+return(
+  <>
+      <div
+        onClick={
+          isInvoicePopupOpen
+            ? () => setIsInvoicePopupOpen(false)
+            : () => setIsInvoicePopupOpen(true)
+        }
+        aria-label="Download"
+        className="text-gray-700 hover:text-gray-900"
+      >
+        <IoDownload className="h-6 w-6 cursor-pointer" />
+      </div>
+      <div
+        onClick={
+          isFilterPopupOpen
+            ? () => setIsFilterPopupOpen(false)
+            : () => setIsFilterPopupOpen(true)
+        }
+        aria-label="Filter"
+        className="text-gray-700 hover:text-gray-900"
+      >
+        <HiFilter className="h-6 w-6 cursor-pointer" />
+      </div>
+
+       <Popup
+        open={isInvoicePopupOpen}
+        onClose={() => setIsInvoicePopupOpen(false)}
+      >
+        <DownloadInvoice
+          isOpen={isInvoicePopupOpen}
+          onClose={() => setIsInvoicePopupOpen(false)}
+          onDownload={() => {
+            console.log("Downloading invoice...");
+            setIsInvoicePopupOpen(false);
+          }}
+        />
+      </Popup>
+      <Popup
+        open={isFilterPopupOpen}
+        onClose={() => setIsFilterPopupOpen(false)}
+        width="sm:max-w-xl"
+      >        
+        <Filter
+          isOpen={isFilterPopupOpen}
+          onClose={() => setIsFilterPopupOpen(false)}
+          onFilter={() => {
+            console.log("Applying filters...");
+            setIsFilterPopupOpen(false);
+          }}
+        />       
+      </Popup>
+    </>
+)
+}
+  

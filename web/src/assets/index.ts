@@ -1,13 +1,14 @@
+import location from "./location.svg";
+import notification from "./notification_big.svg";
 import securePayments from "./secure-payments.png";
 import skillsMatching from "./skills-matching.png";
 import workTracking from "./work-tracking.png";
 import companyLogo from "./company-logo.png";
 import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
+import attachment from "./attachment_01.png";
 import suitcase from "./suitcase.svg";
 import people from "./people.svg";
-import location from "./location.svg";
-import notification from "./notification_big.svg";
 import ftLogoWhite from "./ft_logo_white.svg";
 import adminCard from "./admin-card-icon.svg";
 
@@ -27,8 +28,8 @@ export const assetsConfig = {
       skillsMatching,
       workTracking,
     },
-    admin: {
-      adminCard,
+    dashboard: {
+      attachment,
     },
   },
   icons: {
@@ -37,4 +38,8 @@ export const assetsConfig = {
     location,
     notification
   },
+  admin: {
+    adminCard,
+  },
 };
+

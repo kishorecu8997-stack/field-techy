@@ -1,16 +1,17 @@
-import React from "react";
+import { absoluteUrls } from "@/config/urls";
 import {
   inProgressJobsData,
   jobOverviewData,
   serviceCategoriesData,
 } from "@/dummy_data/dashboard";
+import { earningsData } from "@/dummy_data/jobDetails";
+import React, { useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
+import AllowAccessPopup from "../auth/components/AccessPopup";
+import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
-import InProgressJobCard from "./components/InProgressJobCard";
-import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
-import { earningsData } from "@/dummy_data/jobDetails";
-import { NavLink } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -18,6 +19,12 @@ import { absoluteUrls } from "@/config/urls";
  * It also includes a sidebar with wallet and job posting information.
  */
 const Dashboard: React.FC = () => {
+  const [accessPopup, setAccessPopup] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    setAccessPopup(true);
+  }, []);
+
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -28,7 +35,14 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ">
               {jobOverviewData.map((job) => (
-                <JobOverviewCard key={job.id} id={job.id} title={job.title} count={job.count} status={job.status} buttonShow={job.buttonShow} />
+                <JobOverviewCard
+                  key={job.id}
+                  id={job.id}
+                  title={job.title}
+                  count={job.count}
+                  status={job.status}
+                  buttonShow={job.buttonShow}
+                />
               ))}
             </div>
             <div className="mb-8">
@@ -45,16 +59,15 @@ const Dashboard: React.FC = () => {
                   </NavLink>
                 </nav>
               </div>
-            
-                  <NavLink
-                    to={absoluteUrls.client.home.explore_engineers}
-                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 cursor-pointer hover:text-teal-800 text-[1rem] whitespace-nowrap"
-                  >
-                     {serviceCategoriesData.map((category) => (
+
+              <NavLink
+                to={absoluteUrls.client.home.explore_engineers}
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 cursor-pointer hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              >
+                {serviceCategoriesData.map((category) => (
                   <ServiceCategoryCard key={category.id} {...category} />
                 ))}
-                  </NavLink>
-             
+              </NavLink>
             </div>
             <div>
               <div className="flex justify-between items-center mb-4">
@@ -84,6 +97,10 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      <AllowAccessPopup
+        accessPopup={accessPopup}
+        setAccessPopup={setAccessPopup}
+      />
     </div>
   );
 };

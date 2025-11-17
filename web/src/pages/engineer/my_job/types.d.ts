@@ -70,9 +70,17 @@ export interface ClientInfoCardProps {
   verifications: string[];
 }
 
-/**
- * Props for the tab navigation component within a job view.
- */
+export interface JobHeaderCardProps {
+  title: string;
+  client: string;
+  duration: string;
+  type?: string;
+  status?: StatusType | string;
+  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
+  isSendProposal?: boolean
+}
+
 export interface JobTabsProps {
   activeTab: string;
   tabs: string[];
