@@ -22,6 +22,7 @@ export const urls = {
   engineer: {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
+    terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
 
     home: {
       my_jobs: "my-jobs",
