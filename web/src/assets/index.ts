@@ -33,17 +33,13 @@ export const assetsConfig = {
     },
   },
   icons: {
-    location,
-    notification,
-    admin: {
-      adminCard,
-    },
-  },
-  icons: {
     suitcase,
     people,
     location,
     notification
+  },
+  admin: {
+    adminCard,
   },
 };
 
