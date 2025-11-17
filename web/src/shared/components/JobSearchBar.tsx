@@ -7,7 +7,7 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  * JobSearchBar component provides a dual-input search form for jobs and location.
  * Features dark mode support, responsive design, and react-hook-form integration.
  * The location field is hidden on small screens and shown on large screens.
- * 
+ *
  * @component
  * @example
  * <JobSearchBar />

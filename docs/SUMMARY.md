@@ -1,0 +1,32 @@
+[Introduction](README.md)
+
+# Core Processes
+- [SDLC Document](sdlc/README.md)
+  - [Scrum Framework Overview](sdlc/scrum-framework-overview.md)
+  - [Roles](sdlc/roles.md)
+  - [Artifacts](sdlc/artifacts.md)
+  - [Events](sdlc/events.md)
+  - [Phases Mapping](sdlc/phases-mapping.md)
+  - [Git Flow](sdlc/git-flow.md)
+    - [Branching Strategy](sdlc/git-flow-branching-strategy.md)
+    - [Workflow Examples](sdlc/git-flow-workflow-examples.md)
+  - [Code Review and Assignment](sdlc/code-review-and-assignment.md)
+  - [QA Processes](sdlc/qa-processes.md)
+  - [Escalation of Issues](sdlc/escalation.md)
+  - [Scrum Board](sdlc/scrum-board.md)
+  - [Team Communication](sdlc/communication.md)
+  - [Onboarding](sdlc/onboarding.md)
+
+# Sprint Artifacts
+- [Test Design Documents](test/design/README.md)
+  - [Sprint 1](test/design/test-design-document-sprint-1.md)
+  - [Sprint 2](test/design/test-design-document-sprint-2.md)
+
+- [Web Documents](web/README.md)
+  - [Admin Dashboard](web/admin-dashboard.md)
+  - [Admin Authentication Profile](web/admin-authentication-profile.md)
+  - [Admin Settings](web/admin-settings.md)
+  - [Client Post a Job](web/client-post-a-job.md)
+  - [Corporate and Home Client](web/corporate-and-home-client-23.md)
+  - [Input Validation Spec](web/input-validation-spec.md)
+  - [My Profile Sidebar Input Validation](web/my-profile-sidebar-input-validation.md)

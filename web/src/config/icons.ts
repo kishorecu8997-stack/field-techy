@@ -13,6 +13,10 @@ import { PiWarningOctagonFill } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoHeadsetSharp } from "react-icons/io5";
 import { BiSolidMessageRounded } from "react-icons/bi";
+import { IoWalletOutline } from "react-icons/io5";
+import { MdOutlineImageNotSupported } from "react-icons/md";
+import { IoMdAdd } from "react-icons/io";
+
 
 /**
  * Collection of commonly used icon components mapped to semantic keys for consistent UI usage.
@@ -28,6 +32,7 @@ export const icons = {
   linkedin: BiLogoLinkedin,
   location: CiLocationOn,
   unlink: IoUnlinkSharp,
+  wallet: IoWalletOutline,
   notes: CgNotes,
   locationDot: FaLocationDot,
   checkCircle: FaRegCheckCircle,
@@ -39,9 +44,10 @@ export const icons = {
   contactSupport: MdContactSupport,
   chevronRight: FaChevronRight,
   lock: MdLock,
-  wallet: IoWallet,
   danger: PiWarningOctagonFill,
   phone: FaPhoneAlt,
   headset: IoHeadsetSharp,
   message: BiSolidMessageRounded,
+  noImage: MdOutlineImageNotSupported,
+  add: IoMdAdd,
 };

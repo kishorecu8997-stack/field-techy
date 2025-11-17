@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from '@/config/urls';
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
+import { useHomeNavigation } from '@/shared/hooks/useHomeNavigation';
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -51,6 +52,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+    const { goToLogin } = useHomeNavigation();
+  
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({
     defaultValues: {
@@ -162,7 +165,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
         <LogoutConfirmationPopup
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          onConfirm={() => console.log("confirm")}
+          onConfirm={() => goToLogin()}
           onCancel={() => setIsOpen(false)}
         />
         </div>

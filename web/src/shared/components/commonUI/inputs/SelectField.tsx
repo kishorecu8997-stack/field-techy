@@ -11,7 +11,9 @@ import type { SelectFieldProps } from "./types";
 const ChevronDownIcon = ({ open }: { open: boolean }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+      open ? "rotate-180" : ""
+    }`}
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -51,7 +53,8 @@ export const SelectField = ({
     <div className="flex flex-col py-1">
       {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required !== false && <span className="text-red-600">*</span>}
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
 
@@ -124,7 +127,7 @@ export const SelectField = ({
                               className={({ active }) =>
                                 `relative select-none py-2 pl-10 pr-4 cursor-pointer ${
                                   active
-                                    ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                    ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
                                     : "text-gray-900 dark:text-gray-100"
                                 }`
                               }
