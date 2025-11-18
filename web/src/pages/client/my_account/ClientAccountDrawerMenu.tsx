@@ -91,8 +91,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Michel Brown"
+            avatarUrl={assetsConfig.images.users.user}
+            name="Alex"
             title="Software Engineer"
             rating={4}
             reviewCount={10}

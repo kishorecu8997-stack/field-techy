@@ -161,9 +161,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
-          <span className="max-w-[6rem] truncate text-left">Hi, Alex</span>
+          <span className="max-w-[6rem] truncate text-left">Hi, Nick Wilson</span>
           <img
-            src={assetsConfig.logos.ftLogo}
+            src={assetsConfig.images.users.user}
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />

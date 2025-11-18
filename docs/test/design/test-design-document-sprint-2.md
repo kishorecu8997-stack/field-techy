@@ -631,7 +631,7 @@ The following table outlines the necessary hardware, software, network, and tool
 - **Steps:**
   1. Observe the right sidebar panel.  
   2. Verify presence of:
-     - Engineer’s name (**“Michel Brown”**)  
+     - Engineer’s name (**“Nick Wilson”**)  
      - Role (**“Software Engineer”**)  
      - Phone number (**“+91 74582405XX”**)  
      - **“Complete Now”** button  

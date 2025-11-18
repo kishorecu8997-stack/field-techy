@@ -92,7 +92,7 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Michel Brown"
+            name="Nick Wilson"
             title="Software Engineer"
             rating={4}
             reviewCount={10}
