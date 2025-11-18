@@ -86,7 +86,7 @@ export const urls = {
       wallet_overview: `${BASE.ADMIN}/wallet-overview`,
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
       manage_notification: `${BASE.ADMIN}/notifications`,
-      manage_notification_add: "notifications/add",
+      manage_notification_add: `${BASE.ADMIN}/notifications/add`,
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,

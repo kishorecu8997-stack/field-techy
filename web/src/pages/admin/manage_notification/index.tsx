@@ -56,7 +56,7 @@ const ManageNotification: React.FC = () => {
           type="submit"
           className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
           onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_notification_add}`)
+            navigate(absoluteUrls.admin.home.manage_notification_add)
           }
         >
           Add Notification
@@ -66,7 +66,7 @@ const ManageNotification: React.FC = () => {
         <div>
           <SearchInput />
         </div>
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<NotificationProps>
             columns={columns}
             data={notifications}

@@ -1,8 +1,16 @@
+export const MANAGE_NOTIFICATION_TYPE = {
+  email: "email",
+  broadCast: "broadcast",
+  notification: "notification",
+} as const;
+
+export type ManageNotificationType =
+  (typeof MANAGE_NOTIFICATION_TYPE)[keyof typeof MANAGE_NOTIFICATION_TYPE];
 export interface NotificationProps {
   id: number;
   title: string;
   message: string;
-  type: "email" | "broadcast" | "notification";
+  type: ManageNotificationType;
   sendTo: "subAdmin" | "client" | "engineer" | "both" | "Users";
   createdDate: string;
 }

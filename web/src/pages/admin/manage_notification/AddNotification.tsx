@@ -57,9 +57,7 @@ export default function AddNotification() {
         <Button
           type="submit"
           variant="solid"
-          onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_notification}`)
-          }
+          onClick={() => navigate(absoluteUrls.admin.home.manage_notification)}
         >
           Back
         </Button>
