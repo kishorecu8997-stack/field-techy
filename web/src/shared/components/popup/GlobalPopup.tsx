@@ -11,8 +11,6 @@ import { GenericPopup } from "./GenericPopup";
  * @returns {JSX.Element} The rendered popup component. Null if no popup is open.
  */
 export function GlobalPopup() {
-
-    console.log("GlobalPopup rendered");
   const popup = usePopupStore((s) => s.popup);
   const closePopup = usePopupStore((s) => s.closePopup);
 
