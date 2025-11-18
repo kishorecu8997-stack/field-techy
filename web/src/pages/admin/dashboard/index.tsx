@@ -55,7 +55,7 @@ export default function Dashboard() {
   // }, [selected]);
 
   return (
-    <div>
+    <div className="w-full h-full p-4">
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">Manage Dashbaord</p>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import type { ProposalTermsProps } from "../../pages/engineer/my_job/types";
+import type { ProposalTermsProps } from "@/pages/engineer/my_job/types";
 
 /**
  * Main component for rendering proposal terms and conditions.

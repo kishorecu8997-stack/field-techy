@@ -1,6 +1,6 @@
+import { icons } from "@/config/icons";
 import Popup from "@/shared/components/Popup";
 import React from "react";
-import { IoCloseSharp } from "react-icons/io5";
 
 interface LogoutProps {
   onConfirm: () => void;
@@ -46,7 +46,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
               onClick={onCancel}
               className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             >
-              <IoCloseSharp className="h-6 w-6 cursor-pointer" />
+              <icons.close className="w-6 h-6" />
             </button>
           </div>
         </div>

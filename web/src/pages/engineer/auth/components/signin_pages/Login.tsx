@@ -41,7 +41,7 @@ const Login = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToMyJobs } = useHomeNavigation();
+  const { goToHome } = useHomeNavigation();
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
@@ -145,7 +145,7 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToMyJobs}
+            handleNavigate={goToHome}
           />
         </Popup>
       </div>

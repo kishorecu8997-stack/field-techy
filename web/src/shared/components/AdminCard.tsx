@@ -24,7 +24,7 @@ interface StatCardProps {
  * StatCard (AdminCard) component.
  *
  * Renders a small statistic card with an icon, title and value. The
- * default icon comes from `assetsConfig.images.admin.adminCard` but can be
+ * default icon comes from `assetsConfig.admin.adminCard` but can be
  * overridden via the `iconSrc` prop. Designed for use across admin dashboard
  * sections to display concise metrics.
  *
@@ -47,7 +47,7 @@ const StateCard: React.FC<StatCardProps> = ({
     >
       <div className="rounded-full p-2">
         <img
-          src={`${assetsConfig.images.admin.adminCard}`}
+          src={`${assetsConfig.admin.adminCard}`}
           alt={alt}
           className="w-8 h-8 md:w-11 md:h-11 object-contain"
         />
