@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import BackgroundVerification from "./BackgroundVerification";
-import ProfileSettingPage from "./ProfileSettingPage";
 import SetPassword from "./SetPassword";
+import ProfileSettingPage from "@/pages/client/auth/components/profile_setup/ProfileSettingPage";
 
 // Types (without Zod)
 export type CompleteRegistrationData = {

@@ -9,6 +9,8 @@ export const useHomeNavigation = () => {
   const navigate = useNavigate();
 
   return {
+    goToLogin: () => navigate(absoluteUrls.engineer.auth.login),
+    goToHome: () => navigate(absoluteUrls.engineer.home.dashboard),
     goToMyJobs: () => navigate(absoluteUrls.engineer.home.my_jobs),
     goToSearchResult: () => navigate(absoluteUrls.engineer.home.search_result),
     goToJobDetails: (jobId: string) => navigate(`${absoluteUrls.engineer.home.my_jobs}/${jobId}`),

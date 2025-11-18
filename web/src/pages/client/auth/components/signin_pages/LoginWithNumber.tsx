@@ -8,9 +8,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
-import AllowAccessPopup from "../AccessPopup";
 
 export type LoginFormData = {
   phone: string;
@@ -35,9 +34,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  // const { goToMyJobs } = useHomeNavigation();
-
-  const [accessPopup, setAccessPopup] = useState<boolean>(false);
+const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
@@ -113,17 +110,11 @@ const LoginWithNumber = ({
             onClose={() => setIsOpen(false)}
             handleNavigate={() => {
               setIsOpen(false);
-              setAccessPopup(true);
+              navigate(absoluteUrls.client.home.dashboard);
             }}
           />
         </Popup>
 
-        {accessPopup && (
-          <AllowAccessPopup
-            accessPopup={accessPopup}
-            setAccessPopup={setAccessPopup}
-          />
-        )}
       </div>
     </div>
   );
