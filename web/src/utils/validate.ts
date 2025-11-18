@@ -508,8 +508,8 @@ export const validateCategoryName = (value: string) => {
   }
 
   // Allow only letters, spaces, underscores, and hyphens
-  if (!/^[A-Za-z _-]+$/.test(trimmed)) {
-    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-)";
+  if (!/^[A-Za-z _&-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-), and ampersand (&)";
   }
 
   return true;
@@ -729,7 +729,7 @@ export const validateLocation = (value: string) => {
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Location may contain only letters, numbers, spaces, and / , . - #";
-    }
+  }
 
   return true;
 };
@@ -773,7 +773,7 @@ export const validateNotificationTitle = (value: string) => {
   // Allow only letters and spaces (no emojis, no symbols, no punctuation)
   if (!/^[A-Za-z ]+$/.test(raw)) {
     return "Title must contain only letters and spaces";
-    }
+  }
   return true;
 };
 export interface TextValidationOptions {

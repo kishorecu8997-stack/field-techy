@@ -417,7 +417,7 @@ export const routes = createBrowserRouter([
             element: withSuspense(AdminManageJobCategoryAdd),
           },
           {
-            path: urls.admin.home.manage_categories_edit,
+            path: `${urls.admin.home.manage_categories_edit}/:id`,
             element: withSuspense(AdminManageJobCategoryEdit),
           },
           {
