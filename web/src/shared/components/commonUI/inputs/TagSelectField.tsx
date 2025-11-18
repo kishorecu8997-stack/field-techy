@@ -47,11 +47,7 @@ export const TagSelectField = ({
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
-    required: required
-      ? `${
-         label || name
-        } is required`
-      : false,
+    required: required ? `${label || name} is required` : false,
     ...rules,
   };
 
@@ -161,29 +157,30 @@ export const TagSelectField = ({
 
               {/* Render selected tags */}
               <div className="flex flex-wrap gap-2 py-2">
-                {value.map((tagValue: string, index: number) => {
-                  // Find the label for display
-                  const tagLabel =
-                    options.find((opt) => opt.value === tagValue)?.label ||
-                    tagValue;
+                {value &&
+                  value.map((tagValue: string, index: number) => {
+                    // Find the label for display
+                    const tagLabel =
+                      options.find((opt) => opt.value === tagValue)?.label ||
+                      tagValue;
 
-                  return (
-                    <span
-                      key={index}
-                      className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
-                    >
-                      {tagLabel}
-                      <button
-                        type="button"
-                        onClick={() => removeTag(index, onChange, value)}
-                        className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
-                        aria-label={`Remove tag ${tagLabel}`}
+                    return (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
                       >
-                        ×
-                      </button>
-                    </span>
-                  );
-                })}
+                        {tagLabel}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(index, onChange, value)}
+                          className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
+                          aria-label={`Remove tag ${tagLabel}`}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })}
               </div>
             </>
           );

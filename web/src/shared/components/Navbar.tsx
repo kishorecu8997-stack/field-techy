@@ -9,7 +9,6 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 
-
 /**
  * Header component with navigation, search bar, and user profile.
  * Features responsive design with mobile menu, dark mode support, and notification badges.
@@ -161,7 +160,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
-          <span className="max-w-[6rem] truncate text-left">Hi, Alex</span>
+          <span className="max-w-[6rem] truncate text-left">
+            Hi, Michel Brown
+          </span>
           <img
             src={assetsConfig.logos.ftLogo}
             alt="User"

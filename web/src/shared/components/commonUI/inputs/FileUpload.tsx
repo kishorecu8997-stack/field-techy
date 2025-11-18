@@ -398,8 +398,11 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()} • Min {50} - Max {maxSize / 1024} KB
-                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}                    
+                      Format: {formatAllowedTypes()}• Min 50 KB • Max {maxSize /
+                      1024} KB
+                      {validatePDF &&
+                        accept.toLowerCase().includes("pdf") &&
+                        ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}

@@ -33,19 +33,21 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
   const { name, phone, role, profileCompletion } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
-          <FaUser />
+      <div className="flex flex-row justify-between">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
+            <FaUser />
+          </div>
+          <div>
+            <h3 className="font-bold text-white">{name}</h3>
+            <p className="text-sm opacity-90">{phone}</p>
+            <p className="text-xs opacity-80">{role}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold text-white">{name}</h3>
-          <p className="text-sm opacity-90">{phone}</p>
-          <p className="text-xs opacity-80">{role}</p>
-        </div>
+        <button className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
+          Complete Now
+        </button>
       </div>
-      <button className="w-full bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
-        Complete Profile
-      </button>
       <div className="mt-4">
         <div className="flex justify-between text-xs opacity-90 mb-1">
           <span>Profile Score</span>
