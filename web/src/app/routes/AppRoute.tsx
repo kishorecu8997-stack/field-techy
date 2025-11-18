@@ -125,6 +125,12 @@ const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
 );
+const AdminManageJobCategoryAdd = React.lazy(
+  () => import("@/pages/admin/job_category/AddCategory")
+);
+const AdminManageJobCategoryEdit = React.lazy(
+  () => import("@/pages/admin/job_category/EditCategory")
+);
 const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
 const EditAdminRateCard = React.lazy(() => import("@/pages/admin/rate_card/components/EditRateCard"));
@@ -145,12 +151,15 @@ const WalletTransactionRequests = React.lazy(
 const ManageNotification = React.lazy(
   () => import("@/pages/admin/manage_notification")
 );
+const ManageNotificationAdd = React.lazy(
+  () => import("@/pages/admin/manage_notification/AddNotification")
+);
 const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
-const ReceviedNotification = React.lazy(
-  () => import("@/pages/admin/recevied_notification")
+const ReceivedNotification = React.lazy(
+  () => import("@/pages/admin/received_notification")
 );
 
 /**
@@ -371,6 +380,14 @@ export const routes = createBrowserRouter([
             element: withSuspense(AdminManageJobCategory),
           },
           {
+            path: urls.admin.home.manage_categories_add,
+            element: withSuspense(AdminManageJobCategoryAdd),
+          },
+          {
+            path: urls.admin.home.manage_categories_edit,
+            element: withSuspense(AdminManageJobCategoryEdit),
+          },
+          {
             path: urls.admin.home.manage_rate_card,
             element: withSuspense(AdminManageRateCard),
           },
@@ -398,6 +415,10 @@ export const routes = createBrowserRouter([
             element: withSuspense(ManageNotification),
           },
           {
+            path: urls.admin.home.manage_notification_add,
+            element: withSuspense(ManageNotificationAdd),
+          },
+          {
             path: urls.admin.home.manage_sub_admin,
             element: withSuspense(ManageSubAdmin),
           },
@@ -412,7 +433,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: urls.admin.home.received_notification,
-            element: withSuspense(ReceviedNotification),
+            element: withSuspense(ReceivedNotification),
           },
         ],
       },

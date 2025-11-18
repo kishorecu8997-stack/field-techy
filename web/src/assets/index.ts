@@ -10,6 +10,7 @@ import attachment from "./attachment_01.png";
 import suitcase from "./suitcase.svg";
 import people from "./people.svg";
 import ftLogoWhite from "./ft_logo_white.svg";
+import placeholderImage from "./placeholder_img.svg";
 import adminCard from "./admin-card-icon.svg";
 
 // JSON format export with category-wise organization
@@ -32,11 +33,12 @@ export const assetsConfig = {
       attachment,
     },
   },
+  placeholder: placeholderImage,
   icons: {
     suitcase,
     people,
     location,
-    notification
+    notification,
   },
   admin: {
     adminCard,
