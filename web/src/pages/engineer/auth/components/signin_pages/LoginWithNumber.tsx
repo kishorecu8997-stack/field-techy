@@ -32,7 +32,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToMyJobs } = useHomeNavigation();
+  const { goToDashboard } = useHomeNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -105,7 +105,7 @@ const LoginWithNumber = ({
             header="Verify Mobile Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToMyJobs}
+            handleNavigate={goToDashboard}
           />
         </Popup>
       </div>

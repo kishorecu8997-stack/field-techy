@@ -78,19 +78,27 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  if (!value) return "Address must be at least 20 characters";
+  if (!value) return "Address must be at least 6 characters";
 
   // Disallow leading or trailing spaces
-  if (/^\s|\s$/.test(value))
+  if (/^\s|\s$/.test(value)) {
     return "Address must not start or end with a space";
+  }
 
-  const v = value.trim();
-  if (v.length < 20) return "Address must be at least 20 characters";
+  // Disallow multiple consecutive spaces
+  if (/\s{2,}/.test(value)) {
+    return "Address must not contain consecutive spaces";
+  }
+
+  const v = value.trim(); // technically redundant now, but safe
+  if (v.length < 6) return "Address must be at least 6 characters";
   if (v.length > 50) return "Address must not exceed 50 characters";
-  // Allow letters, numbers, spaces, and / , . - #
+
+  // Allow only letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
+
   return true;
 };
 
@@ -553,6 +561,29 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+export const validatePricePerHour = (value: string) => {
+  const raw = value || "";
+
+  // Reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Length checks
+  if (raw.length < 5) return "Title must be at least 5 characters";
+  if (raw.length > 100) return "Title must not exceed 100 characters";
+
+  // Disallow any digits (0-9)
+  if (/\d/.test(raw)) return "Title must not contain numbers";
+
+  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
+  if (!/^[A-Za-z ]+$/.test(raw)) {
+    return "Title must contain only letters and spaces";
+  }
+
+  return true;
+};
+
 export const validatePricingModel = (
   value: string,
   field: PricingField,
@@ -570,12 +601,10 @@ export const validatePricingModel = (
   if (Number.isNaN(num)) return "Enter a valid number";
   if (num === 0) return "Value cannot be zero";
 
-  if (!/^\d+(\.\d{1,2})?$/.test(v))
-    return "Use max 2 decimal places";
+  if (!/^\d+(\.\d{1,2})?$/.test(v)) return "Use max 2 decimal places";
 
   const [integerPart] = v.split(".");
-  if (integerPart.length < 1)
-    return "Enter a valid amount";
+  if (integerPart.length < 1) return "Enter a valid amount";
 
   if (!relatedValues) return true;
 
@@ -600,12 +629,10 @@ export const validatePricingModel = (
         return "Please enter hourly and half-day first";
 
       const minHourly = hourly * 8;
-      if (num < minHourly)
-        return `Full-day must be at least ${minHourly}`;
+      if (num < minHourly) return `Full-day must be at least ${minHourly}`;
 
       const minHalf = halfDay * 2;
-      if (num < minHalf)
-        return `Full-day must be at least ${minHalf}`;
+      if (num < minHalf) return `Full-day must be at least ${minHalf}`;
 
       return true;
     }
@@ -639,20 +666,16 @@ export const validatePricingModel = (
         return "Please complete previous fields first";
 
       const minHourly = hourly * 3;
-      if (num <= minHourly)
-        return `Monthly must be greater than ${minHourly}`;
+      if (num <= minHourly) return `Monthly must be greater than ${minHourly}`;
 
       const minHalf = halfDay * 40;
-      if (num < minHalf)
-        return `Monthly must be at least ${minHalf}`;
+      if (num < minHalf) return `Monthly must be at least ${minHalf}`;
 
       const minFull = fullDay * 20;
-      if (num < minFull)
-        return `Monthly must be at least ${minFull}`;
+      if (num < minFull) return `Monthly must be at least ${minFull}`;
 
       const minWeekly = weekly * 4;
-      if (num < minWeekly)
-        return `Monthly must be at least ${minWeekly}`;
+      if (num < minWeekly) return `Monthly must be at least ${minWeekly}`;
 
       return true;
     }
@@ -660,29 +683,6 @@ export const validatePricingModel = (
     default:
       return true;
   }
-};
-
-export const validateNotificationTitle = (value: string) => {
-  const raw = value || "";
-
-  // Reject if has leading or trailing spaces
-  if (raw !== raw.trim()) {
-    return "Message must not have leading or trailing spaces";
-  }
-
-  // Length checks
-  if (raw.length < 5) return "Title must be at least 5 characters";
-  if (raw.length > 100) return "Title must not exceed 100 characters";
-
-  // Disallow any digits (0-9)
-  if (/\d/.test(raw)) return "Title must not contain numbers";
-
-  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
-  if (!/^[A-Za-z ]+$/.test(raw)) {
-    return "Title must contain only letters and spaces";
-  }
-
-  return true;
 };
 
 export const validateNotificationMessage = (value: string) => {
@@ -715,6 +715,25 @@ export const validateNotificationMessage = (value: string) => {
   return true;
 };
 
+export const validateLocation = (value: string) => {
+  if (!value) return "Location must be at least 3 characters";
+
+  // Disallow leading or trailing spaces
+  if (/^\s|\s$/.test(value))
+    return "Location must not start or end with a space";
+
+  const v = value.trim();
+  if (v.length < 3) return "Location must be at least 3 characters";
+  if (v.length > 50) return "Location must not exceed 50 characters";
+
+  // Allow letters, numbers, spaces, and / , . - #
+  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
+    return "Location may contain only letters, numbers, spaces, and / , . - #";
+    }
+
+  return true;
+};
+
 export const validateQuestion = (value: string): string | true => {
   if (!value) return "Question is required";
 
@@ -734,6 +753,27 @@ export const validateQuestion = (value: string): string | true => {
     return "Only letters, numbers, spaces, and special characters such as / ( ) , . - # ? are allowed.";
   }
 
+  return true;
+};
+export const validateNotificationTitle = (value: string) => {
+  const raw = value || "";
+
+  // Reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Length checks
+  if (raw.length < 5) return "Title must be at least 5 characters";
+  if (raw.length > 100) return "Title must not exceed 100 characters";
+
+  // Disallow any digits (0-9)
+  if (/\d/.test(raw)) return "Title must not contain numbers";
+
+  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
+  if (!/^[A-Za-z ]+$/.test(raw)) {
+    return "Title must contain only letters and spaces";
+    }
   return true;
 };
 export interface TextValidationOptions {
@@ -790,7 +830,6 @@ export const validateAlphabeticTextArea = (
 
   return true;
 };
-
 export default {
   validateName,
   validateEmail,
@@ -813,6 +852,8 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validatePricePerHour,
+  validateLocation,
   validateQuestion,
   validateAlphabeticTextArea,
   validateNotificationTitle,

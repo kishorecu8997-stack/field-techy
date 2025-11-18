@@ -19,7 +19,7 @@ export default function Settings() {
   ];
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="w-full h-full px-4">
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">Settings</p>
       </div>
