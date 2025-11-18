@@ -109,7 +109,10 @@ export default function ManageSubAdmin() {
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">Manage Sub-Admin</p>
         <div className="flex gap-2">
-          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition">
+          <Button
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            onClick={() => navigate(absoluteUrls.admin.home.roleList)}
+          >
             Roles
           </Button>
           <Button

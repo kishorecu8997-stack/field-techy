@@ -56,9 +56,9 @@ export const SelectField = ({
     : options;
 
   return (
-    <div className="flex flex-col p-1">
+    <div className="flex flex-col">
       {isShowLabel && (
-        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
           {label}
           {(required === true || typeof required === "string") && (
             <span className="text-red-600">*</span>
@@ -109,17 +109,18 @@ export const SelectField = ({
                     {/* BUTTON */}
                     <div className="relative">
                       <Listbox.Button
-                        className={`relative w-full rounded-md border text-sm pl-3 pr-10 h-10 flex items-center justify-start text-left transition
-                        ${
-                          disabled
-                            ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                            : "bg-white dark:bg-gray-800 cursor-pointer"
-                        }
-                        ${
-                          error && !disabled
-                            ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                            : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-                        }`}
+                        className={`relative w-full rounded-md border text-base
+              py-3 pl-5 pr-10 flex items-center justify-start text-left
+              ${
+                disabled
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-white dark:bg-gray-800 cursor-pointer"
+              }
+              ${
+                error && !disabled
+                  ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                  : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+              }`}
                       >
                         <div className="flex items-center w-full space-x-2">
                           {leftIcon && (
@@ -150,7 +151,6 @@ export const SelectField = ({
                         leaveTo="opacity-0"
                       >
                         <Listbox.Options className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/10 p-2 focus:outline-none">
-
                           {/* SEARCH BAR — MULTISELECT ONLY */}
                           {multiple && (
                             <div className="flex items-center px-2 mb-2">

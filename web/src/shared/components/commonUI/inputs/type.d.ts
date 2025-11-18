@@ -175,6 +175,9 @@ interface SwitchInputProps {
   name: string;
   label?: string;
   required?: boolean;
+  helperText?: string;
+  disabled?: boolean;
+  className?: string;
 }
 
 /**
