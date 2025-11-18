@@ -8,14 +8,13 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import Popup from "@/shared/components/Popup";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { JobHeaderCardProps } from "../types";
-import { Select } from "@headlessui/react";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { toast } from "react-toastify";
+import type { JobHeaderCardProps } from "../types";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -172,7 +171,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
                         setIsWorkSubmitted?.(true);
-                        toast.success("Work submitted successfully!");
                       }}
                     >
                       Submit Work

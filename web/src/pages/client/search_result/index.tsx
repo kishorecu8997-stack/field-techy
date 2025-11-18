@@ -13,8 +13,8 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
  */
 const SearchResult = () => {
   // State management
-  const [jobs] = useState<Job[]>(sampleJobs);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(sampleJobs);
+  const [jobs] = useState(sampleJobs);
+  const [filteredJobs, setFilteredJobs] = useState(sampleJobs);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -130,7 +130,7 @@ const SearchResult = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3">
             {currentJobs.map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard key={job.id} job={job as Job} />
             ))}
 
             <Pagination

@@ -19,7 +19,6 @@ const OfferPages = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isJobAccepted, setIsJobAccepted] = useState(false);
 
-
   const filter = () => {
     return sampleJobs.find((job) => {
       return job.id === Number(params.jobId);
