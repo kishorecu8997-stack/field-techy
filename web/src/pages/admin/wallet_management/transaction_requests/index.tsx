@@ -5,11 +5,10 @@ import PendingTable from "./PendingTable";
 import RejectedTable from "./RejectedTable";
 
 /**
- * ManageTransactions Component
+ * WalletTransactionRequests Component
  *
- * @component
- * @description Displays and manages different types of transaction tabs including
- * Engineer Payouts, Milestone Approvals, Dispute Resolutions, and Refunds.
+ * Renders a table of transaction requests with client info, job details, and actions.
+ * @returns {JSX.Element} The transaction requests management view.
  */
 export default function WalletTransactionRequests() {
   const tabs = [
