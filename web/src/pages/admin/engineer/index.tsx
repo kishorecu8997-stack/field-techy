@@ -198,7 +198,7 @@ const ManageEngineer: React.FC = () => {
         </div>
       </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <SearchInput />
           <SelectMenu
             className="absolute z-20"

@@ -108,6 +108,7 @@ export interface ImageUploadFieldProps {
   rules?: RegisterOptions;
   maxSize?: number;
   accept?: string;
+  allowUpload?: boolean;
 }
 
 /**
@@ -174,6 +175,9 @@ interface SwitchInputProps {
   name: string;
   label?: string;
   required?: boolean;
+  helperText?: string;
+  disabled?: boolean;
+  className?: string;
 }
 
 /**

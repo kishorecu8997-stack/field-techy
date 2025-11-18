@@ -729,6 +729,28 @@ export const validateLocation = (value: string) => {
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Location may contain only letters, numbers, spaces, and / , . - #";
+    }
+
+  return true;
+};
+
+export const validateQuestion = (value: string): string | true => {
+  if (!value) return "Question is required";
+
+  if (/^\s|\s$/.test(value)) {
+    return "Question must not start or end with a space";
+  }
+
+  if (/\s{2,}/.test(value)) {
+    return "Question must not contain consecutive spaces";
+  }
+
+  if (value.length < 5) return "Question must be at least 5 characters";
+  if (value.length > 200) return "Question must not exceed 200 characters";
+
+  // Allow: letters, numbers, spaces, and / , . - # ( ) ?
+  if (!/^[A-Za-z0-9\s/,.#()?-]+$/.test(value)) {
+    return "Only letters, numbers, spaces, and special characters such as / ( ) , . - # ? are allowed.";
   }
 
   return true;
@@ -751,6 +773,59 @@ export const validateNotificationTitle = (value: string) => {
   // Allow only letters and spaces (no emojis, no symbols, no punctuation)
   if (!/^[A-Za-z ]+$/.test(raw)) {
     return "Title must contain only letters and spaces";
+    }
+  return true;
+};
+export interface TextValidationOptions {
+  minLength?: number;
+  maxLength?: number;
+  regex?: RegExp;
+  required?: boolean;
+}
+
+export const validateAlphabeticTextArea = (
+  value: string,
+  options: TextValidationOptions = {}
+): string | true => {
+  const { minLength = 1, maxLength = Infinity, required = true } = options;
+
+  const v = value || "";
+
+  if (required && !v) {
+    return "This field is required";
+  }
+
+  if (!required && !v) {
+    return true;
+  }
+
+  if (v.startsWith(" ") || v.endsWith(" ")) {
+    return "Leading or trailing spaces are not allowed";
+  }
+
+  if (/ {2,}/.test(v)) {
+    return "Consecutive spaces are not allowed";
+  }
+
+  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
+  const pattern =
+    options?.regex instanceof RegExp ? options.regex : defaultPattern;
+
+  if (!pattern.test(v)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
+  }
+
+  // Cross-Site Scripting (XSS) check
+  if (v !== xss(v)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  if (v.length < minLength) {
+    return `Minimum length is ${minLength} characters`;
+  }
+  if (v.length > maxLength) {
+    return `Maximum length is ${maxLength} characters`;
   }
 
   return true;
@@ -779,6 +854,8 @@ export default {
   CommissionValidation,
   validatePricePerHour,
   validateLocation,
+  validateQuestion,
+  validateAlphabeticTextArea,
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,

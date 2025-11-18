@@ -164,11 +164,23 @@ const ManageNotificationAdd = React.lazy(
   () => import("@/pages/admin/manage_notification/AddNotification")
 );
 const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
+const AddSubAdmin = React.lazy(
+  () => import("@/pages/admin/sub_admin/AddSubAdmin")
+);
+const EditSubAdmin = React.lazy(
+  () => import("@/pages/admin/sub_admin/EditSubAdmin")
+);
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification")
+);
+const adminEditRolePage = React.lazy(
+  () => import("@/pages/admin/sub_admin/role_pages/PermissionList")
+);
+const roleListPage = React.lazy(
+  () => import("@/pages/admin/sub_admin/role_pages/RolePage")
 );
 
 /**
@@ -444,6 +456,14 @@ export const routes = createBrowserRouter([
             element: withSuspense(ManageSubAdmin),
           },
           {
+            path: urls.admin.home.manage_sub_admin_add,
+            element: withSuspense(AddSubAdmin),
+          },
+          {
+            path: urls.admin.home.manage_sub_admin_edit,
+            element: withSuspense(EditSubAdmin),
+          },
+          {
             path: urls.admin.home.manage_cms,
             element: withSuspense(ManageCMS),
           },
@@ -455,6 +475,14 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.received_notification,
             element: withSuspense(ReceivedNotification),
+          },
+          {
+            path: urls.admin.home.edit_role,
+            element: withSuspense(adminEditRolePage),
+          },
+          {
+            path: urls.admin.home.roleList,
+            element: withSuspense(roleListPage),
           },
         ],
       },

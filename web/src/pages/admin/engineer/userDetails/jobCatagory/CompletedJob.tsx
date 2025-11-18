@@ -119,7 +119,12 @@ const CompletedJob: React.FC = () => {
             />
           </div>
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
-            <CiEdit className="text-blue-600" />
+            <CiEdit
+              className="text-blue-600"
+              onClick={() =>
+                navigate(absoluteUrls.admin.home.manage_categories_edit)
+              }
+            />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">
             <RiDeleteBin6Line className="text-red-600" />

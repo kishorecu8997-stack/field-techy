@@ -113,7 +113,7 @@ export function CustomTable<T>({
             <>
               <div className="hidden md:block w-full">
                 <table className="w-full border-collapse">
-                  <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-20 ">
+                  <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                     <tr>
                       {columns.map((col) => (
                         <th

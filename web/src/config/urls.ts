@@ -8,7 +8,7 @@
  * - Use relative paths only for route definitions
  * - Group related routes under common base
  * - Use consistent naming
- * 
+ *
  * this should be use to app routes definitions etc.
  */
 export const BASE = {
@@ -92,12 +92,13 @@ export const urls = {
       manage_categories_add: "categories/add",
       manage_categories_edit: "categories/edit",
       manage_rate_card: "rate-card",
+      edit_role: "edit-role",
+      manage_notification_add: "notifications/add",
       manage_payment: "revenue",
       manage_transactions: "transaction",
       wallet_overview: "wallet-overview",
       wallet_transaction_requests: "wallet-requests",
       manage_notification: "notifications",
-      manage_notification_add: "notifications/add",
       manage_sub_admin: "sub-admins",
       manage_sub_admin_add: "sub-admins/add",
       manage_sub_admin_edit: "sub-admins/edit",
@@ -105,6 +106,7 @@ export const urls = {
       settings: "settings",
       profile: "profile",
       received_notification: "received-notification",
+      roleList: "roles",
       edit_rate_card: "rate-card/edit",
       view_rate_card: "rate-card/view",
       add_rate_card: "rate-card/add",
@@ -189,10 +191,14 @@ export const absoluteUrls = {
       manage_notification: `${BASE.ADMIN}/notifications`,
       manage_notification_add: `${BASE.ADMIN}/notifications/add`,
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
+      manage_sub_admin_add: `${BASE.ADMIN}/sub-admins/add`,
+      manage_sub_admin_edit: `${BASE.ADMIN}/sub-admins/edit`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_role: `${BASE.ADMIN}/edit-role`,
+      roleList: `${BASE.ADMIN}/roles`,
       edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
       view_rate_card: `${BASE.ADMIN}/rate-card/view`,
       add_rate_card: `${BASE.ADMIN}/rate-card/add`,

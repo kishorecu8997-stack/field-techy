@@ -1,8 +1,12 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
 import type { PaymentProps } from "@/pages/admin/payment/types";
-import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
+import type {
+  PermissionListType,
+  RoleListType,
+} from "@/pages/admin/sub_admin/types";
 import type { RateCardProps } from "@/pages/admin/rate_card/types";
 import type { NotificationProps } from "./manageNotification";
+import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -103,53 +107,73 @@ export const RateCardData: RateCardProps[] = [
 export const PaymentData: PaymentProps[] = [
   {
     id: "RC-001",
-    clientDetails: "TechnoBuild Pvt. Ltd.",
+    clientDetails: {
+      name: "ABC Industries",
+      email: "abc@abc.com",
+      phone: "1234567890",
+    },
     jobTitle: "Electrical Maintenance",
     jobDescription:
       "Routine inspection and repair of industrial electrical systems.",
-    amount: "₹15,000",
+    amount: "$15,000",
     engineerDetails: "Rahul Mehta (ENG-1021)",
     clientStatus: "Approved",
     adminStatus: "Verified",
   },
   {
     id: "RC-002",
-    clientDetails: "Green Energy Co.",
+    clientDetails: {
+      name: "Green Energy Co.",
+      email: "greenenergy@co.com",
+      phone: "0987654321",
+    },
     jobTitle: "Solar Panel Installation",
     jobDescription: "Complete rooftop solar setup for a 5KW system.",
-    amount: "₹42,000",
+    amount: "$42,000",
     engineerDetails: "Priya Sharma (ENG-1044)",
     clientStatus: "Pending",
     adminStatus: "Under Review",
   },
   {
     id: "RC-003",
-    clientDetails: "BlueLine Apartments",
+    clientDetails: {
+      name: "BlueLine Apartments",
+      email: "blueline@apartments.com",
+      phone: "1122334455",
+    },
     jobTitle: "Plumbing Overhaul",
     jobDescription:
       "Replacement of old water lines and fixtures across 12 units.",
-    amount: "₹28,500",
+    amount: "$28,500",
     engineerDetails: "Vikram Rao (ENG-1009)",
     clientStatus: "In Progress",
     adminStatus: "Approved",
   },
   {
     id: "RC-004",
-    clientDetails: "SmartLiving Interiors",
+    clientDetails: {
+      name: "SmartLiving Interiors",
+      email: "smartliving@interiors.com",
+      phone: "6677889900",
+    },
     jobTitle: "Interior Electrical Setup",
     jobDescription: "Full wiring and lighting setup for new luxury apartment.",
-    amount: "₹36,000",
+    amount: "$36,000",
     engineerDetails: "Sneha Patel (ENG-1078)",
     clientStatus: "Completed",
     adminStatus: "Approved",
   },
   {
     id: "RC-005",
-    clientDetails: "Urban Spaces Ltd.",
+    clientDetails: {
+      name: "Urban Spaces Ltd.",
+      email: "urbanspaces@ltd.com",
+      phone: "5566778899",
+    },
     jobTitle: "HVAC System Installation",
     jobDescription:
       "Air conditioning and ventilation setup for office floors 3–6.",
-    amount: "₹55,000",
+    amount: "$55,000",
     engineerDetails: "Amit Verma (ENG-1035)",
     clientStatus: "Cancelled",
     adminStatus: "Rejected",
@@ -213,48 +237,200 @@ export const notifications: NotificationProps[] = [
   },
 ];
 
+export const permissionList: PermissionListType[] = [
+  {
+    id: "1",
+    moduleName: "Rate Card",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+  {
+    id: "2",
+    moduleName: "Notification",
+    addAndEdit: true,
+    view: false,
+    delete: true,
+  },
+  {
+    id: "3",
+    moduleName: "Job Category",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+  {
+    id: "4",
+    moduleName: "Sub Admin",
+    addAndEdit: true,
+    view: true,
+    delete: true,
+  },
+  {
+    id: "5",
+    moduleName: "Payment",
+    addAndEdit: true,
+    view: true,
+    delete: false,
+  },
+];
 
-export const engineerData: EngineerPage[] = [
+export const roleData: RoleListType[] = [
   {
-    sno: 1,
-    details: {
-      name: "Arjun Mehta",
-      phone: "+91 98765 43210",
-    },
-    walletBalance: 12500.75,
+    id: "1",
+    roleName: "Manage Clients",
+    status: true,
+    permissionList: [
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "4",
+        moduleName: "Sub Admin",
+        addAndEdit: true,
+        view: true,
+        delete: true,
+      },
+    ],
   },
   {
-    sno: 2,
-    details: {
-      name: "Priya Sharma",
-      phone: "+91 99887 65432",
-    },
-    walletBalance: 8450.0,
+    id: "2",
+    roleName: "Manage Payment",
+    status: true,
+    permissionList: [
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+    ],
   },
   {
-    sno: 3,
-    details: {
-      name: "Rohit Verma",
-      phone: "+91 91234 56789",
-    },
-    walletBalance: 15780.5,
+    id: "3",
+    roleName: "Manage Rate Card",
+    status: true,
+    permissionList: [
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+    ],
   },
   {
-    sno: 4,
-    details: {
-      name: "Sneha Iyer",
-      phone: "+91 90011 22334",
-    },
-    walletBalance: 11200.25,
+    id: "4",
+    roleName: "Manage Clients",
+    status: true,
+    permissionList: [
+      {
+        id: "1",
+        moduleName: "Rate Card",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "2",
+        moduleName: "Notification",
+        addAndEdit: true,
+        view: false,
+        delete: true,
+      },
+      {
+        id: "3",
+        moduleName: "Job Category",
+        addAndEdit: true,
+        view: true,
+        delete: false,
+      },
+      {
+        id: "4",
+        moduleName: "Sub Admin",
+        addAndEdit: true,
+        view: true,
+        delete: true,
+      },
+    ],
   },
-  {
-    sno: 5,
-    details: {
-      name: "Karan Patel",
-      phone: "+91 90909 11122",
-    },
-    walletBalance: 9800.0,
-  },
+];
+export const rateCardTypes = [
+  { label: "Master Rate Card", value: "masterRateCard" },
+  { label: "Client Specific Rate Card", value: "clientSpecificRateCard" },
+  { label: "Project Specific Rate Card", value: "projectSpecificRateCard" },
+];
+
+export const ClientNameList = [
+  { label: "Client 1", value: "client1" },
+  { label: "Client 2", value: "client2" },
+  { label: "Client 3", value: "client3" },
+];
+
+export const projectNameList = [
+  { label: "Project 1", value: "project1" },
+  { label: "Project 2", value: "project2" },
+  { label: "Project 3", value: "project3" },
+];
+
+export const regionList = [
+  { label: "Region 1", value: "region1" },
+  { label: "Region 2", value: "region2" },
+  { label: "Region 3", value: "region3" },
+];
+
+export const countryList = [
+  { label: "Country 1", value: "country1" },
+  { label: "Country 2", value: "country2" },
+  { label: "Country 3", value: "country3" },
 ];
 
 
@@ -308,6 +484,51 @@ export const transactionRequest: TransactionRequest[] = [
 ];
 
 
+
+export const engineerData: EngineerPage[] = [
+  {
+    sno: 1,
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+    },
+    walletBalance: 12500.75,
+  },
+  {
+    sno: 2,
+    details: {
+      name: "Priya Sharma",
+      phone: "+91 99887 65432",
+    },
+    walletBalance: 8450.0,
+  },
+  {
+    sno: 3,
+    details: {
+      name: "Rohit Verma",
+      phone: "+91 91234 56789",
+    },
+    walletBalance: 15780.5,
+  },
+  {
+    sno: 4,
+    details: {
+      name: "Sneha Iyer",
+      phone: "+91 90011 22334",
+    },
+    walletBalance: 11200.25,
+  },
+  {
+    sno: 5,
+    details: {
+      name: "Karan Patel",
+      phone: "+91 90909 11122",
+    },
+    walletBalance: 9800.0,
+  },
+];
+
+
 export const options = [
   {
     value: "approved",
@@ -317,34 +538,4 @@ export const options = [
     value: "rejected",
     label: "Rejected",
   },
-];
-
-export const rateCardTypes = [
-  { label: "Master Rate Card", value: "masterRateCard" },
-  { label: "Client Specific Rate Card", value: "clientSpecificRateCard" },
-  { label: "Project Specific Rate Card", value: "projectSpecificRateCard" },
-];
-
-export const ClientNameList = [
-  { label: "Client 1", value: "client1" },
-  { label: "Client 2", value: "client2" },
-  { label: "Client 3", value: "client3" },
-];
-
-export const projectNameList = [
-  { label: "Project 1", value: "project1" },
-  { label: "Project 2", value: "project2" },
-  { label: "Project 3", value: "project3" },
-];
-
-export const regionList = [
-  { label: "Region 1", value: "region1" },
-  { label: "Region 2", value: "region2" },
-  { label: "Region 3", value: "region3" },
-];
-
-export const countryList = [
-  { label: "Country 1", value: "country1" },
-  { label: "Country 2", value: "country2" },
-  { label: "Country 3", value: "country3" },
 ];
