@@ -1,5 +1,5 @@
 import { adminEngineer, adminClient } from "@/dummy_data/adminDashboard";
-import StatCard from "@/shared/components/AdminCard";
+import StateCard from "@/shared/components/AdminCard";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 
 /**
@@ -22,7 +22,7 @@ export default function Users() {
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {adminEngineer.map((s, i) => (
-            <StatCard
+            <StateCard
               key={i}
               title={s.title}
               value={s.value}
@@ -39,7 +39,7 @@ export default function Users() {
       content: (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {adminClient.map((s, i) => (
-            <StatCard
+            <StateCard
               key={i}
               title={s.title}
               value={s.value}

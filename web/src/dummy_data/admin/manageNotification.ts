@@ -7,7 +7,7 @@ export const MANAGE_NOTIFICATION_TYPE = {
 export type ManageNotificationType =
   (typeof MANAGE_NOTIFICATION_TYPE)[keyof typeof MANAGE_NOTIFICATION_TYPE];
 export interface NotificationProps {
-  id: number;
+  id: number | string;
   title: string;
   message: string;
   type: ManageNotificationType;
