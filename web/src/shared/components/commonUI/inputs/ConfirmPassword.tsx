@@ -4,8 +4,6 @@ import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 import type { ConfirmPasswordInputProps } from "./type";
 
-
-
 /**
  * ConfirmPasswordInput - A reusable confirm password input component for react-hook-form.
  *
@@ -23,31 +21,55 @@ export const ConfirmPassword = ({
   placeholder,
   required = false,
   rules,
+  isShowLabel=true,
 }: ConfirmPasswordInputProps) => {
   const { control, watch } = useFormContext();
   const [showPassword, setShowPassword] = useState(false);
 
-  const passwordValue = watch(passwordField); // get the original password value
+  const passwordValue = watch(passwordField);
 
-  // Merge default rules (required + match password) with custom rules
-  const validationRules: RegisterOptions = {
-    required: required ? `${label || name} is required` : false,
-    validate: (value: string) =>
-      value === passwordValue || "Passwords do not match",
+  // Handle required message
+  let requiredMessage: string | false = false;
+  if (typeof required === "string") {
+    requiredMessage = required;
+  } else if (required === true) {
+    requiredMessage = `${label || name} is required`;
+  }
+
+  // Build validate function(s)
+  const baseValidate = (value: string) =>
+    value === passwordValue || "Passwords do not match";
+
+  const finalRules: RegisterOptions = {
+    required: requiredMessage,
     ...rules,
   };
 
+  // If user provided validate, merge it with our match validation
+  if (rules?.validate) {
+    const userValidate = rules.validate;
+
+    finalRules.validate = {
+      matchesPassword: baseValidate,
+      ...(typeof userValidate === "function"
+        ? { custom: userValidate }
+        : userValidate),
+    };
+  } else {
+    finalRules.validate = baseValidate;
+  }
+
   return (
     <div className="flex flex-col py-1">
-      {label && (
+      {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+          {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
         name={name}
         control={control}
-        rules={validationRules}
+        rules={finalRules}
         render={({ field, fieldState: { error } }) => (
           <>
             <div className="relative">
@@ -62,6 +84,7 @@ export const ConfirmPassword = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
                   <IoIosEyeOff className="text-xl h-6 w-6" />

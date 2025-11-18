@@ -9,18 +9,17 @@ import { useForm } from "react-hook-form";
 import type { ProfileFormData } from "./types";
 import { toast } from "react-toastify";
 
-
 /**
- * PersonalDetails component renders a form for users to update their personal profile details.
- * Utilizes react-hook-form for form state management and validation.
- * Handles fields for name, email, phone number, and profile image.
+ * `PersonalDetails` is a component that renders a form for updating a user's personal information.
+ * It includes fields for name, email, phone number, and a profile image.
+ * The component uses `react-hook-form` for state management and validation.
  *
- * @component
+ * **Note:** This component currently initializes with empty default values. For a real-world
+ * application, it should fetch the current user's data and populate the form with it.
+ *
+ * @returns {JSX.Element} The rendered personal details form.
  */
 export default function PersonalDetails() {
-  /**
-   * React Hook Form methods for managing form state and validation.
-   */
   const methods = useForm<ProfileFormData>({
     defaultValues: {
       name: "",
@@ -29,13 +28,7 @@ export default function PersonalDetails() {
       profileImage: null,
     },
   });
-
-  /**
-   * Handles form submission. Currently logs to console on submit.
-   * @returns {void}
-   */
   const handleSubmit = () => {
-    // console.log("Profile Submitted");
     toast.success("Profile Updated Successfully!");
   };
 

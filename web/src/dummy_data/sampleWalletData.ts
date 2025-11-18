@@ -1,4 +1,4 @@
-import type { WalletData, Transaction } from '@/pages/client/my_wallet/types';
+import type { WalletData } from '@/pages/client/my_wallet/types';
 
 const today = new Date();
 const yesterday = new Date(today);

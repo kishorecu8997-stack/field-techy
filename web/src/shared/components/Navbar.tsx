@@ -4,8 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { Link, NavLink } from "react-router-dom";
-import Drawer from "./Drawer";
 import { JobSearchBar } from "./JobSearchBar";
+import useDrawerStore from "../store/useDrawerStore";
+import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 
 
@@ -28,6 +29,7 @@ import type { NavbarProps } from "./type";
 const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const { setActiveKey } = useDrawerStore();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,7 +54,11 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
       <div className="flex items-center space-x-8 ">
-        <img src={assetsConfig.logos.ftLogo} alt="FT Logo" className="h-12 w-auto" />
+        <img
+          src={assetsConfig.logos.ftLogo}
+          alt="FT Logo"
+          className="h-12 w-auto"
+        />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
           <NavLink
             to={absoluteUrls.engineer.home.my_jobs}
@@ -60,12 +66,17 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           >
             My Jobs
           </NavLink>
-          <NavLink
-            to={absoluteUrls.engineer.home.my_jobs}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+          <div
+            // to={absoluteUrls.engineer.home.my_jobs}
+
+            onClick={() => {
+              onDrawerToggle();
+              setActiveKey("myEarning");
+            }}
+            className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
           >
             Earning
-          </NavLink>
+          </div>
         </nav>
       </div>
 
@@ -136,7 +147,13 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             3
           </span>
         </button>
-        <button className="p-2 text-gray-600 hover:text-gray-900">
+        <button
+          className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          onClick={() => {
+            onDrawerToggle();
+            setActiveKey("notification");
+          }}
+        >
           <FaBell size={20} />
         </button>
         <button
