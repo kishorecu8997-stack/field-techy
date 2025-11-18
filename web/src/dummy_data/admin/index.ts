@@ -1,7 +1,7 @@
 import type { ServerCategoryProps } from "@/pages/admin/job_category";
-import type { NotificationProps } from "@/pages/admin/manage_notification";
 import type { PaymentProps } from "@/pages/admin/payment/types";
 import type { RateCardProps } from "@/pages/admin/rate_card/types";
+import type { NotificationProps } from "./manageNotification";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -102,56 +102,76 @@ export const RateCardData: RateCardProps[] = [
 export const PaymentData: PaymentProps[] = [
   {
     id: "RC-001",
-    clientDetails: "TechnoBuild Pvt. Ltd.",
+    clientDetails: {
+      name: "Rahul Mehta",
+      email: "rahul@example.com",
+      phone: "1234567890",
+    },
     jobTitle: "Electrical Maintenance",
     jobDescription:
       "Routine inspection and repair of industrial electrical systems.",
-    amount: "₹15,000",
+    amount: "$15,000",
     engineerDetails: "Rahul Mehta (ENG-1021)",
-    clientStatus: "Approved",
-    adminStatus: "Verified",
+    clientStatus: "approved",
+    adminStatus: "approved",
   },
   {
     id: "RC-002",
-    clientDetails: "Green Energy Co.",
+    clientDetails: {
+      name: "Green Energy Co.",
+      email: "green@example.com",
+      phone: "9876543210",
+    },
     jobTitle: "Solar Panel Installation",
     jobDescription: "Complete rooftop solar setup for a 5KW system.",
-    amount: "₹42,000",
+    amount: "$42,000",
     engineerDetails: "Priya Sharma (ENG-1044)",
-    clientStatus: "Pending",
-    adminStatus: "Under Review",
+    clientStatus: "pending",
+    adminStatus: "approved",
   },
   {
     id: "RC-003",
-    clientDetails: "BlueLine Apartments",
+    clientDetails: {
+      name: "BlueLine Apartments",
+      email: "blue@example.com",
+      phone: "8765432109",
+    },
     jobTitle: "Plumbing Overhaul",
     jobDescription:
       "Replacement of old water lines and fixtures across 12 units.",
-    amount: "₹28,500",
+    amount: "$28,500",
     engineerDetails: "Vikram Rao (ENG-1009)",
-    clientStatus: "In Progress",
-    adminStatus: "Approved",
+    clientStatus: "inProgress",
+    adminStatus: "approved",
   },
   {
     id: "RC-004",
-    clientDetails: "SmartLiving Interiors",
+    clientDetails: {
+      name: "SmartLiving Interiors",
+      email: "smart@example.com",
+      phone: "7654321098",
+    },
     jobTitle: "Interior Electrical Setup",
     jobDescription: "Full wiring and lighting setup for new luxury apartment.",
-    amount: "₹36,000",
+    amount: "$36,000",
     engineerDetails: "Sneha Patel (ENG-1078)",
-    clientStatus: "Completed",
-    adminStatus: "Approved",
+    clientStatus: "completed",
+    adminStatus: "approved",
   },
   {
     id: "RC-005",
-    clientDetails: "Urban Spaces Ltd.",
+    clientDetails: {
+      name: "Urban Spaces Ltd.",
+      email: "urban@example.com",
+      phone: "6543210987",
+    },
     jobTitle: "HVAC System Installation",
     jobDescription:
       "Air conditioning and ventilation setup for office floors 3–6.",
-    amount: "₹55,000",
+    amount: "$55,000",
     engineerDetails: "Amit Verma (ENG-1035)",
-    clientStatus: "Cancelled",
-    adminStatus: "Rejected",
+    clientStatus: "cancelled",
+    adminStatus: "rejected",
   },
 ];
 
@@ -161,8 +181,8 @@ export const notificationData: NotificationProps[] = [
     title: "Payment Released",
     message:
       "Payment of ₹15,000 has been successfully released to Engineer Rahul Mehta.",
-    type: "Credit",
-    sendTo: "Rahul Mehta (ENG-1021)",
+    type: "broadcast",
+    sendTo: "subAdmin",
     createdDate: "2024-11-01",
   },
   {
@@ -170,37 +190,47 @@ export const notificationData: NotificationProps[] = [
     title: "Invoice Generated",
     message:
       "Invoice INV-5647 for ₹42,000 has been generated for Green Energy Co.",
-    type: "Invoice",
-    sendTo: "Green Energy Co.",
     createdDate: "2024-10-27",
+    type: "email",
+    sendTo: "client",
   },
   {
     id: "PAY-003",
     title: "Refund Processed",
     message: "Refund of ₹12,500 has been processed to client Urban Spaces Ltd.",
-    type: "Refund",
-    sendTo: "Urban Spaces Ltd.",
     createdDate: "2024-10-15",
+    type: "email",
+    sendTo: "client",
   },
   {
     id: "PAY-004",
     title: "Payment Pending",
     message:
       "Awaiting admin approval for ₹28,000 to be credited to Sneha Patel.",
-    type: "Pending",
-    sendTo: "Sneha Patel (ENG-1078)",
     createdDate: "2024-09-29",
+    type: "notification",
+    sendTo: "engineer",
   },
   {
     id: "PAY-005",
     title: "Partial Payment Released",
     message: "50% advance payment of ₹20,000 has been sent to Amit Verma.",
-    type: "Credit",
-    sendTo: "Amit Verma (ENG-1035)",
     createdDate: "2024-09-10",
+    type: "notification",
+    sendTo: "Users",
   },
 ];
 
+export const options = [
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
+];
 export const rateCardTypes = [
   { label: "Master Rate Card", value: "masterRateCard" },
   { label: "Client Specific Rate Card", value: "clientSpecificRateCard" },
