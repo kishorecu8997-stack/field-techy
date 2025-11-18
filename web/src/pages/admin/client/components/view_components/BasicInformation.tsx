@@ -59,22 +59,22 @@ const BasicInformation: React.FC<CompanyInfo> = ({
           {/* Left Column Info */}
           <div className="w-full space-y-4">
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Company Name</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Company Name</div>
               <div className="font-semibold text-gray-800 dark:text-white">{companyName}</div>
             </div>
             
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Business Type</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Business Type</div>
               <div className="font-semibold text-gray-800 dark:text-white">{businessType}</div>
             </div>
             
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Country</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Country</div>
               <div className="font-semibold text-gray-800 dark:text-white">{country}</div>
             </div>
             
             <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Postal Code</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Postal Code</div>
               <div className="font-semibold text-gray-800 dark:text-white">{postalCode}</div>
             </div>
           </div>
@@ -83,22 +83,22 @@ const BasicInformation: React.FC<CompanyInfo> = ({
         {/* Middle Column Info */}
         <div className="lg:w-1/4 flex flex-col space-y-4">
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Contact Person Name</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Contact Person Name</div>
             <div className="font-semibold text-gray-800 dark:text-white">{contactPersonName}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Industry</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Industry</div>
             <div className="font-semibold text-gray-800 dark:text-white">{industry}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">State</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">State</div>
             <div className="font-semibold text-gray-800 dark:text-white">{state}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Tax Document (VAT)</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Tax Document (VAT)</div>
             <div className="font-semibold text-gray-800 dark:text-white">{taxDocument}</div>
           </div>
         </div>
@@ -106,22 +106,22 @@ const BasicInformation: React.FC<CompanyInfo> = ({
         {/* Right Column Info */}
         <div className="lg:w-1/2 flex flex-col space-y-4">
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Phone Number</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Phone Number</div>
             <div className="font-semibold text-gray-800 dark:text-white">{phoneNumber}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Address</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Address</div>
             <div className="font-semibold text-gray-800 dark:text-white">{address}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">City</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">City</div>
             <div className="font-semibold text-gray-800 dark:text-white">{city}</div>
           </div>
           
           <div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">VAT Registration Number</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">VAT Registration Number</div>
             <div className="font-semibold text-gray-800 dark:text-white">{vatRegistrationNumber}</div>
           </div>
         </div>

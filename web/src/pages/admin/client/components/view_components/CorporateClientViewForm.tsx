@@ -8,6 +8,7 @@ import { ClientViewData } from "@/dummy_data/ClientViewData";
 import WalletTab from "./WalletTab";
 import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
+import { toast } from "react-toastify";
 
 
 /**
@@ -55,7 +56,7 @@ const CorporateClientViewForm: React.FC = () => {
           variant="primary"
           size="sm"
           className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
-          onClick={() => alert("Client Blocked")}
+          onClick={() => toast.success("Client has been blocked successfully!") }
         >
           Block Client
         </Button>

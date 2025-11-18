@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import ClientDocuments from "../ClientDocuments"; 
+import ClientDocuments from "../Documents"; 
 import { FormProvider, useForm } from "react-hook-form";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";

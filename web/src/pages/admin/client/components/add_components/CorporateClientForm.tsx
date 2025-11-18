@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import ClientAdd from "../ClientAdd";
-import ClientDocuments from "../ClientDocuments";
+import Documents from "../Documents";
 import { FormProvider, useForm } from "react-hook-form";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
@@ -33,17 +33,12 @@ const CorporateClientForm: React.FC = () => {
       state: "",
       postalCode: "",
       vatRegistrationNumber: "",
-      governmentIDProof: null,
-      qualificationCertificate: null,
+      governmentIDProof: "",
+      qualificationCertificate: "",
     },
   });
 
   const { trigger } = methods;
-
-  /**
-   * Handles the "Next" button click.
-   * Validates the current tab's fields and, if valid, moves to the next tab.
-   */
   const handleNext = async () => {
     let isValid = false;
 
@@ -61,19 +56,19 @@ const CorporateClientForm: React.FC = () => {
         "state",
         "postalCode",
         "vatRegistrationNumber",
-        "governmentIDProof",
-        "qualificationCertificate",
       ]);
       if (isValid) {
         setActiveTab("Documents");
       }
+    } else if (activeTab === "Documents") {
+      isValid = await trigger([
+        "governmentIDProof",
+        "qualificationCertificate",
+      ]);
     }
   };
 
-  /**
-   * Handles the "Save" button click.
-   * Validates all form fields, and if valid, simulates form submission, shows a toast, and resets the form.
-   */
+
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
@@ -97,12 +92,15 @@ const CorporateClientForm: React.FC = () => {
     {
       label: "Basic Information",
       content: <ClientAdd />,
+      hide: false,
     },
     {
       label: "Documents",
-      content: <ClientDocuments />,
+      content: <Documents />,
+      hide: false,
     },
   ];
+
   const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">

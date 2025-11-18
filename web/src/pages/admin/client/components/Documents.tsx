@@ -29,7 +29,7 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
  *
  * @returns {JSX.Element} A form section for document uploads.
  */
-export default function ClientDocuments() {
+export default function Documents() {
   const methods = useFormContext<ClientFormData>();
   const handleSubmit = (data: ClientFormData) => {
     console.log("Documents submitted:", data);
