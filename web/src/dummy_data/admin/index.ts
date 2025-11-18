@@ -200,3 +200,33 @@ export const notificationData: NotificationProps[] = [
     createdDate: "2024-09-10",
   },
 ];
+
+export const rateCardTypes = [
+  { label: "Master Rate Card", value: "masterRateCard" },
+  { label: "Client Specific Rate Card", value: "clientSpecificRateCard" },
+  { label: "Project Specific Rate Card", value: "projectSpecificRateCard" },
+];
+
+export const ClientNameList = [
+  { label: "Client 1", value: "client1" },
+  { label: "Client 2", value: "client2" },
+  { label: "Client 3", value: "client3" },
+];
+
+export const projectNameList = [
+  { label: "Project 1", value: "project1" },
+  { label: "Project 2", value: "project2" },
+  { label: "Project 3", value: "project3" },
+];
+
+export const regionList = [
+  { label: "Region 1", value: "region1" },
+  { label: "Region 2", value: "region2" },
+  { label: "Region 3", value: "region3" },
+];
+
+export const countryList = [
+  { label: "Country 1", value: "country1" },
+  { label: "Country 2", value: "country2" },
+  { label: "Country 3", value: "country3" },
+];

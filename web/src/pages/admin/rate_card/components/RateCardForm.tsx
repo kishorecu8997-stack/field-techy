@@ -1,6 +1,16 @@
+import { ClientNameList, countryList, projectNameList, rateCardTypes, regionList } from "@/dummy_data/admin";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 
+/*
+ * RateCardForm
+ *
+ * A form component for creating or editing a rate card.
+ * Displays a form with fields for rate card type, client name, project name,
+ * region, and country. Renders a SelectField component for each field.
+ *
+ * @returns {JSX.Element} The rendered rate card form.
+ */
 const RateCardForm = () => {
   const ctx = useFormContext();
 
@@ -13,17 +23,7 @@ const RateCardForm = () => {
           name="rateType"
           label="Rate Card Type"
           required
-          options={[
-            { label: "Master Rate Card", value: "masterRateCard" },
-            {
-              label: "Client Specific Rate Card",
-              value: "clientSpecificRateCard",
-            },
-            {
-              label: "Project Specific Rate Card",
-              value: "projectSpecificRateCard",
-            },
-          ]}
+          options={rateCardTypes}
         />
         {watchRateType === "clientSpecificRateCard" && (
           <SelectField
@@ -31,11 +31,7 @@ const RateCardForm = () => {
             label="Client Name"
             required
             multiple
-            options={[
-              { label: "Client 1", value: "client1" },
-              { label: "Client 2", value: "client2" },
-              { label: "Client 3", value: "client3" },
-            ]}
+            options={ClientNameList}
           />
         )}
         {watchRateType === "projectSpecificRateCard" && (
@@ -44,30 +40,18 @@ const RateCardForm = () => {
               name="projectName"
               label="Project Name"
               required
-              options={[
-                { label: "Project 1", value: "project1" },
-                { label: "Project 2", value: "project2" },
-                { label: "Project 3", value: "project3" },
-              ]}
+              options={projectNameList}
             />
             <SelectField
               name="clientNameOfProject"
               label="Client Name of Project"
-              required  
-              options={[
-                { label: "Client 1", value: "client1" },
-                { label: "Client 2", value: "client2" },
-                { label: "Client 3", value: "client3" },
-              ]}
+              required
+              options={ClientNameList}
             />
             <SelectField
               name="region"
               label="Region"
-              options={[
-                { label: "Region 1", value: "region1" },
-                { label: "Region 2", value: "region2" },
-                { label: "Region 3", value: "region3" },
-              ]}
+              options={regionList}
             />
           </>
         )}
@@ -75,11 +59,7 @@ const RateCardForm = () => {
           name="country"
           required
           label="Country"
-          options={[
-            { label: "Country 1", value: "country1" },
-            { label: "Country 2", value: "country2" },
-            { label: "Country 3", value: "country3" },
-          ]}
+          options={countryList}
         />
       </div>
     </div>

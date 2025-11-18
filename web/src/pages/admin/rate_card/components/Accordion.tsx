@@ -1,3 +1,4 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import React, { useState } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
@@ -13,10 +14,9 @@ export const Accordion: React.FC<{
 
   return (
     <div className="border-b border-gray-300 dark:border-gray-600">
-      <button
-        type="button"
+      <div
         onClick={() => setOpen(!open)}
-        className="w-full flex justify-between items-center py-3 text-lg font-semibold text-gray-800 dark:text-neutral-200"
+        className="w-full flex justify-between items-center py-3 text-lg font-semibold text-gray-800 dark:text-neutral-200 cursor-pointer"
       >
         {title}
         <div className="flex items-center space-x-2">
@@ -30,7 +30,7 @@ export const Accordion: React.FC<{
           />
           <span className="cursor-pointer">{open ? "▾" : "▸"}</span>
         </div>
-      </button>
+      </div>
       {open && <div className="pb-4">{children}</div>}
     </div>
   );
