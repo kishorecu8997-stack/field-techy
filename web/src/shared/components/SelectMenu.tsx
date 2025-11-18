@@ -100,7 +100,7 @@ const SelectMenu = ({
 
       {isOpen && (
         <ul
-          className="absolute z-10 w-full mt-1 bg-white border dark:bg-gray-800 
+          className="absolute z-10 w-full mt-1 bg-white border text-gray-800 dark:text-white dark:bg-gray-800 
         border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
         >
           {options.map((option) => (

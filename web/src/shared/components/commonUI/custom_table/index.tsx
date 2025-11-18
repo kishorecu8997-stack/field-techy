@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
@@ -118,7 +119,7 @@ export function CustomTable<T>({
               {/* Desktop Table */}
               <div className="hidden md:block w-full">
                 <table className="w-full border-collapse">
-                  <thead className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-20 ">
+                  <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-20 ">
                     <tr>
                       {columns.map((col) => (
                         <th
@@ -137,7 +138,7 @@ export function CustomTable<T>({
                       paginatedData.map((row, i) => (
                         <tr
                           key={i}
-                          className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                          className="border-t border-gray-200 text-sm dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
                         >
                           {columns.map((col) => (
                             <td
