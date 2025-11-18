@@ -27,7 +27,7 @@ export function InputOutline({
     <input
       type="text"
       placeholder={placeholder}
-      className={`w-32 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-graring-gray-200 ${className}`}
+      className={`w-32 px-3 py-2 text-sm font-medium text-gray-700 bg-white dark:bg-gray-800 dark:text-white border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-graring-gray-200 ${className}`}
       {...props}
     />
   );
