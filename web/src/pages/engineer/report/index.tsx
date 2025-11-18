@@ -7,6 +7,7 @@ import Popup from "@/shared/components/Popup";
 import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { validateDescription } from "@/pages/engineer/home/validation";
+import { toast } from "react-toastify";
 
 const ReportPage = ({
   open,
@@ -24,9 +25,14 @@ const ReportPage = ({
     onClose();
   };
 
+  const handleSubmit = () => {
+    console.log("Submitted");
+    toast.success("Report submitted successfully!");
+  };
+
   return (
     <Popup onClose={handleClose} open={open}>
-      <FormContainer methods={formCtx} className="flex flex-col gap-2">
+      <FormContainer methods={formCtx} className="flex flex-col gap-2" onSubmit={handleSubmit}>
         <div className="flex flex-col h-full max-h-[90vh] w-full max-w-md">
           {/* Fixed Header */}
           <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4">

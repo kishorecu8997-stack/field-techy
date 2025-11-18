@@ -5,6 +5,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
 import type { bankDetails } from "../types";
+import { toast } from "react-toastify";
 
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
@@ -18,6 +19,7 @@ const Withdraw = () => {
 const availableBalance = 1000;
   const handleSubmit = (data: bankDetails) => {
     console.log(data);
+    toast.success("Withdrawal initiated successfully!");
   };
 
 
