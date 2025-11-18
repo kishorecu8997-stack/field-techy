@@ -60,14 +60,8 @@ const CorporateClientForm: React.FC = () => {
       if (isValid) {
         setActiveTab("Documents");
       }
-    } else if (activeTab === "Documents") {
-      isValid = await trigger([
-        "governmentIDProof",
-        "qualificationCertificate",
-      ]);
     }
   };
-
 
   const handleSave = async () => {
     const isValid = await trigger();
@@ -113,24 +107,28 @@ const CorporateClientForm: React.FC = () => {
         >
           Back
         </Button>
-      </div>
-
+      </div>   
+      
       <FormProvider {...methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
           <AdminTabComponent
-            key={activeTab}
             tabs={tabs}
-            defaultActiveTab={activeTab}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
 
           <div className="flex justify-end mt-6 px-4 pb-4">
             <Button
               type="button"
-              onClick={isLastTab ? handleSave : handleNext}
+              onClick={activeTab === "Documents" ? handleSave : handleNext}
               disabled={isSubmitting}
               className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
             >
-              {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
+              {isSubmitting
+                ? "Saving…"
+                : activeTab === "Documents"
+                ? "Save"
+                : "Next"}
             </Button>
           </div>
         </div>

@@ -85,7 +85,7 @@ const ClientAdd: React.FC = () => {
             options={cityOptions}
             required
           />
-          <div className="relative overflow-y-auto">
+          <div className="relative">
             <SelectField
               label="Tax Document (VAT)"
               name="taxDocument"

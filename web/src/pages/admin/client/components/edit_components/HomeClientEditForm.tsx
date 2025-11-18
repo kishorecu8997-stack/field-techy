@@ -128,26 +128,30 @@ const handleSave = async () => {
                 </Button>
       </div>
 
-     <FormProvider {...methods}>
-             <div className="bg-white dark:bg-gray-700 rounded-lg p-2 ">
-               <AdminTabComponent
-                 key={activeTab}
-                 tabs={tabs}
-                 defaultActiveTab={activeTab}
-               />
-     
-               <div className="flex justify-end mt-6 px-4 pb-4">
-                 <Button
-                   type="button"
-                   onClick={isLastTab ? handleSave : handleNext}
-                   disabled={isSubmitting}
-                   className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
-                 >
-                   {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
-                 </Button>
-               </div>
-             </div>
-           </FormProvider>
+      <FormProvider {...methods}>
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
+          <AdminTabComponent
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+
+          <div className="flex justify-end mt-6 px-4 pb-4">
+            <Button
+              type="button"
+              onClick={activeTab === "Documents" ? handleSave : handleNext}
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+            >
+              {isSubmitting
+                ? "Saving…"
+                : activeTab === "Documents"
+                ? "Save"
+                : "Next"}
+            </Button>
+          </div>
+        </div>
+      </FormProvider>
     </div>
   );
 };
