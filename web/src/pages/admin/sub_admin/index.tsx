@@ -86,12 +86,12 @@ export default function ManageSubAdmin() {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: UserItem) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_sub_admin_edit}`)
+              navigate(`${absoluteUrls.admin.home.manage_sub_admin_edit}/${row.id}`)
             }
           >
             <CiEdit className="text-blue-600" />
