@@ -27,45 +27,10 @@ import type { PaymentProps } from "./types";
  */
 const ManagePayment: React.FC = () => {
   const columns: Column<PaymentProps>[] = [
-    {
-      key: "id",
-      label: "Payment ID",
-      renderCell: (row: PaymentProps) => (
-        <div className="text-nowrap w-full">{row.id}</div>
-      ),
-    },
-    {
-      key: "clientDetails",
-      label: "Client Details",
-      renderCell: (row: PaymentProps) => (
-        <div className="flex items-center gap-2">
-          <div>
-            <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
-          </div>
-          <div>
-            <div className="font-semibold whitespace-nowrap">{row.clientDetails.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.clientDetails.email}
-            </div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.clientDetails.phone}
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    { key: "jobTitle", label: "Job Title",
-       renderCell: (row: PaymentProps) => (
-        <div className="text-sm w-32">{row.jobTitle}</div>
-      ),
-     },
-    {
-      key: "jobDescription",
-      label: "Job Description",
-      renderCell: (row: PaymentProps) => (
-        <div className="text-sm w-72 ">{row.jobDescription}</div>
-      ),
-    },
+    { key: "id", label: "Payment ID" },
+    { key: "clientDetails", label: "Client Details" },
+    { key: "jobTitle", label: "Job Title" },
+    { key: "jobDescription", label: "Job Description" },
     { key: "amount", label: "Amount" },
     { key: "engineerDetails", label: "Engineer Details" },
     {

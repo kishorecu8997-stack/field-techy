@@ -1,5 +1,9 @@
 import xss from "xss";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
+import type {
+  PricingField,
+  PricingRelations,
+} from "@/pages/admin/rate_card/types";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -547,6 +551,115 @@ export const CommissionValidation = (value: string): true | string => {
   }
 
   return true; // valid
+};
+
+export const validatePricingModel = (
+  value: string,
+  field: PricingField,
+  relatedValues?: PricingRelations
+): true | string => {
+  const v = (value || "").trim();
+
+  // Allow empty (legacy behavior)
+  if (!v) return "";
+
+  // Base validations
+  if (/\s/.test(v)) return "Value cannot contain spaces";
+
+  const num = Number(v);
+  if (Number.isNaN(num)) return "Enter a valid number";
+  if (num === 0) return "Value cannot be zero";
+
+  if (!/^\d+(\.\d{1,2})?$/.test(v))
+    return "Use max 2 decimal places";
+
+  const [integerPart] = v.split(".");
+  if (integerPart.length < 1)
+    return "Enter a valid amount";
+
+  if (!relatedValues) return true;
+
+  const { hourly, halfDay, fullDay, weekly } = relatedValues;
+
+  // -----------------------------------
+  // RELATIONAL VALIDATION (IMPROVED TEXT)
+  // -----------------------------------
+  switch (field) {
+    case "hourly":
+      return "";
+
+    case "halfDay": {
+      if (hourly == null) return "Please enter hourly rate first";
+      const min = hourly * 4;
+      if (num < min) return `Half-day must be at least ${min}`;
+      return true;
+    }
+
+    case "fullDay": {
+      if (hourly == null || halfDay == null)
+        return "Please enter hourly and half-day first";
+
+      const minHourly = hourly * 8;
+      if (num < minHourly)
+        return `Full-day must be at least ${minHourly}`;
+
+      const minHalf = halfDay * 2;
+      if (num < minHalf)
+        return `Full-day must be at least ${minHalf}`;
+
+      return true;
+    }
+
+    case "weekly": {
+      if (hourly == null || halfDay == null || fullDay == null)
+        return "Please complete previous fields first";
+
+      const minFromHourly = hourly * 40;
+      if (num < minFromHourly)
+        return `Weekly rate must be at least ${minFromHourly}`;
+
+      const minFromHalfDay = halfDay * 10;
+      if (num < minFromHalfDay)
+        return `Weekly rate must be at least ${minFromHalfDay}`;
+
+      const minFromFullDay = fullDay * 5;
+      if (num < minFromFullDay)
+        return `Weekly rate must be at least ${minFromFullDay}`;
+
+      return true;
+    }
+
+    case "monthly": {
+      if (
+        hourly == null ||
+        halfDay == null ||
+        fullDay == null ||
+        weekly == null
+      )
+        return "Please complete previous fields first";
+
+      const minHourly = hourly * 3;
+      if (num <= minHourly)
+        return `Monthly must be greater than ${minHourly}`;
+
+      const minHalf = halfDay * 40;
+      if (num < minHalf)
+        return `Monthly must be at least ${minHalf}`;
+
+      const minFull = fullDay * 20;
+      if (num < minFull)
+        return `Monthly must be at least ${minFull}`;
+
+      const minWeekly = weekly * 4;
+      if (num < minWeekly)
+        return `Monthly must be at least ${minWeekly}`;
+
+      return true;
+    }
+
+    default:
+      return true;
+  }
 };
 
 export const validateNotificationTitle = (value: string) => {
