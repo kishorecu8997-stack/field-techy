@@ -8,6 +8,8 @@
  * - Use relative paths only for route definitions
  * - Group related routes under common base
  * - Use consistent naming
+ * 
+ * this should be use to app routes definitions etc.
  */
 export const BASE = {
   CLIENT: "/client",
@@ -104,11 +106,14 @@ export const urls = {
       homeClientEdit: `${BASE.ADMIN}/manage-client/edit`,
       corporateClientView: `${BASE.ADMIN}/manage-client/view`,
       homeClientView: `${BASE.ADMIN}/manage-client/view`,
+       edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;
 
-// ✅ Helper for absolute paths (for navigation/linking)
+// ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
 export const absoluteUrls = {
   engineer: {
     auth: {
@@ -192,6 +197,9 @@ export const absoluteUrls = {
       homeClientEdit: `${BASE.ADMIN}/manage-client/edit`,
       corporateClientView: `${BASE.ADMIN}/manage-client/view`,
       homeClientView: `${BASE.ADMIN}/manage-client/view`,
+        edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;
