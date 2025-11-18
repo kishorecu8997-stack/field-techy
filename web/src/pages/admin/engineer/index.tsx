@@ -14,6 +14,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
+import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
@@ -156,7 +157,7 @@ const ManageEngineer: React.FC = () => {
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer_view}`)
+              navigate(absoluteUrls.admin.home.manage_engineer_view)
             }
           >
             <FiEye className="text-yellow-600" />
@@ -164,7 +165,7 @@ const ManageEngineer: React.FC = () => {
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer_edit}`)
+              navigate(absoluteUrls.admin.home.manage_engineer_edit)
             }
           >
             <CiEdit className="text-blue-600" />
@@ -186,7 +187,7 @@ const ManageEngineer: React.FC = () => {
             type="submit"
             className="w-fit bg-gradient-to-r bg-teal-900 text-white"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer_add}`)
+              navigate(absoluteUrls.admin.home.manage_engineer_add)
             }
           >
             Add Engineer
@@ -231,7 +232,7 @@ const ManageEngineer: React.FC = () => {
                 className="text-xl font-semibold cursor-pointer"
                 onClick={() => setIsModalOpen(false)}
               >
-                x
+                <IoCloseSharp />
               </div>
             </div>
             <div className="border border-gray-400 h-36 my-6">

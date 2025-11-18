@@ -82,7 +82,7 @@ export const urls = {
       dashbaord: `${BASE.ADMIN}/dashboard`,
       manage_engineer: `${BASE.ADMIN}/users`,
       manage_engineer_add: `${BASE.ADMIN}/users/add`,
-      manage_engineer_edit: "users/edit",
+      manage_engineer_edit: `${BASE.ADMIN}/users/edit`,
       manage_engineer_view: "users/view",
       manage_client: `${BASE.ADMIN}/client`,
       manage_jobs: `${BASE.ADMIN}/jobs`,

@@ -3,6 +3,7 @@ import {
   chartData,
   days,
   jobs,
+  TOGGLE_STATUS,
   type JobProps,
 } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
@@ -89,7 +90,7 @@ const AppliedJob: React.FC = () => {
       label: "Status",
       renderCell: (row: JobProps) => {
         const currentStatus = getStatus(row);
-        const isOn = currentStatus === "On";
+        const isOn = currentStatus === TOGGLE_STATUS.on;
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}

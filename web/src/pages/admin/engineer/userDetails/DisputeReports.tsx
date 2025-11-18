@@ -4,6 +4,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
+import { IoCloseSharp } from "react-icons/io5";
 
 /**
  * DisputeReports Component
@@ -70,7 +71,7 @@ const DisputeReports: React.FC = () => {
                 className="text-xl font-semibold cursor-pointer"
                 onClick={() => setIsModalOpen(false)}
               >
-                x
+                <IoCloseSharp />
               </div>
             </div>
             <div className="border border-gray-400 h-36 my-6">

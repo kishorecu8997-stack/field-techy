@@ -14,21 +14,22 @@ const ToggleStatus: React.FC<ToggleStatusProps> = ({
   onClick,
 }) => {
   const baseClasses =
-    "px-3 py-1 rounded-md text-sm font-medium cursor-pointer transition-colors";
-  const activeClasses = "bg-white text-gray-500 border border-gray-300";
-  const inactiveClasses = "bg-gray-100 text-gray-700 border border-gray-300";
+    "px-3 py-1 rounded-md text-sm font-medium cursor-pointer transition-colors w-fit";
+  const activeClasses = "bg-white text-gray-500 border border-gray-300 w-fit";
+  const inactiveClasses =
+    "bg-gray-100 text-gray-700 border border-gray-300 w-fit";
 
   return (
     <div className="flex flex-col gap-1">
       <label className="text-sm font-semibold text-gray-700">{label}</label>
-      <button
+      <div
         className={`${baseClasses} ${
           isActive ? activeClasses : inactiveClasses
         }`}
         onClick={onClick}
       >
         {status}
-      </button>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useFormContext } from "react-hook-form";
-import type { EngineerFormData } from "../types";
+import { ENGINEER_PROFILE_DATA, type EngineerFormData } from "../types";
 import { StarIcon } from "lucide-react";
 import ProfileImageWithProgress from "@/shared/components/ProfileImageProgress";
 import RatingAndReviewTable from "./RatingReviewTable";
@@ -24,6 +24,7 @@ import RatingAndReviewTable from "./RatingReviewTable";
  */
 export default function BasicInformation() {
   const methods = useFormContext<EngineerFormData>();
+  const data = ENGINEER_PROFILE_DATA;
 
   return (
     <div>
@@ -37,31 +38,28 @@ export default function BasicInformation() {
         </label>
         <ProfileImageWithProgress
           imageUrl="https://example.com/profiles/123.jpg"
-          completionPercent={60} // ← From API
+          completionPercent={60}
         />
 
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">Name</label>
-              <p className="font-semibold">Buyer Adam</p>
+              <p className="font-semibold">{data.name}</p>
             </div>
 
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 Address
               </label>
-              <p className="text-sm">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Culpa,
-                aliquam.
-              </p>
+              <p className="text-sm">{data.address}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
                 Wallet balance
               </label>
-              <p className="font-semibold">$300</p>
+              <p className="font-semibold">{data.walletBalance}</p>
             </div>
           </div>
 
@@ -70,21 +68,21 @@ export default function BasicInformation() {
               <label className="block text-sm text-gray-500 mb-1">
                 Phone Number
               </label>
-              <p className="font-semibold">+98 23456789</p>
+              <p className="font-semibold">{data.phoneNumber}</p>
             </div>
 
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 Registration Date
               </label>
-              <p className="font-semibold">15 March, 2025</p>
+              <p className="font-semibold">{data.registrationDate}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
                 Total Earning
               </label>
-              <p className="font-semibold">$3000</p>
+              <p className="font-semibold">{data.totalEarning}</p>
             </div>
           </div>
 
@@ -93,20 +91,20 @@ export default function BasicInformation() {
               <label className="block text-sm text-gray-500 mb-1">
                 Email Address
               </label>
-              <p className="font-semibold">kishore@yopmail.com</p>
+              <p className="font-semibold">{data.emailAddress}</p>
             </div>
             <div className="mb-4">
               <label className="block text-sm text-gray-500 mb-1">
                 KYC Status
               </label>
-              <p className="font-semibold">Verified</p>
+              <p className="font-semibold">{data.kycStatus}</p>
             </div>
 
             <div>
               <label className="block text-sm text-gray-500 mb-1">
                 Last login date
               </label>
-              <p className="font-semibold">12-06-2024</p>
+              <p className="font-semibold">{data.lastLoginDate}</p>
             </div>
           </div>
         </div>
@@ -119,13 +117,16 @@ export default function BasicInformation() {
               <StarIcon
                 key={i}
                 className={`h-5 w-5 ${
-                  i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"
+                  i < Math.floor(data.averageRating)
+                    ? "text-yellow-400 fill-current"
+                    : "text-gray-300"
                 }`}
               />
             ))}
           </div>
-          <p className="text-sm text-gray-600 mt-1">4.3 / 5</p>
+          <p className="text-sm text-gray-600 mt-1">{data.averageRating} / 5</p>
         </div>
+
         <div className="border-b px-4 border-gray-200 my-4" />
         <RatingAndReviewTable />
       </FormContainer>

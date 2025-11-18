@@ -131,7 +131,7 @@ export default function AddEngineer() {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer}`)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
         >
           Back
         </Button>

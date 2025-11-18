@@ -138,15 +138,40 @@ export const clientReviews: ClientReviewProps[] = [
   },
 ];
 
-// Add this interface
+// Define constant objects with `as const`
+export const DISPUTE_RAISED_BY = {
+  client: "Client",
+  engineer: "Engineer",
+} as const;
+
+export const DISPUTE_PRIORITY_LEVEL = {
+  high: "High",
+  medium: "Medium",
+  low: "Low",
+} as const;
+
+export const DISPUTE_RESOLVED_IN_FAVOUR_OF = {
+  client: "Client",
+  engineer: "Engineer",
+} as const;
+
+// Derive union types
+export type DisputeRaisedBy =
+  (typeof DISPUTE_RAISED_BY)[keyof typeof DISPUTE_RAISED_BY];
+export type DisputePriorityLevel =
+  (typeof DISPUTE_PRIORITY_LEVEL)[keyof typeof DISPUTE_PRIORITY_LEVEL];
+export type DisputeResolvedInFavourOf =
+  (typeof DISPUTE_RESOLVED_IN_FAVOUR_OF)[keyof typeof DISPUTE_RESOLVED_IN_FAVOUR_OF];
+
+// Updated interface
 export interface DisputeProps {
   id: number;
-  raisedBy: "Client" | "Engineer";
+  raisedBy: DisputeRaisedBy;
   issueCategory: string;
-  priorityLevel: "High" | "Medium" | "Low";
+  priorityLevel: DisputePriorityLevel;
   description: string;
   outcome: string;
-  resolvedInFavourOf: "Client" | "Engineer";
+  resolvedInFavourOf: DisputeResolvedInFavourOf;
 }
 
 // Add this dummy data
@@ -198,15 +223,32 @@ export const issues: DisputeProps[] = [
   },
 ];
 
-// @/dummy_data/admin/transactions.ts
+// Define constant objects with `as const`
+export const TRANSACTION_TYPE = {
+  withdraw: "Withdraw",
+  received: "Received",
+} as const;
 
+export const TRANSACTION_STATUS = {
+  success: "Success",
+  failed: "Failed",
+  pending: "Pending",
+} as const;
+
+// Derive union types
+export type TransactionType =
+  (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE];
+export type TransactionStatus =
+  (typeof TRANSACTION_STATUS)[keyof typeof TRANSACTION_STATUS];
+
+// Updated interface
 export interface TransactionProps {
   id: number;
   date: string;
   transactionId: string;
-  type: "Withdraw" | "Received";
+  type: TransactionType;
   amount: string;
-  status: "Success" | "Failed" | "Pending";
+  status: TransactionStatus;
 }
 
 export const transactions: TransactionProps[] = [
@@ -254,6 +296,12 @@ export const transactions: TransactionProps[] = [
 
 // @/dummy_data/admin/jobs.ts
 
+export const TOGGLE_STATUS = {
+  on: "On",
+  off: "Off",
+} as const;
+
+export type ToggleStatus = (typeof TOGGLE_STATUS)[keyof typeof TOGGLE_STATUS];
 export interface JobProps {
   id: number;
   postedBy: {
@@ -268,7 +316,7 @@ export interface JobProps {
   city: string;
   startDate: string; // "1 March, 2025 9:00 pm"
   createdDate: string; // "1 March, 2025"
-  status: "On" | "Off";
+  status: ToggleStatus;
 }
 
 export const jobs: JobProps[] = [

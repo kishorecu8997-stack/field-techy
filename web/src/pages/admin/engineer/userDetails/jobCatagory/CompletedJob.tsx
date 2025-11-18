@@ -3,6 +3,7 @@ import {
   chartData,
   days,
   jobs,
+  TOGGLE_STATUS,
   type JobProps,
 } from "@/dummy_data/admin/manageEngineer";
 import GeneralChart from "@/shared/components/AdminChart";
@@ -48,7 +49,8 @@ const CompletedJob: React.FC = () => {
   };
 
   const toggleStatus = (id: number, current: "On" | "Off") => {
-    const newStatus = current === "On" ? "Off" : "On";
+    const newStatus =
+      current === TOGGLE_STATUS.on ? TOGGLE_STATUS.off : TOGGLE_STATUS.on;
     setStatuses((prev) => ({ ...prev, [id]: newStatus }));
   };
 
@@ -90,7 +92,7 @@ const CompletedJob: React.FC = () => {
       label: "Status",
       renderCell: (row: JobProps) => {
         const currentStatus = getStatus(row);
-        const isOn = currentStatus === "On";
+        const isOn = currentStatus === TOGGLE_STATUS.on;
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
@@ -113,7 +115,7 @@ const CompletedJob: React.FC = () => {
           <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
             <FiEye
               className="text-yellow-600"
-              onClick={() => navigate(`${absoluteUrls.admin.home.manage_jobs}`)}
+              onClick={() => navigate(absoluteUrls.admin.home.manage_jobs)}
             />
           </div>
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
