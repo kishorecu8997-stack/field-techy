@@ -10,6 +10,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import type { ManageClientProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import Popup from "@/shared/components/Popup";
+import ViewFileComponent from "./ViewFileComponent";
 
 /**
  * HomeClient Component
@@ -23,6 +25,7 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element} The rendered HomeClient component.
  */
 const HomeClient: React.FC = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
   /**
    * Column definitions for the home client table.
@@ -68,10 +71,7 @@ const HomeClient: React.FC = () => {
       renderCell: (row: ManageClientProps) => {
         const name = row.documents || "N/A";
         return (
-          <Button
-            className="w-fit "
-            onClick={() => alert(`Viewing details for ${row.id}`)}
-          >
+          <Button className="w-fit " onClick={() => setIsOpen(true)}>
             {name}
           </Button>
         );
@@ -101,8 +101,8 @@ const HomeClient: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             onClick={() =>
-                         navigate(`${absoluteUrls.admin.home.homeClientView}`)
-                       }
+              navigate(`${absoluteUrls.admin.home.homeClientView}`)
+            }
             className="p-2 bg-yellow-100 rounded-md"
           >
             <FiEye className="text-yellow-600 " />
@@ -139,6 +139,9 @@ const HomeClient: React.FC = () => {
           initialPageSize={10}
         />
       </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <ViewFileComponent onClose={() => setIsOpen(false)} />
+      </Popup>
     </div>
   );
 };

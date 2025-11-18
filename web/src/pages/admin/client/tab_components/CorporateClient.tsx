@@ -3,13 +3,15 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React from "react";
+import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import type { ManageClientProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import Popup from "@/shared/components/Popup";
+import ViewFileComponent from "./ViewFileComponent";
 
 /**
  * CorporateClient Component
@@ -23,6 +25,7 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element} The rendered CorporateClient component.
  */
 const CorporateClient: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   /**
    * Column definitions for the corporate client table.
@@ -68,10 +71,7 @@ const CorporateClient: React.FC = () => {
       renderCell: (row: ManageClientProps) => {
         const name = row.documents || "N/A";
         return (
-          <Button
-            className="w-fit "
-            onClick={() => alert(`Viewing details for ${row.id}`)}
-          >
+          <Button className="w-fit " onClick={() => setIsOpen(true)}>
             {name}
           </Button>
         );
@@ -141,6 +141,9 @@ const CorporateClient: React.FC = () => {
           initialPageSize={10}
         />
       </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <ViewFileComponent onClose={() => setIsOpen(false)} />
+      </Popup>
     </div>
   );
 };
