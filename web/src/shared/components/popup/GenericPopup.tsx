@@ -15,6 +15,10 @@ export interface GenericPopupProps {
   onClose: (value: unknown) => void;
 }
 
+/*
+ * A reusable modal/popup component for React + TS.
+ * Supports async button actions and resolves via onClose().
+ */ 
 export function GenericPopup(props: GenericPopupProps) {
   const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 

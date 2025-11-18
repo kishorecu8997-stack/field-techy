@@ -1,6 +1,15 @@
 import { usePopupStore } from "@/shared/store/popupStore";
 import { GenericPopup } from "./GenericPopup";
 
+/*
+ * GlobalPopup
+ *
+ * A global popup component that renders a popup modal/overlay
+ * when a popup is open. Handles closing the popup and rendering
+ * the popup content.
+ *
+ * @returns {JSX.Element} The rendered popup component. Null if no popup is open.
+ */
 export function GlobalPopup() {
 
     console.log("GlobalPopup rendered");
