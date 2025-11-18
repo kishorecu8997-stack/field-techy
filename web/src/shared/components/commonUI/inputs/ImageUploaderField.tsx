@@ -68,6 +68,7 @@ export const ImageUploaderField = ({
   rules = {},
   maxSize = 350 * 1024, // 350 KB
   accept = ".jpeg,.jpg,.png",
+  allowUpload = true,
 }: ImageUploadFieldProps) => {
   const { control } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -98,7 +99,9 @@ export const ImageUploaderField = ({
         if (!value || typeof value === "string") return true;
         const name = value.name.toLowerCase();
         const hasAllowedExt =
-          name.endsWith(".jpeg") || name.endsWith(".jpg") || name.endsWith(".png");
+          name.endsWith(".jpeg") ||
+          name.endsWith(".jpg") ||
+          name.endsWith(".png");
         if (!hasAllowedExt) {
           return "Only .jpeg, .jpg, or .png extensions are allowed.";
         }
@@ -127,7 +130,11 @@ export const ImageUploaderField = ({
     },
     ...rules,
   };
-
+  const handleImageClick = () => {
+    if (allowUpload) {
+      setIsPopupOpen(true);
+    }
+  };
   return (
     <div className="flex flex-col py-1">
       {label && (
@@ -187,7 +194,9 @@ export const ImageUploaderField = ({
             const isJPEG = file.type === "image/jpeg";
             const isPNG = file.type === "image/png";
             if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
-              toast.error("File type mismatch. Please upload a valid JPEG or PNG.");
+              toast.error(
+                "File type mismatch. Please upload a valid JPEG or PNG."
+              );
               return;
             }
 
@@ -200,7 +209,10 @@ export const ImageUploaderField = ({
             setIsPopupOpen(false);
           };
 
-          const handleAvatarSelectInner = (avatar: { id: string; url: string }) => {
+          const handleAvatarSelectInner = (avatar: {
+            id: string;
+            url: string;
+          }) => {
             onChange(avatar.url);
             setIsPopupOpen(false);
           };
@@ -209,8 +221,10 @@ export const ImageUploaderField = ({
             <>
               <div className="relative inline-block">
                 <div
-                  className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 cursor-pointer flex items-center justify-center"
-                  onClick={handleOpenPopup}
+                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${
+                    allowUpload ? "cursor-pointer" : "cursor-default"
+                  }`}
+                  onClick={handleImageClick}
                 >
                   {displaySrc ? (
                     <img
@@ -223,27 +237,29 @@ export const ImageUploaderField = ({
                   )}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleOpenPopup}
-                  className="absolute bottom-0 right-0 w-8 h-8 bg-green-700 hover:bg-green-800 text-white rounded-full flex items-center justify-center transition"
-                  aria-label="Edit image"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                {allowUpload && (
+                  <button
+                    type="button"
+                    onClick={handleOpenPopup}
+                    className="absolute bottom-0 right-0 w-8 h-8 bg-green-700 hover:bg-green-800 text-white rounded-full flex items-center justify-center transition"
+                    aria-label="Edit image"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+                )}
 
                 <input
                   ref={fileInputRef}
