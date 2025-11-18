@@ -56,6 +56,7 @@ interface ConfirmPasswordInputProps {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
 }
 
@@ -87,7 +88,9 @@ interface FileUploadProps {
   label?: string;
   required?: boolean;
   accept?: string;
+  minSize?: number;
   maxSize?: number;
+  minSize?: number;
   containerClassName?: string;
   placeholder?: string;
   validatePDF?: boolean;
@@ -126,7 +129,8 @@ interface PasswordInputProps {
   name: string;
   label?: string;
   placeholder?: string;
-  required?: boolean;
+  required?: boolean;  
+  isShowLabel?:boolean;
   rules?: RegisterOptions;
 }
 

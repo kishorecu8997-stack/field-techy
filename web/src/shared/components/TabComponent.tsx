@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import type { TabComponentProps } from "./type";
+
+interface TabItem {
+  label: string;
+  content: React.ReactNode;
+  hide?: boolean; // Optional: if true, tab won't be rendered
+}
+
+interface TabComponentProps {
+  tabs: TabItem[];
+  defaultActiveTab?: string;
+  isShowTabs?: boolean;
+}
 
 /**
  * A reusable tab component that allows switching between different content panels.
@@ -20,6 +31,7 @@ import type { TabComponentProps } from "./type";
 const TabComponent: React.FC<TabComponentProps> = ({
   tabs,
   defaultActiveTab,
+  isShowTabs = true,
 }) => {
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
   const visibleTabs = tabs.filter((tab) => !tab.hide);
@@ -36,7 +48,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
   return (
     <div className="w-full">
       <div className="flex flex-wrap gap-2 mb-4">
-        {visibleTabs.map((tab) => (
+        {isShowTabs && visibleTabs.map((tab) => (
           <button
             key={tab.label}
             onClick={() => setActiveTab(tab.label)}
