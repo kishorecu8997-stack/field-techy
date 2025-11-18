@@ -7,7 +7,6 @@ import { validatePassword } from "@/shared/libs/utils";
 import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
 import { toast } from "react-toastify";
 
-
 /**
  * ChangePassword component renders a form for users to change their password.
  * Utilizes react-hook-form for form state management and validation.
@@ -16,9 +15,6 @@ import { toast } from "react-toastify";
  * @component
  */
 export default function ChangePassword() {
-  /**
-   * React Hook Form methods for managing form state and validation.
-   */
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
       oldPassword: "",
@@ -26,13 +22,7 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
-
-  /**
-   * Handles form submission. Currently logs to console on submit.
-   * @returns {void}
-   */
   const handleSubmit = () => {
-    // console.log("Profile Submitted");
     toast.success("Password Changed Successfully!");
   };
 
