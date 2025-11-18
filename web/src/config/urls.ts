@@ -110,6 +110,7 @@ export const urls = {
       edit_rate_card: "rate-card/edit",
       view_rate_card: "rate-card/view",
       add_rate_card: "rate-card/add",
+      manage_jobs_view: "jobs/view",
     },
   },
 } as const;
@@ -202,6 +203,7 @@ export const absoluteUrls = {
       edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
       view_rate_card: `${BASE.ADMIN}/rate-card/view`,
       add_rate_card: `${BASE.ADMIN}/rate-card/add`,
+      manage_jobs_view: `${BASE.ADMIN}/jobs/view`,
     },
   },
 } as const;
