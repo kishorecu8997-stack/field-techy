@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
 import type { FaqAddFormData } from "./types";
 import { useForm } from "react-hook-form";
-import AddFaq from "./AddFaq";
+import FaqForm from "./FaqForm";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
 /**
@@ -71,7 +71,7 @@ export default function Faq() {
 
   const handleSubmit = (data: FaqAddFormData) => {
     console.log("Faq Form Submitted", data);
-    toast.success("Added Successfully!");
+    toast.success(`${faqMode === "Add" ? "Added" : "Edited"} Successfully!`);
   };
 
   return (
@@ -82,10 +82,10 @@ export default function Faq() {
           onClick={() => {
             setIsModalOpen(true);
             setFaqMode("Add");
-             methods.reset({
-               question: "",
-               answer: "",
-             });
+            methods.reset({
+              question: "",
+              answer: "",
+            });
           }}
           className="w-fit bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
         >
@@ -111,7 +111,7 @@ export default function Faq() {
             onSubmit={handleSubmit}
             className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
           >
-            <AddFaq faqMode={faqMode} setIsModalOpen={setIsModalOpen} />
+            <FaqForm faqMode={faqMode} setIsModalOpen={setIsModalOpen} />
           </FormContainer>
         </Popup>
       )}

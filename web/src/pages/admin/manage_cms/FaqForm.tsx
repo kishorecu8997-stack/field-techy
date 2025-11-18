@@ -2,17 +2,24 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Dispatch, SetStateAction } from "react";
 import { validateAlphabeticTextArea, validateQuestion } from "@/utils/validate";
+import { IoCloseSharp } from "react-icons/io5";
 
 interface AddFaqProps {
   faqMode: string;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function AddFaq({ faqMode, setIsModalOpen }: AddFaqProps) {
+/**
+ * Renders a form for adding or editing a Frequently Asked Question (FAQ).
+ * The form is typically displayed within a modal.
+ * @param {AddFaqProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered Add/Edit FAQ form.
+ */
+export default function FaqForm({ faqMode, setIsModalOpen }: AddFaqProps) {
   return (
     <div>
       <div className="p-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-6">
           <p className="text-lg font-bold">
             {faqMode === "Add" ? "Add" : "Edit"} FAQ
           </p>
@@ -20,14 +27,14 @@ export default function AddFaq({ faqMode, setIsModalOpen }: AddFaqProps) {
             onClick={() => setIsModalOpen(false)}
             className="cursor-pointer text-xl"
           >
-            x
+            <IoCloseSharp />
           </div>
         </div>
 
         <div className="grid w-full">
           <InputField
             name="question"
-            label="Add your Question"
+            label="Question"
             type="text"
             required
             rules={{
@@ -38,7 +45,7 @@ export default function AddFaq({ faqMode, setIsModalOpen }: AddFaqProps) {
 
           <TextareaInput
             name="answer"
-            label="Add your Answer"
+            label="Answer"
             required
             rules={{
               validate: (v: string) =>
