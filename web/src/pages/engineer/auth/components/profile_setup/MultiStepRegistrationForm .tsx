@@ -8,7 +8,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import BackgroundVerification from "./BackgroundVerification";
 import SetPassword from "./SetPassword";
-import ProfileSettingPage from "@/pages/client/auth/components/profile_setup/ProfileSettingPage";
+import ProfileSettingPage from "./ProfileSettingPage";
 
 // Types (without Zod)
 export type CompleteRegistrationData = {
@@ -180,71 +180,69 @@ const MultiStepRegistrationForm = () => {
   };
 
   return (
-    <>
-      <FormContainer
-        methods={methods}
-        onSubmit={handleStepSubmit}
-        className="w-full"
-      >
-        {currentStep > 1 && (
-          <div>
-            <button
-              type="button" // Prevents form submission
-              onClick={goToPreviousStep}
-              className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
-              aria-label="Go back"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-gray-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-          </div>
-        )}
-
+    <FormContainer
+      methods={methods}
+      onSubmit={handleStepSubmit}
+      className="w-full h-full flex flex-col justify-between gap-4"
+    >
+      {currentStep > 1 && (
         <div>
-          <div className="flex items-center justify-center">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="profile"
-              className="w-20 h-20"
-            />
-          </div>
-
-          {/* ✅ FIXED: Added key={currentStep} to force re-render on step change */}
-          <div
-            key={currentStep}
-            className="p-2 relative gap-3 overflow-auto max-h-[75vh] w-full justify-items-center"
+          <button
+            type="button" // Prevents form submission
+            onClick={goToPreviousStep}
+            className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
+            aria-label="Go back"
           >
-            {renderStep()}
-          </div>
-
-          <div className="flex justify-center items-center w-full p-4">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-[30rem] bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              {currentStep === 3
-                ? isSubmitting
-                  ? "Submitting..."
-                  : "Complete Registration"
-                : "Next"}
-            </Button>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
         </div>
-      </FormContainer>
-    </>
+      )}
+
+      <div>
+        <div className="flex items-center justify-center">
+          <img
+            src={assetsConfig.logos.companyLogo}
+            alt="profile"
+            className="w-20 h-20"
+          />
+        </div>
+
+        {/* ✅ FIXED: Added key={currentStep} to force re-render on step change */}
+        <div
+          key={currentStep}
+          className="flex-1 p-2 relative gap-3 overflow-y-auto max-h-[75vh] w-full justify-items-center"
+        >
+          {renderStep()}
+        </div>
+
+        <div className="flex justify-center items-center w-full p-4">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-[30rem] bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          >
+            {currentStep === 3
+              ? isSubmitting
+                ? "Submitting..."
+                : "Complete Registration"
+              : "Next"}
+          </Button>
+        </div>
+      </div>
+    </FormContainer>
   );
 };
 
