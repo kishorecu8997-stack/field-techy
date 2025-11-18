@@ -35,7 +35,12 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
+
+// Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
+
+
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
@@ -49,6 +54,10 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutApp"));
+const Home = React.lazy(() => import("@/pages/engineer/home"));
+const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
+
 //client
 const ClientSignInPage = React.lazy(
   () => import("@/pages/client/auth/components/signin_pages/SignInPage")
@@ -116,6 +125,12 @@ const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
 );
+const AdminManageJobCategoryAdd = React.lazy(
+  () => import("@/pages/admin/job_category/AddCategory")
+);
+const AdminManageJobCategoryEdit = React.lazy(
+  () => import("@/pages/admin/job_category/EditCategory")
+);
 const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
 const AdminManagePayment = React.lazy(() => import("@/pages/admin/payment"));
@@ -131,12 +146,15 @@ const WalletTransactionRequests = React.lazy(
 const ManageNotification = React.lazy(
   () => import("@/pages/admin/manage_notification")
 );
+const ManageNotificationAdd = React.lazy(
+  () => import("@/pages/admin/manage_notification/AddNotification")
+);
 const ManageSubAdmin = React.lazy(() => import("@/pages/admin/sub_admin"));
 const ManageCMS = React.lazy(() => import("@/pages/admin/manage_cms"));
 const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
-const ReceviedNotification = React.lazy(
-  () => import("@/pages/admin/recevied_notification")
+const ReceivedNotification = React.lazy(
+  () => import("@/pages/admin/received_notification")
 );
 
 /**
@@ -197,7 +215,9 @@ export const routes = createBrowserRouter([
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
     children: [
-      { index: true, element: withSuspense(MyJobsPage) },
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
+      { path: urls.engineer.home.explore_jobs, element: withSuspense(ExploreJobs) },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
@@ -216,6 +236,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
     ],
   },
 
@@ -271,7 +292,7 @@ export const routes = createBrowserRouter([
   // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
       {
@@ -354,6 +375,14 @@ export const routes = createBrowserRouter([
             element: withSuspense(AdminManageJobCategory),
           },
           {
+            path: urls.admin.home.manage_categories_add,
+            element: withSuspense(AdminManageJobCategoryAdd),
+          },
+          {
+            path: urls.admin.home.manage_categories_edit,
+            element: withSuspense(AdminManageJobCategoryEdit),
+          },
+          {
             path: urls.admin.home.manage_rate_card,
             element: withSuspense(AdminManageRateCard),
           },
@@ -378,6 +407,10 @@ export const routes = createBrowserRouter([
             element: withSuspense(ManageNotification),
           },
           {
+            path: urls.admin.home.manage_notification_add,
+            element: withSuspense(ManageNotificationAdd),
+          },
+          {
             path: urls.admin.home.manage_sub_admin,
             element: withSuspense(ManageSubAdmin),
           },
@@ -392,7 +425,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: urls.admin.home.received_notification,
-            element: withSuspense(ReceviedNotification),
+            element: withSuspense(ReceivedNotification),
           },
         ],
       },
