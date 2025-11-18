@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
-import {
-  FaCog,
-  FaSignOutAlt,
-  FaUser,
-  FaWallet,
-} from 'react-icons/fa';
-import { FaChevronRight } from 'react-icons/fa';
-import LogoutConfirmationPopup from '@/pages/client/auth/LogoutConfirmationPopup';
-import ProfileCard from '@/shared/components/commonUI/ProfileCard';
-import { assetsConfig } from '@/assets';
-import { useForm } from 'react-hook-form';
-import { FormContainer } from '@/shared/components/commonUI/inputs/FormContainer';
+import React, { useState } from "react";
+import { FaCog, FaSignOutAlt, FaUser, FaWallet } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
+import LogoutConfirmationPopup from "@/pages/client/auth/LogoutConfirmationPopup";
+import ProfileCard from "@/shared/components/commonUI/ProfileCard";
+import { assetsConfig } from "@/assets";
+import { useForm } from "react-hook-form";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from '@/config/urls';
+import { absoluteUrls } from "@/config/urls";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
-import { useHomeNavigation } from '@/shared/hooks/useHomeNavigation';
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -52,8 +47,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-    const { goToLogin } = useHomeNavigation();
-  
+  const { goToLogin } = useHomeNavigation();
+
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({
     defaultValues: {
@@ -62,22 +57,22 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   });
 
   const menuItems: ClientMenuItems[] = [
-    { 
-      label: 'Manage Proposal', 
-      icon: IoDocumentText , 
-      key: 'proposal' ,
-      onClick:()=> {
+    {
+      label: "Manage Proposal",
+      icon: IoDocumentText,
+      key: "proposal",
+      onClick: () => {
         navigate(absoluteUrls.client.home.manage_proposal);
         onClose();
       },
     },
-    { label: 'Company Information', icon: FaUser, key: 'company' },
-    { label: 'Documents', icon: IoDocumentText , key: 'document' },
-    { label: 'Payment Methods', icon: FaWallet, key: 'payment' },
-    { label: 'Change Password', icon: RiLockPasswordFill, key: 'changePwd' },
-    { label: 'Account Details', icon: FaCog, key: 'clientAcc' },    
+    { label: "Company Information", icon: FaUser, key: "company" },
+    { label: "Documents", icon: IoDocumentText, key: "document" },
+    { label: "Payment Methods", icon: FaWallet, key: "payment" },
+    { label: "Change Password", icon: RiLockPasswordFill, key: "changePwd" },
+    { label: "Account Details", icon: FaCog, key: "clientAcc" },
     {
-      label: 'Logout',
+      label: "Logout",
       icon: FaSignOutAlt,
       key: "logout",
       isLogout: true,
@@ -91,7 +86,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   return (
     <>
       <FormContainer methods={methods}>
-        <div >
+        <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
             name="Michel Brown"
@@ -102,18 +97,18 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
           />
         </div>
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
-        {menuItems.map((item, index, array) => (
-          <React.Fragment key={item.key}>
-            <button
-              onClick={() => {
-                if(item.key === "logout") {
-                  setIsOpen(true);
-                  return;
-                }
-                onMenuItemClick(item.key);
-                item.onClick?.();
-              }}
-              className={`
+          {menuItems.map((item, index, array) => (
+            <React.Fragment key={item.key}>
+              <button
+                onClick={() => {
+                  if (item.key === "logout") {
+                    setIsOpen(true);
+                    return;
+                  }
+                  onMenuItemClick(item.key);
+                  item.onClick?.();
+                }}
+                className={`
               w-full flex items-center justify-between px-4 py-4 
               transition-all duration-300 cursor-pointer 
               text-gray-700 dark:text-gray-200 
@@ -126,10 +121,10 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
                   : ""
               }
             `}
-            >
-              <div className="flex items-center space-x-3">
-                <item.icon
-                  className={`
+              >
+                <div className="flex items-center space-x-3">
+                  <item.icon
+                    className={`
                   h-5 w-5 transition-colors 
                   ${
                     item.isLogout
@@ -137,37 +132,37 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
                       : "text-gray-600 dark:text-gray-300 "
                   }
                 `}
-                />
-                <span
-                  className={`
+                  />
+                  <span
+                    className={`
                 ${
                   item.isLogout
                     ? "text-red-600 dark:text-red-400"
                     : "text-gray-700 dark:text-gray-200"
                 }
                 `}
-                >
-                  {item.label}
-                </span>
-              </div>
-              <FaChevronRight
-                className={`
+                  >
+                    {item.label}
+                  </span>
+                </div>
+                <FaChevronRight
+                  className={`
                 text-gray-400 dark:text-gray-500 
                 transition-colors
               `}
-              />
-            </button>
-            {index < array.length - 1 && (
-              <div className="border-t border-gray-200 dark:border-gray-700"></div>
-            )}
-          </React.Fragment>
-        ))}
-        <LogoutConfirmationPopup
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          onConfirm={() => goToLogin()}
-          onCancel={() => setIsOpen(false)}
-        />
+                />
+              </button>
+              {index < array.length - 1 && (
+                <div className="border-t border-gray-200 dark:border-gray-700"></div>
+              )}
+            </React.Fragment>
+          ))}
+          <LogoutConfirmationPopup
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={() => goToLogin()}
+            onCancel={() => setIsOpen(false)}
+          />
         </div>
       </FormContainer>
     </>
