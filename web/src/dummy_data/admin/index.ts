@@ -6,6 +6,7 @@ import type {
 } from "@/pages/admin/sub_admin/types";
 import type { RateCardProps } from "@/pages/admin/rate_card/types";
 import type { NotificationProps } from "./manageNotification";
+import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -106,7 +107,11 @@ export const RateCardData: RateCardProps[] = [
 export const PaymentData: PaymentProps[] = [
   {
     id: "RC-001",
-    clientDetails: "TechnoBuild Pvt. Ltd.",
+    clientDetails: {
+      name: "ABC Industries",
+      email: "abc@abc.com",
+      phone: "1234567890",
+    },
     jobTitle: "Electrical Maintenance",
     jobDescription:
       "Routine inspection and repair of industrial electrical systems.",
@@ -117,7 +122,11 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-002",
-    clientDetails: "Green Energy Co.",
+    clientDetails: {
+      name: "Green Energy Co.",
+      email: "greenenergy@co.com",
+      phone: "0987654321",
+    },
     jobTitle: "Solar Panel Installation",
     jobDescription: "Complete rooftop solar setup for a 5KW system.",
     amount: "₹42,000",
@@ -127,7 +136,11 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-003",
-    clientDetails: "BlueLine Apartments",
+    clientDetails: {
+      name: "BlueLine Apartments",
+      email: "blueline@apartments.com",
+      phone: "1122334455",
+    },
     jobTitle: "Plumbing Overhaul",
     jobDescription:
       "Replacement of old water lines and fixtures across 12 units.",
@@ -138,7 +151,11 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-004",
-    clientDetails: "SmartLiving Interiors",
+    clientDetails: {
+      name: "SmartLiving Interiors",
+      email: "smartliving@interiors.com",
+      phone: "6677889900",
+    },
     jobTitle: "Interior Electrical Setup",
     jobDescription: "Full wiring and lighting setup for new luxury apartment.",
     amount: "₹36,000",
@@ -148,7 +165,11 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-005",
-    clientDetails: "Urban Spaces Ltd.",
+    clientDetails: {
+      name: "Urban Spaces Ltd.",
+      email: "urbanspaces@ltd.com",
+      phone: "5566778899",
+    },
     jobTitle: "HVAC System Installation",
     jobDescription:
       "Air conditioning and ventilation setup for office floors 3–6.",
@@ -410,4 +431,111 @@ export const countryList = [
   { label: "Country 1", value: "country1" },
   { label: "Country 2", value: "country2" },
   { label: "Country 3", value: "country3" },
+];
+
+
+
+export const transactionRequest: TransactionRequest[] = [
+  {
+    sno: 1,
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+    },
+    status:"approved",
+    walletBalance: 12500.75,
+  },
+  {
+    sno: 2,
+    details: {
+      name: "Priya Sharma",
+      phone: "+91 99887 65432",
+    },
+    status:"approved",
+    walletBalance: 8450.0,
+  },
+  {
+    sno: 3,
+    details: {
+      name: "Rohit Verma",
+      phone: "+91 91234 56789",
+    },
+    status:"rejected",
+    walletBalance: 15780.5,
+  },
+  {
+    sno: 4,
+    details: {
+      name: "Sneha Iyer",
+      phone: "+91 90011 22334",
+    },
+    status:"approved",
+    walletBalance: 11200.25,
+  },
+  {
+    sno: 5,
+    details: {
+      name: "Karan Patel",
+      phone: "+91 90909 11122",
+    },
+    status:"rejected",
+    walletBalance: 9800.0,
+  },
+];
+
+
+
+export const engineerData: EngineerPage[] = [
+  {
+    sno: 1,
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+    },
+    walletBalance: 12500.75,
+  },
+  {
+    sno: 2,
+    details: {
+      name: "Priya Sharma",
+      phone: "+91 99887 65432",
+    },
+    walletBalance: 8450.0,
+  },
+  {
+    sno: 3,
+    details: {
+      name: "Rohit Verma",
+      phone: "+91 91234 56789",
+    },
+    walletBalance: 15780.5,
+  },
+  {
+    sno: 4,
+    details: {
+      name: "Sneha Iyer",
+      phone: "+91 90011 22334",
+    },
+    walletBalance: 11200.25,
+  },
+  {
+    sno: 5,
+    details: {
+      name: "Karan Patel",
+      phone: "+91 90909 11122",
+    },
+    walletBalance: 9800.0,
+  },
+];
+
+
+export const options = [
+  {
+    value: "approved",
+    label: "Approved",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+  },
 ];
