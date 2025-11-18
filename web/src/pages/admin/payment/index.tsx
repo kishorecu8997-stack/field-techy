@@ -56,14 +56,14 @@ const ManagePayment: React.FC = () => {
     },
     { key: "jobTitle", label: "Job Title",
        renderCell: (row: PaymentProps) => (
-        <div className="text-sm w-30 ">{row.jobTitle}</div>
+        <div className="text-sm w-32">{row.jobTitle}</div>
       ),
      },
     {
       key: "jobDescription",
       label: "Job Description",
       renderCell: (row: PaymentProps) => (
-        <div className="text-sm w-70 ">{row.jobDescription}</div>
+        <div className="text-sm w-72 ">{row.jobDescription}</div>
       ),
     },
     { key: "amount", label: "Amount" },
@@ -88,7 +88,7 @@ const ManagePayment: React.FC = () => {
       label: "Payment",
       renderCell: (row: PaymentProps) => (
         <div className="flex items-center gap-2">
-          <Button className="whitespace-nowrap bg-emerald-900">
+          <Button className="whitespace-nowrap bg-emerald-900" onClick={()=>console.log('send payout')}>
             Send Payout
           </Button>
         </div>
@@ -99,7 +99,7 @@ const ManagePayment: React.FC = () => {
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
         <h1 className="text-lg font-semibold ">Manage Payments</h1>
-        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500">
+        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500" onClick={()=>console.log('export csv')}>
           Export CSV
         </Button>
       </div>
@@ -132,11 +132,11 @@ const AdminStatus = ({ row }: { row: string }) => {
   return (
     <div className="text-sm ">
       <SelectMenu
-        placeholder="Select Region"
+        placeholder="Select Status"
         className="w-36"
         options={options}
         value={status}
-        onChange={() => handleChangeStatus}
+        onChange={() => handleChangeStatus(row)}
       />
     </div>
   );

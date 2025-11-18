@@ -36,11 +36,19 @@ export default function ManageTransactions() {
     },
   ];
 
+  const handleCSVExport = () => {
+    // Implement CSV export functionality here
+    console.log("Exporting data as CSV...");
+  };
+
   return (
     <div className="flex flex-col h-full w-full p-4 gap-2">
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold ">Manage Transactions</h1>
-        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500">
+        <Button
+          className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
+          onClick={handleCSVExport}
+        >
           Export CSV
         </Button>
       </div>

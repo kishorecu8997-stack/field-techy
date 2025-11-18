@@ -46,7 +46,7 @@ const EngineerPayout: React.FC = () => {
       key: "jobDescription",
       label: "Job Description",
       renderCell: (row: TransactionProps) => (
-        <div className="text-sm w-70 ">{row.jobDescription}</div>
+        <div className="text-sm w-72">{row.jobDescription}</div>
       ),
     },
     { key: "amount", label: "Amount" },
@@ -84,7 +84,7 @@ const EngineerPayout: React.FC = () => {
       key: "action",
       label: "Download Invoice",
       renderCell: (row: TransactionProps) => (
-        <div className="flex items-center gap-2 justify-center">
+        <div className="flex items-center gap-2 justify-center cursor-pointer" onClick={()=>console.log('download invoice')}>
           <FiDownload className="text-emerald-600 hover:text-emerald-700" />
         </div>
       ),

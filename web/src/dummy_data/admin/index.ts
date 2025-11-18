@@ -117,7 +117,7 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-002",
-    clientDetails:{
+    clientDetails: {
       name: "Green Energy Co.",
       email: "green@example.com",
       phone: "9876543210",
@@ -160,7 +160,7 @@ export const PaymentData: PaymentProps[] = [
   },
   {
     id: "RC-005",
-    clientDetails:{
+    clientDetails: {
       name: "Urban Spaces Ltd.",
       email: "urban@example.com",
       phone: "6543210987",
@@ -220,7 +220,6 @@ export const notificationData: NotificationProps[] = [
     createdDate: "2024-09-10",
   },
 ];
-
 
 export const options = [
   {
