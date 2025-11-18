@@ -67,8 +67,6 @@ const handleNext = async () => {
       "state",
       "postalCode",
       "vatRegistrationNumber",
-      "governmentIDProof",
-      "qualificationCertificate",
     ]);
     if (isValid) {
       setActiveTab("Documents");
