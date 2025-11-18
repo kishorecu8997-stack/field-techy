@@ -18,6 +18,8 @@ const OfferPages = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isJobAccepted, setIsJobAccepted] = useState(false);
+  const [activeTab, setActiveTab] = useState("Job Information");
+  console.log('activeTab :', activeTab);
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -45,12 +47,14 @@ const OfferPages = () => {
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setIsJobAccepted={setIsJobAccepted}
+              setActiveTab={setActiveTab}
             />
             <JobTabSection
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
               isJobAccepted={isJobAccepted}
+              activeTab={activeTab}
             />
           </div>
           <div className="lg:col-span-1">

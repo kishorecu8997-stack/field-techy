@@ -29,6 +29,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setSendProposal,
   isSendProposal,
   setIsJobAccepted,
+  setActiveTab,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [isAccepted, setIsAccepted] = React.useState(false);
@@ -171,6 +172,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
                         setIsWorkSubmitted?.(true);
+                        setActiveTab("Work Submissions");
                       }}
                     >
                       Submit Work

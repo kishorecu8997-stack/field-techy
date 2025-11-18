@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 
 interface TabItem {
   label: string;
   content: React.ReactNode;
-  hide?: boolean; // Optional: if true, tab won't be rendered
+  hide?: boolean;
 }
 
 interface TabComponentProps {
@@ -34,7 +35,13 @@ const TabComponent: React.FC<TabComponentProps> = ({
   isShowTabs = true,
 }) => {
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
+
   const visibleTabs = tabs.filter((tab) => !tab.hide);
+
+  // 🔥 Sync active tab whenever defaultActiveTab prop changes
+  useEffect(() => {
+    setActiveTab(defaultActiveTab);
+  }, [defaultActiveTab]);
 
   if (visibleTabs.length === 0) {
     return (
@@ -44,24 +51,25 @@ const TabComponent: React.FC<TabComponentProps> = ({
     );
   }
 
-
   return (
     <div className="w-full">
       <div className="flex flex-wrap gap-2 mb-4">
-        {isShowTabs && visibleTabs.map((tab) => (
-          <button
-            key={tab.label}
-            onClick={() => setActiveTab(tab.label)}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-              activeTab === tab.label
-                ? "bg-teal-800 text-white"
-                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {isShowTabs &&
+          visibleTabs.map((tab) => (
+            <button
+              key={tab.label}
+              onClick={() => setActiveTab(tab.label)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                activeTab === tab.label
+                  ? "bg-teal-800 text-white"
+                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
       </div>
+
       <div className="mt-4">
         {visibleTabs.find((tab) => tab.label === activeTab)?.content || (
           <div className="p-6 bg-gray-50 rounded-lg text-gray-500">

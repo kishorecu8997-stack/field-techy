@@ -37,11 +37,14 @@ const JobTabSection = ({
   isWorkSubmitted,
   isSendProposal,
   isJobAccepted,
+  activeTab,
+  
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   isJobAccepted?: boolean;
+  activeTab?: string;
 }) => {
   const tabs = [
     {
@@ -96,12 +99,13 @@ const JobTabSection = ({
     },
   ];
 
+  console.log('activeTab :', activeTab);
   return (
     <div className="">
       {isSendProposal ? (
         <SendProposal />
       ) : (
-        <TabComponent tabs={tabs} defaultActiveTab="Job Information" />
+        <TabComponent tabs={tabs} defaultActiveTab={activeTab || "Job Information"} />
       )}
     </div>
   );
