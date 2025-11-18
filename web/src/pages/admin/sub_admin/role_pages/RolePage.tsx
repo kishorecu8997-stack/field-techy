@@ -8,6 +8,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import type { RoleListType } from "../types";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * RolePage Component
@@ -62,9 +63,12 @@ const RolePage: React.FC = () => {
       label: "Payment",
       renderCell: (row: RoleListType) => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={()=>{
-            navigate(absoluteUrls.admin.home.edit_role);
-          }}>
+          <div
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+            onClick={() => {
+              navigate(absoluteUrls.admin.home.edit_role);
+            }}
+          >
             <CiEdit className="text-blue-600" />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">
@@ -77,7 +81,15 @@ const RolePage: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
-      <h1 className="text-xl font-semibold">Manage Roles</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold ">Manage Roles</h1>
+        <Button
+          className="bg-neutral-800 text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </Button>
+      </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
         <div>
           <SearchInput />
