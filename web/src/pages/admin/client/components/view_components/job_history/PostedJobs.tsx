@@ -66,7 +66,7 @@ const PostedJobs: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             onClick={
-              () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
+              () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
             }
             className="p-2 bg-yellow-100 rounded-md"
           >
@@ -74,7 +74,7 @@ const PostedJobs: React.FC = () => {
           </div>
           <div
             onClick={
-              () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
+              () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
             }
             className="p-2 bg-blue-100 rounded-md"
           >
@@ -82,7 +82,7 @@ const PostedJobs: React.FC = () => {
           </div>
           <div
             onClick={
-              () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
+              () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
             }
             className="p-2 bg-red-100 rounded-md"
           >

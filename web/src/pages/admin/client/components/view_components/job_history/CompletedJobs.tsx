@@ -82,7 +82,7 @@ const CompletedJobs: React.FC = () => {
                   </div>
                   <div
                     onClick={
-                      () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
+                      () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
                     }
                     className="p-2 bg-red-100 rounded-md"
                   >
