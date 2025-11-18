@@ -13,6 +13,7 @@ import Popup from "@/shared/components/Popup";
 import React from "react";
 import { useForm } from "react-hook-form";
 import type { JobHeaderCardProps } from "../types";
+import { toast } from "react-toastify";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -107,6 +108,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = () => {
     console.log("Submitted");
+    toast.success("Job status updated successfully!");
   };
   return (
     <div className="flex flex-col p-6">

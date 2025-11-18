@@ -61,13 +61,13 @@ const ExploreJobs = () => {
           title="Explore Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${allNewJobs.length}+ jobs found`} // ✅ Updated count
+          description={`${sampleJobs.length}+ jobs found`} // ✅ Updated count
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
-            {currentJobs.length > 0 ? (
-              currentJobs.map((job) => (
+            {sampleJobs.length > 0 ? (
+              sampleJobs.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
