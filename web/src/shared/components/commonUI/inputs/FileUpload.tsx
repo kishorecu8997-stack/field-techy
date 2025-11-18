@@ -33,7 +33,8 @@ export const FileUpload = ({
   label = "Upload Document",
   required = false,
   accept = ".pdf,.jpeg,.jpg,.png",
-  maxSize = 350 * 1024,
+  minSize = 50 * 1024, // ✅ Minimum file size: 50 KB
+  maxSize = 350 * 1024, // ✅ Maximum file size: 350 KB
   containerClassName = "flex flex-col py-1",
   placeholder = "Upload Resume/CV",
   validatePDF = true,
@@ -47,44 +48,44 @@ export const FileUpload = ({
   const [fileError, setFileError] = useState<string | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
 
-  // Set PDF.js worker on component mount (client-side only)
+  // ✅ Setup PDF.js worker once
   useEffect(() => {
-    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    if (
+      typeof window !== "undefined" &&
+      !pdfjsLib.GlobalWorkerOptions.workerSrc
+    ) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
     }
   }, []);
 
-  // ✅ Validate PDF: signature + page count + corruption
+  // ✅ PDF validation (signature + page count)
   const validatePdfPages = useCallback(
     async (
       file: File
     ): Promise<{ error: string | null; pages: number | null }> => {
       if (!validatePDF) return { error: null, pages: null };
 
-      // Step 0: Minimum size check (corrupted/truncated PDFs often too small)
       if (file.size < 100) {
         return { error: "File is too small to be a valid PDF.", pages: null };
       }
 
-      // Step 1: Check %PDF header
       try {
         const headerBuffer = await file.slice(0, 4).arrayBuffer();
         const headerBytes = new Uint8Array(headerBuffer);
         const isGenuinePDF =
-          headerBytes[0] === 0x25 && // '%'
-          headerBytes[1] === 0x50 && // 'P'
-          headerBytes[2] === 0x44 && // 'D'
-          headerBytes[3] === 0x46; // 'F'
+          headerBytes[0] === 0x25 &&
+          headerBytes[1] === 0x50 &&
+          headerBytes[2] === 0x44 &&
+          headerBytes[3] === 0x46;
 
         if (!isGenuinePDF) {
           return { error: "File is not a genuine PDF document.", pages: null };
         }
-      } catch (sigError) {
-        console.error("PDF signature check failed:", sigError);
+      } catch (err) {
+        console.error("PDF signature check failed:", err);
         return { error: "Unable to verify PDF file integrity.", pages: null };
       }
 
-      // Step 2: Parse and validate pages
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -116,7 +117,7 @@ export const FileUpload = ({
     [validatePDF, minPages, maxPages]
   );
 
-  // Initialize state from form context if a file already exists
+  // ✅ Load existing form value if present
   useEffect(() => {
     const existingFiles = getValues(name) as FileList | undefined;
     if (existingFiles && existingFiles.length > 0) {
@@ -130,35 +131,33 @@ export const FileUpload = ({
     }
   }, [getValues, name, validatePDF, validatePdfPages]);
 
-  // Cleanup object URL
+  // ✅ Cleanup blob URL on unmount
   useEffect(() => {
     return () => {
       if (fileUrl) URL.revokeObjectURL(fileUrl);
     };
   }, [fileUrl]);
 
-  // Format file size
+  // ✅ Format file size
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  // Get allowed extensions
-  const getAcceptExtensions = (): string[] => {
-    return accept
+  // ✅ Allowed extensions
+  const getAcceptExtensions = (): string[] =>
+    accept
       .split(",")
-      .map((ext) => ext.trim().replace(/^\.?/, ""))
-      .map((ext) => ext.toLowerCase());
-  };
+      .map((ext) => ext.trim().replace(/^\.?/, "").toLowerCase());
 
-  // Format allowed types for display
+  // ✅ Format allowed types for UI
   const formatAllowedTypes = (): string => {
-    const types = getAcceptExtensions().map(ext => ext.toUpperCase());
+    const types = getAcceptExtensions().map((ext) => ext.toUpperCase());
     return types.length > 1 ? types.join(", ") : types[0];
   };
 
-  // Check if file type is allowed by extension
+  // ✅ Check if file type is allowed
   const isFileTypeAllowed = (file: File): boolean => {
     const allowedExts = getAcceptExtensions();
     return allowedExts.some((ext) =>
@@ -166,14 +165,13 @@ export const FileUpload = ({
     );
   };
 
-  // ✅ Validate genuine JPEG
+  // ✅ Validate JPEG & PNG signatures
   const validateJpegSignature = async (file: File): Promise<boolean> => {
     const buffer = await file.slice(0, 2).arrayBuffer();
     const bytes = new Uint8Array(buffer);
     return bytes[0] === 0xff && bytes[1] === 0xd8;
   };
 
-  // ✅ Validate genuine PNG
   const validatePngSignature = async (file: File): Promise<boolean> => {
     const buffer = await file.slice(0, 8).arrayBuffer();
     const header = new Uint8Array(buffer);
@@ -181,7 +179,7 @@ export const FileUpload = ({
     return expected.every((val, i) => val === header[i]);
   };
 
-  // ✅ Handle file change with full validation
+  // ✅ Main validation and upload handler
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     field: ControllerRenderProps
@@ -191,7 +189,7 @@ export const FileUpload = ({
 
     const file = files[0];
 
-    // Reset state
+    // Reset
     setFileName(null);
     setFileSize(null);
     setPageCount(null);
@@ -201,7 +199,7 @@ export const FileUpload = ({
       setFileUrl(null);
     }
 
-    // 1. Validate extension
+    // 1️⃣ Extension
     if (!isFileTypeAllowed(file)) {
       const errorMsg = `Only ${formatAllowedTypes()} files are allowed.`;
       setFileError(errorMsg);
@@ -218,7 +216,6 @@ export const FileUpload = ({
       field.onChange(null);
       return;
     }
-    
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${maxSize / 1024} KB.`;
       setFileError(errorMsg);
@@ -227,13 +224,22 @@ export const FileUpload = ({
       return;
     }
 
+    if (file.size > maxSize) {
+      const errorMsg = `File size must not exceed ${(maxSize / 1024).toFixed(
+        0
+      )} KB.`;
+      setFileError(errorMsg);
+      toast.error(errorMsg);
+      field.onChange(null);
+      return;
+    }
+
+    // 3️⃣ Content validation
     let finalPageCount: number | null = null;
     let isValid = true;
     let validationError = "";
-
     const lowerName = file.name.toLowerCase();
 
-    // 3. Validate by file type
     if (lowerName.endsWith(".pdf")) {
       const { error, pages } = await validatePdfPages(file);
       finalPageCount = pages;
@@ -262,18 +268,16 @@ export const FileUpload = ({
       return;
     }
 
-    // Set preview
+    // ✅ Success
     setFileName(file.name);
     setFileSize(formatFileSize(file.size));
-    if (finalPageCount !== null) {
-      setPageCount(finalPageCount);
-    }
+    if (finalPageCount !== null) setPageCount(finalPageCount);
     const url = URL.createObjectURL(file);
     setFileUrl(url);
     field.onChange(files);
   };
 
-  // Remove file
+  // ✅ Remove file
   const handleRemove = (field: ControllerRenderProps) => {
     field.onChange(null);
     setFileName(null);
@@ -288,19 +292,11 @@ export const FileUpload = ({
     if (input) input.value = "";
   };
 
-  // Re-upload
-  const handleReupload = () => {
-    document.getElementById(name)?.click();
-  };
+  // ✅ Re-upload and preview
+  const handleReupload = () => document.getElementById(name)?.click();
+  const handlePreview = () => fileUrl && window.open(fileUrl, "_blank");
 
-  // Preview
-  const handlePreview = () => {
-    if (fileUrl) {
-      window.open(fileUrl, "_blank");
-    }
-  };
-
-  // Validation rules
+  // ✅ Validation rules for react-hook-form
   const validationRules: RegisterOptions = {
     required: required ? `${label} is required` : false,
     validate: {
@@ -313,6 +309,7 @@ export const FileUpload = ({
     },
   };
 
+  // ✅ Render
   return (
     <div className={containerClassName}>
       {label && (
@@ -325,17 +322,19 @@ export const FileUpload = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const displayError = error?.message || fileError;         
+          const displayError = error?.message || fileError;
 
           return (
             <>
-              <div               
+              <div
                 className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
                   displayError
                     ? "border-red-500"
                     : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
                 }`}
-                onClick={() => !fileName && document.getElementById(name)?.click()}
+                onClick={() =>
+                  !fileName && document.getElementById(name)?.click()
+                }
               >
                 <div className="mx-auto w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
                   <svg
@@ -400,9 +399,13 @@ export const FileUpload = ({
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                       Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
-                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
+                      {validatePDF &&
+                        accept.toLowerCase().includes("pdf") &&
+                        ` • ${minPages}–${maxPages} pages`}
                       Format: {formatAllowedTypes()} • Max {maxSize / 1024} KB
-                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}
+                      {validatePDF &&
+                        accept.toLowerCase().includes("pdf") &&
+                        ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}
@@ -414,7 +417,7 @@ export const FileUpload = ({
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
                 />
-              </div>              
+              </div>
               {displayError && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                   {displayError}

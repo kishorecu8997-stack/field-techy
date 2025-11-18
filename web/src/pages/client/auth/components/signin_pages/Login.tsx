@@ -8,14 +8,13 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useClientHomeNavigation } from "@/shared/hooks/useClientHomeNavigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
-import { NavLink } from "react-router-dom";
-import OTPPage from "../OTPPage";
-import type { LoginFormData } from "../types";
+import { NavLink, useNavigate } from "react-router-dom";
+import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import type { LoginFormData } from "../../../../engineer/auth/components/types";
 
 /**
  * Type representing the data structure for the Login form.
@@ -24,12 +23,24 @@ import type { LoginFormData } from "../types";
  * @property {string} password - User's password.
  * @property {boolean} rememberMe - Whether to remember the user.
  */
+
+/**
+ * Login component
+ *
+ * Renders the client sign-in form (email/password) with options to sign in
+ * via phone number or LinkedIn. Submitting opens the OTP dialog in this
+ * implementation; after OTP success the access popup is shown.
+ *
+ * Props:
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - A single prop used to switch to number-based login UI.
+ * @returns {JSX.Element} Login form UI
+ */
 const Login = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-   const { goToDashboard } = useClientHomeNavigation();
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
@@ -40,6 +51,14 @@ const Login = ({
     },
   });
 
+  /**
+   * handleSubmit
+   *
+   * Called by the form when the user submits credentials. Current behaviour
+   * opens the OTP popup (simulating second-factor or phone flow). Real
+   * implementations should validate credentials against an API and only
+   * open the OTP/modal on success.
+   */
   const handleSubmit = () => {
     setIsOpen(true);
   };
@@ -84,7 +103,7 @@ const Login = ({
             <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
-              to={absoluteUrls.engineer.auth.forget_password}
+              to={absoluteUrls.client.auth.forget_password}
             >
               Forgot Password?
             </NavLink>
@@ -124,8 +143,10 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            //  handleNavigate={goToMyJobs}
-            handleNavigate={goToDashboard}
+            handleNavigate={() => {
+              setIsOpen(false);
+              navigate(absoluteUrls.client.home.dashboard);
+            }}
           />
         </Popup>
       </div>
