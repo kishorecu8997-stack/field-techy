@@ -34,6 +34,9 @@ export const assetsConfig = {
     users: {
       user,
     },
+     dashboard: {
+      attachment,
+    },
     admin: {
       adminCard,
     },
