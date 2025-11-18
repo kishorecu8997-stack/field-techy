@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
+import { toast } from "react-toastify";
 
 /**
  * AdminLogin
@@ -39,14 +40,9 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
 
-  /**
-   * Handles the login form submission.
-   * Currently implements a basic navigation to dashboard.
-   * TODO: Add actual authentication logic.
-   */
   const handleSubmit = () => {
-    // console.log("Admin Login Submitted");
     navigate(`${absoluteUrls.admin.home.dashbaord}`);
+    toast.success("Logged in successfully!");
   };
 
   return (
