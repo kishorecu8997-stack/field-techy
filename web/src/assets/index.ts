@@ -10,6 +10,7 @@ import attachment from "./attachment_01.png";
 import suitcase from "./suitcase.svg";
 import people from "./people.svg";
 import ftLogoWhite from "./ft_logo_white.svg";
+import placeholderImage from "./placeholder_img.svg";
 import adminCard from "./admin-card-icon.svg";
 import user from "./user-image/user.png";
 import circle_tick from "./circle_tick_icon.svg";
@@ -41,11 +42,12 @@ export const assetsConfig = {
       adminCard,
     },
   },
+  placeholder: placeholderImage,
   icons: {
     suitcase,
     people,
     location,
-    notification
+    notification,
   },
   admin: {
     adminCard,

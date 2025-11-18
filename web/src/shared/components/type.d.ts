@@ -83,9 +83,9 @@ interface TabItem {
 interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
-  onTabChange?: (activeTab: string) => void;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
-
 //Notification popover
 export interface NotificationDropdownProps {
   title?: string;

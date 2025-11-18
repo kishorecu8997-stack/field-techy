@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
@@ -98,32 +98,27 @@ export function CustomTable<T>({
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
-        {/* Scrollable Table Area */}
         <div className="flex-1 overflow-y-auto overflow-x-auto">
-          {/* ---- Loading ---- */}
           {loading && (
             <div className="text-center py-10 text-gray-500 dark:text-gray-300">
               Loading...
             </div>
           )}
 
-          {/* ---- Error ---- */}
           {error && (
             <div className="text-center py-10 text-red-500">{error}</div>
           )}
 
-          {/* ---- Data Table ---- */}
           {!loading && !error && (
             <>
-              {/* Desktop Table */}
               <div className="hidden md:block w-full">
                 <table className="w-full border-collapse">
-                  <thead className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-20 ">
+                  <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                     <tr>
                       {columns.map((col) => (
                         <th
                           key={String(col.key)}
-                          className={`py-2 px-4 whitespace-nowrap ${getAlignClass(
+                          className={`py-2 px-4 text-sm whitespace-nowrap ${getAlignClass(
                             col.align
                           )} text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-800`}
                         >
@@ -137,12 +132,12 @@ export function CustomTable<T>({
                       paginatedData.map((row, i) => (
                         <tr
                           key={i}
-                          className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                          className="border-t border-gray-200 text-sm dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
                         >
                           {columns.map((col) => (
                             <td
                               key={String(col.key)}
-                              className={`py-2 px-4 ${getAlignClass(
+                              className={`py-2 px-4 text-sm ${getAlignClass(
                                 col.dataCellAlign
                               )} text-gray-800 dark:text-gray-100`}
                             >

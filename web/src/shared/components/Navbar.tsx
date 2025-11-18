@@ -9,7 +9,6 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 
-
 /**
  * Header component with navigation, search bar, and user profile.
  * Features responsive design with mobile menu, dark mode support, and notification badges.

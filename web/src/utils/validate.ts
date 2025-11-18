@@ -1,5 +1,9 @@
 import xss from "xss";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
+import type {
+  PricingField,
+  PricingRelations,
+} from "@/pages/admin/rate_card/types";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -74,20 +78,27 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  if (!value) return "Address must be at least 20 characters";
+  if (!value) return "Address must be at least 6 characters";
 
   // Disallow leading or trailing spaces
-  if (/^\s|\s$/.test(value))
+  if (/^\s|\s$/.test(value)) {
     return "Address must not start or end with a space";
-// Reject consecutive spaces
-  if (/ {2,}/.test(value)) return `Address must not contain consecutive spaces`;
-  const v = value.trim();
-  if (v.length < 20) return "Address must be at least 20 characters";
+  }
+
+  // Disallow multiple consecutive spaces
+  if (/\s{2,}/.test(value)) {
+    return "Address must not contain consecutive spaces";
+  }
+
+  const v = value.trim(); // technically redundant now, but safe
+  if (v.length < 6) return "Address must be at least 6 characters";
   if (v.length > 50) return "Address must not exceed 50 characters";
-  // Allow letters, numbers, spaces, and / , . - #
+
+  // Allow only letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
+
   return true;
 };
 
@@ -546,6 +557,33 @@ export const validateJobDescription = (value: string) => {
   return true;
 };
 
+export const validateCategoryName = (value: string) => {
+  const trimmed = value.trim();
+
+  // Reject if original had leading or trailing spaces
+  if (trimmed !== value) {
+    return "Category name must not have leading or trailing spaces";
+  }
+
+  if (trimmed.length < 3) {
+    return "Category name must be at least 3 characters";
+  }
+  if (trimmed.length > 50) {
+    return "Category name must not exceed 50 characters";
+  }
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(trimmed)) {
+    return "Category name must not contain consecutive spaces";
+  }
+
+  // Allow only letters, spaces, underscores, and hyphens
+  if (!/^[A-Za-z _-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-)";
+  }
+
+  return true;
+};
 /**
  * Validates that a payment method has been selected.
  * The value is expected to be a `SelectOption` object.
@@ -593,6 +631,275 @@ export const CommissionValidation = (value: string): true | string => {
   return true; // valid
 };
 
+export const validatePricePerHour = (value: string) => {
+  const raw = value || "";
+
+  // Reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Length checks
+  if (raw.length < 5) return "Title must be at least 5 characters";
+  if (raw.length > 100) return "Title must not exceed 100 characters";
+
+  // Disallow any digits (0-9)
+  if (/\d/.test(raw)) return "Title must not contain numbers";
+
+  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
+  if (!/^[A-Za-z ]+$/.test(raw)) {
+    return "Title must contain only letters and spaces";
+  }
+
+  return true;
+};
+
+export const validatePricingModel = (
+  value: string,
+  field: PricingField,
+  relatedValues?: PricingRelations
+): true | string => {
+  const v = (value || "").trim();
+
+  // Allow empty (legacy behavior)
+  if (!v) return "";
+
+  // Base validations
+  if (/\s/.test(v)) return "Value cannot contain spaces";
+
+  const num = Number(v);
+  if (Number.isNaN(num)) return "Enter a valid number";
+  if (num === 0) return "Value cannot be zero";
+
+  if (!/^\d+(\.\d{1,2})?$/.test(v)) return "Use max 2 decimal places";
+
+  const [integerPart] = v.split(".");
+  if (integerPart.length < 1) return "Enter a valid amount";
+
+  if (!relatedValues) return true;
+
+  const { hourly, halfDay, fullDay, weekly } = relatedValues;
+
+  // -----------------------------------
+  // RELATIONAL VALIDATION (IMPROVED TEXT)
+  // -----------------------------------
+  switch (field) {
+    case "hourly":
+      return "";
+
+    case "halfDay": {
+      if (hourly == null) return "Please enter hourly rate first";
+      const min = hourly * 4;
+      if (num < min) return `Half-day must be at least ${min}`;
+      return true;
+    }
+
+    case "fullDay": {
+      if (hourly == null || halfDay == null)
+        return "Please enter hourly and half-day first";
+
+      const minHourly = hourly * 8;
+      if (num < minHourly) return `Full-day must be at least ${minHourly}`;
+
+      const minHalf = halfDay * 2;
+      if (num < minHalf) return `Full-day must be at least ${minHalf}`;
+
+      return true;
+    }
+
+    case "weekly": {
+      if (hourly == null || halfDay == null || fullDay == null)
+        return "Please complete previous fields first";
+
+      const minFromHourly = hourly * 40;
+      if (num < minFromHourly)
+        return `Weekly rate must be at least ${minFromHourly}`;
+
+      const minFromHalfDay = halfDay * 10;
+      if (num < minFromHalfDay)
+        return `Weekly rate must be at least ${minFromHalfDay}`;
+
+      const minFromFullDay = fullDay * 5;
+      if (num < minFromFullDay)
+        return `Weekly rate must be at least ${minFromFullDay}`;
+
+      return true;
+    }
+
+    case "monthly": {
+      if (
+        hourly == null ||
+        halfDay == null ||
+        fullDay == null ||
+        weekly == null
+      )
+        return "Please complete previous fields first";
+
+      const minHourly = hourly * 3;
+      if (num <= minHourly) return `Monthly must be greater than ${minHourly}`;
+
+      const minHalf = halfDay * 40;
+      if (num < minHalf) return `Monthly must be at least ${minHalf}`;
+
+      const minFull = fullDay * 20;
+      if (num < minFull) return `Monthly must be at least ${minFull}`;
+
+      const minWeekly = weekly * 4;
+      if (num < minWeekly) return `Monthly must be at least ${minWeekly}`;
+
+      return true;
+    }
+
+    default:
+      return true;
+  }
+};
+
+export const validateNotificationMessage = (value: string) => {
+  const raw = value || "";
+
+  // Trim check: reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Reject if contains double (or more) consecutive spaces
+  if (/ {2,}/.test(raw)) {
+    return "Message must not contain consecutive spaces";
+  }
+
+  // Length check
+  if (raw.length < 10) {
+    return "Message must be at least 10 characters";
+  }
+  if (raw.length > 500) {
+    return "Message must not exceed 500 characters";
+  }
+
+  const allowedPattern = /^[A-Za-z0-9 /(),.#-]+$/;
+
+  if (!allowedPattern.test(raw)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . - # are allowed.";
+  }
+
+  return true;
+};
+
+export const validateLocation = (value: string) => {
+  if (!value) return "Location must be at least 3 characters";
+
+  // Disallow leading or trailing spaces
+  if (/^\s|\s$/.test(value))
+    return "Location must not start or end with a space";
+
+  const v = value.trim();
+  if (v.length < 3) return "Location must be at least 3 characters";
+  if (v.length > 50) return "Location must not exceed 50 characters";
+
+  // Allow letters, numbers, spaces, and / , . - #
+  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
+    return "Location may contain only letters, numbers, spaces, and / , . - #";
+    }
+
+  return true;
+};
+
+export const validateQuestion = (value: string): string | true => {
+  if (!value) return "Question is required";
+
+  if (/^\s|\s$/.test(value)) {
+    return "Question must not start or end with a space";
+  }
+
+  if (/\s{2,}/.test(value)) {
+    return "Question must not contain consecutive spaces";
+  }
+
+  if (value.length < 5) return "Question must be at least 5 characters";
+  if (value.length > 200) return "Question must not exceed 200 characters";
+
+  // Allow: letters, numbers, spaces, and / , . - # ( ) ?
+  if (!/^[A-Za-z0-9\s/,.#()?-]+$/.test(value)) {
+    return "Only letters, numbers, spaces, and special characters such as / ( ) , . - # ? are allowed.";
+  }
+
+  return true;
+};
+export const validateNotificationTitle = (value: string) => {
+  const raw = value || "";
+
+  // Reject if has leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Message must not have leading or trailing spaces";
+  }
+
+  // Length checks
+  if (raw.length < 5) return "Title must be at least 5 characters";
+  if (raw.length > 100) return "Title must not exceed 100 characters";
+
+  // Disallow any digits (0-9)
+  if (/\d/.test(raw)) return "Title must not contain numbers";
+
+  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
+  if (!/^[A-Za-z ]+$/.test(raw)) {
+    return "Title must contain only letters and spaces";
+    }
+  return true;
+};
+export interface TextValidationOptions {
+  minLength?: number;
+  maxLength?: number;
+  regex?: RegExp;
+  required?: boolean;
+}
+
+export const validateAlphabeticTextArea = (
+  value: string,
+  options: TextValidationOptions = {}
+): string | true => {
+  const { minLength = 1, maxLength = Infinity, required = true } = options;
+
+  const v = value || "";
+
+  if (required && !v) {
+    return "This field is required";
+  }
+
+  if (!required && !v) {
+    return true;
+  }
+
+  if (v.startsWith(" ") || v.endsWith(" ")) {
+    return "Leading or trailing spaces are not allowed";
+  }
+
+  if (/ {2,}/.test(v)) {
+    return "Consecutive spaces are not allowed";
+  }
+
+  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
+  const pattern =
+    options?.regex instanceof RegExp ? options.regex : defaultPattern;
+
+  if (!pattern.test(v)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
+  }
+
+  // Cross-Site Scripting (XSS) check
+  if (v !== xss(v)) {
+    return "Potentially malicious content is not allowed";
+  }
+
+  if (v.length < minLength) {
+    return `Minimum length is ${minLength} characters`;
+  }
+  if (v.length > maxLength) {
+    return `Maximum length is ${maxLength} characters`;
+  }
+
+  return true;
+};
 export default {
   validateName,
   validateEmail,
@@ -615,4 +922,11 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validatePricePerHour,
+  validateLocation,
+  validateQuestion,
+  validateAlphabeticTextArea,
+  validateNotificationTitle,
+  validateNotificationMessage,
+  validateCategoryName,
 };

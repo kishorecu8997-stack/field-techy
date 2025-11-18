@@ -1,0 +1,145 @@
+import { absoluteUrls } from "@/config/urls";
+import AdminTabComponent from "@/shared/components/AdminTabComponent";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import type { EngineerFormData } from "../types";
+import BasicInformation from "../addEngineer/BasicInformation";
+import Documents from "../addEngineer/Documents";
+import ExperienceDetails from "../addEngineer/ExperienceDetails";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+
+/**
+ * EditEngineer component for editing an existing engineer.
+ * Pre-filled with dummy data for development/testing.
+ */
+export default function EditEngineer() {
+  const [activeTab, setActiveTab] = useState("Basic Information");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const methods = useForm<EngineerFormData>({
+    defaultValues: {
+      name: "Alex Johnson",
+      email: "alex.johnson@example.com",
+      phoneNumber: "+91 9876576512",
+      profileImage: null,
+      address: "123 Tech Street, San Francisco, CA",
+      skills: ["React", "TypeScript", "Next.js"],
+      price: "75.5",
+      serviceCategory: "Legal Services",
+      portfolio: "https://alexj.dev",
+      designation: "Senior Frontend Engineer",
+      location: "San Francisco, CA",
+      employer: "Tech Innovators Inc.",
+      experience:
+        "5 years of professional experience in full-stack development.",
+      resume: "",
+      governmentId: "",
+      certificate: "",
+    },
+  });
+
+  const { trigger } = methods;
+
+  // Handle Next button navigation between tabs
+  const handleNext = async () => {
+    let isValid = false;
+
+    if (activeTab === "Basic Information") {
+      isValid = await trigger([
+        "name",
+        "email",
+        "phoneNumber",
+        "address",
+        "skills",
+        "price",
+        "serviceCategory",
+        "portfolio",
+      ]);
+      if (isValid) setActiveTab("Experience Details");
+    } else if (activeTab === "Experience Details") {
+      isValid = await trigger([
+        "designation",
+        "location",
+        "employer",
+        "experience",
+      ]);
+      if (isValid) setActiveTab("Documents");
+    }
+  };
+
+  // Handle form submission
+  const handleSave = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+      setIsSubmitting(true);
+      try {
+        const data = methods.getValues();
+        console.log("Full form data:", data);
+        toast.success("Engineer details updated successfully!");
+        methods.reset();
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  const tabs = [
+    {
+      label: "Basic Information",
+      content: <BasicInformation />,
+      hide: false,
+    },
+    {
+      label: "Experience Details",
+      content: <ExperienceDetails />,
+      hide: false,
+    },
+    {
+      label: "Documents",
+      content: <Documents />,
+      hide: false,
+    },
+  ];
+
+  const isLastTab = activeTab === "Documents";
+
+  return (
+    <div className="w-full px-4 h-full mt-6">
+      <div className="flex justify-between gap-4">
+        <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
+        <Button
+          variant="solid"
+          onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
+        >
+          Back
+        </Button>
+      </div>
+
+      <FormContainer methods={methods}>
+        <div className="bg-white dark:bg-gray-700 rounded-lg p-2 mx-auto">
+          {/* FIX: Use controlled props for tab switching */}
+          <AdminTabComponent
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+
+          <div className="flex justify-end mt-6 px-4 pb-4">
+            <Button
+              type="button"
+              onClick={isLastTab ? handleSave : handleNext}
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 disabled:opacity-50"
+            >
+              {isSubmitting ? "Saving…" : isLastTab ? "Save" : "Next"}
+            </Button>
+          </div>
+        </div>
+      </FormContainer>
+    </div>
+  );
+}
