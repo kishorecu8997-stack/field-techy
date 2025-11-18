@@ -4,8 +4,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
 // import AdminProtectedRoute from "@/layout/admin/AdminProtectedRoute";
 
-// const Layout = React.lazy(() => import("@/pages/engineer/auth"));
-const Layout = React.lazy(() => import("@/pages/client/auth"));
+const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
@@ -36,7 +35,12 @@ const BackgroundVerification = React.lazy(
 const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
+
+// Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
+
+
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
 const JobDetailsPage = React.lazy(
@@ -50,6 +54,60 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutApp"));
+const Home = React.lazy(() => import("@/pages/engineer/home"));
+const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
+
+//client
+const ClientSignInPage = React.lazy(
+  () => import("@/pages/client/auth/components/signin_pages/SignInPage")
+);
+const ClientSignUpPage = React.lazy(
+  () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
+);
+const ClientProfileSettingPage = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+const ClientForgetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ForgetPassword")
+);
+const ClientResetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/ResetPassword")
+);
+const ClientMyJobsPage = React.lazy(
+  () => import("@/pages/client/my_job_client")
+);
+const ClientDashboard = React.lazy(
+  () => import("@/pages/client/dashboard/Dashboard")
+);
+const ClientAccountType = React.lazy(
+  () => import("@/pages/client/auth/components/AccountType")
+);
+const CorporateMultiStepRegistration = React.lazy(
+  () =>
+    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
+);
+
+const ClientBackgroundVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/BackgroundVerification"
+    )
+);
+const ClientSetPassword = React.lazy(
+  () => import("@/pages/client/auth/components/profile_setup/SetPassword")
+);
+const ClientExploreEngineers = React.lazy(
+  () => import("@/pages/client/explore_engineer")
+);
+const ClientManageProposal = React.lazy(
+  () => import("@/pages/client/manage_proposal")
+);
+const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
+const ClientSearchResult = React.lazy(
+  () => import("@/pages/client/search_result")
+);
 
 //admin-dashboard-layout
 const AdminLayout = React.lazy(() => import("@/layout/admin/AdminLayout"));
@@ -66,6 +124,12 @@ const AdminManageEngineer = React.lazy(() => import("@/pages/admin/engineer"));
 const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
+);
+const AdminManageJobCategoryAdd = React.lazy(
+  () => import("@/pages/admin/job_category/AddCategory")
+);
+const AdminManageJobCategoryEdit = React.lazy(
+  () => import("@/pages/admin/job_category/EditCategory")
 );
 const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
@@ -91,23 +155,6 @@ const Settings = React.lazy(() => import("@/pages/admin/settings"));
 const AdminProfile = React.lazy(() => import("@/pages/admin/profile"));
 const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification")
-);
-
-const ClientMyJobsPage = React.lazy(
-  () => import("@/pages/client/my_job_client")
-);
-const ClientDashboard = React.lazy(
-  () => import("@/pages/client/dashboard/Dashboard")
-);
-const ClientExploreEngineers = React.lazy(
-  () => import("@/pages/client/explore_engineer")
-);
-const ClientManageProposal = React.lazy(
-  () => import("@/pages/client/manage_proposal")
-);
-const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
-const ClientSearchResult = React.lazy(
-  () => import("@/pages/client/search_result")
 );
 
 /**
@@ -168,7 +215,9 @@ export const routes = createBrowserRouter([
     path: BASE.ENGINEER,
     element: withSuspense(RootLayout),
     children: [
-      { index: true, element: withSuspense(MyJobsPage) },
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
+      { path: urls.engineer.home.explore_jobs, element: withSuspense(ExploreJobs) },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
@@ -187,13 +236,63 @@ export const routes = createBrowserRouter([
         element: withSuspense(TermsAndConditions),
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+    ],
+  },
+
+  //client
+  {
+    path: BASE.CLIENT_AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { path: urls.client.auth.login, element: withSuspense(ClientSignInPage) },
+      {
+        path: urls.client.auth.signup,
+        element: withSuspense(ClientSignUpPage),
+      },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(ClientProfileSettingPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(ClientSetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(ClientBackgroundVerification),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.client.auth.account_type,
+        element: withSuspense(ClientAccountType),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: `${urls.client.auth.profile_setup}/:role`,
+        element: withSuspense(CorporateMultiStepRegistration),
+      },
     ],
   },
 
   // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
       {
@@ -274,6 +373,14 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_categories,
             element: withSuspense(AdminManageJobCategory),
+          },
+          {
+            path: urls.admin.home.manage_categories_add,
+            element: withSuspense(AdminManageJobCategoryAdd),
+          },
+          {
+            path: urls.admin.home.manage_categories_edit,
+            element: withSuspense(AdminManageJobCategoryEdit),
           },
           {
             path: urls.admin.home.manage_rate_card,

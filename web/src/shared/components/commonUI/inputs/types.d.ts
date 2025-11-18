@@ -1,8 +1,19 @@
 import { RegisterOptions } from "react-hook-form";
-
-declare global {
-  // Optional: if you want it globally available without import
+export interface SelectOption {
+  value: string | number;
+  label: string;
 }
+
+export interface SelectFieldProps {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  required?: boolean | string;
+  options: SelectOption[];
+  isShowLabel?:boolean;
+  rules?: RegisterOptions;
+}
+
 
 interface CheckboxInputProps {
   name: string;
