@@ -25,11 +25,11 @@ const ManageClient: React.FC = () => {
    */
   const tabs = [
     {
-      label: "Corporate",
+      label: "Corporate Client",
       content: <CorporateClient />,
     },
     {
-      label: "Home",
+      label: "Home Client",
       content: <HomeClient />,
     },
   ];
@@ -48,7 +48,7 @@ const ManageClient: React.FC = () => {
       </div>
 
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate" />
+        <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate Client" />
       </div>
     </div>
   );

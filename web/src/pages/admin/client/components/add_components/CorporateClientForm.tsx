@@ -61,6 +61,8 @@ const CorporateClientForm: React.FC = () => {
         "state",
         "postalCode",
         "vatRegistrationNumber",
+        "governmentIDProof",
+        "qualificationCertificate",
       ]);
       if (isValid) {
         setActiveTab("Documents");
