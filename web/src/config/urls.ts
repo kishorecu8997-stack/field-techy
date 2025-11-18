@@ -8,6 +8,8 @@
  * - Use relative paths only for route definitions
  * - Group related routes under common base
  * - Use consistent naming
+ * 
+ * this should be use to app routes definitions etc.
  */
 export const BASE = {
   CLIENT: "/client",
@@ -87,22 +89,28 @@ export const urls = {
       manage_client: `${BASE.ADMIN}/client`,
       manage_jobs: `${BASE.ADMIN}/jobs`,
       manage_categories: `${BASE.ADMIN}/categories`,
+      manage_categories_add: `${BASE.ADMIN}/categories/add`,
+      manage_categories_edit: `${BASE.ADMIN}/categories/edit`,
       manage_rate_card: `${BASE.ADMIN}/rate-card`,
       manage_payment: `${BASE.ADMIN}/revenue`,
       manage_transactions: `${BASE.ADMIN}/transaction`,
       wallet_overview: `${BASE.ADMIN}/wallet-overview`,
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
       manage_notification: `${BASE.ADMIN}/notifications`,
+      manage_notification_add: `${BASE.ADMIN}/notifications/add`,
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;
 
-// ✅ Helper for absolute paths (for navigation/linking)
+// ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
 export const absoluteUrls = {
   engineer: {
     auth: {
@@ -169,17 +177,23 @@ export const absoluteUrls = {
       manage_client: `${BASE.ADMIN}/client`,
       manage_jobs: `${BASE.ADMIN}/jobs`,
       manage_categories: `${BASE.ADMIN}/categories`,
+      manage_categories_add: `${BASE.ADMIN}/categories/add`,
+      manage_categories_edit: `${BASE.ADMIN}/categories/edit`,
       manage_rate_card: `${BASE.ADMIN}/rate-card`,
       manage_payment: `${BASE.ADMIN}/revenue`,
       manage_transactions: `${BASE.ADMIN}/transaction`,
       wallet_overview: `${BASE.ADMIN}/wallet-overview`,
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
       manage_notification: `${BASE.ADMIN}/notifications`,
+      manage_notification_add: `${BASE.ADMIN}/notifications/add`,
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
       manage_cms: `${BASE.ADMIN}/cms`,
       settings: `${BASE.ADMIN}/settings`,
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
     },
   },
 } as const;
