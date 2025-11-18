@@ -18,7 +18,7 @@ const EngineerWallet: React.FC = () => {
   const columns: Column<EngineerPage>[] = [
     {
       key: "sno",
-      label: "Sno",
+      label: "S. No",
     },
     {
       key: "clientDetails",

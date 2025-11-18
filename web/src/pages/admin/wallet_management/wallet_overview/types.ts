@@ -16,7 +16,6 @@ export interface TransactionRequest {
   status: string;
 }
 
-// statusTypes.ts
 export const StatusTypes = {
   approved: "approved",
   pending: "pending",

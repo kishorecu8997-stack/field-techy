@@ -17,7 +17,7 @@ const PendingTable: React.FC = () => {
   const columns: Column<TransactionRequest>[] = [
     {
       key: "sno",
-      label: "Sno",
+      label: "S. No",
     },
     {
       key: "clientDetails",
@@ -73,11 +73,11 @@ const PendingStatus = ({ row }: { row: string }) => {
   return (
     <div className="text-sm ">
       <SelectMenu
-        placeholder="Select Region"
+        placeholder="Select Status"
         className="w-36"
         options={options}
         value={status}
-        onChange={() => handleChangeStatus}
+        onChange={() => handleChangeStatus(row)}
       />
     </div>
   );
