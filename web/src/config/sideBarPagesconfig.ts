@@ -13,6 +13,7 @@ import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
 import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
+import CancelJopOffer from "@/pages/engineer/my_job/job_details_components/CancelJopOffer";
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
 import Documents from "@/pages/engineer/user_profile/components/documents/Documents";
 import AddEducation from "@/pages/engineer/user_profile/components/education/AddEducation";
@@ -55,6 +56,7 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
     }
   > = {
     myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+    cancelOffer: { component: CancelJopOffer, title: "Do you want to cancel the job?" },
     profile: { component: UserProfileSidebar, title: "My Profile" },
     personalInfo: {
       component: PersonalInformation,

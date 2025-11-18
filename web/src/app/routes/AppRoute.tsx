@@ -182,6 +182,7 @@ const adminEditRolePage = React.lazy(
 const roleListPage = React.lazy(
   () => import("@/pages/admin/sub_admin/role_pages/RolePage")
 );
+const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -248,6 +249,10 @@ export const routes = createBrowserRouter([
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
         element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId`,
+        element: withSuspense(OfferPages),
       },
       {
         path: urls.engineer.home.search_result,

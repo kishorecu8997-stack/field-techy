@@ -9,6 +9,7 @@ export const JOB_STATUSES = {
   applied: "applied",
   inprogress: "inprogress",
   new: "new",
+  offer: "offer",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
