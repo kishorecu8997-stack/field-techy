@@ -125,6 +125,12 @@ const AdminManageClient = React.lazy(() => import("@/pages/admin/client"));
 const AdminManageJobCategory = React.lazy(
   () => import("@/pages/admin/job_category")
 );
+const AdminManageJobCategoryAdd = React.lazy(
+  () => import("@/pages/admin/job_category/AddCategory")
+);
+const AdminManageJobCategoryEdit = React.lazy(
+  () => import("@/pages/admin/job_category/EditCategory")
+);
 const AdminManageJobs = React.lazy(() => import("@/pages/admin/jobs"));
 const AdminManageRateCard = React.lazy(() => import("@/pages/admin/rate_card"));
 const AdminManagePayment = React.lazy(() => import("@/pages/admin/payment"));
@@ -364,6 +370,14 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_categories,
             element: withSuspense(AdminManageJobCategory),
+          },
+          {
+            path: urls.admin.home.manage_categories_add,
+            element: withSuspense(AdminManageJobCategoryAdd),
+          },
+          {
+            path: urls.admin.home.manage_categories_edit,
+            element: withSuspense(AdminManageJobCategoryEdit),
           },
           {
             path: urls.admin.home.manage_rate_card,

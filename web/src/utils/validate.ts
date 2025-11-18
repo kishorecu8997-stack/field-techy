@@ -475,6 +475,33 @@ export const validateJobDescription = (value: string) => {
   return true;
 };
 
+export const validateCategoryName = (value: string) => {
+  const trimmed = value.trim();
+
+  // Reject if original had leading or trailing spaces
+  if (trimmed !== value) {
+    return "Category name must not have leading or trailing spaces";
+  }
+
+  if (trimmed.length < 3) {
+    return "Category name must be at least 3 characters";
+  }
+  if (trimmed.length > 50) {
+    return "Category name must not exceed 50 characters";
+  }
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(trimmed)) {
+    return "Category name must not contain consecutive spaces";
+  }
+
+  // Allow only letters, spaces, underscores, and hyphens
+  if (!/^[A-Za-z _-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-)";
+  }
+
+  return true;
+};
 /**
  * Validates that a payment method has been selected.
  * The value is expected to be a `SelectOption` object.
@@ -544,4 +571,5 @@ export default {
   countryValidation,
   addressRequiredValidation,
   CommissionValidation,
+  validateCategoryName,
 };

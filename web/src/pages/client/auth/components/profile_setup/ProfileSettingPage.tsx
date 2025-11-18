@@ -215,10 +215,6 @@ const CorporateMultiStepRegistration = () => {
           <div
             key={currentStep}
             className="relative overflow-auto p-0 mx-auto max-h-[75vh] justify-items-center"
-            style={{
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-            }}
           >
             {renderStep()}
           </div>
