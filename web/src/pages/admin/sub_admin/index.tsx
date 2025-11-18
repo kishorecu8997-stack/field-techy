@@ -1,5 +1,139 @@
-import React from 'react'
+import { absoluteUrls } from "@/config/urls";
+import { userList, type UserItem } from "@/dummy_data/admin/manageSubAdmin";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import CustomTable, {
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
+import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { useState } from "react";
+import { CiEdit } from "react-icons/ci";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
+/**
+ * `ManageSubAdmin` is a page component for displaying and managing sub-admin users.
+ * It features a table of sub-admins with functionality to search, view details,
+ * change status, edit, and delete sub-admins. It also provides navigation to
+ * add new sub-admins or manage roles.
+ * @returns {JSX.Element} The rendered page component.
+ */
 export default function ManageSubAdmin() {
-  return <div>ManageSubAdmin</div>;
+  const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
+  const navigate = useNavigate();
+
+  const getStatus = (row: UserItem) => {
+    return statuses[row.id] ?? row.status;
+  };
+
+  const toggleStatus = (id: number, current: "On" | "Off") => {
+    const newStatus = current === "On" ? "Off" : "On";
+    setStatuses((prev) => ({ ...prev, [id]: newStatus }));
+  };
+
+  const columns: Column<UserItem>[] = [
+    {
+      key: "id",
+      label: "Sr. No.",
+      renderCell: (row: UserItem) => <span>{row.id}</span>,
+    },
+    {
+      key: "name",
+      label: "Name",
+      renderCell: (row: UserItem) => (
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs">
+            👤
+          </div>
+          <span>{row.name}</span>
+        </div>
+      ),
+    },
+    {
+      key: "email",
+      label: "Email",
+      renderCell: (row: UserItem) => <span>{row.email}</span>,
+    },
+    {
+      key: "phoneNumber",
+      label: "Phone Number",
+      renderCell: (row: UserItem) => <span>{row.phoneNumber}</span>,
+    },
+    {
+      key: "roleName",
+      label: "Role Name",
+      renderCell: (row: UserItem) => <span>{row.roleName}</span>,
+    },
+    {
+      key: "status",
+      label: "Status",
+      renderCell: (row: UserItem) => {
+        const currentStatus = getStatus(row);
+        const isOn = currentStatus === "On";
+        return (
+          <div
+            onClick={() => toggleStatus(row.id, currentStatus)}
+            className={`px-3 py-1 w-fit rounded-md text-sm font-medium cursor-pointer ${
+              isOn
+                ? "bg-white text-gray-700 border border-gray-300"
+                : "bg-gray-100 text-gray-700 border border-gray-300"
+            }`}
+          >
+            {currentStatus}
+          </div>
+        );
+      },
+    },
+    {
+      key: "action",
+      label: "Action",
+      renderCell: () => (
+        <div className="flex items-center gap-2">
+          <div
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+            onClick={() =>
+              navigate(`${absoluteUrls.admin.home.manage_sub_admin_edit}`)
+            }
+          >
+            <CiEdit className="text-blue-600" />
+          </div>
+          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+            <RiDeleteBin6Line className="text-red-600" />
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="w-full h-full p-4">
+      <div className="flex justify-between">
+        <p className="mt-2 mb-6 font-semibold">Manage Sub-Admin</p>
+        <div className="flex gap-2">
+          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition">
+            Roles
+          </Button>
+          <Button
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            onClick={() =>
+              navigate(`${absoluteUrls.admin.home.manage_sub_admin_add}`)
+            }
+          >
+            Add Sub Admin
+          </Button>
+        </div>
+      </div>
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-4 pb-8">
+        <div className="mb-4">
+          <SearchInput />
+        </div>
+        <div className="h-full flex-1 overflow-y-auto">
+          <CustomTable<UserItem>
+            columns={columns}
+            data={userList}
+            initialPageSize={10}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }

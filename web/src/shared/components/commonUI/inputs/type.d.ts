@@ -108,6 +108,7 @@ export interface ImageUploadFieldProps {
   rules?: RegisterOptions;
   maxSize?: number;
   accept?: string;
+  allowUpload?: boolean;
 }
 
 /**
