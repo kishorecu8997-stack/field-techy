@@ -7,6 +7,7 @@ import { educationFieldData } from "@/dummy_data";
 import { validatePassingYear } from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 interface AddEducationProps {
   onMenuItemClick: (key: string) => void;
@@ -23,6 +24,7 @@ interface AddEducationProps {
  */
 const AddEducation: React.FC<AddEducationProps> = ({}) => {
   const handleSubmit = (data: EducationFormData) => {
+    toast.success("Education Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
   };

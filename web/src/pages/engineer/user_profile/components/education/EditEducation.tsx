@@ -7,6 +7,7 @@ import { validatePassingYear } from "../../Validate";
 import { educationFieldData } from "@/dummy_data";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 interface EditEducationProps {
   /** The education data to pre-fill in the form for editing. */
@@ -22,6 +23,7 @@ interface EditEducationProps {
  */
 const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
   const handleSubmit = (data: EducationFormData) => {
+    toast.success("Education Updated Successfully");
     console.log("Form submitted with updated data:", data);
     // TODO: Replace with actual submission logic (e.g., API call to update)
   };

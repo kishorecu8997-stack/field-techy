@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for editing tools.
@@ -31,6 +32,7 @@ interface EditToolsProps {
 const EditTools: React.FC<EditToolsProps> = ({ currentTools }) => {
   const onSubmit = (data: EditToolsFormData) => {
     console.log("Form submitted with updated data:", data);
+    toast.success("Tools Updated Successfully");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

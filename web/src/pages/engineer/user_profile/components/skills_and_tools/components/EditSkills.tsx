@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for editing skills.
@@ -37,6 +38,7 @@ const EditSkills: React.FC<EditSkillsProps> = ({ currentSkills }) => {
    */
   const onSubmit = (data: EditSkillsFormData) => {
     console.log("Form submitted with updated data:", data);
+    toast.success("Skills Updated Successfully");  
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

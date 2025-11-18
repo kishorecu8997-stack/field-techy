@@ -7,6 +7,7 @@ import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import { toast } from "react-toastify";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -22,6 +23,7 @@ const AddExperiences = () => {
    * @param {AddExperiencesFormData} data - The validated form data.
    */
   const handleSubmit = (data: ExperiencesFormData) => {
+    toast.success("Experience Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: integrate submission logic here (e.g., API call)
     // Example: await api.experiences.create(data);

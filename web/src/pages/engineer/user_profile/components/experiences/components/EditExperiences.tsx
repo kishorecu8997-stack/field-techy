@@ -8,6 +8,7 @@ import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import { toast } from "react-toastify";
 
 /**
  * Props for the EditExperiences component.
@@ -34,6 +35,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
    * @param {EditExperiencesFormData} data - The validated form data.
    */
   const handleSubmit = (data: ExperiencesFormData) => {
+    toast.success("Experience Updated Successfully");
     console.log("Form submitted with updated data:", data);
     // TODO: integrate submission logic here (e.g., API call)
     // Example: await api.experiences.update(experienceData.id, data);

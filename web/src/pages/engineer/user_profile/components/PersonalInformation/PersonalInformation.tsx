@@ -14,6 +14,7 @@ import type { EditProfileFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
+import { toast } from "react-toastify";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -33,6 +34,7 @@ const PersonalInformation: React.FC = () => {
    */
   const handleSubmit = (data: EditProfileFormData) => {
     console.log("Form submitted with data:", data);
+    toast.success("Profile Updated Successfully");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 
