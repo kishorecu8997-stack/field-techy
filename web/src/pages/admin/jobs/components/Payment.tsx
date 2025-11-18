@@ -5,7 +5,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { useState } from "react";
 
 const Payment = () => {
-    const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const columns = [
     { key: "id", label: "Payment ID" },
     { key: "amount", label: "Amount" },
@@ -13,7 +13,7 @@ const Payment = () => {
     {
       key: "adminStatus",
       label: "Admin Status",
-      renderCell: (row:any) => {
+      renderCell: (row: any) => {
         return (
           <div className="relative w-full">
             <SelectMenu

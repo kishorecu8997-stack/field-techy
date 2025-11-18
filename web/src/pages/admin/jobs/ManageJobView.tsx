@@ -6,7 +6,7 @@ import Payment from "./components/Payment";
 const ManageJobView = () => {
   const tabs = [
     {
-      label: "Contact Support",
+      label: "Job Details",
       content: <JobDetails />,
       hide: false,
     },
