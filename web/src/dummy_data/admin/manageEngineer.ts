@@ -1,7 +1,12 @@
-interface ManageEngineerProps {
+export interface DetailsTypes {
+  name: string;
+  phone: string;
+  email: string;
+}
+export interface ManageEngineerProps {
   id: number;
   engineerID: string;
-  details: string;
+  details: DetailsTypes;
   documents: string;
   location: string;
   registrationDate: string;
@@ -16,7 +21,11 @@ export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 1,
     engineerID: "ENG-1001",
-    details: "Experienced HVAC technician with 5 years in field service.",
+    details: {
+      name: "Alice Johnson",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
     documents: "View",
     location: "Mumbai, India",
     registrationDate: "2024-02-15",
@@ -29,7 +38,11 @@ export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 2,
     engineerID: "ENG-1002",
-    details: "Junior electrical engineer, recently certified.",
+    details: {
+      name: "Brian Lee",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
     documents: "View",
     location: "Pune, India",
     registrationDate: "2024-03-10",
@@ -42,7 +55,11 @@ export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 3,
     engineerID: "ENG-1003",
-    details: "Field engineer specializing in solar panel installations.",
+    details: {
+      name: "Chloe Smith",
+      phone: "+91 95765 43210",
+      email: "chloe.smith@example.com",
+    },
     documents: "View",
     location: "Bangalore, India",
     registrationDate: "2024-05-21",
@@ -55,7 +72,11 @@ export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 4,
     engineerID: "ENG-1004",
-    details: "Mechanical technician with expertise in refrigeration systems.",
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
     documents: "View",
     location: "Delhi, India",
     registrationDate: "2024-06-30",
@@ -68,7 +89,11 @@ export const manageEngineer: ManageEngineerProps[] = [
   {
     id: 5,
     engineerID: "ENG-1005",
-    details: "Electrical maintenance expert, certified by IEEMA.",
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
     documents: "View",
     location: "Hyderabad, India",
     registrationDate: "2024-07-14",

@@ -537,3 +537,55 @@ export const options = [
     label: "Rejected",
   },
 ];
+
+export interface WalletViewProps {
+  sno: number;
+  dateTime: string;
+  transactionId: string;
+  transactionType: string;
+  amount: string;
+  status: string;
+}
+
+export const WalletViewData: WalletViewProps[] = [
+  {
+    sno: 1,
+    dateTime: "10-03-2025 14:20:45",
+    transactionId: "TXN100001",
+    transactionType: "Deposit",
+    amount: "AED 500",
+    status: "Success",
+  },
+  {
+    sno: 2,
+    dateTime: "12-03-2025 09:15:30",
+    transactionId: "TXN100002",
+    transactionType: "Refund",
+    amount: "AED 100",
+    status: "Success",
+  },
+  {
+    sno: 3,
+    dateTime: "13-03-2025 18:05:10",
+    transactionId: "TXN100003",
+    transactionType: "Deposit",
+    amount: "AED 50",
+    status: "Failed",
+  },
+  {
+    sno: 4,
+    dateTime: "15-03-2025 11:45:00",
+    transactionId: "TXN100004",
+    transactionType: "Deposit",
+    amount: "AED 250",
+    status: "Pending",
+  },
+  {
+    sno: 5,
+    dateTime: "17-03-2025 16:30:20",
+    transactionId: "TXN100005",
+    transactionType: "Refund",
+    amount: "AED 75",
+    status: "Success",
+  },
+];

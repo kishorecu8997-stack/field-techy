@@ -22,7 +22,12 @@ import type { PopupProps } from "./type";
  * @param props - {@link PopupProps} The properties for configuring the popup.
  * @returns {JSX.Element} The rendered popup element when open.
  */
-const Popup = ({ open, onClose, children ,width}: PopupProps) => {
+const Popup = ({
+  open,
+  onClose,
+  children,
+  inputClassName = "sm:max-w-md sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto",
+}: PopupProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +41,8 @@ const Popup = ({ open, onClose, children ,width}: PopupProps) => {
     }
 
     return () => {
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
       document.removeEventListener("keydown", handleEsc);
       document.body.style.overflow = "";
     };
@@ -61,20 +68,7 @@ const Popup = ({ open, onClose, children ,width}: PopupProps) => {
     >
       {/* Modal */}
       <div
-        className="
-          w-full 
-          sm:max-w-md sm:rounded-lg sm:shadow-xl
-          max-h-[98%]
-          overflow-auto
-          flex flex-col
-          bg-white dark:bg-gray-800
-          inset-0 
-          sm:inset-auto 
-          fixed 
-          sm:relative
-          h-full 
-          sm:h-auto
-        "
+        className={`${inputClassName}`}
       >
         {children}
       </div>

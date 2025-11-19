@@ -3,13 +3,14 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { EngineerFormData } from "../types";
 import BasicInformation from "../addEngineer/BasicInformation";
 import Documents from "../addEngineer/Documents";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 
 /**
  * EditEngineer component for editing an existing engineer.
@@ -20,11 +21,16 @@ export default function EditEngineer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+  const { id } = useParams<{ id: string }>();
+
+  // Find by ID (replace with real API call if needed)
+  const editEngineer = manageEngineer.find((user) => user.id.toString() === id);
+
   const methods = useForm<EngineerFormData>({
     defaultValues: {
-      name: "Alex Johnson",
-      email: "alex.johnson@example.com",
-      phoneNumber: "+91 9876576512",
+      name: editEngineer?.details.name || "John Doe",
+      email: editEngineer?.details.email || "john.doe@example.com",
+      phoneNumber: editEngineer?.details.phone || "+91 9876576512",
       profileImage: null,
       address: "123 Tech Street, San Francisco, CA",
       skills: ["React", "TypeScript", "Next.js"],
@@ -34,8 +40,7 @@ export default function EditEngineer() {
       designation: "Senior Frontend Engineer",
       location: "San Francisco, CA",
       employer: "Tech Innovators Inc.",
-      experience:
-        "5 years of professional experience in full-stack development.",
+      experience: "5",
       resume: "",
       governmentId: "",
       certificate: "",
