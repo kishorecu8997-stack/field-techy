@@ -412,7 +412,7 @@ export const routes = createBrowserRouter([
             element: withSuspense(AdminManageEngineerView),
           },
           {
-            path: urls.admin.home.manage_engineer_edit,
+            path: `${urls.admin.home.manage_engineer_edit}/:id?`,
             element: withSuspense(AdminManageEngineerEdit),
           },
           {
