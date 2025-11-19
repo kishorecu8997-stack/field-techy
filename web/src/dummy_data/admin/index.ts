@@ -6,7 +6,10 @@ import type {
 } from "@/pages/admin/sub_admin/types";
 import type { RateCardProps } from "@/pages/admin/rate_card/types";
 import type { NotificationProps } from "./manageNotification";
-import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
+import type {
+  EngineerPage,
+  TransactionRequest,
+} from "@/pages/admin/wallet_management/wallet_overview/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -433,8 +436,6 @@ export const countryList = [
   { label: "Country 3", value: "country3" },
 ];
 
-
-
 export const transactionRequest: TransactionRequest[] = [
   {
     sno: 1,
@@ -442,7 +443,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Arjun Mehta",
       phone: "+91 98765 43210",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 12500.75,
   },
   {
@@ -451,7 +452,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Priya Sharma",
       phone: "+91 99887 65432",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 8450.0,
   },
   {
@@ -460,7 +461,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Rohit Verma",
       phone: "+91 91234 56789",
     },
-    status:"rejected",
+    status: "rejected",
     walletBalance: 15780.5,
   },
   {
@@ -469,7 +470,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Sneha Iyer",
       phone: "+91 90011 22334",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 11200.25,
   },
   {
@@ -478,12 +479,10 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Karan Patel",
       phone: "+91 90909 11122",
     },
-    status:"rejected",
+    status: "rejected",
     walletBalance: 9800.0,
   },
 ];
-
-
 
 export const engineerData: EngineerPage[] = [
   {
@@ -527,7 +526,6 @@ export const engineerData: EngineerPage[] = [
     walletBalance: 9800.0,
   },
 ];
-
 
 export const options = [
   {

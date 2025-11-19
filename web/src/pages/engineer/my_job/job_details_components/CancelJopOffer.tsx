@@ -24,7 +24,7 @@ export default function CancelJopOffer() {
 
   const handleSubmit = (data: any) => {
     console.log(data);
-    toast.success("Job offer cancelled successfully!");
+    toast.success("Job offer declined successfully!");
     setISOpenSidebar(false);
   };
 
@@ -74,7 +74,7 @@ export default function CancelJopOffer() {
             className="flex-1 bg-red-600 text-white py-3 rounded-lg font-medium"
             type="submit"
           >
-            Dismiss
+            Decline
           </Button>
         </div>
       </div>

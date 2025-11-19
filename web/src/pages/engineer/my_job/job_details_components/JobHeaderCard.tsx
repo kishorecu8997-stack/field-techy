@@ -69,7 +69,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 </Button>
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                  onClick={() => setIsWorkSubmitted?.(true)}
+                  onClick={() => {
+                    setIsWorkSubmitted?.(true);
+                    setActiveTab("Work Submissions");
+                  }}
                 >
                   Submit work
                 </Button>
@@ -120,7 +123,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                         setISOpenSidebar(true);
                       }}
                     >
-                      Cancel Job
+                      Decline
                     </Button>
                   </div>
                 ) : isAccepted && !isStarted ? (
@@ -133,7 +136,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                         setIsCheckedIn?.(false);
                       }}
                     >
-                      Start Working
+                      Start Job
                     </Button>
 
                     <Button
@@ -145,7 +148,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                         setISOpenSidebar(true);
                       }}
                     >
-                      Cancel Job
+                      Decline
                     </Button>
                   </div>
                 ) : isStarted && !isCheckedIn ? (

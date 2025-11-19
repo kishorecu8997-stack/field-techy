@@ -71,7 +71,7 @@ export const sampleJobs: Job[] = [
     time: "10 Hours of Jobs",
     description:
       "We're looking for a skilled Software Engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
-    location: "Chennai, india",
+    location: "Chennai, India",
     salary: "5000",
     postedTime: "1h ago",
     category: "IT",

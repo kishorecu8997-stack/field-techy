@@ -52,7 +52,7 @@ const JobDetailsPage = () => {
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted}
+              isJobAccepted={isJobAccepted || true}
               activeTab={activeTab}
             />
           </div>
