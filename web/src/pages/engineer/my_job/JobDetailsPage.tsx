@@ -17,16 +17,14 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-    const [isJobAccepted, setIsJobAccepted] = useState(false);
-    const [activeTab, setActiveTab] = useState("Job Information");
-    console.log('activeTab :', activeTab);
+  const [isJobAccepted, setIsJobAccepted] = useState(false);
+  const [activeTab, setActiveTab] = useState("Job Information");
 
   const filter = () => {
     return sampleJobs.find((job) => {
       return job.id === Number(params.jobId);
     });
   };
-  console.log('filter :', filter());
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

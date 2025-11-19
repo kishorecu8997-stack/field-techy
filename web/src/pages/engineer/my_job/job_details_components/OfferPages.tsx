@@ -19,7 +19,6 @@ const OfferPages = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isJobAccepted, setIsJobAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  console.log('activeTab :', activeTab);
 
   const filter = () => {
     return sampleJobs.find((job) => {

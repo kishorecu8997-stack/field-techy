@@ -99,7 +99,6 @@ const JobTabSection = ({
     },
   ];
 
-  console.log('activeTab :', activeTab);
   return (
     <div className="">
       {isSendProposal ? (

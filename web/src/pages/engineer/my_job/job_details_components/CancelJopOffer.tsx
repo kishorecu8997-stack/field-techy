@@ -7,6 +7,10 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
+/**
+ * Cancel job offer form page displaying available balance and allowing users to select a bank and enter an amount.
+ * Includes validation for numeric input and a submit button for initiating withdrawal.
+ */
 export default function CancelJopOffer() {
   const { setISOpenSidebar } = useDrawerStore();
 
