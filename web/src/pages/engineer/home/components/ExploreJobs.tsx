@@ -3,7 +3,11 @@ import { sampleJobs } from "@/dummy_data/searchData";
 import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
-import { SORT_OPTIONS, type Filters } from "@/pages/engineer/search_result/types";
+import {
+  JOB_STATUSES,
+  SORT_OPTIONS,
+  type Filters,
+} from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useMemo, useState } from "react";
 
@@ -29,13 +33,16 @@ const ExploreJobs = () => {
   };
 
   const allNewJobs = useMemo(() => {
-    return sampleJobs.filter((job) => job.status === "new");
-  }, []); 
+    return sampleJobs.filter(
+      (job) =>
+        job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
+    );
+  }, []);
 
-  const jobsPerPage = 4;
-  const totalPages = Math.ceil(allNewJobs.length / jobsPerPage);
-  const startIndex = (currentPage - 1) * jobsPerPage;
-  const currentJobs = allNewJobs.slice(startIndex, startIndex + jobsPerPage);
+  // const jobsPerPage = 4;
+  // const totalPages = Math.ceil(allNewJobs.length / jobsPerPage);
+  // const startIndex = (currentPage - 1) * jobsPerPage;
+  // const currentJobs = allNewJobs.slice(startIndex, startIndex + jobsPerPage);
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
@@ -66,8 +73,8 @@ const ExploreJobs = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
-            {currentJobs.length > 0 ? (
-              currentJobs.map((job) => (
+            {allNewJobs.length > 0 ? (
+              allNewJobs.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
@@ -80,7 +87,7 @@ const ExploreJobs = () => {
 
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={allNewJobs.length}
               onPageChange={handlePageChange}
             />
           </div>
