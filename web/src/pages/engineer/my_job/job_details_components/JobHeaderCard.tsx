@@ -49,7 +49,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
-          <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900">
+          <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">
             {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
           </span>
         </div>

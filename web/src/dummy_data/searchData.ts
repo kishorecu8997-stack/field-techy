@@ -71,7 +71,7 @@ export const sampleJobs: Job[] = [
     time: "10 Hours of Jobs",
     description:
       "We're looking for a skilled Software Engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
-    location: "New York, USA",
+    location: "Chennai, india",
     salary: "5000",
     postedTime: "1h ago",
     category: "IT",
@@ -88,13 +88,13 @@ export const sampleJobs: Job[] = [
   {
     id: 5,
     title: "Innovate Tech",
-    client: "Innovate Tech",
+    client: "Innovate Tech Co",
     time: "10 Hours of Jobs",
     description:
-      "We're looking for a skilled invoice technology to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
+      "innovate tech is a startup that is looking for a talented software engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
     location: "New York, USA",
     salary: "5000",
-    postedTime: "1h ago",
+    postedTime: "2h ago",
     category: "IT",
     rating: 5,
     experience: 4,
@@ -112,10 +112,10 @@ export const sampleJobs: Job[] = [
     client: "Innovate Tech",
     time: "10 Hours of Jobs",
     description:
-      "We're looking for a skilled Innovate Tech to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
+      "innovate tech is a startup that is looking for a talented software engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
     location: "New York, USA",
     salary: "5000",
-    postedTime: "1h ago",
+    postedTime: "2h ago",
     category: "IT",
     rating: 5,
     experience: 4,

@@ -40,12 +40,6 @@ const JobCard: React.FC<Job> = ({
     }
   };
 
-  const getTypeColor = () => {
-    return type === WORKING_TYPES.onsite
-      ? "bg-teal-800 text-white dark:bg-teal-700"
-      : "bg-purple-600 text-white dark:bg-purple-700";
-  };
-
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
@@ -56,7 +50,7 @@ const JobCard: React.FC<Job> = ({
           {title}
         </h3>
         <span
-          className={`px-2.5 py-1 rounded-full text-xs font-medium ${getTypeColor()}`}
+          className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
           {type === WORKING_TYPES.onsite ? WORKING_TYPES_PROPERTY.onsite : WORKING_TYPES_PROPERTY.remote}
         </span>
