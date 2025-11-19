@@ -4,6 +4,7 @@ import {
   EngineerStatus,
   JobStatus,
   manageEngineer,
+  type ManageEngineerProps,
 } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -13,24 +14,11 @@ import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
+import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-
-interface ManageEngineerProps {
-  id: number;
-  engineerID: string;
-  details: string;
-  documents: string;
-  location: string;
-  registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  employementStatus: string;
-  avgRating: number;
-  approvalStatus: string;
-}
 
 /**
  * ManageEngineer Component
@@ -61,24 +49,26 @@ const ManageEngineer: React.FC = () => {
     {
       key: "engineerID",
       label: "Engineer ID",
-      renderCell: (row: ManageEngineerProps) => {
-        const name = row.engineerID || "N/A";
-        return (
-          <span className="flex-nowrap text-nowrap">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </span>
-        );
-      },
     },
     {
       key: "details",
       label: "Details",
       renderCell: (row: ManageEngineerProps) => {
-        const name = row.details || "N/A";
         return (
-          <span className="flex w-[200px]">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </span>
+          <div className="text-sm flex items-center gap-2">
+            <div>
+              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+            </div>
+            <div>
+              <div className="font-semibold">{row.details.name}</div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.details.phone}
+              </div>
+              <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                {row.details.email}
+              </div>
+            </div>
+          </div>
         );
       },
     },
@@ -152,7 +142,7 @@ const ManageEngineer: React.FC = () => {
       key: "action",
       label: "Actions",
       align: "center",
-      renderCell: () => (
+      renderCell: (row: ManageEngineerProps) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
@@ -165,7 +155,9 @@ const ManageEngineer: React.FC = () => {
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(absoluteUrls.admin.home.manage_engineer_edit)
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`
+              )
             }
           >
             <CiEdit className="text-blue-600" />

@@ -7,6 +7,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { PaymentProps } from "./types";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 
 /**
  * ManagePayment Component
@@ -26,6 +27,8 @@ import type { PaymentProps } from "./types";
  * @returns {JSX.Element} The rendered ManagePayment component.
  */
 const ManagePayment: React.FC = () => {
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+
   const columns: Column<PaymentProps>[] = [
     {
       key: "id",
@@ -84,7 +87,23 @@ const ManagePayment: React.FC = () => {
     {
       key: "adminStatus",
       label: "Admin Status",
-      renderCell: (row: PaymentProps) => <AdminStatus row={row.adminStatus} />,
+      renderCell: (row: any) => {
+        return (
+          <div className="relative w-full">
+            <SelectMenu
+              placeholder="Select"
+              value={rowStatuses[row.id] || ""}
+              onChange={(value: string | null) => {
+                setRowStatuses((prev) => ({
+                  ...prev,
+                  [row.id]: value ?? "",
+                }));
+              }}
+              options={JobStatus}
+            />
+          </div>
+        );
+      },
     },
 
     {
