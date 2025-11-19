@@ -13,7 +13,13 @@ import { useState } from "react";
 const MyJobsPage = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
 
-  const jobFilters = ["All Jobs", "In-Progress", "Completed", "Posted", "Hold"];
+  const jobFilters = [
+    "All Jobs",
+    "Applied",
+    "Today",
+    "In Progress",
+    "Completed",
+  ];
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
