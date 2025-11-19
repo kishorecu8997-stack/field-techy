@@ -56,7 +56,7 @@ type PopupProps = {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  width?: string;  
+  inputClassName?: string;
 };
 
 /**
