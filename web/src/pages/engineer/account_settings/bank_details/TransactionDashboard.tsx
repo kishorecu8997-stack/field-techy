@@ -1,3 +1,4 @@
+import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency, formatDate } from '@/shared/libs/utils';
 import React from 'react';
 
@@ -11,7 +12,6 @@ export interface Transaction {
 }
 
 interface TransactionDashboardProps {
-  transactions: Transaction[];
   onViewAllClick?: () => void;
 }
 
@@ -20,7 +20,6 @@ interface TransactionDashboardProps {
  * status badges, and formatted dates. Supports an optional "View All" action and handles empty states.
  */
 const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
-  transactions,
   onViewAllClick,
 }) => {
 
@@ -95,7 +94,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         {onViewAllClick && (
           <button
             onClick={onViewAllClick}
-            className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300"
+            className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
             aria-label="View all transactions"
           >
             View All
