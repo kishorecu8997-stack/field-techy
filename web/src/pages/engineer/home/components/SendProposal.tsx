@@ -5,6 +5,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
 import { validateDescription, validateNumericInput } from "../validation";
+import { toast } from "react-toastify";
 
 /**
  * A form component for submitting a job proposal.
@@ -27,6 +28,7 @@ const SendProposal = () => {
   const formCtx = useForm();
   const handleSubmit = () => {
     console.log("Submitted");
+    toast.success("Proposal submitted successfully!");
   };
 
   return (

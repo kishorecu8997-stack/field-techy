@@ -46,7 +46,7 @@ export const CheckboxInput = ({
         rules={validationRules}
         render={({ field, fieldState: { error } }) => (
           <>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <input
                 {...field}
                 type="checkbox"

@@ -10,6 +10,7 @@ import { absoluteUrls } from "@/config/urls";
 import ReportPage from "@/pages/engineer/report";
 import { useState } from "react";
 import { assetsConfig } from "@/assets";
+import useDrawerStore from "../store/useDrawerStore";
 
 /**
  * Main footer component with company info, quick links, support options,
@@ -17,13 +18,19 @@ import { assetsConfig } from "@/assets";
  */
 const Footer = () => {
   const [open, setOpen] = useState(false);
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
   return (
     <footer className="bg-white dark:bg-gray-900 pt-12 pb-8 px-6 md:px-12 relative overflow-hidden text-gray-600 dark:text-gray-300">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row gap-12">
           <div className="md:w-1/3">
             <div className="mb-6">
-              <img src={assetsConfig.logos.ftLogo} alt="Field Techy Logo" className="h-12 w-auto" />
+              <img
+                src={assetsConfig.logos.ftLogo}
+                alt="Field Techy Logo"
+                className="h-12 w-auto"
+              />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               OUR ADDRESS
@@ -50,36 +57,42 @@ const Footer = () => {
             </h3>
             <ul className="space-y-4">
               <li>
-                <a
-                  href="#"
+                <NavLink
+                  to={absoluteUrls.engineer.home.my_jobs}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Jobs
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a
-                  href="#"
+                <NavLink
+                  to={absoluteUrls.engineer.home.explore_jobs}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Explore Jobs
-                </a>
+                </NavLink>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                <div
+                  onClick={() => {
+                    setActiveKey("myEarning");
+                    setISOpenSidebar(true);
+                  }}
+                  className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Earning
-                </a>
+                </div>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                <div
+                  onClick={() => {
+                    setActiveKey("myAccount");
+                    setISOpenSidebar(true);
+                  }}
+                  className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Account
-                </a>
+                </div>
               </li>
             </ul>
           </div>
@@ -91,19 +104,22 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <div
-                onClick={() => setOpen(true)}
+                  onClick={() => setOpen(true)}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors cursor-pointer"
                 >
                   Report A Problem
                 </div>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                <div
+                  onClick={() => {
+                    setActiveKey("contactUs");
+                    setISOpenSidebar(true);
+                  }}
+                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors cursor-pointer"
                 >
                   Contact Us
-                </a>
+                </div>
               </li>
               <li>
                 <NavLink

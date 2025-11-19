@@ -79,6 +79,8 @@ export interface JobHeaderCardProps {
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
   isSendProposal?: boolean
+  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
+  setActiveTab?: Dispatch<SetStateAction<string>>
 }
 
 export interface JobTabsProps {

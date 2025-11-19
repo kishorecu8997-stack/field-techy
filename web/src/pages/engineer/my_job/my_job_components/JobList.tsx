@@ -1,6 +1,7 @@
 import { sampleJobs } from "@/dummy_data/searchData";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
+import { JOB_STATUSES } from "../../search_result/types";
 
 /**
  * Renders a responsive grid of job cards using dummy job data.
@@ -13,9 +14,11 @@ import { useMemo } from "react";
  */
 const JobList = () => {
   const filteredJobs = useMemo(() => {
-    return sampleJobs.filter((job) => job.status !== "new");
+    return sampleJobs.filter(
+      (job) =>
+        job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
+    );
   }, []);
-
   return (
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

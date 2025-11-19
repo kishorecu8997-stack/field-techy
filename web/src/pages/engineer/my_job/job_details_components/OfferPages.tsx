@@ -1,19 +1,19 @@
-import { client } from "@/dummy_data/jobDetails";
+import { client, jobHeaderData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
-import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/JobHeaderCard";
-import JobTabSection from "./job_details_components/JobTabSection";
+import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
+import ClientInfoCard from "./ClientInfoCard";
+import JobHeaderCard from "./JobHeaderCard";
+import JobTabSection from "./JobTabSection";
 
 /**
  * Page component displaying detailed information about a specific job.
  *
  * @returns {JSX.Element} Job details page layout.
  */
-const JobDetailsPage = () => {
+const OfferPages = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
@@ -37,9 +37,9 @@ const JobDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={filter()?.title as string}
-              client={filter()?.client as string}
-              duration={filter()?.duration as string}
+              title={jobHeaderData.title}
+              client={jobHeaderData.client}
+              duration={jobHeaderData.duration}
               type={filter()?.type}
               status={filter()?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
@@ -52,7 +52,7 @@ const JobDetailsPage = () => {
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted || true}
+              isJobAccepted={isJobAccepted}
               activeTab={activeTab}
             />
           </div>
@@ -72,4 +72,4 @@ const JobDetailsPage = () => {
   );
 };
 
-export default JobDetailsPage;
+export default OfferPages;
