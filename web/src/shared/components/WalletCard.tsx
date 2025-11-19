@@ -35,7 +35,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
         <h3 className="font-semibold text-gray-900 dark:text-white">My Wallet</h3>
         <Button
         variant="text"
-           onClick={()=>onDrawerToggle(WALLET_COMPONENTS.RECENT_TRANSACTIONS)}
+           onClick={()=>onDrawerToggle(WALLET_COMPONENTS.MY_WALLET)}
           className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
         >
           View all

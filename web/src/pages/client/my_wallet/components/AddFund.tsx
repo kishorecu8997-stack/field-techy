@@ -31,7 +31,8 @@ const AddFund = () => {
    */
   const handleSubmit = (data: AddFundFormData) => {    
     // TODO: Replace with actual submission logic (e.g., API call)
-    toast.success(`Funds ${data.amount} added successfully!`);
+    // alert(`Funds ${data.amount} added successfully!`);
+    toast.success(`Funds ${data.amount}  added successfully!`);
   };
 
  const [isOpen, setIsOpen] = useState(false);
