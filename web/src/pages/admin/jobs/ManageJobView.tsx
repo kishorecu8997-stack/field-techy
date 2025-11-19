@@ -2,8 +2,11 @@ import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import JobDetails from "./components/JobDetails";
 import ProcessTracking from "./components/ProcessTracking";
 import Payment from "./components/Payment";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { useNavigate } from "react-router-dom";
 
 const ManageJobView = () => {
+  const navigate = useNavigate();
   const tabs = [
     {
       label: "Job Details",
@@ -26,9 +29,12 @@ const ManageJobView = () => {
     <div className="w-full h-full p-4">
       <div className="flex justify-between">
         <p className="mt-2 mb-6 font-semibold">Job Details</p>
+        <Button variant="solid" onClick={() => navigate(-1)}>
+          Back
+        </Button>
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-lg p-4">
-        <AdminTabComponent tabs={tabs} defaultActiveTab="Contact Support" />
+        <AdminTabComponent tabs={tabs} defaultActiveTab="Job Details" />
       </div>
     </div>
   );
