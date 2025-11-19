@@ -74,13 +74,15 @@ const ManageJobCategory: React.FC = () => {
     {
       key: "action",
       label: "Actions",
-      renderCell: () => (
+      renderCell: (row: ServerCategoryProps) => (
         <div className="flex items-center gap-2">
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
               onClick={() =>
-                navigate(absoluteUrls.admin.home.manage_categories_edit)
+                navigate(
+                  `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`
+                )
               }
             />
           </div>
