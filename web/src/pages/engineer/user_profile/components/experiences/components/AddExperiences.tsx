@@ -39,7 +39,7 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: null,
+      startDate: new Date(),
       endDate: null,
     },
     mode: "onSubmit",

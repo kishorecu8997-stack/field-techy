@@ -11,6 +11,8 @@ import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import {workPreferenceData} from "@/dummy_data/engineer_profile/workPreferenceData";
+
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
@@ -36,10 +38,10 @@ const WorkPreference = () => {
    */
   const methods = useForm<WorkPreferenceFormData>({
     defaultValues: {
-      portfolioLink: "",
-      preferredWorkTypes: "",
-      servicesCategories: "",
-      ratePreference: "",
+      portfolioLink:workPreferenceData[0].portfolioLink,
+      preferredWorkTypes: workPreferenceData[0].preferredWorkTypeIds,
+      servicesCategories: workPreferenceData[0].serviceCategoryIds,
+      ratePreference: workPreferenceData[0].ratePreference,
     },
     mode: "onSubmit",
   });

@@ -87,6 +87,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
             <button
               onClick={() => {
                 onMenuItemClick(item.key);
+                console.log(item.key);
                 item.onClick?.();
               }}
               className={`

@@ -36,7 +36,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
             <Button
-              className={`px-3 py-1 rounded-full text-xs font-medium bg-teal-200 dark:bg-teal-800 transition-colors duration-200 hover:opacity-90 cursor-pointer`}
+              variant="primary"   
+                         
             >
               Invite to Job
             </Button>

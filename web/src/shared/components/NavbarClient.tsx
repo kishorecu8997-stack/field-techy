@@ -175,7 +175,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         >
           <TbAlignLeft className="h-5 w-5" />
           <span className="max-w-[6rem] truncate text-left">
-            Hi, Michel Brown
+            Hi, Nick Wilson
           </span>
           <img
             src={assetsConfig.images.users.user}

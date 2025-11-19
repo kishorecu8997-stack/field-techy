@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -29,7 +29,22 @@ interface EditToolsProps {
  * @param {EditToolsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditTools form component.
  */
-const EditTools: React.FC<EditToolsProps> = ({ currentTools }) => {
+const EditTools: React.FC<EditToolsProps> = () => {
+  const initialToolIds = useMemo(() => {
+    const storedIds = localStorage.getItem("editToolsId");
+    if (storedIds) {
+      try {
+        const parsedIds: (string | number)[] = JSON.parse(storedIds);
+        // Ensure all IDs are strings for the form field
+        return parsedIds.map(String);
+      } catch (error) {
+        console.error("Failed to parse tool IDs from localStorage", error);
+        return [];
+      }
+    }
+    return [];
+  }, []);
+
   const onSubmit = (data: EditToolsFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Tools Updated Successfully");
@@ -37,11 +52,17 @@ const EditTools: React.FC<EditToolsProps> = ({ currentTools }) => {
   };
 
   const methods = useForm<EditToolsFormData>({
-    defaultValues: { tools: currentTools || [] },
+    defaultValues: { tools: initialToolIds },
   });
+
+  /**
+   * Cleanup localStorage on component unmount.
+   */
   useEffect(() => {
-    methods.reset({ tools: currentTools || [] });
-  }, [currentTools, methods]);
+    return () => {
+      localStorage.removeItem("editToolsId");
+    };
+  }, []);
 
   /**
    * Transforms the raw tools data into a format suitable for the `TagSelectField` component.

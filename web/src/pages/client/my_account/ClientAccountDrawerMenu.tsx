@@ -92,7 +92,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.users.user}
-            name="Alex"
+            name="Nick Wilson"
             title="Software Engineer"
             rating={4}
             reviewCount={10}

@@ -14,7 +14,7 @@ import {
  */
 export interface WorkExperience {
   id: string;
-  title: string;
+  designation: string;
   employer: string;
   workLocationType: WorkLocationType;
   employmentType: EmploymentType;
@@ -98,7 +98,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {item.title}
+                      {item.designation}
                     </h3>                   
                   </div>
 

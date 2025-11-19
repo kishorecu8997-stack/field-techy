@@ -15,6 +15,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 import { toast } from "react-toastify";
+import { loginData,type PersonalInfo } from "@/dummy_data/personalInfoData"
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -41,15 +42,16 @@ const PersonalInformation: React.FC = () => {
   /**
    * Initializes `react-hook-form` with default values for the personal information form.
    */
-  const methods = useForm<EditProfileFormData>({
+  const methods = useForm<PersonalInfo>({
     defaultValues: {
-      fullName: "",
-      phoneNumber: "",
-      emailId: "",
-      addressLocation: "",
+      fullName: loginData[0].fullName,
+      phoneNumber: loginData[0].phoneNumber,
+      emailId: loginData[0].emailId,
+      addressLocation: loginData[0].addressLocation,
     },
     mode: "onSubmit",
   });
+  console.log('loginData[0].phoneNumber :', loginData[0].phoneNumber);
 
   const { trigger } = methods;
 

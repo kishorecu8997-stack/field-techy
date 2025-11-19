@@ -3,25 +3,18 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { educationFieldData } from "@/dummy_data";
 import { validatePassingYear } from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { educationLevels, courses, universities, majors} from "@/dummy_data/engineer_profile/education-data";
+
 
 interface AddEducationProps {
   onMenuItemClick: (key: string) => void;
   onClose: () => void;
 }
 
-/**
- * The AddEducation component renders a form for adding a new education entry.
- * It uses `react-hook-form` for form management and validation.
- * @param {AddEducationProps} props - The props for the component.
- * @param {function(): void} props.onClose - Callback to close the parent drawer/sidebar.
- * @param {function(string): void} props.onMenuItemClick - Callback to navigate to other profile sections.
- * @returns {React.ReactElement} The rendered AddEducation form component.
- */
 const AddEducation: React.FC<AddEducationProps> = ({}) => {
   const handleSubmit = (data: EducationFormData) => {
     toast.success("Education Added Successfully");
@@ -52,7 +45,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           isShowLabel={false}
           name="educationLevel"
           placeholder="Education Level"
-          options={educationFieldData.educationLevels.map((e) => ({
+          options={educationLevels.map((e) => ({
             value: e.key,
             label: e.label,
           }))}
@@ -64,7 +57,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           isShowLabel={false}
           name="course"
           placeholder="Course"
-          options={educationFieldData.courses.map((c) => ({
+          options={courses.map((c) => ({
             value: c.key,
             label: c.label,
           }))}
@@ -76,7 +69,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           isShowLabel={false}
           name="university"
           placeholder="University"
-          options={educationFieldData.universities.map((u) => ({
+          options={universities.map((u) => ({
             value: u.key,
             label: u.label,
           }))}
@@ -88,7 +81,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           isShowLabel={false}
           name="majorSubject"
           placeholder="Major Subject"
-          options={educationFieldData.majors.map((m) => ({
+          options={majors.map((m) => ({
             value: m.key,
             label: m.label,
           }))}

@@ -51,7 +51,7 @@ const Filters: React.FC = () => {
         <h2 className="text-xl font-bold">Filters</h2>
         <Button
           onClick={clearAllFilters}
-          className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          className="text-sm font-medium text-teal-800 hover:text-gray-50 dark:text-gray-100 dark:hover:text-gray-400 underline"
         >
           CLEAR ALL
         </Button>
@@ -65,10 +65,10 @@ const Filters: React.FC = () => {
             <Button
               key={option.value}
               onClick={() => setLocation(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 location === option.value
-                  ? "bg-emerald-700 text-white dark:bg-emerald-600"
-                  : "text-gray-900 border border-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
               }`}
             >
               {option.label}
@@ -85,10 +85,10 @@ const Filters: React.FC = () => {
             <Button
               key={option.value}
               onClick={() => setBudget(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 budget === option.value
-                  ? "bg-emerald-700 text-white dark:bg-emerald-600"
-                  : " text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
               }`}
             >
               {option.label}
@@ -105,11 +105,12 @@ const Filters: React.FC = () => {
             <Button
               key={option.value}
               onClick={() => setRating(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 rating === option.value
-                  ? "bg-emerald-700 text-white dark:bg-emerald-600"
-                  : " text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              }`}
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+              }`
+              }
             >
               {option.label}
             </Button>
@@ -158,10 +159,10 @@ const Filters: React.FC = () => {
             <Button
               key={skill.name}
               onClick={() => toggleSkill(index)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 skill.selected
-                  ? "bg-emerald-700 text-white dark:bg-emerald-600"
-                  : " text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
               }`}
             >
               {skill.name}
@@ -173,7 +174,7 @@ const Filters: React.FC = () => {
           <Button
             variant="text"
             onClick={() => setShowAllSkills(!showAllSkills)}
-            className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+            className="mt-2 text-sm font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 underline"
           >
             {showAllSkills ? "Show Less" : "View All"}
           </Button>
