@@ -6,14 +6,17 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { TransactionRequest } from "../wallet_overview/types";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 
 /**
  * PendingTable Component
- * 
+ *
  * Renders a table of transaction requests with client info, job details, and actions.
  * @returns {JSX.Element} The transaction requests management view.
  */
 const PendingTable: React.FC = () => {
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+
   const columns: Column<TransactionRequest>[] = [
     {
       key: "sno",
@@ -40,9 +43,23 @@ const PendingTable: React.FC = () => {
     {
       key: "status",
       label: "Status",
-      renderCell: (row: TransactionRequest) => (
-        <PendingStatus row={row.status} />
-      ),
+      renderCell: (row: any) => {
+        return (
+          <div className="relative w-full">
+            <SelectMenu
+              placeholder="Select"
+              value={rowStatuses[row.id] || ""}
+              onChange={(value: string | null) => {
+                setRowStatuses((prev) => ({
+                  ...prev,
+                  [row.id]: value ?? "",
+                }));
+              }}
+              options={JobStatus}
+            />
+          </div>
+        );
+      },
     },
   ];
   return (

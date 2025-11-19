@@ -1,14 +1,27 @@
 import { earningsData, userData } from "@/dummy_data/jobDetails";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { SORT_OPTIONS } from "../search_result/types";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
-import { SORT_OPTIONS } from "../search_result/types";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import FilterButton from "@/shared/components/commonUI/FilterButton";
+import { useState } from "react";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
  * Includes a header with sorting controls and uses dummy data for user and earnings.
  */
 const MyJobsPage = () => {
+  const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
+
+  const jobFilters = [
+    "All Jobs",
+    "Applied",
+    "Today",
+    "In Progress",
+    "Completed",
+    "Declined",
+    "Cancelled",
+  ];
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -17,6 +30,11 @@ const MyJobsPage = () => {
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
+        />
+        <FilterButton
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          filters={jobFilters}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList />
