@@ -15,6 +15,7 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import type { LoginFormData } from "../../../../engineer/auth/components/types";
+import { toast } from "react-toastify";
 
 /**
  * Type representing the data structure for the Login form.
@@ -146,6 +147,7 @@ const Login = ({
             handleNavigate={() => {
               setIsOpen(false);
               navigate(absoluteUrls.client.home.dashboard);
+              toast.success("Logged in successfully")
             }}
           />
         </Popup>

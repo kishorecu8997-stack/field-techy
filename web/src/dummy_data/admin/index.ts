@@ -6,7 +6,10 @@ import type {
 } from "@/pages/admin/sub_admin/types";
 import type { RateCardProps } from "@/pages/admin/rate_card/types";
 import type { NotificationProps } from "./manageNotification";
-import type { EngineerPage, TransactionRequest } from "@/pages/admin/wallet_management/wallet_overview/types";
+import type {
+  EngineerPage,
+  TransactionRequest,
+} from "@/pages/admin/wallet_management/wallet_overview/types";
 
 export const serviceCategoriesData: ServerCategoryProps[] = [
   {
@@ -433,8 +436,6 @@ export const countryList = [
   { label: "Country 3", value: "country3" },
 ];
 
-
-
 export const transactionRequest: TransactionRequest[] = [
   {
     sno: 1,
@@ -442,7 +443,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Arjun Mehta",
       phone: "+91 98765 43210",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 12500.75,
   },
   {
@@ -451,7 +452,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Priya Sharma",
       phone: "+91 99887 65432",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 8450.0,
   },
   {
@@ -460,7 +461,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Rohit Verma",
       phone: "+91 91234 56789",
     },
-    status:"rejected",
+    status: "rejected",
     walletBalance: 15780.5,
   },
   {
@@ -469,7 +470,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Sneha Iyer",
       phone: "+91 90011 22334",
     },
-    status:"approved",
+    status: "approved",
     walletBalance: 11200.25,
   },
   {
@@ -478,12 +479,10 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Karan Patel",
       phone: "+91 90909 11122",
     },
-    status:"rejected",
+    status: "rejected",
     walletBalance: 9800.0,
   },
 ];
-
-
 
 export const engineerData: EngineerPage[] = [
   {
@@ -528,7 +527,6 @@ export const engineerData: EngineerPage[] = [
   },
 ];
 
-
 export const options = [
   {
     value: "approved",
@@ -537,5 +535,57 @@ export const options = [
   {
     value: "rejected",
     label: "Rejected",
+  },
+];
+
+export interface WalletViewProps {
+  sno: number;
+  dateTime: string;
+  transactionId: string;
+  transactionType: string;
+  amount: string;
+  status: string;
+}
+
+export const WalletViewData: WalletViewProps[] = [
+  {
+    sno: 1,
+    dateTime: "10-03-2025 14:20:45",
+    transactionId: "TXN100001",
+    transactionType: "Deposit",
+    amount: "AED 500",
+    status: "Success",
+  },
+  {
+    sno: 2,
+    dateTime: "12-03-2025 09:15:30",
+    transactionId: "TXN100002",
+    transactionType: "Refund",
+    amount: "AED 100",
+    status: "Success",
+  },
+  {
+    sno: 3,
+    dateTime: "13-03-2025 18:05:10",
+    transactionId: "TXN100003",
+    transactionType: "Deposit",
+    amount: "AED 50",
+    status: "Failed",
+  },
+  {
+    sno: 4,
+    dateTime: "15-03-2025 11:45:00",
+    transactionId: "TXN100004",
+    transactionType: "Deposit",
+    amount: "AED 250",
+    status: "Pending",
+  },
+  {
+    sno: 5,
+    dateTime: "17-03-2025 16:30:20",
+    transactionId: "TXN100005",
+    transactionType: "Refund",
+    amount: "AED 75",
+    status: "Success",
   },
 ];

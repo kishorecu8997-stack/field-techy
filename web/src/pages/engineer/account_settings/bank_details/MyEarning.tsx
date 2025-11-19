@@ -1,7 +1,8 @@
-import { transactions } from "@/dummy_data/bankDetails";
+
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import TransactionDashboard from "./TransactionDashboard";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { set } from "react-hook-form";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -44,8 +45,7 @@ const MyEarning = () => {
       </div>
       <div className="h-[75%] overflow-y-auto">
         <TransactionDashboard
-          transactions={transactions}
-          onViewAllClick={() => alert("View All clicked")}
+          onViewAllClick={() => {setActiveKey("engineerRecentTransactions")}}
         />
       </div>
     </div>

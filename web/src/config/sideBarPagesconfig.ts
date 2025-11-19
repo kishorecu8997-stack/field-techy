@@ -10,11 +10,13 @@ import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBa
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
 import EditBankDetails from "@/pages/engineer/account_settings/bank_details/EditBankDetails";
 import MyEarning from "@/pages/engineer/account_settings/bank_details/MyEarning";
+import TransactionDashboard from "@/pages/engineer/account_settings/bank_details/TransactionDashboard";
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
 import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
+import CancelJopOffer from "@/pages/engineer/my_job/job_details_components/CancelJopOffer";
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
 import Documents from "@/pages/engineer/user_profile/components/documents/Documents";
 import AddEducation from "@/pages/engineer/user_profile/components/education/AddEducation";
@@ -213,4 +215,155 @@ export const sectionConfig: Record<
     actions: ActionButtonsForRecentTransactions,
     parent: "clientWallet",
   },
-};
+
+
+    // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+    cancelOffer: { component: CancelJopOffer, title: "Do you want to cancel the job?" },
+    // profile: { component: UserProfileSidebar, title: "My Profile" },
+    // personalInfo: {
+    //   component: PersonalInformation,
+    //   title: "Personal Information",
+    //   parent: "profile",
+    // },
+    // education: { component: Education, title: "Education", parent: "profile" },
+    // addEducation: {
+    //   component: AddEducation,
+    //   title: "Add Education",
+    //   parent: "education",
+    // },
+    // editEducation: {
+    //   component: EditEducation,
+    //   title: "Edit Education",
+    //   parent: "education",
+    // },
+    // skillsAndTools: {
+    //   component: SkillsAndTools,
+    //   title: "Skills & Tools",
+    //   parent: "profile",
+    // },
+    // addSkills: {
+    //   component: AddSkills,
+    //   title: "Add Skills",
+    //   parent: "skillsAndTools",
+    // },
+    // editSkills: {
+    //   component: EditSkills,
+    //   title: "Edit Skills",
+    //   parent: "skillsAndTools",
+    // },
+    // addTools: {
+    //   component: AddTools,
+    //   title: "Add Tools",
+    //   parent: "skillsAndTools",
+    // },
+    // editTools: {
+    //   component: EditTools,
+    //   title: "Edit Tools",
+    //   parent: "skillsAndTools",
+    // },
+    // experiences: {
+    //   component: Experiences,
+    //   title: "Experiences",
+    //   parent: "profile",
+    // },
+    // addExperiences: {
+    //   component: AddExperiences,
+    //   title: "Add Experience",
+    //   parent: "experiences",
+    // },
+    // editExperiences: {
+    //   component: EditExperiences,
+    //   title: "Edit Experience",
+    //   parent: "experiences",
+    // },
+    // workPreference: {
+    //   component: WorkPreference,
+    //   title: "Work Preference",
+    //   parent: "profile",
+    // },
+    // documents: { component: Documents, title: "Documents", parent: "profile" },
+    // editDocument: {
+    //   component: EditDocument,
+    //   title: "Edit Document",
+    //   parent: "documents",
+    // },
+    // jobs: { component: () => "job", title: "My Jobs" },
+    // earning: {
+    //   component: () =>"test",
+    //   title: "My Earning",
+    // },
+    // saved: { component: () => "test", title: "Saved Jobs" },
+    // settings: { component: AccountSettings, title: "Account Settings", parent: "myAccount" },
+    // changePassword: {
+    //   component: ChangePassword,
+    //   title: "Change Password",
+    //   parent: "settings",
+    // },
+    // manageBankAccounts: {
+    //   component: BankAccountList,
+    //   title: " Bank Details",
+    //   parent: "settings",
+    // },
+    // addBankdetails: {
+    //   component: AddBankDetails,
+    //   title: "Add Bank Details",
+    //   parent: "manageBankAccounts",
+    // },
+    // editBankdetails: {
+    //   component: EditBankDetails,
+    //   title: "Edit Bank Details",
+    //   parent: "manageBankAccounts",
+    // },
+    // contactUs: { component:  ContactUs, title: "Contact Us", parent: "settings" },
+    // myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
+    // withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
+    // notification: { component: NotofocationPage, title: "Notification", parent: "settings" },
+
+    // //client
+    // clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
+    // proposal: {
+    //   component: "test",
+    //   title: "Manage Proposal",
+    //   parent: "clientAccount",
+    // },
+    // company: {
+    //   component: "test",
+    //   title: "Company Information",
+    //   parent: "clientAccount",
+    // },
+    // document: {
+    //   component: "test",
+    //   title: "Documents",
+    //   parent: "clientAccount",
+    // },
+    // payment: {
+    //   component: "test",
+    //   title: "Payment Methods",
+    //   parent: "clientAccount",
+    // },
+    // changePwd: {
+    //   component: "test",
+    //   title: "Change Password",
+    //   parent: "clientAccount",
+    // },
+    // clientAcc: {
+    //   component: "test",
+    //   title: "Account Setting",
+    //   parent: "clientAccount",
+    // },
+    // clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
+ 
+    // recentTransactions: {
+    //   component: ClientRecentTransactions,
+    //   title: "Recent Transactions",
+    //   actions: ActionButtonsForRecentTransactions,
+    //   parent: "clientWallet",
+    // },
+    engineerRecentTransactions: {
+      component: TransactionDashboard,
+      title: "Recent Transactions",
+      actions: ActionButtonsForRecentTransactions,
+      parent: "myEarning",
+    },
+
+  };

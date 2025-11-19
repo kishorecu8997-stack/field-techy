@@ -1,7 +1,10 @@
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // or use your own icon components
-import { InputField } from "./commonUI/inputs";
+import { absoluteUrls } from "@/config/urls";
 import { useForm } from "react-hook-form";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // or use your own icon components
+import { useNavigate } from "react-router-dom";
+import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
+import { useEffect } from "react";
 
 /**
  * JobSearchBar component provides a dual-input search form for jobs and location.
@@ -14,6 +17,8 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  */
 export const JobSearchBar = () => {
   const methods = useForm({});
+  const navigate = useNavigate();
+
   return (
     <FormContainer
       onSubmit={() => {}}
@@ -26,6 +31,7 @@ export const JobSearchBar = () => {
           placeholder="Search Jobs.."
           leftIcon={<FaSearch className="text-gray-400" />}
           containerClassName="flex-1 py-0"
+          onChange={()=>navigate(absoluteUrls.engineer.home.search_result)}
           inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
         />
         <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>

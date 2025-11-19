@@ -578,8 +578,8 @@ export const validateCategoryName = (value: string) => {
   }
 
   // Allow only letters, spaces, underscores, and hyphens
-  if (!/^[A-Za-z _-]+$/.test(trimmed)) {
-    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-)";
+  if (!/^[A-Za-z _&-]+$/.test(trimmed)) {
+    return "Category name may contain only letters, spaces, underscores (_), and hyphens (-), and ampersand (&)";
   }
 
   return true;
@@ -634,21 +634,25 @@ export const CommissionValidation = (value: string): true | string => {
 export const validatePricePerHour = (value: string) => {
   const raw = value || "";
 
-  // Reject if has leading or trailing spaces
+  // Reject leading/trailing spaces
   if (raw !== raw.trim()) {
-    return "Message must not have leading or trailing spaces";
+    return "Price must not have leading or trailing spaces";
   }
 
-  // Length checks
-  if (raw.length < 5) return "Title must be at least 5 characters";
-  if (raw.length > 100) return "Title must not exceed 100 characters";
+  // Must not be empty
+  if (raw === "") {
+    return "Price is required";
+  }
 
-  // Disallow any digits (0-9)
-  if (/\d/.test(raw)) return "Title must not contain numbers";
+  // Must match: one or more digits, optionally followed by . and 1 or 2 digits
+  if (!/^\d+(\.\d{1,2})?$/.test(raw)) {
+    return "Price must be a positive number with up to 2 decimal";
+  }
 
-  // Allow only letters and spaces (no emojis, no symbols, no punctuation)
-  if (!/^[A-Za-z ]+$/.test(raw)) {
-    return "Title must contain only letters and spaces";
+  // Parse and check it's greater than 0
+  const num = parseFloat(raw);
+  if (num <= 0) {
+    return "Price must be greater than 0";
   }
 
   return true;
@@ -799,7 +803,7 @@ export const validateLocation = (value: string) => {
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Location may contain only letters, numbers, spaces, and / , . - #";
-    }
+  }
 
   return true;
 };
@@ -843,7 +847,7 @@ export const validateNotificationTitle = (value: string) => {
   // Allow only letters and spaces (no emojis, no symbols, no punctuation)
   if (!/^[A-Za-z ]+$/.test(raw)) {
     return "Title must contain only letters and spaces";
-    }
+  }
   return true;
 };
 export interface TextValidationOptions {

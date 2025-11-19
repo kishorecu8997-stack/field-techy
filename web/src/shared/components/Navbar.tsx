@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
@@ -29,6 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,7 +57,8 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         <img
           src={assetsConfig.logos.ftLogo}
           alt="FT Logo"
-          className="h-12 w-auto"
+          className="h-12 w-auto cursor-pointer"
+          onClick={() => navigate(absoluteUrls.engineer.home.dashboard)}
         />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
           <NavLink
@@ -81,9 +83,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
       {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 max-w-[500px]">
-        <Link to={absoluteUrls.engineer.home.search_result}>
+        {/* <Link to={absoluteUrls.engineer.home.search_result}> */}
           <JobSearchBar />
-        </Link>
+        {/* </Link> */}
       </div>
 
       {/* Right Section: Icons + Profile Button */}

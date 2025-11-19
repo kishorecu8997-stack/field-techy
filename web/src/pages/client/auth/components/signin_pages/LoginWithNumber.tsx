@@ -10,6 +10,7 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import { toast } from "react-toastify";
 
 export type LoginFormData = {
   phone: string;
@@ -34,7 +35,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
@@ -111,10 +112,10 @@ const navigate = useNavigate();
             handleNavigate={() => {
               setIsOpen(false);
               navigate(absoluteUrls.client.home.dashboard);
+              toast.success("Logged in successfully");
             }}
           />
         </Popup>
-
       </div>
     </div>
   );

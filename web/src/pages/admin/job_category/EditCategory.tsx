@@ -2,10 +2,12 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
+import { serviceCategoriesData } from "@/dummy_data/admin";
+import type { ServerCategoryProps } from ".";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing job category.
@@ -18,13 +20,20 @@ import JobCategoryForm from "./JobCategoryForm";
  * @returns {JSX.Element} The rendered component for editing a category.
  */
 export default function EditCategory() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  // Find the category by ID (replace with real API call if needed)
+  const category = serviceCategoriesData.find(
+    (cat: ServerCategoryProps) => cat.id === id
+  );
+
   const methods = useForm<CategoryFormData>({
     defaultValues: {
-      categoryName: "",
+      categoryName: category?.categoryName || "",
       categoryImage: null,
     },
   });
-  const navigate = useNavigate();
 
   const handleSubmit = () => {
     toast.success("Job category updated successfully!");

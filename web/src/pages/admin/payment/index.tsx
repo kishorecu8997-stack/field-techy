@@ -7,6 +7,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { PaymentProps } from "./types";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 
 /**
  * ManagePayment Component
@@ -26,6 +27,8 @@ import type { PaymentProps } from "./types";
  * @returns {JSX.Element} The rendered ManagePayment component.
  */
 const ManagePayment: React.FC = () => {
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+
   const columns: Column<PaymentProps>[] = [
     {
       key: "id",
@@ -43,7 +46,9 @@ const ManagePayment: React.FC = () => {
             <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
           </div>
           <div>
-            <div className="font-semibold whitespace-nowrap">{row.clientDetails.name}</div>
+            <div className="font-semibold whitespace-nowrap">
+              {row.clientDetails.name}
+            </div>
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
               {row.clientDetails.email}
             </div>
@@ -54,11 +59,13 @@ const ManagePayment: React.FC = () => {
         </div>
       ),
     },
-    { key: "jobTitle", label: "Job Title",
-       renderCell: (row: PaymentProps) => (
+    {
+      key: "jobTitle",
+      label: "Job Title",
+      renderCell: (row: PaymentProps) => (
         <div className="text-sm w-32">{row.jobTitle}</div>
       ),
-     },
+    },
     {
       key: "jobDescription",
       label: "Job Description",
@@ -80,7 +87,23 @@ const ManagePayment: React.FC = () => {
     {
       key: "adminStatus",
       label: "Admin Status",
-      renderCell: (row: PaymentProps) => <AdminStatus row={row.adminStatus} />,
+      renderCell: (row: any) => {
+        return (
+          <div className="relative w-full">
+            <SelectMenu
+              placeholder="Select"
+              value={rowStatuses[row.id] || ""}
+              onChange={(value: string | null) => {
+                setRowStatuses((prev) => ({
+                  ...prev,
+                  [row.id]: value ?? "",
+                }));
+              }}
+              options={JobStatus}
+            />
+          </div>
+        );
+      },
     },
 
     {
@@ -88,7 +111,10 @@ const ManagePayment: React.FC = () => {
       label: "Payment",
       renderCell: (row: PaymentProps) => (
         <div className="flex items-center gap-2">
-          <Button className="whitespace-nowrap bg-emerald-900" onClick={()=>console.log('send payout')}>
+          <Button
+            className="whitespace-nowrap bg-emerald-900"
+            onClick={() => console.log("send payout")}
+          >
             Send Payout
           </Button>
         </div>
@@ -99,7 +125,10 @@ const ManagePayment: React.FC = () => {
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
         <h1 className="text-lg font-semibold ">Manage Payments</h1>
-        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500" onClick={()=>console.log('export csv')}>
+        <Button
+          className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
+          onClick={() => console.log("export csv")}
+        >
           Export CSV
         </Button>
       </div>
@@ -122,7 +151,6 @@ const ManagePayment: React.FC = () => {
 export default ManagePayment;
 
 const AdminStatus = ({ row }: { row: string }) => {
-
   const [status, setStatus] = useState<string>(row);
 
   const handleChangeStatus = (value: string) => {

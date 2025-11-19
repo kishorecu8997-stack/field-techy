@@ -11,6 +11,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
 import type { FormDataPostJob } from "./types";
+import { toast } from "react-toastify";
 
 
 /**
@@ -105,6 +106,7 @@ const MultiStepPostJobForm = () => {
     try {
       // MOCK API CALL (replace with real fetch when backend is ready)
       console.log("Submitting Post a job data:", data);
+      toast.success("Job posted successfully");
       await new Promise((r) => setTimeout(r, 800));
       navigate(absoluteUrls.client.home.dashboard);
     } catch (error) {
