@@ -19,6 +19,8 @@ const MyJobsPage = () => {
     "Today",
     "In Progress",
     "Completed",
+    "Declined",
+    "Cancelled",
   ];
 
   return (

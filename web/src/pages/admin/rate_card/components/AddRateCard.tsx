@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import PricingModel from "./PricingModel";
 import RateCardForm from "./RateCardForm";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * AddRateCard Component
@@ -31,6 +32,7 @@ const AddRateCard = () => {
   });
   const onSubmit = (data: any) => {
     console.log(data);
+    toast.success("Rate card added successfully");
   };
   return (
     <div className="bg-white dark:bg-neutral-700 w-full h-full flex flex-col overflow-y-auto p-4">
