@@ -5,6 +5,16 @@ import Payment from "./components/Payment";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useNavigate } from "react-router-dom";
 
+/*
+ * ManageJobView Component
+ *
+ * Displays a management dashboard for job details, process tracking, and payment.
+ * Uses AdminTabComponent for tabbed UI and react-router for navigation.
+ *
+ * @component
+ * @example
+ * <ManageJobView />
+ * */
 const ManageJobView = () => {
   const navigate = useNavigate();
   const tabs = [

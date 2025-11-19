@@ -3,6 +3,16 @@ import { exampleMarkers } from "@/dummy_data/jobDetails";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import MapComponent from "@/shared/components/MapComponent";
 
+/**
+ * ProcessTracking Component
+ *
+ * Displays a table of check-ins and GPS tracking for a job.
+ * Uses CustomTable and MapComponent components.
+ *
+ * @component
+ * @example
+ * <ProcessTracking />
+ */
 const ProcessTracking = () => {
   const columns = [
     { key: "id", label: "Sr. No." },

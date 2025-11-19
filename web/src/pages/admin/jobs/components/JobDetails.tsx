@@ -3,6 +3,16 @@ import ContactDetailsCard from "@/shared/components/manage_job_components/Contac
 import JobStatusCard from "@/shared/components/manage_job_components/JobStatusCard";
 import ManageJobDetails from "./ManageJobDetails";
 
+/**
+ * JobDetails Component
+ *
+ * Displays a job details page with job information, job status, and contact details.
+ * Uses ManageJobDetails component for job details and job status card.
+ *
+ * @component
+ * @example
+ * <JobDetails />
+ */ 
 const JobDetails = () => {
   // const id = useParams();
   const id = "#Ride001";
