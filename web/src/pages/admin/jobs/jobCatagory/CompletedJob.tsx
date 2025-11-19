@@ -1,3 +1,4 @@
+import { absoluteUrls } from "@/config/urls";
 import {
   AllJobsCategory,
   AllJobsFilterBy,
@@ -14,6 +15,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Renders the "Completed" jobs tab content.
@@ -30,6 +32,7 @@ const CompletedJob: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
+    const navigate = useNavigate();
 
   const columns: Column<ManageJobProps>[] = [
     { key: "id", label: "Job ID" },
@@ -96,7 +99,9 @@ const CompletedJob: React.FC = () => {
       label: "Action",
       renderCell: () => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
+          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+          onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+          >
             <FiEye className="text-yellow-600" />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">

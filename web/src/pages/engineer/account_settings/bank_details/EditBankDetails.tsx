@@ -2,6 +2,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import BankDetailsForm from "./BankDetailsForm";
 import type { bankDetails } from "../types";
+import { toast } from "react-toastify";
 import { bankDetails as bankDetailsData } from "@/dummy_data/bankDetails";
 
 /**
@@ -28,6 +29,7 @@ const EditBankDetails = () => {
 
   const handleSubmit = (data: bankDetails) => {
     console.log("Submitted bank details:", data);
+    toast.success("Bank details updated successfully");
   };
 
   return (

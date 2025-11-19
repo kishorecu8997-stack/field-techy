@@ -1,3 +1,4 @@
+import { absoluteUrls } from "@/config/urls";
 import {
   manageFlaggedJobs,
   type ManageFlaggedJobProps,
@@ -8,6 +9,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import React from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Renders the "Flagged Jobs" tab content.
@@ -19,6 +21,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
  * @returns {JSX.Element} The rendered "Flagged Jobs" view with a search input and a data table.
  */
 const FlaggedJob: React.FC = () => {
+  const navigate = useNavigate();
   const columns: Column<ManageFlaggedJobProps>[] = [
     { key: "id", label: "Job ID" },
     {
@@ -55,7 +58,10 @@ const FlaggedJob: React.FC = () => {
       label: "Action",
       renderCell: () => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+            onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+          >
             <FiEye className="text-yellow-600" />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">

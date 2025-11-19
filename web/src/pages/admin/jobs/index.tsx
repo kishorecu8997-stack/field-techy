@@ -5,7 +5,7 @@ import DeclinedJob from "./jobCatagory/DeclinedJob";
 import HoldJob from "./jobCatagory/HoldJob";
 import AllJob from "./jobCatagory/AllJobs";
 import FlaggedJob from "./jobCatagory/FlaggedJob";
-import InProgressJob from "./jobCatagory/InprogressJob";
+import InProgressJob from "./jobCatagory/InProgressJob";
 
 /**
  * Renders the main page for managing jobs in the admin dashboard.
