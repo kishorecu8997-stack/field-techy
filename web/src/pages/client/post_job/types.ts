@@ -81,10 +81,53 @@ export const OccurrenceEndType ={
 export type OccurrenceEndTypeType = (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
 
 
+
+
 export interface ClientFieldsTypes {
+  id?: number;
   firstName: string;
-  clientEmail: string;
-  clientPhone: string;
-  startDate: Date;
+  lastName: string;
+  email: string;
+  mobile: string;
+  startDate: string;
   startTime: string;
 }
+
+export interface ClientInterviewerSectionProps {
+  interviewers: ClientFieldsTypes[];
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onAdd: () => void;
+  composeDetails: (client: ClientFieldsTypes) => DetailsType;
+}
+
+
+// Each label/value pair
+export interface DetailItem {
+  label: string;
+  value: string | number | null | undefined;
+}
+
+// Section divider
+export interface DetailSection {
+  section: string;
+}
+
+// Union of both
+export type DetailsType = Array<DetailItem | DetailSection>;
+
+// Interviewer fields (your existing shape — adjust if needed}
+
+
+export interface DetailItem {
+  label: string;
+  value: string | number | null | undefined;
+}
+
+export interface DetailSection {
+  section: string;
+}
+
+
+
+
