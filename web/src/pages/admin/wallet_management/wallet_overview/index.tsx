@@ -1,6 +1,7 @@
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import EngineerWallet from "./engineer_pages";
+import ClientWallet from "./client_pages";
 
 /**
  * WalletOverview Component
@@ -12,16 +13,15 @@ import EngineerWallet from "./engineer_pages";
 export default function WalletOverview() {
   const tabs = [
     {
+      label: "Client",
+      content: <ClientWallet />,
+      hide: false,
+    },
+    {
       label: "Engineer",
       content: <EngineerWallet />,
       hide: false,
     },
-    {
-      label: "Client",
-      content: <EngineerWallet />,
-      hide: false,
-    },
-   
   ];
 
   return (
@@ -34,7 +34,7 @@ export default function WalletOverview() {
       </div>
       <div className="w-full h-full bg-white dark:bg-gray-700 rounded-lg p-2">
         <div className="flex p-2 w-full h-full">
-          <AdminTabComponent tabs={tabs} defaultActiveTab="Engineer" />
+          <AdminTabComponent tabs={tabs} defaultActiveTab="Client" />
         </div>
       </div>
     </div>

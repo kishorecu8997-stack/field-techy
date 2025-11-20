@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { validatePassword } from "./validation";
 import type { bankDetails } from "./types";
 import PasswordSection from "../auth/components/PasswordSection";
+import { toast } from "react-toastify";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -25,6 +26,7 @@ const ChangePasswordFields = () => {
 
   const handleSubmit = (data: bankDetails) => {
     console.log("Submitted data:", data);
+    toast.success("Password updated successfully!");
   };
 
   return (

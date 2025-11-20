@@ -1,4 +1,4 @@
-import { SubAdminRoles } from "@/dummy_data/admin/manageSubAdmin";
+import { SubAdminRoles, userList } from "@/dummy_data/admin/manageSubAdmin";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -7,11 +7,11 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/utils/validate";
 import { useForm } from "react-hook-form";
-import type { AddSubAdminForm } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import type { AddSubAdminForm } from "./types";
 
 /**
  * `EditSubAdmin` is a page component for editing an existing sub-admin user.
@@ -21,12 +21,17 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered page component.
  */
 export default function EditSubAdmin() {
+  const { id } = useParams<{ id: string }>();
+
+  // Find the category by ID (replace with real API call if needed)
+  const subAdmin = userList.find((user) => user.id.toString() === id);
+
   const methods = useForm<AddSubAdminForm>({
     defaultValues: {
-      name: "Jhon Doe",
-      email: "example@gmail.com",
-      phoneNumber: "+91 9861234567",
-      role: "superAdmin",
+      name: subAdmin?.name || "",
+      email: subAdmin?.email || "",
+      phoneNumber: subAdmin?.phoneNumber || "",
+      role: "manager",
     },
   });
 

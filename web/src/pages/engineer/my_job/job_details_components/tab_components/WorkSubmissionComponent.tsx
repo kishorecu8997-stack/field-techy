@@ -9,6 +9,9 @@ import { icons } from "@/config/icons";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import SignatureField from "@/shared/components/commonUI/inputs/SignatureField";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
+import { toast } from "react-toastify";
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -22,6 +25,7 @@ const WorkSubmissionComponent: React.FC<{
   workSubmissions: WorkSubmissionComponentProps;
   isWorkSubmitted?: boolean;
 }> = ({ workSubmissions, isWorkSubmitted }) => {
+  const navigate = useNavigate();
   const {
     name,
     workDates,
@@ -67,6 +71,8 @@ const WorkSubmissionComponent: React.FC<{
 
   const handleSubmit = () => {
     console.log("Submitted");
+    toast.success("Work submission submitted successfully!");
+    navigate(absoluteUrls.engineer.home.my_jobs);
   };
 
   return (
