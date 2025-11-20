@@ -57,7 +57,7 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
   isBookmarked = false,
 }) => {
   const [isSelected, setSelected] = useState(isBookmarked);
-  console.log('company :', company);
+  console.log("company :", company);
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
@@ -68,7 +68,11 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
               alt={`logo`}
               className="flex w-10 h-10 object-contain justify-center items-center "
             /> */}
-           {company === "Google" ? <FcGoogle size={30} /> : <FaFacebook size={30} color="#3b5998" />}
+            {company === "Google" ? (
+              <FcGoogle size={30} />
+            ) : (
+              <FaFacebook size={30} color="#3b5998" />
+            )}
           </div>
           <div>
             <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
@@ -80,7 +84,11 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
           </div>
         </div>
         <button
-          onClick={() => setSelected(!isSelected)}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setSelected(!isSelected);
+          }}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
           aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
         >
@@ -200,7 +208,9 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             className={`rounded-xl p-4 shadow-sm cursor-pointer ${
               jobCardGradients[index % jobCardGradients.length]
             }`}
-            onClick={()=>navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`)}
+            onClick={() => {
+              navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
+            }}
           >
             <FeatureJobCard {...job} />
           </div>

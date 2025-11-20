@@ -59,9 +59,9 @@ const JobDetailsPage = () => {
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={client.name}
+              name={filter()?.client as string}
               memberSince={client.memberSince}
-              location={client.location}
+              location={filter()?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}

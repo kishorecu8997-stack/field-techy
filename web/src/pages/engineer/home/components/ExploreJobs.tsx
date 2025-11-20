@@ -9,7 +9,7 @@ import {
   type Filters,
 } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 /**
  * Main application component for job search results
@@ -18,12 +18,6 @@ import { useEffect, useMemo, useState } from "react";
  */
 const ExploreJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
-   const [filteredJobs, setFilteredJobs] = useState(sampleJobs);
-   const [totalPages, setTotalPages] = useState(1);
-
-    useEffect(() => {
-    setTotalPages(Math.ceil(filteredJobs.length / 4));
-  }, [filteredJobs]);
 
   const [filters, setFilters] = useState<Filters>({
     location: [],
@@ -34,25 +28,34 @@ const ExploreJobs = () => {
     skills: [],
   });
 
+  // Keep only jobs that are NOT new or offer
+  const allNewJobs = useMemo(() => {
+    return sampleJobs.filter(
+      (job) =>
+        job.status !== JOB_STATUSES.new &&
+        job.status !== JOB_STATUSES.offer
+    );
+  }, []);
+
+  // Pagination settings
+  const jobsPerPage = 4;
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(allNewJobs.length / jobsPerPage);
+  }, [allNewJobs]);
+
+  const paginatedJobs = useMemo(() => {
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    return allNewJobs.slice(startIndex, startIndex + jobsPerPage);
+  }, [currentPage, allNewJobs]);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const allNewJobs = useMemo(() => {
-    return sampleJobs.filter(
-      (job) =>
-        job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
-    );
-  }, []);
-
-  const jobsPerPage = 4;
-  // const totalPages = Math.ceil(allNewJobs.length / jobsPerPage);
-  const startIndex = (currentPage - 1) * jobsPerPage;
-  const currentJobs = allNewJobs.slice(startIndex, startIndex + jobsPerPage);
-
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1);
+    setCurrentPage(1); // reset page on filter change
   };
 
   const handleClearAllFilters = () => {
@@ -67,8 +70,6 @@ const ExploreJobs = () => {
     setCurrentPage(1);
   };
 
-  const sorteddata = allNewJobs.sort();
-
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -76,13 +77,14 @@ const ExploreJobs = () => {
           title="Explore Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${sampleJobs.length}+ jobs found`} // ✅ Updated count
+          description={`${sampleJobs.length}+ jobs found`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+          {/* LEFT SIDE (Jobs Listing) */}
           <div className="lg:col-span-3">
-            {sorteddata.length > 0 ? (
-              sorteddata.map((job) => (
+            {paginatedJobs.length > 0 ? (
+              paginatedJobs.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
@@ -93,13 +95,15 @@ const ExploreJobs = () => {
               <p>No jobs found.</p>
             )}
 
+            {/* Pagination Component */}
             <Pagination
               currentPage={currentPage}
-              totalPages={allNewJobs.length}
+              totalPages={totalPages}
               onPageChange={handlePageChange}
             />
           </div>
 
+          {/* RIGHT SIDE (Filters) */}
           <div className="lg:col-span-1">
             <FilterPanel
               onFilterChange={handleFilterChange}
