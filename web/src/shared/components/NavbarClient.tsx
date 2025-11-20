@@ -163,10 +163,10 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </button>
         <button
           className="p-2 text-gray-600 hover:text-gray-900"
-          onClick={() => {
-            onDrawerToggle();
-            // setActiveKey("notification");
-          }}
+          // onClick={() => {
+          //   onDrawerToggle();
+          //   // setActiveKey("notification");
+          // }}
         >
           <FaBell size={20} />
         </button>
