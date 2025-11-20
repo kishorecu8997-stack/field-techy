@@ -205,7 +205,7 @@ const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_
 
 const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
 const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
-const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
+// const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
 const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job/MultiStepPostJob"));
 const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
 const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
@@ -374,10 +374,10 @@ export const routes = createBrowserRouter([
         path: urls.client.home.post_JobPage,
         element: withSuspense(ClientPostJobPage),
       },
-      {
-        path: urls.client.home.manage_proposal,
-        element: withSuspense(ClientManageProposal),
-      },
+      // {
+      //   path: urls.client.home.manage_proposal,
+      //   element: withSuspense(ClientManageProposal),
+      // },
       {
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
@@ -395,7 +395,7 @@ export const routes = createBrowserRouter([
       { path: urls.client.home.dashboard, element: withSuspense(ClientDashboard) },
       { path: urls.client.home.explore_engineers, element: withSuspense(ClientExploreEngineers) },
       { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
-      { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
+      // { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
       { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
       { path: urls.client.home.explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
       {path: urls.client.home.ClientJobInvite, element: withSuspense(ClientJobInvite)},      

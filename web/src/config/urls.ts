@@ -54,7 +54,7 @@ export const urls = {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
       explore_engineers: "explore-engineers",
-      manage_proposal: "manage-proposals",
+      // manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
       search_result: "search-result",
       faq: "faq",

@@ -40,8 +40,8 @@ const InProgressJobCard: React.FC<InProgressJob> = ({
    */
   const getWorkModeColor = (workMode: string) => {
     return workMode === "On Site"
-      ? "bg-blue-600 text-white"
-      : "bg-indigo-600 text-white";
+      ? "bg-indigo-600 text-white"
+      : "bg-blue-600 text-white";
   };
 
   return (

@@ -15,6 +15,8 @@ import {
   portfoloioLink,
 } from "@/dummy_data/categoryTagData";
 import InformationCardTools from "@/shared/components/InformationCardTools";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { SORT_OPTIONS } from "@/pages/client/search_result/types";
 
 const portfolioLink = portfoloioLink;
 
@@ -37,10 +39,12 @@ const EngineerProfile: React.FC = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-              <ClientHeader
-                currentPath="Explore Engineers"
-                showSearchBar={false}
+            <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">             
+              <MyJobsHeader
+                title="Explore Engineers"
+                currentSort={SORT_OPTIONS.NEWEST}
+                isShowBreadcrumb={false}
+                description={`10 jobs found`} // ✅ Updated count
               />
             </div>
             <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">

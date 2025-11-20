@@ -24,7 +24,7 @@ const CategoryTag: React.FC<CategoryTagProps> = ({  category, label, isShowLabel
         {category.map((item, index) => (  // Fixed: removed extra parenthesis, and better to use 'index' than 'id' for array index
           <span 
             key={index} 
-            className="px-4 py-2 bg-green-75 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-full border border-gray-300 dark:border-gray-700"
+            className="px-4 py-2 bg-teal-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-full border border-gray-300 dark:border-gray-700"
           >
             {item}
           </span>

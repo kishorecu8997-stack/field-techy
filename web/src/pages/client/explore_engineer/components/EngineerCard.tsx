@@ -14,7 +14,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   return (
-    <div className="p-4 rounded-lg flex items-center gap-4 bg-teal-50 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer">
+    <div className="p-4 rounded-lg flex items-center gap-4 bg-slate-100 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer">
       <img
         // src={engineer.imageUrl}
         src={assetsConfig.images.users.user}
@@ -33,11 +33,11 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <NavLink
             to={absoluteUrls.client.home.explore_engineers_details}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+            className="hover:text-teal-900 text-[1rem] whitespace-nowrap"
           >
             <Button
-              variant="primary"   
-                         
+              variant="primary"    
+              className="bg-teal-800 dark:bg-teal text-white"                        
             >
               Invite to Job
             </Button>

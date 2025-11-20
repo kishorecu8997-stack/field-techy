@@ -23,9 +23,7 @@ interface JobCardProps {
 const JobInviteCard: React.FC<JobCardProps> = ({ job, isSelected, onToggle }) => {
   return (
     <div
-      className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border-2 ${
-        isSelected ? "border-teal-500" : "border-transparent"
-      }`}
+      className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer `}
       onClick={() => onToggle(job.id)}
     >
       <div className="flex justify-between items-start mb-3">
@@ -35,8 +33,8 @@ const JobInviteCard: React.FC<JobCardProps> = ({ job, isSelected, onToggle }) =>
         <div
           className={`relative w-5 h-5 rounded-full cursor-pointer border-2 transition-colors duration-200 ${
             isSelected
-              ? "bg-teal-600 border-teal-600"
-              : "bg-white border-gray-300 dark:bg-gray-700 dark:border-gray-600"
+              ? "bg-teal-800 border-teal-900"
+              : "bg-white border-gray-400 dark:bg-gray-700 dark:border-gray-600"
           }`}
           onClick={(e) => {
             e.stopPropagation();

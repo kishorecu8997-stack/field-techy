@@ -39,7 +39,19 @@ const ClientHeader: React.FC<HeaderProps> = ({
                 to={absoluteUrls.client.home.dashboard}
                 className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
-                <span>Home / </span>
+                <span>Home/</span>
+              </NavLink>
+              <NavLink
+                to={absoluteUrls.client.home.explore_engineers}
+                className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              >
+                <span>Services/</span>
+              </NavLink>
+              <NavLink
+                to={absoluteUrls.client.home.explore_engineers_details}
+                className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              >
+                <span>Network/</span>
               </NavLink>
               <span className="font-medium">{currentPath}</span>
             </nav>
@@ -47,7 +59,12 @@ const ClientHeader: React.FC<HeaderProps> = ({
 
           {showSearchBar && <SortDropdown />}
           {showButton && (
-            <Button onClick={onClick} variant="primary" type="submit">
+            <Button
+             onClick={onClick} 
+             variant="primary" 
+             type="submit"
+             className="bg-teal-800 dark:bg-teal text-white"
+             >
               {buttonText}
             </Button>
           )}

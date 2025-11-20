@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import JobPostForm from "./components/JobPostForm";
 import JobReviewPage from "./components/JobReviewPage";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ClientHeader from "@/shared/components/ClientHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -12,6 +11,7 @@ import { absoluteUrls } from "@/config/urls";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
 import type { FormDataPostJob } from "./types";
 import { toast } from "react-toastify";
+import ClientHeader from "./components/ClientHeader";
 
 
 /**
@@ -108,7 +108,7 @@ const MultiStepPostJobForm = () => {
       console.log("Submitting Post a job data:", data);
       toast.success("Job posted successfully");
       await new Promise((r) => setTimeout(r, 800));
-      navigate(absoluteUrls.client.home.dashboard);
+      navigate(absoluteUrls.client.home.my_jobs);
     } catch (error) {
       console.error("Network error:", error);
     } finally {

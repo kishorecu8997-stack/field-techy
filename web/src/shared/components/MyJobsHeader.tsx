@@ -17,6 +17,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowBreadcrumb = true,
   description,
   isShowSort = true,
+  isReport = false,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
 
@@ -45,27 +46,26 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             </div>
           </div>
           <>
-            <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
-              <div
-                className="underline cursor-pointer hover:text-teal-900"
-                onClick={() => setIsShowReport(true)}
-              >
-                Report
-              </div>
-              {isShowSort && (
-                <SortDropdown
-                  currentSort={currentSort}
-                  onSortChange={onSortChange}
-                />
+              <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
+                {isReport && (
+                <div
+                  className="underline cursor-pointer hover:text-teal-900"
+                  onClick={() => setIsShowReport(true)}
+                >
+                  Report
+                </div>
               )}
-            </div>
+                {isShowSort && (
+                  <SortDropdown
+                    currentSort={currentSort}
+                    onSortChange={onSortChange}
+                  />
+                )}
+              </div>
           </>
         </div>
       </header>
-        <ReportPage
-          open={isShowReport}
-          onClose={() => setIsShowReport(false)}
-        />
+      <ReportPage open={isShowReport} onClose={() => setIsShowReport(false)} />
     </div>
   );
 };

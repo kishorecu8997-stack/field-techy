@@ -10,7 +10,9 @@ import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
 import { validateAmount, validatePaymentMethods } from "@/utils/validate";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
-import { toast } from "react-toastify/unstyled";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { toast } from "react-toastify";
+
 
 /**
  * @description Defines the shape of the form data for adding funds to the wallet.
@@ -24,15 +26,17 @@ export interface AddFundFormData {
  * @description A component that renders a form for adding funds to a user's wallet.
  * It includes fields for the amount and payment method selection.
  */
-const AddFund = () => {
+const AddFund = () => {  
   /**
    * @description Handles the submission of the add fund form.
    * @param {AddFundFormData} data - The data from the form.
    */
+ const { setActiveKey } = useDrawerStore();
   const handleSubmit = (data: AddFundFormData) => {    
-    // TODO: Replace with actual submission logic (e.g., API call)
-    // alert(`Funds ${data.amount} added successfully!`);
-    toast.success(`Funds ${data.amount}  added successfully!`);
+   console.log('data :', data);
+    // TODO: Replace with actual submission logic (e.g., API call)    
+    toast.success(`Funds added successfully`);
+    setActiveKey("clientWallet");
   };
 
  const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +103,7 @@ const AddFund = () => {
 
         <div className="bg-white ">
           <Button
-            type="submit"
+            type="submit"             
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Add Fund

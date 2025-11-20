@@ -34,6 +34,12 @@ import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
 
+import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
+import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
+import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
+
+
+
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
  * Used for dynamically rendering account settings and profile-related UI sections.
@@ -178,15 +184,22 @@ export const sectionConfig: Record<
     title: "Manage Proposal",
     parent: "clientAccount",
   },
+
   company: {
-    component: "test",
+    component: ClientPersonalInformation,
     title: "Company Information",
     parent: "clientAccount",
   },
+
   document: {
-    component: "test",
+    component: ClientDocuments,
     title: "Documents",
     parent: "clientAccount",
+  },
+  clientEditDocument: {
+    component: ClientEditDocument,
+    title: "Edit Document",
+    parent: "document",
   },
   payment: {
     component: "test",
