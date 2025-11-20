@@ -9,6 +9,7 @@ export const JOB_STATUSES = {
   applied: "applied",
   inprogress: "inprogress",
   new: "new",
+  offer: "offer",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -21,7 +22,7 @@ export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
-}
+};
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -56,6 +57,7 @@ export interface Job {
   companyLogo?: string;
   company?: string;
   employmentType?: string;
+  place: string;
 }
 
 /**

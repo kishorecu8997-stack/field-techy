@@ -14,6 +14,11 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   title = "Recommended Jobs",
   onViewAll,
 }) => {
+
+  const filteredJobs = jobs.filter((job) => {
+    return job.place === "recommended";
+  });
+
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center  p-2">
@@ -27,7 +32,7 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
           </button>
         )}
       </div>
-      {jobs.map((job: Job) => (
+      {filteredJobs.map((job: Job) => (
         <JobCard key={job.id} job={job} navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`} />
       ))}
     </div>

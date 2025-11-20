@@ -1,7 +1,9 @@
 import { icons } from "@/config/icons";
+import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
 import { FaFacebook } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 interface JobCardProps {
   title: string;
@@ -155,6 +157,7 @@ interface FeaturedJobsProps {
     salary: string;
     location: string;
     isBookmarked?: boolean;
+    id: number | string;
   }>;
   title?: string;
   onViewAll?: () => void;
@@ -176,6 +179,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   title = "Featured Jobs",
   onViewAll,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
@@ -193,9 +197,10 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
         {jobs.map((job, index) => (
           <div
             key={index}
-            className={`rounded-xl p-4 shadow-sm ${
+            className={`rounded-xl p-4 shadow-sm cursor-pointer ${
               jobCardGradients[index % jobCardGradients.length]
             }`}
+            onClick={()=>navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`)}
           >
             <FeatureJobCard {...job} />
           </div>

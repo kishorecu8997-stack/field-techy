@@ -1,6 +1,8 @@
 import React from 'react';
 import type { NotificationProps } from '../types';
 import { Button } from '@/shared/components/commonUI/Buttons';
+import useDrawerStore from '@/shared/store/useDrawerStore';
+import { useNavigate } from 'react-router-dom';
 
 interface NotificationItemProps {
   notification: NotificationProps;
@@ -10,8 +12,26 @@ interface NotificationItemProps {
  * Renders a single notification item with an icon, title, message, optional job details,
  * timestamp, and action buttons (for job offers). Supports structured display based on notification type.
  */
-const NotificationItem: React.FC<NotificationItemProps> = ({ notification }) => {
-  const { type, title, message, jobTitle, location, client, payment, duration, timestamp, icon } = notification;
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+}) => {
+  //this is for testing purpose
+  const index = "10";
+
+  const {
+    type,
+    title,
+    message,
+    jobTitle,
+    location,
+    client,
+    payment,
+    duration,
+    timestamp,
+    icon,
+  } = notification;
+  const navigate = useNavigate();
+  const { setISOpenSidebar } = useDrawerStore();
 
   const renderJobDetails = () => {
     if (!jobTitle) return null;

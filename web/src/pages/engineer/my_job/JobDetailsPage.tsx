@@ -17,6 +17,8 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
+  const [activeTab, setActiveTab] = useState("Job Information");
+  const [OfferJobStatus, setOfferJobStatus] = useState<"accepted" | "declined" | "started" | "checked-in" | undefined>();
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -43,11 +45,16 @@ const JobDetailsPage = () => {
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
+              setActiveTab={setActiveTab}
+              setOfferJobStatus={setOfferJobStatus}
+              OfferJobStatus={OfferJobStatus}
             />
             <JobTabSection
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
+              activeTab={activeTab}
+              OfferJobStatus={OfferJobStatus}
             />
           </div>
           <div className="lg:col-span-1">

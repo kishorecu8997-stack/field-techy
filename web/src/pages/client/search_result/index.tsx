@@ -114,7 +114,7 @@ const SearchResult = () => {
 
   // Get jobs for current page
   const startIndex = (currentPage - 1) * 4;
-  const currentJobs = filteredJobs.slice(startIndex, startIndex + 4);
+  const currentJobs = filteredJobs.slice(startIndex, startIndex + 4).sort();
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

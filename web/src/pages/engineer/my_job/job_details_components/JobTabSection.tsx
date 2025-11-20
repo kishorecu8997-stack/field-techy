@@ -33,16 +33,28 @@ const JobTabSection = ({
   status,
   isWorkSubmitted,
   isSendProposal,
+  activeTab,
+  OfferJobStatus,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
+  activeTab?: string;
+  OfferJobStatus?:
+    | "accepted"
+    | "declined"
+    | "started"
+    | "checked-in"
+    | undefined;
 }) => {
   const tabs = [
     {
       label: "Logs",
       content: <LogComponent logs={logs} />,
-      hide: status === JOB_STATUSES.applied || status === JOB_STATUSES.new,
+      hide:
+        status === JOB_STATUSES.applied ||
+        status === JOB_STATUSES.new ||
+        OfferJobStatus !== "checked-in",
     },
     {
       label: "Work Submissions",
@@ -52,7 +64,10 @@ const JobTabSection = ({
           isWorkSubmitted={isWorkSubmitted}
         />
       ),
-      hide: status === JOB_STATUSES.applied || status === JOB_STATUSES.new,
+      hide:
+        status === JOB_STATUSES.applied ||
+        status === JOB_STATUSES.new ||
+        OfferJobStatus !== "checked-in",
     },
     {
       label: "Job Information",
@@ -92,7 +107,7 @@ const JobTabSection = ({
       ) : (
         <TabComponent
           tabs={tabs}
-          defaultActiveTab="Job Information"
+          defaultActiveTab={activeTab || "Job Information"}
         />
       )}
     </div>

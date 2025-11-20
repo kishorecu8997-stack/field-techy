@@ -5,7 +5,7 @@ import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import { SORT_OPTIONS, type Filters } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * Main application component for job search results
@@ -14,6 +14,12 @@ import { useMemo, useState } from "react";
  */
 const ExploreJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
+   const [filteredJobs, setFilteredJobs] = useState(sampleJobs);
+   const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+    setTotalPages(Math.ceil(filteredJobs.length / 4));
+  }, [filteredJobs]);
 
   const [filters, setFilters] = useState<Filters>({
     location: [],
@@ -33,7 +39,7 @@ const ExploreJobs = () => {
   }, []); 
 
   const jobsPerPage = 4;
-  const totalPages = Math.ceil(allNewJobs.length / jobsPerPage);
+  // const totalPages = Math.ceil(allNewJobs.length / jobsPerPage);
   const startIndex = (currentPage - 1) * jobsPerPage;
   const currentJobs = allNewJobs.slice(startIndex, startIndex + jobsPerPage);
 
@@ -54,6 +60,8 @@ const ExploreJobs = () => {
     setCurrentPage(1);
   };
 
+  const sorteddata = allNewJobs.sort();
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -66,8 +74,8 @@ const ExploreJobs = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
-            {sampleJobs.length > 0 ? (
-              sampleJobs.map((job) => (
+            {sorteddata.length > 0 ? (
+              sorteddata.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
