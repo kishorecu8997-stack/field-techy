@@ -3,6 +3,7 @@ import ClientAccountDrawerMenu from "@/pages/client/my_account/ClientAccountDraw
 import ClientAddFund from "@/pages/client/my_wallet/components/AddFund";
 import ClientRecentTransactions, { ActionButtonsForRecentTransactions } from "@/pages/client/my_wallet/components/RecentTransactionsList";
 import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
+import AddClient from "@/pages/client/post_job/PostAJobComponent/client_Interview/AddClient";
 import AccountSettings from "@/pages/engineer/account_settings";
 import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBankDetails";
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
@@ -31,6 +32,7 @@ import EditTools from "@/pages/engineer/user_profile/components/skills_and_tools
 import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools";
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
+
 
 
 /**
@@ -207,6 +209,10 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
       title: "Recent Transactions",
       actions: ActionButtonsForRecentTransactions,
       parent: "myEarning",
+    },
+    clientInterviewer: {
+      component: AddClient,
+      title: "Client Interviewer",
     },
 
   };

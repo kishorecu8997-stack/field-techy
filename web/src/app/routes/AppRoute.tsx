@@ -217,6 +217,7 @@ const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
 const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -386,6 +387,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
+      },
+      {
+        path: urls.client.home.post_a_job,
+        element: withSuspense(PostAJobPage),
       },
     ],
   },

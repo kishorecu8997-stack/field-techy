@@ -17,13 +17,13 @@ import { useEffect } from "react";
  */
 export const JobSearchBar = () => {
   const methods = useForm({});
-  const navigate = useNavigate();
-  const watchSearchQuery = methods.watch("searchQuery");
-  const watchLocation = methods.watch("location");
+  // const navigate = useNavigate();
+  // const watchSearchQuery = methods.watch("searchQuery");
+  // const watchLocation = methods.watch("location");
 
-  useEffect(() => {
-    navigate(absoluteUrls.engineer.home.search_result);
-  }, [watchSearchQuery, watchLocation]);
+  // useEffect(() => {
+  //   navigate(absoluteUrls.engineer.home.search_result);
+  // }, [watchSearchQuery, watchLocation]);
 
   return (
     <FormContainer

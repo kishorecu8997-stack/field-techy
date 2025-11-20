@@ -17,6 +17,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowBreadcrumb = true,
   description,
   isShowSort = true,
+  isReport = true,
+  action
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
 
@@ -34,6 +36,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   customLabels={{
                     "my-jobs": "My Jobs",
                     "in-progress": "In Progress",
+                    "home": "Home",
                   }}
                 />
               )}
@@ -46,12 +49,15 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
           </div>
           <>
             <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
-              <div
-                className="underline cursor-pointer hover:text-teal-900"
-                onClick={() => setIsShowReport(true)}
-              >
-                Report
-              </div>
+              {action && action}
+              {isReport && (
+                <div
+                  className="underline cursor-pointer hover:text-teal-900"
+                  onClick={() => setIsShowReport(true)}
+                >
+                  Report
+                </div>
+              )}
               {isShowSort && (
                 <SortDropdown
                   currentSort={currentSort}
@@ -62,10 +68,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
           </>
         </div>
       </header>
-        <ReportPage
-          open={isShowReport}
-          onClose={() => setIsShowReport(false)}
-        />
+      <ReportPage open={isShowReport} onClose={() => setIsShowReport(false)} />
     </div>
   );
 };

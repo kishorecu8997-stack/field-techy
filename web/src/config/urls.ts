@@ -1,3 +1,5 @@
+import { job } from "@/dummy_data/jobDetails";
+
 /**
  * Application route URLs.
  *
@@ -55,6 +57,7 @@ export const urls = {
       explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
+      post_a_job: "post-a-job",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
@@ -170,6 +173,7 @@ export const absoluteUrls = {
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      post_a_job: `${BASE.CLIENT}/post-a-job`,
     },
   },
 
