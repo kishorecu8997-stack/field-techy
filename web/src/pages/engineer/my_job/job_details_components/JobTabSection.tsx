@@ -44,20 +44,24 @@ const JobTabSection = ({
   isSendProposal?: boolean;
   activeTab?: string;
   OfferJobStatus?:
+    | "initial"
     | "accepted"
     | "declined"
     | "started"
     | "checked-in"
     | undefined;
 }) => {
+
+   const shouldHideLogs = !(
+    status === JOB_STATUSES.inprogress ||
+    status === JOB_STATUSES.completed ||
+    OfferJobStatus === "checked-in"
+  );
   const tabs = [
     {
       label: "Logs",
       content: <LogComponent logs={logs} />,
-      hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        OfferJobStatus !== "checked-in",
+      hide: shouldHideLogs,
     },
     {
       label: "Work Submissions",
@@ -67,10 +71,7 @@ const JobTabSection = ({
           isWorkSubmitted={isWorkSubmitted}
         />
       ),
-      hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        OfferJobStatus !== "checked-in",
+      hide: shouldHideLogs,
     },
     {
       label: "Job Information",

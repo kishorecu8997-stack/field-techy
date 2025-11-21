@@ -82,7 +82,7 @@ export interface JobHeaderCardProps {
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
   setActiveTab?: Dispatch<SetStateAction<string>>
   setOfferJobStatus?: Dispatch<SetStateAction<string>>
-  OfferJobStatus?: "accepted" | "declined" | "started" | "checked-in" | undefined
+  OfferJobStatus?: "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
 }
 
 export interface JobTabsProps {

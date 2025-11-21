@@ -58,6 +58,7 @@ export interface Job {
   company?: string;
   employmentType?: string;
   place: string;
+  isBookmarked?: boolean;
 }
 
 /**

@@ -18,7 +18,7 @@ const JobDetailsPage = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  const [OfferJobStatus, setOfferJobStatus] = useState<"accepted" | "declined" | "started" | "checked-in" | undefined>();
+  const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
 
   const filter = () => {
     return sampleJobs.find((job) => {

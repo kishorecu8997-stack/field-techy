@@ -1,21 +1,8 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
-import { FaFacebook } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-
-interface JobCardProps {
-  title: string;
-  company: string;
-  companyLogo: string;
-  category: string;
-  employmentType: string;
-  locationType: string;
-  salary: string;
-  location: string;
-  isBookmarked?: boolean;
-}
+import type { Job } from "../../search_result/types";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -45,35 +32,21 @@ interface JobCardProps {
  *   location="California, USA"
  * />
  */
-const FeatureJobCard: React.FC<JobCardProps> = ({
+const FeatureJobCard: React.FC<Job> = ({
   title,
   company,
-  companyLogo,
   category,
   employmentType,
-  locationType,
+  type,
   salary,
   location,
   isBookmarked = false,
 }) => {
   const [isSelected, setSelected] = useState(isBookmarked);
-  console.log("company :", company);
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex justify-center items-center">
-            {/* <img
-              src={companyLogo}
-              alt={`logo`}
-              className="flex w-10 h-10 object-contain justify-center items-center "
-            /> */}
-            {company === "Google" ? (
-              <FcGoogle size={30} />
-            ) : (
-              <FaFacebook size={30} color="#3b5998" />
-            )}
-          </div>
           <div>
             <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
               {title}
@@ -110,9 +83,9 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
             {employmentType}
           </span>
         )}
-        {locationType && (
+        {type && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {locationType}
+            {type}
           </span>
         )}
       </div>
@@ -155,18 +128,7 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
  * />
  */
 interface FeaturedJobsProps {
-  jobs: Array<{
-    title: string;
-    company: string;
-    companyLogo: string;
-    category: string;
-    employmentType: string;
-    locationType: string;
-    salary: string;
-    location: string;
-    isBookmarked?: boolean;
-    id: number | string;
-  }>;
+  jobs:Job[]
   title?: string;
   onViewAll?: () => void;
 }
@@ -219,4 +181,5 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
     </div>
   );
 };
-export { FeatureJobCard, FeaturedJobs };
+export { FeaturedJobs, FeatureJobCard };
+

@@ -35,6 +35,14 @@ const Home = () => {
     return job.status === "new";
   });
 
+  const recommendedJobs  = findNewJobs.filter((job) => {
+    return job.place === "recommended";
+  });
+
+  const featuredJobs = findNewJobs.filter((job) => {
+    return job.place === "featured";
+  });
+
 
   useEffect(() => {
     setAccessPopup(true);
@@ -47,12 +55,12 @@ const Home = () => {
           <div className="lg:col-span-2 space-y-6">
             <JobExplorationBanner />
             <FeaturedJobs
-              jobs={jobData}
+              jobs={featuredJobs}
               title="Featured Jobs"
               onViewAll={handleExploreJobs}
             />
             <RecommendedJobs
-              jobs={findNewJobs}
+              jobs={recommendedJobs}
               onViewAll={handleExploreJobs}
               title="Recommended Jobs"
             />
