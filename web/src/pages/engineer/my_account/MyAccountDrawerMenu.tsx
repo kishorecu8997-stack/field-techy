@@ -84,7 +84,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         </div>
         {menuItems.map((item, index, array) => (
           <React.Fragment key={item.key}>
-            <button
+            <div
               onClick={() => {
                 onMenuItemClick(item.key);
                 console.log(item.key);
@@ -133,7 +133,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
                 transition-colors
               `}
               />
-            </button>
+            </div>
             {index < array.length - 1 && (
               <div className="border-t border-gray-200 dark:border-gray-700"></div>
             )}

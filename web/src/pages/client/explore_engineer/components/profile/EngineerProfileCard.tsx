@@ -1,6 +1,7 @@
 import React from 'react';
 import { assetsConfig } from '@/assets';
 import type { ProfileCardProps } from '../../types';
+import { Button } from '@/shared/components/commonUI/Buttons';
 
 /**
  * A card component to display a summary of an engineer's profile.
@@ -45,12 +46,12 @@ const EngineerProfileCard: React.FC<ProfileCardProps> = ({profile, onInviteClick
         
         {/* Button */}
         <div className="flex-shrink-0 mt-4 md:mt-auto">
-          <button 
+          <Button 
             onClick={onInviteClick}
             className="bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-opacity-50"
           >
             Invite To Job
-          </button>
+          </Button>
         </div>
       </div>      
     </div>

@@ -6,6 +6,8 @@ import {
   IoConstructOutline,
 } from "react-icons/io5";
 import type { JobInvite } from "../../types";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+import { FaRegCircle } from "react-icons/fa";
 
 interface JobCardProps {
   job: JobInvite;
@@ -20,7 +22,11 @@ interface JobCardProps {
  * @param {JobCardProps} props The properties for the component.
  * @param {Job} props.job An object containing the details of the job to display.
  */
-const JobInviteCard: React.FC<JobCardProps> = ({ job, isSelected, onToggle }) => {
+const JobInviteCard: React.FC<JobCardProps> = ({
+  job,
+  isSelected,
+  onToggle,
+}) => {
   return (
     <div
       className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer `}
@@ -29,44 +35,32 @@ const JobInviteCard: React.FC<JobCardProps> = ({ job, isSelected, onToggle }) =>
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           {job.title}
-        </h3>       
+        </h3>
         <div
-          className={`relative w-5 h-5 rounded-full cursor-pointer border-2 transition-colors duration-200 ${
+          className={`relative w-5 h-5  cursor-pointer  transition-colors duration-200 ${
             isSelected
-              ? "bg-teal-800 border-teal-900"
-              : "bg-white border-gray-400 dark:bg-gray-700 dark:border-gray-600"
+              ? " border-teal-900"
+              : " border-gray-400 dark:bg-gray-700 dark:border-gray-600"
           }`}
           onClick={(e) => {
             e.stopPropagation();
             onToggle(job.id);
           }}
-          role="checkbox"
-          aria-checked={isSelected}
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === " " || e.key === "Enter") {
+              e.preventDefault();
               onToggle(job.id);
             }
           }}
+          aria-label={isSelected ? "Selected" : "Not selected"}
         >
-          {isSelected && (
-            <svg
-              className="absolute inset-0 w-full h-full text-white pointer-events-none"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+          {isSelected ? (
+            <AiOutlineCheckCircle className="w-full h-full  text-teal-800" />
+          ) : (
+            <FaRegCircle className="w-full h-full text-inherit" />
           )}
         </div>
-
-        {/* Hidden native checkbox for form submission */}
         <input
           type="checkbox"
           checked={isSelected}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";import { useForm, useWatch } from "react-hook-form";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm, useWatch } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import {
   validateAddress,
@@ -16,7 +17,7 @@ import { toast } from "react-toastify";
 import { loginData } from "@/dummy_data/personalInfoData";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries, {
-  BUSINESS_TYPES,  
+  BUSINESS_TYPES,
 } from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
 
@@ -33,17 +34,17 @@ const ClientPersonalInformation: React.FC = () => {
   const methods = useForm<PersonalInfo>({
     defaultValues: {
       companyName: "",
-  contactPersonName: "",
-  phoneNumber: "",
-  businessType: "",
-  industry: "",
-  address: "",
-  country: "",
-  state: "",
-  city: "",
-  postalCode: "",
-  taxDocument: "",
-  vatRegistrationNumber: "",
+      contactPersonName: "",
+      phoneNumber: "",
+      businessType: "",
+      industry: "",
+      address: "",
+      country: "",
+      state: "",
+      city: "",
+      postalCode: "",
+      taxDocument: "",
+      vatRegistrationNumber: "",
     },
     mode: "onSubmit",
   });
@@ -56,9 +57,7 @@ const ClientPersonalInformation: React.FC = () => {
     toast.success("Profile Updated Successfully");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
-  console.log("loginData[0].phoneNumber :", loginData[0].phoneNumber);
 
-  // When the phone number is verified, trigger validation to clear any "must be verified" error.
   useEffect(() => {
     if (isPhoneVerified) {
       trigger("phoneNumber");
@@ -168,7 +167,7 @@ const ClientPersonalInformation: React.FC = () => {
           label="Postal Code"
           type="text"
           placeholder="Postal Code"
-          required         
+          required
           rules={{
             validate: (value: string) =>
               validateZipcode(

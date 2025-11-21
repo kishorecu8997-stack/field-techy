@@ -218,7 +218,7 @@ export interface OTPValues {
   otp: string;
 }
 
-interface VerifyEmailModalProps {
+export interface VerifyEmailModalProps {
   header?: string;
   description?: string;
   onClose?: () => void;
@@ -226,4 +226,21 @@ interface VerifyEmailModalProps {
   buttonText?: string;
   isSuccess?: boolean;
   name?: string;
+}
+
+
+export interface InputFieldProps {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  required?: boolean | string;
+  type?: "text" | "email" | "number" | "date";
+  isShowLabel?: boolean;
+  rules?: RegisterOptions;
+  leftIcon?: React.ReactNode;
+  containerClassName?: string;
+  inputClassName?: string;
+  showValidationCheck?: boolean;
+  disabled?: boolean;
+  onChange?: (value: string) => void;
 }

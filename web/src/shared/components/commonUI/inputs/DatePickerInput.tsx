@@ -4,17 +4,14 @@
  * Uses Controller internally and does not rely on external date libraries.
  */
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  type FC,
-} from "react";
+import React, { useState, useEffect, useRef, type FC } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FiCalendar } from "react-icons/fi";
 
 interface DatePickerInputProps {
   name: string;
@@ -129,7 +126,8 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           };
           if (isOpen) {
             document.addEventListener("mousedown", handleClickOutside);
-            return () => document.removeEventListener("mousedown", handleClickOutside);
+            return () =>
+              document.removeEventListener("mousedown", handleClickOutside);
           }
         }, [isOpen]);
 
@@ -171,7 +169,13 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
           const days = [];
           for (let i = firstDay.getDay() - 1; i >= 0; i--) {
-            days.push(new Date(date.getFullYear(), date.getMonth() - 1, new Date(date.getFullYear(), date.getMonth(), 0).getDate() - i));
+            days.push(
+              new Date(
+                date.getFullYear(),
+                date.getMonth() - 1,
+                new Date(date.getFullYear(), date.getMonth(), 0).getDate() - i
+              )
+            );
           }
           return days;
         };
@@ -185,11 +189,31 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           return days;
         };
 
-        const formatMonthName = (d: Date) => d.toLocaleDateString("en-US", { month: "long" });
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const formatMonthName = (d: Date) =>
+          d.toLocaleDateString("en-US", { month: "long" });
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
 
-        const goToPrevMonth = () => setCurrentMonth((p: Date) => new Date(p.getFullYear(), p.getMonth() - 1, 1));
-        const goToNextMonth = () => setCurrentMonth((p: Date) => new Date(p.getFullYear(), p.getMonth() + 1, 1));
+        const goToPrevMonth = () =>
+          setCurrentMonth(
+            (p: Date) => new Date(p.getFullYear(), p.getMonth() - 1, 1)
+          );
+        const goToNextMonth = () =>
+          setCurrentMonth(
+            (p: Date) => new Date(p.getFullYear(), p.getMonth() + 1, 1)
+          );
         const goToMonthView = () => setView("month");
         const goToYearView = () => setView("year");
         const selectMonth = (m: number) => {
@@ -203,7 +227,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
         const getMonthsForPicker = () => {
           const year = currentMonth.getFullYear();
-          return Array.from({ length: 12 }, (_, i) => i).filter(m => {
+          return Array.from({ length: 12 }, (_, i) => i).filter((m) => {
             const d = new Date(year, m, 1);
             return (!minDate || d >= minDate) && (!maxDate || d <= maxDate);
           });
@@ -211,7 +235,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
         const getYearsForPicker = () => {
           const start = Math.floor(currentMonth.getFullYear() / 10) * 10;
-          return Array.from({ length: 10 }, (_, i) => start + i).filter(y => {
+          return Array.from({ length: 10 }, (_, i) => start + i).filter((y) => {
             const d = new Date(y, 0, 1);
             return (!minDate || d >= minDate) && (!maxDate || d <= maxDate);
           });
@@ -247,20 +271,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                   onBlur={handleInputBlur}
                   className="flex-1 bg-transparent outline-none text-gray-800 dark:text-gray-200 text-base"
                 />
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <FiCalendar className="w-5 h-5 text-gray-400" />
               </div>
 
               {isOpen && (
@@ -272,27 +283,41 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                       onClick={
                         view === "day"
                           ? goToPrevMonth
-                          : () => setCurrentMonth((p: Date) => new Date(p.getFullYear() - 10, p.getMonth(), 1))
+                          : () =>
+                              setCurrentMonth(
+                                (p: Date) =>
+                                  new Date(
+                                    p.getFullYear() - 10,
+                                    p.getMonth(),
+                                    1
+                                  )
+                              )
                       }
                       className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                      {/* Left arrow SVG */}
-                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
+                      {/* Left arrow */}
+                      <FaChevronLeft className="w-5 h-5 text-gray-600" />
                     </button>
 
                     {view === "day" && (
                       <div className="flex space-x-2">
-                        <span onClick={goToMonthView} className="cursor-pointer hover:text-blue-600">
+                        <span
+                          onClick={goToMonthView}
+                          className="cursor-pointer hover:text-blue-600"
+                        >
                           {formatMonthName(currentMonth)}
                         </span>
-                        <span onClick={goToYearView} className="cursor-pointer hover:text-blue-600">
+                        <span
+                          onClick={goToYearView}
+                          className="cursor-pointer hover:text-blue-600"
+                        >
                           {currentMonth.getFullYear()}
                         </span>
                       </div>
                     )}
-                    {view === "month" && <div>{currentMonth.getFullYear()}</div>}
+                    {view === "month" && (
+                      <div>{currentMonth.getFullYear()}</div>
+                    )}
                     {view === "year" && (
                       <div>
                         {Math.floor(currentMonth.getFullYear() / 10) * 10}–
@@ -305,33 +330,47 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                       onClick={
                         view === "day"
                           ? goToNextMonth
-                          : () => setCurrentMonth((p: Date) => new Date(p.getFullYear() + 10, p.getMonth(), 1))
+                          : () =>
+                              setCurrentMonth(
+                                (p: Date) =>
+                                  new Date(
+                                    p.getFullYear() + 10,
+                                    p.getMonth(),
+                                    1
+                                  )
+                              )
                       }
                       className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                      {/* Right arrow SVG */}
-                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
+                      {/* Right arrow*/}
+                      <FaChevronRight className="w-5 h-5 text-gray-600" />
                     </button>
                   </div>
 
                   {/* Views */}
                   {view === "day" && (
                     <div className="grid grid-cols-7 gap-1">
-                      {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => (
-                        <div key={d} className="text-xs font-medium text-center py-1 text-gray-500 dark:text-gray-400">
+                      {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+                        <div
+                          key={d}
+                          className="text-xs font-medium text-center py-1 text-gray-500 dark:text-gray-400"
+                        >
                           {d}
                         </div>
                       ))}
                       {getPreviousMonthDays(currentMonth).map((d, i) => (
-                        <div key={`prev-${i}`} className="text-xs text-center py-1 text-gray-400 cursor-pointer">
+                        <div
+                          key={`prev-${i}`}
+                          className="text-xs text-center py-1 text-gray-400 cursor-pointer"
+                        >
                           {d.getDate()}
                         </div>
                       ))}
                       {getDaysInMonth(currentMonth).map((d, i) => {
-                        const isSelected = value?.toDateString() === d.toDateString();
-                        const isToday = new Date().toDateString() === d.toDateString();
+                        const isSelected =
+                          value?.toDateString() === d.toDateString();
+                        const isToday =
+                          new Date().toDateString() === d.toDateString();
                         const disabled = !isDateValid(d);
                         return (
                           <div
@@ -350,7 +389,10 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                         );
                       })}
                       {getNextMonthDays(currentMonth).map((d, i) => (
-                        <div key={`next-${i}`} className="text-xs text-center py-1 text-gray-400 cursor-pointer">
+                        <div
+                          key={`next-${i}`}
+                          className="text-xs text-center py-1 text-gray-400 cursor-pointer"
+                        >
                           {d.getDate()}
                         </div>
                       ))}
@@ -359,12 +401,13 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
                   {view === "month" && (
                     <div className="grid grid-cols-3 gap-2">
-                      {getMonthsForPicker().map(m => (
+                      {getMonthsForPicker().map((m) => (
                         <div
                           key={m}
                           onClick={() => selectMonth(m)}
                           className={`text-sm text-center py-2 rounded-md cursor-pointer ${
-                            value?.getMonth() === m && value.getFullYear() === currentMonth.getFullYear()
+                            value?.getMonth() === m &&
+                            value.getFullYear() === currentMonth.getFullYear()
                               ? "bg-blue-600 text-white"
                               : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
                           }`}
@@ -377,7 +420,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
                   {view === "year" && (
                     <div className="grid grid-cols-2 gap-2">
-                      {getYearsForPicker().map(y => (
+                      {getYearsForPicker().map((y) => (
                         <div
                           key={y}
                           onClick={() => selectYear(y)}

@@ -20,7 +20,27 @@ import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
-
+/**
+ * UserProfileSidebar Component
+ * 
+ * A comprehensive sidebar navigation component for the engineer's user profile section.
+ * Displays user profile information with a rating card and provides navigation menu items
+ * for accessing different profile sections including personal info, education, skills,
+ * experiences, work preferences, documents, and settings.
+ * 
+ * @component
+ * @param {DrawerMenuProps} props - The drawer menu configuration props
+ * @param {Function} props.onMenuItemClick - Callback function triggered when a menu item is clicked
+ * @param {Function} props.onClose - Callback function triggered to close the drawer
+ * 
+ * @returns {React.ReactElement} A sidebar component containing profile card and navigation menu
+ * 
+ * @example
+ * <UserProfileSidebar
+ *   onMenuItemClick={(menuId) => handleMenuClick(menuId)}
+ *   onClose={() => setDrawerOpen(false)}
+ * />
+ */
 const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
