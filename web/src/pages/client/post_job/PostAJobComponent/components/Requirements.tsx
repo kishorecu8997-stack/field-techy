@@ -2,8 +2,13 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../SectionHeader";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
+import usePostAJobStore, {
+  CurrentLocation,
+} from "@/shared/store/postAJobStore";
 
 const Requirements = ({ isDisable }: { isDisable: boolean }) => {
+  const { currentLocation } = usePostAJobStore();
+
   return (
     <div className="w-full space-y-2">
       <SectionHeader title="Requirements" />
@@ -29,6 +34,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
       </div>
       <TagSelectField
         required
+        placeholder="Select a Skills"
         disabled={isDisable}
         name="skills"
         label="Skills"
@@ -46,6 +52,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
       <TagSelectField
         disabled={isDisable}
         required
+        placeholder="Select a Tools"
         name="tools"
         label="Tools"
         options={[
@@ -59,10 +66,29 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           },
         ]}
       />
+      {currentLocation === CurrentLocation.dispatch && (
+        <TagSelectField
+          name="task"
+          placeholder="Select a Task"
+          label="Task"
+          required
+          options={[
+            {
+              value: "task1",
+              label: "Task 1",
+            },
+            {
+              value: "task2",
+              label: "Task 2",
+            },
+          ]}
+        />
+      )}
       <TagSelectField
         disabled={isDisable}
         name="safetyWears"
         label="Safety Wears"
+        placeholder="Select a Safety Wears"
         options={[
           {
             value: "safetyWear1",

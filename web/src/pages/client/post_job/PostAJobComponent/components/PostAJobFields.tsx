@@ -97,8 +97,12 @@ const PostAJobFields = ({
         <LocationPage isDisable={isDisable} />
         <SchedulingPage isDisable={isDisable} />
         <Requirements isDisable={isDisable} />
-        <BackFills isDisable={isDisable} />
-        <Budget isDisable={isDisable} />
+        {currentLocation !== CurrentLocation.dispatch && (
+          <>
+            <BackFills isDisable={isDisable} />
+            <Budget isDisable={isDisable} />
+          </>
+        )}
         <Languages isDisable={isDisable} />
         <OtherDetails isDisable={isDisable} />
         {!isDisable && (
