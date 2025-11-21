@@ -56,20 +56,19 @@ export default function JobPostDropdown({
       className="relative inline-block text-left text-neutral-800 space-y-1"
     >
       {/* Trigger button */}
-      <button
-        type="button"
+      <div
         onClick={() => setOpen(!open)}
-        className="px-4 py-2 bg-teal-200 cursor-pointer rounded-full shadow hover:bg-teal-300 transition flex items-center gap-2"
+        className="px-4 py-2 rounded-full transition flex items-center gap-2 justify-center bg-emerald-600 text-neutral-200 dark:text-neutral-800 hover:bg-emerald-700 dark:hover:bg-emerald-500 cursor-pointer"
       >
         <span className="font-semibold text-md">{selected ? selected.label : label ||"Post A Job"}</span>
         <span className="text-xl">▾</span>
-      </button>
+      </div>
 
       {/* Dropdown menu */}
       {open && (
         <div
           ref={menuRef}
-          className={`absolute mt-2 w-56 bg-white shadow-lg rounded-xl p-2 z-20 animate-fadeIn ${
+          className={`absolute mt-2 w-56 bg-white shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl p-2 z-20 animate-fadeIn ${
             dropdownPosition === "left" ? "left-0" : "right-0"
           }`}
         >
@@ -82,8 +81,8 @@ export default function JobPostDropdown({
                 setOpen(false);
                 opt.action?.();
               }}
-              className={`block text-left w-full px-4 py-2 rounded-lg hover:bg-teal-100 transition cursor-pointer ${
-                selected?.value === opt.value ? "bg-teal-100" : ""
+              className={`block text-left w-full px-4 py-2 rounded-lg hover:bg-emerald-100 transition cursor-pointer ${
+                selected?.value === opt.value ? "bg-emerald-100" : ""
               }`}
             >
               {opt.label}

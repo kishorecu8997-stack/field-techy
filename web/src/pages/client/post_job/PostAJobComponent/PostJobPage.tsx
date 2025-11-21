@@ -23,7 +23,7 @@ const PostJobPage = () => {
       projectName: "",
       jobName: "",
       jobTitle: "",
-      locationType: "",
+      locationType: "remote",
       location: "",
       experienceLevel: "",
       numberOfVacancy: "",
@@ -31,7 +31,7 @@ const PostJobPage = () => {
       tools: "",
       safetyWears: "",
       description: "",
-      backFills: "",
+      backFills: "required",
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
@@ -157,37 +157,39 @@ const PostJobPage = () => {
   return (
     <div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
-        <MyJobsHeader
-          title={
-            currentLocation === CurrentLocation.dedicated
-              ? "Post a Job - Dedicated Service"
-              : currentLocation === CurrentLocation.dispatch
-              ? "Post a Job - Dispatch Service"
-              : "Post a Job - Scheduled Service"
-          }
-          isReport={false}
-          isShowSort={false}
-          action={
-            isDisable ? (
-              <div className="flex gap-2">
-                <Button
-                  className="rounded-full"
-                  variant="outline"
-                  onClick={() => setIsDisable(false)}
-                >
-                  Back to Edit
-                </Button>
-                <Button className="rounded-full" type="submit">
-                  Post a Job
-                </Button>
-              </div>
-            ) : (
-              currentLocation === CurrentLocation.dispatch && (
-                <JobPostDropdown label="Template" options={TemplateOptions} />
+        <div className="sticky top-18 z-20">
+          <MyJobsHeader
+            title={
+              currentLocation === CurrentLocation.dedicated
+                ? "Post a Job - Dedicated Service"
+                : currentLocation === CurrentLocation.dispatch
+                ? "Post a Job - Dispatch Service"
+                : "Post a Job - Scheduled Service"
+            }
+            isReport={false}
+            isShowSort={false}
+            action={
+              isDisable ? (
+                <div className="flex gap-2">
+                  <Button
+                    className="rounded-full"
+                    variant="outline"
+                    onClick={() => setIsDisable(false)}
+                  >
+                    Back to Edit
+                  </Button>
+                  <Button className="rounded-full" type="submit">
+                    Post a Job
+                  </Button>
+                </div>
+              ) : (
+                currentLocation === CurrentLocation.dispatch && (
+                  <JobPostDropdown label="Template" options={TemplateOptions} />
+                )
               )
-            )
-          }
-        />
+            }
+          />
+        </div>
         <PostAJobFields setIsDisable={setIsDisable} isDisable={isDisable} />
       </FormContainer>
     </div>

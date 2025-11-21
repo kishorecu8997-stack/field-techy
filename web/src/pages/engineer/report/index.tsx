@@ -90,8 +90,8 @@ const ReportPage = ({
             <FileUpload
               name="file"
               label="Attach File (If any)"
-              required
               accept=".pdf, .jpg, .png"
+              placeholder="Attach File"
               maxPages={5}
               validatePDF={true}
             />

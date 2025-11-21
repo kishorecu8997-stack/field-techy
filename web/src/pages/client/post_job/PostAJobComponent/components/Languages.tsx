@@ -1,22 +1,46 @@
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../SectionHeader";
+import { useFormContext } from "react-hook-form";
 
+/*
+ * Languages component
+ *
+ * Displays a section for selecting primary and secondary languages.
+ * It uses the SelectField component to render the dropdown options.
+ * It filters out the selected language options to prevent duplicates.
+ */ 
 const Languages = ({ isDisable }: { isDisable: boolean }) => {
+
+  const ctx = useFormContext()
+  const watchPrimaryLanguage = ctx.watch("primaryLanguage");
+  const watchSecondaryLanguage = ctx.watch("secondaryLanguage");
+
+  const primaryLanguageOptions = [
+    { value: "language1", label: "Language 1" },
+    { value: "language2", label: "Language 2" },
+    { value: "language3", label: "Language 3" },
+  ];
+
+  const secondaryLanguageOptions = [
+    { value: "language1", label: "Language 1" },
+    { value: "language2", label: "Language 2" },
+    { value: "language3", label: "Language 3" },
+  ];
+
+  const filteredPrimaryLanguageOptions = primaryLanguageOptions.filter((opt) => opt.value !== watchSecondaryLanguage);
+  const filteredSecondaryLanguageOptions = secondaryLanguageOptions.filter((opt) => opt.value !== watchPrimaryLanguage);
+
   return (
     <div className="w-full flex flex-col gap-2">
       <SectionHeader title="Languages" />
-      <div className="flex flex-row w-full gap-2 items-center">
+      <div className="flex flex-row w-full gap-4 items-center">
         <div className="w-full">
           <SelectField
             disabled={isDisable}
             required
             name="primaryLanguage"
             label="Primary Language"
-            options={[
-              { value: "language1", label: "Language 1" },
-              { value: "language2", label: "Language 2" },
-              { value: "language3", label: "Language 3" },
-            ]}
+            options={filteredPrimaryLanguageOptions}
           />
         </div>
         <div className="w-full">
@@ -25,11 +49,7 @@ const Languages = ({ isDisable }: { isDisable: boolean }) => {
             required
             name="secondaryLanguage"
             label="Secondary Language"
-            options={[
-              { value: "language1", label: "Language 1" },
-              { value: "language2", label: "Language 2" },
-              { value: "language3", label: "Language 3" },
-            ]}
+            options={filteredSecondaryLanguageOptions}
           />
         </div>
       </div>

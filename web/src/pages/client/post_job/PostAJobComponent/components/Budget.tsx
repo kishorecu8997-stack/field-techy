@@ -1,5 +1,6 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SectionHeader from "../SectionHeader";
+import { validateAmount } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 
 const Budget = ({ isDisable }: { isDisable: boolean }) => {
   return (
@@ -8,9 +9,11 @@ const Budget = ({ isDisable }: { isDisable: boolean }) => {
       <InputField
         disabled={isDisable}
         required
+        inputMode="number"
         name="budget"
         label="Estimated Budget"
         placeholder="e.g. $50,000"
+        rules={{validate:(v)=> validateAmount(v)}}
       />
     </div>
   );

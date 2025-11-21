@@ -1,12 +1,13 @@
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../SectionHeader";
+import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 
 const Requirements = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div className="w-full space-y-2">
       <SectionHeader title="Requirements" />
-      <div className="flex flex-row w-full gap-2 items-center">
+      <div className="flex flex-row w-full gap-4 items-center">
         <div className="w-full">
           <SelectField
             disabled={isDisable}
@@ -26,10 +27,10 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           disabled={isDisable}
         />
       </div>
-      <SelectField
+      <TagSelectField
         required
         disabled={isDisable}
-        name="skillsRequired"
+        name="skills"
         label="Skills"
         options={[
           {
@@ -42,7 +43,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           },
         ]}
       />
-      <SelectField
+      <TagSelectField
         disabled={isDisable}
         required
         name="tools"
@@ -58,7 +59,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           },
         ]}
       />
-      <SelectField
+      <TagSelectField
         disabled={isDisable}
         name="safetyWears"
         label="Safety Wears"

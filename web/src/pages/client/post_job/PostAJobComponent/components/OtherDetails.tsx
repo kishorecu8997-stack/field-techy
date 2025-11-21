@@ -9,6 +9,7 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
+import { validateDescription } from "@/pages/engineer/home/validation";
 
 const OtherDetails = ({ isDisable }: { isDisable: boolean }) => {
   const { currentLocation } = usePostAJobStore();
@@ -24,16 +25,23 @@ const OtherDetails = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Describe here..."
         required
         disabled={isDisable}
+        rules={validateDescription(50, 2000, "Additional Details")}
       />
       <FileUpload
         name="attachment"
         label=" Additional Attachments (Guidelines, Docs)"
+        placeholder="Attachments"
         disabled={isDisable}
+        accept=".pdf"
       />
 
       {currentLocation === CurrentLocation.dispatch && (
         <div className="w-full space-y-2">
-          <CheckboxInput label="Save As Template" name="saveAsTemplate" disabled={isDisable}/>
+          <CheckboxInput
+            label="Save As Template"
+            name="saveAsTemplate"
+            disabled={isDisable}
+          />
           {WatchISTemplate && (
             <InputField
               label="Template Name"

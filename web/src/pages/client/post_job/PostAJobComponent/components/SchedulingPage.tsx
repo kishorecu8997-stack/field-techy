@@ -15,20 +15,33 @@ import {
 } from "../../types";
 import SectionHeader from "../SectionHeader";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
+import { useEffect } from "react";
+import { getDuration } from "@/utils";
 
 const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const ctx = useFormContext();
   const watchOccurrence = ctx.watch("jobOccurrence");
   const watchOccurrenceEndType = ctx.watch("occurrenceEndType");
   const watchRepeatedBy = ctx.watch("repeatedBy");
-  const { currentLocation  } = usePostAJobStore();
+  const { currentLocation } = usePostAJobStore();
+
+  const tentativeStartDate = ctx.watch("tentativeStartDate");
+  const tentativeEndDate = ctx.watch("tentativeEndDate");
+  const applicationEndDate = ctx.watch("applicationEndDate");
+
+  useEffect(() => {
+    if (tentativeStartDate && tentativeEndDate) {
+      const duration = getDuration(tentativeStartDate, tentativeEndDate);
+      ctx.setValue("jobDuration", duration);
+    }
+  }, [tentativeStartDate, tentativeEndDate]);
 
   return (
     <>
       <SectionHeader title="Scheduling" />
       {currentLocation === CurrentLocation.dedicated ? (
         <div className="w-full space-y-2">
-          <div className="flex flex-row w-full gap-2 items-center">
+          <div className="flex flex-row w-full gap-4 items-center">
             <div className="relative w-full">
               <Controller
                 name="tentativeStartDate"
@@ -48,6 +61,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       placeholder="Select Tentative start date"
                       {...field}
                       required
+                      minDate={applicationEndDate ? applicationEndDate : null}
+                      maxDate={tentativeEndDate ? tentativeEndDate : null}
                     />
                     {error && (
                       <p className="text-red-600 text-sm">{error.message}</p>
@@ -71,6 +86,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
+                      minDate={applicationEndDate ? applicationEndDate : null}
                       required
                     />
                     {error && (
@@ -81,13 +97,16 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
               />
             </div>
           </div>
-          <div className="flex flex-row w-full gap-2 items-center">
+          <div className="flex flex-row w-full gap-4 items-center">
             <div className="relative w-full">
               <Controller
                 name="applicationEndDate"
                 rules={{
                   validate: (value) =>
-                    validateDateRange(value, ctx.getValues("applicationEndDate")),
+                    validateDateRange(
+                      value,
+                      ctx.getValues("applicationEndDate")
+                    ),
                 }}
                 control={ctx.control}
                 render={({ field, fieldState: { error } }) => (
@@ -98,6 +117,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       placeholder="Select Application End date"
                       {...field}
                       required
+                      maxDate={tentativeStartDate ? tentativeStartDate : null}
                     />
                     {error && (
                       <p className="text-red-600 text-sm">{error.message}</p>
@@ -116,8 +136,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
             </div>
           </div>
           <InputField
-            disabled={isDisable}
+            disabled={true}
             name={"jobDuration"}
+            required
             label={"Job Duration"}
             placeholder={"Enter Job Duration"}
           />

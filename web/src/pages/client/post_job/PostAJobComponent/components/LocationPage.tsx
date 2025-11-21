@@ -10,6 +10,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         label="Location Type"
         name="locationType"
         disabled={isDisable}
+        required
         direction="horizontal"
         options={[
           { label: "Remote", value: "remote" },

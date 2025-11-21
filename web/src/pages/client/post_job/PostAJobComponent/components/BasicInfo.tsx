@@ -1,9 +1,11 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
-import usePostAJobStore, { CurrentLocation } from "@/shared/store/postAJobStore";
+import usePostAJobStore, {
+  CurrentLocation,
+} from "@/shared/store/postAJobStore";
+import { validateName } from "../../Validates";
 
-const BasicInfo = ({isDisable}:{isDisable:boolean}) => {
-
-const {currentLocation} = usePostAJobStore()  
+const BasicInfo = ({ isDisable }: { isDisable: boolean }) => {
+  const { currentLocation } = usePostAJobStore();
 
   return (
     <div className="w-full space-y-2">
@@ -13,9 +15,24 @@ const {currentLocation} = usePostAJobStore()
         placeholder="Project Name"
         disabled={isDisable}
         required={currentLocation === CurrentLocation.dedicated}
+        rules={{ validate: (v: string) => validateName(v) }}
       />
-      <InputField label="Job Name" name="jobName" placeholder="Job Name" required disabled={isDisable}/>
-      <InputField label="Job Title" name="jobTitle" placeholder="Job Title" required disabled={isDisable}/>
+      <InputField
+        label="Job Name"
+        name="jobName"
+        placeholder="Job Name"
+        required
+        disabled={isDisable}
+        rules={{ validate: (v: string) => validateName(v) }}
+      />
+      <InputField
+        label="Job Title"
+        name="jobTitle"
+        placeholder="Job Title"
+        required
+        disabled={isDisable}
+        rules={{ validate: (v: string) => validateName(v) }}
+      />
     </div>
   );
 };
