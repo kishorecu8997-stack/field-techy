@@ -319,7 +319,7 @@ export const FileUpload = ({
           className={`block mb-1 text-md font-bold 
             ${
               disabled
-                ? "text-gray-400 dark:text-gray-600"
+                ? "text-gray-400 dark:text-gray-400"
                 : "text-gray-700 dark:text-gray-300"
             }`}
         >
@@ -337,10 +337,12 @@ export const FileUpload = ({
           return (
             <>
               <div
-                className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
-                  displayError
-                    ? "border-red-500"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${
+                  disabled
+                    ? "border-gray-400  cursor-not-allowed opacity-50"
+                    : displayError
+                    ? "border-red-500  cursor-pointer"
+                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500  cursor-pointer"
                 }`}
                 onClick={() =>
                   !fileName && document.getElementById(name)?.click()
@@ -407,7 +409,7 @@ export const FileUpload = ({
                     <p className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                       {placeholder}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       Format: {formatAllowedTypes()}• Min 50 KB • Max{" "}
                       {maxSize / 1024} KB
                       {validatePDF &&

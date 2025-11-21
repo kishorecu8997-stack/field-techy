@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { interviewerData } from "@/dummy_data/admin/PostAJob";
 
 /**
  *
@@ -19,7 +21,22 @@ const EditClient = () => {
 export default EditClient;
 
 const EditClientFields = () => {
-  const FormCtx = useForm<ClientFieldsTypes>();
+
+  const { selectedId} = useDrawerStore();
+  const value = interviewerData.find((item) => item.id === selectedId);
+
+  const formCtx = useForm<ClientFieldsTypes>({
+    defaultValues:{
+      firstName: value?.firstName,
+      lastName: value?.lastName,
+      email: value?.email,
+      mobile: value?.mobile,
+      startDate: new Date(value?.startDate),
+      startTime: value?.startTime,
+    },
+  });
+
+
 
   const handleSubmit = (data: ClientFieldsTypes) => {
     console.log("Submitted data:", data);
@@ -28,7 +45,7 @@ const EditClientFields = () => {
 
   return (
     <FormContainer
-      methods={FormCtx}
+      methods={formCtx}
       onSubmit={handleSubmit}
       className="flex h-full flex-col"
     >

@@ -45,7 +45,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   };
 
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
+    <nav aria-label="Breadcrumb" className="text-sm text-gray-500 dark:text-gray-300">
       <ol className="flex items-center space-x-1">
         {/* Home link points to /engineer */}
         <li>

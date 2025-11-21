@@ -1,3 +1,4 @@
+import { absoluteUrls } from "@/config/urls";
 import { interviewerData, pointOfContent } from "@/dummy_data/admin/PostAJob";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -6,6 +7,7 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientInterviewerCard from "../client_Interview/ClientInterviewerCard";
 import ClientInterviewerSection from "../client_Interview/ClientInterviewerSection";
@@ -18,9 +20,6 @@ import LocationPage from "./LocationPage";
 import OtherDetails from "./OtherDetails";
 import Requirements from "./Requirements";
 import SchedulingPage from "./SchedulingPage";
-import { absoluteUrls } from "@/config/urls";
-import { useNavigate } from "react-router-dom";
-import { scrollToTop } from "@/utils";
 
 const PostAJobFields = ({
   setIsDisable,
@@ -29,7 +28,7 @@ const PostAJobFields = ({
   setIsDisable: Dispatch<SetStateAction<boolean>>;
   isDisable: boolean;
 }) => {
-  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const { setActiveKey, setISOpenSidebar, setSelectedId } = useDrawerStore();
   const { currentLocation } = usePostAJobStore();
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
@@ -69,6 +68,7 @@ const PostAJobFields = ({
     onEdit: () => {
       setActiveKey("editPointOfContent");
       setISOpenSidebar(true);
+      setSelectedId(item.id);
     },
     onDelete: () => handleDeleteInterviewer(item.id),
   }));
@@ -86,6 +86,7 @@ const PostAJobFields = ({
     onEdit: () => {
       setActiveKey("editClientInterviewer");
       setISOpenSidebar(true);
+      setSelectedId(Number(item.id));
     },
     onDelete: () => handleDeleteInterviewer(Number(item.id)),
   }));
@@ -100,27 +101,29 @@ const PostAJobFields = ({
         <Budget isDisable={isDisable} />
         <Languages isDisable={isDisable} />
         <OtherDetails isDisable={isDisable} />
-        <div className="flex justify-end gap-2 mt-2">
-          <Button
-            isScrollToTop
-            variant="outline"
-            className="rounded-full"
-            onClick={() => {
-              navigate(absoluteUrls.client.home.my_jobs);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            isScrollToTop
-            onClick={() => {
-              setIsDisable(true);
-            }}
-            className="rounded-full"
-          >
-            Review Job Posting
-          </Button>
-        </div>
+        {!isDisable && (
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              isScrollToTop
+              variant="outline"
+              className="rounded-full"
+              onClick={() => {
+                navigate(absoluteUrls.client.home.my_jobs);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              isScrollToTop
+              onClick={() => {
+                setIsDisable(true);
+              }}
+              className="rounded-full"
+            >
+              Review Job Posting
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="w-1/3">

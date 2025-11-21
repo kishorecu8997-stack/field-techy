@@ -1,4 +1,3 @@
-import type { JSX } from "react";
 import type React from "react";
 
 export interface JobPostFormData {
@@ -84,13 +83,13 @@ export type OccurrenceEndTypeType =
   (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
 
 export interface ClientFieldsTypes {
-  id?: number;
+  id: string | number;
   firstName: string;
   lastName: string;
   email: string;
   mobile: string;
-  startDate: string;
-  startTime: string;
+  startDate?: any;
+  startTime?: string;
 }
 
 export interface ClientInterviewerSectionProps {
@@ -137,4 +136,14 @@ export interface CardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   addAction?: React.ReactNode;
+}
+
+
+export interface pointOfContentTypes {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobile: string;
+  contactType: string;
 }

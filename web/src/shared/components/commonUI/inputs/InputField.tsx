@@ -74,7 +74,7 @@ export const InputField = ({
           className={`block mb-1 text-md font-bold 
             ${
               disabled
-                ? "text-gray-400 dark:text-gray-600"
+                ? "text-gray-400 dark:text-gray-400"
                 : "text-gray-700 dark:text-gray-300"
             }`}
         >
@@ -106,7 +106,7 @@ export const InputField = ({
                   ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""} 
                   ${
                     disabled
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      ? " text-gray-500 dark:text-gray-500 cursor-not-allowed"
                       : ""
                   }`}
               />

@@ -285,12 +285,12 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   ];
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
-      {isShowLabel && (
+       {isShowLabel && (
         <label
           className={`block mb-1 text-md font-bold 
             ${
               disabled
-                ? "text-gray-400 dark:text-gray-600"
+                ? "text-gray-400 dark:text-gray-400"
                 : "text-gray-700 dark:text-gray-300"
             }`}
         >

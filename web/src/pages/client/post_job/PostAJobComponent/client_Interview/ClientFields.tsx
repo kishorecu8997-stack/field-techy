@@ -1,7 +1,6 @@
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import TimeInput from "@/shared/components/commonUI/inputs/TimeInput";
-import { validateDateRange } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
 
@@ -25,13 +24,13 @@ const ClientFields = () => {
       <InputField
         label="Email"
         required
-        name="clientEmail"
+        name="email"
         placeholder="Client Email"
       />
       <InputField
         required
         label="Phone"
-        name="clientPhone"
+        name="mobile"
         placeholder="Client Phone"
       />
       <div className="py-2">
@@ -41,10 +40,10 @@ const ClientFields = () => {
         <div className="relative w-full">
           <Controller
             name="startDate"
-            rules={{
-              validate: (value) =>
-                validateDateRange(value, ctx.getValues("startDate")),
-            }}
+            // rules={{
+            //   validate: (value) =>
+            //     validateDateRange(value, ctx.getValues("startDate")),
+            // }}
             control={ctx.control}
             render={({ field, fieldState: { error } }) => (
               <>

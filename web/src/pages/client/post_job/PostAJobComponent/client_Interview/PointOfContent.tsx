@@ -19,13 +19,13 @@ const PointOfContent = () => {
       <InputField
         label="Email"
         required
-        name="clientEmail"
+        name="email"
         placeholder="Client Email"
       />
       <InputField
         required
         label="Phone"
-        name="clientPhone"
+        name="mobile"
         placeholder="Client Phone"
       />
       <SelectField

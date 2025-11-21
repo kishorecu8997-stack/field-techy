@@ -57,12 +57,12 @@ export const SelectField = ({
 
   return (
     <div className="flex flex-col">
-      {isShowLabel && (
+    {isShowLabel && (
         <label
           className={`block mb-1 text-md font-bold 
             ${
               disabled
-                ? "text-gray-400 dark:text-gray-600"
+                ? "text-gray-400 dark:text-gray-400"
                 : "text-gray-700 dark:text-gray-300"
             }`}
         >
@@ -70,7 +70,6 @@ export const SelectField = ({
           {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
-
       <Controller
         name={name}
         control={control}
@@ -118,7 +117,7 @@ export const SelectField = ({
               py-3 pl-5 pr-10 flex items-center justify-start text-left
               ${
                 disabled
-                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                  ? " text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-gray-800 cursor-pointer"
               }
               ${
