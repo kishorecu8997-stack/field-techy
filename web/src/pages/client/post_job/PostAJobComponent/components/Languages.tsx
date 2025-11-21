@@ -1,14 +1,15 @@
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../SectionHeader";
 
-const Languages = () => {
+const Languages = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div className="w-full flex flex-col gap-2">
       <SectionHeader title="Languages" />
       <div className="flex flex-row w-full gap-2 items-center">
         <div className="w-full">
           <SelectField
-          required
+            disabled={isDisable}
+            required
             name="primaryLanguage"
             label="Primary Language"
             options={[
@@ -20,7 +21,8 @@ const Languages = () => {
         </div>
         <div className="w-full">
           <SelectField
-          required
+            disabled={isDisable}
+            required
             name="secondaryLanguage"
             label="Secondary Language"
             options={[

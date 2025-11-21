@@ -16,6 +16,7 @@ interface TimeInputProps {
   inputClassName?: string;
   leftIcon?: React.ReactNode;
   showValidationCheck?: boolean;
+  disabled?: boolean;
 }
 
 export const TimeInput: React.FC<TimeInputProps> = ({
@@ -25,6 +26,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   required = false,
   placeholder = "Select Time",
   rules,
+  disabled = false,
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   leftIcon,
@@ -47,7 +49,14 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
         </label>
@@ -67,6 +76,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
               <input
                 {...field}
                 type="time"
+                disabled={disabled}
                 placeholder={placeholder}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""

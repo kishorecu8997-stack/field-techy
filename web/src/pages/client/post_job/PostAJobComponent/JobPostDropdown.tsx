@@ -1,14 +1,40 @@
 import { useEffect, useRef, useState } from "react";
 import type { PostOption } from "./TalentSection";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 export default function JobPostDropdown({
   options,
+  showViewAll = false,
+  label,
 }: {
   options: PostOption[];
+  showViewAll?: boolean;
+  label?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<PostOption | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const [dropdownPosition, setDropdownPosition] = useState<"left" | "right">(
+    "left"
+  );
+
+  // Smart positioning
+  useEffect(() => {
+    if (open && dropdownRef.current && menuRef.current) {
+      const buttonRect = dropdownRef.current.getBoundingClientRect();
+      const menuRect = menuRef.current.getBoundingClientRect();
+      const screenWidth = window.innerWidth;
+
+      // If menu overflows right boundary → align right
+      if (buttonRect.left + menuRect.width > screenWidth) {
+        setDropdownPosition("right");
+      } else {
+        setDropdownPosition("left");
+      }
+    }
+  }, [open]);
 
   // Close when clicking outside
   useEffect(() => {
@@ -27,21 +53,29 @@ export default function JobPostDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="relative inline-block text-left text-neutral-800"
+      className="relative inline-block text-left text-neutral-800 space-y-1"
     >
+      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
         className="px-4 py-2 bg-teal-200 cursor-pointer rounded-full shadow hover:bg-teal-300 transition flex items-center gap-2"
       >
-        <span>{selected ? selected.label : "Post A Job"}</span>
+        <span className="font-semibold text-md">{selected ? selected.label : label ||"Post A Job"}</span>
         <span className="text-xl">▾</span>
       </button>
 
+      {/* Dropdown menu */}
       {open && (
-        <div className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-xl p-2 z-20 animate-fadeIn">
+        <div
+          ref={menuRef}
+          className={`absolute mt-2 w-56 bg-white shadow-lg rounded-xl p-2 z-20 animate-fadeIn ${
+            dropdownPosition === "left" ? "left-0" : "right-0"
+          }`}
+        >
           {options.map((opt) => (
-            <button
+            <Button
+              variant="text"
               key={opt.value}
               onClick={() => {
                 setSelected(opt);
@@ -53,8 +87,16 @@ export default function JobPostDropdown({
               }`}
             >
               {opt.label}
-            </button>
+            </Button>
           ))}
+
+          {showViewAll && (
+            <div className="flex justify-end">
+              <Button variant="text" className="rounded-full">
+                View all
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -16,12 +16,12 @@ import {
 import SectionHeader from "../SectionHeader";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 
-const SchedulingPage = () => {
+const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const ctx = useFormContext();
   const watchOccurrence = ctx.watch("jobOccurrence");
   const watchOccurrenceEndType = ctx.watch("occurrenceEndType");
   const watchRepeatedBy = ctx.watch("repeatedBy");
-  const { currentLocation } = usePostAJobStore();
+  const { currentLocation  } = usePostAJobStore();
 
   return (
     <>
@@ -43,6 +43,7 @@ const SchedulingPage = () => {
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePickerInput
+                      disabled={isDisable}
                       label="Tentative Start Date"
                       placeholder="Select Tentative start date"
                       {...field}
@@ -66,6 +67,7 @@ const SchedulingPage = () => {
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePickerInput
+                      disabled={isDisable}
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
@@ -82,17 +84,18 @@ const SchedulingPage = () => {
           <div className="flex flex-row w-full gap-2 items-center">
             <div className="relative w-full">
               <Controller
-                name="tentativeEndDate"
+                name="applicationEndDate"
                 rules={{
                   validate: (value) =>
-                    validateDateRange(value, ctx.getValues("tentativeEndDate")),
+                    validateDateRange(value, ctx.getValues("applicationEndDate")),
                 }}
                 control={ctx.control}
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <DatePickerInput
-                      label="Tentative End Date"
-                      placeholder="Select Tentative End date"
+                      disabled={isDisable}
+                      label=" Application End Date"
+                      placeholder="Select Application End date"
                       {...field}
                       required
                     />
@@ -105,13 +108,15 @@ const SchedulingPage = () => {
             </div>
             <div className="w-full">
               <TimeInput
-                label="Tentative End Time"
-                name="tentativeEndTime"
+                disabled={isDisable}
+                label="Application End Time"
+                name="applicationEndTime"
                 required
               />
             </div>
           </div>
           <InputField
+            disabled={isDisable}
             name={"jobDuration"}
             label={"Job Duration"}
             placeholder={"Enter Job Duration"}
@@ -120,6 +125,8 @@ const SchedulingPage = () => {
       ) : currentLocation === CurrentLocation.scheduled ? (
         <div className="w-full space-y-2">
           <RadioField
+            disabled={isDisable}
+            required
             label="Job Occurrence Type"
             name="jobOccurrence"
             direction="horizontal"
@@ -131,6 +138,7 @@ const SchedulingPage = () => {
           {watchOccurrence === OccurrenceFields.repeat ? (
             <>
               <SelectField
+                disabled={isDisable}
                 name="repeatedBy"
                 label="Repeated By"
                 options={[
@@ -154,6 +162,7 @@ const SchedulingPage = () => {
                       render={({ field, fieldState: { error } }) => (
                         <>
                           <DatePickerInput
+                            disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
                             {...field}
@@ -170,16 +179,27 @@ const SchedulingPage = () => {
                   </div>
                   <div className="flex flex-row w-full gap-2 items-center">
                     <div className="w-full">
-                      <TimeInput label="Start Time" name="startTime" required />
+                      <TimeInput
+                        label="Start Time"
+                        name="startTime"
+                        required
+                        disabled={isDisable}
+                      />
                     </div>
                     <div className="w-full">
-                      <TimeInput label="End Time" name="endTime" required />
+                      <TimeInput
+                        label="End Time"
+                        name="endTime"
+                        required
+                        disabled={isDisable}
+                      />
                     </div>
                   </div>
                 </>
               ) : watchRepeatedBy === RepeatByFields.month ? (
                 <div className="mt-2">
                   <SelectField
+                    disabled={isDisable}
                     label="Repeat On (Date of month)"
                     name="repeatedByMonth"
                     required
@@ -191,6 +211,7 @@ const SchedulingPage = () => {
                   <div className="flex flex-row w-full gap-4 items-center mt-2">
                     <div className="w-full">
                       <SelectField
+                        disabled={isDisable}
                         label="Repeat Year"
                         name="repeatedByYear"
                         required
@@ -199,6 +220,7 @@ const SchedulingPage = () => {
                     </div>
                     <div className="w-full">
                       <SelectField
+                        disabled={isDisable}
                         label="Repeat On (Date of month)"
                         name="repeatedByMonth"
                         required
@@ -209,6 +231,8 @@ const SchedulingPage = () => {
                 )
               )}
               <RadioField
+                disabled={isDisable}
+                required
                 label="Job Occurrence End Type"
                 name="occurrenceEndType"
                 direction="horizontal"
@@ -238,7 +262,8 @@ const SchedulingPage = () => {
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <DatePickerInput
-                          label="Job Occurrence End Date*"
+                          disabled={isDisable}
+                          label="Job Occurrence End Date"
                           placeholder="Select Job Occurrence end date"
                           {...field}
                           required
@@ -254,6 +279,8 @@ const SchedulingPage = () => {
                 </div>
               ) : (
                 <InputField
+                  disabled={isDisable}
+                  required
                   name="after"
                   label="After (Number of Occurrences"
                   placeholder="Enter number of occurrences"
@@ -268,6 +295,7 @@ const SchedulingPage = () => {
                   <div className="flex flex-row w-full gap-2 items-center">
                     <div className="relative w-full">
                       <Controller
+                        disabled={isDisable}
                         name="startDate"
                         rules={{
                           validate: (value) =>
@@ -280,6 +308,7 @@ const SchedulingPage = () => {
                         render={({ field, fieldState: { error } }) => (
                           <>
                             <DatePickerInput
+                              disabled={isDisable}
                               label="Start Date"
                               placeholder="Select start date"
                               {...field}
@@ -295,7 +324,12 @@ const SchedulingPage = () => {
                       />
                     </div>
                     <div className="w-full">
-                      <TimeInput label="Start Time" name="startTime" required />
+                      <TimeInput
+                        label="Start Time"
+                        name="startTime"
+                        required
+                        disabled={isDisable}
+                      />
                     </div>
                   </div>
                   <div className="flex flex-row w-full gap-2 items-center">
@@ -310,6 +344,7 @@ const SchedulingPage = () => {
                         render={({ field, fieldState: { error } }) => (
                           <>
                             <DatePickerInput
+                              disabled={isDisable}
                               label="End Date"
                               placeholder="Select End date"
                               {...field}
@@ -325,7 +360,12 @@ const SchedulingPage = () => {
                       />
                     </div>
                     <div className="w-full">
-                      <TimeInput label="End Time" name="endTime" required />
+                      <TimeInput
+                        label="End Time"
+                        name="endTime"
+                        required
+                        disabled={isDisable}
+                      />
                     </div>
                   </div>
                 </div>
@@ -350,6 +390,7 @@ const SchedulingPage = () => {
                       render={({ field, fieldState: { error } }) => (
                         <>
                           <DatePickerInput
+                            disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
                             {...field}
@@ -365,7 +406,12 @@ const SchedulingPage = () => {
                     />
                   </div>
                   <div className="w-full">
-                    <TimeInput label="Start Time" name="startTime" required />
+                    <TimeInput
+                      label="Start Time"
+                      name="startTime"
+                      required
+                      disabled={isDisable}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-row w-full gap-2 items-center">
@@ -384,6 +430,7 @@ const SchedulingPage = () => {
                             placeholder="Select End date"
                             {...field}
                             required
+                            disabled={isDisable}
                           />
                           {error && (
                             <p className="text-red-600 text-sm">
@@ -395,11 +442,17 @@ const SchedulingPage = () => {
                     />
                   </div>
                   <div className="w-full">
-                    <TimeInput label="End Time" name="endTime" required />
+                    <TimeInput
+                      label="End Time"
+                      name="endTime"
+                      required
+                      disabled={isDisable}
+                    />
                   </div>
                 </div>
               </div>
               <InputField
+                disabled={isDisable}
                 name={"estimatedDuration"}
                 label={"Estimated Duration"}
                 placeholder={"Enter Estimated Duration"}

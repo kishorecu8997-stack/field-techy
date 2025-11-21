@@ -52,10 +52,14 @@ export const TextareaInput = ({
 
   return (
     <div className={containerClassName}>
-      {isShowLabel && label && (
+     {isShowLabel && (
         <label
-          htmlFor={name}
-          className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300"
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
         >
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}

@@ -39,7 +39,9 @@ export const FileUpload = ({
   placeholder = "Upload Resume/CV",
   validatePDF = true,
   minPages = 1,
+  disabled = false,
   maxPages = 5,
+  isShowLabel = true,
 }: FileUploadProps) => {
   const { control, getValues } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
@@ -312,9 +314,17 @@ export const FileUpload = ({
   // ✅ Render
   return (
     <div className={containerClassName}>
-      {label && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+      {isShowLabel && (
+        <label
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -398,8 +408,8 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()}• Min 50 KB • Max {maxSize /
-                      1024} KB
+                      Format: {formatAllowedTypes()}• Min 50 KB • Max{" "}
+                      {maxSize / 1024} KB
                       {validatePDF &&
                         accept.toLowerCase().includes("pdf") &&
                         ` • ${minPages}–${maxPages} pages`}
@@ -410,6 +420,7 @@ export const FileUpload = ({
                 <input
                   id={name}
                   type="file"
+                  disabled={disabled}
                   accept={accept}
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"

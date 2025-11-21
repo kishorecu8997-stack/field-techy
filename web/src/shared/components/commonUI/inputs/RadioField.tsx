@@ -14,6 +14,8 @@ interface RadioFieldProps {
   label?: string;
   required?: boolean;
   options: RadioOption[];
+  disabled?: boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
   direction?: "vertical" | "horizontal"; // 👈 new prop
   containerClassName?: string;
@@ -36,6 +38,8 @@ export const RadioField = ({
   required = false,
   options,
   rules,
+  isShowLabel = true,
+  disabled = false,
   direction = "vertical", // 👈 default layout
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",
@@ -57,9 +61,17 @@ export const RadioField = ({
 
   return (
     <div className={containerClassName}>
-      {label && (
-        <label className="block mb-2 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+      {isShowLabel && (
+        <label
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -77,6 +89,7 @@ export const RadioField = ({
                   <input
                     type="radio"
                     name={fieldName}
+                    disabled={disabled}
                     value={option.value}
                     checked={value === option.value}
                     onChange={() => onChange(option.value)}

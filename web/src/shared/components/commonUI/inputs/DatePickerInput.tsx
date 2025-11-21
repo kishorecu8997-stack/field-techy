@@ -14,6 +14,7 @@ interface DatePickerInputProps {
   isShowLabel?: boolean;
   value: Date | null;
   minDate?: Date;
+  disabled?: boolean;
   maxDate?: Date;
   onChange: (date: Date | null) => void;
   placeholder?: string;
@@ -39,6 +40,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   onChange,
   placeholder = "Select date",
   className = "",
+  disabled = false,
   required = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -284,18 +286,25 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
   return (
     <div className={`relative ${className}`} ref={datePickerRef}>
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-           {label}{" "}
+        <label
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
-
       <div
         className="flex items-center h-[50.23px] px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <input
           type="text"
+          disabled={disabled}
           value={value ? formatDate(value) : ""}
           placeholder={placeholder}
           readOnly

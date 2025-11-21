@@ -24,7 +24,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
 
   return (
     <div className="py-2">
-      <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
+      <header className="sticky top-[80px] z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">

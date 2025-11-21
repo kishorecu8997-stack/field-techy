@@ -69,8 +69,15 @@ export const InputField = ({
 
   return (
     <div className={containerClassName}>
-      {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+       {isShowLabel && (
+        <label
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
         </label>
@@ -94,9 +101,14 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled} 
-                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
-                  showValidationCheck && isDirty && !invalid ? "pr-10" : ""
-                }`}
+                className={`${inputClassName} 
+                  ${leftIcon ? "pl-10" : ""} 
+                  ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""} 
+                  ${
+                    disabled
+                      ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      : ""
+                  }`}
               />
               {showValidationCheck && isDirty && !invalid && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">

@@ -22,3 +22,21 @@ export const interviewerData: ClientFieldsTypes[] = [
 ];
 
 
+export const pointOfContent = [
+   {
+    id: 1,
+    firstName: "Ram",
+    lastName: "Risi",
+    email: "ramrisi@xyz.in",
+    mobile: "9876543210",
+    contactType: "Primary",
+  },
+  {
+    id: 2,
+    firstName: "Ram",
+    lastName: "Risi",
+    email: "ramrisi@xyz.in",
+    mobile: "9876543210",
+    contactType: "Primary",
+  },
+]

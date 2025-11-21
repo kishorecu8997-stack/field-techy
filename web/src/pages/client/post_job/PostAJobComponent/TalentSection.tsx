@@ -1,5 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
-import usePostAJobStore, { CurrentLocation } from "@/shared/store/postAJobStore";
+import usePostAJobStore, {
+  CurrentLocation,
+} from "@/shared/store/postAJobStore";
 import { useNavigate } from "react-router-dom";
 import JobPostDropdown from "./JobPostDropdown";
 
@@ -9,12 +11,11 @@ export interface PostOption {
   action?: () => void;
 }
 
-
 export default function TalentSection() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const { setCurrentLocation } = usePostAJobStore();
 
-const options: PostOption[] = [
+  const options: PostOption[] = [
     {
       label: "Dedicated Job Service",
       value: CurrentLocation.dedicated,
@@ -45,7 +46,8 @@ const options: PostOption[] = [
     <section className="bg-teal-900 text-white rounded-2xl p-8 w-full max-w-xl shadow-lg">
       <h2 className="text-xl font-semibold mb-2">Looking for Talent?</h2>
       <p className="text-sm opacity-90 mb-6">
-        Post your job opportunity and effortlessly engage with skilled professionals!
+        Post your job opportunity and effortlessly engage with skilled
+        professionals!
       </p>
 
       <JobPostDropdown options={options} />

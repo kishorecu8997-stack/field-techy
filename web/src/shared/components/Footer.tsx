@@ -11,6 +11,7 @@ import ReportPage from "@/pages/engineer/report";
 import { useState } from "react";
 import { assetsConfig } from "@/assets";
 import useDrawerStore from "../store/useDrawerStore";
+import { scrollToTop } from "@/utils";
 
 /**
  * Main footer component with company info, quick links, support options,
@@ -59,6 +60,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   to={absoluteUrls.engineer.home.my_jobs}
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Jobs
@@ -67,6 +69,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   to={absoluteUrls.engineer.home.explore_jobs}
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Explore Jobs
@@ -124,6 +127,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   to={absoluteUrls.engineer.home.faq}
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   FAQ
@@ -132,6 +136,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   to={absoluteUrls.engineer.home.terms_and_conditions}
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Terms & Conditions
@@ -141,6 +146,7 @@ const Footer = () => {
                 <NavLink
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                   to={absoluteUrls.engineer.home.privacy_policy}
+                  onClick={() => scrollToTop()}
                 >
                   Privacy Policy
                 </NavLink>

@@ -1,3 +1,6 @@
+import type { JSX } from "react";
+import type React from "react";
+
 export interface JobPostFormData {
   jobTitle: string;
   jobDescription: string;
@@ -72,16 +75,13 @@ export const RepeatByFields = {
 
 export type RepeatByType = (typeof RepeatByFields)[keyof typeof RepeatByFields];
 
-
-export const OccurrenceEndType ={
+export const OccurrenceEndType = {
   onDate: "onDate",
   afterDate: "afterDate",
-}
+};
 
-export type OccurrenceEndTypeType = (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
-
-
-
+export type OccurrenceEndTypeType =
+  (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
 
 export interface ClientFieldsTypes {
   id?: number;
@@ -94,13 +94,12 @@ export interface ClientFieldsTypes {
 }
 
 export interface ClientInterviewerSectionProps {
-  interviewers: ClientFieldsTypes[];
+  interviewers: DetailItem[];
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
   onAdd: () => void;
-  composeDetails: (client: ClientFieldsTypes) => DetailsType;
+  composeDetails: (client: any) => DetailsType;
 }
-
 
 // Each label/value pair
 export interface DetailItem {
@@ -118,7 +117,6 @@ export type DetailsType = Array<DetailItem | DetailSection>;
 
 // Interviewer fields (your existing shape — adjust if needed}
 
-
 export interface DetailItem {
   label: string;
   value: string | number | null | undefined;
@@ -128,6 +126,15 @@ export interface DetailSection {
   section: string;
 }
 
+export interface InfoItem {
+  label: string;
+  value: string;
+}
 
-
-
+export interface CardProps {
+  title: string;
+  items: InfoItem[];
+  onEdit?: () => void;
+  onDelete?: () => void;
+  addAction?: React.ReactNode;
+}

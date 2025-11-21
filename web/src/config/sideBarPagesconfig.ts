@@ -6,7 +6,9 @@ import ClientRecentTransactions, {
 } from "@/pages/client/my_wallet/components/RecentTransactionsList";
 import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
 import AddClient from "@/pages/client/post_job/PostAJobComponent/client_Interview/AddClient";
+import AddPOC from "@/pages/client/post_job/PostAJobComponent/client_Interview/AddPOC";
 import EditClient from "@/pages/client/post_job/PostAJobComponent/client_Interview/EditClient";
+import EditPOC from "@/pages/client/post_job/PostAJobComponent/client_Interview/EditPOC";
 import AccountSettings from "@/pages/engineer/account_settings";
 import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBankDetails";
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
@@ -229,5 +231,13 @@ export const sectionConfig: Record<
   editClientInterviewer: {
     component: EditClient,
     title: "Edit Client Interviewer Details",
+  },
+  addPointOfContent:{
+    component: AddPOC,
+    title: "Add Point Of Content",
+  },
+  editPointOfContent:{
+    component: EditPOC,
+    title: "Edit Point Of Content",
   },
 };
