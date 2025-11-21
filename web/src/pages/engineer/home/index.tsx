@@ -35,9 +35,16 @@ const Home = () => {
     return job.status === "new";
   });
 
-
   useEffect(() => {
-    setAccessPopup(true);
+    const locationPermission = localStorage.getItem("location_permission");
+    const notificationPermission = localStorage.getItem(
+      "notification_permission"
+    );
+
+    // SHOW popup only if ANY permission is missing
+    if (!locationPermission || !notificationPermission) {
+      setAccessPopup(true);
+    }
   }, []);
 
   return (
@@ -71,7 +78,10 @@ const Home = () => {
           </div>
 
           {/* Allow access popup */}
-          <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />
+          <AllowAccessPopup
+            accessPopup={accessPopup}
+            setAccessPopup={setAccessPopup}
+          />
         </div>
       </div>
     </div>

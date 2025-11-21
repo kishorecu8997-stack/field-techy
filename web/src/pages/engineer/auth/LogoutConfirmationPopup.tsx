@@ -69,6 +69,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
                   onClose();
                   onConfirm();
                   goToLogin();
+                  localStorage.clear();
                 }}
                 className="flex-1 px-4 py-2 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors cursor-pointer"
               >
