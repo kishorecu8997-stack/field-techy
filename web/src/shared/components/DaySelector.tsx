@@ -45,16 +45,19 @@ const DaySelectorInner: React.FC<{
 
   return (
     <div className={`mb-4 ${className}`.trim()}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm font-medium dark:text-white text-gray-700 mb-1">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-wrap gap-3">
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 rounded-lg p-3 flex flex-wrap gap-3">
         {days.map((day) => {
           const isSelected = selectedDays.includes(day);
           return (
-            <label key={day} className="flex items-center cursor-pointer">
+            <label
+              key={day}
+              className="flex items-center cursor-pointer dark:text-white"
+            >
               <input
                 type="checkbox"
                 checked={isSelected}
@@ -72,7 +75,9 @@ const DaySelectorInner: React.FC<{
                   </div>
                 )}
               </div>
-              <span className="ml-2 text-sm text-gray-800">{day}</span>
+              <span className="ml-2 dark:text-white text-sm text-gray-800">
+                {day}
+              </span>
             </label>
           );
         })}

@@ -112,15 +112,15 @@ const MapSearchBar: React.FC<{
           }}
           onKeyDown={handleKeyDown}
           placeholder="Search location..."
-          className="w-full py-2 px-4 border bg-white rounded-lg shadow-md text-sm"
+          className="w-full py-2 px-4 border bg-white dark:bg-gray-800 rounded-lg shadow-md text-sm"
         />
         {suggestions.length > 0 && (
-          <ul className="absolute mt-1 w-full bg-white shadow-lg rounded-md border max-h-56 overflow-y-auto z-[2000]">
+          <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto z-[1000]">
             {suggestions.map((item, index) => (
               <li
                 key={index}
                 onClick={() => handleSelect(item)}
-                className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                className="px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-500 cursor-pointer"
               >
                 {item.display_name}
               </li>
