@@ -35,3 +35,80 @@ export interface JobCardProps {
   onApprove: () => void;
   onRequestRevision: () => void;
 }
+
+export interface JobHeaderCardProps {
+  title: string;
+  client: string;
+  duration: string;
+  type?: WorkingType | string;
+  status?: JobStatus | string;
+}
+
+export interface JobHeaderCardProps {
+  title: string;
+  client: string;
+  duration: string;
+  type?: string;
+  status?: StatusType | string;
+  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
+  isSendProposal?: boolean
+  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
+  setActiveTab?: Dispatch<SetStateAction<string>>
+
+}
+
+export interface LogComponentProps {
+  logs: LogEntry[];
+}
+
+export interface LogEntry {
+  title: string;
+  date: string;
+  status: LogStatus | string;
+  showIcon?: boolean;
+  children?: React.ReactNode;
+}
+
+export interface JobInfoSectionProps {
+  jobTitle: string;
+  terms: {
+    title?: string;
+    items: Array<{ text: string }>;
+  };
+  files: string[];
+}
+
+export interface WorkInfoItem {
+  label: string;
+  value: string;
+}
+
+
+export interface WorkSubmissionComponentProps {
+  name: string;
+  workDates: string;
+  startTime: string;
+  endTime: string;
+  onsiteTask: boolean;
+  location: string;
+  fileName: string;
+  notes: string;
+  signatureUrl?: string;      
+}
+
+
+export interface JobTabsProps {
+  activeTab: string;
+  tabs: string[];
+  onTabChange: (tabName: string) => void;
+}
+
+export interface ProposalTermsProps {
+  jobTitle?: string;
+  terms: {
+    title?: string;
+    items: Array<{ text: string; subItems?: string[] }>;
+  };
+  element?: React.ReactNode;
+}

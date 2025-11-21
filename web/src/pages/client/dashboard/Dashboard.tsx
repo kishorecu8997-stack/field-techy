@@ -72,22 +72,23 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
-                
-                  {/* <NavLink
-                    to={absoluteUrls.client.home.my_jobs}
-                    className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
-                  > */}
-                    <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
-                      View all
-                    </button>
-                  {/* </NavLink> */}
-                
+
+                <NavLink
+                  to={absoluteUrls.client.home.my_jobs}
+                  className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+                >
+                  <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                    View all
+                  </button>
+                </NavLink>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
-                {inProgressJobsData.map((job) => (
-                  <InProgressJobCard key={job.id} {...job} />
-                ))}
-              </div>
+              <NavLink to={absoluteUrls.client.home.my_jobs}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
+                  {inProgressJobsData.map((job) => (
+                    <InProgressJobCard key={job.id} {...job} />
+                  ))}
+                </div>
+              </NavLink>
             </div>
           </div>
           <div className="lg:col-span-1">

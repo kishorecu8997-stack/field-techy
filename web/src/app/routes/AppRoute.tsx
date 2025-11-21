@@ -174,23 +174,32 @@ const ReceivedNotification = React.lazy(
   () => import("@/pages/admin/received_notification")
 );
 const corporateClientAdd = React.lazy(
-  () => import("@/pages/admin/client/components/add_components/CorporateClientForm")
+  () =>
+    import("@/pages/admin/client/components/add_components/CorporateClientForm")
 );
-const homeClientAdd=React.lazy(
+const homeClientAdd = React.lazy(
   () => import("@/pages/admin/client/components/add_components/HomeClientForm")
 );
 const corporateClientEdit = React.lazy(
-  () => import("@/pages/admin/client/components/edit_components/CorporateClientEditForm")
+  () =>
+    import(
+      "@/pages/admin/client/components/edit_components/CorporateClientEditForm"
+    )
 );
-const homeClientEdit=React.lazy(
-  () => import("@/pages/admin/client/components/edit_components/HomeClientEditForm")
+const homeClientEdit = React.lazy(
+  () =>
+    import("@/pages/admin/client/components/edit_components/HomeClientEditForm")
 );
 
 const corporateClientView = React.lazy(
-  () => import("@/pages/admin/client/components/view_components/CorporateClientViewForm")
+  () =>
+    import(
+      "@/pages/admin/client/components/view_components/CorporateClientViewForm"
+    )
 );
-const homeClientView=React.lazy(
-  () => import("@/pages/admin/client/components/view_components/HomeClientViewForm")
+const homeClientView = React.lazy(
+  () =>
+    import("@/pages/admin/client/components/view_components/HomeClientViewForm")
 );
 const adminEditRolePage = React.lazy(
   () => import("@/pages/admin/sub_admin/role_pages/PermissionList")
@@ -201,17 +210,39 @@ const roleListPage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
-const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const OfferPages = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
+);
 
-const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
-const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
-const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
-const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job/MultiStepPostJob"));
-const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
-const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
-const ClientExploreEngDetails = React.lazy(() => import("@/pages/client/explore_engineer/components/profile/EngineerProfile"));
-const ClientJobInvite = React.lazy(() => import("@/pages/client/explore_engineer/components/invite_job/InviteJob"));
-
+const ClientMyJobsPage = React.lazy(
+  () => import("@/pages/client/my_job_client")
+);
+const ClientDashboard = React.lazy(
+  () => import("@/pages/client/dashboard/Dashboard")
+);
+const ClientManageProposal = React.lazy(
+  () => import("@/pages/client/manage_proposal")
+);
+const ClientPostJobPage = React.lazy(
+  () => import("@/pages/client/post_job/MultiStepPostJob")
+);
+const ClientSearchResult = React.lazy(
+  () => import("@/pages/client/search_result")
+);
+const ClientExploreEngineers = React.lazy(
+  () => import("@/pages/client/explore_engineer")
+);
+const ClientExploreEngDetails = React.lazy(
+  () =>
+    import("@/pages/client/explore_engineer/components/profile/EngineerProfile")
+);
+const ClientJobInvite = React.lazy(
+  () =>
+    import("@/pages/client/explore_engineer/components/invite_job/InviteJob")
+);
+const ClientJobDetails = React.lazy(
+  () => import("@/pages/client/my_job_client/components/JobDetails")
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -382,9 +413,13 @@ export const routes = createBrowserRouter([
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
       },
-       {
+      {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
+      },
+      {
+        path: urls.client.home.Client_Job_Details,
+        element: withSuspense(ClientJobDetails),
       },
     ],
   },
@@ -395,14 +430,42 @@ export const routes = createBrowserRouter([
     element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
-      { path: urls.client.home.my_jobs, element: withSuspense(ClientMyJobsPage) },
-      { path: urls.client.home.dashboard, element: withSuspense(ClientDashboard) },
-      { path: urls.client.home.client_Explore_engineers, element: withSuspense(ClientExploreEngineers) },
-      { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
-      { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
-      { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
-      { path: urls.client.home.client_Explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
-      {path: urls.client.home.ClientJobInvite, element: withSuspense(ClientJobInvite)},      
+      {
+        path: urls.client.home.my_jobs,
+        element: withSuspense(ClientMyJobsPage),
+      },
+      {
+        path: urls.client.home.dashboard,
+        element: withSuspense(ClientDashboard),
+      },
+      {
+        path: urls.client.home.client_Explore_engineers,
+        element: withSuspense(ClientExploreEngineers),
+      },
+      {
+        path: urls.client.home.post_JobPage,
+        element: withSuspense(ClientPostJobPage),
+      },
+      {
+        path: urls.client.home.manage_proposal,
+        element: withSuspense(ClientManageProposal),
+      },
+      {
+        path: urls.client.home.search_result,
+        element: withSuspense(ClientSearchResult),
+      },
+      {
+        path: urls.client.home.client_Explore_engineers_details,
+        element: withSuspense(ClientExploreEngDetails),
+      },
+      {
+        path: urls.client.home.ClientJobInvite,
+        element: withSuspense(ClientJobInvite),
+      },
+      {
+        path: urls.client.home.Client_Job_Details,
+        element: withSuspense(ClientJobDetails),
+      },
     ],
   },
 
@@ -551,28 +614,28 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.corporateClientAdd,
             element: withSuspense(corporateClientAdd),
           },
-             {
+          {
             path: urls.admin.home.homeClientAdd,
             element: withSuspense(homeClientAdd),
-          },  
+          },
           {
             path: urls.admin.home.corporateClientEdit,
             element: withSuspense(corporateClientEdit),
           },
-             {
+          {
             path: urls.admin.home.homeClientEdit,
             element: withSuspense(homeClientEdit),
-          },  
+          },
           {
             path: urls.admin.home.corporateClientView,
             element: withSuspense(corporateClientView),
           },
-             {
+          {
             path: urls.admin.home.homeClientView,
             element: withSuspense(homeClientView),
-          },  
-             
- {
+          },
+
+          {
             path: urls.admin.home.edit_role,
             element: withSuspense(adminEditRolePage),
           },
@@ -583,7 +646,7 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_jobs_view,
             element: withSuspense(ManageJobView),
-          }
+          },
         ],
       },
     ],
