@@ -42,13 +42,13 @@ const ClientHeader: React.FC<HeaderProps> = ({
                 <span>Home/</span>
               </NavLink>
               <NavLink
-                to={absoluteUrls.client.home.explore_engineers}
+                to={absoluteUrls.client.home.client_Explore_engineers}
                 className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
                 <span>Services/</span>
               </NavLink>
               <NavLink
-                to={absoluteUrls.client.home.explore_engineers_details}
+                to={absoluteUrls.client.home.client_Explore_engineers_details}
                 className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
                 <span>Network/</span>

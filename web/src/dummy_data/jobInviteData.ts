@@ -3,17 +3,17 @@ import type { JobInvite } from "@/pages/client/explore_engineer/types";
 export const JobInviteData: JobInvite[] = [
   {
     id: 1,
-    title: "Website Redesign for E-commerce Store",
-    date: "2025-10-15, 07:32 AM",
+    title: "Network Engineer",
+    date: "15 Oct, 2025, 07:32 AM",
     location: "New York, NY",
     duration: "3 weeks",
-    serviceType: "Web Development",
+    serviceType: "Infrastructure Setup",
     price: "$4500"    
   },
   {
     id: 2,
     title: "Mobile App UI/UX Audit",
-    date: "2025-10-20, 08:32 PM",
+    date: "20 Oct, 2025, 08:32 PM",
     location: "San Francisco, CA",
     duration: "10 days",
     serviceType: "Design",
@@ -22,7 +22,7 @@ export const JobInviteData: JobInvite[] = [
   {
     id: 3,
     title: "Cloud Infrastructure Setup",
-    date: "2025-10-25, 10:32 AM",
+    date: "25 Oct, 2025, 10:32 AM",
     location: "Austin, TX",
     duration: "2 weeks",
     serviceType: "DevOps",
@@ -31,7 +31,7 @@ export const JobInviteData: JobInvite[] = [
   {
     id: 4,
     title: "SEO Optimization Campaign",
-    date: "2025-10-10, 12:32 PM",
+    date: "27 Oct, 2025, 12:32 PM",
     location: "Chicago, IL",
     duration: "1 month",
     serviceType: "Digital Marketing",
@@ -40,7 +40,7 @@ export const JobInviteData: JobInvite[] = [
   {
     id: 5,
     title: "Custom CRM Integration",
-    date: "2025-10-22, 06:32 PM",
+    date: "20 Nov, 2025, 06:32 PM",
     location: "Seattle, WA",
     duration: "4 weeks",
     serviceType: "Software Development",

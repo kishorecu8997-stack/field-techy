@@ -367,7 +367,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientDashboard),
       },
       {
-        path: urls.client.home.explore_engineers,
+        path: urls.client.home.client_Explore_engineers,
         element: withSuspense(ClientExploreEngineers),
       },
       {
@@ -382,22 +382,26 @@ export const routes = createBrowserRouter([
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
       },
+       {
+        path: urls.client.home.client_Explore_engineers_details,
+        element: withSuspense(ClientExploreEngDetails),
+      },
     ],
   },
 
   // Client Main Routes
   {
     path: BASE.CLIENT,
-    element: withSuspense(RootLayout), // Assuming clients share the same RootLayout
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
     children: [
       { index: true, element: withSuspense(ClientMyJobsPage) },
       { path: urls.client.home.my_jobs, element: withSuspense(ClientMyJobsPage) },
       { path: urls.client.home.dashboard, element: withSuspense(ClientDashboard) },
-      { path: urls.client.home.explore_engineers, element: withSuspense(ClientExploreEngineers) },
+      { path: urls.client.home.client_Explore_engineers, element: withSuspense(ClientExploreEngineers) },
       { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
       { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
       { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
-      { path: urls.client.home.explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
+      { path: urls.client.home.client_Explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
       {path: urls.client.home.ClientJobInvite, element: withSuspense(ClientJobInvite)},      
     ],
   },

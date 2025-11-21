@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useNavigate } from "react-router-dom";
-import { JobSearchBar } from "./JobSearchBar";
+import { JobSearchBarClient } from "./jobSearchBarClient";
 import Drawer from "./drawer/Drawer";
 import useDrawerStore from "../store/useDrawerStore";
 
@@ -89,7 +89,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
       {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 max-w-[500px]">
         {/* <Link to={absoluteUrls.client.home.search_result}> */}
-        <JobSearchBar />
+        <JobSearchBarClient />
         {/* </Link> */}
       </div>
 

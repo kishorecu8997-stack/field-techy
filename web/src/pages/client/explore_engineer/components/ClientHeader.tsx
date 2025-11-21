@@ -5,6 +5,7 @@ import type { HeaderProps } from "@/shared/components/type";
 import SortDropdown from "@/shared/components/SortDropdownClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
+
 /**
  * A reusable header component for client-facing pages.
  * It displays a title, breadcrumb navigation, and optional search/sort and action button.
@@ -40,14 +41,31 @@ const ClientHeader: React.FC<HeaderProps> = ({
                 className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
                 <span>Home/</span>
-              </NavLink>              
+              </NavLink>
+              <NavLink
+                to={absoluteUrls.client.home.client_Explore_engineers}
+                className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              >
+                <span>Services/</span>
+              </NavLink>
+              <NavLink
+                to={absoluteUrls.client.home.client_Explore_engineers_details}
+                className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              >
+                <span>Network/</span>
+              </NavLink>
               <span className="font-medium">{currentPath}</span>
             </nav>
           </div>
 
           {showSearchBar && <SortDropdown />}
           {showButton && (
-            <Button onClick={onClick} variant="primary" type="submit">
+            <Button
+             onClick={onClick} 
+             variant="primary" 
+             type="submit"
+             className="bg-teal-800 dark:bg-teal text-white"
+             >
               {buttonText}
             </Button>
           )}

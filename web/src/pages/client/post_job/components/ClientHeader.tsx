@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import type { HeaderProps } from "@/shared/components/type";
-import SortDropdown from "@/shared/components/SortDropdown";
+import SortDropdown from "@/shared/components/SortDropdownClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**

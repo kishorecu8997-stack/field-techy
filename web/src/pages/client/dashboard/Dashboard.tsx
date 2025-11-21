@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
                 <h2 className="text-xl font-bold">Service Categories</h2>
                 <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   <NavLink
-                    to={absoluteUrls.client.home.explore_engineers}
+                    to={absoluteUrls.client.home.client_Explore_engineers}
                     className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                   >
                     <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               <NavLink
-                to={absoluteUrls.client.home.explore_engineers}
+                to={absoluteUrls.client.home.client_Explore_engineers}
                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 cursor-pointer hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
                 {serviceCategoriesData.map((category) => (
