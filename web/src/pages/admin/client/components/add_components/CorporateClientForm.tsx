@@ -104,7 +104,7 @@ const CorporateClientForm: React.FC = () => {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.manage_client}`)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_client)}
         >
           Back
         </Button>

@@ -1,9 +1,3 @@
-/**
- * @file DatePickerInput.tsx
- * @description A react-hook-form compatible, lightweight date picker built with React and Tailwind CSS.
- * Uses Controller internally and does not rely on external date libraries.
- */
-
 import React, { useState, useEffect, useRef, type FC } from "react";
 import {
   Controller,
@@ -12,26 +6,8 @@ import {
 } from "react-hook-form";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
+import type { DatePickerInputProps } from "./types";
 
-interface DatePickerInputProps {
-  name: string;
-  label?: string;
-  isShowLabel?: boolean;
-  minDate?: Date;
-  maxDate?: Date;
-  placeholder?: string;
-  className?: string;
-  /**
-   * Set to true for default required message,
-   * or a string for a custom required error message.
-   */
-  required?: boolean | string;
-  /**
-   * Additional validation rules (e.g., validate).
-   */
-  rules?: RegisterOptions;
-  containerClassName?: string;
-}
 
 /**
  * A react-hook-form compatible date picker input component.

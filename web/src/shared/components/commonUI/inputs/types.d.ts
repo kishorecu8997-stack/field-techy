@@ -244,3 +244,17 @@ export interface InputFieldProps {
   disabled?: boolean;
   onChange?: (value: string) => void;
 }
+
+
+export interface DatePickerInputProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  minDate?: Date;
+  maxDate?: Date;
+  placeholder?: string;
+  className?: string;
+  required?: boolean | string;
+  rules?: RegisterOptions;
+  containerClassName?: string;
+}

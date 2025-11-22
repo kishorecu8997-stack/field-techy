@@ -10,16 +10,6 @@ import { HiOutlinePlusSmall } from "react-icons/hi2";
 import type { PaymentMethodSelectorProps } from "../type";
 
 /**
- * Represents a single payment card option.
- */
-export interface PaymentCardOption {
-  id: string;
-  last4: string;
-  brand: "visa" | "mastercard" | "amex" | "discover" | string;
-  name: string;
-}
-
-/**
  * A component for selecting a payment method from a list of cards.
  * Integrates with `react-hook-form` and allows adding new payment methods.
  * @param {PaymentMethodSelectorProps} props - The props for the component.

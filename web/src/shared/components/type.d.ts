@@ -183,3 +183,11 @@ export interface CategoryTagProps {
   isShowLabel?: boolean;
   required?: boolean;
 }
+
+
+export interface PaymentCardOption {
+  id: string;
+  last4: string;
+  brand: "visa" | "mastercard" | "amex" | "discover" | string;
+  name: string;
+}
