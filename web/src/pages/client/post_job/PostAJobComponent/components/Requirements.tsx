@@ -1,10 +1,18 @@
+import {
+  experienceLevel,
+  safetyWears,
+  skills,
+  task,
+  tools,
+} from "@/dummy_data/client";
+import { validateDescription } from "@/pages/engineer/home/validation";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import SectionHeader from "../SectionHeader";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import SectionHeader from "../SectionHeader";
 
 const Requirements = ({ isDisable }: { isDisable: boolean }) => {
   const { currentLocation } = usePostAJobStore();
@@ -19,16 +27,13 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
             required
             name="experienceLevel"
             label=" Engineer Experience Level"
-            options={[
-              { value: "experience1", label: "Experience 1" },
-              { value: "experience2", label: "Experience 2" },
-              { value: "experience3", label: "Experience 3" },
-            ]}
+            options={experienceLevel}
           />
         </div>
         <InputField
           name="numberOfVacancy"
           label="Number of Persons Required"
+          inputMode="number"
           disabled={isDisable}
         />
       </div>
@@ -38,16 +43,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         disabled={isDisable}
         name="skills"
         label="Skills"
-        options={[
-          {
-            value: "skill1",
-            label: "Skill 1",
-          },
-          {
-            value: "skill2",
-            label: "Skill 2",
-          },
-        ]}
+        options={skills}
       />
       <TagSelectField
         disabled={isDisable}
@@ -55,33 +51,15 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Select a Tools"
         name="tools"
         label="Tools"
-        options={[
-          {
-            value: "tool1",
-            label: "Tool 1",
-          },
-          {
-            value: "tool2",
-            label: "Tool 2",
-          },
-        ]}
+        options={tools}
       />
-      {currentLocation === CurrentLocation.dispatch && (
+      {currentLocation !== CurrentLocation.dedicated && (
         <TagSelectField
           name="task"
           placeholder="Select a Task"
           label="Task"
           required
-          options={[
-            {
-              value: "task1",
-              label: "Task 1",
-            },
-            {
-              value: "task2",
-              label: "Task 2",
-            },
-          ]}
+          options={task}
         />
       )}
       <TagSelectField
@@ -89,22 +67,14 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         name="safetyWears"
         label="Safety Wears"
         placeholder="Select a Safety Wears"
-        options={[
-          {
-            value: "safetyWear1",
-            label: "Safety Wear 1",
-          },
-          {
-            value: "safetyWear2",
-            label: "Safety Wear 2",
-          },
-        ]}
+        options={safetyWears}
       />
       <TextareaInput
         required
         name="description"
         label="Description"
         disabled={isDisable}
+        rules={validateDescription(5, 2000, "Description")}
       />
     </div>
   );

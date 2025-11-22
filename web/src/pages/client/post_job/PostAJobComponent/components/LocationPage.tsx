@@ -1,6 +1,7 @@
 import MapComponent from "@/shared/components/MapComponent";
 import SectionHeader from "../SectionHeader";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
+import { workTypes } from "@/dummy_data/client";
 
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
   return (
@@ -12,10 +13,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         disabled={isDisable}
         required
         direction="horizontal"
-        options={[
-          { label: "Remote", value: "remote" },
-          { label: "On-site", value: "on-site" },
-        ]}
+        options={workTypes}
       />
       <div className="space-y-2">
         <p> Work Location</p>

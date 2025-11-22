@@ -235,7 +235,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           name="remarks"
           label="Remarks"
           required
-          rules={validateDescription(5, 2000, "remarks")}
+          rules={validateDescription(50, 2000, "remarks")}
         />
         <FileUpload
           name="workScreenShot"

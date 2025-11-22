@@ -1,6 +1,10 @@
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../SectionHeader";
 import { useFormContext } from "react-hook-form";
+import {
+  primaryLanguageOptions,
+  secondaryLanguageOptions,
+} from "@/dummy_data/client";
 
 /*
  * Languages component
@@ -8,27 +12,18 @@ import { useFormContext } from "react-hook-form";
  * Displays a section for selecting primary and secondary languages.
  * It uses the SelectField component to render the dropdown options.
  * It filters out the selected language options to prevent duplicates.
- */ 
+ */
 const Languages = ({ isDisable }: { isDisable: boolean }) => {
-
-  const ctx = useFormContext()
+  const ctx = useFormContext();
   const watchPrimaryLanguage = ctx.watch("primaryLanguage");
   const watchSecondaryLanguage = ctx.watch("secondaryLanguage");
 
-  const primaryLanguageOptions = [
-    { value: "language1", label: "Language 1" },
-    { value: "language2", label: "Language 2" },
-    { value: "language3", label: "Language 3" },
-  ];
-
-  const secondaryLanguageOptions = [
-    { value: "language1", label: "Language 1" },
-    { value: "language2", label: "Language 2" },
-    { value: "language3", label: "Language 3" },
-  ];
-
-  const filteredPrimaryLanguageOptions = primaryLanguageOptions.filter((opt) => opt.value !== watchSecondaryLanguage);
-  const filteredSecondaryLanguageOptions = secondaryLanguageOptions.filter((opt) => opt.value !== watchPrimaryLanguage);
+  const filteredPrimaryLanguageOptions = primaryLanguageOptions.filter(
+    (opt) => opt.value !== watchSecondaryLanguage
+  );
+  const filteredSecondaryLanguageOptions = secondaryLanguageOptions.filter(
+    (opt) => opt.value !== watchPrimaryLanguage
+  );
 
   return (
     <div className="w-full flex flex-col gap-2">

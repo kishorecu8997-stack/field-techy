@@ -97,7 +97,7 @@ const PostAJobFields = ({
         <LocationPage isDisable={isDisable} />
         <SchedulingPage isDisable={isDisable} />
         <Requirements isDisable={isDisable} />
-        {currentLocation !== CurrentLocation.dispatch && (
+        {currentLocation === CurrentLocation.dedicated && (
           <>
             <BackFills isDisable={isDisable} />
             <Budget isDisable={isDisable} />

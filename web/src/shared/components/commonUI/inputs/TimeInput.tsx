@@ -17,6 +17,11 @@ interface TimeInputProps {
   leftIcon?: React.ReactNode;
   showValidationCheck?: boolean;
   disabled?: boolean;
+
+  /** New props */
+  minTime?: string; // HH:MM
+  maxTime?: string; // HH:MM
+  onChange?: (value: string) => void;
 }
 
 export const TimeInput: React.FC<TimeInputProps> = ({
@@ -31,6 +36,9 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   leftIcon,
   showValidationCheck = false,
+  minTime,
+  maxTime,
+  onChange,
 }) => {
   const { control } = useFormContext();
 
@@ -48,7 +56,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
 
   return (
     <div className={containerClassName}>
-       {isShowLabel && (
+      {isShowLabel && (
         <label
           className={`block mb-1 text-md font-bold 
             ${
@@ -61,6 +69,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
           {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
+
       <Controller
         name={name}
         control={control}
@@ -73,21 +82,40 @@ export const TimeInput: React.FC<TimeInputProps> = ({
                   {leftIcon}
                 </div>
               )}
+
               <input
                 {...field}
                 type="time"
                 disabled={disabled}
                 placeholder={placeholder}
+                min={minTime}
+                max={maxTime}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 }`}
+                onChange={(e) => {
+                  let value = e.target.value;
+
+                  // Auto-lock to min/max
+                  if (minTime && value < minTime) {
+                    value = minTime;
+                  }
+                  if (maxTime && value > maxTime) {
+                    value = maxTime;
+                  }
+
+                  field.onChange(value);
+                  onChange?.(value);
+                }}
               />
+
               {showValidationCheck && isDirty && !invalid && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
                   ✓
                 </div>
               )}
             </div>
+
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                 {error.message}

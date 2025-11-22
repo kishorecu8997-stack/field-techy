@@ -1,12 +1,15 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
+import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import TimeInput from "@/shared/components/commonUI/inputs/TimeInput";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { getDuration } from "@/utils";
+import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
+import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   OccurrenceEndType,
@@ -14,9 +17,7 @@ import {
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
-import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
-import { useEffect } from "react";
-import { getDuration } from "@/utils";
+import { repeatByOptions } from "@/dummy_data/client";
 
 const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const ctx = useFormContext();
@@ -28,6 +29,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const tentativeStartDate = ctx.watch("tentativeStartDate");
   const tentativeEndDate = ctx.watch("tentativeEndDate");
   const applicationEndDate = ctx.watch("applicationEndDate");
+  const startTime = ctx.watch("startTime");
+  const endTime = ctx.watch("endTime");
 
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
@@ -127,7 +130,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
               />
             </div>
             <div className="w-full">
-              <TimeInput
+              <CustomTimePicker
                 disabled={isDisable}
                 label="Application End Time"
                 name="applicationEndTime"
@@ -162,11 +165,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                 disabled={isDisable}
                 name="repeatedBy"
                 label="Repeated By"
-                options={[
-                  { value: RepeatByFields.week, label: "Week" },
-                  { value: RepeatByFields.month, label: "Month" },
-                  { value: RepeatByFields.year, label: "Year" },
-                ]}
+                options={repeatByOptions}
                 required
               />
               {watchRepeatedBy === RepeatByFields.week ? (
@@ -200,18 +199,20 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                   </div>
                   <div className="flex flex-row w-full gap-2 items-center">
                     <div className="w-full">
-                      <TimeInput
-                        label="Start Time"
+                      <CustomTimePicker
                         name="startTime"
                         required
+                        label="Start Time"
+                        maxTime={endTime}
                         disabled={isDisable}
                       />
                     </div>
                     <div className="w-full">
-                      <TimeInput
-                        label="End Time"
+                      <CustomTimePicker
                         name="endTime"
                         required
+                        label="End Time"
+                        minTime={startTime}
                         disabled={isDisable}
                       />
                     </div>
@@ -345,7 +346,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       />
                     </div>
                     <div className="w-full">
-                      <TimeInput
+                      <CustomTimePicker
                         label="Start Time"
                         name="startTime"
                         required
@@ -381,7 +382,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       />
                     </div>
                     <div className="w-full">
-                      <TimeInput
+                      <CustomTimePicker
                         label="End Time"
                         name="endTime"
                         required
@@ -427,7 +428,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     />
                   </div>
                   <div className="w-full">
-                    <TimeInput
+                    <CustomTimePicker
                       label="Start Time"
                       name="startTime"
                       required
@@ -463,7 +464,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     />
                   </div>
                   <div className="w-full">
-                    <TimeInput
+                    <CustomTimePicker
                       label="End Time"
                       name="endTime"
                       required

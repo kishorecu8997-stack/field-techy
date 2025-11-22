@@ -30,9 +30,9 @@ const OtherDetails = ({ isDisable }: { isDisable: boolean }) => {
       <FileUpload
         name="attachment"
         label=" Additional Attachments (Guidelines, Docs)"
-        placeholder="Attachments"
+        placeholder="Attachments (Guidelines, Docs)"
         disabled={isDisable}
-        accept=".pdf"
+        accept=".pdf,.jpg,.png"
       />
 
       {currentLocation === CurrentLocation.dispatch && (
