@@ -15,7 +15,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 import { toast } from "react-toastify";
-import { loginData,type PersonalInfo } from "@/dummy_data/personalInfoData"
+import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -51,7 +51,6 @@ const PersonalInformation: React.FC = () => {
     },
     mode: "onSubmit",
   });
-  console.log('loginData[0].phoneNumber :', loginData[0].phoneNumber);
 
   const { trigger } = methods;
 
@@ -86,7 +85,7 @@ const PersonalInformation: React.FC = () => {
           required
           rules={{ validate: (v: string) => validateName(v) }}
         />
-        
+
         <VerifiedPhoneInputField
           name="phoneNumber"
           label="Phone Number"
@@ -100,11 +99,13 @@ const PersonalInformation: React.FC = () => {
         />
 
         <VerifiedEmailInputField
-          name="emailId"     
-          label="Email ID"     
+          name="emailId"
+          label="Email ID"
           isShowLabel={false}
           required
-          rules={{ validate: () => validateIsVerified(isEmailVerified, "Email") }}
+          rules={{
+            validate: () => validateIsVerified(isEmailVerified, "Email"),
+          }}
           verified={isEmailVerified}
           setVerified={setIsEmailVerified}
         />
