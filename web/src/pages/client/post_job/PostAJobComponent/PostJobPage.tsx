@@ -11,7 +11,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { backFillsType, locationType, OccurrenceEndType, OccurrenceFields, RepeatByFields, type PostAJobFieldsProps } from "../types";
+import {
+  backFillsType,
+  locationType,
+  OccurrenceEndType,
+  OccurrenceFields,
+  RepeatByFields,
+  type PostAJobFieldsProps,
+} from "../types";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
 import type { PostOption } from "./TalentSection";
@@ -58,15 +65,22 @@ const PostJobPage = () => {
       repeatedByYear: "",
       JobOccurrenceEndDate: null,
       estimatedDuration: "",
+      saveAsTemplate: false,
     },
     mode: "onSubmit",
   });
+
+
 
   const getTemplateData = () => {
     return TemplateData.map((item) => ({
       label: item.templatesName,
       value: item.id,
-      action: async () => templateActionHandler(item.id),
+      action: async () =>
+        await templateActionHandler({
+          label: item.templatesName,
+          value: item.id,
+        }),
     }));
   };
 
@@ -75,9 +89,9 @@ const PostJobPage = () => {
     formCtx.reset(findTemplate as PostAJobFieldsProps);
   };
 
-  const templateActionHandler = async (id: number) => {
+  const templateActionHandler = async (data: PostOption) => {
     await showPopup({
-      title: "Apply Template",
+      title: `Apply ${data.label} Template`,
       body: "Are you sure you want to apply this template? We’ll load the selected template and update your form with its details.",
       actionButtons: [
         {
@@ -91,7 +105,7 @@ const PostJobPage = () => {
           variant: "primary",
           action: async (close) => {
             close(true);
-            await handleTemplateDate(id);
+            await handleTemplateDate(data.value as number);
             toast.success("Template applied successfully");
           },
         },
@@ -132,40 +146,40 @@ const PostJobPage = () => {
   return (
     <div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
-          <MyJobsHeader
-            title={
-              currentLocation === CurrentLocation.dedicated
-                ? "Post a Job - Dedicated Service"
-                : currentLocation === CurrentLocation.dispatch
-                ? "Post a Job - Dispatch Service"
-                : "Post a Job - Scheduled Service"
-            }
-            isReport={false}
-            isShowSort={false}
-            action={
-              isDisable ? (
-                <div className="flex gap-2">
-                  <Button
-                    className="rounded-full"
-                    variant="outline"
-                    onClick={() => setIsDisable(false)}
-                  >
-                    Back to Edit
-                  </Button>
-                  <Button className="rounded-full" type="submit">
-                    Post a Job
-                  </Button>
-                </div>
-              ) : (
-                currentLocation === CurrentLocation.dispatch && (
-                  <JobPostDropdown
-                    label="Template"
-                    options={getTemplateData() as PostOption[]}
-                  />
-                )
+        <MyJobsHeader
+          title={
+            currentLocation === CurrentLocation.dedicated
+              ? "Post a Job - Dedicated Service"
+              : currentLocation === CurrentLocation.dispatch
+              ? "Post a Job - Dispatch Service"
+              : "Post a Job - Scheduled Service"
+          }
+          isReport={false}
+          isShowSort={false}
+          action={
+            isDisable ? (
+              <div className="flex gap-2">
+                <Button
+                  className="rounded-full"
+                  variant="outline"
+                  onClick={() => setIsDisable(false)}
+                >
+                  Back to Edit
+                </Button>
+                <Button className="rounded-full" type="submit">
+                  Post a Job
+                </Button>
+              </div>
+            ) : (
+              currentLocation === CurrentLocation.dispatch && (
+                <JobPostDropdown
+                  label="Template"
+                  options={getTemplateData() as PostOption[]}
+                />
               )
-            }
-          />
+            )
+          }
+        />
         <PostAJobFields setIsDisable={setIsDisable} isDisable={isDisable} />
       </FormContainer>
     </div>

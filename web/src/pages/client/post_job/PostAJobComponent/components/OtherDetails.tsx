@@ -45,7 +45,7 @@ const OtherDetails = ({ isDisable }: { isDisable: boolean }) => {
           {WatchISTemplate && (
             <InputField
               label="Template Name"
-              name="templateName"
+              name="templatesName"
               placeholder="Enter Template Name"
               disabled={isDisable}
             />

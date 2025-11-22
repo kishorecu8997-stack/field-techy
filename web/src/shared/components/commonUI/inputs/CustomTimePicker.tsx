@@ -89,7 +89,8 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
   /* ---- Smart popup positioning ---- */
   useEffect(() => {
-    if (open && wrapperRef.current) {
+    const recompute = () => {
+      if (!wrapperRef.current) return;
       const rect = wrapperRef.current.getBoundingClientRect();
       const viewH = window.innerHeight;
       const dropdownH = 250;
@@ -97,12 +98,19 @@ export const TimePicker: React.FC<TimePickerProps> = ({
       const spaceBelow = viewH - rect.bottom;
       const spaceAbove = rect.top;
 
-      if (spaceBelow < dropdownH && spaceAbove > spaceBelow) {
-        setDirection("up");
-      } else {
-        setDirection("down");
-      }
-    }
+      if (spaceBelow < dropdownH && spaceAbove > spaceBelow) setDirection("up");
+      else setDirection("down");
+    };
+
+    if (open) recompute();
+
+    window.addEventListener("scroll", recompute, true);
+    window.addEventListener("resize", recompute);
+
+    return () => {
+      window.removeEventListener("scroll", recompute, true);
+      window.removeEventListener("resize", recompute);
+    };
   }, [open]);
 
   /* ---- Required message ---- */
@@ -138,7 +146,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const isHourDisabled = (hour12: string, period: "AM" | "PM") => {
-    // Range for this hour: [h:00, h:59]
     const earliest = combineTo24(hour12, "00", period);
     const latest = combineTo24(hour12, "59", period);
     const earliestM = time24ToMinutes(earliest)!;
@@ -147,7 +154,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     const effMin = minMinutes ?? 0;
     const effMax = maxMinutes ?? 24 * 60 - 1;
 
-    // no overlap between [earliestM, latestM] and [effMin, effMax]
     if (effMax < earliestM || effMin > latestM) return true;
     return false;
   };
@@ -163,7 +169,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   };
 
   const isPeriodDisabled = (p: "AM" | "PM") => {
-    // AM => [00:00, 11:59], PM => [12:00, 23:59]
     const rangeStart = p === "AM" ? "12:00 AM" : "12:00 PM";
     const rangeEnd = p === "AM" ? "11:59 AM" : "11:59 PM";
     const startM = time24ToMinutes(to24(rangeStart))!;
@@ -172,7 +177,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     const effMin = minMinutes ?? 0;
     const effMax = maxMinutes ?? 24 * 60 - 1;
 
-    // no overlap between [startM, endM] and [effMin, effMax]
     if (effMax < startM || effMin > endM) return true;
     return false;
   };
@@ -198,9 +202,8 @@ export const TimePicker: React.FC<TimePickerProps> = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const rawValue: string | undefined = field.value; // always 24h "HH:mm"
+          const rawValue = field.value as string | undefined;
 
-          // Convert 24h → 12h for display
           let displayHour = "--";
           let displayMinute = "--";
           let displayPeriod: "AM" | "PM" = "AM";
@@ -219,11 +222,9 @@ export const TimePicker: React.FC<TimePickerProps> = ({
           }
 
           const setValue = (h: string, m: string, p: "AM" | "PM") => {
-            const newVal = combineTo24(h, m, p); // 24h
-            // strict mode: but we already disable invalid values in UI
+            const newVal = combineTo24(h, m, p);
             field.onChange(newVal);
             onChange?.(newVal);
-            // IMPORTANT: do NOT close on click; user closes via outside click/input
           };
 
           const handleInputClick = () => {
@@ -233,7 +234,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
           return (
             <>
-              {/* Input Box */}
               <button
                 type="button"
                 onClick={handleInputClick}
@@ -250,7 +250,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 <Clock className="w-5 h-5 text-gray-600" />
               </button>
 
-              {/* Popup (always mounted for smooth transition) */}
+              {/* ---- UPDATED DROPDOWN ---- */}
               <div
                 className={`
                   absolute z-50 bg-white shadow-lg border rounded-lg p-3 flex gap-4
@@ -264,8 +264,8 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
                   ${
                     open
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-95 pointer-events-none"
+                      ? "opacity-100 scale-100 overflow-visible"
+                      : "opacity-0 scale-95 pointer-events-none overflow-hidden"
                   }
                 `}
               >
@@ -274,13 +274,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                   {hours.map((h) => {
                     const disabledHour = isHourDisabled(h, displayPeriod);
                     const isActive = h === displayHour && !disabledHour;
-
-                    const baseClass = "px-3 py-1 rounded text-center text-sm";
-                    const enabledClass = isActive
-                      ? "bg-blue-600 text-white cursor-pointer"
-                      : "text-gray-800 hover:bg-gray-200 cursor-pointer";
-                    const disabledClass =
-                      "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed";
 
                     return (
                       <div
@@ -293,8 +286,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                             displayPeriod
                           );
                         }}
-                        className={`${baseClass} ${
-                          disabledHour ? disabledClass : enabledClass
+                        className={`px-3 py-1 rounded text-center text-sm ${
+                          disabledHour
+                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            : isActive
+                            ? "bg-blue-600 text-white cursor-pointer"
+                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {h}
@@ -313,13 +310,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     );
                     const isActive = m === displayMinute && !disabledMinute;
 
-                    const baseClass = "px-3 py-1 rounded text-center text-sm";
-                    const enabledClass = isActive
-                      ? "bg-blue-600 text-white cursor-pointer"
-                      : "text-gray-800 hover:bg-gray-200 cursor-pointer";
-                    const disabledClass =
-                      "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed";
-
                     return (
                       <div
                         key={m}
@@ -331,8 +321,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                             displayPeriod
                           );
                         }}
-                        className={`${baseClass} ${
-                          disabledMinute ? disabledClass : enabledClass
+                        className={`px-3 py-1 rounded text-center text-sm ${
+                          disabledMinute
+                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            : isActive
+                            ? "bg-blue-600 text-white cursor-pointer"
+                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {m}
@@ -341,18 +335,11 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                   })}
                 </div>
 
-                {/* AM / PM */}
+                {/* PERIODS */}
                 <div className="flex flex-col max-h-48 overflow-y-auto">
                   {periods.map((p) => {
                     const disabledPeriod = isPeriodDisabled(p);
                     const isActive = p === displayPeriod && !disabledPeriod;
-
-                    const baseClass = "px-3 py-1 rounded text-center text-sm";
-                    const enabledClass = isActive
-                      ? "bg-blue-600 text-white cursor-pointer"
-                      : "text-gray-800 hover:bg-gray-200 cursor-pointer";
-                    const disabledClass =
-                      "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed";
 
                     return (
                       <div
@@ -365,8 +352,12 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                             p
                           );
                         }}
-                        className={`${baseClass} ${
-                          disabledPeriod ? disabledClass : enabledClass
+                        className={`px-3 py-1 rounded text-center text-sm ${
+                          disabledPeriod
+                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            : isActive
+                            ? "bg-blue-600 text-white cursor-pointer"
+                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {p}

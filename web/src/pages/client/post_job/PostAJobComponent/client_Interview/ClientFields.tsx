@@ -1,18 +1,18 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
+import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { validateEmail, validateName, validatePhone } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
-import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 
 const ClientFields = () => {
   const ctx = useFormContext();
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex flex-col overflow-auto flex-grow gap-2">
-        <div className="">
+    <div className="flex flex-col h-full gap-2">
+      <div className="flex flex-col overflow-auto">
+        <div className="flex flex-col gap-2">
           <InputField
             label="First Name"
             name="firstName"
@@ -41,9 +41,7 @@ const ClientFields = () => {
             placeholder="Client Phone"
             rules={{ validate: (v) => validatePhone(v) }}
           />
-          <div className="py-2">
-            <SectionHeader title=" Interview Schedule Info" />
-          </div>
+          <SectionHeader title=" Interview Schedule Info" />
           <div className="relative w-full">
             <Controller
               name="startDate"

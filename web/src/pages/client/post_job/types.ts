@@ -200,4 +200,5 @@ export interface PostAJobFieldsProps {
   templatesName: string;
   JobOccurrenceEndDate: Date | null;
   estimatedDuration: string;
+  saveAsTemplate: boolean;
 }

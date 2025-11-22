@@ -98,6 +98,7 @@ export const TemplateData = [
     repeatedByYear: "",
     JobOccurrenceEndDate: new Date("2025-03-01"),
     estimatedDuration: "6 weeks",
+    saveAsTemplate: true,
   },
   {
     id: 2,
@@ -136,5 +137,6 @@ export const TemplateData = [
     templatesName: "Template 2",
     JobOccurrenceEndDate: null,
     estimatedDuration: "1 day",
+    saveAsTemplate: true,
   },
 ];

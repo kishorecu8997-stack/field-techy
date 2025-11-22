@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { pointOfContentTypes } from "../../types";
 import PointOfContent from "./PointOfContent";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 const EditPOC = () => {
   const { selectedId } = useDrawerStore();
+  const { showPopup } = usePopupStore();
   const value = pointOfContent.find((item) => item.id === selectedId);
 
   const formCtx = useForm<pointOfContentTypes>({
@@ -20,9 +22,28 @@ const EditPOC = () => {
     },
   });
 
-  const handleSubmit = (data: any) => {
-    console.log(data);
-    toast.success("Point of content updated successfully");
+  const handleSubmit = async (data: any) => {
+    await showPopup({
+      title: "Update Point Of Content",
+      body: "Are you sure you want to update this point of content?",
+      actionButtons: [
+        {
+          label: "cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Point of Content Updated Successfully");
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   return (

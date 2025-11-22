@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  *  Edit Client Page
@@ -16,6 +17,7 @@ import ClientFields from "./ClientFields";
  */
 const EditClient = () => {
   const { selectedId } = useDrawerStore();
+  const { showPopup } = usePopupStore();
   const value = interviewerData.find((item) => item.id === selectedId);
 
   const formCtx = useForm<ClientFieldsTypes>({
@@ -29,9 +31,28 @@ const EditClient = () => {
     },
   });
 
-  const handleSubmit = (data: ClientFieldsTypes) => {
-    console.log("Submitted data:", data);
-    toast.success("Client Added successfully!");
+  const handleSubmit = async (data: ClientFieldsTypes) => {
+    await showPopup({
+      title: "Update Client Interviewer",
+      body: "Are you sure you want to update this client interviewer?",
+      actionButtons: [
+        {
+          label: "cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Client Interviewer Updated Successfully");
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   return (
