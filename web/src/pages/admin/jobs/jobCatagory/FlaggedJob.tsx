@@ -1,15 +1,14 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  manageFlaggedJobs,
-  type ManageFlaggedJobProps,
-} from "@/dummy_data/admin/manageJobs";
+import { manageFlaggedJobs } from "@/dummy_data/admin/manageJobs";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import type { ManageFlaggedJobProps } from "../types";
 
 /**
  * Renders the "Flagged Jobs" tab content.
@@ -22,6 +21,35 @@ import { useNavigate } from "react-router-dom";
  */
 const FlaggedJob: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: ManageFlaggedJobProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<ManageFlaggedJobProps>[] = [
     { key: "id", label: "Job ID" },
     {
@@ -56,7 +84,7 @@ const FlaggedJob: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: ManageFlaggedJobProps) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
@@ -64,7 +92,10 @@ const FlaggedJob: React.FC = () => {
           >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>

@@ -51,3 +51,24 @@ export const BANK_CARD_DATA = {
   swiftCode: "AHGFH456",
   walletBalance: "AED 500",
 };
+
+
+export interface DetailsTypes {
+  name: string;
+  phone: string;
+  email: string;
+}
+export interface ManageEngineerProps {
+  id: number;
+  engineerID: string;
+  details: DetailsTypes;
+  documents: string;
+  location: string;
+  registrationDate: string;
+  walletBalance: string;
+  kycStatus: string;
+  employementStatus: string;
+  avgRating: number;
+  approvalStatus: string;
+}
+
