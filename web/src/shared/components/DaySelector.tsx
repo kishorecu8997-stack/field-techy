@@ -6,26 +6,24 @@ interface DaySelectorProps {
   label?: string;
   required?: boolean;
   className?: string;
+  isShowLabel?: boolean;
 }
 
-/**
- * The inner component for rendering the day selector UI.
- * It is not intended to be used directly in forms, but rather wrapped by the main DaySelector component.
- * @param {object} props - The component props.
- * @param {string[]} props.selectedDays - An array of currently selected day strings.
- * @param {(days: string[]) => void} props.onChange - Callback function triggered when the selection changes.
- * @param {string} [props.label] - The label to display above the day selector.
- * @param {boolean} [props.required=false] - Whether the field is required, displays an asterisk.
- * @param {string} [props.className=""] - Additional CSS classes for the container.
- * @returns {React.ReactElement} The rendered day selector UI.
- */
 const DaySelectorInner: React.FC<{
   selectedDays: string[];
   onChange: (days: string[]) => void;
   label?: string;
   required?: boolean;
+  isShowLabel?: boolean;
   className?: string;
-}> = ({ selectedDays, onChange, label, required = false, className = "" }) => {
+}> = ({
+  selectedDays,
+  onChange,
+  label,
+  required = false,
+  isShowLabel = true,
+  className = "",
+}) => {
   const days = [
     "Monday",
     "Tuesday",
@@ -43,14 +41,19 @@ const DaySelectorInner: React.FC<{
     onChange(newSelected);
   };
 
+  // Only show asterisk if label is shown, exists, and field is required
+  const showAsterisk = isShowLabel && Boolean(label) && required;
+
   return (
     <div className={`mb-4 ${className}`.trim()}>
-      <label className="block text-sm font-medium dark:text-white text-gray-700 mb-1">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
+      {isShowLabel && label && (
+        <label className="block text-sm font-medium dark:text-white text-gray-700 mb-1">
+          {label}
+          {showAsterisk && <span className="text-red-600">*</span>}
+        </label>
+      )}
 
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 rounded-lg p-3 flex flex-wrap gap-3">
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 flex flex-wrap gap-3">
         {days.map((day) => {
           const isSelected = selectedDays.includes(day);
           return (
@@ -63,19 +66,18 @@ const DaySelectorInner: React.FC<{
                 checked={isSelected}
                 onChange={() => handleToggle(day)}
                 className="sr-only"
+                disabled={false} // can be made dynamic if needed later
               />
               <div
                 className={`flex items-center justify-center h-4 w-4 rounded border ${
-                  isSelected ? "bg-teal-900 border-teal-900" : "border-gray-300"
+                  isSelected
+                    ? "bg-teal-900 border-teal-900"
+                    : "border-gray-300 dark:border-gray-600"
                 }`}
               >
-                {isSelected && (
-                  <div className="inline-flex items-center justify-center p-1 text-xs text-white">
-                    ✓
-                  </div>
-                )}
+                {isSelected && <span className="text-xs text-white">✓</span>}
               </div>
-              <span className="ml-2 dark:text-white text-sm text-gray-800">
+              <span className="ml-2 text-sm text-gray-800 dark:text-gray-200">
                 {day}
               </span>
             </label>
@@ -86,13 +88,14 @@ const DaySelectorInner: React.FC<{
   );
 };
 
-// Main exported component — React Hook Form ready
+// Main component: React Hook Form compatible
 const DaySelector = <T extends FieldValues>({
   control,
   name,
   label,
-  required,
+  required = false,
   className,
+  isShowLabel = true,
   ...props
 }: UseControllerProps<T> & DaySelectorProps) => {
   return (
@@ -105,6 +108,7 @@ const DaySelector = <T extends FieldValues>({
           onChange={onChange}
           label={label}
           required={required}
+          isShowLabel={isShowLabel}
           className={className}
         />
       )}
