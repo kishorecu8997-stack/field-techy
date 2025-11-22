@@ -834,6 +834,23 @@ export const validateAlphabeticTextArea = (
 
   return true;
 };
+
+
+export const validatePhone = (value: string) => {
+  const v = (value || "").trim();
+  if (!v) return "Phone is required";
+
+  // A more comprehensive regex for phone validation
+  const phoneRegex =
+    /^[0-9]{10,15}$/;
+
+  if (!phoneRegex.test(v)) {
+    return "Please enter a valid phone number";
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -863,4 +880,5 @@ export default {
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,
+  validatePhone,
 };

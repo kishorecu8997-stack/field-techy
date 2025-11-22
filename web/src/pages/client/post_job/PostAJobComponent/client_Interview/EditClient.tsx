@@ -7,19 +7,14 @@ import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
 
 /**
- *
+ *  Edit Client Page
+ *    - Displays a form to edit client details
+ *    - Uses react-hook-form for form state management
+ *    - Submits form data to the server
+ * @returns {JSX.Element} The rendered Edit Client page
+ * @constructor
  */
 const EditClient = () => {
-  return (
-    <div className="h-full">
-      <EditClientFields />
-    </div>
-  );
-};
-
-export default EditClient;
-
-const EditClientFields = () => {
   const { selectedId } = useDrawerStore();
   const value = interviewerData.find((item) => item.id === selectedId);
 
@@ -40,12 +35,16 @@ const EditClientFields = () => {
   };
 
   return (
-    <FormContainer
-      methods={formCtx}
-      onSubmit={handleSubmit}
-      className="flex flex-col h-full"
-    >
-      <ClientFields />
-    </FormContainer>
+    <div className="h-full">
+      <FormContainer
+        methods={formCtx}
+        onSubmit={handleSubmit}
+        className=" flex-col h-full"
+      >
+        <ClientFields />
+      </FormContainer>
+    </div>
   );
 };
+
+export default EditClient;

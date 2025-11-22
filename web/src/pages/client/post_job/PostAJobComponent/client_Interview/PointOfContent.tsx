@@ -1,9 +1,10 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { validateName } from "@/shared/libs/utils";
+import { validateEmail, validatePhone } from "@/utils/validate";
 
 const ClientFields = () => {
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col overflow-auto flex-grow gap-2">
@@ -13,24 +14,28 @@ const ClientFields = () => {
             name="firstName"
             required
             placeholder="first Name"
+            rules={{ validate: (v) => validateName(v) }}
           />
           <InputField
             required
             label="Last Name"
             name="lastName"
             placeholder="last Name"
+            rules={{ validate: (v) => validateName(v) }}
           />
           <InputField
             label="Email"
             required
             name="email"
             placeholder="Client Email"
+            rules={{ validate: (v) => validateEmail(v) }}
           />
           <InputField
             required
             label="Phone"
             name="mobile"
             placeholder="Client Phone"
+            rules={{ validate: (v) => validatePhone(v) }}
           />
           <SelectField
             label="Contact Type"
