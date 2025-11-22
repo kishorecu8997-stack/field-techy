@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /*
  * Report page component
@@ -28,13 +29,35 @@ const ReportPage = ({
     defaultValues: {},
   });
 
+  const { showPopup } = usePopupStore();
+
   const handleClose = () => {
     formCtx.reset();
     onClose();
   };
 
-  const handleSubmit = () => {
-    toast.success("Report submitted successfully!");
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Report an Issue",
+      body: "Are you sure you want to report this issue?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, report",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Report submitted successfully!");
+            close(true);
+            onClose();
+          },
+        },
+      ],
+    });
   };
 
   return (

@@ -10,6 +10,7 @@ import type {
 } from "@/shared/libs/constants/filterOptions";
 import type { LocationValue } from "@/shared/libs/constants/filterOptions";
 import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
+import { usePopupStore } from "../store/popupStore";
 
 const Filters: React.FC = () => {
   const [location, setLocation] = useState<LocationValue>("all");
@@ -43,6 +44,32 @@ const Filters: React.FC = () => {
 
   const visibleSkills = showAllSkills ? skills : skills.slice(0, 6);
 
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmClearAll = async () => {
+    await showPopup({
+      title: "Clear All Filters",
+      body: "Are you sure you want to clear all filters?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, clear",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            clearAllFilters();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
+
   return (
     <div
       className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300"
@@ -50,12 +77,12 @@ const Filters: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold">Filters</h2>
-        <button
-          onClick={clearAllFilters}
+        <div
+          onClick={handleConfirmClearAll}
           className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
         >
           CLEAR ALL
-        </button>
+        </div>
       </div>
 
       {/* Location */}

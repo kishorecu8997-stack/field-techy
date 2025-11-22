@@ -15,6 +15,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { JobHeaderCardProps } from "../types";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -37,6 +38,159 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [isCheckedIn, setIsCheckedIn] = React.useState(false);
 
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmSendProposal = async () => {
+    await showPopup({
+      title: "Send Proposal",
+      body: "Are you sure you want to send this job proposal?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, send",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job proposal sent successfully");
+            close(true);
+            setSendProposal?.(true);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmAcceptJob = async () => {
+    await showPopup({
+      title: "Accept Job",
+      body: "Are you sure you want to accept this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, accept",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job accepted successfully");
+            close(true);
+            setIsAccepted?.(true);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmStartJob = async () => {
+    await showPopup({
+      title: "Start Job",
+      body: "Are you sure you want to start this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, start",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job started successfully");
+            close(true);
+            setIsStarted?.(true);
+            setIsCheckedIn?.(false);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmCheckIn = async () => {
+    await showPopup({
+      title: "Check In",
+      body: "Are you sure you want to check in this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, check in",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job checked in successfully");
+            close(true);
+            setIsJobAccepted?.(true);
+            setIsCheckedIn?.(true);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmCancelOffer = async () => {
+    await showPopup({
+      title: "Cancel Offer",
+      body: "Are you sure you want to cancel this job offer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, cancel",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job offer cancelled successfully");
+            close(true);
+            setIsAccepted?.(false);
+            setIsStarted?.(false);
+            setIsJobAccepted?.(false);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmDecline = async () => {
+    await showPopup({
+      title: "Decline Job",
+      body: "Are you sure you want to decline this job offer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, decline",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job offer declined successfully");
+            close(true);
+            setIsAccepted?.(false);
+            setIsStarted?.(false);
+            setActiveKey("cancelOffer");
+            setISOpenSidebar(true);
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <>
@@ -87,7 +241,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 {!isSendProposal ? (
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                    onClick={() => setSendProposal?.(true)}
+                    onClick={() => handleConfirmSendProposal()}
                   >
                     Send Proposal
                   </Button>
@@ -108,7 +262,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsAccepted?.(true);
+                        handleConfirmAcceptJob();
                       }}
                     >
                       Accept Job
@@ -117,10 +271,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsAccepted?.(false);
-                        setIsStarted?.(false);
-                        setActiveKey("cancelOffer");
-                        setISOpenSidebar(true);
+                        handleConfirmDecline();
                       }}
                     >
                       Decline
@@ -132,8 +283,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsStarted?.(true);
-                        setIsCheckedIn?.(false);
+                        handleConfirmStartJob();
                       }}
                     >
                       Start Job
@@ -142,10 +292,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsAccepted?.(false);
-                        setIsStarted?.(false);
-                        setActiveKey("cancelOffer");
-                        setISOpenSidebar(true);
+                        handleConfirmDecline();
                       }}
                     >
                       Decline
@@ -156,8 +303,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                     onClick={() => {
-                      setIsJobAccepted?.(true);
-                      setIsCheckedIn?.(true);
+                     handleConfirmCheckIn()
                     }}
                   >
                     Check in
@@ -203,11 +349,32 @@ export default JobHeaderCard;
 
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const FormCtx = useForm();
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = () => {
-    console.log("Submitted");
-    toast.success("Job status updated successfully!");
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Update Status",
+      body: "Are you sure you want to update this job status?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job status updated successfully");
+            close(true);
+            onClose();
+          },
+        },
+      ],
+    });
   };
+
   return (
     <div className="flex flex-col p-6">
       <div className="flex justify-end">
@@ -241,6 +408,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           name="workScreenShot"
           label="Work Screenshot"
           required
+          placeholder="Work screenshot"
           accept=".pdf"
           maxPages={5}
           validatePDF={true}
