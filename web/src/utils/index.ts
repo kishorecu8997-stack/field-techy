@@ -37,3 +37,16 @@ export function getDuration(startDate: string | Date, endDate: string | Date) {
 
   return parts.join(" ");
 }
+
+
+export const buildQuery = (params: Record<string, any>) => {
+  const query = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") {
+      query.append(key, value);
+    }
+  });
+
+  return query.toString();
+};

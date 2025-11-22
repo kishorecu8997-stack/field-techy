@@ -4,6 +4,7 @@ import BankDetailsForm from "./BankDetailsForm";
 import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
 import { bankDetails as bankDetailsData } from "@/dummy_data/bankDetails";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
@@ -13,6 +14,7 @@ const EditBankDetails = () => {
     (bank) => bank.bankName === "Bank of America"
   );
 
+  const { showPopup } = usePopupStore();
   const formCtx = useForm<bankDetails>({
     // ✅ Typed correctly
     mode: "onChange",
@@ -27,10 +29,30 @@ const EditBankDetails = () => {
     },
   });
 
-  const handleSubmit = (data: bankDetails) => {
-    console.log("Submitted bank details:", data);
-    toast.success("Bank details updated successfully");
+ const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
+      title: "Update Bank Details",
+      body: "Are you sure you want to update this bank details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Bank details updated successfully");
+            close(true);
+          },
+        },
+      ],
+    });
   };
+
 
   return (
     <FormContainer
