@@ -1,11 +1,10 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { interviewerData } from "@/dummy_data/admin/PostAJob";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { interviewerData } from "@/dummy_data/admin/PostAJob";
 
 /**
  *
@@ -21,12 +20,11 @@ const EditClient = () => {
 export default EditClient;
 
 const EditClientFields = () => {
-
-  const { selectedId} = useDrawerStore();
+  const { selectedId } = useDrawerStore();
   const value = interviewerData.find((item) => item.id === selectedId);
 
   const formCtx = useForm<ClientFieldsTypes>({
-    defaultValues:{
+    defaultValues: {
       firstName: value?.firstName,
       lastName: value?.lastName,
       email: value?.email,
@@ -35,8 +33,6 @@ const EditClientFields = () => {
       startTime: value?.startTime,
     },
   });
-
-
 
   const handleSubmit = (data: ClientFieldsTypes) => {
     console.log("Submitted data:", data);
@@ -47,17 +43,9 @@ const EditClientFields = () => {
     <FormContainer
       methods={formCtx}
       onSubmit={handleSubmit}
-      className="flex h-full flex-col"
+      className="flex flex-col h-full"
     >
       <ClientFields />
-      <div className="mt-auto flex justify-end">
-        <Button
-          type="submit"
-          className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded w-full"
-        >
-          Add Client
-        </Button>
-      </div>
     </FormContainer>
   );
 };

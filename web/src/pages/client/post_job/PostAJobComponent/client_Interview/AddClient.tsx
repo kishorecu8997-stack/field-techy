@@ -33,14 +33,6 @@ const AddClientFields = () => {
       className="flex h-full flex-col"
     >
       <ClientFields />
-      <div className="mt-auto flex justify-end">
-        <Button
-          type="submit"
-          className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded w-full"
-        >
-          Add Client
-        </Button>
-      </div>
     </FormContainer>
   );
 };

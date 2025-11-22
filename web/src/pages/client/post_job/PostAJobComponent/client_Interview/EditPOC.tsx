@@ -1,11 +1,10 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { pointOfContent } from "@/dummy_data/admin/PostAJob";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import PointOfContent from "./PointOfContent";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { pointOfContent } from "@/dummy_data/admin/PostAJob";
 import type { pointOfContentTypes } from "../../types";
+import PointOfContent from "./PointOfContent";
 
 const EditPOC = () => {
   const { selectedId } = useDrawerStore();
@@ -27,18 +26,13 @@ const EditPOC = () => {
   };
 
   return (
-    <div>
-      <FormContainer
-        methods={formCtx}
-        onSubmit={handleSubmit}
-        className="space-y-2"
-      >
-        <PointOfContent />
-        <Button type="submit" className="w-full">
-          Save
-        </Button>
-      </FormContainer>
-    </div>
+    <FormContainer
+      methods={formCtx}
+      onSubmit={handleSubmit}
+      className="flex flex-col h-full"
+    >
+      <PointOfContent />
+    </FormContainer>
   );
 };
 

@@ -60,7 +60,7 @@ const ClientInterviewerSection: React.FC<MultiCardProps> = ({
           {/* Items */}
           <div className="space-y-2">
             {section.items.map((item, i) => (
-              <div key={i} className="flex justify-between">
+              <div key={i} className="grid grid-cols-2 gap-2">
                 <p className="text-gray-500 text-sm dark:text-gray-300">{item.label}</p>
                 <p className="text-gray-800 font-medium dark:text-gray-300">{item.value}</p>
               </div>
