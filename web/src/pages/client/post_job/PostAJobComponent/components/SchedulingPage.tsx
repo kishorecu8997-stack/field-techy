@@ -31,6 +31,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const applicationEndDate = ctx.watch("applicationEndDate");
   const startTime = ctx.watch("startTime");
   const endTime = ctx.watch("endTime");
+  const startDate = ctx.watch("startDate");
+  const endDate = ctx.watch("endDate");
 
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
@@ -417,6 +419,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select start date"
                             {...field}
                             required
+                            maxDate={endDate ? endDate : null}
                           />
                           {error && (
                             <p className="text-red-600 text-sm">
@@ -432,6 +435,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Start Time"
                       name="startTime"
                       required
+                      maxTime={endTime}
                       disabled={isDisable}
                     />
                   </div>
@@ -452,6 +456,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select End date"
                             {...field}
                             required
+                            minDate={startDate ? startDate : null}
                             disabled={isDisable}
                           />
                           {error && (
@@ -468,6 +473,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="End Time"
                       name="endTime"
                       required
+                      minTime={startTime}
                       disabled={isDisable}
                     />
                   </div>

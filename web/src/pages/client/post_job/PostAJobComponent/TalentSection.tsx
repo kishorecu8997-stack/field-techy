@@ -7,7 +7,7 @@ import JobPostDropdown from "./JobPostDropdown";
 
 export interface PostOption {
   label: string;
-  value: string;
+  value: string | number;
   action?: () => void;
 }
 

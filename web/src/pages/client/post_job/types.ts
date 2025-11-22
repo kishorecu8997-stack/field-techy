@@ -11,7 +11,7 @@ export interface JobPostFormData {
   startTime: string;
   numberOfVacancy: string;
   timePeriod: string;
-  skillsRequired: string;
+  skills: string;
   requirements: string;
   otherInfo: string;
   toolName: string;
@@ -37,7 +37,7 @@ interface FormData {
   startTime?: string;
   numberOfVacancy: string;
   timePeriod: string;
-  skillsRequired: string;
+  skills: string;
   requirements: string;
   otherInfo: string;
   toolName: string;
@@ -81,6 +81,21 @@ export const OccurrenceEndType = {
 
 export type OccurrenceEndTypeType =
   (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
+
+  export const locationType = {
+    remote: "remote",
+    onsite: "onsite",
+  };
+
+  export type locationTypeType = (typeof locationType)[keyof typeof locationType];
+
+  export const backFillsType = {
+    required: "required",
+    notRequired: "not-required",
+  };
+
+  export type backFillsTypeType = (typeof backFillsType)[keyof typeof backFillsType];
+  
 
 export interface ClientFieldsTypes {
   id: string | number;
@@ -146,4 +161,43 @@ export interface pointOfContentTypes {
   email: string;
   mobile: string;
   contactType: string;
+}
+
+export interface PostAJobFieldsProps {
+  id?: number;
+  projectName: string;
+  jobName: string;
+  jobTitle: string;
+  locationType: locationTypeType;
+  location: string;
+  experienceLevel: string;
+  numberOfVacancy: string;
+  skills: [string];
+  tools: [string];
+  safetyWears: [string];
+  task: [string];
+  description: string;
+  backFills: backFillsTypeType;
+  budget: string;
+  primaryLanguage: string;
+  secondaryLanguage: string;
+  attachment: File | null;
+  otherInfo: string;
+  startDate: Date | null;
+  startTime: string;
+  endDate: Date | null;
+  endTime: string;
+  jobDuration: string;
+  tentativeStartDate: Date | null;
+  tentativeEndDate: Date | null;
+  tentativeEndTime: string;
+  jobOccurrence: OccurrenceType;
+  repeatedBy: RepeatByType;
+  occurrenceEndType: OccurrenceEndTypeType;
+  after: string;
+  repeatedByMonth: string;
+  repeatedByYear: string;
+  templatesName: string;
+  JobOccurrenceEndDate: Date | null;
+  estimatedDuration: string;
 }

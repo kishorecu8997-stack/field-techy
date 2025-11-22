@@ -1,128 +1,104 @@
+import { absoluteUrls } from "@/config/urls";
+import { TemplateData } from "@/dummy_data/client";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { backFillsType, locationType, OccurrenceEndType, OccurrenceFields, RepeatByFields, type PostAJobFieldsProps } from "../types";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
-import { useState } from "react";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
+import type { PostOption } from "./TalentSection";
 
 const PostJobPage = () => {
   const [isDisable, setIsDisable] = useState(false);
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
 
-  const formCtx = useForm({
+  const formCtx = useForm<PostAJobFieldsProps>({
     defaultValues: {
       projectName: "",
       jobName: "",
       jobTitle: "",
-      locationType: "remote",
+      locationType: locationType.remote,
       location: "",
       experienceLevel: "",
       numberOfVacancy: "",
-      skillsRequired: "",
-      tools: "",
-      safetyWears: "",
+      skills: [""],
+      tools: [""],
+      safetyWears: [""],
+      task: [""],
       description: "",
-      backFills: "required",
+      backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
       secondaryLanguage: "",
-      attachment: "",
+      attachment: null,
       otherInfo: "",
-      startDate: "",
+      startDate: null,
       startTime: "",
-      endDate: "",
+      endDate: null,
       endTime: "",
       jobDuration: "",
-      tentativeStartDate: "",
-      tentativeEndDate: "",
+      tentativeStartDate: null,
+      tentativeEndDate: null,
       tentativeEndTime: "",
-      jobOccurrence: "repeat",
-      repeatedBy: "week",
-      occurrenceEndType: "onDate",
+      jobOccurrence: OccurrenceFields.repeat,
+      repeatedBy: RepeatByFields.week,
+      occurrenceEndType: OccurrenceEndType.onDate,
       after: "",
       repeatedByMonth: "",
+      templatesName: "",
       repeatedByYear: "",
-      JobOccurrenceEndDate: "",
+      JobOccurrenceEndDate: null,
       estimatedDuration: "",
     },
     mode: "onSubmit",
   });
 
-  const handleTemplateDate = async () => {
-    formCtx.reset({
-      projectName: "Test Project",
-      jobName: "Test Job",
-      jobTitle: "Test Job Title",
-      locationType: "remote",
-      location: "remote",
-      experienceLevel: "experience1",
-      numberOfVacancy: "1",
-      skillsRequired: "skill1",
-      tools: "tool1",
-      safetyWears: "safetyWear1",
-      description: "Test Description",
-      backFills: "required",
-      budget: "1000",
-      primaryLanguage: "language1",
-      secondaryLanguage: "language1",
-      attachment: "",
-      otherInfo: "Test Other Info",
-      startDate: "", // TODO: Set default date
-      startTime: "",
-      endDate: "",
-      endTime: "",
-      jobDuration: "20",
-      tentativeStartDate: "",
-      tentativeEndDate: "",
-      tentativeEndTime: "",
-      jobOccurrence: "repeat",
-      repeatedBy: "week",
-      occurrenceEndType: "onDate",
-      after: "",
-      repeatedByMonth: "feb",
-      repeatedByYear: "2025",
-      JobOccurrenceEndDate: "",
-      estimatedDuration: "20",
-    });
+  const getTemplateData = () => {
+    return TemplateData.map((item) => ({
+      label: item.templatesName,
+      value: item.id,
+      action: async () => templateActionHandler(item.id),
+    }));
+  };
+  console.log('getTemplateData', getTemplateData());
+
+  const handleTemplateDate = async (id: number) => {
+    const findTemplate = TemplateData.find((item) => item.id === id);
+    formCtx.reset(findTemplate as PostAJobFieldsProps);
   };
 
-  const TemplateOptions = [
-    {
-      label: "Template 1",
-      value: "template1",
-      action: async () =>
-        await showPopup({
-          title: "Apply Template",
-          body: "Are you sure you want to apply this template? We’ll load the selected template and update your form with its details.",
-          actionButtons: [
-            {
-              label: "Cancel",
-              value: null,
-              variant: "outline",
-            },
-            {
-              label: "Apply",
-              value: "apply",
-              variant: "primary",
-              action: async (close) => {
-                close(true);
-                await handleTemplateDate();
-                toast.success("Template applied successfully");
-              },
-            },
-          ],
-        }),
-    },
-  ];
+  const templateActionHandler = async (id: number) => {
+    await showPopup({
+      title: "Apply Template",
+      body: "Are you sure you want to apply this template? We’ll load the selected template and update your form with its details.",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Apply",
+          value: "apply",
+          variant: "primary",
+          action: async (close) => {
+            close(true);
+            await handleTemplateDate(id);
+            toast.success("Template applied successfully");
+          },
+        },
+      ],
+    });
+  };
 
   const handleSubmit = async (data: any) => {
     console.log(data);
@@ -184,7 +160,10 @@ const PostJobPage = () => {
                 </div>
               ) : (
                 currentLocation === CurrentLocation.dispatch && (
-                  <JobPostDropdown label="Template" options={TemplateOptions} />
+                  <JobPostDropdown
+                    label="Template"
+                    options={getTemplateData() as PostOption[]}
+                  />
                 )
               )
             }
