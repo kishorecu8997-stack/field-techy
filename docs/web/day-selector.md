@@ -1,0 +1,3 @@
+| Page      | Fields       | Input Type | Required (Yes/No) | Rule                 | Validation Rule                      | Lower Limit | Upper Limit                                                    |
+|-----------|--------------|------------|-------------------|----------------------|--------------------------------------|-------------|----------------------------------------------------------------|
+| Component | Day selector | Checkbox   | Yes               | Checkbox  validation | At least one option must be selected | 1           | Flexible for multi-select (user can pick all 7 days if needed) |
