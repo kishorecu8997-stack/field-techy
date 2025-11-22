@@ -18,7 +18,7 @@ import EngineerJobCatagory from "./jobCatagory";
  * - Basic Information: Personal and contact details
  * - Documents: Uploaded verification files
  * - Disputes & Reports: List of filed disputes with file previews
- * - Privilages: Access rights and permissions (note: intentional spelling as per UI)
+ * - Privileges: Access rights and permissions (note: intentional spelling as per UI)
  * - Wallet: Transaction history and balance
  * - Job History: Past and current job assignments
  *
@@ -57,7 +57,7 @@ export default function UserDetails() {
       hide: false,
     },
     {
-      label: "Privilages",
+      label: "Privileges",
       content: <Previlage />,
       hide: false,
     },

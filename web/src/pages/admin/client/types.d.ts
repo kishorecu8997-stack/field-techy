@@ -78,6 +78,7 @@ export interface PostedJobsProps {
 }
 
 export interface CompletedJobsProps {
+  id?: number;
   jObID: string;
   postedBy: string;
   jObTitle: string;

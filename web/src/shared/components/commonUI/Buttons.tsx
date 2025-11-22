@@ -5,7 +5,15 @@ import Loader2 from "../Loader2";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline" | "link" | "text" | "solid";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "ghost"
+    | "danger"
+    | "outline"
+    | "link"
+    | "text"
+    | "solid";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -55,7 +63,7 @@ export const Button: React.FC<ButtonProps> = ({
       "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
-      "bg-[#0f1727] text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
+      "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
   };
 
   const sizeStyles: Record<string, string> = {

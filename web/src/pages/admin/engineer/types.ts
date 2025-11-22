@@ -1,3 +1,5 @@
+import type { adminJobsStatus } from "../jobs/types";
+
 export interface BasicInformation {
   name: string;
   email: string;
@@ -51,8 +53,6 @@ export const BANK_CARD_DATA = {
   swiftCode: "AHGFH456",
   walletBalance: "AED 500",
 };
-
-
 export interface DetailsTypes {
   name: string;
   phone: string;
@@ -63,6 +63,7 @@ export interface ManageEngineerProps {
   engineerID: string;
   details: DetailsTypes;
   documents: string;
+  status?: adminJobsStatus;
   location: string;
   registrationDate: string;
   walletBalance: string;

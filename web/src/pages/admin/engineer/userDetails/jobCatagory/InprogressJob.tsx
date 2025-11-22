@@ -11,6 +11,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
@@ -30,6 +31,7 @@ const InprogressJob: React.FC = () => {
   const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
 
   const getStatus = (row: JobProps) => {
     return statuses[row.id] ?? row.status;
@@ -38,6 +40,33 @@ const InprogressJob: React.FC = () => {
   const toggleStatus = (id: number, current: "On" | "Off") => {
     const newStatus = current === "On" ? "Off" : "On";
     setStatuses((prev) => ({ ...prev, [id]: newStatus }));
+  };
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: JobProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   const columns: Column<JobProps>[] = [
@@ -96,7 +125,7 @@ const InprogressJob: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: JobProps) => (
         <div className="flex items-center gap-2">
           <div className="p-2 bg-yellow-100 rounded-md cursor-pointer">
             <FiEye
@@ -112,7 +141,10 @@ const InprogressJob: React.FC = () => {
               }
             />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
