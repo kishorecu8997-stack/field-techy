@@ -69,7 +69,6 @@ const PostJobPage = () => {
       action: async () => templateActionHandler(item.id),
     }));
   };
-  console.log('getTemplateData', getTemplateData());
 
   const handleTemplateDate = async (id: number) => {
     const findTemplate = TemplateData.find((item) => item.id === id);
@@ -116,8 +115,8 @@ const PostJobPage = () => {
           value: "post",
           variant: "primary",
           action: async (close) => {
-            close(true);
             await handlePostAJob(data);
+            close(true);
             navigate(absoluteUrls.client.home.my_jobs);
           },
         },
@@ -133,7 +132,6 @@ const PostJobPage = () => {
   return (
     <div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
-        <div className="sticky top-18 z-20">
           <MyJobsHeader
             title={
               currentLocation === CurrentLocation.dedicated
@@ -168,7 +166,6 @@ const PostJobPage = () => {
               )
             }
           />
-        </div>
         <PostAJobFields setIsDisable={setIsDisable} isDisable={isDisable} />
       </FormContainer>
     </div>
