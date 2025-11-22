@@ -107,3 +107,33 @@ This document outlines all the field validations implemented in the Post a Job f
 |------------|----------|------------------|
 | Save As Template | No | Checkbox field |
 | Template Name | Yes (when Save As Template is checked) | No specific validation beyond required field |
+
+## Client Interview Fields
+
+### Client Information Fields
+
+| Field Name | Required | Validation Rules |
+|------------|----------|------------------|
+| First Name | Yes | Uses `validateName` function: No leading/trailing spaces, no consecutive spaces, alphabetic characters and single spaces only, max 10 spaces, 2-50 characters |
+| Last Name | Yes | Uses `validateName` function: No leading/trailing spaces, no consecutive spaces, alphabetic characters and single spaces only, max 10 spaces, 2-50 characters |
+| Email | Yes | Uses `validateEmail` function: Standard email format validation |
+| Phone | Yes | Uses `validatePhone` function: Phone number format validation |
+
+### Interview Schedule Fields
+
+| Field Name | Required | Validation Rules |
+|------------|----------|------------------|
+| Start Date | Yes | Date picker with required field validation |
+| Start Time | Yes | Time picker with required field validation |
+
+## Point of Contact Fields
+
+### Contact Information Fields
+
+| Field Name | Required | Validation Rules |
+|------------|----------|------------------|
+| First Name | Yes | Uses `validateName` function: No leading/trailing spaces, no consecutive spaces, alphabetic characters and single spaces only, max 10 spaces, 2-50 characters |
+| Last Name | Yes | Uses `validateName` function: No leading/trailing spaces, no consecutive spaces, alphabetic characters and single spaces only, max 10 spaces, 2-50 characters |
+| Email | Yes | Uses `validateEmail` function: Standard email format validation |
+| Phone | Yes | Uses `validatePhone` function: Phone number format validation |
+| Contact Type | Yes | Required selection from available options |
