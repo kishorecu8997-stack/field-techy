@@ -1,5 +1,4 @@
 import { absoluteUrls } from "@/config/urls";
-import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
 import React, { useState } from "react";
 import {  
   FaChevronRight,
@@ -11,10 +10,9 @@ import {
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
 import { useNavigate } from "react-router";
+import LogoutConfirmationPopup from "../LogoutConfirmationPopup";
+import type { DrawerMenuProps } from "../drawer/Drawer";
 
-interface DrawerMenuProps {
-  onMenuItemClick: (key: string) => void;
-}
 
 export type MenuItems = {
   label: string;
@@ -36,7 +34,7 @@ export type MenuItems = {
  * @example
  * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
  */
-const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuItems: MenuItems[] = [
     { label: "Manage Proposal", icon: IoDocumentText, key: "proposal" },
@@ -119,8 +117,10 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <LogoutConfirmationPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onConfirm={() => navigate(absoluteUrls.engineer.auth.login)}
-        onCancel={() => setIsOpen(false)}
+        onConfirm={() => {
+          onClose();
+           navigate(absoluteUrls.client.auth.login); }}
+        onCancel={() => setIsOpen(false)}        
       />
     </div>
   );

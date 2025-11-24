@@ -30,6 +30,7 @@ import type { RateCardProps } from "./types";
 
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
+
   const columns: Column<RateCardProps>[] = [
     {
       key: "id",

@@ -35,3 +35,14 @@ export type FilterData = {
   startDate: Date | null;
   endDate: Date | null;
 };
+
+interface FilterFormData {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+interface FilterProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onFilter?: (data: FilterFormData) => void;
+}

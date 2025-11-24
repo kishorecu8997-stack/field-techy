@@ -11,6 +11,7 @@ import type {
 import type { LocationValue } from "@/shared/libs/constants/filterOptions";
 import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
 import { usePopupStore } from "../store/popupStore";
+import { Button } from "./commonUI/Buttons";
 
 const Filters: React.FC = () => {
   const [location, setLocation] = useState<LocationValue>("all");
@@ -71,9 +72,7 @@ const Filters: React.FC = () => {
 
 
   return (
-    <div
-      className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300"
-    >
+    <div className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold">Filters</h2>
@@ -90,13 +89,17 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Location</h3>
         <div className="flex flex-wrap gap-2">
           {LOCATION_OPTIONS.map((option) => (
-            <button
+            <Button
               key={option.value}
               onClick={() => setLocation(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${location === option.value ? "bg-emerald-700 text-white dark:bg-emerald-600" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
+                location === option.value
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+              }`}
             >
               {option.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -106,13 +109,17 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Budget</h3>
         <div className="flex flex-wrap gap-2">
           {BUDGET_OPTIONS.map((option) => (
-            <button
+            <Button
               key={option.value}
               onClick={() => setBudget(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${budget === option.value ? "bg-emerald-700 text-white dark:bg-emerald-600" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
+                budget === option.value
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+              }`}
             >
               {option.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -122,13 +129,18 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Rating</h3>
         <div className="flex flex-wrap gap-2">
           {RATING_OPTIONS.map((option) => (
-            <button
+            <Button
               key={option.value}
               onClick={() => setRating(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${rating === option.value ? "bg-emerald-700 text-white dark:bg-emerald-600" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
+                rating === option.value
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+              }`
+              }
             >
               {option.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -147,7 +159,9 @@ const Filters: React.FC = () => {
             onChange={(e) => setExperience(parseInt(e.target.value) || 0)}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-300 dark:bg-gray-600"
             style={{
-              background: `linear-gradient(to right, #059669 0%, #059669 ${(experience / 10) * 100}%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
+              background: `linear-gradient(to right, #059669 0%, #059669 ${
+                (experience / 10) * 100
+              }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
             }}
           />
           {/* Dynamic tooltip */}
@@ -169,23 +183,28 @@ const Filters: React.FC = () => {
         <h3 className="font-medium mb-3">Skills</h3>
         <div className="flex flex-wrap gap-2">
           {visibleSkills.map((skill, index) => (
-            <button
+            <Button
               key={skill.name}
               onClick={() => toggleSkill(index)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${skill.selected ? "bg-emerald-700 text-white dark:bg-emerald-600" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"}`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
+                skill.selected
+                  ? 'bg-teal-800 dark:bg-teal text-white'
+                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+              }`}
             >
               {skill.name}
-            </button>
+            </Button>
           ))}
         </div>
 
         {skills.length > 6 && (
-          <button
+          <Button
+            variant="text"
             onClick={() => setShowAllSkills(!showAllSkills)}
-            className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+            className="mt-2 text-sm font-medium text-teal-700 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 underline"
           >
             {showAllSkills ? "Show Less" : "View All"}
-          </button>
+          </Button>
         )}
       </div>
     </div>

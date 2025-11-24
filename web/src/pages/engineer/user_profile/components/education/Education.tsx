@@ -1,13 +1,7 @@
-/**
- * @file Education.tsx
- * @description This component displays a summary of the user's educational qualifications.
- * It uses a `DrawerCard` to list each education entry and provides actions to add,
- * edit, or delete entries by invoking callbacks.
- */
 import React from "react";
-import educationData from "@/dummy_data/education.json";
 import DrawerCard from "@/shared/components/DrawerCard";
 import { toast } from "react-toastify";
+import { educationList } from "@/dummy_data/engineer_profile/education-data";
 
 /**
  * Props for the Education component, typically used for components
@@ -28,14 +22,16 @@ interface DrawerMenuProps {
  * @returns {React.ReactElement} The rendered Education component.
  */
 const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
-
   return (
     <>
       <DrawerCard
         title="Education"
-        items={educationData.education}
+        items={educationList}
         onAddAction={() => onMenuItemClick(`addEducation`)}
-        onEditAction={(id) => onMenuItemClick(`editEducation-${id}`)}
+        onEditAction={(id) => {
+          localStorage.setItem("editEducationId", id.toString());
+          onMenuItemClick("editEducation");
+        }}
         // TODO: Implement a proper confirmation modal for deletion.
         onDeleteAction={(id) => toast.info(`Delete education at index ${id}`)}
       />

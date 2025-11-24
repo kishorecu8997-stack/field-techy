@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for adding tools.
@@ -37,6 +38,7 @@ const AddTools = () => {
    */
   const onSubmit = (data: AddToolsFormData) => {
     console.log("Form data:", data);
+    toast.success("Tools Saved Successfully");  
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

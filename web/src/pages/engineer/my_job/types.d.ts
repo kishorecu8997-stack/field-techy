@@ -33,6 +33,7 @@ export interface MyJobsHeaderProps {
   isReport?: boolean;
   isShowSort?: boolean;
   action?: React.ReactNode
+  isReport?:boolean;
 }
 
 /**
@@ -83,6 +84,8 @@ export interface JobHeaderCardProps {
   isSendProposal?: boolean
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
   setActiveTab?: Dispatch<SetStateAction<string>>
+  setOfferJobStatus?: Dispatch<SetStateAction<string>>
+  OfferJobStatus?: "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
 }
 
 export interface JobTabsProps {

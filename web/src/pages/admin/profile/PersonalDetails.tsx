@@ -8,6 +8,8 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { useForm } from "react-hook-form";
 import type { ProfileFormData } from "./types";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -20,16 +22,18 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered personal details form.
  */
 export default function PersonalDetails() {
+  const navigate= useNavigate()
   const methods = useForm<ProfileFormData>({
     defaultValues: {
-      name: "",
-      email: "",
+      name: "Kevin Smith",
+      email: "kevinsmith@gmail.com",
       phoneNumber: "",
       profileImage: null,
     },
   });
   const handleSubmit = () => {
     toast.success("Profile Updated Successfully!");
+    navigate(absoluteUrls.admin.home.dashbaord)
   };
 
   return (

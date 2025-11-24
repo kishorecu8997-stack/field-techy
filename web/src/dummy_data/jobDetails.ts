@@ -5,6 +5,7 @@ import type {
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
 
+
 export const logs: LogEntry[] = [
   {
     title: "Check In To Office",
@@ -160,7 +161,7 @@ export const exampleMarkers = {
 };
 
 export const userData = {
-  name: "Michel Brown",
+  name: "Nick Wilson",
   phone: "+91 74582405XX",
   role: "Software Engineer",
   profileCompletion: 39,
@@ -173,6 +174,7 @@ export const earningsData = {
 // Example usage
 export const jobData = [
   {
+    id: 1,
     title: "Software Engineer",
     company: "Google",
     companyLogo: "/logos/google.png",
@@ -183,6 +185,7 @@ export const jobData = [
     location: "California, USA",
   },
   {
+    id: 2,
     title: "Python Engineer",
     company: "Facebook",
     companyLogo: "/logos/facebook.png",
@@ -193,6 +196,7 @@ export const jobData = [
     location: "California, USA",
   },
   {
+    id: 3,
     title: "Project Manager",
     company: "Google",
     companyLogo: "/logos/google.png",

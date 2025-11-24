@@ -9,6 +9,7 @@ import {
 import {
   JOB_STATUSES,
   type JobStatus,
+  type OfferedJobStatusType,
 } from "@/pages/engineer/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import JobInfoSection from "./tab_components/JobInfoSection";
@@ -36,24 +37,25 @@ const JobTabSection = ({
   status,
   isWorkSubmitted,
   isSendProposal,
-  isJobAccepted,
   activeTab,
-  
+  OfferJobStatus,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
-  isJobAccepted?: boolean;
   activeTab?: string;
+  OfferJobStatus?: OfferedJobStatusType;
 }) => {
+  const shouldHideLogs = !(
+    status === JOB_STATUSES.inprogress ||
+    status === JOB_STATUSES.completed ||
+    OfferJobStatus === "checked-in"
+  );
   const tabs = [
     {
       label: "Logs",
       content: <LogComponent logs={logs} />,
-      hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        !isJobAccepted,
+      hide: shouldHideLogs,
     },
     {
       label: "Work Submissions",
@@ -63,10 +65,7 @@ const JobTabSection = ({
           isWorkSubmitted={isWorkSubmitted}
         />
       ),
-      hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        !isJobAccepted,
+      hide: shouldHideLogs,
     },
     {
       label: "Job Information",
@@ -104,7 +103,10 @@ const JobTabSection = ({
       {isSendProposal ? (
         <SendProposal />
       ) : (
-        <TabComponent tabs={tabs} defaultActiveTab={activeTab || "Job Information"} />
+        <TabComponent
+          tabs={tabs}
+          defaultActiveTab={activeTab || "Job Information"}
+        />
       )}
     </div>
   );

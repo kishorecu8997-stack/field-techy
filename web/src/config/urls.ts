@@ -1,4 +1,3 @@
-import { job } from "@/dummy_data/jobDetails";
 
 /**
  * Application route URLs.
@@ -26,6 +25,7 @@ export const urls = {
   engineer: {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
+    terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
 
     home: {
       dashboard: "dashboard",
@@ -36,6 +36,7 @@ export const urls = {
       privacy_policy: "privacy-policy",
       about_app: "about-app",
       explore_jobs: "explore-jobs",
+      chat: "chat",
     },
     auth: {
       login: "login",
@@ -54,7 +55,7 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
-      explore_engineers: "explore-engineers",
+      client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
       post_a_job: "post-a-job",
@@ -62,6 +63,8 @@ export const urls = {
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
+      client_Explore_engineers_details: "explore-engineers/details",
+      ClientJobInvite: "explore-engineers/select-jobs",
     },
     auth: {
       login: "login",
@@ -149,6 +152,8 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
+      chat: `${BASE.ENGINEER}/chat`,
+
     },
   },
   client: {
@@ -166,7 +171,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
-      explore_engineers: `${BASE.CLIENT}/explore-engineers`,
+      client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
       search_result: `${BASE.CLIENT}/search-result`,
@@ -174,6 +179,8 @@ export const absoluteUrls = {
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
       post_a_job: `${BASE.CLIENT}/post-a-job`,
+      client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
+      ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
     },
   },
 

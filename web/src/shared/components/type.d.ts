@@ -39,6 +39,7 @@ interface MapComponentProps {
   initialZoom?: number;
   markers?: MapMarker[];
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
+  viewOnly?: boolean;
 }
 
 /**
@@ -132,3 +133,62 @@ export interface GeneralChartProps<
 }
 
 export type ChartType = "line" | "bar";
+
+export interface Category {
+  id: string;
+  items: string;
+}
+
+interface InformationCardProps {
+  title: string;
+  description: string;
+  details: {
+    label: string;
+    value: string;
+  }[];
+  className?: string;
+}
+
+export interface InformationCardPropsTools {
+  title: string;
+  description: string;
+  category: string[];
+  className?: string;
+}
+
+export interface PaymentMethodSelectorProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  isShowRadio?: boolean;
+  required?: boolean;
+  rules?: RegisterOptions;
+  options?: PaymentCardOption[];
+  onAddNew?: (cardData: CardFormData) => void;
+  isOpen?: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface HeaderProps {
+  title?: string;
+  currentPath: string;
+  showSearchBar?: boolean;
+  showButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
+}
+
+export interface CategoryTagProps {
+  category: string[];
+  label?: string;
+  isShowLabel?: boolean;
+  required?: boolean;
+}
+
+
+export interface PaymentCardOption {
+  id: string;
+  last4: string;
+  brand: "visa" | "mastercard" | "amex" | "discover" | string;
+  name: string;
+}

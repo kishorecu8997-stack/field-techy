@@ -6,6 +6,8 @@ import type { ChangePasswordFormData } from "./types";
 import { validatePassword } from "@/shared/libs/utils";
 import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -15,6 +17,7 @@ import { toast } from "react-toastify";
  * @component
  */
 export default function ChangePassword() {
+  const navigate = useNavigate();
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
       oldPassword: "",
@@ -24,6 +27,7 @@ export default function ChangePassword() {
   });
   const handleSubmit = () => {
     toast.success("Password Changed Successfully!");
+    navigate(absoluteUrls.admin.home.dashbaord)
   };
 
   return (

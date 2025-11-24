@@ -18,7 +18,7 @@ import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-
+import { toast } from "react-toastify";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -145,7 +145,10 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToHome}
+            handleNavigate={() => {
+              goToHome();
+              toast.success("Logged in successfully");
+            }}
           />
         </Popup>
       </div>

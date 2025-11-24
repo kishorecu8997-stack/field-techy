@@ -19,6 +19,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
+ *
+ * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
+ * @returns {JSX.Element} The rendered JobHeaderCard component.
  */
 const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   title,
@@ -29,15 +32,13 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setIsWorkSubmitted,
   setSendProposal,
   isSendProposal,
-  setIsJobAccepted,
   setActiveTab,
+  OfferJobStatus,
+  setOfferJobStatus,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [isAccepted, setIsAccepted] = React.useState(false);
-  const [isStarted, setIsStarted] = React.useState(false);
-  const [isCheckedIn, setIsCheckedIn] = React.useState(false);
-
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
   const { showPopup } = usePopupStore();
 
   const handleConfirmAcceptJob = async () => {
@@ -57,7 +58,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           action: async (close) => {
             toast.success("Job accepted successfully");
             close(true);
-            setIsAccepted?.(true);
+            setOfferJobStatus("accepted");
           },
         },
       ],
@@ -81,8 +82,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           action: async (close) => {
             toast.success("Job started successfully");
             close(true);
-            setIsStarted?.(true);
-            setIsCheckedIn?.(false);
+            setOfferJobStatus("started");
           },
         },
       ],
@@ -106,8 +106,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           action: async (close) => {
             toast.success("Job checked in successfully");
             close(true);
-            setIsJobAccepted?.(true);
-            setIsCheckedIn?.(true);
+            setOfferJobStatus("checked-in");
           },
         },
       ],
@@ -201,14 +200,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </div>
             ) : status === JOB_STATUSES.offer ? (
               <div className="flex flex-wrap gap-2 w-fit items-center">
-                {!isAccepted && !isStarted ? (
-                  /* BEFORE ACCEPTING THE JOB */
+                {OfferJobStatus === "initial" ? (
                   <div className="flex flex-row gap-4">
                     <Button
                       className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-                      onClick={() => {
-                        handleConfirmAcceptJob();
-                      }}
+                      onClick={() => handleConfirmAcceptJob()}
                     >
                       Accept Job
                     </Button>
@@ -223,8 +219,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       Decline
                     </Button>
                   </div>
-                ) : isAccepted && !isStarted ? (
-                  /* JOB ACCEPTED, READY TO START */
+                ) : OfferJobStatus === "accepted" ? (
                   <div className="flex flex-row gap-4">
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -245,8 +240,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       Decline
                     </Button>
                   </div>
-                ) : isStarted && !isCheckedIn ? (
-                  /* WORK STARTED, BUT NOT CHECKED IN */
+                ) : OfferJobStatus === "started" ? (
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                     onClick={() => {
@@ -256,7 +250,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     Check in
                   </Button>
                 ) : (
-                  /* CHECKED IN — SHOW WORK ACTIONS */
                   <div className="flex flex-wrap gap-2 w-fit">
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -325,12 +318,12 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="flex flex-col p-6">
       <div className="flex justify-end">
-        <button
+        <div
           className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
           onClick={onClose}
         >
           <icons.close className="w-6 h-6" />
-        </button>
+        </div>
       </div>
       <div className="text-xl text-gray-900 dark:text-white font-bold text-center">
         Update Status

@@ -38,9 +38,8 @@ const ManageClient: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold ">Manage Clients</h1>
         <Button
-          variant="primary"
+          variant="solid"
           size="sm"
-          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
           onClick={() => alert("Export CSV")}
         >
           Export CSV

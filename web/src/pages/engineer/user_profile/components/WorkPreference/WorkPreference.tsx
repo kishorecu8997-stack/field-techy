@@ -10,6 +10,9 @@ import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
 import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+import {workPreferenceData} from "@/dummy_data/engineer_profile/workPreferenceData";
+
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
@@ -25,6 +28,7 @@ const WorkPreference = () => {
    * @param {WorkPreferenceFormData} data - The validated form data.
    */
   const handleSubmit = (data: WorkPreferenceFormData) => {
+    toast.success("Work Preferences Saved Successfully");
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
   };
@@ -34,10 +38,10 @@ const WorkPreference = () => {
    */
   const methods = useForm<WorkPreferenceFormData>({
     defaultValues: {
-      portfolioLink: "",
-      preferredWorkTypes: "",
-      servicesCategories: "",
-      ratePreference: "",
+      portfolioLink:workPreferenceData[0].portfolioLink,
+      preferredWorkTypes: workPreferenceData[0].preferredWorkTypeIds,
+      servicesCategories: workPreferenceData[0].serviceCategoryIds,
+      ratePreference: workPreferenceData[0].ratePreference,
     },
     mode: "onSubmit",
   });
@@ -97,7 +101,7 @@ const WorkPreference = () => {
 
       <div className="bg-white ">
         <Button
-          type="submit"
+          type="submit"          
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
           Save Preferences

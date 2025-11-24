@@ -9,6 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { validateDescription } from "../../home/validation";
 
 /**
  * Cancel job offer form page displaying available balance and allowing users to select a bank and enter an amount.
@@ -72,9 +73,7 @@ export default function CancelJopOffer() {
           name="remark"
           label="Remark"
           required
-          rules={{
-            validate: (v: string) => v.length > 0,
-          }}
+          rules={validateDescription(50, 2000, "Remark")}
         />
 
         {/* Checkbox */}

@@ -7,3 +7,15 @@ interface EngineerCardProps {
     imageUrl: string;
   };
 }
+
+interface EngineerCardListProps {
+    name: string;
+    rating: number;
+    bidAmount:string;
+    payType:string;
+    reviewCount: number;
+    title: string;
+    availability:string;    
+    imageUrl: string;
+    status:string;    
+}

@@ -26,6 +26,23 @@ export const validateName = (value: string) => {
 };
 
 /**
+ * Validates that a date is the current date or a future date.
+ * @param date The date to validate.
+ * @returns {true | string} True if valid, otherwise an error message.
+ */
+export const validateCurrentOrFutureDate = (date: Date | null): true | string => {
+  if (!date) {
+    return "Date must be selected";
+  }
+
+  if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+    return "Date cannot be in the past";
+  }
+
+  return true;
+};
+
+/**
  * Validate a date range.
  * - Start date must not be in the future.
  * - Start date must be before the end date.
@@ -193,11 +210,11 @@ export const validateAlphabeticText = (
   }
 
   // Allowed characters: letters, commas, and single spaces only
-  const defaultPattern = /^[a-zA-Z, ]+$/;
+  const defaultPattern = /^[a-zA-Z,+# ]+$/;
   const pattern = regex ?? defaultPattern;
 
   if (!pattern.test(v)) {
-    return "Only alphabets, commas, and spaces are allowed";
+    return "Only alphabets, commas, hashes, plus signs, and spaces are allowed";
   }
 
   // Length validation
@@ -247,9 +264,9 @@ export const validateCurrencyText = (
   }
 
   // Allowed characters: letters + common currency symbols + space
-  const allowedPattern = /^[a-zA-Z0-9 $€£¥₹¢₩₽₴₵₦₱₺]+$/;
+  const allowedPattern = /^[0-9 $€£¥₹¢₩₽₴₵₦₱₺]+$/;
   if (!allowedPattern.test(v)) {
-    return "Only letters, numbers, spaces, and currency symbols are allowed";
+    return "Only numbers and currency symbols are allowed";
   }
 
   // Length checks
@@ -261,6 +278,12 @@ export const validateCurrencyText = (
 
 export const validatePaymentMethods = (value: string | null | undefined) => {
   if (!value) return "Please select a payment method";
+  return true;
+};
+
+export const validateConsent = (value: boolean) => {
+  console.log("Consent value:", value); 
+  if (!value) return "You must agree to the terms and conditions";
   return true;
 };
 
@@ -295,6 +318,15 @@ export const validateAlphabeticTextArea = (
   if (/ {2,}/.test(v)) {
     return "Consecutive spaces are not allowed";
   }  
+
+   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
+  const pattern = defaultPattern;
+
+  if (!pattern.test(v)) {
+    return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
+  }
+
 
   // Cross-Site Scripting (XSS) check
   if (v !== xss(v)) {

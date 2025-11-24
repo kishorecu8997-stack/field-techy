@@ -4,6 +4,7 @@ import { mockEngineers } from "@/dummy_data/engineers";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import Pagination from "../../search_result/components/Pagination";
 
+
 /**
  * `EngineerListPage` is a component that displays a paginated list of engineers.
  * It includes functionality for filtering engineers by category and supports both
@@ -35,30 +36,36 @@ const EngineerListPage: React.FC = () => {
     startIndex + itemsPerPage
   );
 
+ 
+
   return (
-    <div className="p-4 md:p-2 transition-colors duration-300">
-      {/* Category Filters */}
-      <div className="flex flex-wrap gap-2">
-        <FilterButton
-          activeFilter={selectedCategory}
-          onFilterChange={setSelectedCategory}
-          filters={categories}
+    <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="container mx-auto px-4 py-6 md:px-6 ">
+        
+        {/* Category Filters */}
+        <div className="flex flex-wrap gap-2">
+          <FilterButton
+            activeFilter={selectedCategory}
+            onFilterChange={setSelectedCategory}
+            filters={categories}
+          />
+        </div>
+
+        {/* Engineer Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {currentEngineers.map((engineer) => (
+            <EngineerCard key={engineer.id} engineer={engineer} />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
+       
       </div>
-
-      {/* Engineer Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        {currentEngineers.map((engineer) => (
-          <EngineerCard key={engineer.id} engineer={engineer} />
-        ))}
-      </div>
-
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
     </div>
   );
 };

@@ -9,17 +9,37 @@ import PaymentMethod, {
 import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
 import { validateAmount, validatePaymentMethods } from "@/utils/validate";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
+import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { toast } from "react-toastify";
 
+
+/**
+ * @description Defines the shape of the form data for adding funds to the wallet.
+ */
 export interface AddFundFormData {
   amount: string;
   cardId: string;
 }
 
-const AddFund = () => {
-  const handleSubmit = (data: AddFundFormData) => {
-    console.log("Form submitted with data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+/**
+ * @description A component that renders a form for adding funds to a user's wallet.
+ * It includes fields for the amount and payment method selection.
+ */
+const AddFund = () => {  
+  /**
+   * @description Handles the submission of the add fund form.
+   * @param {AddFundFormData} data - The data from the form.
+   */
+ const { setActiveKey } = useDrawerStore();
+  const handleSubmit = (data: AddFundFormData) => {    
+   console.log('data :', data);
+    // TODO: Replace with actual submission logic (e.g., API call)    
+    toast.success(`Funds added successfully`);
+    setActiveKey("clientWallet");
   };
+
+ const [isOpen, setIsOpen] = useState(false);
 
   const methods = useForm<AddFundFormData>({
     defaultValues: {
@@ -33,6 +53,12 @@ const AddFund = () => {
     initialPaymentOptions
   );
 
+  /**
+   * @description Handles the addition of a new payment card.
+   * It creates a new card object, adds it to the list of payment options,
+   * and sets it as the selected card in the form.
+   * @param {{ cardNumber: string }} cardData - The data for the new card, typically the card number.
+   */
   const handleAddNewCard = (cardData: { cardNumber: string }) => {
     const newCard: PaymentCardOption = {
       id: `card_${Date.now()}`,
@@ -44,41 +70,51 @@ const AddFund = () => {
     methods.setValue("cardId", newCard.id);
   };
   return (
-    <FormContainer
-      methods={methods}
-      onSubmit={handleSubmit}
-      className="flex flex-col h-full"
-    >
-      <div className="flex-1 overflow-y-auto px-3 space-y-3">
-        <InputField
-          label="Amount"
-          name="amount"
-          placeholder="Enter Amount e.g., $10"
-          required
-          rules={{ validate: (v: string) => validateAmount(v) }}
-        />
-        <div className="space-y-3">
-          <PaymentMethod
-            name="cardId"
-            label="Select Payment Method"
+    <>
+      <FormContainer
+        methods={methods}
+        onSubmit={handleSubmit}
+        className="flex flex-col h-full"
+      >
+        <div className="flex-1 overflow-y-auto px-3 space-y-3">
+          <InputField
+            label="Amount"
+            name="amount"
+            placeholder="Enter Amount e.g., $10"
             required
-            options={paymentOptions}
-            onAddNew={handleAddNewCard}
-            isShowRadio={true}
-            rules={{ validate: (v: SelectOption) => validatePaymentMethods(v) }}
+            rules={{ validate: (v: string) => validateAmount(v) }}
           />
+          <div className="space-y-3">
+            <PaymentMethod
+              name="cardId"
+              label="Select Payment Method"
+              required
+              options={paymentOptions}
+              onAddNew={handleAddNewCard}
+              isOpen={isOpen}
+              isShowRadio={true}
+              setIsOpen={setIsOpen}              
+              rules={{
+                validate: (v: SelectOption) => validatePaymentMethods(v),
+              }}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="bg-white ">
-        <Button
-          type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-        >
-          Add Fund
-        </Button>
-      </div>
-    </FormContainer>
+        <div className="bg-white ">
+          <Button
+            type="submit"             
+            className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          >
+            Add Fund
+          </Button>
+        </div>
+      </FormContainer>
+      <AddPaymentMethod
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+    </>
   );
 };
 

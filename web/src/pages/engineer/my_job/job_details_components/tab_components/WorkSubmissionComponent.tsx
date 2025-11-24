@@ -12,6 +12,7 @@ import SignatureField from "@/shared/components/commonUI/inputs/SignatureField";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -42,6 +43,7 @@ const WorkSubmissionComponent: React.FC<{
     rating,
     reviewComment,
   } = workSubmissions;
+  const { showPopup } = usePopupStore();
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -61,18 +63,33 @@ const WorkSubmissionComponent: React.FC<{
     { label: "Date(s) of Work", value: workDates },
     { label: "Work Start Date & Time", value: startTime },
     { label: "Work End Date & Time", value: endTime },
-    // {
-    //   label: "Task Carried out at the site?",
-    //   value: onsiteTask ? "Yes" : "No",
-    // },
   ];
 
   const FormCtx = useForm();
 
-  const handleSubmit = () => {
-    console.log("Submitted");
-    toast.success("Work submission submitted successfully!");
-    navigate(absoluteUrls.engineer.home.my_jobs);
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Submit Work",
+      body: "Are you sure you want to submit this work?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, submit",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Work submission submitted successfully!");
+            close(true);
+            navigate(absoluteUrls.engineer.home.my_jobs);
+            console.log("Submitted");
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -126,9 +143,21 @@ const WorkSubmissionComponent: React.FC<{
               accept=".pdf"
               validatePDF
             />
-            <TextareaInput name="notes" label="Technician notes (if any)" required rules={validateDescription(50, 2000, "Technician notes")} />
-            <SignatureField name="signature" label="Technician Signature" required accept=".png,.jpg,.jpeg"  />
-            <Button type="submit" className="px-4 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
+            <TextareaInput
+              name="notes"
+              label="Technician notes (if any)"
+              rules={validateDescription(50, 2000, "Technician notes")}
+            />
+            <SignatureField
+              name="signature"
+              label="Technician Signature"
+              required
+              accept=".png,.jpg,.jpeg"
+            />
+            <Button
+              type="submit"
+              className="px-4 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
+            >
               Submit Work
             </Button>
           </>

@@ -1,12 +1,13 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm, Controller } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import { toast } from "react-toastify";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -22,6 +23,7 @@ const AddExperiences = () => {
    * @param {AddExperiencesFormData} data - The validated form data.
    */
   const handleSubmit = (data: ExperiencesFormData) => {
+    toast.success("Experience Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: integrate submission logic here (e.g., API call)
     // Example: await api.experiences.create(data);
@@ -37,7 +39,7 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: null,
+      startDate: new Date(),
       endDate: null,
     },
     mode: "onSubmit",
@@ -87,45 +89,25 @@ const AddExperiences = () => {
           options={employmentTypeOptions}
           required
         />
-
-        <Controller
+        <DatePickerInput
           name="startDate"
-          control={methods.control}
+          label="Start Date"
+          isShowLabel={false}
+          placeholder="Start date"
+          required
+          maxDate={new Date()}
           rules={{
             validate: (value) =>
               validateDateRange(value, methods.getValues("endDate")),
           }}
-          render={({ field, fieldState: { error } }) => (
-            <>
-              <DatePickerInput
-                label="Start Date"
-                isShowLabel={false}
-                placeholder="Start date"
-                value={field.value}
-                onChange={field.onChange}
-                minDate={new Date(1970, 0, 1)}
-                maxDate={new Date()}
-              />
-              {error && <p className="text-red-600 text-sm">{error.message}</p>}
-            </>
-          )}
         />
-        <Controller
+        <DatePickerInput
           name="endDate"
-          control={methods.control}
-          render={({ field }) => (
-            <DatePickerInput
-              label="End Date"
-              isShowLabel={false}
-              placeholder="End date (optional)"
-              value={field.value}
-              onChange={(date) => {
-                field.onChange(date);
-                methods.trigger("startDate"); // Re-validate start date
-              }}
-              minDate={methods.getValues("startDate") || new Date(1970, 0, 1)}
-            />
-          )}
+          label="End Date"
+          isShowLabel={false}
+          placeholder="End date (optional)"
+          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+          rules={{ onChange: () => methods.trigger("startDate") }}
         />
       </div>
 

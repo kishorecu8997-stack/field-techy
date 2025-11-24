@@ -1,9 +1,9 @@
-import { absoluteUrls } from "@/config/urls";
+import React from "react";
+import type { NotificationProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import type { NotificationProps } from "../types";
+import { absoluteUrls } from "@/config/urls";
 
 interface NotificationItemProps {
   notification: NotificationProps;
@@ -16,8 +16,8 @@ interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
 }) => {
-  //this is for testing purpose
-  const index = "7";
+  //this is for testing purpose, will be removed later
+  const index = "10";
 
   const {
     type,
