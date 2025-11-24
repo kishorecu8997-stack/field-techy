@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import { FaCog, FaSignOutAlt, FaUser, FaWallet } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
-import LogoutConfirmationPopup from "@/pages/client/auth/LogoutConfirmationPopup";
-import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import { assetsConfig } from "@/assets";
-import { useForm } from "react-hook-form";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
-import { RiLockPasswordFill } from "react-icons/ri";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import ProfileCard from "@/shared/components/commonUI/ProfileCard";
+import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  FaChevronRight,
+  FaCog,
+  FaSignOutAlt,
+  FaUser,
+  FaWallet,
+} from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -47,7 +51,6 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-  const { goToLogin } = useHomeNavigation();
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({
@@ -60,11 +63,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     {
       label: "Manage Proposal",
       icon: IoDocumentText,
-      key: "proposal",
-      onClick: () => {
-        navigate(absoluteUrls.client.home.manage_proposal);
-        onClose();
-      },
+      key: "proposal",     
     },
     { label: "Company Information", icon: FaUser, key: "company" },
     { label: "Documents", icon: IoDocumentText, key: "document" },
@@ -88,8 +87,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Michel Brown"
+            avatarUrl={assetsConfig.images.users.user}
+            name="Nick Wilson"
             title="Software Engineer"
             rating={4}
             reviewCount={10}
@@ -160,7 +159,10 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
           <LogoutConfirmationPopup
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            onConfirm={() => goToLogin()}
+            onConfirm={() => {
+              onClose();
+              navigate(absoluteUrls.client.auth.login);
+            }}
             onCancel={() => setIsOpen(false)}
           />
         </div>

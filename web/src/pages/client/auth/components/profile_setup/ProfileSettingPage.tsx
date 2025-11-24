@@ -8,9 +8,10 @@ import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import { FaAngleLeft } from "react-icons/fa";
 import AllowAccessPopup from "../AccessPopup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
 import type { CompleteRegistrationData } from "./types";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * A multi-step registration form component that guides users through
@@ -31,6 +32,7 @@ const CorporateMultiStepRegistration = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [accessPopup, setAccessPopup] = useState<boolean>(false);
   const { role } = useParams<{ role?: string }>();
+  const navigate=useNavigate()
 
   const methods = useForm<CompleteRegistrationData>({
     mode: "onSubmit",
@@ -131,6 +133,7 @@ const CorporateMultiStepRegistration = () => {
    * @param {CompleteRegistrationData} data - The fully collected registration data
    */
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
+    
     setIsSubmitting(true);
     try {
       // MOCK API CALL (replace with real fetch when backend is ready)
@@ -141,7 +144,7 @@ const CorporateMultiStepRegistration = () => {
       setAccessPopup(true);
 
       // Simulate success
-      // navigate("/client/dashboard");
+       navigate(absoluteUrls.client.auth.login);
     } catch (error) {
       console.error("Network error:", error);
     } finally {
@@ -233,13 +236,7 @@ const CorporateMultiStepRegistration = () => {
             </Button>
           </div>
         </div>
-      </FormContainer>
-      {accessPopup && (
-        <AllowAccessPopup
-          accessPopup={accessPopup}
-          setAccessPopup={setAccessPopup}
-        />
-      )}
+      </FormContainer>      
     </>
   );
 };

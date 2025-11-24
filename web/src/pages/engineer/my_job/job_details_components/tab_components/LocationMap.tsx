@@ -28,12 +28,15 @@ const LocationMap = () => {
             SPOC Details
           </h3>
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Work location is at:</span> 3517 W.
-            Gray St. Utica, Pennsylvania 57867
+            <span className="font-medium">Nick Wilson</span> work location: 3517
+            W. Gray St. Utica, Pennsylvania 57867
           </p>
         </div>
         <MapComponent
-          initialPosition={[exampleMarkers.position[0], exampleMarkers.position[1]]} // Coordinates for Utica, NY
+          initialPosition={[
+            exampleMarkers.position[0],
+            exampleMarkers.position[1],
+          ]} // Coordinates for Utica, NY
           initialZoom={exampleMarkers.maxZoom} // Zoom level appropriate for street view
           markers={[exampleMarkers]}
           onMapClick={handleMapClick}

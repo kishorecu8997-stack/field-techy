@@ -53,10 +53,9 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   onEdit,
   onDelete,
   id,
-}) => { 
-
+}) => {
   const renderPreview = (doc: Document) => {
-    if (doc.fileType === "PDF" && doc.previewUrl) {        
+    if (doc.fileType === "PDF" && doc.previewUrl) {
       return <PDFPreview url={doc.previewUrl} />;
     }
 

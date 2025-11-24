@@ -1,11 +1,11 @@
 import React, { useState,  useMemo } from "react";
 import JobCard from "./components/JobCard";
-import Header from "@/shared/components/ClientHeader";
 import type { Job } from "./types";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { jobData } from "@/dummy_data/myJobs";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
+import ClientHeader from "./components/ClientHeader";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -29,8 +29,10 @@ const jobFilters = ['All Jobs', 'In-Progress', 'Completed', 'Posted', 'Hold'];
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-              <Header currentPath="My Jobs" />
+              <ClientHeader currentPath="My Jobs" />              
             </div>
+            
+
             <div className="space-y-6">
               <FilterButton
                 activeFilter={activeFilter}

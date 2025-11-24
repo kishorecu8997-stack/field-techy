@@ -2,6 +2,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for editing a document.
@@ -27,6 +28,7 @@ const EditDocument = () => {
    */
   const onSubmit = (data: EditDocumentFormData) => {
     console.log("Form submitted with updated data:", data);
+    toast.success("Document Updated Successfully");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

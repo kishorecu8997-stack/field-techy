@@ -282,24 +282,45 @@ export const validateDateRange = (
   return true;
 };
 
+
+
 export const validateFilterDateRange = (
   startDate: Date | null,
   endDate: Date | null
-) => {
+): true | string => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Optional: normalize to start of day for comparison
+
   if (!startDate) {
     return "Start date is required";
   }
 
-  if (startDate > new Date()) {
+  if (!endDate) {
+    return "End date is required";
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Normalize time part if you only care about dates (optional)
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  if (start > today) {
     return "Start date cannot be in the future";
   }
 
-  if (endDate && startDate > endDate) {
-    return "Start date must be before the end date";
+  if (end > today) {
+    return "End date cannot be in the future";
+  }
+
+  if (start > end) {
+    return "Start date cannot be after end date";
   }
 
   return true;
 };
+
 
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
@@ -325,7 +346,6 @@ export const validateRate = (value: string) => {
 
   return true;
 };
-
 
 export const validatePortfolioLink = (value: string) => {
   if (!value) return "Portfolio link is required";
@@ -382,20 +402,24 @@ export const validatePortfolioLink = (value: string) => {
 
     // Block dangerous or irrelevant domains
     const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
-    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    const suspiciousKeywords =
+      /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
     if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
       return "Domain is not allowed";
     }
-
     // Normalize path: must be clean and minimal
     const path = url.pathname;
 
     // Define allowed profiles
     const isGitHub =
-      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+      hostname === "github.com" &&
+      /^\/[a-zA-Z0-9._-]+$/.test(path) &&
+      !path.includes("..");
 
     // Allow /in/username with an optional trailing slash
-    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+    const isLinkedIn =
+      hostname === "www.linkedin.com" &&
+      /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
 
     const isExample = hostname === "example.com" && path === "/";
 

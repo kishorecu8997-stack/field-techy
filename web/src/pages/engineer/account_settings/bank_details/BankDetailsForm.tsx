@@ -69,7 +69,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
       <div className="mt-auto flex justify-end">
         <Button
           type="submit"
-          className="bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
+          className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
         >
           {formType === "add" ? "Add Account" : "Save Bank Details"}
         </Button>
