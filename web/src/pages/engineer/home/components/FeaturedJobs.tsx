@@ -56,7 +56,7 @@ const FeatureJobCard: React.FC<Job> = ({
             </p>
           </div>
         </div>
-        <button
+        <div
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -70,7 +70,7 @@ const FeatureJobCard: React.FC<Job> = ({
           ) : (
             <icons.bookmark className="h-4 w-4" />
           )}
-        </button>
+        </div>
       </div>
 
       {/* Tags section - theme-aware background */}
