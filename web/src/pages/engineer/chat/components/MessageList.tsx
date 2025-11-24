@@ -20,7 +20,11 @@ export const MessageList = ({ users, selectedUserId, onSelectUser }: Props) => {
       {users.map((u) => (
         <MessageItem
           key={u.id}
-          user={u}
+          lastMessage={u.lastMessage}
+          timestamp={u.timestamp}
+          unreadCount={u.unreadCount}
+          isRead={u.isRead}
+           user={{ name: u.name}}
           active={selectedUserId === u.id}
           onClick={() => onSelectUser(u)}
         />

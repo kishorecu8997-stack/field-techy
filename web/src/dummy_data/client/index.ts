@@ -143,10 +143,35 @@ export const TemplateData = [
 ];
 
 
+
 export const users: ChatUser[] = [
-  { id: 1, name: "Jack Promp", avatar: null },
-  { id: 2, name: "Emily Stone", avatar: null },
-  { id: 3, name: "Robert Cole", avatar: null },
+  {
+    id: 1,
+    name: "Employees Task",
+    avatar: null,
+    lastMessage: "Okay, it's all noted.",
+    timestamp: "Yesterday",
+    unreadCount: 4,
+    isRead: false,
+  },
+  {
+    id: 2,
+    name: "Daily Report",
+    avatar: null,
+    lastMessage: "Okay, it's all noted.",
+    timestamp: "Yesterday",
+    unreadCount: 0,
+    isRead: true,
+  },
+  {
+    id: 3,
+    name: "Robert Cole",
+    avatar: null,
+    lastMessage: "Thanks for the update.",
+    timestamp: "Today",
+    unreadCount: 0,
+    isRead: true,
+  },
 ];
 
 export const messages: ChatMessage[] = [
@@ -202,28 +227,28 @@ export const messages: ChatMessage[] = [
     timestamp: "15:10",
   },
   {
-    id: 51,
+    id: 52,
     userId: 2,
     fromMe: false,
     message: "Hi, did you receive my resume?",
     timestamp: "15:10",
   },
   {
-    id: 51,
+    id: 53,
     userId: 2,
     fromMe: false,
     message: "Hi, did you receive my resume?",
     timestamp: "15:10",
   },
   {
-    id: 51,
+    id: 54,
     userId: 2,
     fromMe: false,
     message: "Hi, did you receive my resume?",
     timestamp: "15:10",
   },
   {
-    id: 51,
+    id: 55,
     userId: 2,
     fromMe: false,
     message: "Hi, did you receive my resume?",
