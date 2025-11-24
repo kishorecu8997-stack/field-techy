@@ -217,6 +217,7 @@ const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
 const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 /**
  * Configures the application's routing structure using React Router.
@@ -305,6 +306,10 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
     ],
   },
 

@@ -84,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 max-w-[500px]">
         {/* <Link to={absoluteUrls.engineer.home.search_result}> */}
-          <JobSearchBar />
+        <JobSearchBar />
         {/* </Link> */}
       </div>
 
@@ -142,13 +142,16 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
-        <button className="relative p-2 text-gray-600 hover:text-gray-900">
+        <div
+          className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          //  onClick={() => navigate(absoluteUrls.engineer.home.chat)}
+        >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
             3
           </span>
-        </button>
-        <button
+        </div>
+        <div
           className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
@@ -156,7 +159,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           }}
         >
           <FaBell size={20} />
-        </button>
+        </div>
         <button
           onClick={onDrawerToggle}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
