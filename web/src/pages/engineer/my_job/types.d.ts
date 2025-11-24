@@ -31,6 +31,7 @@ export interface MyJobsHeaderProps {
   isShowBreadcrumb?: boolean;
   description?: string;
   isShowSort?: boolean;
+  isReport?:boolean;
 }
 
 /**

@@ -56,3 +56,32 @@ export interface PaymentCardOption {
   name: string;
 }
 
+
+export type FormDataPostJob = {
+  jobTitle: string;
+  jobDescription: string;
+  jobType: string;
+  country: string;
+  state: string;
+  city: string;
+  startDate: Date | null;
+  startTime?: string;
+  numberOfVacancy: string;
+  timePeriod: string;
+  skillsRequired: string;
+  requirements: string;
+  otherInfo: string;
+  toolName: string;
+  toolImage: File | null;
+  additionalBudget: string;
+  experienceLevel: string;
+  engagementModel: string;
+  projectDeadline: Date | null;
+  milestoneStructure: string;
+  attachments: File | null;
+  jobVisibility: string;
+  //Review job post
+  urgencyLevel: string;
+  consent: boolean;
+  paymentMethod: string;
+};

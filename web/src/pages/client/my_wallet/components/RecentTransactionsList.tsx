@@ -176,8 +176,8 @@ return(
       </Popup>
       <Popup
         open={isFilterPopupOpen}
-        onClose={() => setIsFilterPopupOpen(false)}
-        width="sm:max-w-xl"
+        onClose={() => setIsFilterPopupOpen(false)}       
+        inputClassName = "sm:max-w-xl sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto"
       >        
         <Filter
           isOpen={isFilterPopupOpen}

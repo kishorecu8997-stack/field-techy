@@ -78,12 +78,7 @@ const ClientForgetPassword = React.lazy(
 const ClientResetPassword = React.lazy(
   () => import("@/pages/client/auth/components/ResetPassword")
 );
-const ClientMyJobsPage = React.lazy(
-  () => import("@/pages/client/my_job_client")
-);
-const ClientDashboard = React.lazy(
-  () => import("@/pages/client/dashboard/Dashboard")
-);
+
 const ClientAccountType = React.lazy(
   () => import("@/pages/client/auth/components/AccountType")
 );
@@ -100,16 +95,6 @@ const ClientBackgroundVerification = React.lazy(
 );
 const ClientSetPassword = React.lazy(
   () => import("@/pages/client/auth/components/profile_setup/SetPassword")
-);
-const ClientExploreEngineers = React.lazy(
-  () => import("@/pages/client/explore_engineer")
-);
-const ClientManageProposal = React.lazy(
-  () => import("@/pages/client/manage_proposal")
-);
-const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job"));
-const ClientSearchResult = React.lazy(
-  () => import("@/pages/client/search_result")
 );
 
 //admin-dashboard-layout
@@ -218,6 +203,16 @@ const ManageJobView = React.lazy(
 );
 const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
+
+const ClientMyJobsPage = React.lazy(() => import("@/pages/client/my_job_client"));
+const ClientDashboard = React.lazy(() => import("@/pages/client/dashboard/Dashboard"));
+const ClientManageProposal = React.lazy(() => import("@/pages/client/manage_proposal"));
+const ClientPostJobPage = React.lazy(() => import("@/pages/client/post_job/MultiStepPostJob"));
+const ClientSearchResult = React.lazy(() => import("@/pages/client/search_result"));
+const ClientExploreEngineers = React.lazy(() => import("@/pages/client/explore_engineer"));
+const ClientExploreEngDetails = React.lazy(() => import("@/pages/client/explore_engineer/components/profile/EngineerProfile"));
+const ClientJobInvite = React.lazy(() => import("@/pages/client/explore_engineer/components/invite_job/InviteJob"));
+
 
 /**
  * Configures the application's routing structure using React Router.
@@ -377,7 +372,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientDashboard),
       },
       {
-        path: urls.client.home.explore_engineers,
+        path: urls.client.home.client_Explore_engineers,
         element: withSuspense(ClientExploreEngineers),
       },
       {
@@ -392,6 +387,27 @@ export const routes = createBrowserRouter([
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
       },
+       {
+        path: urls.client.home.client_Explore_engineers_details,
+        element: withSuspense(ClientExploreEngDetails),
+      },
+    ],
+  },
+
+  // Client Main Routes
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
+    children: [
+      { index: true, element: withSuspense(ClientMyJobsPage) },
+      { path: urls.client.home.my_jobs, element: withSuspense(ClientMyJobsPage) },
+      { path: urls.client.home.dashboard, element: withSuspense(ClientDashboard) },
+      { path: urls.client.home.client_Explore_engineers, element: withSuspense(ClientExploreEngineers) },
+      { path: urls.client.home.post_JobPage, element: withSuspense(ClientPostJobPage) },
+      { path: urls.client.home.manage_proposal, element: withSuspense(ClientManageProposal) },
+      { path: urls.client.home.search_result, element: withSuspense(ClientSearchResult) },
+      { path: urls.client.home.client_Explore_engineers_details, element: withSuspense(ClientExploreEngDetails)},
+      {path: urls.client.home.ClientJobInvite, element: withSuspense(ClientJobInvite)},      
     ],
   },
 

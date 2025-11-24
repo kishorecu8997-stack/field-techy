@@ -85,6 +85,7 @@ export default function EditEngineer() {
         const data = methods.getValues();
         console.log("Full form data:", data);
         toast.success("Engineer details updated successfully!");
+        navigate(absoluteUrls.admin.home.manage_engineer);
         methods.reset();
       } finally {
         setIsSubmitting(false);

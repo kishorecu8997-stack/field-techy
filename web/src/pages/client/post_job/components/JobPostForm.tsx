@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import FormSection from "./FormSection";
 import {
   JOB_TYPES,
@@ -11,93 +11,42 @@ import {
   ENGAGEMENT_MODELS,
   JOB_VISIBILITY,
 } from "@/dummy_data/jobFormOptions";
-import JobReviewPage from "./JobReviewPage";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { Controller, useForm } from "react-hook-form";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import type { FormData } from "../types";
 import { TimeInput } from "@/shared/components/commonUI/inputs/TimeInput";
 import {
   validateJobTitile,
-  validateDateRange,
   validateJobTimePeriod,
   validateAlphabeticText,
   validateCurrencyText,
-  validateProjectDeadline,
   validateAlphabeticTextArea,
+  validateCurrentOrFutureDate,
 } from "../Validates";
+
 /**
- * `JobPostForm` is a comprehensive form for clients to post new jobs.
- * It is structured into multiple sections covering basic information, requirements,
- * hardware tools, and rate details.
- * The form uses `react-hook-form` for state management and validation.
- * On successful validation and submission, it transitions to a `JobReviewPage`
- * to allow the user to review the details before final posting.
- * @returns {React.ReactElement} The rendered job posting form.
+ * @description A form component for creating a new job post.
+ * This component handles the first step of the multi-step job posting process,
+ * collecting basic information, requirements, and other details about the job.
+ * It uses `react-hook-form` for form state management and validation.
  */
 const JobPostForm: React.FC = () => {
-  const method = useForm<FormData>({
-    defaultValues: {
-      jobTitle: "",
-      jobDescription: "",
-      jobType: "",
-      country: "",
-      state: "",
-      city: "",
-      startDate: null,
-      startTime: "",
-      numberOfVacancy: "",
-      timePeriod: "",
-      skillsRequired: "",
-      requirements: "",
-      otherInfo: "",
-      toolName: "",
-      toolImage: null,
-      additionalBudget: "",
-      experienceLevel: "",
-      engagementModel: "",
-      projectDeadline: null,
-      milestoneStructure: "",
-      attachments: null,
-      jobVisibility: "",
-    },
-    mode: "onSubmit",
-  });
+  /**
+   * @description Initializes `react-hook-form` with default values and submission mode.
+   * This hook provides methods for form registration, submission, and state management.
+   */
+ 
 
-  const [showReview, setShowReview] = useState<boolean>(false);
-
-  const handleSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
-    setShowReview(true);
-  };
-
+  /**
+   * @description A helper function to generate consistent CSS classes for form inputs.
+   * @returns {string} A string of Tailwind CSS classes for styling input fields.
+   */
   const inputClass = () =>
     "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
 
-  if (showReview) {
-    return (
-      <div className="max-w-6xl mx-auto p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
-        <JobReviewPage
-          formData={method.getValues()}
-          onBack={() => setShowReview(false)}
-          onSubmit={() => {
-            alert("Job posted successfully!");
-            // TODO: Add actual submission logic
-          }}
-        />
-      </div>
-    );
-  }
-
   return (
-    <FormContainer
-      methods={method}
-      onSubmit={handleSubmit}
-      className="flex flex-col h-full"
-    >
+    <>
       <div className="w-full p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         {/* Basic Information */}
         <FormSection title="Basic Information">
@@ -123,10 +72,10 @@ const JobPostForm: React.FC = () => {
                     validateAlphabeticTextArea(v, {
                       minLength: 50,
                       maxLength: 2000,
-                      required: true,                      
+                      required: true,
                     }),
-                }}  
-                required               
+                }}
+                required
               />
             </div>
 
@@ -171,29 +120,16 @@ const JobPostForm: React.FC = () => {
             </div>
 
             <div>
-              <div className="relative">
-                <Controller
-                  name="startDate"
-                  rules={{
-                    validate: (value) =>
-                      validateDateRange(value, method.getValues("startDate")),
-                  }}
-                  control={method.control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <DatePickerInput
-                        label="Start Date"
-                        placeholder="Select start date"
-                        {...field}
-                        required
-                      />
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
+              <DatePickerInput
+                name="startDate"
+                label="Start Date"
+                required
+                minDate={new Date(1970, 0, 1)}
+                // maxDate={new Date(2030, 11, 31)}
+                rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
+              />
             </div>
 
             <div>
@@ -247,15 +183,15 @@ const JobPostForm: React.FC = () => {
           <TextareaInput
             label="Requirements / Deliverables"
             name="requirements"
-            placeholder="Describe here..."  
+            placeholder="Describe here..."
             rules={{
-                  validate: (v: string) =>
-                    validateAlphabeticTextArea(v, {
-                      minLength: 50,
-                      maxLength: 2000,
-                      required: true,
-                    }),
-                }}          
+              validate: (v: string) =>
+                validateAlphabeticTextArea(v, {
+                  minLength: 50,
+                  maxLength: 2000,
+                  required: true,
+                }),
+            }}
             required
           />
         </FormSection>
@@ -267,13 +203,13 @@ const JobPostForm: React.FC = () => {
             name="otherInfo"
             placeholder="Describe here..."
             rules={{
-                  validate: (v: string) =>
-                    validateAlphabeticTextArea(v, {
-                      minLength: 50,
-                      maxLength: 2000,
-                      required: true,
-                    }),
-                }}  
+              validate: (v: string) =>
+                validateAlphabeticTextArea(v, {
+                  minLength: 50,
+                  maxLength: 2000,
+                  required: true,
+                }),
+            }}
             required
           />
         </FormSection>
@@ -319,9 +255,8 @@ const JobPostForm: React.FC = () => {
                 validate: (v: string) =>
                   validateCurrencyText(v, {
                     minLength: 2,
-                    maxLength: 50,
+                    maxLength: 5,
                     required: true,
-                    maxSpaces: 10,
                   }),
               }}
               required
@@ -357,31 +292,17 @@ const JobPostForm: React.FC = () => {
             />
 
             <div>
-              <div className="relative">
-                <Controller
-                  name="projectDeadline"
-                  rules={{
-                    validate: (value) =>
-                      validateProjectDeadline(
-                        value,                     
-                      ),
-                  }}
-                  control={method.control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <DatePickerInput
-                        label="Project Deadline"
-                        placeholder="Select project deadline"
-                        required
-                        {...field}
-                      />
-                      {error && (
-                        <p className="text-red-600 text-sm">{error.message}</p>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
+              <DatePickerInput
+                name="projectDeadline"
+                label="Project Deadline"
+                placeholder="Project Deadline"
+                required
+                minDate={new Date(1970, 0, 1)}
+                // maxDate={new Date(2030, 11, 31)}
+                rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
+              />
             </div>
 
             <div className="md:col-span-2">
@@ -420,15 +341,8 @@ const JobPostForm: React.FC = () => {
             </div>
           </div>
         </FormSection>
-
-        <button
-          type="submit"
-          className="mt-6 px-6 py-3 rounded-lg font-medium bg-emerald-700 hover:bg-emerald-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
-        >
-          Review Job Posting
-        </button>
       </div>
-    </FormContainer>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import PricingModel from "./PricingModel";
 import { useLocation, useNavigate } from "react-router-dom";
 import RateCardDetails from "./RateCardDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * EditRateCard Component
@@ -73,6 +74,7 @@ const EditRateCard = () => {
   });
   const onSubmit = (data: any) => {
     console.log(data);
+    toast.success("Rate card updated successfully")
   };
 
   const isEdit = path.includes("/edit");
@@ -106,7 +108,7 @@ const EditRateCard = () => {
 
         {isEdit && (
           <div className="flex justify-end">
-            <Button className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
+            <Button type="submit" className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
               Submit
             </Button>
           </div>

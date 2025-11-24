@@ -24,6 +24,7 @@ export const urls = {
   engineer: {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
+    terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
 
     home: {
       dashboard: "dashboard",
@@ -53,13 +54,15 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
-      explore_engineers: "explore-engineers",
+      client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
+      client_Explore_engineers_details: "explore-engineers/details",
+      ClientJobInvite: "explore-engineers/select-jobs",
     },
     auth: {
       login: "login",
@@ -166,13 +169,15 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
-      explore_engineers: `${BASE.CLIENT}/explore-engineers`,
+      client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
       search_result: `${BASE.CLIENT}/search-result`,
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
+      ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
     },
   },
 

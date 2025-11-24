@@ -97,6 +97,7 @@ export default function AddEngineer() {
         const data = methods.getValues();
         console.log("Full form ", data);
         toast.success("Engineer added successfully!");
+        navigate(absoluteUrls.admin.home.manage_engineer);
         methods.reset();
       } finally {
         setIsSubmitting(false);

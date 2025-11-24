@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import { icons } from "@/config/icons";
+import { toast } from "react-toastify";
 
 export type LoginFormData = {
   phone: string;
@@ -32,7 +33,7 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToDashboard } = useHomeNavigation();
+  const { goToHome } = useHomeNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
@@ -105,7 +106,10 @@ const LoginWithNumber = ({
             header="Verify Mobile Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={goToDashboard}
+            handleNavigate={() => {
+              goToHome();
+              toast.success("Logged in successfully");
+            }}
           />
         </Popup>
       </div>
