@@ -5,7 +5,13 @@ interface Props {
   active: boolean;
   onClick: () => void;
 }
-
+/**
+ * The item for the chat message.
+ * @param user - The user to display in the item.
+ * @param active - Whether the item is active.
+ * @param onClick - The function to handle click.
+ * @returns The chat message item.  
+ */
 export const MessageItem = ({ user, active, onClick }: Props) => {
   return (
     <div

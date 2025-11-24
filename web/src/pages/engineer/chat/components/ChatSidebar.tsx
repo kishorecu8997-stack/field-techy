@@ -7,6 +7,13 @@ interface Props {
   onSelectUser: (user: ChatUser) => void;
 }
 
+/**
+ * The sidebar for the chat page.
+ * @param users - The list of users to display in the sidebar.
+ * @param selectedUserId - The ID of the selected user.
+ * @param onSelectUser - The function to handle user selection.
+ * @returns The chat sidebar.  
+ */
 export const ChatSidebar = ({ users, selectedUserId, onSelectUser }: Props) => {
   return (
     <aside className="w-80 border-r bg-white flex flex-col">

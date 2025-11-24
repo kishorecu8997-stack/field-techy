@@ -4,6 +4,10 @@ import { ChatWindow } from "./components/ChatWindow";
 import type { ChatUser } from "./types";
 import { messages, users } from "@/dummy_data/client";
 
+/**
+ * The layout for the chat page.
+ * @returns The chat layout.  
+ */
 export default function ChatLayout() {
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(users[0]);
 

@@ -6,6 +6,12 @@ interface Props {
   messages: ChatMessage[];
 }
 
+/**
+ * The window for the chat page.
+ * @param user - The user to display in the window.
+ * @param messages - The list of messages to display in the window.
+ * @returns The chat window.  
+ */
 export const ChatWindow = ({ user, messages }: Props) => {
   if (!user)
     return <div className="flex-1 flex items-center justify-center">Select user</div>;
