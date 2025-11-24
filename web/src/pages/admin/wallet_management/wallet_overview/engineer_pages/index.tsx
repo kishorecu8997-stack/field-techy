@@ -9,6 +9,7 @@ import type { EngineerPage } from "../types";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Engineer Component
@@ -18,6 +19,34 @@ import { absoluteUrls } from "@/config/urls";
  */
 const EngineerWallet: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteJob = async (data: EngineerPage) => {
+    await showPopup({
+      title: "Delete Engineer",
+      body: "Are you sure you want to delete this engineer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", data);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<EngineerPage>[] = [
     {
@@ -58,7 +87,10 @@ const EngineerWallet: React.FC = () => {
           >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -69,7 +101,7 @@ const EngineerWallet: React.FC = () => {
     <div className="w-full h-full flex flex-col gap-3 ">
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
         <SearchInput />
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<EngineerPage>
             columns={columns}
             data={engineerData}

@@ -1,4 +1,4 @@
-import { options, PaymentData } from "@/dummy_data/admin";
+import { PaymentData } from "@/dummy_data/admin";
 import StateCard from "@/shared/components/AdminCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -8,6 +8,8 @@ import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { PaymentProps } from "./types";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import type { adminJobsStatus } from "../jobs/types";
 
 /**
  * ManagePayment Component
@@ -27,7 +29,37 @@ import { JobStatus } from "@/dummy_data/admin/manageEngineer";
  * @returns {JSX.Element} The rendered ManagePayment component.
  */
 const ManagePayment: React.FC = () => {
-  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const [rowStatuses, setRowStatuses] = useState<Record<string, string>>({});
+  const { showPopup } = usePopupStore();
+
+  const handleStatusChange = async (data: PaymentProps) => {
+    if (!data.adminStatus) return;
+    const status = data.adminStatus;
+    await showPopup({
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Payment`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this payment?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("close :", close);
+            // await handlePostAJob(data);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<PaymentProps>[] = [
     {
@@ -87,17 +119,26 @@ const ManagePayment: React.FC = () => {
     {
       key: "adminStatus",
       label: "Admin Status",
-      renderCell: (row: any) => {
+      renderCell: (row: PaymentProps) => {
         return (
           <div className="relative w-full">
             <SelectMenu
               placeholder="Select"
               value={rowStatuses[row.id] || ""}
-              onChange={(value: string | null) => {
+              onChange={(
+                value: string | null | { value: string; label: string }
+              ) => {
+                const statusValue =
+                  typeof value === "string" ? value : value?.value ?? "";
+
                 setRowStatuses((prev) => ({
                   ...prev,
-                  [row.id]: value ?? "",
+                  [row.id]: statusValue,
                 }));
+                handleStatusChange({
+                  ...row,
+                  adminStatus: value as adminJobsStatus,
+                });
               }}
               options={JobStatus}
             />
@@ -109,7 +150,7 @@ const ManagePayment: React.FC = () => {
     {
       key: "action",
       label: "Payment",
-      renderCell: (row: PaymentProps) => (
+      renderCell: () => (
         <div className="flex items-center gap-2">
           <Button
             className="whitespace-nowrap bg-emerald-900"
@@ -124,7 +165,7 @@ const ManagePayment: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
-        <h1 className="text-lg font-semibold ">Manage Payments</h1>
+        <h1 className="text-lg font-semibold">Manage Payments</h1>
         <Button
           className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
           onClick={() => console.log("export csv")}
@@ -133,7 +174,7 @@ const ManagePayment: React.FC = () => {
         </Button>
       </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <div className="max-w-80">
+        <div className="max-w-80 my-2">
           <StateCard title="Total Payment" value={5000} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
@@ -149,23 +190,3 @@ const ManagePayment: React.FC = () => {
 };
 
 export default ManagePayment;
-
-const AdminStatus = ({ row }: { row: string }) => {
-  const [status, setStatus] = useState<string>(row);
-
-  const handleChangeStatus = (value: string) => {
-    setStatus(value);
-  };
-
-  return (
-    <div className="text-sm ">
-      <SelectMenu
-        placeholder="Select Status"
-        className="w-36"
-        options={options}
-        value={status}
-        onChange={() => handleChangeStatus(row)}
-      />
-    </div>
-  );
-};

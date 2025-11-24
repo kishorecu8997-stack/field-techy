@@ -18,8 +18,11 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered DataDeletionPolicy component.
  */
 export default function DataDeletionPolicy() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] =
+    useState(`<p>This policy explains how users can request the removal of their personal data.
+We ensure all deletion requests are processed securely and within the required timeframe.
+Once deleted, the data cannot be recovered and is permanently removed from our systems.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

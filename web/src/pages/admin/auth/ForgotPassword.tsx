@@ -63,7 +63,7 @@ export default function ForgotPassword() {
         >
           <InputField
             name="email"
-            label="Email Email Address"
+            label="Email Address"
             type="text"
             required
             rules={validateEmailRules}

@@ -111,11 +111,10 @@ const HomeClientForm: React.FC = () => {
     },
   ];
   /** Determines if the current active tab is the last tab ("Documents"). */
-  const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Add Client</h1>
+        <h1 className="font-semibold ">Add Client</h1>
         <Button
           variant="solid"
           className=""

@@ -18,8 +18,11 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered CustomerPrivacyPolicy component.
  */
 export default function CustomerPrivacyPolicy() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] =
+    useState(`<p>We value your trust and are committed to safeguarding your personal information.
+This policy explains how customer data is collected, used, and protected.
+We ensure that all information is handled with strict confidentiality and security.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

@@ -18,8 +18,12 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered AboutUs component.
  */
 export default function AboutUs() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] =
+    useState(`<p>We are a dedicated team focused on delivering high-quality services to our customers.
+Our mission is to create innovative solutions that make a meaningful impact.
+With a commitment to excellence, we continuously strive to improve and grow.
+We believe in building long-term relationships based on trust and reliability.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

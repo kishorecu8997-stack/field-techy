@@ -18,8 +18,12 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered CMSLegal component.
  */
 export default function CMSLegal() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] = useState(`<p>
+CMSLegal provides comprehensive legal solutions for modern businesses.<br/><br/>
+Our team delivers trusted guidance across multiple practice areas.<br/><br/>
+We focus on clarity, compliance, and actionable legal insights.<br/><br/>
+Empowering clients with reliable and efficient legal support.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

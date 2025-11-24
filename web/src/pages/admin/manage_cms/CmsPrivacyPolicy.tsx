@@ -18,8 +18,11 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered CMSPrivacyPolicy component.
  */
 export default function CMSPrivacyPolicy() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] =
+    useState(`<p>We are committed to protecting your personal information and ensuring transparency.
+Our Privacy Policy outlines how data is collected, used, and securely stored.
+We only process information necessary to deliver and improve our services.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

@@ -95,11 +95,10 @@ const CorporateClientForm: React.FC = () => {
     },
   ];
 
-  const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Add Client</h1>
+        <h1 className="font-semibold ">Add Client</h1>
         <Button
           variant="solid"
           className=""
@@ -107,8 +106,8 @@ const CorporateClientForm: React.FC = () => {
         >
           Back
         </Button>
-      </div>   
-      
+      </div>
+
       <FormProvider {...methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
           <AdminTabComponent

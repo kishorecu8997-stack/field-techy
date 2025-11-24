@@ -18,8 +18,12 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered TermsAndCondition component.
  */
 export default function TermsAndCondition() {
-  const [value, setValue] = useState("<p>Hello world</p>");
-  const { containerRef } = useQuillEditor({ value, onChange: setValue }); 
+  const [value, setValue] =
+    useState(`<p>These Terms and Conditions outline the rules and guidelines for using our services.
+By accessing our platform, you agree to comply with all stated requirements.
+We reserve the right to update or modify these terms at any time.
+Continued use of our services indicates acceptance of the latest terms.</p>`);
+  const { containerRef } = useQuillEditor({ value, onChange: setValue });
 
   return (
     <div className="w-full h-full flex flex-col">

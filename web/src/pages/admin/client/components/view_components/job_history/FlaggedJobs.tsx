@@ -16,6 +16,7 @@ import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * FlaggedJobs component displays a table of flagged jobs and a chart visualizing related data.
@@ -25,10 +26,50 @@ import { absoluteUrls } from "@/config/urls";
  */
 const FlaggedJobs: React.FC = () => {
   const navigate = useNavigate();
-  /**
-   * Column definitions for the flagged jobs table.
-   * @type {Column<FlaggedJobsProps>[]}
-   */
+  const { showPopup } = usePopupStore();
+
+  const [status, setStatus] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    postedJobsData.forEach((job) => {
+      initial[job.jObID] = Boolean(job.status);
+    });
+    return initial;
+  });
+
+  const toggleStatus = (id: string) => {
+    setStatus((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: FlaggedJobsProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.jObID);
+            // TODO: call your delete API here
+            // await deleteJob(job.jObID);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<FlaggedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -44,16 +85,16 @@ const FlaggedJobs: React.FC = () => {
       key: "status",
       label: "Status",
       renderCell: (row: FlaggedJobsProps) => {
-        const [status, setStatus] = useState<boolean>(row.status);
+        const val = status[row.jObID] ?? row.status;
 
         return (
           <div
             className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
-            onClick={() => setStatus(!status)}
+            onClick={() => toggleStatus(row.jObID)}
           >
-            {status ? "On" : "Off"}
+            {val ? "On" : "Off"}
           </div>
         );
       },
@@ -64,31 +105,25 @@ const FlaggedJobs: React.FC = () => {
       label: "Actions",
       renderCell: (row: FlaggedJobsProps) => (
         <div className="flex items-center gap-2">
-                  <div
-                    onClick={
-                      () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
-                    }
-                    className="p-2 bg-yellow-100 rounded-md"
-                  >
-                    <FiEye className="text-yellow-600 " />
-                  </div>
-                  <div
-                    onClick={
-                      () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
-                    }
-                    className="p-2 bg-blue-100 rounded-md"
-                  >
-                    <CiEdit className="text-blue-600" />
-                  </div>
-                  <div
-                    onClick={
-                      () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
-                    }
-                    className="p-2 bg-red-100 rounded-md"
-                  >
-                    <RiDeleteBin6Line className="text-red-600" />
-                  </div>
-                </div>
+          <div
+            onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+          >
+            <FiEye className="text-yellow-600 " />
+          </div>
+          <div
+            onClick={() => navigate(absoluteUrls.admin.home.manage_categories)}
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+          >
+            <CiEdit className="text-blue-600" />
+          </div>
+          <div
+            onClick={() => handleDeleteJob(row)}
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+          >
+            <RiDeleteBin6Line className="text-red-600" />
+          </div>
+        </div>
       ),
     },
   ];
@@ -154,4 +189,4 @@ const FlaggedJobs: React.FC = () => {
   );
 };
 
-export default FlaggedJobs
+export default FlaggedJobs;
