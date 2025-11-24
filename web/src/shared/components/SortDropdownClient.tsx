@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import type { SortDropdownProps } from "./type";
-import { SORT_OPTIONS, type SortOption } from "@/pages/client/search_result/types";
-
-
+import {
+  SORT_OPTIONS,
+  type SortOption,
+} from "@/pages/client/search_result/types";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 /**
  * SortDropdown Component
@@ -26,28 +28,18 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   ];
   return (
     <div className="relative inline-block">
-      <button
+      <div
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >
         Sort by: {options.find((option) => option.value === sort)?.label}
-        <svg
-          className={`ml-2 h-4 w-4 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+        {isOpen && (
+          <FaChevronUp className="ml-2 h-4 w-4 transition-transform" />
+        )}
+        {!isOpen && (
+          <FaChevronDown className="ml-2 h-4 w-4 transition-transform" />          
+        )}
+      </div>
 
       {isOpen && (
         <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">

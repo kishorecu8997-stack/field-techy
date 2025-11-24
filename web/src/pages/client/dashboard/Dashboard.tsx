@@ -10,6 +10,7 @@ import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import type { Job } from "../search_result/types";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -56,9 +57,12 @@ const Dashboard: React.FC = () => {
                     to={absoluteUrls.client.home.client_Explore_engineers}
                     className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                   >
-                    <button className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                    <Button
+                      variant="link"
+                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer"
+                    >
                       View all
-                    </button>
+                    </Button>
                   </NavLink>
                 </nav>
               </div>
@@ -75,7 +79,6 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
-
                 <NavLink
                   to={absoluteUrls.client.home.my_jobs}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"

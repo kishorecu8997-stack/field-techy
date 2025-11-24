@@ -15,13 +15,19 @@ interface AddEducationProps {
   onClose: () => void;
 }
 
+/**
+ * The AddEducation component renders a form for adding a new education entry.
+ * It uses `react-hook-form` for form management and validation.
+ * @param {AddEducationProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered AddEducation form component.
+ */
 const AddEducation: React.FC<AddEducationProps> = ({}) => {
+
   const handleSubmit = (data: EducationFormData) => {
     toast.success("Education Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
   };
-
   const methods = useForm<EducationFormData>({
     defaultValues: {
       educationLevel: "",

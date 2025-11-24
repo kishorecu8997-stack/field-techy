@@ -75,7 +75,6 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           My Jobs
         </NavLink>
         <div
-          // onClick={() => handleDrawerToggle(DRAWER_COMPONENTS.WALLET)}
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientWallet");
@@ -86,14 +85,11 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </div>
       </div>
 
-      {/* Middle Section: Search Bar - Flexible but not greedy */}
       <div className="flex-1 mx-4 max-w-[500px]">
-        {/* <Link to={absoluteUrls.client.home.search_result}> */}
         <JobSearchBarClient />
-        {/* </Link> */}
+        
       </div>
 
-      {/* Right Section: Icons + Profile Button */}
       <div className="flex items-center space-x-4 md:hidden">
         <button
           onClick={toggleMobileMenu}
@@ -155,13 +151,13 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
 
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
-        <button className="relative p-2 text-gray-600 hover:text-gray-900">
+        <div className="relative p-2 text-gray-600 hover:text-gray-900">
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
             3
           </span>
-        </button>
-        <button
+        </div>
+        <div
           className="p-2 text-gray-600 hover:text-gray-900"
           // onClick={() => {
           //   onDrawerToggle();
@@ -169,8 +165,8 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           // }}
         >
           <FaBell size={20} />
-        </button>
-        <button
+        </div>
+        <div
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientAccount");
@@ -186,7 +182,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />
-        </button>
+        </div>
       </div>
 
       {/* Drawer */}

@@ -2,6 +2,17 @@ import { assetsConfig } from "@/assets";
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * `ProposalListCard` is a React component that displays a summary of an engineer's proposal.
+ * It includes the engineer's name, rating, bid amount, pay type, and availability.
+ * The card is a link that can navigate to a specific job page.
+ *
+ * @param {object} props - The props for the component.
+ * @param {EngineerCardListProps} props.engineer - An object containing the engineer's proposal details.
+ * @param {string} [props.navigateToJob='#'] - The URL to navigate to when the card is clicked. Defaults to '#'.
+ * @returns {React.ReactElement} The rendered proposal list card component.
+ */
+
 const ProposalListCard: React.FC<{
   engineer: EngineerCardListProps;
   navigateToJob?: string;

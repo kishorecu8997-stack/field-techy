@@ -34,13 +34,13 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
                 Are you sure you want to log out of your Field Techy account?
               </p>
             </div>
-            <button
+            <div
               onClick={onClose}
               aria-label="Close"
-              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
             >
               <IoCloseSharp className="h-6 w-6" />
-            </button>
+            </div>
           </div>
         </div>
 

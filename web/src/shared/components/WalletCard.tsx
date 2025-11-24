@@ -1,22 +1,15 @@
+import useDrawerStore from "../store/useDrawerStore";
 import { Button } from "./commonUI/Buttons";
+import Drawer from "./drawer/Drawer";
 
 interface EarningsData {
   balance: number;
 }
-
-/**
- * Props for the WalletCard component.
- */
 interface WalletCardProps {
   earnings: EarningsData;
-  onDrawerToggle: (componentName: string) => void;
+  onDrawerToggle: () => void;
+  isDrawerOpen: boolean;
 }
-
-const WALLET_COMPONENTS = {
-  MY_WALLET: "clientWallet",
-  ADD_FUND: "clientAddFund",
-  RECENT_TRANSACTIONS: "recentTransactions",
-};
 
 /**
  * A card component that displays the user's wallet balance and provides
@@ -27,7 +20,8 @@ const WALLET_COMPONENTS = {
  * @param {WalletCardProps} props - The props for the component.
  * @returns {JSX.Element} The rendered WalletCard component.
  */
-export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle }) => {
+export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle,isDrawerOpen }) => {
+  const { setActiveKey } = useDrawerStore();
     
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -35,7 +29,10 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
         <h3 className="font-semibold text-gray-900 dark:text-white">My Wallet</h3>
         <Button
         variant="text"
-           onClick={()=>onDrawerToggle(WALLET_COMPONENTS.MY_WALLET)}
+           onClick={() => {
+            onDrawerToggle();
+            setActiveKey("clientWallet");
+          }}
           className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
         >
           View all
@@ -56,17 +53,24 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
         <Button 
           variant="primary"
          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
-          onClick={()=>onDrawerToggle(WALLET_COMPONENTS.ADD_FUND)}
+          onClick={() => {
+            onDrawerToggle();
+            setActiveKey("clientAddFund");
+          }}
         >
           Add Fund
         </Button>
         <Button variant="primary"
-          onClick={() => onDrawerToggle(WALLET_COMPONENTS.RECENT_TRANSACTIONS)}
+          onClick={() => {
+            onDrawerToggle();
+            setActiveKey("recentTransactions");
+          }}
           className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
         >
           Transactions
         </Button>
       </div>
+      <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />
     </div>
   );
 };

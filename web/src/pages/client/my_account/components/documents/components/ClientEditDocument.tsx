@@ -48,6 +48,7 @@ const ClientEditDocument = () => {
           name="resume"
           label="Document"
           required
+          placeholder="Add a file"
           accept=".pdf"
           maxPages={5}
           validatePDF={true}

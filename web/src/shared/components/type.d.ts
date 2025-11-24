@@ -39,6 +39,7 @@ interface MapComponentProps {
   initialZoom?: number;
   markers?: MapMarker[];
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
+  viewOnly?: boolean;
 }
 
 /**
@@ -182,4 +183,12 @@ export interface CategoryTagProps {
   label?: string;
   isShowLabel?: boolean;
   required?: boolean;
+}
+
+
+export interface PaymentCardOption {
+  id: string;
+  last4: string;
+  brand: "visa" | "mastercard" | "amex" | "discover" | string;
+  name: string;
 }

@@ -904,6 +904,43 @@ export const validateAlphabeticTextArea = (
 
   return true;
 };
+
+export interface CheckboxValidationOptions {
+  required?: boolean;
+  minSelected?: number;
+  maxSelected?: number;
+}
+
+export const validateCheckboxGroup = (
+  values: (string | number | boolean)[],
+  options: CheckboxValidationOptions = {}
+): string | true => {
+  const { required = true, minSelected = 1, maxSelected = Infinity } = options;
+
+  // Normalize: treat `null`, `undefined`, or non-array as empty
+  const selected = Array.isArray(values)
+    ? values.filter((v) => v !== false && v != null && v !== "")
+    : [];
+
+  if (required && selected.length === 0) {
+    return "At least one option must be selected";
+  }
+
+  if (!required && selected.length === 0) {
+    return true;
+  }
+
+  if (selected.length < minSelected) {
+    return `At least ${minSelected} option(s) must be selected`;
+  }
+
+  if (selected.length > maxSelected) {
+    return `You can select up to ${maxSelected} option(s)`;
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -933,4 +970,5 @@ export default {
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,
+  validateCheckboxGroup,
 };

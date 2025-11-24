@@ -15,9 +15,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { JobHeaderCardProps } from "../types";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
+ * 
+ * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
+ * @returns {JSX.Element} The rendered JobHeaderCard component.
  */
 const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   title,
@@ -28,15 +32,110 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setIsWorkSubmitted,
   setSendProposal,
   isSendProposal,
-  setIsJobAccepted,
   setActiveTab,
+  OfferJobStatus,
+  setOfferJobStatus,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [isAccepted, setIsAccepted] = React.useState(false);
-  const [isStarted, setIsStarted] = React.useState(false);
-  const [isCheckedIn, setIsCheckedIn] = React.useState(false);
-
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmAcceptJob = async () => {
+    await showPopup({
+      title: "Accept Job",
+      body: "Are you sure you want to accept this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, accept",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job accepted successfully");
+            close(true);
+            setOfferJobStatus("accepted");
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmStartJob = async () => {
+    await showPopup({
+      title: "Start Job",
+      body: "Are you sure you want to start this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, start",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job started successfully");
+            close(true);
+            setOfferJobStatus("started");
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmCheckIn = async () => {
+    await showPopup({
+      title: "Check In",
+      body: "Are you sure you want to check in this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, check in",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job checked in successfully");
+            close(true);
+            setOfferJobStatus("checked-in");
+          },
+        },
+      ],
+    });
+  };
+
+ 
+  const handleViewJobPosting = async () => {
+    await showPopup({
+      title: "View Job Posting",
+      body: "Are you sure you want to view this job posting? once viewed, you cannot edit or delete it.",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, view",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            close(true);
+            setSendProposal?.(false)
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <>
@@ -94,7 +193,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 ) : (
                   <div
                     className="text-green-700 hover:underline cursor-pointer"
-                    onClick={() => setSendProposal?.(false)}
+                    onClick={() => handleViewJobPosting()}
                   >
                     View Job posting
                   </div>
@@ -102,14 +201,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
               </div>
             ) : status === JOB_STATUSES.offer ? (
               <div className="flex flex-wrap gap-2 w-fit items-center">
-                {!isAccepted && !isStarted ? (
-                  /* BEFORE ACCEPTING THE JOB */
+                {OfferJobStatus === "initial" ? (
                   <div className="flex flex-row gap-4">
                     <Button
                       className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-                      onClick={() => {
-                        setIsAccepted?.(true);
-                      }}
+                      onClick={() => handleConfirmAcceptJob()}
                     >
                       Accept Job
                     </Button>
@@ -117,8 +213,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsAccepted?.(false);
-                        setIsStarted?.(false);
                         setActiveKey("cancelOffer");
                         setISOpenSidebar(true);
                       }}
@@ -126,14 +220,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       Decline
                     </Button>
                   </div>
-                ) : isAccepted && !isStarted ? (
-                  /* JOB ACCEPTED, READY TO START */
+                ) : OfferJobStatus === "accepted" ? (
                   <div className="flex flex-row gap-4">
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsStarted?.(true);
-                        setIsCheckedIn?.(false);
+                        handleConfirmStartJob();
                       }}
                     >
                       Start Job
@@ -142,8 +234,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setIsAccepted?.(false);
-                        setIsStarted?.(false);
                         setActiveKey("cancelOffer");
                         setISOpenSidebar(true);
                       }}
@@ -151,19 +241,16 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                       Decline
                     </Button>
                   </div>
-                ) : isStarted && !isCheckedIn ? (
-                  /* WORK STARTED, BUT NOT CHECKED IN */
+                ) : OfferJobStatus === "started" ? (
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                     onClick={() => {
-                      setIsJobAccepted?.(true);
-                      setIsCheckedIn?.(true);
+                      handleConfirmCheckIn();
                     }}
                   >
                     Check in
                   </Button>
                 ) : (
-                  /* CHECKED IN — SHOW WORK ACTIONS */
                   <div className="flex flex-wrap gap-2 w-fit">
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -203,20 +290,41 @@ export default JobHeaderCard;
 
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const FormCtx = useForm();
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitted");
-    toast.success("Job status updated successfully!");
+    await showPopup({
+      title: "Update Status",
+      body: "Are you sure you want to update this job status?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job status updated successfully!");
+            close(true);
+            onClose();
+          },
+        },
+      ],
+    });
   };
   return (
     <div className="flex flex-col p-6">
       <div className="flex justify-end">
-        <button
+        <div
           className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
           onClick={onClose}
         >
           <icons.close className="w-6 h-6" />
-        </button>
+        </div>
       </div>
       <div className="text-xl text-gray-900 dark:text-white font-bold text-center">
         Update Status

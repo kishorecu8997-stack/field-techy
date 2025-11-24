@@ -71,7 +71,7 @@ const CorporateClientForm: React.FC = () => {
         const formData = methods.getValues();
         console.log("Form submitted:", formData);
         toast.success("Client information saved successfully!");
-        navigate(`${absoluteUrls.admin.home.manage_client}`);
+        navigate(absoluteUrls.admin.home.manage_client);
         methods.reset();
         setActiveTab("Basic Information");
       } catch (error) {
@@ -104,7 +104,7 @@ const CorporateClientForm: React.FC = () => {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.manage_client}`)}
+          onClick={() => navigate(absoluteUrls.admin.home.manage_client)}
         >
           Back
         </Button>

@@ -7,15 +7,19 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
 export type EditSkillsFormData = {
-  skills: string[]; // array of skill IDs (as strings)
+  skills: string[];
 };
-
 interface EditSkillsProps {
-  // This prop is not currently used as we are reading from localStorage,
-  // but it's good practice for component design.
   currentSkills?: string[];
 }
 
+/**
+ * The EditSkills component renders a form to modify a user's professional skills.
+ * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing skills
+ * retrieved from localStorage.
+ * @param {EditSkillsProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered EditSkills form component.
+ */
 const EditSkills: React.FC<EditSkillsProps> = () => {
   const initialSkillIds = useMemo(() => {
     const storedIds = localStorage.getItem("editSkillsId");
@@ -39,6 +43,9 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
     value: skill.id.toString(), // assuming skill.id is number
   }));
 
+  /**
+   * Initializes `react-hook-form` with default values for the edit skills form.
+   */
   const methods = useForm<EditSkillsFormData>({
     defaultValues: {
       skills: initialSkillIds,
@@ -46,7 +53,7 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
   });
 
   /**
-   * Cleanup localStorage (if used elsewhere, but not for form values).
+   * Effect hook to clean up the `editSkillsId` from localStorage when the component unmounts.
    */
   useEffect(() => {
     return () => {
@@ -54,6 +61,12 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
     };
   }, []);
 
+  /**
+   * Handles the form submission for updating skills.
+   * Currently logs the data to the console and shows a success toast.
+   *
+   * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
+   */
   const onSubmit = (data: EditSkillsFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Skills Updated Successfully");
