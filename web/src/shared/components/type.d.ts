@@ -39,6 +39,7 @@ interface MapComponentProps {
   initialZoom?: number;
   markers?: MapMarker[];
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
+  viewOnly?: boolean;
 }
 
 /**
