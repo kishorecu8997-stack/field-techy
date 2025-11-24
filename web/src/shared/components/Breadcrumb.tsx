@@ -18,7 +18,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const location = useLocation();
 
-  const isEngineerIndex =  location.pathname.includes("client") ? "client" : "engineer";
+  const isEngineerIndex = location.pathname.includes("client")
+    ? "client"
+    : "engineer";
 
   // Split current path and remove empty segments
   const allSegments = location.pathname.split("/").filter(Boolean);
@@ -44,13 +46,18 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
+  const homepath = `${isEngineerIndex}/dashboard`;
+
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-gray-500 dark:text-gray-300">
+    <nav
+      aria-label="Breadcrumb"
+      className="text-sm text-gray-500 dark:text-gray-300"
+    >
       <ol className="flex items-center space-x-1">
         {/* Home link points to /engineer */}
         <li>
           <NavLink
-            to={`/${isEngineerIndex}`}
+            to={`/${homepath}`}
             className="hover:text-emerald-600 transition-colors"
           >
             {homeLabel}
@@ -59,7 +66,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
         {breadcrumbSegments.map((value, index) => {
           // Build path: /engineer + segments up to current
-          const to = `/${isEngineerIndex}/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
+          const to = `/${isEngineerIndex}/${breadcrumbSegments
+            .slice(0, index + 1)
+            .join("/")}`;
           const isLast = index === breadcrumbSegments.length - 1;
 
           return (

@@ -38,6 +38,8 @@ import ClientDocuments from "@/pages/client/my_account/components/documents/Clie
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
 
+import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
+
 
 
 /**
@@ -229,7 +231,7 @@ export const sectionConfig: Record<
     parent: "clientWallet",
   },
 
-
+clientFeedback:{ component: Feedback, title: "Rate Client" },
     // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
     cancelOffer: { component: CancelJopOffer, title: "Do you want to cancel the job?" },
     // profile: { component: UserProfileSidebar, title: "My Profile" },

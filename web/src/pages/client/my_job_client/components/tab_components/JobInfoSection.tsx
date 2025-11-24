@@ -1,5 +1,5 @@
 import React from "react";
-import type { JobInfoSectionProps } from "../../types";
+import type { JobInfoSectionProps,paymentTermsProps } from "../../types";
 import Proposal from "@/shared/components/Proposal";
 
 /**
@@ -7,8 +7,10 @@ import Proposal from "@/shared/components/Proposal";
  */
 const JobInfoSection: React.FC<{
   jobInfo: JobInfoSectionProps;
-}> = ({ jobInfo }) => {
+  payInfo: paymentTermsProps;
+}> = ({ jobInfo, payInfo}) => {
   const { jobTitle, terms, files } = jobInfo;
+  
 
   return (
     <div className="">
@@ -30,8 +32,13 @@ const JobInfoSection: React.FC<{
             </div>
           }
         />
-    
+    <div className="bg-gray-200 rounded-xl  p-6 mb-4 dark:bg-gray-700">
+          <h4 className="font-semibold mb-2">{payInfo.title}</h4>
+          <h4 className="font-semibold ">${payInfo.amount}</h4>
+          <p className="text-xs text-gray-700 dark:text-gray-300">{payInfo.priceType} Price</p>
+        </div>
     </div>
+    
   );
 };
 

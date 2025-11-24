@@ -9,6 +9,7 @@ import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
 import JobTabSection from "./JobTabSection";
 import { useParams } from "react-router-dom";
 import { sampleJobs } from "@/dummy_data/searchData";
+import { jobHeaderData } from "@/dummy_data/jobDetailsClient";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -28,7 +29,7 @@ const JobsDetails: React.FC = () => {
     "Other",
     "Proposal's Terms & Conditions",
   ];
-   const params = useParams();
+  const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isJobAccepted, setIsJobAccepted] = useState(false);
@@ -43,7 +44,7 @@ const JobsDetails: React.FC = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">           
+          <div className="lg:col-span-2">
             <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
@@ -52,21 +53,25 @@ const JobsDetails: React.FC = () => {
             />
             <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
               <JobCardDetailsHeader
-                title="Mobile App UI/UX Designer and Product Designer"
-                hours={8}
-                client="TechNova Co"
-                status="On Site"
-                onApprove={() => console.log("Work approved")}
-                onRequestRevision={() => console.log("Revision requested")}
+                title={jobHeaderData.title}
+                client={jobHeaderData.client}
+                duration={jobHeaderData.duration}
+                type={filter()?.type}
+                status={filter()?.status}
+                setIsApprovalSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setIsJobAccepted={setIsJobAccepted}
+                setActiveTab={setActiveTab}
               />
-             <div className="space-y-6 pt-2">             
-                 <JobTabSection
-              status={filter()?.status as JobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted || true}
-              activeTab={activeTab}
-            />
+              <div className="space-y-6 pt-2">
+                <JobTabSection
+                  status={filter()?.status as JobStatus}
+                  isWorkSubmitted={isWorkSubmitted}
+                  isSendProposal={isSendProposal}
+                  isJobAccepted={isJobAccepted || true}
+                  activeTab={activeTab}
+                />
               </div>
             </div>
           </div>

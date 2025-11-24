@@ -5,11 +5,12 @@ import {
   requirements,
   termsData,
   workSubmissions,
+  paymentTerms,
 } from "@/dummy_data/jobDetailsClient";
 import {
   JOB_STATUSES,
   type JobStatus,
-} from "@/pages/engineer/search_result/types";
+} from "@/pages/client/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
@@ -51,9 +52,8 @@ const JobTabSection = ({
       label: "Engineers Logs",
       content: <LogComponent logs={logs} />,
       hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        !isJobAccepted,
+        status === JOB_STATUSES.posted 
+        || !isJobAccepted
     },
     {
       label: "Work Submissions",
@@ -64,13 +64,12 @@ const JobTabSection = ({
         />
       ),
       hide:
-        status === JOB_STATUSES.applied ||
-        status === JOB_STATUSES.new ||
-        !isJobAccepted,
+        status === JOB_STATUSES.posted 
+        || !isJobAccepted
     },
     {
       label: "Job Information",
-      content: <JobInfoSection jobInfo={job} />,
+      content: <JobInfoSection jobInfo={job} payInfo={paymentTerms} />,
     },
     {
       label: "Requirement",

@@ -3,7 +3,7 @@ export type JobStatus =
   | "In-Progress"
   | "Completed"
   | "Posted"
-  | "Hold"; 
+  | "Hold";
 
 export interface Job {
   id: number;
@@ -21,17 +21,16 @@ export interface JobCardHeaderProps {
   title: string;
   hours: number;
   client: string;
-  status: 'On Site' | 'Remote' | 'Pending';
+  status: "On Site" | "Remote" | "Pending";
   onApprove: () => void;
   onRequestRevision: () => void;
 }
-
 
 export interface JobCardProps {
   title: string;
   hours: number;
   client: string;
-  status: 'On Site' | 'Remote' | 'Pending';
+  status: "On Site" | "Remote" | "Pending";
   onApprove: () => void;
   onRequestRevision: () => void;
 }
@@ -50,12 +49,11 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: string;
   status?: StatusType | string;
-  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
-  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
-  isSendProposal?: boolean
-  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
-  setActiveTab?: Dispatch<SetStateAction<string>>
-
+  setIsApprovalSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
+  isSendProposal?: boolean;
+  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
+  setActiveTab?: Dispatch<SetStateAction<string>>;
 }
 
 export interface LogComponentProps {
@@ -84,7 +82,6 @@ export interface WorkInfoItem {
   value: string;
 }
 
-
 export interface WorkSubmissionComponentProps {
   name: string;
   workDates: string;
@@ -94,9 +91,14 @@ export interface WorkSubmissionComponentProps {
   location: string;
   fileName: string;
   notes: string;
-  signatureUrl?: string;      
+  signatureUrl?: string;
 }
 
+export interface paymentTermsProps {
+  title: string;
+  amount: string;
+  priceType: string;
+}
 
 export interface JobTabsProps {
   activeTab: string;

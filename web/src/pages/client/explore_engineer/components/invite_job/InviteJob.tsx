@@ -10,9 +10,6 @@ import type { SelectedJobCardId } from "../../types";
 import { useForm, Controller } from "react-hook-form";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { toast } from "react-toastify";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS } from "@/pages/client/search_result/types";
-
 interface SelectJobCardProps {
   onClose: () => void;
 }
@@ -73,7 +70,8 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                   showSearchBar={false}
                   showButton={true}
                   buttonText="Invite To Job"
-                />               
+                />                                
+
               </div>
               <div className="p-4 md:p-8 min-h-screen transition-colors duration-300">
                 <Controller

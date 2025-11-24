@@ -1,17 +1,15 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  inProgressJobsData,
-  jobOverviewData,
-  serviceCategoriesData,
-} from "@/dummy_data/dashboard";
+import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
-import React, { useEffect } from "react";
+import { sampleJobs } from "@/dummy_data/searchDataClient";
+import React, { useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
 import AllowAccessPopup from "../auth/components/AccessPopup";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
+import type { Job } from "../search_result/types";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -20,6 +18,11 @@ import ServiceCategoryCard from "./components/ServiceCategoryCard";
  */
 const Dashboard: React.FC = () => {
   const [accessPopup, setAccessPopup] = React.useState<boolean>(false);
+
+  const inProgressJobsData = useMemo(
+    () => sampleJobs.filter((job) => job.status === "inprogress"),
+    []
+  );
 
   useEffect(() => {
     setAccessPopup(true);
@@ -82,13 +85,15 @@ const Dashboard: React.FC = () => {
                   </button>
                 </NavLink>
               </div>
-              <NavLink to={absoluteUrls.client.home.my_jobs}>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
-                  {inProgressJobsData.map((job) => (
-                    <InProgressJobCard key={job.id} {...job} />
-                  ))}
-                </div>
-              </NavLink>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
+                {inProgressJobsData.map((job:Job) => (
+                  <InProgressJobCard
+                    key={job.id}
+                    job={job}
+                    navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <div className="lg:col-span-1">

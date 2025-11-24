@@ -394,6 +394,14 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
+        path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
         path: urls.client.home.dashboard,
         element: withSuspense(ClientDashboard),
       },

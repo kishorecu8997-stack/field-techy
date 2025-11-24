@@ -1,5 +1,10 @@
-import type { JobInfoSectionProps, LogEntry, ProposalTermsProps, WorkSubmissionComponentProps } from "@/pages/client/my_job_client/types";
-
+import type {
+  JobInfoSectionProps,
+  LogEntry,
+  paymentTermsProps,
+  ProposalTermsProps,
+  WorkSubmissionComponentProps,
+} from "@/pages/client/my_job_client/types";
 
 export const logs: LogEntry[] = [
   {
@@ -21,7 +26,11 @@ export const logs: LogEntry[] = [
   },
 ];
 
-
+export const jobHeaderData = {
+  title: "Mobile App UI/UX Designer and Product Designer",
+  client: "TechNova Co",
+  duration: "8 Hours of Work",
+};
 
 export const workSubmissions: WorkSubmissionComponentProps = {
   name: "Nick Wilson",
@@ -32,9 +41,8 @@ export const workSubmissions: WorkSubmissionComponentProps = {
   location: "3517 W. Gray St, Utica, Pennsylvania 57867",
   fileName: "Workfile.doc",
   notes: "With over 5 years of extensive experience...",
-  signatureUrl: "/signature.png",  
+  signatureUrl: "/signature.png",
 };
-
 
 export const job: JobInfoSectionProps = {
   jobTitle: "Angular Developer",
@@ -57,13 +65,18 @@ export const job: JobInfoSectionProps = {
         text: "Conduct user acceptance testing and finalize documentation",
       },
       {
-        text:"Launch the project to users on 01-Dec-2025"
-      }
+        text: "Launch the project to users on 01-Dec-2025",
+      },
     ],
   },
   files: ["File Documents.doc", "File Documents.doc", "Image Document.jpg"],
 };
 
+export const paymentTerms: paymentTermsProps = {
+  title: "Payment Terms (Hourly/Fixed)",
+  amount: "200.00",
+  priceType: "Fixed",
+};
 
 export const otherProposal: ProposalTermsProps = {
   jobTitle: "Angular Developer",
@@ -94,16 +107,14 @@ export const requirements: ProposalTermsProps = {
         text: "Tool required - Router, RJ 45 LAN cable, Switches",
       },
       {
-        text:"Skills required - Installing cables, Error detections, Basic structure cabling"
+        text: "Skills required - Installing cables, Error detections, Basic structure cabling",
       },
       {
-        text:"Task - Installation of anti-virus, Firewall config, MOM sign"
+        text: "Task - Installation of anti-virus, Firewall config, MOM sign",
       },
     ],
   },
 };
-
-
 
 export const termsData: ProposalTermsProps = {
   jobTitle: "Angular Developer",
