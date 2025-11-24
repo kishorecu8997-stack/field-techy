@@ -83,3 +83,14 @@ export interface Options {
   label: string;
   value: string;
 }
+
+
+export const OfferedJobStatus = {
+  initial: "initial",
+  accepted: "accepted",
+  declined: "declined",
+  started: "started",
+  checkedIn: "checked-in",
+};
+
+export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];

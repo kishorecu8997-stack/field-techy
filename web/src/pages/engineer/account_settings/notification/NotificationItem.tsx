@@ -16,7 +16,7 @@ interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
 }) => {
-  //this is for testing purpose
+  //this is for testing purpose, will be removed later
   const index = "10";
 
   const {

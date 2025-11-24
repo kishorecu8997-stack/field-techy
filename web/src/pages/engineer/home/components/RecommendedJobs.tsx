@@ -9,6 +9,12 @@ interface RecommendedJobsProps {
   onViewAll?: () => void;
 }
 
+/**
+ * Displays a list of recommended jobs.
+ * 
+ * @param {RecommendedJobsProps} props - Props for the RecommendedJobs component.
+ * @returns {JSX.Element} The rendered RecommendedJobs component.   
+ */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   jobs,
   title = "Recommended Jobs",

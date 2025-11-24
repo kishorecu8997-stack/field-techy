@@ -1,14 +1,14 @@
-import { earningsData, jobData, userData } from "@/dummy_data/jobDetails";
+import { absoluteUrls } from "@/config/urls";
+import { earningsData, userData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
+import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
+import Pagination from "../search_result/components/Pagination";
 import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
-import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
-import Pagination from "../search_result/components/Pagination";
-import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
-import { useEffect, useState } from "react";
 
 /**
  * Home page component.

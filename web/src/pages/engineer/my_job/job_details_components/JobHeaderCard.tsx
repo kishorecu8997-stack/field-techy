@@ -19,6 +19,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
+ * 
+ * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
+ * @returns {JSX.Element} The rendered JobHeaderCard component.
  */
 const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   title,

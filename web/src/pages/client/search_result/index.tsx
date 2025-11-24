@@ -12,7 +12,6 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
-  // State management
   const [jobs] = useState(sampleJobs);
   const [filteredJobs, setFilteredJobs] = useState(sampleJobs);
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,7 +113,7 @@ const SearchResult = () => {
 
   // Get jobs for current page
   const startIndex = (currentPage - 1) * 4;
-  const currentJobs = filteredJobs.slice(startIndex, startIndex + 4).sort();
+  const currentJobs = filteredJobs.slice(startIndex, startIndex + 4);
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

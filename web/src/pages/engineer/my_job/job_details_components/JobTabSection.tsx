@@ -9,6 +9,7 @@ import {
 import {
   JOB_STATUSES,
   type JobStatus,
+  type OfferedJobStatusType,
 } from "@/pages/engineer/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
 import JobInfoSection from "./tab_components/JobInfoSection";
@@ -43,16 +44,9 @@ const JobTabSection = ({
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   activeTab?: string;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  OfferJobStatus?: OfferedJobStatusType;
 }) => {
-
-   const shouldHideLogs = !(
+  const shouldHideLogs = !(
     status === JOB_STATUSES.inprogress ||
     status === JOB_STATUSES.completed ||
     OfferJobStatus === "checked-in"
