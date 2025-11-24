@@ -90,12 +90,12 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
       {/* Right Section: Icons + Profile Button */}
       <div className="flex items-center space-x-4 md:hidden">
-        <button
+        <div
           onClick={toggleMobileMenu}
-          className="p-2 text-gray-600 hover:text-gray-900 relative"
+          className="p-2 text-gray-600 hover:text-gray-900 relative cursor-pointer"
         >
           <FaBars size={20} />
-        </button>
+        </div>
 
         {isMobileMenuOpen && (
           <div
@@ -160,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         >
           <FaBell size={20} />
         </div>
-        <button
+        <div
           onClick={onDrawerToggle}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
@@ -171,7 +171,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />
-        </button>
+        </div>
       </div>
 
       {/* Drawer */}

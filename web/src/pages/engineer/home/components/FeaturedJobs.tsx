@@ -155,12 +155,12 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
       <div className="flex justify-between items-center p-2">
         <h2 className="text-xl font-bold">{title}</h2>
         {onViewAll && (
-          <button
+          <div
             onClick={onViewAll}
-            className="text-teal-600 hover:text-teal-800 font-medium text-sm cursor-pointer hover:underline dark:text-teal-400 dark:hover:text-teal-300"
+            className="text-teal-600 hover:text-teal-800 font-medium text-sm hover:underline dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
           >
             View all
-          </button>
+          </div>
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -12,7 +12,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useMemo, useState } from "react";
 
 /**
- * Main application component for job search results
+ * explore jobs page component
  *
  * @returns {JSX.Element} Rendered application component
  */

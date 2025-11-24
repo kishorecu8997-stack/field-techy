@@ -319,12 +319,12 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="flex flex-col p-6">
       <div className="flex justify-end">
-        <button
+        <div
           className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
           onClick={onClose}
         >
           <icons.close className="w-6 h-6" />
-        </button>
+        </div>
       </div>
       <div className="text-xl text-gray-900 dark:text-white font-bold text-center">
         Update Status
