@@ -61,7 +61,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
     mode: "onSubmit",
   });
 
-  const handleAddCard = async () => {    
+  const handleAddCard = async () => {
     const isValid = await methods.trigger();
     if (isValid) {
       const data = methods.getValues();
@@ -73,78 +73,82 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   };
 
   return (
-    <div>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-md p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Add Card
-          </h2>
-          <AiOutlineClose onClick={onClose} className="cursor-pointer" />
+    <FormContainer
+      methods={methods}
+      onSubmit={handleAddCard}
+      className="flex flex-col gap-2"
+    >
+      <div className="flex flex-col h-full max-h-[90vh] w-full max-w-md">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4">
+          <div className="flex justify-end">
+            <button
+              className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+              onClick={onClose}
+            >
+              <AiOutlineClose className="w-6 h-6" />
+            </button>
+          </div>
+          <h1 className="text-xl font-bold text-center"> Add Card</h1>
         </div>
 
-        <FormContainer
-          methods={methods}
-          onSubmit={handleAddCard}
-          className="space-y-6"
-        >
-          <div className="space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 pt-0">
+          <div>
+            <InputField
+              label="Card Number"
+              name="cardNumber"
+              placeholder="9999 9999 9999 9999"
+              rules={{ validate: (v: string) => cardNumberValidation(v) }}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <InputField
-                label="Card Number"
-                name="cardNumber"
-                placeholder="9999 9999 9999 9999"
-                rules={{ validate: (v: string) => cardNumberValidation(v) }}
+                label="Expiry Date"
+                name="expDate"
+                placeholder="MM/YY"
+                rules={{ validate: (v: string) => expiryDateValidation(v) }}
                 required
               />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <InputField
-                  label="Expiry Date"
-                  name="expDate"
-                  placeholder="MM/YY"
-                  rules={{ validate: (v: string) => expiryDateValidation(v) }}
-                  required
-                />
-              </div>
-              <div>
-                <InputField
-                  label="CVV"
-                  name="cvv"
-                  placeholder="Enter CVV"
-                  rules={{ validate: (v: string) => cvvValidation(v) }}
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <SelectField
-                label="Country"
-                name="country"
-                placeholder="Country"
-                options={countries.map((c) => ({
-                  value: c.value,
-                  label: c.label,
-                }))}
-                required
-                rules={{ validate: (v: string) => countryValidation(v) }}
-              />
-            </div>
-
             <div>
               <InputField
-                label="Address"
-                name="address"
-                placeholder="Enter Address"
+                label="CVV"
+                name="cvv"
+                placeholder="Enter CVV"
+                rules={{ validate: (v: string) => cvvValidation(v) }}
                 required
-                rules={{ validate: (v: string) => validateAddress(v) }}
               />
             </div>
+          </div>
 
+          <div>
+            <SelectField
+              label="Country"
+              name="country"
+              placeholder="Country"
+              options={countries.map((c) => ({
+                value: c.value,
+                label: c.label,
+              }))}
+              required
+              rules={{ validate: (v: string) => countryValidation(v) }}
+            />
+          </div>
+
+          <div>
+            <InputField
+              label="Address"
+              name="address"
+              placeholder="Enter Address"
+              required
+              rules={{ validate: (v: string) => validateAddress(v) }}
+            />
+          </div>
+          <div className="sticky bottom-0 bg-white dark:bg-gray-800  ">
             <Button
-              type="submit"  
+              type="submit"
               className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               <div className="flex gap-1 items-center">
@@ -152,9 +156,9 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               </div>
             </Button>
           </div>
-        </FormContainer>
+        </div>
       </div>
-    </div>
+    </FormContainer>
   );
 };
 
