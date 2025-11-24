@@ -12,10 +12,6 @@ import { AiOutlineClose } from "react-icons/ai";
 interface AllowAccessPopupProps {
   accessPopup: boolean;
   setAccessPopup: Dispatch<SetStateAction<boolean>>;
-  onAllowLocation?: () => void;
-  onAllowNotification?: () => void;
-  onDenyNotification?: () => void;
-  onDenyLocation?: () => void;
 }
 
 /**
@@ -34,10 +30,6 @@ interface AllowAccessPopupProps {
 export default function AllowAccessPopup({
   accessPopup,
   setAccessPopup,
-  onAllowLocation,
-  onAllowNotification,
-  onDenyNotification,
-  onDenyLocation,
 }: AllowAccessPopupProps) {
   // Local state: whether to show the notifications step instead of location step
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
@@ -69,20 +61,14 @@ export default function AllowAccessPopup({
             <Button
               type="button"
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-              onClick={() => {
-                setEnableNotification(true);
-                onAllowNotification?.();
-              }}
+              onClick={() => setEnableNotification(true)}
             >
               Allow Access
             </Button>
             <button
               type="button"
               className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
-              onClick={() => {
-                setAccessPopup(false);
-                onDenyNotification?.();
-              }}
+              onClick={() => setAccessPopup(false)}
             >
               Deny Access
             </button>
@@ -108,7 +94,6 @@ export default function AllowAccessPopup({
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
               onClick={() => {
                 setAccessPopup(false);
-                onAllowLocation?.();
               }}
             >
               Allow Access
@@ -116,10 +101,7 @@ export default function AllowAccessPopup({
             <button
               type="button"
               className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
-              onClick={() => {
-                setAccessPopup(false);
-                onDenyLocation?.();
-              }}
+              onClick={() => setAccessPopup(false)}
             >
               Deny Access
             </button>

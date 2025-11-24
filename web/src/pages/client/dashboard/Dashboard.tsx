@@ -100,8 +100,6 @@ const Dashboard: React.FC = () => {
       <AllowAccessPopup
         accessPopup={accessPopup}
         setAccessPopup={setAccessPopup}
-        onAllowLocation={() => console.log("Allow Location")}
-        onAllowNotification={() => console.log("Allow Notification")}
       />
     </div>
   );
