@@ -35,9 +35,9 @@ export const ChatWindow = ({ user, messages }: Props) => {
           placeholder="Write text here..."
           className="flex-1 border rounded-xl px-4 py-2"
         />
-        <button className="h-10 w-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+        <div className="h-10 w-10 bg-green-600 text-white rounded-full flex items-center justify-center">
           ▶
-        </button>
+        </div>
       </div>
     </section>
   );
