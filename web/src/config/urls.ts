@@ -36,7 +36,7 @@ export const urls = {
       privacy_policy: "privacy-policy",
       about_app: "about-app",
       explore_jobs: "explore-jobs",
-      chat: "chat",
+      chat: "messages",
     },
     auth: {
       login: "login",
@@ -152,7 +152,7 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
-      chat: `${BASE.ENGINEER}/chat`,
+      chat: `${BASE.ENGINEER}/messages`,
 
     },
   },

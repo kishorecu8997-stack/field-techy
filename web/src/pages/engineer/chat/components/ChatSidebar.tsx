@@ -16,12 +16,12 @@ interface Props {
  */
 export const ChatSidebar = ({ users, selectedUserId, onSelectUser }: Props) => {
   return (
-    <aside className="w-80 border-r bg-white flex flex-col">
-      <div className="p-4 border-b">
+    <aside className="w-80 border-r border-gray-200 dark:border-gray-700 bg-white flex flex-col">
+      <div className="p-3 ">
         <input
           type="text"
           placeholder="Search Jobs.."
-          className="w-full rounded-xl border px-3 py-2 text-sm"
+          className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm"
         />
       </div>
 

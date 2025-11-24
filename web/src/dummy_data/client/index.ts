@@ -144,9 +144,9 @@ export const TemplateData = [
 
 
 export const users: ChatUser[] = [
-  { id: 1, name: "Jack Promp", avatar: "/avatars/jack.png" },
-  { id: 2, name: "Emily Stone", avatar: "/avatars/emily.png" },
-  { id: 3, name: "Robert Cole", avatar: "/avatars/robert.png" },
+  { id: 1, name: "Jack Promp", avatar: null },
+  { id: 2, name: "Emily Stone", avatar: null },
+  { id: 3, name: "Robert Cole", avatar: null },
 ];
 
 export const messages: ChatMessage[] = [
@@ -175,6 +175,55 @@ export const messages: ChatMessage[] = [
   // Emily chat
   {
     id: 4,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 9,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 10,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 51,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 51,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 51,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 51,
+    userId: 2,
+    fromMe: false,
+    message: "Hi, did you receive my resume?",
+    timestamp: "15:10",
+  },
+  {
+    id: 51,
     userId: 2,
     fromMe: false,
     message: "Hi, did you receive my resume?",
