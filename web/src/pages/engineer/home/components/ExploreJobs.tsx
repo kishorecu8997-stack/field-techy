@@ -77,7 +77,7 @@ const ExploreJobs = () => {
           title="Explore Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${sampleJobs.length}+ jobs found`}
+          description={`${allNewJobs.length}+ jobs found`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">

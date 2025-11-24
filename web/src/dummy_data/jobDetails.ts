@@ -173,7 +173,7 @@ export const earningsData = {
 // Example usage
 export const jobData = [
   {
-    id:1,
+    id: 1,
     title: "Software Engineer",
     company: "Google",
     companyLogo: "/logos/google.png",
@@ -184,7 +184,7 @@ export const jobData = [
     location: "California, USA",
   },
   {
-    id:2,
+    id: 2,
     title: "Python Engineer",
     company: "Facebook",
     companyLogo: "/logos/facebook.png",
@@ -195,7 +195,7 @@ export const jobData = [
     location: "California, USA",
   },
   {
-    id:3,
+    id: 3,
     title: "Project Manager",
     company: "Google",
     companyLogo: "/logos/google.png",
