@@ -149,7 +149,7 @@ const MapSearchBar: React.FC<{
         />
 
         {suggestions.length > 0 && (
-          <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto z-[1000]">
+          <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto">
             {suggestions.map((item, index) => (
               <li
                 key={index}
@@ -221,7 +221,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   const [searchLocation, setSearchLocation] = useState<L.LatLng | null>(null);
 
   return (
-    <div className="relative w-full z-50">
+    <div className="relative w-full z-10">
       {!viewOnly && <MapSearchBar onSelect={setSearchLocation} />}
 
       <MapContainer
