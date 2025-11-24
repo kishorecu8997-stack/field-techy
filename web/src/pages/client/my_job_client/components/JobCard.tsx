@@ -52,7 +52,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       to={`${absoluteUrls.client.home.my_jobs}/${id}`}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+      
         <div className="flex justify-between items-start mb-3">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
             {title}
@@ -94,8 +94,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             <RiMoneyDollarCircleLine className="w-4 h-4 mr-2 flex-shrink-0" />
             {pay}
           </div>
-        </div>
-      </div>
+        </div>      
     </Link>
   );
 };

@@ -1,75 +1,81 @@
-import React, { useState } from 'react';
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface FeedbackFormProps {
-  onSubmit?: (rating: number, feedback: string) => void;
+  onSubmit?: (rating: number, feedback: string) => void;  
   initialRating?: number;
-  className?: string;
+}
+
+interface IFormInput {
+  feedback: string;
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
-  initialRating = 0,
-  className = '',
+  initialRating = 1,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
-  const [feedback, setFeedback] = useState<string>('');
+  const methods = useForm<IFormInput>({
+    defaultValues: {
+      feedback: "",
+    },
+    mode: "onSubmit",
+  });
 
   const handleStarClick = (starValue: number) => {
     setRating(starValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleFormSubmit = (data: IFormInput) => {
     if (onSubmit) {
-      onSubmit(rating, feedback);
+      onSubmit(rating, data.feedback);
+      toast.success("Feedback Submitted Successfully");      
     }
-    // Optionally reset form after submission
-    // setRating(0);
-    // setFeedback('');
+
+    // methods.reset(); // Optionally reset form
   };
 
   return (
-    <div className={`bg-gray-100 p-6 rounded-lg ${className}`}>
-      {/* Star Rating */}
-      <div className="flex justify-center mb-4">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => handleStarClick(star)}
-            className={`text-2xl transition-colors duration-200 ${
-              star <= rating ? 'text-yellow-500' : 'text-gray-300'
-            }`}
-            aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
-          >
-            ★
-          </button>
-        ))}
+    <FormContainer
+      methods={methods}
+      onSubmit={handleFormSubmit}
+      className="flex flex-col h-full"
+    >
+      <div className={`flex-1 overflow-y-auto px-3 space-y-3`}>
+        <div className="flex justify-center mb-4">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <div
+              key={star}
+              onClick={() => handleStarClick(star)}
+              className={`text-7xl cursor-pointer transition-colors duration-200 ${
+                star <= rating ? "text-yellow-500" : "text-gray-300"
+              }`}
+              aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
+            >
+              ★
+            </div>
+          ))}
+        </div>
+          <TextareaInput
+              name="feedback"
+              label="Add Feedback"
+              placeholder="Add your feedback here..."
+              required
+            />
       </div>
-
-      {/* Feedback Form */}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="feedback" className="block font-bold text-gray-800 mb-2">
-          Add Feedback<span className="text-red-500">*</span>
-        </label>
-        <textarea
-          id="feedback"
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
-          placeholder="Add your feedback here..."
-          className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none h-32 text-gray-600"
-          required
-        />
-        
-        <button
+      <div className="bg-white">
+        <Button
           type="submit"
-          className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
           Submit Rating
-        </button>
-       
-      </form>
-    </div>
+        </Button>
+      </div>
+    </FormContainer>
   );
 };
 

@@ -213,7 +213,6 @@ const ManageJobView = React.lazy(
 const OfferPages = React.lazy(
   () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
 );
-const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
@@ -244,6 +243,13 @@ const ClientJobInvite = React.lazy(
 const ClientJobDetails = React.lazy(
   () => import("@/pages/client/my_job_client/components/JobDetails")
 );
+
+
+const ClientInviteEngineers= React.lazy(
+  ()=> import("@/pages/client/my_job_client/components/ClientInviteJob/EngineerInviteListPage")
+);
+/**
+
 
 /**
  * Configures the application's routing structure using React Router.
@@ -332,10 +338,6 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
-      {
-        path: urls.engineer.home.chat,
-        element: withSuspense(EngineerChatPage),
-      },
     ],
   },
 
@@ -401,11 +403,7 @@ export const routes = createBrowserRouter([
       {
         path: `${urls.client.home.my_jobs}/:jobId`,
         element: withSuspense(ClientJobDetails),
-      },
-      {
-        path: `${urls.client.home.my_jobs}/:jobId`,
-        element: withSuspense(ClientJobDetails),
-      },
+      },     
       {
         path: urls.client.home.dashboard,
         element: withSuspense(ClientDashboard),
@@ -434,6 +432,12 @@ export const routes = createBrowserRouter([
         path: urls.client.home.Client_Job_Details,
         element: withSuspense(ClientJobDetails),
       },
+{
+        path: urls.client.home.ClientSelectEngineeers,
+        element: withSuspense(ClientInviteEngineers),
+      
+}
+
     ],
   },
 

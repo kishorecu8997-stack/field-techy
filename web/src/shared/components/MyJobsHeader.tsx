@@ -3,6 +3,7 @@ import ReportPage from "@/pages/engineer/report";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
+import { Button } from "./commonUI/Buttons";
 
 /**
  * MyJobsHeader Component
@@ -18,7 +19,10 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   description,
   isShowSort = true,
   isReport = true,
-  action
+  action,
+  isShowButton = false,
+  buttonText = "Invite To Job",
+  onClick,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
 
@@ -36,7 +40,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   customLabels={{
                     "my-jobs": "My Jobs",
                     "in-progress": "In Progress",
-                    "home": "Home",
+                    home: "Home",
                   }}
                 />
               )}
@@ -63,6 +67,16 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   currentSort={currentSort}
                   onSortChange={onSortChange}
                 />
+              )}
+              {isShowButton && (
+                <Button
+                  onClick={onClick}
+                  variant="primary"
+                  type="submit"
+                  className="bg-teal-800 dark:bg-teal text-white"
+                >
+                  {buttonText}
+                </Button>
               )}
             </div>
           </>

@@ -47,13 +47,13 @@ const JobTabSection = ({
   isJobAccepted?: boolean;
   activeTab?: string;
 }) => {
+  console.log('isJobAccepted :', isJobAccepted);
   const tabs = [
     {
       label: "Engineers Logs",
       content: <LogComponent logs={logs} />,
       hide:
         status === JOB_STATUSES.posted 
-        || !isJobAccepted
     },
     {
       label: "Work Submissions",
@@ -65,7 +65,6 @@ const JobTabSection = ({
       ),
       hide:
         status === JOB_STATUSES.posted 
-        || !isJobAccepted
     },
     {
       label: "Job Information",

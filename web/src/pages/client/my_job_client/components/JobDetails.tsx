@@ -8,7 +8,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
 import JobTabSection from "./JobTabSection";
 import { useParams } from "react-router-dom";
-import { sampleJobs } from "@/dummy_data/searchData";
+import { sampleJobs } from "@/dummy_data/searchDataClient";
 import { jobHeaderData } from "@/dummy_data/jobDetailsClient";
 
 /**
@@ -40,43 +40,35 @@ const JobsDetails: React.FC = () => {
       return job.id === Number(params.jobId);
     });
   };
+  console.log('filter :', filter());
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <MyJobsHeader
+    <div className="min-h-screen transition-colors duration-200">
+      <div className="container  mx-auto px-4 py-6">
+        <MyJobsHeader
               title="Job Details"
               currentSort={SORT_OPTIONS.NEWEST}
               isReport
               onSortChange={() => {}}
             />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            
             <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-              <JobCardDetailsHeader
-                title={jobHeaderData.title}
-                client={jobHeaderData.client}
-                duration={jobHeaderData.duration}
-                type={filter()?.type}
-                status={filter()?.status}
-                setIsApprovalSubmitted={setIsWorkSubmitted}
-                setSendProposal={setIsSendProposal}
-                isSendProposal={isSendProposal}
-                setIsJobAccepted={setIsJobAccepted}
-                setActiveTab={setActiveTab}
-              />
+              <JobCardDetailsHeader />
               <div className="space-y-6 pt-2">
                 <JobTabSection
                   status={filter()?.status as JobStatus}
                   isWorkSubmitted={isWorkSubmitted}
                   isSendProposal={isSendProposal}
-                  isJobAccepted={isJobAccepted || true}
+                  isJobAccepted={isJobAccepted}
                   activeTab={activeTab}
                 />
               </div>
             </div>
+
           </div>
           <div className="lg:col-span-1">
-            <div className="sticky top-6">
+            <div className="sticky top-6 pt-2">
               <SidebarJobPostWallet earnings={earningsData} />
             </div>
           </div>

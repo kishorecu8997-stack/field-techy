@@ -1,11 +1,11 @@
 // JobCardDetailsHeader.tsx
 import { Button } from "@/shared/components/commonUI/Buttons";
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import Popup from "@/shared/components/Popup";
 import RequestRevision from "./RequestRevision";
 import ConfirmationModal from "./ConfirmationModal";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   JOB_STATUSES,
   WORKING_TYPES,
@@ -13,10 +13,11 @@ import {
 import { icons } from "@/config/icons";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { absoluteUrls } from "@/config/urls";
 
 const JobCardDetailsHeader = () => {
+  const navigate = useNavigate();
   const params = useParams();
-
   const job = useMemo(() => {
     const jobId = params.jobId;
     if (!jobId) return null;
@@ -29,6 +30,7 @@ const JobCardDetailsHeader = () => {
   const [isWorkApproved, setIsWorkApproved] = useState(false);
   const [isPaymentReleased, setIsPaymentReleased] = useState(false);
   const [isSendProposal, setSendProposal] = useState(false);
+  const [isRatingUpdated, setIsRatingUpdated] = useState(false);
 
   if (!job) {
     return (
@@ -105,7 +107,9 @@ const JobCardDetailsHeader = () => {
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3 justify-end">
-          {job.status === JOB_STATUSES.inprogress && !isWorkApproved && !isPaymentReleased ? (
+          {job.status === JOB_STATUSES.inprogress &&
+          !isWorkApproved &&
+          !isPaymentReleased ? (
             <div className="flex flex-wrap gap-2">
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -137,8 +141,9 @@ const JobCardDetailsHeader = () => {
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                 onClick={() => {
+                  setIsRatingUpdated(true);
                   setActiveKey("clientFeedback");
-                  setISOpenSidebar(true);
+                  setISOpenSidebar(true);                  
                 }}
               >
                 Rate Engineer
@@ -148,7 +153,7 @@ const JobCardDetailsHeader = () => {
             <div className="flex items-center gap-2">
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => console.log("Invite to Job clicked")}
+                onClick={() => navigate(absoluteUrls.client.home.ClientSelectEngineeers)}
               >
                 Invite to Job
               </Button>
