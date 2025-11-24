@@ -1,247 +1,3 @@
-// import { icons } from "@/config/icons";
-// import { validateDescription } from "@/pages/engineer/home/validation";
-// import {
-//   JOB_STATUSES,
-//   WORKING_TYPES,
-// } from "@/pages/engineer/search_result/types";
-// import { Button } from "@/shared/components/commonUI/Buttons";
-// import { TextareaInput } from "@/shared/components/commonUI/inputs";
-// import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-// import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-// import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-// import Popup from "@/shared/components/Popup";
-// import useDrawerStore from "@/shared/store/useDrawerStore";
-// import React from "react";
-// import { useForm } from "react-hook-form";
-// import { toast } from "react-toastify";
-// import type { JobHeaderCardProps } from "../types";
-
-// const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
-//   title,
-//   client,
-//   duration,
-//   type,
-//   status = "new",
-//   setIsWorkSubmitted,
-//   setSendProposal,
-//   isSendProposal,
-//   setActiveTab,
-//   setOfferJobStatus,
-//   OfferJobStatus,
-// }) => {
-//   const [open, setOpen] = React.useState(false);
-
-//   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
-//   return (
-//     <>
-//       <div
-//         className={`${
-//           isSendProposal ? "text-gray-800 bg-yellow-50" : "bg-teal-800"
-//         } p-5 rounded-xl shadow-md`}
-//       >
-//         <div className="flex justify-between items-center text-white">
-//           <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
-//           <span className="bg-gray-300 px-3 py-1.5 rounded-full text-sm font-medium text-gray-900">
-//             {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
-//           </span>
-//         </div>
-
-//         <div className="mt-3 flex flex-wrap gap-4 text-sm text-white">
-//           <span className="flex items-center gap-1 ">🕒 {duration}</span>
-//           <span>Client: {client}</span>
-//         </div>
-
-//         <div className="mt-4 flex flex-wrap gap-3 justify-end">
-//           <span className="flex rounded-full text-sm font-medium">
-//             {status === JOB_STATUSES.inprogress ? (
-//               <div className="flex gap-2">
-//                 <Button
-//                   variant="primary"
-//                   className=" rounded-md"
-//                   onClick={() => setOpen(true)}
-//                 >
-//                   Update Log
-//                 </Button>
-//                 <Button
-//                    variant="secondary"
-//                   onClick={() => setIsWorkSubmitted?.(true)}
-//                 >
-//                   Submit work
-//                 </Button>
-//               </div>
-//             ) : status === JOB_STATUSES.applied ? (
-//               <div className="flex gap-2 items-center">
-//                 <icons.checkCircle className="text-green-500 w-6 h-6" />
-//                 <span className="text-lg text-white">Job Applied</span>
-//               </div>
-//             ) : status === JOB_STATUSES.new ? (
-//               <div className="flex gap-2 items-center">
-//                 {!isSendProposal && (
-//                   <>
-//                     <Button
-//                       className="bg-teal-800 text-white px-6 py-2 rounded-md"
-//                       onClick={() => setSendProposal?.(true)}
-//                     >
-//                       Update Log
-//                     </Button>
-//                     <Button
-//                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-//                       onClick={() => {
-//                         setIsWorkSubmitted?.(true);
-//                         setActiveTab("Work Submissions");
-//                       }}
-//                     >
-//                       View Job posting
-//                     </Button>
-//                   </>
-//                 )}
-//               </div>
-//             ) : status === JOB_STATUSES.offer ? (
-//               <div className="flex gap-2 items-center">
-//                 {OfferJobStatus === undefined ? (
-//                   <div className="flex gap-4">
-//                     <Button
-//                      variant="primary"
-//                       onClick={() => setOfferJobStatus("accepted")}
-//                     >
-//                       Accept Job
-//                     </Button>
-
-//                     <Button
-//                      variant="secondary"
-//                       onClick={() => {
-//                         setOfferJobStatus("declined");
-//                         setActiveKey("cancelOffer");
-//                         setISOpenSidebar(true);
-//                       }}
-//                     >
-//                       Decline
-//                     </Button>
-//                   </div>
-//                 ) : OfferJobStatus === "accepted" ? (
-//                   <div className="flex gap-4">
-//                     <Button
-//                       variant="primary"
-//                       onClick={() => setOfferJobStatus("started")}
-//                     >
-//                       Start Job
-//                     </Button>
-
-//                     <Button
-//                       variant="secondary"
-//                       onClick={() => {
-//                         setOfferJobStatus("declined");
-//                         setActiveKey("cancelOffer");
-//                         setISOpenSidebar(true);
-//                       }}
-//                     >
-//                       Decline
-//                     </Button>
-//                   </div>
-//                 ) : OfferJobStatus === "started" ? (
-//                   <Button
-//                     variant="primary"
-//                     onClick={() => setOfferJobStatus("checked-in")}
-//                   >
-//                     Check in
-//                   </Button>
-//                 ) : (
-//                   <div className="flex gap-2">
-//                     <Button
-//                        variant="primary"
-//                       onClick={() => setOpen(true)}
-//                     >
-//                       Update Log
-//                     </Button>
-//                     <Button
-//                       variant="secondary"
-//                       onClick={() => {
-//                         setIsWorkSubmitted?.(true);
-//                         setActiveTab("Work Submissions");
-//                       }}
-//                     >
-//                       Submit Work
-//                     </Button>
-//                   </div>
-//                 )}
-//               </div>
-//             ) : (
-//               <div className="flex gap-2 items-center">
-//                 <icons.checkCircle className="text-green-500 w-6 h-6" />
-//                 <span className="text-lg text-white">Job Completed</span>
-//               </div>
-//             )}
-//           </span>
-//         </div>
-//       </div>
-//       <Popup open={open} onClose={() => setOpen(false)}>
-//         <UpdateStatus onClose={() => setOpen(false)} />
-//       </Popup>
-//     </>
-//   );
-// };
-
-// export default JobHeaderCard;
-
-// // -----------------------------------------------------
-// // Subcomponent
-// // -----------------------------------------------------
-
-// const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
-//   const FormCtx = useForm();
-
-//   const handleSubmit = () => {
-//     toast.success("Job status updated successfully!");
-//   };
-
-//   return (
-//     <div className="flex flex-col p-6">
-//       <div className="flex justify-end">
-//         <button onClick={onClose}>
-//           <icons.close className="w-6 h-6" />
-//         </button>
-//       </div>
-
-//       <div className="text-xl font-bold text-center">Update Status</div>
-
-//       <FormContainer methods={FormCtx} onSubmit={handleSubmit}>
-//         <SelectField
-//           name="status"
-//           label="Status"
-//           required
-//           options={[
-//             { label: "In Progress", value: "in-progress" },
-//             { label: "Completed", value: "completed" },
-//           ]}
-//         />
-
-//         <TextareaInput
-//           name="remarks"
-//           label="Remarks"
-//           required
-//           rules={validateDescription(5, 2000, "remarks")}
-//         />
-
-//         <FileUpload
-//           name="workScreenShot"
-//           label="Work Screenshot"
-//           required
-//           accept=".pdf"
-//         />
-
-//         <Button
-//           type="submit"
-//           className="w-full bg-teal-800 text-white py-2 rounded-lg mt-5"
-//         >
-//           Submit
-//         </Button>
-//       </FormContainer>
-//     </div>
-//   );
-// };
-
-
 import { icons } from "@/config/icons";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import {
@@ -259,6 +15,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { JobHeaderCardProps } from "../types";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -272,13 +29,110 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   setIsWorkSubmitted,
   setSendProposal,
   isSendProposal,
-  setIsJobAccepted,
   setActiveTab,
   OfferJobStatus,
   setOfferJobStatus,
 }) => {
   const [open, setOpen] = React.useState(false);
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmAcceptJob = async () => {
+    await showPopup({
+      title: "Accept Job",
+      body: "Are you sure you want to accept this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, accept",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job accepted successfully");
+            close(true);
+            setOfferJobStatus("accepted");
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmStartJob = async () => {
+    await showPopup({
+      title: "Start Job",
+      body: "Are you sure you want to start this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, start",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job started successfully");
+            close(true);
+            setOfferJobStatus("started");
+          },
+        },
+      ],
+    });
+  };
+
+  const handleConfirmCheckIn = async () => {
+    await showPopup({
+      title: "Check In",
+      body: "Are you sure you want to check in this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, check in",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job checked in successfully");
+            close(true);
+            setOfferJobStatus("checked-in");
+          },
+        },
+      ],
+    });
+  };
+
+ 
+  const handleViewJobPosting = async () => {
+    await showPopup({
+      title: "View Job Posting",
+      body: "Are you sure you want to view this job posting? once viewed, you cannot edit or delete it.",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, view",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            close(true);
+            setSendProposal?.(false)
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <>
@@ -336,7 +190,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 ) : (
                   <div
                     className="text-green-700 hover:underline cursor-pointer"
-                    onClick={() => setSendProposal?.(false)}
+                    onClick={() => handleViewJobPosting()}
                   >
                     View Job posting
                   </div>
@@ -348,7 +202,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   <div className="flex flex-row gap-4">
                     <Button
                       className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-                      onClick={() => setOfferJobStatus("accepted")}
+                      onClick={() => handleConfirmAcceptJob()}
                     >
                       Accept Job
                     </Button>
@@ -356,7 +210,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setOfferJobStatus(undefined);
                         setActiveKey("cancelOffer");
                         setISOpenSidebar(true);
                       }}
@@ -369,7 +222,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setOfferJobStatus("started");
+                        handleConfirmStartJob();
                       }}
                     >
                       Start Job
@@ -378,7 +231,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        setOfferJobStatus(undefined);
                         setActiveKey("cancelOffer");
                         setISOpenSidebar(true);
                       }}
@@ -390,7 +242,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                     onClick={() => {
-                      setOfferJobStatus("checked-in");
+                      handleConfirmCheckIn();
                     }}
                   >
                     Check in
@@ -435,10 +287,31 @@ export default JobHeaderCard;
 
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const FormCtx = useForm();
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitted");
-    toast.success("Job status updated successfully!");
+    await showPopup({
+      title: "Update Status",
+      body: "Are you sure you want to update this job status?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Job status updated successfully!");
+            close(true);
+            onClose();
+          },
+        },
+      ],
+    });
   };
   return (
     <div className="flex flex-col p-6">
