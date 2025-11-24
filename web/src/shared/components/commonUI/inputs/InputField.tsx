@@ -3,8 +3,22 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import type { InputFieldProps } from "./types";
 
+interface InputFieldProps {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  required?: boolean | string;
+  type?: "text" | "email" | "number" | "date";
+  isShowLabel?: boolean;
+  rules?: RegisterOptions;
+  leftIcon?: React.ReactNode;
+  containerClassName?: string;
+  inputClassName?: string;
+  showValidationCheck?: boolean;
+  disabled?: boolean;
+  onChange?: (value: string) => void;
+}
 
 /**
  * InputField - A reusable input component for react-hook-form.

@@ -1,19 +1,8 @@
 import { icons } from "@/config/icons";
+import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
-import { FaFacebook } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
-
-interface JobCardProps {
-  title: string;
-  company: string;
-  companyLogo: string;
-  category: string;
-  employmentType: string;
-  locationType: string;
-  salary: string;
-  location: string;
-  isBookmarked?: boolean;
-}
+import { useNavigate } from "react-router-dom";
+import type { Job } from "../../search_result/types";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -43,31 +32,21 @@ interface JobCardProps {
  *   location="California, USA"
  * />
  */
-const FeatureJobCard: React.FC<JobCardProps> = ({
+const FeatureJobCard: React.FC<Job> = ({
   title,
   company,
-  companyLogo,
   category,
   employmentType,
-  locationType,
+  type,
   salary,
   location,
   isBookmarked = false,
 }) => {
   const [isSelected, setSelected] = useState(isBookmarked);
-  console.log('company :', company);
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex justify-center items-center">
-            {/* <img
-              src={companyLogo}
-              alt={`logo`}
-              className="flex w-10 h-10 object-contain justify-center items-center "
-            /> */}
-           {company === "Google" ? <FcGoogle size={30} /> : <FaFacebook size={30} color="#3b5998" />}
-          </div>
           <div>
             <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
               {title}
@@ -77,8 +56,12 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
             </p>
           </div>
         </div>
-        <button
-          onClick={() => setSelected(!isSelected)}
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setSelected(!isSelected);
+          }}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
           aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
         >
@@ -87,7 +70,7 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
           ) : (
             <icons.bookmark className="h-4 w-4" />
           )}
-        </button>
+        </div>
       </div>
 
       {/* Tags section - theme-aware background */}
@@ -100,9 +83,9 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
             {employmentType}
           </span>
         )}
-        {locationType && (
+        {type && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {locationType}
+            {type}
           </span>
         )}
       </div>
@@ -145,17 +128,7 @@ const FeatureJobCard: React.FC<JobCardProps> = ({
  * />
  */
 interface FeaturedJobsProps {
-  jobs: Array<{
-    title: string;
-    company: string;
-    companyLogo: string;
-    category: string;
-    employmentType: string;
-    locationType: string;
-    salary: string;
-    location: string;
-    isBookmarked?: boolean;
-  }>;
+  jobs:Job[]
   title?: string;
   onViewAll?: () => void;
 }
@@ -176,26 +149,30 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   title = "Featured Jobs",
   onViewAll,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
         <h2 className="text-xl font-bold">{title}</h2>
         {onViewAll && (
-          <button
+          <div
             onClick={onViewAll}
-            className="text-teal-600 hover:text-teal-800 font-medium text-sm cursor-pointer hover:underline dark:text-teal-400 dark:hover:text-teal-300"
+            className="text-teal-600 hover:text-teal-800 font-medium text-sm hover:underline dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
           >
             View all
-          </button>
+          </div>
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {jobs.map((job, index) => (
           <div
             key={index}
-            className={`rounded-xl p-4 shadow-sm ${
+            className={`rounded-xl p-4 shadow-sm cursor-pointer ${
               jobCardGradients[index % jobCardGradients.length]
             }`}
+            onClick={() => {
+              navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
+            }}
           >
             <FeatureJobCard {...job} />
           </div>
@@ -204,4 +181,5 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
     </div>
   );
 };
-export { FeatureJobCard, FeaturedJobs };
+export { FeaturedJobs, FeatureJobCard };
+

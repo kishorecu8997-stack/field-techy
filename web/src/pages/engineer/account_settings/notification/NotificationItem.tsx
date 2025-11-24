@@ -1,9 +1,9 @@
-import { absoluteUrls } from "@/config/urls";
+import React from "react";
+import type { NotificationProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import type { NotificationProps } from "../types";
+import { absoluteUrls } from "@/config/urls";
 
 interface NotificationItemProps {
   notification: NotificationProps;
@@ -16,8 +16,8 @@ interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
 }) => {
-  //this is for testing purpose
-  const index = "7";
+  //this is for testing purpose, will be removed later
+  const index = "10";
 
   const {
     type,
@@ -32,7 +32,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     icon,
   } = notification;
   const navigate = useNavigate();
-  const { setISOpenSidebar } = useDrawerStore();
+  const { setISOpenSidebar, setActiveKey } = useDrawerStore();
 
   const renderJobDetails = () => {
     if (!jobTitle) return null;
@@ -74,7 +74,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         >
           Accept
         </Button>
-        <Button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition">
+        <Button
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition"
+          onClick={() => {
+            setActiveKey("cancelOffer");
+            setISOpenSidebar(true);
+          }}
+        >
           Decline
         </Button>
       </div>

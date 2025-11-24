@@ -17,8 +17,8 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isJobAccepted, setIsJobAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
+  const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -45,22 +45,23 @@ const JobDetailsPage = () => {
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
-              setIsJobAccepted={setIsJobAccepted}
               setActiveTab={setActiveTab}
+              setOfferJobStatus={setOfferJobStatus}
+              OfferJobStatus={OfferJobStatus}
             />
             <JobTabSection
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted || true}
               activeTab={activeTab}
+              OfferJobStatus={OfferJobStatus}
             />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={client.name}
+              name={filter()?.client as string}
               memberSince={client.memberSince}
-              location={client.location}
+              location={filter()?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
