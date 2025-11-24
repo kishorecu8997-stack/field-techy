@@ -144,7 +144,7 @@ const PostJobPage = () => {
 
   const { currentLocation } = usePostAJobStore();
   return (
-    <div>
+    <div className="p-4 bg-white">
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <MyJobsHeader
           title={

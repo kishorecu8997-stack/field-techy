@@ -1,9 +1,10 @@
-import MapComponent from "@/shared/components/MapComponent";
-import SectionHeader from "../SectionHeader";
-import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { workTypes } from "@/dummy_data/client";
+import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
+import MapSearch from "@/shared/components/MapWithSearch";
+import SectionHeader from "../SectionHeader";
 
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
+console.log('isDisable :', isDisable);
   return (
     <div>
       <SectionHeader title="Location" />
@@ -17,7 +18,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
       />
       <div className="space-y-2">
         <p> Work Location</p>
-        <MapComponent />
+        <MapSearch viewOnly={isDisable} />
       </div>
     </div>
   );
