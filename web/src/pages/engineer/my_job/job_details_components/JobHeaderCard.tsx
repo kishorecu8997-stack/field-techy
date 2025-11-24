@@ -38,32 +38,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [isCheckedIn, setIsCheckedIn] = React.useState(false);
 
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
   const { showPopup } = usePopupStore();
-
-  const handleConfirmSendProposal = async () => {
-    await showPopup({
-      title: "Send Proposal",
-      body: "Are you sure you want to send this job proposal?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Yes, send",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            toast.success("Job proposal sent successfully");
-            close(true);
-            setSendProposal?.(true);
-          },
-        },
-      ],
-    });
-  };
 
   const handleConfirmAcceptJob = async () => {
     await showPopup({
@@ -139,10 +114,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     });
   };
 
-  const handleConfirmCancelOffer = async () => {
+  const handleViewJobPosting = async () => {
     await showPopup({
-      title: "Cancel Offer",
-      body: "Are you sure you want to cancel this job offer?",
+      title: "View Job Posting",
+      body: "Are you sure you want to view this job posting? once viewed, you cannot edit or delete it.",
       actionButtons: [
         {
           label: "Cancel",
@@ -150,42 +125,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           variant: "outline",
         },
         {
-          label: "Yes, cancel",
+          label: "Yes, view",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Job offer cancelled successfully");
             close(true);
-            setIsAccepted?.(false);
-            setIsStarted?.(false);
-            setIsJobAccepted?.(false);
-          },
-        },
-      ],
-    });
-  };
-
-  const handleConfirmDecline = async () => {
-    await showPopup({
-      title: "Decline Job",
-      body: "Are you sure you want to decline this job offer?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Yes, decline",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            toast.success("Job offer declined successfully");
-            close(true);
-            setIsAccepted?.(false);
-            setIsStarted?.(false);
-            setActiveKey("cancelOffer");
-            setISOpenSidebar(true);
+            setSendProposal?.(false);
           },
         },
       ],
@@ -241,14 +186,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 {!isSendProposal ? (
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                    onClick={() => handleConfirmSendProposal()}
+                    onClick={() => setSendProposal?.(true)}
                   >
                     Send Proposal
                   </Button>
                 ) : (
                   <div
                     className="text-green-700 hover:underline cursor-pointer"
-                    onClick={() => setSendProposal?.(false)}
+                    onClick={() => handleViewJobPosting()}
                   >
                     View Job posting
                   </div>
@@ -271,7 +216,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        handleConfirmDecline();
+                        setActiveKey("cancelOffer");
+                        setISOpenSidebar(true);
                       }}
                     >
                       Decline
@@ -292,7 +238,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                     <Button
                       className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                       onClick={() => {
-                        handleConfirmDecline();
+                        setActiveKey("cancelOffer");
+                        setISOpenSidebar(true);
                       }}
                     >
                       Decline
@@ -303,7 +250,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                   <Button
                     className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                     onClick={() => {
-                     handleConfirmCheckIn()
+                      handleConfirmCheckIn();
                     }}
                   >
                     Check in

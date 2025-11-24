@@ -9,6 +9,7 @@ import { absoluteUrls } from "@/config/urls";
 import Pagination from "../search_result/components/Pagination";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { useEffect, useState } from "react";
+import { scrollToTop } from "@/utils";
 
 /**
  * Home page component.
@@ -21,6 +22,7 @@ const Home = () => {
   const [accessPopup, setAccessPopup] = useState(false);
 
   const handleExploreJobs = () => {
+    scrollToTop();
     navigate(absoluteUrls.engineer.home.explore_jobs);
   };
 

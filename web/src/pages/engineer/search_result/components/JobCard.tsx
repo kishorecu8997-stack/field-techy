@@ -4,6 +4,7 @@ import { BiDollar } from "react-icons/bi";
 import { IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
+import { scrollToTop } from "@/utils";
 /**
  * JobCard component displays a single job listing
  *
@@ -22,6 +23,9 @@ const JobCard: React.FC<{
   return (
     <Link
       to={navigateToJob}
+      onClick={() => {
+        scrollToTop();
+      }}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm sm:p-6 mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
@@ -51,6 +55,7 @@ const JobCard: React.FC<{
             <button
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 setBookmark(!isBookmarked);
               }}
               className={`p-2 rounded-full  hover:bg-gray-100 transition-colors cursor-pointer`}
