@@ -34,6 +34,7 @@ export default function AddSubAdmin() {
   const handleSubmit = (data: AddSubAdminForm) => {
     console.log("data", data);
     toast.success("Sub Admin Added Successfully");
+    navigate(absoluteUrls.admin.home.manage_sub_admin);
   };
 
   return (

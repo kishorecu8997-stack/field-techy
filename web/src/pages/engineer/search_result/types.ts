@@ -22,7 +22,7 @@ export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
-}
+};
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -57,6 +57,8 @@ export interface Job {
   companyLogo?: string;
   company?: string;
   employmentType?: string;
+  place: string;
+  isBookmarked?: boolean;
 }
 
 /**
@@ -81,3 +83,14 @@ export interface Options {
   label: string;
   value: string;
 }
+
+
+export const OfferedJobStatus = {
+  initial: "initial",
+  accepted: "accepted",
+  declined: "declined",
+  started: "started",
+  checkedIn: "checked-in",
+};
+
+export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];

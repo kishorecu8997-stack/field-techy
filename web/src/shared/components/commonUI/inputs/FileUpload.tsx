@@ -36,7 +36,7 @@ export const FileUpload = ({
   minSize = 50 * 1024, // ✅ Minimum file size: 50 KB
   maxSize = 350 * 1024, // ✅ Maximum file size: 350 KB
   containerClassName = "flex flex-col py-1",
-  placeholder = "Upload Resume/CV",
+  placeholder = "Add a file",
   validatePDF = true,
   minPages = 1,
   maxPages = 5,
@@ -398,11 +398,8 @@ export const FileUpload = ({
                       {placeholder}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()}• Min 50 KB • Max {maxSize /
-                      1024} KB
-                      {validatePDF &&
-                        accept.toLowerCase().includes("pdf") &&
-                        ` • ${minPages}–${maxPages} pages`}
+                      Format: {formatAllowedTypes()} • Min {50} - Max {maxSize / 1024} KB
+                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}                     
                     </p>
                   </>
                 )}

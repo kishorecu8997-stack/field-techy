@@ -3,7 +3,6 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import React from "react";
 
 interface InputFieldProps {
   name: string;
@@ -11,13 +10,14 @@ interface InputFieldProps {
   placeholder?: string;
   required?: boolean | string;
   type?: "text" | "email" | "number" | "date";
-  isShowLabel?:boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
   leftIcon?: React.ReactNode;
   containerClassName?: string;
   inputClassName?: string;
   showValidationCheck?: boolean;
   disabled?: boolean;
+  onChange?: (value: string) => void;
 }
 
 /**
@@ -35,12 +35,13 @@ export const InputField = ({
   required = false,
   type = "text",
   rules,
-  isShowLabel=true,
+  isShowLabel = true,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   showValidationCheck = false,
-  disabled = false,  // Added disabled default to false
+  disabled = false, // Added disabled default to false
+  onChange,
 }: InputFieldProps) => {
   const { control } = useFormContext();
 
@@ -93,10 +94,14 @@ export const InputField = ({
                 // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
                 placeholder={placeholder || label}
-                disabled={disabled} 
+                disabled={disabled}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 }`}
+                onChange={(e) => {
+                  field.onChange(e); // 🔹 update RHF form state
+                  onChange?.(e.target.value); // 🔹 call custom change handler if provided
+                }}
               />
               {showValidationCheck && isDirty && !invalid && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">

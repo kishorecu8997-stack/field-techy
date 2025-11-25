@@ -40,6 +40,7 @@ export default function EditSubAdmin() {
   const handleSubmit = (data: AddSubAdminForm) => {
     console.log("data", data);
     toast.success("Sub Admin Updated Successfully");
+    navigate(absoluteUrls.admin.home.manage_sub_admin);
   };
 
   return (

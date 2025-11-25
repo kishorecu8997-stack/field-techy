@@ -60,19 +60,5 @@ export const initialDocuments: Document[] = [
     metadata: {
       Pages: "2",
     },
-  },
-  {
-    id: 5,
-    title: "External Document",
-    fileName: "invoice-2023.pdf",
-    fileType: "PDF",
-    // This URL comes from an external source (like an API or database)
-    // It's a full, absolute URL string.
-    previewUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-    uploadDate: "2023-05-20",
-    description: "A document hosted on an external server.",
-    metadata: {
-      Source: "External Server",
-    },
-  },
+  },  
 ];

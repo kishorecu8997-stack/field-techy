@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for adding skills.
@@ -20,30 +21,18 @@ export type AddSkillsFormData = {
  * @returns {React.ReactElement} The rendered AddSkills form component.
  */
 const AddSkills = () => {
-  /**
-   * Initializes `react-hook-form` with default values for the skills form.
-   */
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
     },
   });
 
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the selected skills.
-   * @param {AddSkillsFormData} data - The validated form data containing an array of skill IDs.
-   */
   const onSubmit = (data: AddSkillsFormData) => {
+    toast.success("Skills Saved Successfully");  
     console.log("Form data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
   };
-
-  /**
-   * Transforms the raw skills data into a format suitable for the `TagSelectField` component.
-   * @type {Array<{label: string, value: string}>}
-   */
+  
   const skillOptions = skillsData.map((skill) => ({
     label: skill.label,
     value: skill.id.toString(),

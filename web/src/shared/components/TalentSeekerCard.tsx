@@ -2,6 +2,7 @@
 
 import { absoluteUrls } from "@/config/urls";
 import { NavLink } from "react-router-dom";
+import { Button } from "./commonUI/Buttons";
 
 export const TalentSeekerCard = () => {
   return (
@@ -23,11 +24,11 @@ export const TalentSeekerCard = () => {
             to={absoluteUrls.client.home.post_JobPage}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
-            <button
+            <Button
               className="bg-emerald-100 text-emerald-900 hover:bg-emerald-200 font-medium py-2 px-4 rounded-2xl text-sm transition-colors duration-200"
             >
               Post A Job
-            </button>
+            </Button>
           </NavLink>
         </nav>
       </div>

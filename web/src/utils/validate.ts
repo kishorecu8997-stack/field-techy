@@ -431,30 +431,100 @@ export const validateIsPhoneVerified = (verified: boolean) => {
 };
 
 export const cardNumberValidation = (value: string) => {
-  const raw = value || "";
-  const cleanedValue = raw.replace(/\s/g, "");
-  if (!cleanedValue) return "Card number is required.";
-  if (!/^\d{13,19}$/.test(cleanedValue)) {
-    return "Card number must be 13 to 19 digits.";
+  const raw = value?.trim() || ""; // Trim whitespace from both ends of the input
+
+  if (/^\s|\s$/.test(raw)) {
+    return "Card number must not start or end with a space.";
   }
-  return true;
+
+  const cleanedValue = raw.replace(/\s/g, ""); // Remove all whitespace
+  if (!cleanedValue) return "Card number is required.";
+
+  if (!/^\d{12,19}$/.test(cleanedValue)) {
+    return "Card number must be 12 to 19 digits.";
+  }
+
+  if (/^0+$/.test(cleanedValue)) {
+    return "Card number cannot be all zeros.";
+  }
+
+  if (!luhnCheck(cleanedValue)) {
+    return "Invalid card number.";
+  }
+
+  return true; // Validation successful
+};
+
+// Luhn Algorithm for checksum validation
+const luhnCheck = (cardNumber: string) => {
+  let sum = 0;
+  let alternate = false;
+
+  for (let i = cardNumber.length - 1; i >= 0; i--) {
+    let n = parseInt(cardNumber.charAt(i), 10);
+
+    if (alternate) {
+      n *= 2;
+      if (n > 9) {
+        n -= 9;
+      }
+    }
+    sum += n;
+    alternate = !alternate; // Toggle alternate flag
+  }
+  
+  return sum % 10 === 0; // Valid if sum is a multiple of 10
 };
 
 export const expiryDateValidation = (value: string) => {
-  const raw = value || "";
-  if (!raw) return "Expiry date is required.";
-  if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
-    return "Invalid date format. Use MM/YY.";
-  }
-  const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
-  if (!match) return true; // Let pattern handle format errors
-  const [, month, year] = match;
-  const expiryDate = new Date(Number(`20${year}`), Number(month) - 1); // Month is 0-indexed
-  const now = new Date();
-  // Set current date to first of the month for fair comparison
-  now.setDate(1);
-  return expiryDate >= now || "Card has expired.";
+    const raw = value?.trim() || "";
+  
+    if (!raw) {
+        return "Expiry date is required.";
+    }
+
+    if (/^\s|\s$/.test(raw)) {
+        return "Expiry date must not start or end with a space.";
+    }
+
+    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
+        return "Invalid date format. Use MM/YY.";
+    }
+
+    const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
+    if (!match) {
+        return "Invalid date format.";
+    }
+
+    const [, monthStr, yearStr] = match;
+    const expiryMonth = parseInt(monthStr, 10);
+    const currentYear = new Date().getFullYear();
+    const twoDigitYear = parseInt(yearStr, 10);
+  
+    // Determine full year based on the current year
+    const expiryYear = currentYear - (currentYear % 100) + twoDigitYear;
+
+    const now = new Date();
+    const maxExpiryYear = currentYear + 5; // Maximum expiry year set to 5 years from now
+
+    // Check if the expiry year exceeds the max allowed
+    if (expiryYear > maxExpiryYear) {
+        return `Expiry date cannot be more than 5 years from the current year (${maxExpiryYear}).`;
+    }
+
+    // Set to the first day of the expiry month for comparison
+    const expiryDate = new Date(expiryYear, expiryMonth - 1, 1);
+
+    // Check if the expiry date is valid
+    if (expiryDate > now || (expiryYear === currentYear && expiryMonth >= (now.getMonth() + 1))) {
+        return true; // Validation successful
+    }
+
+    return "Card has expired.";
 };
+
+
+
 
 export const cvvValidation = (value: string) => {
   const raw = value || "";
@@ -834,6 +904,43 @@ export const validateAlphabeticTextArea = (
 
   return true;
 };
+
+export interface CheckboxValidationOptions {
+  required?: boolean;
+  minSelected?: number;
+  maxSelected?: number;
+}
+
+export const validateCheckboxGroup = (
+  values: (string | number | boolean)[],
+  options: CheckboxValidationOptions = {}
+): string | true => {
+  const { required = true, minSelected = 1, maxSelected = Infinity } = options;
+
+  // Normalize: treat `null`, `undefined`, or non-array as empty
+  const selected = Array.isArray(values)
+    ? values.filter((v) => v !== false && v != null && v !== "")
+    : [];
+
+  if (required && selected.length === 0) {
+    return "At least one option must be selected";
+  }
+
+  if (!required && selected.length === 0) {
+    return true;
+  }
+
+  if (selected.length < minSelected) {
+    return `At least ${minSelected} option(s) must be selected`;
+  }
+
+  if (selected.length > maxSelected) {
+    return `You can select up to ${maxSelected} option(s)`;
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -863,4 +970,5 @@ export default {
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,
+  validateCheckboxGroup,
 };

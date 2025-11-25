@@ -12,7 +12,6 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
-  // State management
   const [jobs] = useState(sampleJobs);
   const [filteredJobs, setFilteredJobs] = useState(sampleJobs);
   const [currentPage, setCurrentPage] = useState(1);

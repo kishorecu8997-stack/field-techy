@@ -49,6 +49,7 @@ export default function AddNotification() {
   const handleSubmit = (data: AddNotificationProps) => {
     console.log("Form Data:", data);
     toast.success("Notification Added Successfully!");
+    navigate(absoluteUrls.admin.home.manage_notification);
   };
   return (
     <div className="w-full h-full flex flex-col px-4 py-2 gap-3">
