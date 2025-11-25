@@ -44,7 +44,7 @@ export default function AddSubAdmin() {
           variant="solid"
           className=""
           onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_sub_admin}`)
+            navigate(absoluteUrls.admin.home.manage_sub_admin)
           }
         >
           Back

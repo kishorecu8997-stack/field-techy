@@ -50,7 +50,7 @@ export default function EditSubAdmin() {
           variant="solid"
           className=""
           onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_sub_admin}`)
+            navigate(absoluteUrls.admin.home.manage_sub_admin)
           }
         >
           Back
