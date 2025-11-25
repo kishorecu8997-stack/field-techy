@@ -70,9 +70,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       minDate={applicationEndDate ? applicationEndDate : null}
                       maxDate={tentativeEndDate ? tentativeEndDate : null}
                     />
-                    {error && (
+                    {/* {error && (
                       <p className="text-red-600 text-sm">{error.message}</p>
-                    )}
+                    )} */}
                   </>
                 )}
               />
@@ -95,9 +95,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       minDate={applicationEndDate ? applicationEndDate : null}
                       required
                     />
-                    {error && (
+                    {/* {error && (
                       <p className="text-red-600 text-sm">{error.message}</p>
-                    )}
+                    )} */}
                   </>
                 )}
               />
@@ -125,9 +125,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       required
                       maxDate={tentativeStartDate ? tentativeStartDate : null}
                     />
-                    {error && (
+                    {/* {error && (
                       <p className="text-red-600 text-sm">{error.message}</p>
-                    )}
+                    )} */}
                   </>
                 )}
               />
@@ -198,11 +198,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             {...field}
                             required
                           />
-                          {error && (
+                          {/* {error && (
                             <p className="text-red-600 text-sm">
                               {error.message}
                             </p>
-                          )}
+                          )} */}
                         </>
                       )}
                     />
@@ -300,11 +300,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           {...field}
                           required
                         />
-                        {error && (
+                        {/* {error && (
                           <p className="text-red-600 text-sm">
                             {error.message}
                           </p>
-                        )}
+                        )} */}
                       </>
                     )}
                   />
@@ -346,11 +346,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                               {...field}
                               required
                             />
-                            {error && (
+                            {/* {error && (
                               <p className="text-red-600 text-sm">
                                 {error.message}
                               </p>
-                            )}
+                            )} */}
                           </>
                         )}
                       />
@@ -382,11 +382,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                               {...field}
                               required
                             />
-                            {error && (
+                            {/* {error && (
                               <p className="text-red-600 text-sm">
                                 {error.message}
                               </p>
-                            )}
+                            )} */}
                           </>
                         )}
                       />
@@ -429,11 +429,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             required
                             maxDate={endDate ? endDate : null}
                           />
-                          {error && (
+                          {/* {error && (
                             <p className="text-red-600 text-sm">
                               {error.message}
                             </p>
-                          )}
+                          )} */}
                         </>
                       )}
                     />
@@ -467,11 +467,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             minDate={startDate ? startDate : null}
                             disabled={isDisable}
                           />
-                          {error && (
+                          {/* {error && (
                             <p className="text-red-600 text-sm">
                               {error.message}
                             </p>
-                          )}
+                          )} */}
                         </>
                       )}
                     />
