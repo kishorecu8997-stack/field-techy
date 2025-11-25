@@ -1,11 +1,45 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PaymentData } from "@/dummy_data/admin";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
+import type { adminJobsStatus } from "../types";
 
 const Payment = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const { showPopup } = usePopupStore();
+
+  const handleStatusChange = async (data: any) => {
+    if (!data.status) return;
+    const status = data.status;
+    await showPopup({
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Paymnet`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this Payment?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("close :", close);
+            // await handlePostAJob(data);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns = [
     { key: "id", label: "Payment ID" },
     { key: "amount", label: "Amount" },
@@ -24,6 +58,10 @@ const Payment = () => {
                   ...prev,
                   [row.id]: value ?? "",
                 }));
+                handleStatusChange({
+                  ...row,
+                  status: value as adminJobsStatus,
+                });
               }}
               options={JobStatus}
             />

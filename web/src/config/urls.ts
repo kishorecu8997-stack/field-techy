@@ -111,7 +111,7 @@ export const urls = {
       settings: "settings",
       profile: "profile",
       received_notification: "received-notification",
-      roleList: "roles",
+      roleList: "sub-admins/roles",
       corporateClientAdd: "client/add",
       homeClientAdd: "client/add",
       corporateClientEdit: "client/edit",
@@ -151,7 +151,6 @@ export const absoluteUrls = {
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/chat`,
-
     },
   },
   client: {
@@ -216,7 +215,7 @@ export const absoluteUrls = {
       profile: `${BASE.ADMIN}/profile`,
       received_notification: `${BASE.ADMIN}/received-notification`,
       edit_role: `${BASE.ADMIN}/edit-role`,
-      roleList: `${BASE.ADMIN}/roles`,
+      roleList: `${BASE.ADMIN}/sub-admins/roles`,
       corporateClientAdd: `${BASE.ADMIN}/client/add`,
       homeClientAdd: `${BASE.ADMIN}/client/add`,
       corporateClientEdit: `${BASE.ADMIN}/client/edit`,

@@ -45,7 +45,7 @@ export default function Commission() {
           <InputField
             placeholder="Commission"
             name="commission"
-            label="Set Commission"
+            label="Set Commission(%)"
             required
             rules={{ validate: (v: string) => CommissionValidation(v) }}
           />
