@@ -14,6 +14,13 @@ interface SimpleSelectProps {
   className?: string;
 }
 
+/**
+ * A simple and reusable select menu component that automatically adjusts
+ * its dropdown position (top or bottom) based on available space.
+ *
+ * @param {SimpleSelectProps} props The props for the component.
+ * @returns {JSX.Element} The rendered select menu component.
+ */
 const SelectMenu = ({
   options,
   placeholder = "Select an option",
@@ -45,7 +52,7 @@ const SelectMenu = ({
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
 
-    // 👇 Find nearest scrollable parent (you can adjust selector if needed)
+    //Find nearest scrollable parent (you can adjust selector if needed)
     let scrollContainer: HTMLElement | null = null;
     let parent = triggerRef.current.parentElement;
 
@@ -77,7 +84,7 @@ const SelectMenu = ({
 
     const menuHeight = 200; // Approximate height of menu (adjust if needed)
 
-    // 👇 Flip to top only if not enough space below AND enough space above
+    // Flip to top only if not enough space below AND enough space above
     if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
       setPosition("top");
     } else {
