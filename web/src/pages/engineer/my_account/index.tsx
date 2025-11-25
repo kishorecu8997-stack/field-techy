@@ -62,12 +62,12 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       id: "earning",
       onClick: () => onMenuItemClick("earning"),
     },
-    {
-      label: "Saved Jobs",
-      icon: FaBookmark,
-      id: "saved",
-      onClick: () => onMenuItemClick("saved"),
-    },
+    // {
+    //   label: "Saved Jobs",
+    //   icon: FaBookmark,
+    //   id: "saved",
+    //   onClick: () =>console.log("saved"),
+    // },
     {
       label: "Settings",
       icon: FaCog,
