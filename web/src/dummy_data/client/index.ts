@@ -1,8 +1,8 @@
-import type { ChatMessage, ChatUser } from "@/pages/engineer/chat/types";
 import {
   locationType,
   RepeatByFields
 } from "@/pages/client/post_job/types";
+import type { ChatMessage, Conversation } from "@/pages/engineer/chat/types";
 
 export const experienceLevel = [
   { value: "beginner", label: "Beginner" },
@@ -144,130 +144,91 @@ export const TemplateData = [
 
 
 
-export const users: ChatUser[] = [
+export const messages: ChatMessage[] = [
   {
-    id: 1,
-    name: "Employees Task",
-    avatar: null,
-    lastMessage: "Okay, it's all noted.",
-    timestamp: "Yesterday",
-    unreadCount: 4,
-    isRead: false,
+    id: "m1",
+    conversationId: "c3",
+    from: "other",
+    text: "Hey marcel, The job submission deadline on our platform is approaching fast.",
+    timestamp: "15:42",
   },
   {
-    id: 2,
-    name: "Daily Report",
-    avatar: null,
-    lastMessage: "Okay, it's all noted.",
-    timestamp: "Yesterday",
-    unreadCount: 0,
-    isRead: true,
+    id: "m2",
+    conversationId: "c3",
+    from: "other",
+    text: "Your payment for the job listing has been processed.",
+    timestamp: "16:20",
   },
   {
-    id: 3,
-    name: "Robert Cole",
-    avatar: null,
-    lastMessage: "Thanks for the update.",
-    timestamp: "Today",
-    unreadCount: 0,
-    isRead: true,
+    id: "m3",
+    conversationId: "c3",
+    from: "me",
+    text: "Oh I'm sorry, may I see the bill Receipt?",
+    timestamp: "16:28",
+  },
+
+  // another conversation
+  {
+    id: "m4",
+    conversationId: "c1",
+    from: "other",
+    text: "Daily report for yesterday has been generated.",
+    timestamp: "09:01",
+  },
+  {
+    id: "m5",
+    conversationId: "c4",
+    from: "other",
+    text: "Pushing the new design to Figma now.",
+    timestamp: "10:10",
+  },
+  {
+    id: "m6",
+    conversationId: "c4",
+    from: "me",
+    text: "Great, I’ll review it in a bit.",
+    timestamp: "10:12",
   },
 ];
 
-export const messages: ChatMessage[] = [
-  {
-    id: 1,
-    userId: 1,
-    fromMe: false,
-    message: "Your payment for the job listing has been processed.",
-    timestamp: "16:56", 
-  },
-  {
-    id: 2,
-    userId: 1,
-    fromMe: true,
-    message: "Oh I'm sorry, may I see the bill receipt?",
-    timestamp: "16:58",
-  },
-  {
-    id: 3,
-    userId: 1,
-    fromMe: true,
-    message: "Okay, I'll pay for it now.",
-    timestamp: "16:59",
-  },
 
-  // Emily chat
-  {
-    id: 4,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 9,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 10,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 51,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 52,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 53,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 54,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 55,
-    userId: 2,
-    fromMe: false,
-    message: "Hi, did you receive my resume?",
-    timestamp: "15:10",
-  },
-  {
-    id: 5,
-    userId: 2,
-    fromMe: true,
-    message: "Yes! reviewing now.",
-    timestamp: "15:11",
-  },
+// src/data/conversations.ts
 
-  // Robert chat
+export const conversations: Conversation[] = [
   {
-    id: 6,
-    userId: 3,
-    fromMe: false,
-    message: "Is the meeting still scheduled?",
-    timestamp: "11:00",
+    id: "c1",
+    name: "Daily Report",
+    lastMessage: "Okay, it’s all noted.",
+    updatedAt: "Yesterday",
+    unreadCount: 0,
+    type: "personal",
+    participants: ["You", "Daily Report Bot"],
+  },
+  {
+    id: "c2",
+    name: "Office 450",
+    lastMessage: "Okay, it’s all noted.",
+    updatedAt: "Yesterday",
+    unreadCount: 0,
+    type: "personal",
+    participants: ["You", "Office Manager"],
+  },
+  {
+    id: "c3",
+    name: "Employees Task",
+    lastMessage: "Okay, it’s all noted.",
+    updatedAt: "Yesterday",
+    unreadCount: 4,
+    type: "group",
+    members: ["Marcel", "HR Team", "Finance", "You"],
+  },
+  {
+    id: "c4",
+    name: "Design Squad",
+    lastMessage: "Let’s finalize the UI today.",
+    updatedAt: "Today",
+    unreadCount: 2,
+    type: "group",
+    members: ["Alice", "Ben", "Chris", "You"],
   },
 ];

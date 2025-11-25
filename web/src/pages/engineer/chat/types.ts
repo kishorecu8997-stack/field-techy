@@ -1,17 +1,31 @@
-export interface ChatUser {
-  id: number;
-  name: string;
-  avatar: string | null;
+// src/components/types.ts
+export type ChatMode = "personal" | "group";
 
+export interface BaseConversation {
+  id: string;
+  name: string;
   lastMessage: string;
-  timestamp: string;      // e.g. "Yesterday"
-  unreadCount: number;    // if > 0 → show badge
-  isRead: boolean;        // if true → show ✔✔
+  updatedAt: string;
+  unreadCount?: number;
+  type: ChatMode | "system";
 }
+
+export interface PersonalConversation extends BaseConversation {
+  type: "personal";
+  participants: string[]; // you + one other (or more if you want)
+}
+
+export interface GroupConversation extends BaseConversation {
+  type: "group";
+  members: string[]; // list of member display names
+}
+
+export type Conversation = PersonalConversation | GroupConversation;
+
 export interface ChatMessage {
-  id: number;
-  userId: number;
-  fromMe: boolean;
-  message: string;
+  id: string;
+  conversationId: string;
+  from: "me" | "other";
+  text: string;
   timestamp: string;
 }
