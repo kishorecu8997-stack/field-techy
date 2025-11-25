@@ -59,7 +59,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     ),
                 }}
                 control={ctx.control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <>
                     <DatePickerInput
                       disabled={isDisable}
@@ -85,7 +85,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     validateDateRange(value, ctx.getValues("tentativeEndDate")),
                 }}
                 control={ctx.control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <>
                     <DatePickerInput
                       disabled={isDisable}
@@ -115,7 +115,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     ),
                 }}
                 control={ctx.control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <>
                     <DatePickerInput
                       disabled={isDisable}
@@ -179,7 +179,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     label="Repeat On (Days)"
                     required
                     disabled={isDisable}
-                    
                   />
                   <div className="relative w-full">
                     <Controller
@@ -189,7 +188,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           validateDateRange(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
-                      render={({ field, fieldState: { error } }) => (
+                      render={({ field }) => (
                         <>
                           <DatePickerInput
                             disabled={isDisable}
@@ -291,7 +290,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         ),
                     }}
                     control={ctx.control}
-                    render={({ field, fieldState: { error } }) => (
+                    render={({ field }) => (
                       <>
                         <DatePickerInput
                           disabled={isDisable}
@@ -337,7 +336,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             ),
                         }}
                         control={ctx.control}
-                        render={({ field, fieldState: { error } }) => (
+                        render={({ field }) => (
                           <>
                             <DatePickerInput
                               disabled={isDisable}
@@ -373,7 +372,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             validateDateRange(value, ctx.getValues("endDate")),
                         }}
                         control={ctx.control}
-                        render={({ field, fieldState: { error } }) => (
+                        render={({ field }) => (
                           <>
                             <DatePickerInput
                               disabled={isDisable}
@@ -419,7 +418,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           validateDateRange(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
-                      render={({ field, fieldState: { error } }) => (
+                      render={({ field }) => (
                         <>
                           <DatePickerInput
                             disabled={isDisable}
@@ -457,7 +456,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           validateDateRange(value, ctx.getValues("endDate")),
                       }}
                       control={ctx.control}
-                      render={({ field, fieldState: { error } }) => (
+                      render={({ field }) => (
                         <>
                           <DatePickerInput
                             label="End Date"
