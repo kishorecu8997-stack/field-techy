@@ -28,7 +28,6 @@ const ExploreJobs = () => {
     skills: [],
   });
 
-  console.log('sampleJobs :', sampleJobs);
   // Keep only jobs that are NOT new or offer
   const allNewJobs = useMemo(() => {
     return sampleJobs.filter(
