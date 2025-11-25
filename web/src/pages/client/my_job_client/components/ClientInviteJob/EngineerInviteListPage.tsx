@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { mockEngineers } from "@/dummy_data/engineers";
 import Pagination from "@/pages/client/search_result/components/Pagination";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS, type Filters } from "@/pages/client/search_result/types";
+import {
+  SORT_OPTIONS,
+  type Filters,
+} from "@/pages/client/search_result/types";
 import FilterPanel from "@/pages/client/search_result/components/FilterPanel";
 import EngineerInviteCard from "./EngineerInviteCard";
 import Popup from "@/shared/components/Popup";
@@ -19,7 +22,9 @@ interface SelectInviteJobCardProps {
  * The component manages its own state for theme, category selection, and pagination.
  * @returns {React.ReactElement} The rendered engineer list page.
  */
-const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = (onClose) => {
+const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = ({
+  onClose: _onClose,
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [invitedEngineers, setInvitedEngineers] = useState<number[]>([]);
@@ -32,6 +37,7 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = (onClose) => 
     startIndex,
     startIndex + itemsPerPage
   );
+
   const [filters, setFilters] = useState<Filters>({
     location: [],
     category: [],
@@ -65,15 +71,27 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = (onClose) => 
     setCurrentPage(1);
   };
 
+  const handleInviteClick = () => {
+    // Send invite logic (e.g., API call)
+    console.log("Invite sent to engineers", invitedEngineers);
+    setIsOpen(true);
+  };
+
+  const handleSingleInviteClick = (id: number) => {
+    // Send single invite logic (e.g., API call)
+    console.log("Invite sent to engineer", id);
+    setIsOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
         <div className="sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
             title="Explore Engineers"
-            currentSort={SORT_OPTIONS.NEWEST}
-            isShowBreadcrumb={false}
-            description={`10 jobs found`} // ✅ Updated count
+            isShowButton={false}
+            onClick={handleInviteClick}
+            description={`${mockEngineers.length} engineers found`}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -84,7 +102,9 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = (onClose) => 
                 <EngineerInviteCard
                   key={engineer.id}
                   engineer={engineer}
-                  onInviteToggle={() => handleInviteToggle(engineer.id)}
+                  onSelectionToggle={handleInviteToggle}
+                  selected={invitedEngineers.includes(engineer.id)}
+                  onInviteClick={() => handleSingleInviteClick(engineer.id)}
                 />
               ))}
             </div>
@@ -106,9 +126,9 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = (onClose) => 
           </div>
         </div>
       </div>
-       {/* <Popup open={isOpen} onClose={onClose}>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
         <InvitationSentModal onClose={() => setIsOpen(false)} />
-      </Popup> */}
+      </Popup>
     </div>
   );
 };
