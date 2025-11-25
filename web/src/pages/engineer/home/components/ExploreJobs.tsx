@@ -28,12 +28,12 @@ const ExploreJobs = () => {
     skills: [],
   });
 
+  console.log('sampleJobs :', sampleJobs);
   // Keep only jobs that are NOT new or offer
   const allNewJobs = useMemo(() => {
     return sampleJobs.filter(
       (job) =>
-        job.status !== JOB_STATUSES.new &&
-        job.status !== JOB_STATUSES.offer
+        job.status === JOB_STATUSES.new
     );
   }, []);
 
