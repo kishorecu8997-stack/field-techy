@@ -1,27 +1,44 @@
 import { Listbox, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
 import type { SelectFieldProps, SelectOption } from "./types";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
+/**
+ * A chevron icon that rotates based on the open state.
+ * @param {{ open: boolean }} props - The props for the component.
+ * @returns {JSX.Element} The rendered chevron icon.
+ */
 const ChevronDownIcon = ({ open }: { open: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+  <MdOutlineKeyboardArrowDown
+    className={`h-7 w-7 text-gray-500 transition-transform duration-200 ${
       open ? "rotate-180" : ""
     }`}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-  </svg>
+  />
 );
 
+/**
+ * A highly customizable select field component integrated with React Hook Form.
+ * It supports single and multiple selections, search, validation, and automatic
+ * dropdown positioning. Built with Headless UI for accessibility.
+ *
+ * @param {SelectFieldProps & { multiple?: boolean }} props The props for the component.
+ * @param {string} props.name - The name of the field, used for form registration.
+ * @param {string} [props.label] - The label text for the input field.
+ * @param {boolean} [props.isShowLabel=true] - Whether to display the label.
+ * @param {string} [props.placeholder="Select"] - The placeholder text when no value is selected.
+ * @param {boolean | string} [props.required=false] - Marks the field as required. Can be a boolean or a custom error message string.
+ * @param {SelectOption[]} [props.options=[]] - The array of options to display in the dropdown.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for React Hook Form.
+ * @param {React.ReactNode} [props.leftIcon] - An optional icon to display on the left side of the input.
+ * @param {boolean} [props.multiple=false] - Enables multi-select functionality.
+ * @param {boolean} [props.disabled=false] - Disables the select field.
+ * @returns {JSX.Element} The rendered select field component.
+ */
 export const SelectField = ({
   name,
   label,
@@ -36,6 +53,9 @@ export const SelectField = ({
 }: SelectFieldProps & { multiple?: boolean }) => {
   const { control } = useFormContext();
   const [search, setSearch] = useState("");
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const openRef = useRef(false);
+  const [position, setPosition] = useState<"bottom" | "top">("bottom");
 
   const requiredMessage =
     typeof required === "string"
@@ -54,6 +74,50 @@ export const SelectField = ({
         opt.label.toLowerCase().includes(search.toLowerCase())
       )
     : options;
+
+  const updatePosition = () => {
+    if (!buttonRef.current) return;
+
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+
+    let scrollContainer: HTMLElement | null = null;
+    let parent = buttonRef.current.parentElement;
+    while (parent && parent !== document.body) {
+      const style = window.getComputedStyle(parent);
+      if (
+        style.overflowY === "auto" ||
+        style.overflowY === "scroll" ||
+        (style.maxHeight && style.maxHeight !== "none")
+      ) {
+        scrollContainer = parent;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    const containerRect = scrollContainer
+      ? scrollContainer.getBoundingClientRect()
+      : { top: 0, bottom: window.innerHeight };
+
+    const spaceBelow = containerRect.bottom - buttonRect.bottom;
+    const spaceAbove = buttonRect.top - containerRect.top;
+    const dropdownHeight = 240; // approx max-h-60
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setPosition("top");
+    } else {
+      setPosition("bottom");
+    }
+  };
+
+  // Optional: recalculate on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (openRef.current) updatePosition();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -77,11 +141,21 @@ export const SelectField = ({
               )
             : options.find((opt) => opt.value === value) ?? null;
 
-          const handleSelect = (selected: any) => {
+          const handleSelect = (
+            selected: SelectOption | SelectOption[] | null
+          ) => {
             if (multiple) {
-              onChange(selected.map((s: SelectOption) => s.value));
+              if (Array.isArray(selected)) {
+                onChange(selected.map((s) => s.value));
+              } else {
+                onChange([]); // fallback if null or invalid
+              }
             } else {
-              onChange(selected?.value ?? "");
+              if (selected && !Array.isArray(selected)) {
+                onChange(selected.value);
+              } else {
+                onChange("");
+              }
             }
           };
 
@@ -99,59 +173,74 @@ export const SelectField = ({
               disabled={disabled}
             >
               {({ open }) => {
-                // ✅ CLEAR SEARCH WHEN DROPDOWN CLOSES
+                if (open && !openRef.current) {
+                  openRef.current = true;
+                  requestAnimationFrame(updatePosition);
+                } else if (!open && openRef.current) {
+                  openRef.current = false;
+                  // Reset to bottom on close (optional)
+                  // setPosition("bottom");
+                }
+
                 if (!open && search !== "") {
                   setTimeout(() => setSearch(""), 0);
                 }
 
                 return (
-                  <>
-                    {/* BUTTON */}
-                    <div className="relative">
-                      <Listbox.Button
-                        className={`relative w-full rounded-md border text-base
-              py-3 pl-5 pr-10 flex items-center justify-start text-left
-              ${
-                disabled
-                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-white dark:bg-gray-800 cursor-pointer"
-              }
-              ${
-                error && !disabled
-                  ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                  : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-              }`}
-                      >
-                        <div className="flex items-center w-full space-x-2">
-                          {leftIcon && (
-                            <span className="text-gray-400 dark:text-gray-500">
-                              {leftIcon}
-                            </span>
-                          )}
-
-                          <span
-                            className={`block truncate w-full ${
-                              !value ? "text-gray-400" : ""
-                            }`}
-                          >
-                            {displayLabel}
+                  <div className="relative">
+                    <Listbox.Button
+                      ref={buttonRef}
+                      className={`relative w-full rounded-md border text-base py-3 pl-5 pr-10 flex items-center justify-start text-left
+                        ${
+                          disabled
+                            ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                            : "bg-white dark:bg-gray-800 cursor-pointer"
+                        }
+                        ${
+                          error && !disabled
+                            ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                            : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                        }`}
+                    >
+                      <div className="flex items-center w-full space-x-2">
+                        {leftIcon && (
+                          <span className="text-gray-400 dark:text-gray-500">
+                            {leftIcon}
                           </span>
-                        </div>
-
-                        <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                          <ChevronDownIcon open={open} />
+                        )}
+                        <span
+                          className={`block truncate w-full ${
+                            !value ? "text-gray-400" : ""
+                          }`}
+                        >
+                          {displayLabel}
                         </span>
-                      </Listbox.Button>
+                      </div>
+                      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <ChevronDownIcon open={open} />
+                      </span>
+                    </Listbox.Button>
 
-                      {/* OPTIONS */}
-                      <Transition
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
+                    <Transition
+                      as={Fragment}
+                      show={open}
+                      enter="transition ease-out duration-100"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      {/*Position-aware wrapper */}
+                      <div
+                        className={`absolute z-20 w-full ${
+                          position === "bottom"
+                            ? "top-full mt-1"
+                            : "bottom-full mb-1"
+                        } max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/10 focus:outline-none`}
                       >
-                        <Listbox.Options className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/10 p-2 focus:outline-none">
-                          {/* SEARCH BAR — MULTISELECT ONLY */}
+                        {/*Explicitly render as div to avoid Fragment error */}
+                        <Listbox.Options as="div" static>
                           {multiple && (
                             <div className="flex items-center px-2 mb-2">
                               <input
@@ -159,7 +248,7 @@ export const SelectField = ({
                                 placeholder="Search..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                onKeyDown={(e) => e.stopPropagation()} // ← FIX SPACE ISSUE
+                                onKeyDown={(e) => e.stopPropagation()}
                                 className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1.5 text-sm focus:ring-primary/40 focus:border-primary/40 dark:bg-gray-700"
                               />
                             </div>
@@ -175,8 +264,7 @@ export const SelectField = ({
                                 key={option.value}
                                 value={option}
                                 className={({ active }) =>
-                                  `relative flex items-center space-x-2 cursor-pointer select-none py-2 pl-3 pr-4 rounded-md
-                                  ${
+                                  `relative flex items-center space-x-2 cursor-pointer select-none py-2 pl-3 pr-4 rounded-md ${
                                     active
                                       ? "bg-green-100 dark:bg-green-900"
                                       : ""
@@ -193,7 +281,6 @@ export const SelectField = ({
                                         className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                                       />
                                     )}
-
                                     <span
                                       className={`block truncate ${
                                         selected
@@ -209,15 +296,15 @@ export const SelectField = ({
                             ))
                           )}
                         </Listbox.Options>
-                      </Transition>
-                    </div>
+                      </div>
+                    </Transition>
 
                     {error && (
                       <p className="mt-1 text-xs text-red-600">
                         {error.message}
                       </p>
                     )}
-                  </>
+                  </div>
                 );
               }}
             </Listbox>
