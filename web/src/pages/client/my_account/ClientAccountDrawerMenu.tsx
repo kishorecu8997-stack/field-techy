@@ -63,7 +63,11 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     {
       label: "Manage Proposal",
       icon: IoDocumentText,
-      key: "proposal",     
+      key: "proposal",
+      onClick: () => {
+        onClose();
+        navigate(absoluteUrls.client.home.client_Explore_engineers);
+      },
     },
     { label: "Company Information", icon: FaUser, key: "company" },
     { label: "Documents", icon: IoDocumentText, key: "document" },

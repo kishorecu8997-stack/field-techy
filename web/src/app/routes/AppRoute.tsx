@@ -388,6 +388,11 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientSearchResult),
       },
        {
+        path: urls.engineer.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+       {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },

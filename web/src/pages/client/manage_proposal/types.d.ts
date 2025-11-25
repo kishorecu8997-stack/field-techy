@@ -5,6 +5,8 @@ interface EngineerCardProps {
     reviewCount: number;
     title: string;
     imageUrl: string;
+    pay_type?: string;
+    availability?: string;
   };
 }
 
