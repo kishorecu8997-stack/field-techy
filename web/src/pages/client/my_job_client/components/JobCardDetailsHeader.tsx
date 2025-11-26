@@ -57,6 +57,12 @@ const JobCardDetailsHeader = () => {
     setIsOpen(false);
   };
 
+  const handleRatingUpdate = () => {
+    console.log("Is Rating Updated: ", isRatingUpdated);
+    setIsRatingUpdated(true);
+    console.log("Is Rating Updated: ", isRatingUpdated);
+  };
+
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
@@ -134,7 +140,8 @@ const JobCardDetailsHeader = () => {
             >
               Complete And Release Payment
             </Button>
-          ) : isPaymentReleased || job.status === JOB_STATUSES.completed ? (
+          ) : (isPaymentReleased && !isRatingUpdated) ||
+            job.status === JOB_STATUSES.completed ? (
             <div className="flex flex-wrap gap-2 items-center">
               <icons.checkCircle className="text-green-500 w-6 h-6" />
               <span className="text-lg">Job Completed</span>
@@ -153,7 +160,9 @@ const JobCardDetailsHeader = () => {
             <div className="flex items-center gap-2">
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => navigate(absoluteUrls.client.home.ClientSelectEngineeers)}
+                onClick={() =>
+                  navigate(absoluteUrls.client.home.ClientSelectEngineeers)
+                }
               >
                 Invite to Job
               </Button>
