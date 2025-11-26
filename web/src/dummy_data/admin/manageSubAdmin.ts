@@ -11,7 +11,7 @@ export const userList: UserItem[] = [
   {
     id: 1,
     name: "John Doe",
-    email: "john@gmil.com",
+    email: "john@gmail.com",
     phoneNumber: "+91 9861234567",
     roleName: "Manager",
     status: "Off",
@@ -19,7 +19,7 @@ export const userList: UserItem[] = [
   {
     id: 2,
     name: "Alex",
-    email: "alex@gmil.com",
+    email: "alex@gmail.com",
     phoneNumber: "+91 9854728765",
     roleName: "Team Lead",
     status: "Off",
@@ -27,7 +27,7 @@ export const userList: UserItem[] = [
   {
     id: 3,
     name: "david",
-    email: "david@gmil.com",
+    email: "david@gmail.com",
     phoneNumber: "+91 9476382565",
     roleName: "Admin",
     status: "Off",
@@ -35,7 +35,7 @@ export const userList: UserItem[] = [
   {
     id: 4,
     name: "kiran",
-    email: "kiran@gmil.com",
+    email: "kiran@gmail.com",
     phoneNumber: "+91 9787457811",
     roleName: "Super Admin",
     status: "On",
