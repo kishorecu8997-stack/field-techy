@@ -66,13 +66,12 @@ const AddRateCard = () => {
   };
 
   const onSubmit = (data: any) => {
-    console.log(data);
     handleSaveConfirmation(data);
   };
   return (
     <div className="bg-white dark:bg-neutral-700 w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-900">Add Rate Card</h2>
+        <h2 className="font-bold text-gray-900">Add Rate Card</h2>
         <Button
           type="button"
           onClick={() => navigate(-1)}

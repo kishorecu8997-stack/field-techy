@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import type { SkillPricing } from "../types";
 import { Accordion } from "./Accordion";
 import PricingTable from "./PricingTable";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
 
 /**
  * Accordion wrapper for each skill's pricing section
@@ -23,12 +25,71 @@ const SkillAccordion: React.FC<{
     name: `skills.${index}.tiers`,
   });
 
-  const handleRemove = () => {
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteSkill = async (skill: SkillPricing) => {
+    console.log("skill :", skill.id);
+    await showPopup({
+      title: "Delete Skill",
+      body: "Are you sure you want to delete this skill?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: async (close: any) => {
+            console.log("Deleting:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
+  const handleRemove = (skill: SkillPricing) => {
+    handleDeleteSkill(skill);
     removeSkill();
   };
 
+  //Save confirmation
+  const handleSaveConfirmation = async (data: any) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Skill",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Skill added successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   return (
-    <Accordion title={skill.name} remove={() => handleRemove()}>
+    <Accordion title={skill.name} remove={() => handleRemove(skill)}>
       <PricingTable
         control={control}
         index={index}
@@ -38,7 +99,12 @@ const SkillAccordion: React.FC<{
 
       {!isView && (
         <div className="flex justify-end mt-4 space-x-2">
-          <Button variant="secondary">Save</Button>
+          <Button
+            variant="secondary"
+            onClick={() => handleSaveConfirmation(skill)}
+          >
+            Save
+          </Button>
         </div>
       )}
     </Accordion>
