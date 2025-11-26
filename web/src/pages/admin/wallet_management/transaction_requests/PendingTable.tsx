@@ -27,7 +27,7 @@ const PendingTable: React.FC = () => {
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
       body: `Are you sure you want to ${
         status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this job?`,
+      } this request?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -37,7 +37,9 @@ const PendingTable: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: "primary",
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);

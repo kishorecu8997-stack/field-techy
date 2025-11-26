@@ -26,7 +26,6 @@ export default function EditSubAdmin() {
 
   // Find the category by ID (replace with real API call if needed)
   const subAdmin = userList.find((user) => user.id.toString() === id);
-  console.log('subAdmin :', subAdmin);
 
   const methods = useForm<AddSubAdminForm>({
     defaultValues: {

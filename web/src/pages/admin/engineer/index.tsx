@@ -50,6 +50,7 @@ const ManageEngineer: React.FC = () => {
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
     const status = data.status;
+    console.log("status :", status);
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
       body: `Are you sure you want to ${
@@ -64,7 +65,7 @@ const ManageEngineer: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: "primary",
+          variant: `${status.toLocaleLowerCase() === "approve" ? "primary" : "danger"}`,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);

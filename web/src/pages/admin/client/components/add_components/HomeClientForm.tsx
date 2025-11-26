@@ -117,7 +117,6 @@ const HomeClientForm: React.FC = () => {
       setIsSubmitting(true);
       try {
         const formData = methods.getValues();
-        console.log("Form submitted:", formData);
         setActiveTab("Basic Information");
         handleSaveConfirmation(formData);
       } catch (error) {

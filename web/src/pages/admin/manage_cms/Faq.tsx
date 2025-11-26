@@ -1,4 +1,4 @@
-import { faqList, type FaqItem } from "@/dummy_data/admin/Faq";
+import { faqList } from "@/dummy_data/admin/Faq";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTable, {
   type Column,
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { toast } from "react-toastify";
-import type { FaqAddFormData } from "./types";
+import type { FaqAddFormData, FaqItem } from "./types";
 import { useForm } from "react-hook-form";
 import FaqForm from "./FaqForm";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -147,7 +147,7 @@ export default function Faq() {
               answer: "",
             });
           }}
-          className="w-fit bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
+          className="w-fit mt-2 bg-gradient-to-r bg-teal-900 text-white rounded-lg hover:opacity-90 transition"
         >
           Add Faq
         </Button>

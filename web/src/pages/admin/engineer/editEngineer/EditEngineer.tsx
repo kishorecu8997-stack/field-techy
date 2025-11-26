@@ -49,6 +49,7 @@ export default function EditEngineer() {
   });
 
   const { trigger } = methods;
+  const { showPopup } = usePopupStore();
 
   // Handle Next button navigation between tabs
   const handleNext = async () => {
@@ -76,7 +77,6 @@ export default function EditEngineer() {
       if (isValid) setActiveTab("Documents");
     }
   };
-  const { showPopup } = usePopupStore();
 
   const handleupdateConfirmation = async (data: EngineerFormData) => {
     console.log("data :", data);
@@ -115,7 +115,6 @@ export default function EditEngineer() {
       setIsSubmitting(true);
       try {
         const data = methods.getValues();
-        console.log("Full form data:", data);
         handleupdateConfirmation(data);
       } finally {
         setIsSubmitting(false);

@@ -49,7 +49,9 @@ const ManagePayment: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: "primary",
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);
@@ -165,7 +167,7 @@ const ManagePayment: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
-        <h1 className="text-lg font-semibold">Manage Payments</h1>
+        <h1 className="font-semibold">Manage Payments</h1>
         <Button
           className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
           onClick={() => console.log("export csv")}

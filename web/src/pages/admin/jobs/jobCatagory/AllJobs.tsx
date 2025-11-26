@@ -56,7 +56,9 @@ const AllJob: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: "primary",
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);
