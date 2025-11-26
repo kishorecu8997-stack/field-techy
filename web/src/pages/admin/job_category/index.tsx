@@ -96,7 +96,7 @@ const ManageJobCategory: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="font-semibold ">Manage service categories</h1>
+        <h1 className="font-semibold">Manage service categories</h1>
         <Button
           type="submit"
           className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-md hover:opacity-90 transition"

@@ -38,7 +38,13 @@ const SkillAccordion: React.FC<{
 
       {!isView && (
         <div className="flex justify-end mt-4 space-x-2">
-          <Button variant="secondary">Save</Button>
+          <Button
+            variant="solid"
+            type="button"
+            onClick={() => console.log("click")}
+          >
+            Save
+          </Button>
         </div>
       )}
     </Accordion>
