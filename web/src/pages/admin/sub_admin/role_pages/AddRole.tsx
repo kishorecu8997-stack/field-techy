@@ -39,8 +39,11 @@ const AddRole = () => {
             />
           </div>
           <RoleTable />
-          <div className="px-3">
-            <Button type="submit" className="w-fit bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
+          <div className="px-3 flex justify-end">
+            <Button
+              type="submit"
+              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            >
               Submit
             </Button>
           </div>

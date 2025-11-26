@@ -1,6 +1,6 @@
 import { Button } from "@headlessui/react";
 import AddRole from "./AddRole";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 /**
  * PermissionList Component
@@ -17,13 +17,17 @@ import { useNavigate } from "react-router-dom";
  */
 const PermissionList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const endpoint = location.pathname.split("/").filter(Boolean).pop() || "";
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 ">
+    <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold ">Edit Role</h1>
+        <h1 className="font-semibold">
+          {endpoint === "edit-role" ? " Edit Role" : "Add Role"}
+        </h1>
         <Button
-          className="bg-neutral-800 text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"
+          className="bg-neutral-800 font-semibold text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"
           onClick={() => navigate(-1)}
         >
           Back
