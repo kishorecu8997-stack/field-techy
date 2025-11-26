@@ -7,41 +7,21 @@
 import DocumentCard from "@/shared/components/DocumentCard";
 import React from "react";
 
-/**
- * Represents a single document with its metadata.
- * @interface Document
- */
 export interface Document {
-  /** A unique identifier for the document. */
   id: number;
-  /** The display title of the document. */
   title: string;
-  /** The original file name of the document. */
   fileName: string;
-  /** The type of the file (e.g., PDF, JPEG). */
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
-  /** A URL to a preview image or the document itself. */
   previewUrl?: string;
-  /** The date the document was uploaded, in string format. */
   uploadDate?: string;
-  /** A brief description of the document. */
   description?: string;
-  /** A key-value store for any additional metadata. */
   metadata?: Record<string, string>;
 }
 
-/**
- * Props for the DocumentsList component.
- * @interface DocumentsListProps
- */
 interface DocumentsListProps {
-  /** An array of document objects to be displayed. */
   documents: Document[];
-  /** Optional callback function to handle adding a new document. */
   onAddDocument?: () => void;
-  /** Optional callback function to handle editing a document, identified by its numeric ID. */
   onEditDocument?: (id: number) => void;
-  /** Optional callback function to handle deleting a document, identified by its numeric ID. */
   onDeleteDocument?: (id: number) => void;
 }
 

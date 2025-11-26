@@ -16,6 +16,7 @@ import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
  * SWIFT code, address, IBAN, and account holder name. Submit button text adapts based on `formType`.
  */
 const BankDetailsForm = ({ formType }: { formType?: string }) => {
+  
   return (
     <div className="flex flex-col h-full pb-4">
       <div className="flex flex-col overflow-auto flex-grow gap-4">
