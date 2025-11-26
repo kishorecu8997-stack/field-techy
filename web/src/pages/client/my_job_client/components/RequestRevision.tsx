@@ -64,7 +64,7 @@ const RequestRevision: React.FC<RequestRevisionProps> = ({
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-green-800 hover:bg-green-900 text-white font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            variant="primary"          
           >
             Send
           </Button>

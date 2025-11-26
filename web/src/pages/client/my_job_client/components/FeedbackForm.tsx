@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 interface FeedbackFormProps {
-  onSubmit?: (rating: number, feedback: string) => void;  
+  onSubmit?: (rating: number, feedback: string) => void;
+  onClose?: () => void;
   initialRating?: number;
 }
 
@@ -16,6 +17,7 @@ interface IFormInput {
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
+  onClose,
   initialRating = 1,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
@@ -30,13 +32,19 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     setRating(starValue);
   };
 
-  const handleFormSubmit = (data: IFormInput) => {
-    if (onSubmit) {
-      onSubmit(rating, data.feedback);
-      toast.success("Feedback Submitted Successfully");      
+  const handleFormSubmit = async (data: IFormInput) => {
+    try {
+      if (onSubmit) {
+        await Promise.resolve(onSubmit(rating, data.feedback));
+      }
+      toast.success("Feedback Submitted Successfully");
+      if (onClose) {
+        onClose();
+      }
+      methods.reset();
+    } catch (error) {
+      toast.error("Failed to submit feedback. Please try again.");
     }
-
-    // methods.reset(); // Optionally reset form
   };
 
   return (
@@ -60,12 +68,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             </div>
           ))}
         </div>
-          <TextareaInput
-              name="feedback"
-              label="Add Feedback"
-              placeholder="Add your feedback here..."
-              required
-            />
+        <TextareaInput
+          name="feedback"
+          label="Add Feedback"
+          placeholder="Add your feedback here..."
+          required
+        />
       </div>
       <div className="bg-white">
         <Button

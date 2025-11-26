@@ -57,12 +57,6 @@ const JobCardDetailsHeader = () => {
     setIsOpen(false);
   };
 
-  const handleRatingUpdate = () => {
-    console.log("Is Rating Updated: ", isRatingUpdated);
-    setIsRatingUpdated(true);
-    console.log("Is Rating Updated: ", isRatingUpdated);
-  };
-
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
