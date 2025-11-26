@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
 import {
   validateNotificationMessage,
   validateNotificationTitle,
@@ -36,6 +37,8 @@ interface AddNotificationProps {
  */
 export default function AddNotification() {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
   const methods = useForm<AddNotificationProps>({
     defaultValues: {
       title: "",
@@ -46,10 +49,38 @@ export default function AddNotification() {
     },
   });
 
+  const handleSaveConfirmation = async (data: AddNotificationProps) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Notification",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Notification added successfully!");
+            navigate(absoluteUrls.admin.home.manage_notification);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = (data: AddNotificationProps) => {
-    console.log("Form Data:", data);
-    toast.success("Notification Added Successfully!");
-    navigate(absoluteUrls.admin.home.manage_notification);
+    handleSaveConfirmation(data);
   };
   return (
     <div className="w-full h-full flex flex-col px-4 py-2 gap-3">

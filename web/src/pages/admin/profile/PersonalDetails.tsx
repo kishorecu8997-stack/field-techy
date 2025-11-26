@@ -10,6 +10,7 @@ import type { ProfileFormData } from "./types";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -22,7 +23,7 @@ import { absoluteUrls } from "@/config/urls";
  * @returns {JSX.Element} The rendered personal details form.
  */
 export default function PersonalDetails() {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const methods = useForm<ProfileFormData>({
     defaultValues: {
       name: "Kevin Smith",
@@ -31,9 +32,41 @@ export default function PersonalDetails() {
       profileImage: null,
     },
   });
+
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: ProfileFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Update Profile",
+      body: "Are you sure you want to update this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Profile updated successfully!");
+            navigate(absoluteUrls.admin.home.dashbaord);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    toast.success("Profile Updated Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+    handleSaveConfirmation(methods.getValues());
   };
 
   return (

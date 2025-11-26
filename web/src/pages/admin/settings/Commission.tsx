@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { SettingsFormData } from "./types";
 import { CommissionValidation } from "@/utils/validate";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Commission settings page component.
@@ -29,9 +30,39 @@ export default function Commission() {
    * Handle form submit. Displays a success toast when the commission is saved.
    * @returns {void}
    */
+
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: SettingsFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Commission",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Commission added successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    // console.log("Profile Submitted");
-    toast.success("Added Successfully!");
+    handleSaveConfirmation(methods.getValues());
   };
 
   return (

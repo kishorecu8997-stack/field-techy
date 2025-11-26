@@ -8,6 +8,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * HomeClientEditForm component for editing existing home client information.
@@ -77,6 +78,38 @@ const handleNext = async () => {
   }
 };
 
+const { showPopup } = usePopupStore();
+
+const handleSaveConfirmation = async (data: ClientFormData) => {
+  console.log("data :", data);
+  await showPopup({
+    title: "Update Client",
+    body: "Are you sure you want to update this details?",
+    actionButtons: [
+      {
+        label: "Cancel",
+        value: null,
+        variant: "outline",
+      },
+      {
+        label: "Save",
+        value: "save",
+        variant: "primary",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        action: async (close: any) => {
+          console.log("Deleting job:", close);
+          // TODO: call your delete API here
+          // await deleteJob(job.id);
+          toast.success("Client information update successfully!");
+          navigate(absoluteUrls.admin.home.manage_client);
+          methods.reset();
+          close(true);
+        },
+      },
+    ],
+  });
+};
+
 /**
  * Handles the "Save" button click.
  * It triggers validation for the entire form. If valid, it simulates form submission, displays a success toast, and resets the form.
@@ -88,9 +121,8 @@ const handleSave = async () => {
     try {
       const formData = methods.getValues();
       console.log("Form submitted:", formData);
-      toast.success("Client information saved successfully!");
-      methods.reset();
       setActiveTab("Basic Information");
+      handleSaveConfirmation(formData);
     } catch (error) {
       console.error("Error saving client information:", error);
       toast.error("An error occurred while saving client information.");
@@ -114,7 +146,6 @@ const handleSave = async () => {
     },
   ];
   /** Determines if the current active tab is the last tab ("Documents"). */
-  const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">

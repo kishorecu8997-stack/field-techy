@@ -8,6 +8,7 @@ import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPass
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -18,6 +19,8 @@ import { absoluteUrls } from "@/config/urls";
  */
 export default function ChangePassword() {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
       oldPassword: "",
@@ -25,9 +28,39 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
+
+  const handleSaveConfirmation = async (data: ChangePasswordFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Change Password",
+      body: "Are you sure you want to change this password?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Password changed successfully!");
+            navigate(absoluteUrls.admin.home.dashbaord);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    toast.success("Password Changed Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+    handleSaveConfirmation(methods.getValues());
   };
 
   return (

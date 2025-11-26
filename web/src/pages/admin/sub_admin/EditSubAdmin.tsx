@@ -12,6 +12,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { AddSubAdminForm } from "./types";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `EditSubAdmin` is a page component for editing an existing sub-admin user.
@@ -25,22 +26,52 @@ export default function EditSubAdmin() {
 
   // Find the category by ID (replace with real API call if needed)
   const subAdmin = userList.find((user) => user.id.toString() === id);
+  console.log('subAdmin :', subAdmin);
 
   const methods = useForm<AddSubAdminForm>({
     defaultValues: {
       name: subAdmin?.name || "",
       email: subAdmin?.email || "",
       phoneNumber: subAdmin?.phoneNumber || "",
-      role: "manager",
+      role: subAdmin?.roleName || "",
     },
   });
 
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: AddSubAdminForm) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Update Sub-Admin",
+      body: "Are you sure you want to update this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Sub-Admin updated successfully!");
+            navigate(absoluteUrls.admin.home.manage_sub_admin);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const handleSubmit = (data: AddSubAdminForm) => {
-    console.log("data", data);
-    toast.success("Sub Admin Updated Successfully");
-    navigate(absoluteUrls.admin.home.manage_sub_admin);
+    handleSaveConfirmation(data);
   };
 
   return (
@@ -50,9 +81,7 @@ export default function EditSubAdmin() {
         <Button
           variant="solid"
           className=""
-          onClick={() =>
-            navigate(absoluteUrls.admin.home.manage_sub_admin)
-          }
+          onClick={() => navigate(absoluteUrls.admin.home.manage_sub_admin)}
         >
           Back
         </Button>

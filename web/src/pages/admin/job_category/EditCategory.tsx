@@ -8,6 +8,7 @@ import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { serviceCategoriesData } from "@/dummy_data/admin";
 import type { ServerCategoryProps } from ".";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing job category.
@@ -35,9 +36,40 @@ export default function EditCategory() {
     },
   });
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: CategoryFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Update Category",
+      body: "Are you sure you want to update this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Job category updated successfully!");
+            methods.reset();
+            navigate(absoluteUrls.admin.home.manage_categories);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    toast.success("Job category updated successfully!");
-    navigate(absoluteUrls.admin.home.manage_categories);
+    handleSaveConfirmation(methods.getValues());
   };
   return (
     <div className="w-full h-full p-4">

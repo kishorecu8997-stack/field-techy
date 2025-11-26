@@ -11,6 +11,7 @@ import Documents from "../addEngineer/Documents";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * EditEngineer component for editing an existing engineer.
@@ -75,6 +76,37 @@ export default function EditEngineer() {
       if (isValid) setActiveTab("Documents");
     }
   };
+  const { showPopup } = usePopupStore();
+
+  const handleupdateConfirmation = async (data: EngineerFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Update Engineer",
+      body: "Are you sure you want to update this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Update",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Engineer updated successfully!");
+            navigate(absoluteUrls.admin.home.manage_engineer);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   // Handle form submission
   const handleSave = async () => {
@@ -84,9 +116,7 @@ export default function EditEngineer() {
       try {
         const data = methods.getValues();
         console.log("Full form data:", data);
-        toast.success("Engineer details updated successfully!");
-        navigate(absoluteUrls.admin.home.manage_engineer);
-        methods.reset();
+        handleupdateConfirmation(data);
       } finally {
         setIsSubmitting(false);
       }

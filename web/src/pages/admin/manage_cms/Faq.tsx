@@ -13,6 +13,7 @@ import type { FaqAddFormData } from "./types";
 import { useForm } from "react-hook-form";
 import FaqForm from "./FaqForm";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * @component Faq
@@ -34,6 +35,34 @@ export default function Faq() {
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [faqMode, setFaqMode] = useState<"Add" | "Edit">("Add");
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: FaqItem) => {
+    await showPopup({
+      title: "Delete Faq",
+      body: "Are you sure you want to delete this faq?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<FaqItem>[] = [
     { key: "id", label: "sr. No" },
@@ -60,7 +89,7 @@ export default function Faq() {
           </div>
           <div
             className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => console.log("Delete confirmation")}
+            onClick={() => handleDeleteJob(row)}
           >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
@@ -69,9 +98,40 @@ export default function Faq() {
     },
   ];
 
+  const handleSaveConfirmation = async (data: FaqAddFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: `${faqMode === "Add" ? "Add" : "Edit"} Faq`,
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success(
+              `${faqMode === "Add" ? "Added" : "Edited"} Successfully!`
+            );
+            close(true);
+            setIsModalOpen(false);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = (data: FaqAddFormData) => {
     console.log("Faq Form Submitted", data);
-    toast.success(`${faqMode === "Add" ? "Added" : "Edited"} Successfully!`);
+    handleSaveConfirmation(data);
   };
 
   return (

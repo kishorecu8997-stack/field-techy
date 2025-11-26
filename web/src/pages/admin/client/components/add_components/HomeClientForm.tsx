@@ -8,6 +8,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * HomeClientForm component for adding new home client information.
@@ -74,6 +75,38 @@ const HomeClientForm: React.FC = () => {
     }
   };
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: ClientFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Client",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Client information saved successfully!");
+            navigate(absoluteUrls.admin.home.manage_client);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   /**
    * Handles the "Save" button click.
    * It triggers validation for the entire form. If valid, it simulates form submission, displays a success toast, and resets the form.
@@ -85,9 +118,8 @@ const HomeClientForm: React.FC = () => {
       try {
         const formData = methods.getValues();
         console.log("Form submitted:", formData);
-        toast.success("Client information saved successfully!");
-        methods.reset();
         setActiveTab("Basic Information");
+        handleSaveConfirmation(formData);
       } catch (error) {
         console.error("Error saving client information:", error);
         toast.error("An error occurred while saving client information.");
