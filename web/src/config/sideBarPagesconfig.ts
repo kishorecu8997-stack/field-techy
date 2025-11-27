@@ -37,8 +37,7 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
-
-
+import ProjectSidebar from "@/pages/client/my_projects/ProjectSidebar";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -229,154 +228,158 @@ export const sectionConfig: Record<
     parent: "clientWallet",
   },
 
+  clientProject: {
+    component: ProjectSidebar,
+    title: "Add Project Site",
+  }, // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+  cancelOffer: {
+    component: CancelJopOffer,
+    title: "Do you want to cancel the job?",
+  },
+  // profile: { component: UserProfileSidebar, title: "My Profile" },
+  // personalInfo: {
+  //   component: PersonalInformation,
+  //   title: "Personal Information",
+  //   parent: "profile",
+  // },
+  // education: { component: Education, title: "Education", parent: "profile" },
+  // addEducation: {
+  //   component: AddEducation,
+  //   title: "Add Education",
+  //   parent: "education",
+  // },
+  // editEducation: {
+  //   component: EditEducation,
+  //   title: "Edit Education",
+  //   parent: "education",
+  // },
+  // skillsAndTools: {
+  //   component: SkillsAndTools,
+  //   title: "Skills & Tools",
+  //   parent: "profile",
+  // },
+  // addSkills: {
+  //   component: AddSkills,
+  //   title: "Add Skills",
+  //   parent: "skillsAndTools",
+  // },
+  // editSkills: {
+  //   component: EditSkills,
+  //   title: "Edit Skills",
+  //   parent: "skillsAndTools",
+  // },
+  // addTools: {
+  //   component: AddTools,
+  //   title: "Add Tools",
+  //   parent: "skillsAndTools",
+  // },
+  // editTools: {
+  //   component: EditTools,
+  //   title: "Edit Tools",
+  //   parent: "skillsAndTools",
+  // },
+  // experiences: {
+  //   component: Experiences,
+  //   title: "Experiences",
+  //   parent: "profile",
+  // },
+  // addExperiences: {
+  //   component: AddExperiences,
+  //   title: "Add Experience",
+  //   parent: "experiences",
+  // },
+  // editExperiences: {
+  //   component: EditExperiences,
+  //   title: "Edit Experience",
+  //   parent: "experiences",
+  // },
+  // workPreference: {
+  //   component: WorkPreference,
+  //   title: "Work Preference",
+  //   parent: "profile",
+  // },
+  // documents: { component: Documents, title: "Documents", parent: "profile" },
+  // editDocument: {
+  //   component: EditDocument,
+  //   title: "Edit Document",
+  //   parent: "documents",
+  // },
+  // jobs: { component: () => "job", title: "My Jobs" },
+  // earning: {
+  //   component: () =>"test",
+  //   title: "My Earning",
+  // },
+  // saved: { component: () => "test", title: "Saved Jobs" },
+  // settings: { component: AccountSettings, title: "Account Settings", parent: "myAccount" },
+  // changePassword: {
+  //   component: ChangePassword,
+  //   title: "Change Password",
+  //   parent: "settings",
+  // },
+  // manageBankAccounts: {
+  //   component: BankAccountList,
+  //   title: " Bank Details",
+  //   parent: "settings",
+  // },
+  // addBankdetails: {
+  //   component: AddBankDetails,
+  //   title: "Add Bank Details",
+  //   parent: "manageBankAccounts",
+  // },
+  // editBankdetails: {
+  //   component: EditBankDetails,
+  //   title: "Edit Bank Details",
+  //   parent: "manageBankAccounts",
+  // },
+  // contactUs: { component:  ContactUs, title: "Contact Us", parent: "settings" },
+  // myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
+  // withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
+  // notification: { component: NotofocationPage, title: "Notification", parent: "settings" },
 
-    // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
-    cancelOffer: { component: CancelJopOffer, title: "Do you want to cancel the job?" },
-    // profile: { component: UserProfileSidebar, title: "My Profile" },
-    // personalInfo: {
-    //   component: PersonalInformation,
-    //   title: "Personal Information",
-    //   parent: "profile",
-    // },
-    // education: { component: Education, title: "Education", parent: "profile" },
-    // addEducation: {
-    //   component: AddEducation,
-    //   title: "Add Education",
-    //   parent: "education",
-    // },
-    // editEducation: {
-    //   component: EditEducation,
-    //   title: "Edit Education",
-    //   parent: "education",
-    // },
-    // skillsAndTools: {
-    //   component: SkillsAndTools,
-    //   title: "Skills & Tools",
-    //   parent: "profile",
-    // },
-    // addSkills: {
-    //   component: AddSkills,
-    //   title: "Add Skills",
-    //   parent: "skillsAndTools",
-    // },
-    // editSkills: {
-    //   component: EditSkills,
-    //   title: "Edit Skills",
-    //   parent: "skillsAndTools",
-    // },
-    // addTools: {
-    //   component: AddTools,
-    //   title: "Add Tools",
-    //   parent: "skillsAndTools",
-    // },
-    // editTools: {
-    //   component: EditTools,
-    //   title: "Edit Tools",
-    //   parent: "skillsAndTools",
-    // },
-    // experiences: {
-    //   component: Experiences,
-    //   title: "Experiences",
-    //   parent: "profile",
-    // },
-    // addExperiences: {
-    //   component: AddExperiences,
-    //   title: "Add Experience",
-    //   parent: "experiences",
-    // },
-    // editExperiences: {
-    //   component: EditExperiences,
-    //   title: "Edit Experience",
-    //   parent: "experiences",
-    // },
-    // workPreference: {
-    //   component: WorkPreference,
-    //   title: "Work Preference",
-    //   parent: "profile",
-    // },
-    // documents: { component: Documents, title: "Documents", parent: "profile" },
-    // editDocument: {
-    //   component: EditDocument,
-    //   title: "Edit Document",
-    //   parent: "documents",
-    // },
-    // jobs: { component: () => "job", title: "My Jobs" },
-    // earning: {
-    //   component: () =>"test",
-    //   title: "My Earning",
-    // },
-    // saved: { component: () => "test", title: "Saved Jobs" },
-    // settings: { component: AccountSettings, title: "Account Settings", parent: "myAccount" },
-    // changePassword: {
-    //   component: ChangePassword,
-    //   title: "Change Password",
-    //   parent: "settings",
-    // },
-    // manageBankAccounts: {
-    //   component: BankAccountList,
-    //   title: " Bank Details",
-    //   parent: "settings",
-    // },
-    // addBankdetails: {
-    //   component: AddBankDetails,
-    //   title: "Add Bank Details",
-    //   parent: "manageBankAccounts",
-    // },
-    // editBankdetails: {
-    //   component: EditBankDetails,
-    //   title: "Edit Bank Details",
-    //   parent: "manageBankAccounts",
-    // },
-    // contactUs: { component:  ContactUs, title: "Contact Us", parent: "settings" },
-    // myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
-    // withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
-    // notification: { component: NotofocationPage, title: "Notification", parent: "settings" },
+  // //client
+  // clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
+  // proposal: {
+  //   component: "test",
+  //   title: "Manage Proposal",
+  //   parent: "clientAccount",
+  // },
+  // company: {
+  //   component: "test",
+  //   title: "Company Information",
+  //   parent: "clientAccount",
+  // },
+  // document: {
+  //   component: "test",
+  //   title: "Documents",
+  //   parent: "clientAccount",
+  // },
+  // payment: {
+  //   component: "test",
+  //   title: "Payment Methods",
+  //   parent: "clientAccount",
+  // },
+  // changePwd: {
+  //   component: "test",
+  //   title: "Change Password",
+  //   parent: "clientAccount",
+  // },
+  // clientAcc: {
+  //   component: "test",
+  //   title: "Account Setting",
+  //   parent: "clientAccount",
+  // },
+  // clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
 
-    // //client
-    // clientAccount: { component: ClientAccountDrawerMenu, title: "My Account" },
-    // proposal: {
-    //   component: "test",
-    //   title: "Manage Proposal",
-    //   parent: "clientAccount",
-    // },
-    // company: {
-    //   component: "test",
-    //   title: "Company Information",
-    //   parent: "clientAccount",
-    // },
-    // document: {
-    //   component: "test",
-    //   title: "Documents",
-    //   parent: "clientAccount",
-    // },
-    // payment: {
-    //   component: "test",
-    //   title: "Payment Methods",
-    //   parent: "clientAccount",
-    // },
-    // changePwd: {
-    //   component: "test",
-    //   title: "Change Password",
-    //   parent: "clientAccount",
-    // },
-    // clientAcc: {
-    //   component: "test",
-    //   title: "Account Setting",
-    //   parent: "clientAccount",
-    // },
-    // clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
- 
-    // recentTransactions: {
-    //   component: ClientRecentTransactions,
-    //   title: "Recent Transactions",
-    //   actions: ActionButtonsForRecentTransactions,
-    //   parent: "clientWallet",
-    // },
-    engineerRecentTransactions: {
-      component: TransactionDashboard,
-      title: "Recent Transactions",
-      actions: ActionButtonsForRecentTransactions,
-      parent: "myEarning",
-    },
-
-  };
+  // recentTransactions: {
+  //   component: ClientRecentTransactions,
+  //   title: "Recent Transactions",
+  //   actions: ActionButtonsForRecentTransactions,
+  //   parent: "clientWallet",
+  // },
+  engineerRecentTransactions: {
+    component: TransactionDashboard,
+    title: "Recent Transactions",
+    actions: ActionButtonsForRecentTransactions,
+    parent: "myEarning",
+  },
+};

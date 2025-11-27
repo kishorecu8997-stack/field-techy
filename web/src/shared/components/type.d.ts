@@ -40,6 +40,7 @@ interface MapComponentProps {
   markers?: MapMarker[];
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
   viewOnly?: boolean;
+  onPositionChange?: (position: [number, number]) => void;
 }
 
 /**
