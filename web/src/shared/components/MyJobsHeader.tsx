@@ -18,6 +18,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   description,
   isShowSort = true,
   isReport = false,
+  action,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
 
@@ -35,6 +36,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   customLabels={{
                     "my-jobs": "My Jobs",
                     "in-progress": "In Progress",
+                    home: "Home",
                   }}
                 />
               )}
@@ -46,8 +48,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             </div>
           </div>
           <>
-              <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
-                {isReport && (
+            <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
+              {isReport && (
                 <div
                   className="underline cursor-pointer hover:text-teal-900"
                   onClick={() => setIsShowReport(true)}
@@ -55,13 +57,14 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   Report
                 </div>
               )}
-                {isShowSort && (
-                  <SortDropdown
-                    currentSort={currentSort}
-                    onSortChange={onSortChange}
-                  />
-                )}
-              </div>
+              {action}
+              {isShowSort && (
+                <SortDropdown
+                  currentSort={currentSort}
+                  onSortChange={onSortChange}
+                />
+              )}
+            </div>
           </>
         </div>
       </header>

@@ -66,7 +66,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       key: "proposal",
       onClick: () => {
         onClose();
-        navigate(absoluteUrls.client.home.client_Explore_engineers);
+        navigate(absoluteUrls.client.home.manage_proposal);
       },
     },
     { label: "Company Information", icon: FaUser, key: "company" },

@@ -21,3 +21,24 @@ interface EngineerCardListProps {
     imageUrl: string;
     status:string;    
 }
+
+export interface ProposalListType {
+  id: number;
+  engineerName: string;
+  ratings: string;
+  reviewCount: string;
+  bitAmount: string;
+  payType: string;
+  availability: string;
+  jobID: number;
+  jobName: string;
+  proposal: string;
+  portfolioDoc: string;
+}
+
+export interface proposalEngineer {
+  id: number;
+  name: string;
+  ratings: string;
+  designation: string;
+}

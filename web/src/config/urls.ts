@@ -1,3 +1,4 @@
+
 /**
  * Application route URLs.
  *
@@ -59,10 +60,12 @@ export const urls = {
       post_JobPage: "post-job",
       search_result: "search-result",
       faq: "faq",
+      job_details: "job-details",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
+      SelectEngineer:"select-engineer",
     },
     auth: {
       login: "login",
@@ -178,6 +181,8 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
       client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
+      job_details: `${BASE.CLIENT}/job-details`,
+      SelectEngineer:`${BASE.CLIENT}/select-engineer`,
     },
   },
 

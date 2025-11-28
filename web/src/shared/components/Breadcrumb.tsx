@@ -18,11 +18,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 }) => {
   const location = useLocation();
 
+  const isEngineerIndex =  location.pathname.includes("client") ? "client" : "engineer";
+
   // Split current path and remove empty segments
   const allSegments = location.pathname.split("/").filter(Boolean);
 
   // Find index of 'engineer' in the path
-  const engineerIndex = allSegments.indexOf("engineer");
+  const engineerIndex = allSegments.indexOf(isEngineerIndex);
 
   // If 'engineer' is not in the path, show nothing or fallback
   if (engineerIndex === -1) {
@@ -43,12 +45,12 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   };
 
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-gray-500">
+    <nav aria-label="Breadcrumb" className="text-sm text-gray-500 dark:text-gray-300">
       <ol className="flex items-center space-x-1">
         {/* Home link points to /engineer */}
         <li>
           <NavLink
-            to="/engineer"
+            to={`/${isEngineerIndex}`}
             className="hover:text-emerald-600 transition-colors"
           >
             {homeLabel}
@@ -57,7 +59,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
         {breadcrumbSegments.map((value, index) => {
           // Build path: /engineer + segments up to current
-          const to = `/engineer/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
+          const to = `/${isEngineerIndex}/${breadcrumbSegments.slice(0, index + 1).join("/")}`;
           const isLast = index === breadcrumbSegments.length - 1;
 
           return (
@@ -84,3 +86,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 export default Breadcrumb;
+
+
+
+
+

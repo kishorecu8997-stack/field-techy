@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/JobHeaderCard";
+import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
 
 /**

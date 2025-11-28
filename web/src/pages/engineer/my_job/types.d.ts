@@ -32,6 +32,7 @@ export interface MyJobsHeaderProps {
   description?: string;
   isShowSort?: boolean;
   isReport?:boolean;
+  action?:React.ReactNode;
 }
 
 /**
