@@ -19,6 +19,7 @@ interface RadioFieldProps {
   containerClassName?: string;
   radioItemClassName?: string;
   radioInputClassName?: string;
+  wrapperClassName?: string;
 }
 
 /**
@@ -40,6 +41,7 @@ export const RadioField = ({
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",
   radioInputClassName = "h-4 w-4 text-blue-600 dark:text-blue-500 focus:ring-blue-500 focus:ring-2",
+  wrapperClassName,
 }: RadioFieldProps) => {
   const { control } = useFormContext();
 
@@ -71,7 +73,7 @@ export const RadioField = ({
           fieldState: { error },
         }) => (
           <>
-            <div className={layoutClass}>
+            <div className={`${wrapperClassName} ${layoutClass}`}>
               {options.map((option) => (
                 <label key={option.value} className={radioItemClassName}>
                   <input

@@ -224,6 +224,9 @@ const ClientMyProjectsPage = React.lazy(
 const ClientProjectDetailsPage = React.lazy(
   () => import("@/pages/client/my_projects/projectDetail")
 );
+const ClientCreateProjectPage = React.lazy(
+  () => import("@/pages/client/my_projects/createProject")
+);
 const ClientDashboard = React.lazy(
   () => import("@/pages/client/dashboard/Dashboard")
 );
@@ -408,6 +411,10 @@ export const routes = createBrowserRouter([
       {
         path: `${urls.client.home.my_projects}/:projectId`,
         element: withSuspense(ClientProjectDetailsPage),
+      },
+      {
+        path: urls.client.home.create_project,
+        element: withSuspense(ClientCreateProjectPage),
       },
       {
         path: urls.client.home.dashboard,

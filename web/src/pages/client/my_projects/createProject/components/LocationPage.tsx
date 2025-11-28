@@ -1,0 +1,73 @@
+import { currencyTypes, projectCoutries, workTypes } from "@/dummy_data/client";
+import SectionHeader from "./SectionHeader";
+import { CheckboxField } from "@/shared/components/commonUI/inputs/CheckBoxField";
+import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
+import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+
+const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
+  console.log("isDisable :", isDisable);
+  return (
+    <div>
+      <SectionHeader title="Location and Currency" />
+      <CheckboxField
+        name="locationType"
+        label="Location Type"
+        required
+        direction="horizontal"
+        options={workTypes}
+        wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
+      />
+      <TagSelectField
+        name="onSiteCoutry"
+        label="On-site Countries"
+        placeholder="Select countries from the list"
+        required
+        options={projectCoutries}
+      />
+      <TagSelectField
+        name="remoteCoutry"
+        label="Remote Countries"
+        placeholder="Select countries from the list"
+        required
+        options={projectCoutries}
+      />
+
+      <RadioField
+        // disabled={isDisable}
+        label="Remote Service Address"
+        required
+        name="backFills"
+        direction="horizontal"
+        wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
+        options={[
+          { label: "Mandatory", value: "mandatory" },
+          { label: "Optional", value: "optional" },
+        ]}
+      />
+
+      <RadioField
+        // disabled={isDisable}
+        label="Project Address"
+        required
+        name="backFills"
+        direction="horizontal"
+        wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
+        options={[
+          { label: "Predefined Address", value: "predefinedAddress" },
+          { label: "Any Address", value: "anyAddress" },
+        ]}
+      />
+
+      <SelectField
+        name="curency"
+        label="Billing Currency"
+        placeholder="Select Cuureny"
+        required
+        options={currencyTypes}
+      />
+    </div>
+  );
+};
+
+export default LocationPage;

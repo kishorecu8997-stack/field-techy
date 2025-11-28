@@ -120,6 +120,7 @@ export default function ProjectDetails() {
                 title="My Projects"
                 currentSort={SORT_OPTIONS.NEWEST}
                 onSortChange={() => {}}
+                isShowSort={false}
               />
             </div>
           </div>

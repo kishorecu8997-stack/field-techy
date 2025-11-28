@@ -81,8 +81,7 @@ const MyProjects: React.FC = () => {
                   </p>
                   <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     <NavLink
-                      // to={absoluteUrls.client.home.post_JobPage}
-                      to=""
+                      to={absoluteUrls.client.home.create_project}
                     >
                       <div className="bg-[#c3ffef] text-[#333] hover:bg-emerald-200 font-medium py-2 px-4 rounded-full w-fit text-sm transition-colors duration-200">
                         Create Project

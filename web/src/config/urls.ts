@@ -1,3 +1,4 @@
+
 /**
  * Application route URLs.
  *
@@ -55,6 +56,7 @@ export const urls = {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
       my_projects: "my-projects",
+      create_project: "my-projects/create-project",
       client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
@@ -152,7 +154,6 @@ export const absoluteUrls = {
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/chat`,
-
     },
   },
   client: {
@@ -171,6 +172,7 @@ export const absoluteUrls = {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
       my_projects: `${BASE.CLIENT}/my-projects`,
+      create_project: `${BASE.CLIENT}/my-projects/create-project`,
       client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
