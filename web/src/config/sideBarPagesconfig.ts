@@ -37,7 +37,8 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
-import ProjectSidebar from "@/pages/client/my_projects/ProjectSidebar";
+import AddProject from "@/pages/client/my_projects/projectDetail/AddProject";
+import EditProject from "@/pages/client/my_projects/projectDetail/EditProject";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -228,10 +229,16 @@ export const sectionConfig: Record<
     parent: "clientWallet",
   },
 
-  clientProject: {
-    component: ProjectSidebar,
+  addclientProject: {
+    component: AddProject,
     title: "Add Project Site",
   }, // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+
+  editclientProject: {
+    component: EditProject,
+    title: "Edit Project Site",
+  },
+
   cancelOffer: {
     component: CancelJopOffer,
     title: "Do you want to cancel the job?",

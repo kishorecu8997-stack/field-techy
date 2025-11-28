@@ -41,6 +41,7 @@ interface MapComponentProps {
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
   viewOnly?: boolean;
   onPositionChange?: (position: [number, number]) => void;
+  className?: string;
 }
 
 /**

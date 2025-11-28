@@ -44,3 +44,15 @@ export interface JobCardProps {
   onApprove: () => void;
   onRequestRevision: () => void;
 }
+
+export type ProjectSite = {
+  id: number;
+  siteId: string;
+  siteName: string;
+  coordinates: [number, number];
+};
+export interface ProjectSiteForm {
+  siteId: string;
+  siteName: string;
+  coordinates: [number, number];
+}

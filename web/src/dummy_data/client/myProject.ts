@@ -1,4 +1,4 @@
-import type { Project } from "@/pages/client/my_projects/types";
+import type { Project, ProjectSite } from "@/pages/client/my_projects/types";
 
 export const projectData: Project[] = [
   {
@@ -119,5 +119,26 @@ export const projectMembers = [
     email: "sita.verma@abc.co",
     mobile: "9876543211",
     role: "Manager",
+  },
+];
+
+export const initialSites: ProjectSite[] = [
+  {
+    id: 1,
+    siteId: "SOF123NAMUSA",
+    siteName: "Bangalore Tech Park – Block A",
+    coordinates: [12.9716, 77.5946],
+  },
+  {
+    id: 2,
+    siteId: "SOF456DELIND",
+    siteName: "Delhi Innovation Hub – Tower 2",
+    coordinates: [28.7041, 77.1025],
+  },
+  {
+    id: 3,
+    siteId: "SOF789MUMIND",
+    siteName: "Mumbai Business Center – Wing C",
+    coordinates: [19.076, 72.8777],
   },
 ];

@@ -1,18 +1,25 @@
 import { absoluteUrls } from "@/config/urls";
-import { projectData, projectMembers } from "@/dummy_data/client/myProject";
+import {
+  initialSites,
+  projectData,
+  projectMembers,
+} from "@/dummy_data/client/myProject";
 import { SORT_OPTIONS } from "@/pages/engineer/search_result/types";
+import ClientInterviewerSection from "@/shared/components/ClientInterviewerSection";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import MapSearch from "@/shared/components/MapWithSearch";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { BiEdit } from "react-icons/bi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
-import ProjectInfoCard from "./ProjectInfoCard";
-import dayjs from "dayjs";
-import ClientInterviewerSection from "@/shared/components/ClientInterviewerSection";
-import { useState } from "react";
-import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import useDrawerStore from "@/shared/store/useDrawerStore";
+import ProjectInfoCard from "./ProjectInfoCard";
 
 export default function ProjectDetails() {
   const { projectId } = useParams();
@@ -20,8 +27,43 @@ export default function ProjectDetails() {
   const { showPopup } = usePopupStore();
   const [members, setMembers] = useState(projectMembers);
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const [sites, setSites] = useState(initialSites);
+  const [activeSiteId, setActiveSiteId] = useState(initialSites[0]?.id || null);
 
   const projectDetails = projectData.find((p) => p.id === projectId);
+
+  const siteDeleteHandler = async (id: number) => {
+    setSites((prev) => prev.filter((site) => site.id !== id));
+
+    if (activeSiteId === id) {
+      const nextSite = sites.find((s) => s.id !== id);
+      setActiveSiteId(nextSite?.id || null);
+    }
+  };
+  //Hnadleprojectsite delete
+  const handleDeleteSite = async (id: number) => {
+    await showPopup({
+      title: "Delete",
+      body: "Are you sure you want to delete this project site?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "danger",
+          action: async (close) => {
+            siteDeleteHandler(id);
+            toast.success("Project site deleted successfully");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const handleDeleteConfirmation = async () => {
     await showPopup({
@@ -56,7 +98,7 @@ export default function ProjectDetails() {
   };
 
   const sections = members.map((member) => ({
-    title: "Project Member", // will render as "Project Member 1", "Project Member 2"
+    title: "Project Member",
     items: [
       { label: "First Name", value: member.firstName },
       { label: "Last Name", value: member.lastName },
@@ -84,7 +126,7 @@ export default function ProjectDetails() {
         </div>
 
         <div className="grid md:flex gap-8 mt-4">
-          <div className="md:w-9/12">
+          <div className="lg:w-9/12">
             <div className="rounded-xl bg-[#044745] p-4 py-5 text-white">
               <div className="flex justify-between items-start">
                 {/* Left Section */}
@@ -132,17 +174,67 @@ export default function ProjectDetails() {
             <ProjectInfoCard projectDetails={projectDetails} />
 
             {/* Project Site */}
-            <div className="bg-gray-200 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow-sm">
+            <div className="bg-gray-200 dark:bg-gray-800  dark:text-white rounded-lg p-4 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Project Site
               </h3>
 
-              <div className="flex flex-col rounded-md bg-white dark:bg-gray-800 dark:text-white items-center justify-center py-12 space-y-4">
-                <p>No project sites added yet</p>
+              <div className="h-96 overflow-y-scroll">
+                {sites.map((site, i) => (
+                  <div
+                    className="flex flex-col rounded-md mb-2 bg-white dark:bg-gray-800 dark:text-white items-center justify-center space-y-4"
+                    key={i}
+                  >
+                    <div className="flex flex-col w-full my-auto px-4 pt-2 h-16">
+                      <div className="flex justify-between">
+                        <h4 className="text-sm font-semibold text-gray-800 dark:text-white">
+                          Project Site {site.id}
+                        </h4>
+                        <div className="flex space-x-2">
+                          <BiEdit
+                            className="text-lg cursor-pointer"
+                            onClick={() => {
+                              setActiveKey("editclientProject");
+                              setISOpenSidebar(true);
+                            }}
+                          />
+                          <RiDeleteBin6Line
+                            className="text-lg cursor-pointer"
+                            onClick={() => handleDeleteSite(site.id)}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex space-x-4 text-sm text-gray-600 dark:text-gray-300">
+                        <span>
+                          <strong>Site ID:</strong> {site.siteId}
+                        </span>
+                        <span>
+                          <strong>Site Name:</strong> {site.siteName}
+                        </span>
+                      </div>
+                    </div>
+
+                    {sites.length > 0 ? (
+                      <MapSearch
+                        className="h-72 overflow-hidden rounded-lg mb-2 border border-gray-200 dark:border-gray-700"
+                        initialPosition={
+                          sites.find((s) => s.id === activeSiteId)
+                            ?.coordinates || sites[0].coordinates
+                        }
+                        viewOnly={true}
+                      />
+                    ) : (
+                      <p>No project sites added yet</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end mt-4">
                 <Button
                   type="button"
                   onClick={() => {
-                    setActiveKey("clientProject");
+                    setActiveKey("addclientProject");
                     setISOpenSidebar(true);
                   }}
                   className="w-fit rounded-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition"
@@ -154,7 +246,7 @@ export default function ProjectDetails() {
           </div>
 
           {/* SideCard */}
-          <div className="w-3/12 space-y-4">
+          <div className="lg:w-3/12 space-y-4">
             <div className="bg-gray-200 rounded-lg p-4 shadow-sm">
               <h3 className="text-sm md:text-lg font-medium mb-1">
                 Remaining Budget

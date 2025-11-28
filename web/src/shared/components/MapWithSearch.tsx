@@ -187,6 +187,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
+  className,
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
   const [searchLocation, setSearchLocation] = useState<L.LatLng | null>(null);
@@ -213,7 +214,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   };
 
   return (
-    <div className="relative w-full z-50">
+    <div className={`relative w-full z-40 ${className}`}>
       {/* Hide search bar in viewOnly */}
       {!viewOnly && <MapSearchBar onSelect={handleSearchSelect} />}
 
