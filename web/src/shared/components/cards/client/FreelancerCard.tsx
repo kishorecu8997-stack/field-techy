@@ -1,5 +1,6 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { Button } from "../../commonUI/Buttons";
 
 export interface FreelancerCardProps {
   id: number;
@@ -14,6 +15,12 @@ export interface FreelancerCardProps {
   onSelect: (id: number) => void;
 }
 
+/**
+ * FreelancerCard Component
+ * Renders a card for a freelancer, displaying the freelancer's name, rating, role, and availability.
+ * @param {FreelancerCardProps} props - Configuration props including the freelancer object
+ * @returns {JSX.Element} The rendered card element with a clickable image and name
+ */
 const FreelancerCard: React.FC<FreelancerCardProps> = ({
   id,
   name,
@@ -51,7 +58,7 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
 
         <p className="text-sm text-gray-700 mt-1">{role}</p>
 
-        <button
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             onInvite?.();
@@ -59,7 +66,7 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
           className="mt-3 w-fit bg-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-900 transition-colors"
         >
           Invite to Job
-        </button>
+        </Button>
       </div>
 
       {/* TOP RIGHT ICON */}
@@ -79,7 +86,11 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
             stroke="currentColor"
             className="w-4 h-4"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
           </svg>
         )}
       </div>

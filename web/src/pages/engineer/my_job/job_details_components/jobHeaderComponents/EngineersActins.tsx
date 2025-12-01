@@ -7,7 +7,13 @@ import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import type { JobStatus } from "../../types";
 
-const EngineersActins = ({
+/**
+ * EngineersActions Component
+ * Renders the actions section for the Manage Proposal page, including a button to invite a new job.
+ * @param {EngineersActionsProps} props - Configuration props including the engineer object
+ * @returns {JSX.Element} The rendered actions section
+ * */
+const EngineersActions = ({
   setOfferJobStatus,
   setSendProposal,
   setOpen,
@@ -254,4 +260,4 @@ const EngineersActins = ({
     </div>
   );
 };
-export default EngineersActins;
+export default EngineersActions;

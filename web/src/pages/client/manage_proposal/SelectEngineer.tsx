@@ -12,6 +12,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Pagination from "../search_result/components/Pagination";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -21,6 +22,20 @@ import { toast } from "react-toastify";
 const SelectEngineer = () => {
   const params = useParams();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const itemsPerPage = 8;
+
+  // Filtered engineers (mock — in real app, filter by category)
+  const filteredEngineers = EngineersList; // Add actual filtering logic if needed
+
+  // Pagination
+  const totalPages = Math.ceil(filteredEngineers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentEngineers = filteredEngineers.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
@@ -32,13 +47,14 @@ const SelectEngineer = () => {
     ? sampleJobs.find((job) => job.id === proposal.jobID)
     : null;
 
- const handleSelect = (id: number) => {
-  setSelectedIds((prev) =>
-    prev.includes(id)
-      ? prev.filter((item) => item !== id) // unselect
-      : [...prev, id]                      // select
-  );
-};
+  const handleSelect = (id: number) => {
+    setSelectedIds(
+      (prev) =>
+        prev.includes(id)
+          ? prev.filter((item) => item !== id) // unselect
+          : [...prev, id] // select
+    );
+  };
 
   const handleInvite = async () => {
     console.log("Invited");
@@ -81,7 +97,7 @@ const SelectEngineer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {EngineersList.map((engineer) => (
+              {currentEngineers.map((engineer) => (
                 <FreelancerCard
                   key={engineer.id}
                   id={engineer.id}
@@ -90,11 +106,16 @@ const SelectEngineer = () => {
                   reviews={engineer.reviewCount}
                   role={engineer.role}
                   onInvite={() => {}}
-                 selected={selectedIds.includes(engineer.id)}
+                  selected={selectedIds.includes(engineer.id)}
                   onSelect={handleSelect}
                 />
               ))}
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6">

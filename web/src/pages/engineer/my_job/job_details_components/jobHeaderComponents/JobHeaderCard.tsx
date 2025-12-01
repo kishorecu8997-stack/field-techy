@@ -3,7 +3,7 @@ import Popup from "@/shared/components/Popup";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
-import EngineersActins from "./EngineersActins";
+import EngineersActions from "./EngineersActins";
 import UpdateStatus from "./UpdateStatus";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 
@@ -53,7 +53,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         {isClient ? (
           <ClientActions />
         ) : (
-          <EngineersActins
+          <EngineersActions
             OfferJobStatus={OfferJobStatus}
             isSendProposal={isSendProposal}
             setActiveTab={setActiveTab}

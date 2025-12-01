@@ -2,6 +2,11 @@ import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+/**ProposalCard Component
+ * Renders a card for a proposal, displaying the engineer's name, rating, title, and availability.
+ *  @param {EngineerCardProps} props - Configuration props including the engineer object
+ *  @returns {JSX.Element} The rendered card element
+ *  */
 const ProposalCard: React.FC<EngineerCardProps> = ({ engineer }) => {
   const navigate = useNavigate();
 
@@ -26,8 +31,12 @@ const ProposalCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           </span>
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>
-        <p className="text-sm font-medium"><span>Pay Type:</span> {engineer.pay_type}</p>
-        <p className="text-sm font-medium"><span>Availability:</span> {engineer.availability}</p>
+        <p className="text-sm font-medium">
+          <span>Pay Type:</span> {engineer.pay_type}
+        </p>
+        <p className="text-sm font-medium">
+          <span>Availability:</span> {engineer.availability}
+        </p>
         {/* <button className="mt-2 px-3 py-1 rounded text-sm font-medium bg-emerald-700 hover:bg-emerald-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors">
           Invite to Job
         </button> */}

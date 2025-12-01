@@ -2,7 +2,6 @@ import { absoluteUrls } from "@/config/urls";
 import { ProposalsList } from "@/dummy_data/client/ManageProposal";
 import { earningsData } from "@/dummy_data/jobDetails";
 import ExploreEngineerHeaderCard from "@/shared/components/cards/client/ExploreEngineerHeaderCard";
-import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { usePopupStore } from "@/shared/store/popupStore";
