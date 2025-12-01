@@ -25,10 +25,9 @@ const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
   onAccept,
   onDecline,
 }) => {
-  
   return (
-    <div className="grid grid-cols-[1fr_auto] gap-6 p-6 rounded-2xl bg-emerald-900 text-white w-full max-w-4xl  overflow-hidden">
-      <div className="flex items-center gap-4 ">
+    <div className="grid grid-cols-[1fr_auto] gap-6 p-4 rounded-2xl bg-emerald-900 text-white w-full max-w-4xl  overflow-hidden">
+      <div className="flex items-center gap-6 ">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -36,7 +35,9 @@ const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
             className="w-20 h-20 rounded-lg object-cover"
           />
         ) : (
-          <FaUserCircle className="w-16 h-16 text-gray-400" />
+          <div className="h-full w-30 rounded-lg bg-gray-100 flex items-center justify-center">
+            <FaUserCircle className="w-16 h-16 text-gray-400" />
+          </div>
         )}
 
         <div className="flex flex-col">
@@ -66,7 +67,9 @@ const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
       <div className="flex gap-4  self-end">
         <Button onClick={onAccept}>Accept & Assign</Button>
 
-        <Button onClick={onDecline} variant="secondary">Decline</Button>
+        <Button onClick={onDecline} variant="secondary">
+          Decline
+        </Button>
       </div>
     </div>
   );

@@ -44,7 +44,9 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
           className="w-20 h-20 rounded-lg object-cover"
         />
       ) : (
-        <FaUserCircle className="w-16 h-16 text-gray-400" />
+        <div className="h-full w-30 rounded-lg bg-gray-100 flex items-center justify-center">
+          <FaUserCircle className="w-16 h-16 text-gray-400" />
+        </div>
       )}
 
       <div className="flex flex-col flex-1">

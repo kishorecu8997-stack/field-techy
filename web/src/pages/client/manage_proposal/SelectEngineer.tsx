@@ -92,9 +92,10 @@ const SelectEngineer = () => {
           title="Explore Engineers"
           isShowBreadcrumb={false}
           isShowSort={false}
+          description={`${10}+ jobs found`}
           action={<Button onClick={handleInvite}>Invite to Job</Button>}
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
           <div className="lg:col-span-2 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {currentEngineers.map((engineer) => (
@@ -118,7 +119,7 @@ const SelectEngineer = () => {
             />
           </div>
           <div className="lg:col-span-1">
-            <div className="sticky top-6">
+            <div className="sticky top-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
               <Filters />
             </div>
           </div>

@@ -66,7 +66,7 @@ const ManageExploreEngineer = () => {
             description={`${10}+ jobs found`}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <ExploreEngineerHeaderCard
               name={getProposal()?.engineerName as string}
