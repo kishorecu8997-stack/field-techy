@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from "react";
-import JobCard from "./components/JobCard";
-import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
-import FilterButton from "@/shared/components/commonUI/FilterButton";
-import { absoluteUrls } from "@/config/urls";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
+import FilterButton from "@/shared/components/commonUI/FilterButton";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
+import JobCard from "./components/JobCard";
+import Pagination from "@/pages/engineer/search_result/components/Pagination";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-   const params = useParams();
+  const params = useParams();
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
 
   const filteredJobs = useMemo(() => {
@@ -24,55 +24,59 @@ const MyJobsClient: React.FC = () => {
       return sampleJobs as Job[];
     }
     if (activeFilter === jobFilters[1]) {
-    return (sampleJobs as Job[]).filter((job) => job.status === "inprogress");
+      return (sampleJobs as Job[]).filter((job) => job.status === "inprogress");
     }
     if (activeFilter === jobFilters[2]) {
-    return (sampleJobs as Job[]).filter((job) => job.status === "completed");
+      return (sampleJobs as Job[]).filter((job) => job.status === "completed");
     }
     if (activeFilter === jobFilters[3]) {
-    return (sampleJobs as Job[]).filter((job) => job.status === "posted");
+      return (sampleJobs as Job[]).filter((job) => job.status === "posted");
     }
     if (activeFilter === jobFilters[4]) {
-    return (sampleJobs as Job[]).filter((job) => job.status === "hold");
+      return (sampleJobs as Job[]).filter((job) => job.status === "hold");
     }
     return (sampleJobs as Job[]).filter((job) => job.status === activeFilter);
   }, [activeFilter]);
-  
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8;
+
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-     <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-          <MyJobsHeader
-            title="My Jobs"
-            currentSort={SORT_OPTIONS.NEWEST}
-            isShowBreadcrumb
-          />
-        </div>
-      <div className="container mx-auto px-4 py-6">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+        <MyJobsHeader
+          title="My Jobs"
+          currentSort={SORT_OPTIONS.NEWEST}
+          isShowBreadcrumb
+        />
+      </div>
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
-            <div className="space-y-6">
+            <div className="">
               <FilterButton
                 activeFilter={activeFilter}
                 onFilterChange={setActiveFilter}
                 filters={jobFilters}
               />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredJobs.length > 0 ? (
-                  filteredJobs.map((job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                    />
-                  ))
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {currentJobs.length > 0 ? (
+                  currentJobs.map((job) => <JobCard key={job.id} job={job} />)
                 ) : (
                   <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
                     No jobs match the selected filter.
                   </p>
                 )}
               </div>
+              <Pagination
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                currentPage={currentPage}
+              />
             </div>
           </div>
           <div className="lg:col-span-1">
