@@ -102,7 +102,7 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                             <JobInviteCard
                               key={job.id}
                               job={job}
-                              isSelected={field.value.includes(job.id)}
+                              isSelected={field.value ? field.value.includes(job.id) : false}
                               onToggle={handleToggle}
                             />
                           ))
