@@ -2,6 +2,12 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import "react-quill-new/dist/quill.bubble.css";
 
+/**
+ * QuillEditor Component
+ * Renders a Quill editor with a custom theme and placeholder.
+ * @param param0
+ * @returns
+ */
 const QuillEditor = ({
   value,
   onChange,
