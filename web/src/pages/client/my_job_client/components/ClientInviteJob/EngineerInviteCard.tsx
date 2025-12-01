@@ -14,7 +14,7 @@ const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
   const { id, name, rating, reviewCount, title } = engineer;
 
   return (
-    <div className="p-4 rounded-lg flex items-start gap-4 bg-slate-100 dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer hover:shadow-md">
+    <div className="p-4 rounded-lg flex items-start gap-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer hover:shadow-md">
       {/* Profile Image */}
       <img
         src={assetsConfig.images.users.user}

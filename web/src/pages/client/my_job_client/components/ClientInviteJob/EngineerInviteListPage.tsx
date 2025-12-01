@@ -90,6 +90,7 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = ({
           <MyJobsHeader
             title="Explore Engineers"
             isShowButton={false}
+            isShowBreadcrumb={false}
             onClick={handleInviteClick}
             description={`${mockEngineers.length} engineers found`}
           />

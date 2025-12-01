@@ -5,7 +5,7 @@ import { FaFacebook } from "react-icons/fa";
 import { FaInstagramSquare } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import ReportPage from "@/pages/engineer/report";
 import { useState } from "react";
@@ -19,6 +19,9 @@ import useDrawerStore from "../store/useDrawerStore";
 const Footer = () => {
   const [open, setOpen] = useState(false);
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
+  const location = useLocation();
+  const isClient = location.pathname.includes("client");
 
   return (
     <footer className="bg-white dark:bg-gray-900 pt-12 pb-8 px-6 md:px-12 relative overflow-hidden text-gray-600 dark:text-gray-300">
@@ -58,7 +61,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <NavLink
-                  to={absoluteUrls.engineer.home.my_jobs}
+                  to={isClient ? absoluteUrls.client.home.my_jobs : absoluteUrls.engineer.home.my_jobs}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Jobs
@@ -66,7 +69,7 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={absoluteUrls.engineer.home.explore_jobs}
+                  to={isClient ? absoluteUrls.client.home.client_Explore_engineers : absoluteUrls.engineer.home.explore_jobs}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Explore Jobs
@@ -75,7 +78,7 @@ const Footer = () => {
               <li>
                 <div
                   onClick={() => {
-                    setActiveKey("myEarning");
+                    setActiveKey(isClient ? "clientWallet" : "myEarning");
                     setISOpenSidebar(true);
                   }}
                   className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
@@ -86,7 +89,7 @@ const Footer = () => {
               <li>
                 <div
                   onClick={() => {
-                    setActiveKey("myAccount");
+                    setActiveKey(isClient ? "clientAccount" : "myAccount");
                     setISOpenSidebar(true);
                   }}
                   className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
@@ -123,7 +126,7 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={absoluteUrls.engineer.home.faq}
+                  to={isClient ? absoluteUrls.client.home.faq : absoluteUrls.engineer.home.faq}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   FAQ
@@ -131,7 +134,7 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={absoluteUrls.engineer.home.terms_and_conditions}
+                  to={isClient ? absoluteUrls.client.home.terms_and_conditions : absoluteUrls.engineer.home.terms_and_conditions}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Terms & Conditions
@@ -140,7 +143,7 @@ const Footer = () => {
               <li>
                 <NavLink
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
-                  to={absoluteUrls.engineer.home.privacy_policy}
+                  to={isClient ? absoluteUrls.client.home.privacy_policy : absoluteUrls.engineer.home.privacy_policy}
                 >
                   Privacy Policy
                 </NavLink>

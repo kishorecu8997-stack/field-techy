@@ -1,17 +1,16 @@
-import React from "react";
-import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
-import ClientHeader from "@/shared/components/ClientHeader";
-import JobInviteCard from "./JobInviteCard";
 import { JobInviteData } from "@/dummy_data/jobInviteData";
-import Popup from "@/shared/components/Popup";
-import InvitationSentModal from "./InvitationSentModal";
-import type { SelectedJobCardId } from "../../types";
-import { useForm, Controller } from "react-hook-form";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { toast } from "react-toastify";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS } from "@/pages/client/search_result/types";
+import Popup from "@/shared/components/Popup";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import type { SelectedJobCardId } from "../../types";
+import InvitationSentModal from "./InvitationSentModal";
+import JobInviteCard from "./JobInviteCard";
+import { Button } from "@/shared/components/commonUI/Buttons";
 interface SelectJobCardProps {
   onClose: () => void;
 }
@@ -63,19 +62,26 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
         className="space-y-6"
       >
         <div className="container mx-auto px-4 py-6">
+          <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+            <MyJobsHeader
+              title="Select Jobs"
+              isShowBreadcrumb={true}
+              isReport={false}
+              isShowSort={false}
+              action={
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="bg-teal-800 dark:bg-teal text-white"
+                >
+                  Invite To Job
+                </Button>
+              }
+            />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">               
-                <MyJobsHeader
-                  title="Select Jobs"
-                  isShowBreadcrumb={true}
-                  isReport={false}                  
-                  isShowSort={false}                   
-                  isShowButton={true}
-                  buttonText="Invite To Job"
-                />
-              </div>
-              <div className="p-4 md:p-8 min-h-screen transition-colors duration-300">
+              <div className="p-4 min-h-screen transition-colors duration-300">
                 <Controller
                   name="id"
                   control={control}

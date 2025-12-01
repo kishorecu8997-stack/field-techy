@@ -21,7 +21,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isReport = true,
   action,
   isShowButton = false,
-  buttonText = "Invite To Job",
+  buttonText,
   onClick,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
@@ -52,7 +52,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             </div>
           </div>
           <>
-            <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
+            <div className="flex flex-row flex-shrink-0 justify-end items-center gap-4">
               {action && action}
               {isReport && (
                 <div
@@ -75,7 +75,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   type="submit"
                   className="bg-teal-800 dark:bg-teal text-white"
                 >
-                  {buttonText}
+                  {buttonText && buttonText}
                 </Button>
               )}
             </div>

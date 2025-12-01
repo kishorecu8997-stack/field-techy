@@ -64,7 +64,7 @@ export const urls = {
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
       Client_Job_Details:"jobs-details/in-progress",
-      ClientSelectEngineeers: "select-engineers",
+      ClientSelectEngineers: "select-engineers",
 
     },
     auth: {
