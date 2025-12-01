@@ -1,14 +1,16 @@
 import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
+import "react-quill-new/dist/quill.bubble.css";
 
 const QuillEditor = ({
   value,
   onChange,
-  isEdit,
+  isEdit = true,
   placeholder,
 }: {
   value: string;
   onChange: (html: string) => void;
-  isEdit: boolean;
+  isEdit?: boolean;
   placeholder: string;
 }) => {
   const modules = {
@@ -28,7 +30,7 @@ const QuillEditor = ({
         onChange={onChange}
         readOnly={!isEdit}
         modules={isEdit ? modules : { toolbar: false }}
-        theme={"snow"}
+        theme={isEdit ? "snow" : "bubble"}
         placeholder={placeholder}
         style={{ minHeight: "200px" }}
       />

@@ -31,7 +31,6 @@ export default function CMSLegal() {
         value={content}
         onChange={onChange}
         placeholder={"Start writing..."}
-        isEdit={true}
       />
       <div className="w-full flex justify-end ">
         <Button
