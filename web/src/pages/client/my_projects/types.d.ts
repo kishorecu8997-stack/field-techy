@@ -56,3 +56,57 @@ export interface ProjectSiteForm {
   siteName: string;
   coordinates: [number, number];
 }
+
+export interface CreateProjectFormValues {
+  projectName: string;
+  projectType: string;
+  description: string;
+  budget: string;
+  purchaseOrder: string;
+  curency: string;
+  scheduledStartDate: Date;
+  scheduledEndDate: Date;
+
+  // Engg level & discounts
+  engineerLevel: string;
+  discount: number;
+
+  // Business hours
+  businessHourFrom: string;
+  businessHourTo: string;
+
+  // Select / Multi-select fields
+  engineersNeededFrom: string;
+  group: string[];
+  jobType: string[];
+  locationType: string[];
+
+  // Countries
+  onSiteCoutry: string[];
+  remoteCoutry: string[];
+
+  // Addresses
+  projectAddress: string;
+  remoteServiceAddress: string;
+}
+
+export interface ServiceConfig {
+  service: string;
+  skill: string;
+  sla: string;
+  level: string;
+  country: string;
+  rate: string;
+}
+export interface ProjectMember {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobile: string;
+  role: string;
+}
+export interface ExistingFTMember {
+  existingMember: string;
+  role: string;
+}

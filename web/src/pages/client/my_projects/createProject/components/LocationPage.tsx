@@ -6,12 +6,12 @@ import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
-  console.log("isDisable :", isDisable);
   return (
     <div>
       <SectionHeader title="Location and Currency" />
       <CheckboxField
         name="locationType"
+        disabled={isDisable}
         label="Location Type"
         required
         direction="horizontal"
@@ -23,9 +23,11 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         label="On-site Countries"
         placeholder="Select countries from the list"
         required
+        disabled={isDisable}
         options={projectCoutries}
       />
       <TagSelectField
+        disabled={isDisable}
         name="remoteCoutry"
         label="Remote Countries"
         placeholder="Select countries from the list"
@@ -34,10 +36,10 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
       />
 
       <RadioField
-        // disabled={isDisable}
+        disabled={isDisable}
         label="Remote Service Address"
         required
-        name="backFills"
+        name="remoteServiceAddress"
         direction="horizontal"
         wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
         options={[
@@ -47,10 +49,10 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
       />
 
       <RadioField
-        // disabled={isDisable}
+        disabled={isDisable}
         label="Project Address"
         required
-        name="backFills"
+        name="projectAddress"
         direction="horizontal"
         wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
         options={[
@@ -60,6 +62,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
       />
 
       <SelectField
+        disabled={isDisable}
         name="curency"
         label="Billing Currency"
         placeholder="Select Cuureny"

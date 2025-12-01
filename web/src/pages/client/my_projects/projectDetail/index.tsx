@@ -20,6 +20,7 @@ import { TiDocumentText } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProjectInfoCard from "./ProjectInfoCard";
+import MemberPopup from "../createProject/components/MemberPopup";
 
 export default function ProjectDetails() {
   const { projectId } = useParams();
@@ -29,7 +30,7 @@ export default function ProjectDetails() {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [sites, setSites] = useState(initialSites);
   const [activeSiteId, setActiveSiteId] = useState(initialSites[0]?.id || null);
-
+  const [isMember, setIsMember] = useState<boolean>(false);
   const projectDetails = projectData.find((p) => p.id === projectId);
 
   const siteDeleteHandler = async (id: number) => {
@@ -65,7 +66,7 @@ export default function ProjectDetails() {
     });
   };
 
-  const handleDeleteConfirmation = async () => {
+  const handleDeleteConfirmation = async (id: number) => {
     await showPopup({
       title: "Delete",
       body: "Are you sure you want to delete this member?",
@@ -80,6 +81,7 @@ export default function ProjectDetails() {
           value: "yes",
           variant: "danger",
           action: async (close) => {
+            setMembers(members.filter((m) => m.id !== id));
             toast.success("Member deleted successfully");
             close(true);
           },
@@ -89,12 +91,13 @@ export default function ProjectDetails() {
   };
 
   const handleEdit = (id: number) => () => {
-    console.log("Edit member:", id);
+    localStorage.setItem("editMemberId", id.toString());
+    setActiveKey("editProjectMember");
+    setISOpenSidebar(true);
   };
 
   const handleDelete = (id: number) => async () => {
-    handleDeleteConfirmation();
-    setMembers(members.filter((m) => m.id !== id));
+    handleDeleteConfirmation(id);
   };
 
   const sections = members.map((member) => ({
@@ -283,14 +286,17 @@ export default function ProjectDetails() {
               sections={sections}
               addAction={
                 <Button
-                  type="submit"
                   className="w-fit mt-2 rounded-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition"
+                  onClick={() => setIsMember(!isMember)}
                 >
                   Add Project Member
                 </Button>
               }
               disabled={false}
             />
+            {isMember && (
+              <MemberPopup isMember={isMember} setIsMember={setIsMember} />
+            )}
           </div>
         </div>
       </div>

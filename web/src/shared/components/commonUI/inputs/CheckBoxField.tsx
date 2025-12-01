@@ -20,6 +20,7 @@ interface CheckboxFieldProps {
   itemClassName?: string;
   inputClassName?: string;
   wrapperClassName?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -40,6 +41,7 @@ export const CheckboxField = ({
   itemClassName = "flex items-center mb-2",
   inputClassName = "h-4 w-4 text-blue-600 dark:text-blue-500 focus:ring-blue-500 focus:ring-2",
   wrapperClassName = "items-center border pl-2 pt-2 border-gray-300 rounded-sm bg-white dark:bg-gray-800 dark:text-white", // 👈 default wrapper
+  disabled = false,
 }: CheckboxFieldProps) => {
   const { control } = useFormContext();
 
@@ -70,6 +72,7 @@ export const CheckboxField = ({
           fieldState: { error },
         }) => {
           const handleSelect = (val: string | number) => {
+            if (disabled) return;
             if (value.includes(val)) {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onChange(value.filter((v: any) => v !== val));
@@ -80,17 +83,39 @@ export const CheckboxField = ({
 
           return (
             <>
-              {/* 👇 wrapper className now customizable */}
-              <div className={`${wrapperClassName} ${layoutClass}`}>
+              {/*wrapper className now customizable */}
+              <div
+                className={`${wrapperClassName} ${layoutClass} ${
+                  disabled ? "cursor-not-allowed" : ""
+                }`}
+              >
                 {options.map((option) => (
-                  <label key={option.value} className={itemClassName}>
+                  <label
+                    key={option.value}
+                    className={`${itemClassName} ${
+                      disabled
+                        ? "cursor-not-allowed opacity-60"
+                        : "cursor-pointer"
+                    }`}
+                  >
                     <input
                       type="checkbox"
                       value={option.value}
                       checked={value.includes(option.value)}
                       onChange={() => handleSelect(option.value)}
                       onBlur={onBlur}
-                      className={inputClassName}
+                      className={`
+                        ${inputClassName}
+                        ${disabled ? "cursor-not-allowed" : ""}
+                        ${
+                          disabled && value.includes(option.value)
+                            ? "!bg-blue-600 !border-blue-600 opacity-100"
+                            : disabled
+                            ? "opacity-40"
+                            : ""
+                        }
+                      `}
+                      disabled={disabled}
                     />
                     <span className="ml-2 text-gray-700 dark:text-gray-300">
                       {option.label}

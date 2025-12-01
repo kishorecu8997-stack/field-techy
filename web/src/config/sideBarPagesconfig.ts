@@ -39,6 +39,9 @@ import ClientEditDocument from "@/pages/client/my_account/components/documents/c
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
 import AddProject from "@/pages/client/my_projects/projectDetail/AddProject";
 import EditProject from "@/pages/client/my_projects/projectDetail/EditProject";
+import AddProjectMember from "@/pages/client/my_projects/createProject/components/AddProjectMember";
+import AddExistingFTMember from "@/pages/client/my_projects/createProject/components/AddExistingFTMember";
+import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -237,6 +240,21 @@ export const sectionConfig: Record<
   editclientProject: {
     component: EditProject,
     title: "Edit Project Site",
+  },
+
+  addProjectMember : {
+    component: AddProjectMember,
+    title: "Add New Project Member",
+  },
+
+  addExistingProjectMember : {
+    component: AddExistingFTMember,
+    title: "Add Existing FT Project Member",
+  },
+
+  editProjectMember : {
+    component: EditProjectMember,
+    title: "Edit Project Member Details",
   },
 
   cancelOffer: {

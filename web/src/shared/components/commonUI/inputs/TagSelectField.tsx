@@ -23,13 +23,11 @@ interface TagSelectFieldProps {
   containerClassName?: string;
   inputClassName?: string;
   maxTags?: number;
-  options: TagOption[]; // ✅ Updated type
+  options: TagOption[];
+  isTagCloseable?: boolean;
+  disabled?: boolean;
 }
 
-/**
- * A tag selection component for react-hook-form that allows users to select tags from a predefined list.
- * Selected tags are displayed as dismissible pills. It prevents duplicate selections and enforces a tag limit.
- */
 export const TagSelectField = ({
   name,
   label,
@@ -39,9 +37,17 @@ export const TagSelectField = ({
   rules,
   leftIcon,
   containerClassName = "flex flex-col py-1",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-4 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition",
+  inputClassName = `
+    w-full rounded-md border border-gray-300 dark:border-gray-600
+    py-3 pl-5 bg-white dark:bg-gray-800 
+    text-base text-gray-900 dark:text-gray-100
+    placeholder-gray-400 dark:placeholder-gray-500
+    transition
+  `,
   maxTags = 10,
   options = [],
+  disabled = false,
+  isTagCloseable = true,
 }: TagSelectFieldProps) => {
   const { control } = useFormContext();
   const [selectedOption, setSelectedOption] = useState("");
@@ -85,7 +91,13 @@ export const TagSelectField = ({
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label
+          className={`
+            block mb-1 text-md font-semibold
+            ${disabled ? "text-gray-400" : "text-gray-700"} 
+            dark:${disabled ? "text-gray-500" : "text-gray-300"}
+          `}
+        >
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
@@ -95,57 +107,67 @@ export const TagSelectField = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => {
-          const { onChange, value = [] } = field;
+          /** FIX: Always ensure value is an array */
+          const onChange = field.onChange;
+          const value: string[] = Array.isArray(field.value) ? field.value : [];
 
-          // ✅ Filter out already selected tags
           const availableOptions = options.filter(
             (opt) => !value.includes(opt.value)
           );
 
           return (
             <>
-              {/* Select wrapper */}
               <div className="relative">
                 {leftIcon && (
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10">
                     {leftIcon}
                   </div>
                 )}
 
-                {/* Wrapper for custom arrow */}
-                <div className="relative">
-                  <select
-                    value={selectedOption}
-                    onChange={(e) => {
-                      const selected = e.target.value;
-                      setSelectedOption(selected);
-                      handleAddTag(selected, onChange, value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddTag(selectedOption, onChange, value);
-                      }
-                    }}
-                    className={`${inputClassName} ${
-                      leftIcon ? "pl-10" : ""
-                    } pr-10 appearance-none`}
-                  >
-                    <option value="" disabled hidden>
-                      {placeholder}
-                    </option>
+                <select
+                  value={selectedOption}
+                  disabled={disabled}
+                  onChange={(e) => {
+                    const selected = e.target.value;
+                    setSelectedOption(selected);
+                    handleAddTag(selected, onChange, value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTag(selectedOption, onChange, value);
+                    }
+                  }}
+                  className={`
+                    ${inputClassName}
+                    ${leftIcon ? "pl-10" : ""}
+                    pr-10 appearance-none cursor-pointer
+                    disabled:bg-gray-100 disabled:text-gray-400 
+                    dark:disabled:bg-gray-700 dark:disabled:text-gray-500
+                    /* Placeholder style for select */
+                    [&>*:disabled]:text-gray-400 
+                    dark:[&>*:disabled]:text-gray-500
+                  `}
+                >
+                  <option value="" disabled hidden>
+                    {placeholder}
+                  </option>
 
-                    {availableOptions.map((opt) => (
+                  {availableOptions.length ? (
+                    availableOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
                       </option>
-                    ))}
-                  </select>
+                    ))
+                  ) : (
+                    <option value="" disabled>
+                      No item found
+                    </option>
+                  )}
+                </select>
 
-                  {/* Custom dropdown arrow */}
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <FaChevronDown className="h-4 w-4 text-gray-500" />
-                  </div>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <FaChevronDown className="h-4 w-4 text-gray-500" />
                 </div>
               </div>
 
@@ -155,32 +177,42 @@ export const TagSelectField = ({
                 </p>
               )}
 
-              {/* Render selected tags */}
-              <div className="flex flex-wrap gap-2 py-2">
-                {value &&
-                  value.map((tagValue: string, index: number) => {
-                    // Find the label for display
-                    const tagLabel =
-                      options.find((opt) => opt.value === tagValue)?.label ||
-                      tagValue;
+              {/* TAG LIST */}
+              <div
+                className={`flex flex-wrap gap-2 ${value.length ? "py-2" : ""}`}
+              >
+                {value.map((tagValue: string, index: number) => {
+                  const tagLabel =
+                    options.find((opt) => opt.value === tagValue)?.label ||
+                    tagValue;
 
-                    return (
-                      <span
-                        key={index}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
-                      >
-                        {tagLabel}
+                  return (
+                    <span
+                      key={index}
+                      className="
+                        inline-flex items-center gap-1 px-3 py-1 text-sm 
+                        bg-teal-100 dark:bg-teal-900 
+                        text-teal-800 dark:text-teal-200 
+                        rounded-full border border-teal-300 dark:border-teal-700
+                      "
+                    >
+                      {tagLabel}
+                      {isTagCloseable && !disabled && (
                         <button
                           type="button"
                           onClick={() => removeTag(index, onChange, value)}
-                          className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
-                          aria-label={`Remove tag ${tagLabel}`}
+                          className="
+                            ml-1 text-teal-600 dark:text-teal-400 
+                            hover:text-teal-800 dark:hover:text-teal-200
+                            focus:outline-none
+                          "
                         >
                           ×
                         </button>
-                      </span>
-                    );
-                  })}
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             </>
           );

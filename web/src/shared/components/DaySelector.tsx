@@ -11,11 +11,12 @@ interface CheckboxSelectorProps<T extends FieldValues> {
   control?: Control<T>;
   label?: string;
   required?: boolean | string;
-  options: string[]; // 👈 NEW – dynamic options
+  options: string[]; //NEW – dynamic options
   rules?: RegisterOptions<T>;
   isShowLabel?: boolean;
   containerClassName?: string;
   selectorClassName?: string;
+  disabled?: boolean;
 }
 
 const CheckboxSelector = <T extends FieldValues>({
@@ -28,6 +29,7 @@ const CheckboxSelector = <T extends FieldValues>({
   isShowLabel = true,
   containerClassName = "flex flex-col py-1 w-full",
   selectorClassName = "",
+  disabled = false,
 }: CheckboxSelectorProps<T>) => {
   // Build required message
   let requiredMessage: string | false = false;
@@ -54,6 +56,7 @@ const CheckboxSelector = <T extends FieldValues>({
         const selected = Array.isArray(value) ? value : [];
 
         const toggleOption = (item: string) => {
+          if (disabled) return;
           const updated = selected.includes(item)
             ? selected.filter((x) => x !== item)
             : [...selected, item];
@@ -77,20 +80,25 @@ const CheckboxSelector = <T extends FieldValues>({
                 return (
                   <label
                     key={item}
-                    className="flex items-center cursor-pointer dark:text-white"
+                    className={`flex items-center ${
+                      disabled
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    } dark:text-white`}
                   >
                     <input
                       type="checkbox"
                       checked={selectedItem}
                       onChange={() => toggleOption(item)}
                       className="sr-only"
+                      disabled={disabled}
                     />
                     <div
                       className={`flex items-center justify-center h-4 w-4 rounded border ${
                         selectedItem
                           ? "bg-teal-900 border-teal-900"
                           : "border-gray-300 dark:border-gray-600"
-                      }`}
+                      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
                     >
                       {selectedItem && (
                         <span className="text-xs text-white">✓</span>

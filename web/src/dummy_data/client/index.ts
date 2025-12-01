@@ -171,3 +171,33 @@ export const projectRateCards = [
     rate: "£72/hr",
   },
 ];
+
+export const memberRoles = [
+  { label: "Manager", value: "Manager" },
+  { label: "Engineer", value: "Engineer" },
+  { label: "Designer", value: "Designer" },
+  { label: "Lead", value: "Lead" },
+];
+
+export const existingMembers = [
+  {
+    label: "Alice",
+    value: "alice",
+  },
+  {
+    label: "Smith",
+    value: "smith",
+  },
+  {
+    label: "Sita",
+    value: "sita",
+  },
+  {
+    label: "David",
+    value: "david",
+  },
+  {
+    label: "Kiran",
+    value: "kiran",
+  },
+];

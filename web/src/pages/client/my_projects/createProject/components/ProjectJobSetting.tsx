@@ -4,7 +4,7 @@ import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { useFormContext } from "react-hook-form";
 
-export default function ProjectJobSetting() {
+export default function ProjectJobSetting({ isDisable }: { isDisable: boolean }) {
   const methods = useFormContext();
   const businessHourFrom = methods.watch("businessHourFrom");
   const businessHourTo = methods.watch("businessHourTo");
@@ -13,6 +13,7 @@ export default function ProjectJobSetting() {
     <div>
       <SectionHeader title="Job Setting" />
       <CheckboxSelector
+        disabled={isDisable}
         name="jobType"
         label="Job Type"
         required
@@ -25,15 +26,15 @@ export default function ProjectJobSetting() {
           required
           label="Business Hours (From)"
           maxTime={businessHourTo}
-          // disabled={isDisable}
+          disabled={isDisable}
         />
 
         <CustomTimePicker
           name="businessHourTo"
           required
           label="Business Hours (To)"
-          maxTime={businessHourFrom}
-          // disabled={isDisable}
+          minTime={businessHourFrom}
+          disabled={isDisable}
         />
       </div>
       <TextareaInput
@@ -41,6 +42,7 @@ export default function ProjectJobSetting() {
         label="Description"
         placeholder="Enter Description"
         required
+        disabled={isDisable}
       />
     </div>
   );

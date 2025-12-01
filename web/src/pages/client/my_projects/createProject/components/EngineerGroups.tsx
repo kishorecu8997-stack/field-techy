@@ -3,12 +3,12 @@ import SectionHeader from "./SectionHeader";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { projectGroups } from "@/dummy_data/client";
 
-export default function EngineerGroups() {
+export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
   return (
     <div>
       <SectionHeader title="Engineer & Groups" />
       <RadioField
-        // disabled={isDisable}
+        disabled={isDisable}
         label="Engineers Needed From"
         required
         name="engineersNeededFrom"
@@ -20,6 +20,7 @@ export default function EngineerGroups() {
         ]}
       />
       <TagSelectField
+        disabled={isDisable}
         name="group"
         label="Select Group"
         placeholder="Select Group"
