@@ -55,14 +55,13 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
       <FormContainer
         methods={methods}
         onSubmit={handleInviteClick}
-        className="space-y-6"
       >
-        <div className="container mx-auto px-4 py-6">
-          <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+        <div className="px-4 py-6">
+          <div className="w-full sticky top-16 z-10 ">
             <MyJobsHeader
               title="Select Jobs"
               isShowBreadcrumb={true}
@@ -79,9 +78,9 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
               }
             />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2">
-              <div className="p-4 min-h-screen transition-colors duration-300">
+              <div className="py-2 min-h-screen transition-colors duration-300">
                 <Controller
                   name="id"
                   control={control}
@@ -97,7 +96,7 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                           {errors.id.message}
                         </p>
                       )}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {JobInviteData.length > 0 ? (
                           JobInviteData.map((job) => (
                             <JobInviteCard

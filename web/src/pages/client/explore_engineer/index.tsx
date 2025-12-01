@@ -1,13 +1,11 @@
-import EngineerListPage from "./components/EngineerListPage";
-import Header from "@/shared/components/ClientHeader";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import {
-  JOB_STATUSES,
-  SORT_OPTIONS,
-  type Filters,
-} from "@/pages/client/search_result/types";
 import FilterPanel from "@/pages/client/search_result/components/FilterPanel";
+import {
+  SORT_OPTIONS,
+  type Filters
+} from "@/pages/client/search_result/types";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
+import EngineerListPage from "./components/EngineerListPage";
 
 /**
  * `ExploreEngineer` is the main page component for browsing and finding engineers.
@@ -45,8 +43,8 @@ const ExploreEngineer = () => {
   };
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
-        <div className="sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+      <div className="container mx-auto px-4 ">
+          <div className="w-full sticky top-16 z-10 ">
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
@@ -54,7 +52,7 @@ const ExploreEngineer = () => {
             description={`10 jobs found`} // ✅ Updated count
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
             <div className="space-y-10">
               <EngineerListPage />

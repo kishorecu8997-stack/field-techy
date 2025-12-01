@@ -36,8 +36,8 @@ const EngineerProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
-        <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+      <div className="container mx-auto px-4 ">
+          <div className="w-full sticky top-16 z-10 ">
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}
