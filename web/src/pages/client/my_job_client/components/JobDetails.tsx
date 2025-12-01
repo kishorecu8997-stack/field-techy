@@ -40,19 +40,17 @@ const JobsDetails: React.FC = () => {
       return job.id === Number(params.jobId);
     });
   };
-  console.log('filter :', filter());
   return (
     <div className="min-h-screen transition-colors duration-200">
       <div className="container  mx-auto px-4 py-6">
         <MyJobsHeader
-              title="Job Details"
-              currentSort={SORT_OPTIONS.NEWEST}
-              isReport
-              onSortChange={() => {}}
-            />
+          title="Job Details"
+          currentSort={SORT_OPTIONS.NEWEST}
+          isReport
+          onSortChange={() => {}}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            
             <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
               <JobCardDetailsHeader />
               <div className="space-y-6 pt-2">
@@ -65,7 +63,6 @@ const JobsDetails: React.FC = () => {
                 />
               </div>
             </div>
-
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6 pt-2">
