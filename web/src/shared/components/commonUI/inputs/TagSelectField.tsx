@@ -173,7 +173,7 @@ export const TagSelectField = ({
                         <button
                           type="button"
                           onClick={() => removeTag(index, onChange, value)}
-                          className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none"
+                          className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none cursor-pointer"
                           aria-label={`Remove tag ${tagLabel}`}
                         >
                           ×
