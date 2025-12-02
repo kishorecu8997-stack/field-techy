@@ -14,7 +14,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { BiEdit } from "react-icons/bi";
-import { HiOutlineDotsVertical } from "react-icons/hi";
+// import { HiOutlineDotsVertical } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,6 +22,14 @@ import { toast } from "react-toastify";
 import ProjectInfoCard from "./ProjectInfoCard";
 import MemberPopup from "../createProject/components/MemberPopup";
 
+/**
+ * `ProjectDetails` component displays the detailed view of a single project.
+ * It fetches project data based on the `projectId` from the URL parameters.
+ * This component renders project information, site details with a map,
+ * and a list of project members. It also provides functionality to
+ * add, edit, and delete project sites and members, as well as navigate
+ * to view related jobs or post a new job.
+ */
 export default function ProjectDetails() {
   const { projectId } = useParams();
   const navigate = useNavigate();

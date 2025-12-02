@@ -8,6 +8,11 @@ import { SORT_OPTIONS } from "@/pages/engineer/search_result/types";
 import { NavLink, useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
+/**
+ * `MyProjects` component displays a list of projects for the client.
+ * It allows filtering projects by their status (All, In-Progress, Completed).
+ * It also provides a call-to-action to create a new project.
+ */
 const MyProjects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const navigate = useNavigate();

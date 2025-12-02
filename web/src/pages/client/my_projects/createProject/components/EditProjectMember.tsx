@@ -12,6 +12,26 @@ import { projectMembers } from "@/dummy_data/client/myProject";
 import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
+/**
+ * EditProjectMember
+ *
+ * Form used to edit an existing project member. The component prefills the
+ * form with data from `projectMembers` (selected by `editMemberId` stored in
+ * localStorage) and allows updating member fields such as name, email, mobile,
+ * and role.
+ *
+ * Features:
+ * - Uses `react-hook-form` for form state and validation
+ * - Validates fields using shared validation utilities
+ * - On submit, shows a success toast and closes the sidebar via `useDrawerStore`
+ *
+ * Notes:
+ * - This component expects `editMemberId` to be present in localStorage.
+ * - Mobile numbers are normalized to include the `+91` prefix if missing.
+ *
+ * @component
+ * @returns {JSX.Element} The edit-member form UI
+ */
 export default function EditProjectMember() {
   const { setISOpenSidebar } = useDrawerStore();
 

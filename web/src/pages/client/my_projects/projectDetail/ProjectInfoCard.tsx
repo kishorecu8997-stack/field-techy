@@ -1,6 +1,27 @@
 import type { Project } from "../types";
 import dayjs from "dayjs";
 
+/**
+ * ProjectInfoCard
+ *
+ * Displays summary information about a project in a compact card layout.
+ *
+ * Props:
+ * - `projectDetails` (Project | undefined): The project object containing
+ *   metadata such as countries, duration, budget, job type and description.
+ *
+ * Behavior:
+ * - Formats the `createdAt` date using `dayjs`.
+ * - Gracefully handles `undefined` project data by using optional chaining.
+ *
+ * Example:
+ * ```tsx
+ * <ProjectInfoCard projectDetails={project} />
+ * ```
+ *
+ * @param {{ projectDetails: Project | undefined }} props Component props
+ * @returns {JSX.Element} A styled card with project metadata
+ */
 export default function ProjectInfoCard({
   projectDetails,
 }: {

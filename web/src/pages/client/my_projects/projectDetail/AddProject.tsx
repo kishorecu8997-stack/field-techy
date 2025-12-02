@@ -6,6 +6,13 @@ import type { ProjectSiteForm } from "../types";
 import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
+/**
+ * `AddProject` component renders a form for adding a new project site.
+ * It uses `react-hook-form` for form state management and validation.
+ * On submission, it stores the new site's coordinates in local storage,
+ * shows a success toast notification, and closes the sidebar.
+ * The form fields are contained within the `ProjectSidebar` component.
+ */
 const AddProject = () => {
   const methods = useForm<ProjectSiteForm>({
     defaultValues: {

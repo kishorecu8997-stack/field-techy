@@ -10,7 +10,19 @@ import { useForm } from "react-hook-form";
 import type { ProjectMember } from "../../types";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
-
+/**
+ * AddProjectMember
+ *
+ * Small form component to add a new project member manually.
+ *
+ * Features:
+ * - Collects first name, last name, email, mobile number and role
+ * - Uses `react-hook-form` for local form state and validation
+ * - On successful submit, shows a toast and closes the sidebar via `useDrawerStore`
+ *
+ * @component
+ * @returns {JSX.Element} The add-project-member form
+ */
 export default function AddProjectMember() {
   const methods = useForm<ProjectMember>({});
   const { setISOpenSidebar } = useDrawerStore();

@@ -12,6 +12,29 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import type { ServiceConfig } from "../../types";
 
 export default function ProjectServiceConfig() {
+  /**
+   * ProjectServiceConfig
+   *
+   * Renders the service configuration section of the project creation form.
+   * This section displays a compact rate-card table and allows the user to
+   * view the full rate card in a popup. It also exposes read-only inputs for
+   * engineer level and discount which are wired to the outer form.
+   *
+   * Behavior:
+   * - Shows a small `CustomTable` with a subset of the rate card (no pagination).
+   * - Clicking "View Full Rate Card" opens a `Popup` with a searchable rate card table.
+   * - Integrates with the parent form through read-only `InputField` components
+   *   (e.g. `engineerLevel`, `discount`) which should be controlled by the
+   *   surrounding `FormProvider`.
+   *
+   * Notes:
+   * - Uses dummy `projectRateCards` data for display. In production this should
+   *   be replaced by API-driven data passed via props or fetched within the
+   *   parent form.
+   *
+   * @component
+   * @returns {JSX.Element} Service configuration UI including small rate card and popup
+   */
   const [isOpen, setIsOpen] = React.useState(false);
 
   const columns: Column<ServiceConfig>[] = [

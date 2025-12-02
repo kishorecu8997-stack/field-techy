@@ -5,6 +5,24 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 
+/**
+ * LocationPage
+ *
+ * Form section responsible for selecting project location, work type and billing currency.
+ * It exposes controls for on-site/remote country selection, location type, project address
+ * and billing currency. Fields can be disabled via the `isDisable` prop (used for review mode).
+ *
+ * Props:
+ * - `isDisable` (boolean): When true, input fields are rendered in a disabled state.
+ *
+ * Notes:
+ * - This component is designed to be used inside a `FormProvider` and relies on the
+ *   shared input components to integrate with `react-hook-form`.
+ *
+ * @component
+ * @param {{ isDisable: boolean }} props
+ * @returns {JSX.Element} Location and currency selection section
+ */
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div>

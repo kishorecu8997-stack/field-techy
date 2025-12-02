@@ -1,3 +1,16 @@
+/**
+ * SectionHeader
+ *
+ * Small presentational component that renders a section title with a horizontal divider.
+ * Intended for use inside multi-section forms or pages to visually separate sections.
+ *
+ * Props:
+ * - `title` (string): The heading text displayed at the start of the section.
+ *
+ * @component
+ * @param {{ title: string }} props
+ * @returns {JSX.Element} A section header with title and divider
+ */
 function SectionHeader({ title }: { title: string }) {
   return (
     <div className="flex items-center w-full">

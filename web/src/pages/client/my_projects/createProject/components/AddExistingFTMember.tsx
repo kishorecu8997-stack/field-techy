@@ -6,7 +6,19 @@ import { useForm } from "react-hook-form";
 import type { ExistingFTMember } from "../../types";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
-
+/**
+ * AddExistingFTMember
+ *
+ * A small form used to add an existing field-technical (FT) member to a project.
+ *
+ * Features:
+ * - Select an existing member from a dropdown and choose their role
+ * - Uses `react-hook-form` for local form state
+ * - On submit, shows a success toast and closes the sidebar via `useDrawerStore`
+ *
+ * @component
+ * @returns {JSX.Element} Form UI for selecting and adding an existing project member
+ */
 export default function AddExistingFTMember() {
   const methods = useForm<ExistingFTMember>({});
   const { setISOpenSidebar } = useDrawerStore();

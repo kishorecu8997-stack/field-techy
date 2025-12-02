@@ -8,6 +8,29 @@ import { initialSites } from "@/dummy_data/client/myProject";
 import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
+/**
+ * EditProjects
+ *
+ * Renders the edit form for a project site inside the client's project details view.
+ * This component wires a `react-hook-form` instance into `FormContainer`, shows
+ * the `ProjectSidebar` for editing site-specific fields, and provides a submit
+ * button to update the project site.
+ *
+ * Behavior:
+ * - Pre-fills the form using `initialSites` and a selected `editSiteId` from localStorage.
+ * - On submit, displays a success toast and closes the sidebar drawer.
+ *
+ * Notes:
+ * - Uses `ProjectSiteForm` type for form values.
+ * - `ProjectSidebar` contains the editable form fields and consumes the form context.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <EditProjects />
+ * ```
+ * @returns {JSX.Element} A form for editing a project site
+ */
 const EditProjects = () => {
   const [sites] = useState(initialSites);
   const editProjectSiteId = localStorage.getItem("editSiteId");

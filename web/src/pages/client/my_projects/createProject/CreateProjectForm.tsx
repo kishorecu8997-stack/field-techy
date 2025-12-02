@@ -21,6 +21,27 @@ export default function CreateProjectForm({
 }: {
   isDisable: boolean;
 }) {
+  /**
+   * CreateProjectForm
+   *
+   * Multi-section form used to create a new project. This component composes
+   * multiple page sections (location, scheduling, engineers, budget, job settings,
+   * and service configuration) into a single form and exposes project member
+   * management on the sidebar.
+   *
+   * Behavior:
+   * - Uses `useFormContext` to access form state managed by a surrounding
+   *   `FormProvider`.
+   * - Manages local `members` state and shows a `MemberPopup` for adding members.
+   * - Opens sidebars/popups through shared UI stores (`useDrawerStore`, `usePopupStore`).
+   * - Shows toasts for user actions (delete, edit flows).
+   *
+   * Props:
+   * @param {{ isDisable: boolean }} props - `isDisable` disables inputs when true.
+   *
+   * @component
+   * @returns {JSX.Element} The create-project form UI
+   */
   const ctx = useFormContext();
   const [isMember, setIsMember] = useState<boolean>(false);
   const { showPopup } = usePopupStore();

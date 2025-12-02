@@ -12,6 +12,26 @@ import { absoluteUrls } from "@/config/urls";
 import type { CreateProjectFormValues } from "../types";
 
 export default function CreateProject() {
+/**
+ * CreateProject
+ *
+ * Page component that renders the multi-section Create Project flow for clients.
+ * It composes `CreateProjectForm` inside a `FormContainer` and provides top-level
+ * actions such as Review, Submit and Cancel.
+ *
+ * Behavior:
+ * - Initializes form state via `useForm` with sensible defaults.
+ * - `reviewProject` freezes the form for review by setting `isDisable`.
+ * - `handleCreate` shows a confirmation popup and navigates back to the projects list on confirm.
+ *
+ * Notes:
+ * - Uses shared UI stores (`usePopupStore`) and `toast` for user feedback.
+ * - This component is the page-level wrapper; the actual form sections live
+ *   inside `CreateProjectForm` and are wired with `react-hook-form`.
+ *
+ * @component
+ * @returns {JSX.Element} The Create Project page with form and actions
+ */
   const methods = useForm<CreateProjectFormValues>({
     defaultValues: { engineerLevel: "Level 1 - Level 2", discount: 10 },
     mode: "onChange",

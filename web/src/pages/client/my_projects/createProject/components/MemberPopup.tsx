@@ -3,6 +3,27 @@ import Popup from "@/shared/components/Popup";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { VscChromeClose } from "react-icons/vsc";
 
+/**
+ * MemberPopup
+ *
+ * Modal popup that allows the user to add a new project member or select an
+ * existing field-technical (FT) member when creating a project. The popup
+ * presents two primary actions:
+ * - Add New Member: opens the sidebar and selects the `addProjectMember` view
+ * - Add Existing FT Member: opens the sidebar and selects the `addExistingProjectMember` view
+ *
+ * Props:
+ * - `isMember` (boolean): controls whether the popup is open
+ * - `setIsMember` (function): setter to close/open the popup
+ *
+ * Behavior:
+ * - Uses `useDrawerStore` to open the sidebar and switch the active drawer key.
+ * - Uses `Popup` for modal rendering and buttons to trigger sidebar actions.
+ *
+ * @component
+ * @param {{ isMember: boolean; setIsMember: React.Dispatch<React.SetStateAction<boolean>> }} props
+ * @returns {JSX.Element} Member selection popup UI
+ */
 export default function MemberPopup({
   isMember,
   setIsMember,
