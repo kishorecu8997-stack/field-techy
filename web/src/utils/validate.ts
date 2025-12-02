@@ -941,6 +941,125 @@ export const validateCheckboxGroup = (
   return true;
 };
 
+export const validateProjectName = (value: string) => {
+  const raw = value || "";
+
+  // Reject leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return `${value} must not have leading or trailing spaces`;
+  }
+
+  // Reject consecutive spaces
+  if (/ {2,}/.test(raw)) {
+    return `${value} must not contain consecutive spaces`;
+  }
+
+  // Allowed characters: alphanumeric + # @ _ - .
+  if (!/^[A-Za-z0-9#@_. -]+$/i.test(raw)) {
+    return `${value} can only contain letters, numbers, and the following symbols: # @ _ - . or space`;
+  }
+
+  // Length requirement: 2 to 50 characters
+  if (raw.length < 2) {
+    return `${value} must be at least 2 characters`;
+  }
+  if (raw.length > 50) {
+    return `${value} must not exceed 50 characters`;
+  }
+
+  return true;
+};
+
+export const validateDescription = (value: string) => {
+  //Reject if has leading or trailing spaces
+  if (value !== value.trim()) {
+    return "Description must not have leading or trailing spaces";
+  }
+
+  const v = value.trim(); // now v === value, but kept for clarity
+
+  //Reject consecutive spaces
+  if (/ {2,}/.test(v)) {
+    return "Description must not contain consecutive spaces";
+  }
+
+  //Length check
+  if (v.length < 10) {
+    return "Description must be at least 10 characters";
+  }
+  if (v.length > 500) {
+    return "Description must not exceed 500 characters";
+  }
+
+  //Character whitelist: alphanumerics, space, and / , . - # ( )
+  if (!/^[A-Za-z0-9\s/,.\-#()]+$/u.test(v)) {
+    return "Description may only contain letters, numbers, spaces, and / , . - # ( )";
+  }
+
+  return true;
+};
+
+export const validateBudget = (value: string) => {
+  const raw = value || "";
+
+  if (!raw.trim()) return "Budget is required";
+
+  // Only numbers + comma allowed
+  if (!/^[0-9,]+$/.test(raw)) {
+    return "Budget can contain only numbers and commas";
+  }
+
+  // No leading or trailing comma
+  if (raw.startsWith(",") || raw.endsWith(",")) {
+    return "Budget must not start or end with a comma";
+  }
+
+  // No consecutive commas
+  if (raw.includes(",,")) {
+    return "Budget cannot contain consecutive commas";
+  }
+
+  // Remove commas
+  const digitsOnly = raw.replace(/,/g, "");
+
+  // Must be only digits
+  if (!/^\d+$/.test(digitsOnly)) {
+    return "Invalid budget format";
+  }
+
+  // Convert to number
+  const num = Number(digitsOnly);
+
+  // Must be > 0
+  if (num <= 0) {
+    return "Budget must be greater than 0";
+  }
+
+  return true;
+};
+
+export const validatePurchaseOrderNumber = (value: string) => {
+  const raw = value || "";
+
+  if (!raw.trim()) return "Purchase Order Number is required";
+
+  // Leading/trailing spaces
+  if (raw !== raw.trim()) return "Must not have leading or trailing spaces";
+
+  // Consecutive spaces
+  if (raw.includes("  ")) return "Must not contain consecutive spaces";
+
+  // Only letters + numbers
+  if (!/^[A-Za-z0-9]+$/.test(raw))
+    return "Only letters and numbers are allowed";
+
+  // Length 2–6
+  if (raw.length < 2) return "Must be at least 2 characters";
+  if (raw.length > 6) return "Must not exceed 6 characters";
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -971,4 +1090,8 @@ export default {
   validateNotificationMessage,
   validateCategoryName,
   validateCheckboxGroup,
+  validateProjectName,
+  validateDescription,
+  validateBudget,
+  validatePurchaseOrderNumber,
 };

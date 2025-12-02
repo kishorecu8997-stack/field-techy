@@ -13,7 +13,7 @@ export default function ProjectScheduling({ isDisable }: { isDisable: boolean })
       <div className="flex gap-4">
         <DatePickerInput
           name="scheduledStartDate"
-          // disabled={isDisable}
+          disabled={isDisable}
           label="Scheduled Start Date"
           placeholder="Start Date"
           required
@@ -21,7 +21,7 @@ export default function ProjectScheduling({ isDisable }: { isDisable: boolean })
         />
         <DatePickerInput
           name="scheduledEndDate"
-          // disabled={isDisable}
+          disabled={isDisable}
           label="Scheduled End Date"
           placeholder="End Date"
           required

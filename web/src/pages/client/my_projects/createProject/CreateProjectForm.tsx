@@ -13,16 +13,21 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { projectMembers } from "@/dummy_data/client/myProject";
 import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { validateProjectName } from "@/utils/validate";
+import { useFormContext } from "react-hook-form";
 
 export default function CreateProjectForm({
   isDisable,
 }: {
   isDisable: boolean;
 }) {
+  const ctx = useFormContext();
   const [isMember, setIsMember] = useState<boolean>(false);
   const { showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [members, setMembers] = useState(projectMembers);
+
+  const billingcurreny = ctx.watch("curency");
 
   const handleDeleteConfirmation = async (id: number) => {
     await showPopup({
@@ -82,6 +87,7 @@ export default function CreateProjectForm({
               required
               label={"Project Name"}
               placeholder={"Enter Project Name"}
+              rules={{ validate: (v: string) => validateProjectName(v) }}
             />
             <InputField
               disabled={isDisable}
@@ -89,6 +95,7 @@ export default function CreateProjectForm({
               required
               label={"Project Type"}
               placeholder={"Enter Project Type"}
+              rules={{ validate: (v: string) => validateProjectName(v) }}
             />
 
             <LocationPage isDisable={isDisable} />
@@ -97,7 +104,7 @@ export default function CreateProjectForm({
 
             <EngineerGroups isDisable={isDisable} />
 
-            <ProjectBudget isDisable={isDisable} />
+            <ProjectBudget isDisable={isDisable} billingcurreny={billingcurreny} />
 
             <ProjectJobSetting isDisable={isDisable} />
 

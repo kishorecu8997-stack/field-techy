@@ -2,6 +2,7 @@ import SectionHeader from "./SectionHeader";
 import CheckboxSelector from "@/shared/components/DaySelector";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
+import { validateDescription } from "@/utils/validate";
 import { useFormContext } from "react-hook-form";
 
 export default function ProjectJobSetting({ isDisable }: { isDisable: boolean }) {
@@ -43,6 +44,7 @@ export default function ProjectJobSetting({ isDisable }: { isDisable: boolean })
         placeholder="Enter Description"
         required
         disabled={isDisable}
+        rules={{ validate: (v: string) => validateDescription(v) }}
       />
     </div>
   );
