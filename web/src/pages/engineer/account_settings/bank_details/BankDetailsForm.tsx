@@ -1,14 +1,14 @@
 import { bankList } from "@/dummy_data/bankDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
+import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import {
   validateAccNumber,
-  validateIBANForCountrywise,
-  validateSWIFTBank,
   validateAddress,
-  validateName,
+  validateIBANForCountrywise,
+  validateNameWithSpace,
+  validateSWIFTBank
 } from "../validation";
-import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 
 
 /**
@@ -41,7 +41,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           placeholder="Name"
           required
           rules={{             
-            validate: (value) => validateName(value),
+            validate: (value) => validateNameWithSpace(value, "Name")
           }}
         />
         <InputField
