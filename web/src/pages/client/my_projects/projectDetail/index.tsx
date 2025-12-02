@@ -124,6 +124,7 @@ export default function ProjectDetails() {
                 currentSort={SORT_OPTIONS.NEWEST}
                 onSortChange={() => {}}
                 isShowSort={false}
+                isReport={false}
               />
             </div>
           </div>
@@ -152,7 +153,7 @@ export default function ProjectDetails() {
                     <span className="bg-white text-[#044745] text-xs font-medium px-3 py-1 rounded-full">
                       On-site & Remote
                     </span>
-                    <HiOutlineDotsVertical className="cursor-pointer" />
+                    {/* <HiOutlineDotsVertical className="cursor-pointer" /> */}
                   </div>
                 </div>
               </div>
@@ -198,6 +199,7 @@ export default function ProjectDetails() {
                           <BiEdit
                             className="text-lg cursor-pointer"
                             onClick={() => {
+                              localStorage.setItem("editSiteId", site.id.toString());
                               setActiveKey("editclientProject");
                               setISOpenSidebar(true);
                             }}

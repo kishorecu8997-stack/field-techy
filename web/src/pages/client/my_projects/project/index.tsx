@@ -6,7 +6,7 @@ import type { Project } from "../types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { SORT_OPTIONS } from "@/pages/engineer/search_result/types";
 import { NavLink, useNavigate } from "react-router-dom";
-import { absoluteUrls} from "@/config/urls";
+import { absoluteUrls } from "@/config/urls";
 
 const MyProjects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
@@ -32,6 +32,7 @@ const MyProjects: React.FC = () => {
                 title="My Projects"
                 currentSort={SORT_OPTIONS.NEWEST}
                 onSortChange={() => {}}
+                isReport={false}
               />
             </div>
           </div>
@@ -50,7 +51,9 @@ const MyProjects: React.FC = () => {
                   <div
                     className=""
                     onClick={() =>
-                      navigate(`${absoluteUrls.client.home.my_projects}/${project.id}`)
+                      navigate(
+                        `${absoluteUrls.client.home.my_projects}/${project.id}`
+                      )
                     }
                   >
                     <ProjectCard key={project.id} project={project} />
@@ -80,9 +83,7 @@ const MyProjects: React.FC = () => {
                     organized from day one!
                   </p>
                   <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    <NavLink
-                      to={absoluteUrls.client.home.create_project}
-                    >
+                    <NavLink to={absoluteUrls.client.home.create_project}>
                       <div className="bg-[#c3ffef] text-[#333] hover:bg-emerald-200 font-medium py-2 px-4 rounded-full w-fit text-sm transition-colors duration-200">
                         Create Project
                       </div>
