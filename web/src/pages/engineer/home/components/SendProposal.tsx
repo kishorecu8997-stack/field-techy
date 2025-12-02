@@ -6,6 +6,9 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
 import { validateDescription, validateNumericInput } from "../validation";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * A form component for submitting a job proposal.
@@ -25,14 +28,45 @@ import { toast } from "react-toastify";
  * return <SendProposal />;
  */
 const SendProposal = () => {
+  const { showPopup } = usePopupStore();
+  const navigate = useNavigate();
+
   const formCtx = useForm();
-  const handleSubmit = () => {
-    console.log("Submitted");
-    toast.success("Proposal submitted successfully!");
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Submit Proposal",
+      body: "Are you sure you want to submit the proposal?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("Cancel button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "yes, submit",
+          value: "ok",
+          variant: "primary",
+          action: async (close) => {
+            console.log("OK button clicked");
+            toast.success("Proposal submitted successfully!");
+            navigate(absoluteUrls.engineer.home.my_jobs);
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   return (
-    <FormContainer methods={formCtx} onSubmit={handleSubmit}>
+    <FormContainer
+      methods={formCtx}
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-1"
+    >
       <TextareaInput
         name="description"
         label="Proposal Description"
@@ -40,7 +74,7 @@ const SendProposal = () => {
         placeholder="Write your pitch to the client here..."
         rules={validateDescription(50, 2000, "Proposal Description")}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 justify-center items-center">
         <InputField
           name="expected"
           label="Expected Pay"
