@@ -19,6 +19,9 @@ interface DrawerMenuProps {
  * @returns {React.ReactElement} The rendered SkillsAndTools component.
  */
 const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+
+
+  
   return (
     <>
       <div className="flex flex-col gap-4">

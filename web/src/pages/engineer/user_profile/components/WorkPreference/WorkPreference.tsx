@@ -48,7 +48,7 @@ const WorkPreference = () => {
           action: async (close) => {
             toast.success("Work Preferences Updated Successfully");
             close(true);
-            setActiveKey("workPreference");
+            setActiveKey("profile");
           },
         },
       ],

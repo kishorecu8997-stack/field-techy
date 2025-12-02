@@ -6,20 +6,47 @@ import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import { useForm } from "react-hook-form";
 import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
 const Withdraw = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
   const FormCtx = useForm<bankDetails>({
     mode: "onSubmit",
   });
   
 const availableBalance = 1000;
-  const handleSubmit = (data: bankDetails) => {
-    console.log(data);
-    toast.success("Withdrawal initiated successfully!");
+  const handleSubmit = async(data: bankDetails) => {
+ await showPopup({
+      title: "Withdraw",
+      body: "Are you sure you want to Withdraw?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",         
+          variant:"secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, Withdraw",
+          value: "yes",
+          variant:"primary",
+          action: async (close) => {
+            close(true);
+            toast.success("Withdrawal initiated successfully!");
+            setActiveKey("settings");
+          },
+        },
+      ],
+    });
   };
 
 

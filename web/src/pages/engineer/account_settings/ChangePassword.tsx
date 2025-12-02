@@ -6,6 +6,8 @@ import { validatePassword } from "./validation";
 import type { bankDetails } from "./types";
 import PasswordSection from "../auth/components/PasswordSection";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -22,11 +24,36 @@ const ChangePassword = () => {
 export default ChangePassword;
 
 const ChangePasswordFields = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
   const FormCtx = useForm<bankDetails>();
 
-  const handleSubmit = (data: bankDetails) => {
-    console.log("Submitted data:", data);
-    toast.success("Password updated successfully!");
+  const handleSubmit = async(data: bankDetails) => {
+await showPopup({
+      title: "Change Password",
+      body: "Are you sure you want to update the password?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Password Updated Successfully");
+            close(true);
+            setActiveKey("settings");
+          },
+        },
+      ],
+    });   
   };
 
   return (
