@@ -4,6 +4,7 @@ import BankDetailsForm from "./BankDetailsForm";
 import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Page component for adding new bank details using a controlled form with React Hook Form.
@@ -22,6 +23,7 @@ const AddBankDetails = () => {
   });
 
   const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
 
   const handleSubmit = async (data: bankDetails) => {
     await showPopup({
@@ -41,6 +43,7 @@ const AddBankDetails = () => {
             console.log("Submitted data:", data);
             toast.success("Bank details added successfully");
             close(true);
+            setActiveKey("manageBankAccounts");
           },
         },
       ],

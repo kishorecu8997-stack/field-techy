@@ -5,6 +5,7 @@ import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
 import { bankDetails as bankDetailsData } from "@/dummy_data/bankDetails";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
@@ -29,6 +30,7 @@ const EditBankDetails = () => {
     },
   });
 
+  const {setActiveKey} = useDrawerStore()
  const handleSubmit = async (data: bankDetails) => {
     await showPopup({
       title: "Update Bank Details",
@@ -47,6 +49,7 @@ const EditBankDetails = () => {
             console.log("Submitted data:", data);
             toast.success("Bank details updated successfully");
             close(true);
+            setActiveKey("manageBankAccounts");
           },
         },
       ],

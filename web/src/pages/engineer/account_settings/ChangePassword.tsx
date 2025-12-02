@@ -7,6 +7,7 @@ import PasswordSection from "../auth/components/PasswordSection";
 import type { bankDetails } from "./types";
 import { validatePassword } from "./validation";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -14,6 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 const ChangePassword = () => {
   const FormCtx = useForm<bankDetails>();
+  const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
 
   const handleSubmit = async (data: bankDetails) => {
@@ -34,6 +36,7 @@ const ChangePassword = () => {
             console.log("Submitted data:", data);
             toast.success("Password changed successfully");
             close(true);
+            setActiveKey("settings");
           },
         },
       ],
