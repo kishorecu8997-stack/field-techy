@@ -106,7 +106,7 @@ const SelectEngineer = () => {
                   rating={engineer.ratings}
                   reviews={engineer.reviewCount}
                   role={engineer.role}
-                  onInvite={() => {}}
+                  onInvite={handleInvite}
                   selected={selectedIds.includes(engineer.id)}
                   onSelect={handleSelect}
                 />
