@@ -3,7 +3,7 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validatePassingYear } from "../../Validate";
+import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
@@ -15,19 +15,25 @@ interface AddEducationProps {
   onClose: () => void;
 }
 
+
 /**
  * The AddEducation component renders a form for adding a new education entry.
  * It uses `react-hook-form` for form management and validation.
  * @param {AddEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC<AddEducationProps> = ({}) => {
+
+
+const AddEducation: React.FC<AddEducationProps> = ({ }) => {
 
   const handleSubmit = (data: EducationFormData) => {
     toast.success("Education Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
+
   };
+
+  
   const methods = useForm<EducationFormData>({
     defaultValues: {
       educationLevel: "",
@@ -45,6 +51,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
+      
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <SelectField
           label="Education Level"
@@ -70,7 +77,8 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           required
         />
 
-        <SelectField
+      {/*
+         * <SelectField
           label="University"
           isShowLabel={false}
           name="university"
@@ -93,6 +101,30 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           }))}
           required
         />
+      */}
+
+         <InputField 
+          label="University"
+          isShowLabel={true}
+          name="university"
+          placeholder="Enter university name (e.g., University of Example)"
+          aria-required="true"
+          required
+          rules={{ validate: (v: string ) => validateUniversity(v) }}
+        
+        />
+
+        <InputField
+          label="Major Subject"
+          isShowLabel={true}
+          name="major_subject"
+          placeholder="Enter major subject name (e.g. Physics.)"
+          aria-required="true"
+          required
+          rules={{ validate: (v: string) => validateMajorSubject(v) }}
+        
+        />
+
         <InputField
           label="Passing Year"
           isShowLabel={false}

@@ -1,13 +1,14 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validatePassingYear } from "../../Validate";
+import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { educationLevels, courses, universities, majors,educationEdit} from "@/dummy_data/engineer_profile/education-data";
+
 
 /**
  * The EditEducation component renders a form to modify an existing education entry.
@@ -16,7 +17,9 @@ import { educationLevels, courses, universities, majors,educationEdit} from "@/d
  * @param {EditEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
-const EditEducation = () => {
+
+
+const EditEducation =() => {
   const getEducationById = () => {
     const id = localStorage.getItem("editEducationId");
     const educationId = id ;
@@ -34,6 +37,7 @@ const EditEducation = () => {
     toast.success("Education Updated Successfully");
     console.log("Form submitted with updated data:", data);
     // TODO: Replace with actual submission logic (e.g., API call to update)
+    
   };
 
   const methods = useForm<EducationFormData>({
@@ -72,7 +76,9 @@ const EditEducation = () => {
           required
         />
 
-        <SelectField
+
+        {/**
+         * <SelectField
           label="University"
           isShowLabel={false}
           name="university"
@@ -87,7 +93,7 @@ const EditEducation = () => {
         <SelectField
           label="Major Subject"
           isShowLabel={false}
-          name="major"
+          name="majorSubject"
           placeholder="Major Subject"
           options={majors.map((m) => ({
             value: m.key,
@@ -95,6 +101,31 @@ const EditEducation = () => {
           }))}
           required
         />
+         */}  
+
+
+        <InputField 
+          label="University"
+          isShowLabel={true}
+          name="university"
+          placeholder="Enter university name (e.g., University of Example)"
+          aria-required="true"
+          required
+          rules={{ validate: (v: string) => validateUniversity(v) }}
+        
+        />
+    
+        <InputField
+          label="Major Subject"
+          isShowLabel={true}
+          name="major_subject"
+          placeholder="Enter major subject name (e.g. Physics.)"
+          aria-required="true"
+          required
+          rules={{ validate: (v: string) => validateMajorSubject(v) }}
+        
+        />
+ 
         <InputField
           label="Passing Year"
           isShowLabel={false}

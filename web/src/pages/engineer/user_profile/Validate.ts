@@ -221,6 +221,52 @@ export const validateExperience = (value: string) => {
   return true;
 };
 
+// following two validations created by Mithun for validate university and major subject text fields
+
+// validate university text field
+export const validateUniversity = (
+  value: string,
+  required: boolean = true
+) => {
+  const trimmed = value?.trim() ?? "";
+
+  //  Check the field is Required or null if it give error message 
+  if (required && !trimmed) {
+    return "Please enter a university name.";
+  }
+
+  // Length check above 200 characters
+  if (trimmed.length > 200) {
+    return "University must not exceed 200 characters";
+  }
+
+  return true;
+};
+
+
+//  validate Major Subject 
+export const validateMajorSubject = (
+  value: string,
+  required: boolean = true
+) => {
+  const trimmed = value?.trim() ?? "";
+
+  //  Check the field is Required or null if it give error message 
+  if (required && !trimmed) {
+    return "Please enter a major subject name.";
+  }
+
+
+  // Length check above 200 characters 
+  if (trimmed.length > 200) {
+    return "Major Subject must not exceed 200 characters";
+  }
+
+  return true;
+};
+
+
+
 /**
  * Validate passing year.
  * - must be a 4-digit number
@@ -489,4 +535,6 @@ export default {
   validateIsVerified,
   validateIsPhoneVerified,
   validateVatNumber,
+  validateUniversity,
+  validateMajorSubject,
 };
