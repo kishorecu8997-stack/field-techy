@@ -1,8 +1,9 @@
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+
 /**
  * Props for the AllowAccessPopup component.
  *
@@ -34,7 +35,58 @@ export default function AllowAccessPopup({
   // Local state: whether to show the notifications step instead of location step
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
 
+  // --- NEW PERMISSION CHECK (browser)
+  useEffect(() => {
+    const checkPermissions = async () => {
+      try {
+        const geo = await navigator.permissions.query({ name: "geolocation" });
+        const notif = Notification.permission;
+
+        // If BOTH permissions already decided → hide popup 
+        if (
+          (geo.state === "granted" || geo.state === "denied") &&
+          (notif === "granted" || notif === "denied")
+        ) {
+          setAccessPopup(false);
+          return;
+        }
+
+        // If geolocation still needs prompting → first step
+        if (geo.state === "prompt") {
+          setEnableNotification(false);
+          return;
+        }
+
+        // If geolocation done but notifications not decided → second step
+        if ((geo.state === "granted" || geo.state === "denied") && notif === "default") {
+          setEnableNotification(true);
+          return;
+        }
+
+        setAccessPopup(false);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (accessPopup) checkPermissions();
+  }, [accessPopup]);
+
   if (!accessPopup) return null;
+
+  // REAL location permission request
+  const handleRealLocationRequest = () => {
+    navigator.geolocation.getCurrentPosition(
+      () => setEnableNotification(true), // success → move to notifications step
+      () => setAccessPopup(false) // denied
+    );
+  };
+
+  //  REAL notification permission request
+  const handleRealNotificationRequest = async () => {
+    await Notification.requestPermission();
+    setAccessPopup(false);
+  };
 
   return (
     <Popup open={accessPopup} onClose={() => setAccessPopup(false)}>
@@ -44,6 +96,7 @@ export default function AllowAccessPopup({
       >
         <AiOutlineClose />
       </div>
+
       {!enableNotification ? (
         <>
           <div className="pb-6 px-10 text-center">
@@ -61,10 +114,11 @@ export default function AllowAccessPopup({
             <Button
               type="button"
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-              onClick={() => setEnableNotification(true)}
+              onClick={handleRealLocationRequest}
             >
               Allow Access
             </Button>
+
             <button
               type="button"
               className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
@@ -92,12 +146,11 @@ export default function AllowAccessPopup({
             <Button
               type="button"
               className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-              onClick={() => {
-                setAccessPopup(false);
-              }}
+              onClick={handleRealNotificationRequest}
             >
               Allow Access
             </Button>
+
             <button
               type="button"
               className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
