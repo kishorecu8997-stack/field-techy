@@ -6,18 +6,18 @@ import type { SidebarProps } from "./types";
 
 /**
  * Sidebar
- * 
+ *
  * Admin dashboard navigation sidebar component with collapsible menu items.
  * Supports nested menu structure with expandable/collapsible sections and
  * active state highlighting.
- * 
+ *
  * Features:
  * - Collapsible sidebar with icon-only and full-width states
  * - Nested menu structure with expandable parent items
  * - Automatic expansion of parent items based on active route
  * - Active route highlighting
  * - Logout functionality
- * 
+ *
  * @param {SidebarProps} props - Component props
  * @param {boolean} props.isCollapsed - Controls the sidebar's collapsed state
  * @returns {JSX.Element} Sidebar navigation component
@@ -39,7 +39,18 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   }, [location.pathname]);
 
   const toggle = (name: string) => {
-    setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
+    // setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
+    setOpenMenus((prev) => {
+      const isCurrentlyOpen = prev[name];
+
+      // New state: CLOSE ALL, then open only the clicked one (if not already open)
+      const newState: Record<string, boolean> = {};
+
+      if (!isCurrentlyOpen) {
+        newState[name] = true;
+      }
+      return newState;
+    });
   };
 
   return (
