@@ -105,7 +105,7 @@
 //       formData.append("password", data.password);
 //       formData.append("fullName", `${data.firstName} ${data.lastName}`);
 //       formData.append("address", data.address);
-//       formData.append("jobSkills", JSON.stringify(data.skills ?? []));
+//       formData.append("jobSkills", data.skills ?? []);
 //       formData.append("portfolioLink", data.portfolio ?? "");
 //       formData.append("serviceCategory", data.serviceCategory ?? "");
 //       formData.append("budget", data.amount ?? "");
@@ -125,17 +125,27 @@
 //           data.certificate[0]
 //         );
 //       }
-//       if (data.resume?.[0]) {
-//         formData.append("resume", data.resume[0]);
+//       // if (data.resume?.[0]) {
+//       //   formData.append("resume", data.resume[0]);
+//       // }
+//        if (data.resume?.[0]) {
+//         formData.append("resume", "770e8400-e29b-41d4-a716-446655440003");
 //       }
 //       if (data.profileImage?.[0]) {
 //         formData.append("profilePicture", data.profileImage[0]);
 //       }
 
-//       const res = await axios.post(
-//         "http://localhost:8083/e/api/v1/eng/signup",
-//         formData
-//       );
+//       // const res = await axios.post(
+//       //   "http://localhost:8083/e/api/v1/eng/signup",
+//       //   formData
+//       // );
+//       const res = await axios({
+//         method: "post",
+//         url: "http://localhost:8083/e/api/v1/eng/signup",
+//         data: formData,
+//         transformRequest: [(data) => JSON.stringify(Object.fromEntries(data))],
+//         headers: { "Content-Type": "application/json" },
+//       });
 
 //       if (res.status === 200) navigate("/engineer/auth");
 //     } catch (error) {
@@ -332,26 +342,46 @@ const MultiStepRegistrationForm = () => {
     try {
       // 1️⃣ Create nested object for all non-file data
       const engineerPayload = {
-        email: data.email,
+        email: "karthi4@gmail.com",
         phoneNumber: data.phone,
-        password: data.password,
+        password: "",
         fullName: `${data.firstName} ${data.lastName}`,
         address: data.address,
-        jobSkills: data.skills ?? [],
+        jobSkills: data.skills,
         portfolioLink: data.portfolio ?? "",
         serviceCategory: data.serviceCategory ?? "",
-        budget: data.amount ?? "",
-        experiences: data.experience ?? "",
+        budget: "",
+        experienceYears: data.experience ?? "",
         designation: data.designation ?? "",
         company: data.company ?? "",
         postalCode: data.postalCode ?? "",
         country: data.country ?? "",
+        resume: "770e8400-e29b-41d4-a716-446655440003",
+        rate: "",
+        experiences: [],
+        governmentIdProofDocument: "",
+        certificateQualificationsDocument: "",
+        educations: [],
+        tools: [],
+        preferedWorkType: "",
+        enableNotifications: false,
+        profilePicture: "",
+        isApproved: false,
+        location: "",
+        averageRating: 0,
       };
 
       const res = await axios.post(
         "http://localhost:8083/e/api/v1/eng/signup",
-        { engineerPayload }
+        engineerPayload
       );
+      // const res = await axios({
+      //   method: "post",
+      //   url: "http://localhost:8083/e/api/v1/eng/signup",
+      //   data: engineerPayload,
+      //   transformRequest: [(data) => JSON.stringify(Object.fromEntries(data))],
+      //   headers: { "Content-Type": "application/json" },
+      // });
 
       if (res.status === 200) navigate("/engineer/auth");
     } catch (error) {
