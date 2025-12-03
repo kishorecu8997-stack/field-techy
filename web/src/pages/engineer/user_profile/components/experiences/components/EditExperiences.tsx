@@ -126,6 +126,8 @@ const EditExperiences = () => {
           isShowLabel={false}
           placeholder="End date (optional)"
           minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+          maxDate={new Date()}
+
           rules={{ onChange: () => methods.trigger("startDate") }}
         />
       </div>

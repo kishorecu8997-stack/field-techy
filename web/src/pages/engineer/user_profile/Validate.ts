@@ -281,7 +281,24 @@ export const validateDateRange = (
 
   return true;
 };
+export const validatepastDateRange = (
+  startDate: Date | null,
+  endDate: Date | null
+) => {
+  if (!startDate) {
+    return "Start date is required";
+  }
 
+  if (startDate <= new Date()) {
+    return "Start date cannot be in the Past";
+  }
+
+  if (endDate && startDate >= endDate) {
+    return "Start date must be on or before the project end date";
+  }
+
+  return true;
+};
 
 
 export const validateFilterDateRange = (

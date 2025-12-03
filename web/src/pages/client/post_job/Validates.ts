@@ -1,6 +1,10 @@
 
 import xss from "xss";
 
+
+
+
+
 export const validateName = (value: string) => {
   const raw = value || "";
 
@@ -31,16 +35,36 @@ export const validateName = (value: string) => {
  * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateCurrentOrFutureDate = (date: Date | null): true | string => {
-  if (!date) {
-    return "Date must be selected";
-  }
+   if (!date) {
+     return "Date must be selected";
+   }
 
-  if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
-    return "Date cannot be in the past";
-  }
+  //  if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+  //    return "Date cannot be in the past";
+  //  }
 
-  return true;
-};
+   return true;
+ };
+
+export const validateEndDate = (endDate: Date | null, startDate: Date | null): true | string => {
+   if (!endDate) {
+     return "Project deadline must be selected.";
+   }
+
+   const today = new Date();
+   today.setHours(0, 0, 0, 0);
+
+   if (endDate < today) {
+     return "Project deadline cannot be in the past.";
+   }
+
+   if (startDate && endDate < startDate) {
+     return "Project deadline cannot be earlier than the start date.";
+   }
+   return true;
+ };
+
+
 
 /**
  * Validate a date range.
@@ -69,16 +93,20 @@ export const validateDateRange = (
 };
 
 export const validateProjectDeadline = (
-  startDate: Date | null,  
+  startDate: Date | null,
+  deadline: Date | null
 ) => {
- if (!startDate) {
-    return "Start date is required";
-  }
+  // const today = new Date();
+  // today.setHours(0, 0, 0, 0);
 
-  if (startDate < new Date(new Date().setHours(0, 0, 0, 0))) {
-    return "Start date cannot be in the past";
-  }  
-  return true;  
+  if (!startDate) return "Start date is required";
+  if (!deadline) return "Project deadline is required";
+
+
+  if (deadline <= startDate)
+    return "Project deadline must be on or after the start date";
+
+  return true;
 };
 
 

@@ -1,5 +1,8 @@
 import React from "react";
+import {  FormProvider, useFormContext } from "react-hook-form";
 import FormSection from "./FormSection";
+//import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+
 import {
   JOB_TYPES,
   COUNTRIES,
@@ -22,7 +25,6 @@ import {
   validateAlphabeticText,
   validateCurrencyText,
   validateAlphabeticTextArea,
-  validateCurrentOrFutureDate,
 } from "../Validates";
 
 /**
@@ -31,12 +33,21 @@ import {
  * collecting basic information, requirements, and other details about the job.
  * It uses `react-hook-form` for form state management and validation.
  */
+
 const JobPostForm: React.FC = () => {
   /**
    * @description Initializes `react-hook-form` with default values and submission mode.
    * This hook provides methods for form registration, submission, and state management.
    */
+     // const {watch, } = useForm();
  
+const methods = useFormContext();
+({
+  
+    
+ 
+});
+
 
   /**
    * @description A helper function to generate consistent CSS classes for form inputs.
@@ -45,8 +56,57 @@ const JobPostForm: React.FC = () => {
   const inputClass = () =>
     "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
 
+  const normalize = (d: any) => {
+  if (!d) return null;
+  const date = d instanceof Date ? d : new Date(d);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+};
+const validateTime = (selectedDate: any, selectedTime: string) => {
+  if (!selectedDate || !selectedTime) return true;
+
+  const now = new Date();
+  const date = new Date(selectedDate);
+
+  // Future dates → no restriction
+  if (date.toDateString() !== now.toDateString()) return true;
+
+  // Selected datetime
+  const [h, m] = selectedTime.split(":").map(Number);
+  const selected = new Date(date);
+  selected.setHours(h, m, 0, 0);
+
+  if (selected <= now) {
+    return "You cannot select a past time for today";
+  }
+
+  return true;
+};
+React.useEffect(() => {
+  const date = methods.watch("startDate");
+  const time = methods.watch("startTime");
+
+  if (!date || !time) return;
+
+  const now = new Date();
+  const selected = new Date(date);
+  const [h, m] = time.split(":").map(Number);
+  selected.setHours(h, m);
+
+  // Prevent past time for today
+  if (selected <= now && selected.toDateString() === now.toDateString()) {
+    methods.setValue(
+      "startTime",
+      `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}`
+    );
+  }
+}, [methods.watch("startDate"), methods.watch("startTime")]);
+
+  
   return (
     <>
+    <FormProvider {...methods}>
       <div className="w-full p-4 md:p-6 bg-white text-gray-800 dark:bg-gray-900 dark:text-white transition-colors duration-300">
         {/* Basic Information */}
         <FormSection title="Basic Information">
@@ -119,23 +179,43 @@ const JobPostForm: React.FC = () => {
               />
             </div>
 
-            <div>
-              <DatePickerInput
-                name="startDate"
-                label="Start Date"
-                required
-                minDate={new Date(1970, 0, 1)}
-                // maxDate={new Date(2030, 11, 31)}
-                rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
-              />
-            </div>
+                <DatePickerInput
+                    name="startDate"
+                    label="Start Date"
+                    required
+                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+                    maxDate={normalize(methods.watch("projectDeadline")) || undefined}
+                    rules={{
+                      validate: (startRaw) => {
+                        const endRaw = methods.getValues("projectDeadline");
 
-            <div>
-              <TimeInput label="Start Time" name="startTime" required />
-            </div>
+                        const start = normalize(startRaw);
+                        const end = normalize(endRaw);
 
+                        if (!start) return "Start date is required";
+                        if (start <= new Date()) {
+                           return "Past dates are not allowed—please choose today or a future date";
+                    }
+                        if (end && start > end)
+                          return "Start date must be before project deadline";
+
+                        return true;
+                      },
+                    }}
+/>
+
+
+            <TimeInput 
+              label="Start Time" 
+              name="startTime" 
+              required
+              rules={{
+                validate: (value) =>
+                validateTime(methods.watch("startDate"), value),
+              }}
+            />
+
+                  
             <div>
               <SelectField
                 label="Number of Vacancies"
@@ -291,20 +371,31 @@ const JobPostForm: React.FC = () => {
               required
             />
 
-            <div>
-              <DatePickerInput
-                name="projectDeadline"
-                label="Project Deadline"
-                placeholder="Project Deadline"
-                required
-                minDate={new Date(1970, 0, 1)}
-                // maxDate={new Date(2030, 11, 31)}
-                rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
-              />
-            </div>
+                 
+      <DatePickerInput
+        name="projectDeadline"
+        label="Project Deadline"
+        required
 
+        minDate={normalize(methods.watch("startDate")) || new Date(new Date().setHours(0, 0, 0, 0))}
+        rules={{
+          validate: (endDateRaw) => {
+            const startRaw = methods.getValues("startDate");
+      
+            const start = normalize(startRaw);
+            const end = normalize(endDateRaw);
+      
+            if (!end) return "ProjectDeadline is required";
+            if (!start) return "Select start date first";
+      
+            if (end < start) return "ProjectDeadline must be after start date";
+      
+            return true;
+          },
+        }}
+      /> 
+
+      
             <div className="md:col-span-2">
               <SelectField
                 label="Milestone Structure"
@@ -342,6 +433,7 @@ const JobPostForm: React.FC = () => {
           </div>
         </FormSection>
       </div>
+      </FormProvider>
     </>
   );
 };
