@@ -83,7 +83,7 @@ const ProfileSetup = () => {
         Basic Details
       </div>
       <InputField
-        name="firstname"
+        name="firstName"
         label="First Name"
         type="text"
         placeholder="First Name"
@@ -92,7 +92,7 @@ const ProfileSetup = () => {
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
       <InputField
-        name="lastname"
+        name="lastName"
         label="Last Name"
         type="text"
         placeholder="Last Name"

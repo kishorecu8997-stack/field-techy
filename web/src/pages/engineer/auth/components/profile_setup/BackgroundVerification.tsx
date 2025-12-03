@@ -24,7 +24,7 @@ const BackgroundVerification = () => {
         name="governmentId"
         label="Government ID"
         placeholder="Government ID"
-        required
+        // required
         accept='.pdf'
         maxPages={5}
         validatePDF={true}
