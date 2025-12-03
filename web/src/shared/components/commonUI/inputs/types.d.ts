@@ -257,4 +257,6 @@ export interface DatePickerInputProps {
   required?: boolean | string;
   rules?: RegisterOptions;
   containerClassName?: string;
+  disabled?:boolean;
+  hidden?:boolean;
 }

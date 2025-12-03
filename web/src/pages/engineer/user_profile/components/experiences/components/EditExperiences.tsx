@@ -14,7 +14,7 @@ import {
 } from "./constants";
 import { toast } from "react-toastify";
 import { experienceData } from "@/dummy_data";
-import {experianceEdit} from "@/dummy_data/engineer_profile/work-experience";
+import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 
 
 /**
@@ -33,23 +33,23 @@ const EditExperiences = () => {
   };
 
   const getExperienceById = () => {
-  const id = localStorage.getItem("editExperiencesId");
-  console.log(id)
-  const experienceId = id ;
-  const found = experianceEdit.find(
-    (exp) => exp.id === experienceId
-  );
-  
+    const id = localStorage.getItem("editExperiencesId");
+    console.log(id)
+    const experienceId = id;
+    const found = experianceEdit.find(
+      (exp) => exp.id === experienceId
+    );
 
-  if (!found) return undefined;
 
-  // Convert string dates to Date objects (handle empty/undefined endDate)
-  return {
-    ...found,
-    startDate: found.startDate ? new Date(found.startDate) : undefined,
-    endDate: found.endDate ? new Date(found.endDate) : undefined,
+    if (!found) return undefined;
+
+    // Convert string dates to Date objects (handle empty/undefined endDate)
+    return {
+      ...found,
+      startDate: found.startDate ? new Date(found.startDate) : undefined,
+      endDate: found.endDate ? new Date(found.endDate) : undefined,
+    };
   };
-};
 
   const methods = useForm<ExperiencesFormData>({
     defaultValues: getExperienceById(),
@@ -63,6 +63,14 @@ const EditExperiences = () => {
       localStorage.removeItem("editExperiencesId");
     };
   }, []);
+
+  useEffect(() => {
+  const endDate = methods.getValues("endDate");
+  if (!endDate) {
+    methods.setValue("isCurrent", true);
+  }
+   }, []);
+
 
   return (
     <FormContainer
@@ -120,14 +128,52 @@ const EditExperiences = () => {
               validateDateRange(value, methods.getValues("endDate") || null),
           }}
         />
-        <DatePickerInput
-          name="endDate"
-          label="End Date"
-          isShowLabel={false}
-          placeholder="End date (optional)"
-          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-          rules={{ onChange: () => methods.trigger("startDate") }}
-        />
+
+        <div id="endDateSection">
+          {!methods.watch("isCurrent") && (
+            <DatePickerInput
+              name="endDate"
+              label="End Date"
+              isShowLabel={false}
+              placeholder="End date (required if not current)"
+              minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+              required={!methods.watch("isCurrent")}
+              rules={{
+                validate: (value) => {
+                  if (!methods.watch("isCurrent") && !value) {
+                    return "End date is required when not currently working";
+                  }
+                  return true;
+                },
+                onChange: () => methods.trigger("startDate")
+              }}
+            />
+          )}
+        </div>
+
+        {/* Checkbox lable */}
+        <div className="flex items-center gap-2 mt-2 ">
+          <input
+            type="checkbox"
+            id="isCurrent"
+            aria-controls="endDateSection"
+            {...methods.register("isCurrent")}
+            onChange={(e) => {
+              const checked = e.target.checked;
+
+              methods.setValue("isCurrent", checked);
+
+              if (checked) {
+                methods.setValue("endDate", null)//Remove end date
+              }
+            }}
+            className="w-4 h-4"
+          />
+
+          <label htmlFor="isCurrent" className="text-[16px] font-medium text-gray-500">
+            I currently work here
+          </label>
+        </div>
       </div>
 
       {/* Fixed bottom button */}

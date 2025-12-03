@@ -1,6 +1,6 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
@@ -41,6 +41,8 @@ const AddExperiences = () => {
       employmentType: "",
       startDate: new Date(),
       endDate: null,
+      isCurrent: false
+
     },
     mode: "onSubmit",
   });
@@ -101,14 +103,45 @@ const AddExperiences = () => {
               validateDateRange(value, methods.getValues("endDate")),
           }}
         />
-        <DatePickerInput
-          name="endDate"
-          label="End Date"
-          isShowLabel={false}
-          placeholder="End date (optional)"
-          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-          rules={{ onChange: () => methods.trigger("startDate") }}
-        />
+        
+      <div className="endDateSection">
+        {!methods.watch("isCurrent") && (
+          <DatePickerInput
+            name="endDate"
+            label="End Date"
+            isShowLabel={false}
+            placeholder="End date (optional)"
+            minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+            rules={{ onChange: () => methods.trigger("startDate") }}
+          />
+        )}
+      </div>
+     
+        <div className="flex items-center gap-2 mt-2 ">
+          <input
+            type="checkbox"
+            id="isCurrent"
+            aria-controls="endDateSection"
+            {...methods.register("isCurrent")}
+            onChange={(e) => {
+              const checked = e.target.checked;
+
+              methods.setValue("isCurrent", checked);
+
+              if (checked) {
+                setTimeout(() => {
+                  methods.setValue("endDate", null);
+                  methods.trigger("endDate");
+                }, 0);
+              }
+            }}
+            className="w-4 h-4"
+          />
+
+          <label htmlFor="isCurrent" className="text-[16px] font-medium text-gray-500">
+            I currently work here
+          </label>
+        </div>
       </div>
 
       {/* Fixed bottom button */}

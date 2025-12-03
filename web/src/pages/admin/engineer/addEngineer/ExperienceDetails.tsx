@@ -1,5 +1,7 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
+import { useFormContext } from "react-hook-form";
+
 import {
   validateCompany,
   validateDesignation,
@@ -40,6 +42,8 @@ import {
  * @returns {JSX.Element} A form section component with professional experience fields
  */
 export default function ExperienceDetails() {
+  const  methods=useFormContext();
+
   return (
     <div>
       <div className="w-60">
@@ -70,7 +74,7 @@ export default function ExperienceDetails() {
             rules={{ validate: (v: string) => validateLocation(v) }}
           />
         </div>
-
+        
         <div className="w-1/2 space-y-2">
           <InputField
             name="employer"
@@ -79,6 +83,7 @@ export default function ExperienceDetails() {
             required
             rules={{ validate: (v: string) => validateCompany(v) }}
           />
+
           <InputField
             name="experience"
             label="Total Experience (In years)"
@@ -86,8 +91,26 @@ export default function ExperienceDetails() {
             required
             rules={{ validate: (v: string) => validateExperience(v) }}
           />
+
+      
         </div>
       </div>
+      
+      <div className="w-full flex items-center gap-2 mt-2 justify-start">
+          <input
+            type="checkbox"
+            id="isCurrent"
+            className="w-4 h-4"
+            {...methods.register("isCurrent")}
+          />
+
+          <label
+            htmlFor="isCurrent"
+            className="text-[16px] font-medium text-gray-500"
+          >
+            I currently work here
+          </label>
+          </div>
     </div>
   );
 }
