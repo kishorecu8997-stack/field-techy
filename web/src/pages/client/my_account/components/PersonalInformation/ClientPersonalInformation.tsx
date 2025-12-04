@@ -87,6 +87,7 @@ const ClientPersonalInformation: React.FC = () => {
           placeholder="Contact Person Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
+          alphabetOnly
           rules={{ validate: (v: string) => validateName(v) }}
         />
         <VerifiedPhoneInputField
