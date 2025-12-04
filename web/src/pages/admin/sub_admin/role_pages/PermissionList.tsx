@@ -24,7 +24,7 @@ const PermissionList = () => {
     <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold">
-          {endpoint === "edit-role" ? " Edit Role" : "Add Role"}
+          {endpoint === "edit-role" ? "Edit Role" : "Add Role"}
         </h1>
         <Button
           className="bg-neutral-800 font-semibold text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"

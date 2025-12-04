@@ -42,7 +42,7 @@ const AddRole = () => {
           <div className="px-3 flex justify-end">
             <Button
               type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              className="w-fit bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               Submit
             </Button>

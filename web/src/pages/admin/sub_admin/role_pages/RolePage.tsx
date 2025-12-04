@@ -86,7 +86,7 @@ const RolePage: React.FC = () => {
         <div className="gap-2">
           <Button
             onClick={() => navigate(absoluteUrls.admin.home.add_role)}
-            className="w-fit mr-2 bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-fit mr-2 bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Add Role
           </Button>
