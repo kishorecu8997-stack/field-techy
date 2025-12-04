@@ -64,6 +64,7 @@ export default function AddSubAdmin() {
                 type="text"
                 placeholder="Enter Name"
                 required
+                alphabetOnly
                 rules={{ validate: (v: string) => validateName(v) }}
               />
               <PhoneInputField

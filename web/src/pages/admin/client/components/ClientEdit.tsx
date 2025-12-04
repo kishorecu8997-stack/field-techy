@@ -107,6 +107,7 @@ const ClientEdit: React.FC = () => {
             name="contactPersonName"
             placeholder="Enter Contact Person Name"
             required
+            alphabetOnly
             rules={{ validate: (v: string) => validateName(v) }}
           />
 
