@@ -79,7 +79,6 @@ export default function EditEngineer() {
   };
 
   const handleupdateConfirmation = async (data: EngineerFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Update Engineer",
       body: "Are you sure you want to update this details?",
@@ -93,9 +92,8 @@ export default function EditEngineer() {
           label: "Update",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Engineer updated successfully!");

@@ -67,7 +67,6 @@ const CorporateClientForm: React.FC = () => {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: ClientFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Client",
       body: "Are you sure you want to save this details?",
@@ -81,9 +80,8 @@ const CorporateClientForm: React.FC = () => {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Client information saved successfully!");
@@ -96,10 +94,6 @@ const CorporateClientForm: React.FC = () => {
     });
   };
 
-  /**
-   * Handles the "Save" button click.
-   * It triggers validation for the entire form. If valid, it simulates form submission, displays a success toast, and resets the form.
-   */
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {

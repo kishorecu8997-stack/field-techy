@@ -39,7 +39,6 @@ export default function EditCategory() {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: CategoryFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Update Category",
       body: "Are you sure you want to update this details?",
@@ -53,9 +52,8 @@ export default function EditCategory() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Job category updated successfully!");

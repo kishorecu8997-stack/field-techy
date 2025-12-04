@@ -16,15 +16,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
  * Form state and validation are managed using react-hook-form.
  */
 const CorporateClientEditForm: React.FC = () => {
-  /**
-   * State to manage the currently active tab in the form.
-   * @type {string}
-   */
   const [activeTab, setActiveTab] = useState("Basic Information");
-  /** State to indicate if the form is currently being submitted. */
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  /** react-hook-form methods for form management and validation. */
   const methods = useForm<ClientFormData>({
     defaultValues: {
       profileImage: null,
@@ -47,10 +41,6 @@ const CorporateClientEditForm: React.FC = () => {
 
   const { trigger } = methods;
 
-  /**
-   * Handles the "Next" button click.
-   * Validates the fields in the "Basic Information" tab and moves to the "Documents" tab if validation is successful.
-   */
   const handleNext = async () => {
     let isValid = false;
 
@@ -78,7 +68,6 @@ const CorporateClientEditForm: React.FC = () => {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: ClientFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Update Client",
       body: "Are you sure you want to update this details?",
@@ -92,9 +81,8 @@ const CorporateClientEditForm: React.FC = () => {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Client information updated successfully!");
@@ -107,10 +95,6 @@ const CorporateClientEditForm: React.FC = () => {
     });
   };
 
-  /**
-   * Handles the "Save" button click.
-   * Triggers validation for the entire form. If valid, it simulates form submission, shows a success toast, and resets the form.
-   */
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
@@ -128,9 +112,6 @@ const CorporateClientEditForm: React.FC = () => {
     }
   };
 
-  /**
-   * Defines the tabs for the AdminTabComponent.
-   */
   const tabs = [
     {
       label: "Basic Information",
@@ -141,7 +122,7 @@ const CorporateClientEditForm: React.FC = () => {
       content: <ClientDocuments />,
     },
   ];
-  /** Determines if the current active tab is the last tab ("Documents"). */
+
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">

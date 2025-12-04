@@ -56,7 +56,6 @@ const ToggleStatus: React.FC<ToggleStatusProps> = ({
  *
  * @returns {JSX.Element} A responsive row of privilege toggle cards for engineer management.
  */
-
 export default function Previlege() {
   const [topRated, setTopRated] = React.useState(true);
   const [blacklist, setBlacklist] = React.useState(true);

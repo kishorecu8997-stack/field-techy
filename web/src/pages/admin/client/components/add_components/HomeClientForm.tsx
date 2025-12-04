@@ -16,15 +16,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
  * This component uses react-hook-form for form state management and validation.
  */
 const HomeClientForm: React.FC = () => {
-  /**
-   * State to manage the currently active tab in the form.
-   * @type {string}
-   */
   const [activeTab, setActiveTab] = useState("Basic Information");
-  /** State to indicate if the form is currently being submitted. */
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  /** react-hook-form methods for form management and validation. */
   const methods = useForm<ClientFormData>({
     defaultValues: {
       profileImage: null,
@@ -46,11 +40,6 @@ const HomeClientForm: React.FC = () => {
   });
 
   const { trigger } = methods;
-
-  /**
-   * Handles the "Next" button click.
-   * It validates the fields in the "Basic Information" tab and proceeds to the "Documents" tab if validation passes.
-   */
   const handleNext = async () => {
     let isValid = false;
 
@@ -78,7 +67,6 @@ const HomeClientForm: React.FC = () => {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: ClientFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Client",
       body: "Are you sure you want to save this details?",
@@ -92,9 +80,8 @@ const HomeClientForm: React.FC = () => {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+             console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Client information saved successfully!");
@@ -107,10 +94,6 @@ const HomeClientForm: React.FC = () => {
     });
   };
 
-  /**
-   * Handles the "Save" button click.
-   * It triggers validation for the entire form. If valid, it simulates form submission, displays a success toast, and resets the form.
-   */
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
@@ -128,9 +111,6 @@ const HomeClientForm: React.FC = () => {
     }
   };
 
-  /**
-   * Defines the tabs for the AdminTabComponent.
-   */
   const tabs = [
     {
       label: "Basic Information",
@@ -141,7 +121,7 @@ const HomeClientForm: React.FC = () => {
       content: <ClientDocuments />,
     },
   ];
-  /** Determines if the current active tab is the last tab ("Documents"). */
+
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">

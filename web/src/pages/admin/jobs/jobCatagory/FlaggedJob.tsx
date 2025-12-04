@@ -38,8 +38,7 @@ const FlaggedJob: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting job:", job.id);
             // TODO: call your delete API here
             // await deleteJob(job.id);
