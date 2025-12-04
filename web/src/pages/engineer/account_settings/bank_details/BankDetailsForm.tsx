@@ -39,6 +39,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           label="Name"
           placeholder="Name"
           required
+          alphabetOnly
           rules={{             
             validate: (value) => validateName(value),
           }}

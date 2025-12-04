@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Controller,
   useFormContext,
@@ -17,7 +18,8 @@ interface InputFieldProps {
   inputClassName?: string;
   showValidationCheck?: boolean;
   disabled?: boolean;
-  onChange?: (value: string) => void;
+  // optional prop to enforce alphabet-only rule
+  alphabetOnly?: boolean;
 }
 
 /**
@@ -28,6 +30,8 @@ interface InputFieldProps {
  * Shows a * if required.
  * Supports left icons and custom styling.
  */
+ 
+
 export const InputField = ({
   name,
   label,
@@ -38,12 +42,14 @@ export const InputField = ({
   isShowLabel = true,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
+  inputClassName =
+    "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   showValidationCheck = false,
-  disabled = false, // Added disabled default to false
-  onChange,
+  disabled = false,
+  alphabetOnly = false,
 }: InputFieldProps) => {
   const { control } = useFormContext();
+  const [attemptedInvalid, setAttemptedInvalid] = useState(false);
 
   // Build required validation message
   let requiredMessage: string | false = false;
@@ -64,7 +70,16 @@ export const InputField = ({
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "Please enter a valid email address",
-      ...rules?.pattern, // merge with custom pattern if provided
+      ...rules?.pattern,
+    };
+  }
+
+  // Add alphabet-only validation
+  if (alphabetOnly) {
+    validationRules.validate = (value: string) => {
+      if (!value || value.trim() === "") return requiredMessage || "This field is required.";
+      if (/[^a-zA-Z]/.test(value)) return "This field may contain letters only. Numbers are not allowed.";
+      return true;
     };
   }
 
@@ -72,8 +87,7 @@ export const InputField = ({
     <div className={containerClassName}>
       {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label}{" "}
-          {required !== false && <span className="text-red-600">*</span>}
+          {label} {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -91,16 +105,23 @@ export const InputField = ({
               <input
                 {...field}
                 id={name}
-                // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""
-                }`}
+                } ${invalid ? "border-red-500 dark:border-red-400" : ""}`}
                 onChange={(e) => {
-                  field.onChange(e); // 🔹 update RHF form state
-                  onChange?.(e.target.value); // 🔹 call custom change handler if provided
+                  let value = e.target.value;
+
+                  // alphabet-only sanitization
+                  if (alphabetOnly) {
+                    const sanitized = value.replace(/[^a-zA-Z]/g, "");
+                    setAttemptedInvalid(sanitized !== value); // show inline error
+                    value = sanitized;
+                  }
+
+                  field.onChange(value);
                 }}
               />
               {showValidationCheck && isDirty && !invalid && (
@@ -109,11 +130,22 @@ export const InputField = ({
                 </div>
               )}
             </div>
+
+            {/* Inline error from attempted invalid input */}
+            {alphabetOnly && attemptedInvalid && (
+              <p className="mt-1 text-sm text-red-600" role="alert">
+                This field may contain letters only. Numbers are not allowed.
+              </p>
+            )}
+
+            {/* Inline error from RHF validation */}
             {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+              <p className="mt-1 text-sm text-red-600 dark:text-red-500" role="alert">
                 {error.message}
               </p>
             )}
+
+          
           </>
         )}
       />
