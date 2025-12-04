@@ -45,6 +45,7 @@ const availableBalance = 1000;
             name="amount"
             label="Amount"
             required
+            allowedCharacters="currency"
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);

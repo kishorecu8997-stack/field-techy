@@ -48,6 +48,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           label="Account Number"
           placeholder="Account number"
           required
+          allowedCharacters="numbers"
           rules={{ validate: validateAccNumber }}
          
         />
@@ -56,6 +57,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           label="IBAN"
           placeholder="IBAN"
           required
+        allowedCharacters="alphanumeric"  
           rules={{ validate: validateIBANForCountrywise }}
         />
         <InputField
@@ -63,6 +65,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           label="Swift Code"
           placeholder="SWIFT code"
           required
+          allowedCharacters="alphanumeric"
           rules={{ validate: validateSWIFTBank }}
         />
       </div>

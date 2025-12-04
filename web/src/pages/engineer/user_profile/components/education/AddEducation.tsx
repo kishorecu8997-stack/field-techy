@@ -99,6 +99,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           name="passingYear"
           placeholder="Passing Year"
           required
+          allowedCharacters="numbers"
           rules={{ validate: (v: string) => validatePassingYear(v) }}
         />
       </div>
