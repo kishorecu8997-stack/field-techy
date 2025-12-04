@@ -33,7 +33,7 @@ export default function ManageSubAdmin() {
   const columns: Column<UserItem>[] = [
     {
       key: "id",
-      label: "Sr. No.",
+      label: "Sr.No",
       renderCell: (row: UserItem) => <span>{row.id}</span>,
     },
     {

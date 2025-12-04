@@ -36,7 +36,7 @@ export default function Faq() {
   const [faqMode, setFaqMode] = useState<"Add" | "Edit">("Add");
 
   const columns: Column<FaqItem>[] = [
-    { key: "id", label: "sr. No" },
+    { key: "id", label: "Sr.No" },
     { key: "question", label: "Question" },
     { key: "answer", label: "Answer" },
     {

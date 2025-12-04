@@ -22,7 +22,7 @@ import { absoluteUrls } from "@/config/urls";
  * @returns {JSX.Element} The rendered personal details form.
  */
 export default function PersonalDetails() {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const methods = useForm<ProfileFormData>({
     defaultValues: {
       name: "Kevin Smith",
@@ -33,7 +33,7 @@ export default function PersonalDetails() {
   });
   const handleSubmit = () => {
     toast.success("Profile Updated Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+    navigate(absoluteUrls.admin.home.dashbaord);
   };
 
   return (
@@ -41,9 +41,9 @@ export default function PersonalDetails() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
-        <div className="mb-6 mt-2 w-fit">
+        <div className="mb-4 w-fit">
           <ImageUploaderField label="Profile Image" name="profileImage" />
         </div>
         <div className="flex gap-4 w-full">

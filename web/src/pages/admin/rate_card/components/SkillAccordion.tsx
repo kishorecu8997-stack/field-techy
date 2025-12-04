@@ -41,7 +41,7 @@ const SkillAccordion: React.FC<{
           <Button
             variant="solid"
             type="button"
-            onClick={() => console.log("click")}
+            // onClick={() => console.log("click")}
           >
             Save
           </Button>

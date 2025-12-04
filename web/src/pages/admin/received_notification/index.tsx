@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 const columns: Column<ReceivedNotificationProps>[] = [
   {
     key: "id",
-    label: "Sr. No",
+    label: "Sr.No",
     renderCell: (row) => <span>{row.id}</span>,
   },
   {

@@ -13,7 +13,7 @@ import React from "react";
  */
 const RatingAndReviewTable: React.FC = () => {
   const columns: Column<ClientReviewProps>[] = [
-    { key: "id", label: "Sr. No." },
+    { key: "id", label: "Sr.No" },
     {
       key: "name",
       label: "Client Details",

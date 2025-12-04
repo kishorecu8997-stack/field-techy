@@ -20,7 +20,7 @@ const RejectedTable: React.FC = () => {
   const columns: Column<TransactionRequest>[] = [
     {
       key: "sno",
-      label: "S. No",
+      label: "Sr.No",
     },
     {
       key: "clientDetails",
