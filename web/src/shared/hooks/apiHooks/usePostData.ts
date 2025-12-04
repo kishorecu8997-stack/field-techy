@@ -1,11 +1,13 @@
 import axios from "axios";
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface UsePostDataProps {
   url: string;
   urlType?: "prod" | "demo";
   pathParams?: Record<string, string | number>;
   queryParams?: Record<string, string | number>;
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
 }
 
 interface PostResponse<T> {
@@ -42,13 +44,28 @@ function formatUrl(
   return queryString ? `${withParams}?${queryString}` : withParams;
 }
 
-export const usePostData = <T,>({
+/*
+ * usePostData
+ *
+ * A custom hook for making POST requests to a specified URL.
+ *
+ * @param {UsePostDataProps} props - The props for the hook.
+ * @param {string} props.url - The URL to make the POST request to.
+ * @param {string} [props.urlType="prod"] - The type of URL to use (prod or demo).
+ * @param {Record<string, string | number>} [props.pathParams={}] - The path parameters for the URL.
+ * @param {Record<string, string | number>} [props.queryParams={}] - The query parameters for the URL.
+ * @param {(data: any) => void} [props.onSuccess] - A callback function to handle successful POST requests.
+ * @param {(error: any) => void} [props.onError] - A callback function to handle errors during POST requests.
+ * @returns {UsePostDataResult<T>} The result of the POST request.
+ */
+export const usePostData = <T>({
   url,
   urlType = "prod",
   pathParams = {},
   queryParams = {},
+  onSuccess,
+  onError,
 }: UsePostDataProps): UsePostDataResult<T> => {
-  
   const [data, setData] = useState<T | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
@@ -103,6 +120,7 @@ export const usePostData = <T,>({
         setData(response.data.data ?? null);
         setMessage(response.data.message ?? null);
         setSuccess(response.data.success);
+        onSuccess?.(response.data.data);
       } catch (err: any) {
         if (axios.isCancel(err)) return;
 
@@ -113,6 +131,7 @@ export const usePostData = <T,>({
         });
 
         setSuccess(false);
+        onError?.(err);
       } finally {
         setLoading(false);
       }

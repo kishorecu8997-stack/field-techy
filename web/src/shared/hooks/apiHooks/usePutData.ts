@@ -34,19 +34,32 @@ function formatUrl(
   }, url);
 
   const q = new URLSearchParams(
-    Object.fromEntries(Object.entries(queryParams).map(([k, v]) => [k, String(v)]))
+    Object.fromEntries(
+      Object.entries(queryParams).map(([k, v]) => [k, String(v)])
+    )
   ).toString();
 
   return q ? `${p}?${q}` : p;
 }
 
-export const usePutData = <T,>({
+/*
+ * usePutData
+ *
+ * A custom hook for making PUT requests to a specified URL.
+ *
+ * @param {UsePutDataProps} props - The props for the hook.
+ * @param {string} props.url - The URL to make the PUT request to.
+ * @param {string} [props.urlType="prod"] - The type of URL to use (prod or demo).
+ * @param {Record<string, string | number>} [props.pathParams={}] - The path parameters for the URL.
+ * @param {Record<string, string | number>} [props.queryParams={}] - The query parameters for the URL.
+ * @returns {UsePutDataResult<T>} The result of the PUT request.
+ */
+export const usePutData = <T>({
   url,
   urlType = "prod",
   pathParams = {},
   queryParams = {},
 }: UsePutDataProps): UsePutDataResult<T> => {
-
   const [data, setData] = useState<T | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);

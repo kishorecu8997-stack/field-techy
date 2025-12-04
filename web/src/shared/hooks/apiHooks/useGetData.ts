@@ -37,6 +37,19 @@ function formatUrl(
   return queryString ? `${urlWithPath}?${queryString}` : urlWithPath;
 }
 
+/*
+ * useGetData
+ *
+ * A custom hook for making GET requests to a specified URL.
+ *
+ * @param {UseGetDataProps} props - The props for the hook.
+ * @param {string} props.url - The URL to make the GET request to.
+ * @param {boolean} [props.isEnabled=true] - Whether the request is enabled.
+ * @param {Record<string, string | number>} [props.pathParams={}] - The path parameters for the URL.
+ * @param {Record<string, string | number>} [props.queryParams={}] - The query parameters for the URL.
+ * @param {string} [props.urlType="prod"] - The type of URL to use (prod or demo).
+ * @returns {UseGetDataResult<T>} The result of the GET request.    
+ */
 export const useGetData = <T,>({
   url,
   isEnabled = true,
