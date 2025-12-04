@@ -168,6 +168,7 @@ const ClientPersonalInformation: React.FC = () => {
           type="text"
           placeholder="Postal Code"
           required
+          allowedCharacters="alphanumeric"
           rules={{
             validate: (value: string) =>
               validateZipcode(
@@ -191,6 +192,7 @@ const ClientPersonalInformation: React.FC = () => {
           type="text"
           placeholder="VAT Registration Number"
           required
+          allowedCharacters="alphanumeric"
           label="VAT Registration Number"
           rules={{ validate: (v: string) => validateVatNumber(v) }}
         />

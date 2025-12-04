@@ -106,6 +106,7 @@ export default function BasicInformation() {
             placeholder="Enter Price per/hour"
             required
             rules={{ validate: (v: string) => validatePricePerHour(v) }}
+          
           />
         </div>
       </div>

@@ -126,6 +126,7 @@ const JobPostForm: React.FC = () => {
                 required
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
+               
                 rules={{
                   validate: (value) => validateCurrentOrFutureDate(value),
                 }}
@@ -153,6 +154,7 @@ const JobPostForm: React.FC = () => {
                 placeholder="e.g. 8 hours"
                 inputClassName={inputClass()}
                 required
+                allowedCharacters="numbers"
                 rules={{ validate: (v: string) => validateJobTimePeriod(v) }}
               />
             </div>
@@ -260,6 +262,7 @@ const JobPostForm: React.FC = () => {
                   }),
               }}
               required
+              allowedCharacters="currency"
             />
           </div>
         </FormSection>

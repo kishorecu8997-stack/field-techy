@@ -49,6 +49,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           placeholder="Account number"
           required
           rules={{ validate: validateAccNumber }}
+         
         />
         <InputField
           name="iban"

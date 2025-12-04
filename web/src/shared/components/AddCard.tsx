@@ -99,6 +99,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               placeholder="9999 9999 9999 9999"
               rules={{ validate: (v: string) => cardNumberValidation(v) }}
               required
+              
             />
           </div>
 
@@ -119,6 +120,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
                 required
+                
               />
             </div>
           </div>

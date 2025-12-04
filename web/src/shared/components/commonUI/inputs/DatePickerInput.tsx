@@ -110,8 +110,9 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
         // Handle manual input
         const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const text = e.target.value;
-          setInputValue(text);
-          const parsed = parseDate(text);
+          const sanitized = text.replace(/[^0-9/]/g, "");
+          setInputValue(sanitized);
+          const parsed = parseDate(sanitized);
           if (parsed && isDateValid(parsed)) {
             onChange(parsed);
           } else if (text === "") {

@@ -81,8 +81,10 @@ const AddFund = () => {
             label="Amount"
             name="amount"
             placeholder="Enter Amount e.g., $10"
-            required
+  z  
+  ///           allowedCharacters="currency"
             rules={{ validate: (v: string) => validateAmount(v) }}
+          
           />
           <div className="space-y-3">
             <PaymentMethod
