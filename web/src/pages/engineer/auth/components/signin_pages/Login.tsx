@@ -19,6 +19,7 @@ import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -42,6 +43,13 @@ const Login = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { goToHome } = useHomeNavigation();
+  const { mutate } = usePostData({
+    url: "/u/api/v1/usr/signIn",
+    onSuccess: (data) => {
+      console.log(data);
+      setIsOpen(true);
+    },
+  });
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
@@ -52,8 +60,12 @@ const Login = ({
     },
   });
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = async (data: LoginFormData) => {
+    await mutate({
+      email: data.email,
+      password: data.password,
+      rememberMe: data.rememberMe,
+    });
   };
 
   return (
