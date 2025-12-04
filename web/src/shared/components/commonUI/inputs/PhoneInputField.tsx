@@ -65,8 +65,9 @@ export const PhoneInputField = ({
     if (!/^\d+$/.test(phoneNumber)) {
       return "Mobile number must contain only digits (0-9)";
     }
-    
+
     const { validationKey } = selectedCountry;
+
     if (validationKey === "india") {
       if (phoneNumber.length !== 10) {
         return "India mobile number must be exactly 10 digits long";
@@ -75,12 +76,54 @@ export const PhoneInputField = ({
         return "India mobile numbers must start with 6, 7, 8, or 9";
       }
     } else if (validationKey === "uk") {
-      // ✅ CORRECTED: After +44, UK mobile = 10 digits, starting with 7, 8, or 9
       if (phoneNumber.length !== 10) {
         return "UK mobile number must be exactly 10 digits long";
       }
       if (!/^[789]/.test(phoneNumber)) {
         return "UK mobile numbers must start with 7, 8, or 9";
+      }
+    } else if (validationKey === "australia") {
+      if (phoneNumber.length !== 9) {
+        return "Australia mobile number must be exactly 9 digits long";
+      }
+    } else if (validationKey === "brazil") {
+      if (phoneNumber.length !== 11) {
+        return "Brazil mobile number must be exactly 11 digits long";
+      }
+    } else if (validationKey === "china") {
+      if (phoneNumber.length !== 11) {
+        return "China mobile number must be exactly 11 digits long";
+      }
+    } else if (validationKey === "egypt") {
+      if (phoneNumber.length !== 10) {
+        return "Egypt mobile number must be exactly 10 digits long";
+      }
+    } else if (validationKey === "france") {
+      if (phoneNumber.length !== 9) {
+        return "France mobile number must be exactly 9 digits long";
+      }
+      if (!/^[67]/.test(phoneNumber)) {
+        return "France mobile numbers must start with 6 or 7";
+      }
+    } else if (validationKey === "germany") {
+      if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+        return "Germany mobile number must be 10 to 11 digits long";
+      }
+    } else if (validationKey === "japan") {
+      if (phoneNumber.length !== 10) {
+        return "Japan mobile number must be exactly 10 digits long";
+      }
+    } else if (validationKey === "spain") {
+      if (phoneNumber.length !== 9) {
+        return "Spain mobile number must be exactly 9 digits long";
+      }
+    } else if (validationKey === "usa") {
+      if (phoneNumber.length !== 10) {
+        return "United States mobile number must be exactly 10 digits long";
+      }
+    } else if (validationKey === "uae") {
+      if (phoneNumber.length !== 9) {
+        return "UAE mobile number must be exactly 9 digits long";
       }
     }
 
@@ -111,6 +154,38 @@ export const PhoneInputField = ({
           ).split(" ");
           const numberValue = rest.join(" ");
 
+          const selectedCountry = PHONE_COUNTRIES.find(
+            (c) => c.code === countryCode
+          );
+
+          let maxLength = 20;
+
+          if (selectedCountry) {
+            if (
+              selectedCountry.validationKey === "india" ||
+              selectedCountry.validationKey === "uk" ||
+              selectedCountry.validationKey === "japan" ||
+              selectedCountry.validationKey === "egypt" ||
+              selectedCountry.validationKey === "usa"
+            ) {
+              maxLength = 10;
+            } else if (
+              selectedCountry.validationKey === "australia" ||
+              selectedCountry.validationKey === "uae" ||
+              selectedCountry.validationKey === "spain" ||
+              selectedCountry.validationKey === "france"
+            ) {
+              maxLength = 9;
+            } else if (
+              selectedCountry.validationKey === "brazil" ||
+              selectedCountry.validationKey === "china"
+            ) {
+              maxLength = 11;
+            } else if (selectedCountry.validationKey === "germany") {
+              maxLength = 11;
+            }
+          }
+
           return (
             <>
               <div className="flex w-full rounded-md border border-gray-300 dark:border-gray-600">
@@ -128,7 +203,7 @@ export const PhoneInputField = ({
                   disabled={typeof disabled !== "undefined" ? disabled : false}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    if (/^\d*$/.test(newValue)) {
+                    if (/^\d*$/.test(newValue) && newValue.length <= maxLength) {
                       field.onChange(`${countryCode} ${newValue}`);
                     }
                   }}
