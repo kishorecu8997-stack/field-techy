@@ -18,11 +18,17 @@ import {
   OccurrenceFields,
   RepeatByFields,
   type PostAJobFieldsProps,
+  type PostOption,
 } from "../types";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
-import type { PostOption } from "./TalentSection";
 
+/**
+ * PostJobPage Component
+ * The main page for posting a job.
+ * It includes a form for entering job details, a dropdown for selecting job posting options, and a button to submit the form.
+ * @returns {JSX.Element} The rendered PostJobPage component.   
+ */
 const PostJobPage = () => {
   const [isDisable, setIsDisable] = useState(false);
   const { showPopup } = usePopupStore();

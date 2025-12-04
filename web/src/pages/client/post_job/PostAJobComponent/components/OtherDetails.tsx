@@ -1,3 +1,4 @@
+import { validateDescription } from "@/pages/engineer/home/validation";
 import {
   CheckboxInput,
   InputField,
@@ -9,8 +10,13 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
-import { validateDescription } from "@/pages/engineer/home/validation";
 
+/*
+ *  Other Details
+ *    - Displays the section for other details
+ * @returns {JSX.Element} The rendered Other Details
+ * @constructor
+ */
 const OtherDetails = ({ isDisable }: { isDisable: boolean }) => {
   const { currentLocation } = usePostAJobStore();
   const ctx = useFormContext();

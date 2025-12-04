@@ -176,7 +176,7 @@ const FilterPanel: React.FC<{
         </h3>
         <div className="flex flex-wrap gap-2">
           {locationOptions.map((option) => (
-            <button
+            <div
               key={option}
               onClick={() =>
                 toggleFilter(selectedLocation, option, setSelectedLocation)
@@ -188,7 +188,7 @@ const FilterPanel: React.FC<{
               }`}
             >
               {option}
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -200,7 +200,7 @@ const FilterPanel: React.FC<{
         </h3>
         <div className="flex flex-wrap gap-2">
           {categoryOptions.map((option) => (
-            <button
+            <div
               key={option}
               onClick={() =>
                 toggleFilter(selectedCategory, option, setSelectedCategory)
@@ -212,7 +212,7 @@ const FilterPanel: React.FC<{
               }`}
             >
               {option}
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -224,7 +224,7 @@ const FilterPanel: React.FC<{
         </h3>
         <div className="flex flex-wrap gap-2">
           {ratingOptions.map((rating) => (
-            <button
+            <div
               key={rating}
               onClick={() => toggleRating(rating)}
               className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
@@ -234,7 +234,7 @@ const FilterPanel: React.FC<{
               }`}
             >
               {rating} Star
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -273,7 +273,7 @@ const FilterPanel: React.FC<{
         </h3>
         <div className="flex flex-wrap gap-2">
           {budgetOptions.map((option) => (
-            <button
+            <div
               key={option}
               onClick={() => {
                 const type = option.toLowerCase().includes("hourly")
@@ -293,7 +293,7 @@ const FilterPanel: React.FC<{
               }`}
             >
               {option}
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -305,7 +305,7 @@ const FilterPanel: React.FC<{
         </h3>
         <div className="flex flex-wrap gap-2">
           {skillOptions.slice(0, 9).map((skill) => (
-            <button
+            <div
               key={skill}
               onClick={() =>
                 toggleFilter(selectedSkills, skill, setSelectedSkills)
@@ -317,12 +317,12 @@ const FilterPanel: React.FC<{
               }`}
             >
               {skill}
-            </button>
+            </div>
           ))}
         </div>
-        <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mt-2 cursor-pointer">
+        <div className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mt-2 cursor-pointer">
           View All
-        </button>
+        </div>
       </div>
     </div>
   );

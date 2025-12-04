@@ -3,6 +3,12 @@ import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import MapSearch from "@/shared/components/MapWithSearch";
 import SectionHeader from "../SectionHeader";
 
+/*
+ *  Location
+ *    - Displays a form to add location
+ * @returns {JSX.Element} The rendered Location
+ * @constructor
+ */
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div>

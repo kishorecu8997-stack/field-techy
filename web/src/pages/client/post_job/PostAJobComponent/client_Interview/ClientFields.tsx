@@ -7,6 +7,14 @@ import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
 
+/*
+ *  Client Fields
+ *    - Displays a form to add client details
+ *    - Uses react-hook-form for form state management
+ *    - Submits form data to the server
+ * @returns {JSX.Element} The rendered Client Fields
+ * @constructor
+ *  */
 const ClientFields = () => {
   const ctx = useFormContext();
 

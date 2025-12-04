@@ -1,4 +1,3 @@
-// src/components/ChatWindow/MessageBubble.tsx
 import React from "react";
 import type { ChatMessage } from "../types";
 
@@ -6,6 +5,15 @@ interface MessageBubbleProps {
   message: ChatMessage;
 }
 
+/*
+ * MessageBubble
+ *
+ * A component that displays a message bubble.
+ *
+ * @param {ChatMessage} message - The chat message object.
+ * @returns {JSX.Element} The rendered message bubble component.
+ * @constructor
+ */
 export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const isMe = message.from === "me";
 

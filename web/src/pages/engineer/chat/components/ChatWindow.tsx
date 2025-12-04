@@ -1,14 +1,14 @@
 // src/components/ChatWindow/ChatWindow.tsx
 import React from "react";
-import { MessageBubble } from "./MessageBubble";
 import type {
+  ChatMessage,
   ChatMode,
   Conversation,
-  ChatMessage,
   GroupConversation,
 } from "../types";
 import { ChatHeader } from "./ChatHeader";
 import { ChatInput } from "./ChatInput";
+import { MessageBubble } from "./MessageBubble";
 
 interface ChatWindowProps {
   mode: ChatMode;
@@ -16,6 +16,17 @@ interface ChatWindowProps {
   messages: ChatMessage[];
 }
 
+/*
+ * ChatWindow
+ *
+ * A component that displays a chat window with a header, input bar, and message bubbles.
+ *
+ * @param {ChatMode} mode - The current chat mode.
+ * @param {Conversation | null} conversation - The selected conversation.
+ * @param {ChatMessage[]} messages - The list of chat messages.
+ * @returns {JSX.Element} The rendered chat window component.
+ * @constructor
+ */
 export const ChatWindow: React.FC<ChatWindowProps> = ({
   mode,
   conversation,

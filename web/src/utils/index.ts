@@ -5,7 +5,7 @@ export function scrollToTop() {
   });
 }
 
-
+// Custom time formatter
 export function getDuration(startDate: string | Date, endDate: string | Date) {
   if (!startDate || !endDate) return "";
 
@@ -49,4 +49,25 @@ export const buildQuery = (params: Record<string, any>) => {
   });
 
   return query.toString();
+};
+
+
+export const to24 = (time: string) => {
+  if (!time) return "";
+  const [hhmm, period] = time.split(" ");
+  let [hour, minute] = hhmm.split(":").map(Number);
+
+  if (period === "PM" && hour !== 12) hour += 12;
+  if (period === "AM" && hour === 12) hour = 0;
+
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+};
+
+export const combineTo24 = (h: string, m: string, p: string) => to24(`${h}:${m} ${p}`);
+
+export const time24ToMinutes = (value24: string | null | undefined) => {
+  if (!value24) return null;
+  const [h, m] = value24.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return h * 60 + m;
 };

@@ -1,4 +1,5 @@
 // src/components/ChatWindow/ChatInput.tsx
+import { Button } from "@/shared/components/commonUI/Buttons";
 import React, { useRef, useState } from "react";
 import { FaMicrophoneAlt } from "react-icons/fa";
 
@@ -8,6 +9,20 @@ interface ChatInputProps {
   onStartVoiceMessage: () => void;
 }
 
+/*
+ * ChatInput
+ *
+ * A component that handles the chat input bar.
+ * It includes a text input field, a file upload button,
+ * a voice message button, and a send button.
+ *
+ * @param {ChatInputProps} props - The component props.
+ * @param {Function} props.onSend - A function to handle sending messages.
+ * @param {Function} props.onUploadFile - A function to handle file uploads.
+ * @param {Function} props.onStartVoiceMessage - A function to handle starting voice messages.
+ * @returns {JSX.Element} The rendered ChatInput component.
+ * @constructor
+ */
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSend,
   onUploadFile,
@@ -45,21 +60,21 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         `}
       >
         <div className="h-16 w-16 rounded-full bg-white shadow-lg flex items-center justify-center">
-          <button
+          <Button
             className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
           >
             📄
-          </button>
+          </Button>
         </div>
 
         <div className="h-16 w-16 rounded-full bg-white shadow-lg flex items-center justify-center">
-          <button
+          <Button
             className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
           >
             🖼️
-          </button>
+          </Button>
         </div>
       </div>
 

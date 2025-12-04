@@ -20,6 +20,12 @@ import {
 } from "../../types";
 import SectionHeader from "../SectionHeader";
 
+/*
+ *  Scheduling
+ *    - Displays a form to add scheduling
+ * @returns {JSX.Element} The rendered Scheduling
+ * @constructor
+ */
 const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const ctx = useFormContext();
   const watchOccurrence = ctx.watch("jobOccurrence");

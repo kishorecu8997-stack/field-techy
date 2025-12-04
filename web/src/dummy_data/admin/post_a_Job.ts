@@ -22,7 +22,7 @@ export const interviewerData: ClientFieldsTypes[] = [
 ];
 
 
-export const pointOfContact = [
+export const pointOfContactData = [
    {
     id: 1,
     firstName: "Ram",

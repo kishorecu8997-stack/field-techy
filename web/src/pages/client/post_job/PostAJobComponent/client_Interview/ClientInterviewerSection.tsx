@@ -1,25 +1,14 @@
 import React from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import type { MultiCardProps } from "../../types";
 
-export interface InfoItem {
-  label: string;
-  value: any;
-}
-
-export interface SectionData {
-  title: string;
-  items: InfoItem[];
-  onEdit: () => void;
-  onDelete: () => Promise<void>;
-}
-
-interface MultiCardProps {
-  sections: SectionData[];
-  addAction?: React.ReactNode; // common add component
-  title?: string;
-  disabled?: boolean;
-}
-
+/*
+ *  Client Interviewer Section
+ *    - Displays a section with client interviewer details
+ *    - Provides a button to edit the client interviewer
+ * @returns {JSX.Element} The rendered Client Interviewer Section
+ * @constructor 
+ */
 const ClientInterviewerSection: React.FC<MultiCardProps> = ({
   sections,
   addAction,

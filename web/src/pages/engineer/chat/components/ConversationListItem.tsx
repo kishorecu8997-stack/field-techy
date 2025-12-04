@@ -16,6 +16,17 @@ const getInitials = (name: string) =>
     .toUpperCase()
     .slice(0, 2);
 
+/*
+ * ConversationListItem
+ *
+ * A component that displays a list item for a conversation.
+ *
+ * @param {Conversation} conversation - The conversation object.
+ * @param {boolean} active - Whether the conversation is active.
+ * @param {() => void} onClick - A callback function to handle click events.
+ * @returns {JSX.Element} The rendered conversation list item component.
+ * @constructor
+ */
 export const ConversationListItem: React.FC<ConversationListItemProps> = ({
   conversation,
   active,
@@ -51,9 +62,7 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
                 {conversation.unreadCount}
               </div>
             ) : (
-              <span className="text-emerald-700 text-lg leading-none">
-                ✓✓
-              </span>
+              <span className="text-emerald-700 text-lg leading-none">✓✓</span>
             )}
           </div>
         </div>

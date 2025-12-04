@@ -248,7 +248,7 @@ export const sectionConfig: Record<
     component: EditClient,
     title: "Edit Client Interviewer Details",
   },
-  addPointOfContent: {
+  addPointOfContact: {
     component: AddPOC,
     title: "Add Point of Contact",
   },

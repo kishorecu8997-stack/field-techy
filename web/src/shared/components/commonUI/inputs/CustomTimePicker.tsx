@@ -1,10 +1,11 @@
+import { combineTo24, time24ToMinutes, to24 } from "@/utils";
+import { Clock } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { Clock } from "lucide-react";
 
 interface TimePickerProps {
   name: string;
@@ -20,28 +21,25 @@ interface TimePickerProps {
   inputClassName?: string;
 }
 
-/* -------- Helpers -------- */
-
-const to24 = (time: string) => {
-  if (!time) return "";
-  const [hhmm, period] = time.split(" ");
-  let [hour, minute] = hhmm.split(":").map(Number);
-
-  if (period === "PM" && hour !== 12) hour += 12;
-  if (period === "AM" && hour === 12) hour = 0;
-
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-};
-
-const combineTo24 = (h: string, m: string, p: string) => to24(`${h}:${m} ${p}`);
-
-const time24ToMinutes = (value24: string | null | undefined) => {
-  if (!value24) return null;
-  const [h, m] = value24.split(":").map(Number);
-  if (Number.isNaN(h) || Number.isNaN(m)) return null;
-  return h * 60 + m;
-};
-
+/*
+ * TimePicker Component
+ *
+ * This component is used to select a time from a dropdown menu.
+ *
+ * Props:
+ *
+ * - name (string): The name of the input field.
+ * - label (string): The label for the input field.
+ * - isShowLabel (boolean): Whether to show the label.
+ * - required (boolean): Whether the input field is required.
+ * - rules (RegisterOptions): The validation rules for the input field.
+ * - disabled (boolean): Whether the input field is disabled.
+ * - minTime (string): The minimum time that can be selected.
+ * - maxTime (string): The maximum time that can be selected.
+ * - onChange (function): A callback function that is called when the input field value changes.
+ * - containerClassName (string): The class name for the container element.
+ * - inputClassName (string): The class name for the input field.
+ */
 export const TimePicker: React.FC<TimePickerProps> = ({
   name,
   label = "Select Time",

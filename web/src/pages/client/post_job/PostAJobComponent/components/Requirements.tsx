@@ -13,7 +13,12 @@ import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
 import SectionHeader from "../SectionHeader";
-
+/*
+ *  Requirements
+ *    - Displays a form to add requirements
+ * @returns {JSX.Element} The rendered Requirements
+ * @constructor
+ */
 const Requirements = ({ isDisable }: { isDisable: boolean }) => {
   const { currentLocation } = usePostAJobStore();
 

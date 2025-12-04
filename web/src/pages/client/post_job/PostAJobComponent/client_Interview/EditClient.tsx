@@ -1,4 +1,3 @@
-import { interviewerData } from "@/dummy_data/admin/postAJob";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
@@ -6,6 +5,7 @@ import { toast } from "react-toastify";
 import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { interviewerData } from "@/dummy_data/admin/post_a_Job";
 
 /**
  *  Edit Client Page

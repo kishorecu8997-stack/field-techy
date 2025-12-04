@@ -4,6 +4,12 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { validateName } from "../../Validates";
 
+/*
+ *  Basic Info
+ *    - Displays a form to add basic info
+ * @returns {JSX.Element} The rendered Basic Info
+ * @constructor
+ */
 const BasicInfo = ({ isDisable }: { isDisable: boolean }) => {
   const { currentLocation } = usePostAJobStore();
 

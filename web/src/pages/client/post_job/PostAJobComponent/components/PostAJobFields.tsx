@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { interviewerData, pointOfContact } from "@/dummy_data/admin/postAJob";
+import { interviewerData, pointOfContactData } from "@/dummy_data/admin/post_a_Job";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientInterviewerCard from "../client_Interview/ClientInterviewerCard";
 import ClientInterviewerSection from "../client_Interview/ClientInterviewerSection";
-import PointOfContentPage from "../client_Interview/PointOfContentPage";
+import PointOfContactPage from "../client_Interview/PointOfContactPage";
 import BackFills from "./BackFills";
 import BasicInfo from "./BasicInfo";
 import Budget from "./Budget";
@@ -21,6 +21,12 @@ import OtherDetails from "./OtherDetails";
 import Requirements from "./Requirements";
 import SchedulingPage from "./SchedulingPage";
 
+/*
+ *  PostAJobFields
+ *    - Displays a form to add post a job details
+ * @returns {JSX.Element} The rendered PostAJobFields
+ * @constructor
+ */
 const PostAJobFields = ({
   setIsDisable,
   isDisable,
@@ -56,7 +62,7 @@ const PostAJobFields = ({
     });
   };
 
-  const pointOfContactSection = pointOfContact.map((item) => ({
+  const pointOfContactSection = pointOfContactData.map((item) => ({
     title: `Point of Contact`,
     items: [
       { label: "First Name", value: item.firstName },
@@ -156,7 +162,7 @@ const PostAJobFields = ({
           </>
         ) : (
           <>
-            {pointOfContact.length ? (
+            {pointOfContactData.length ? (
               <ClientInterviewerSection
                 disabled={isDisable}
                 sections={pointOfContactSection}
@@ -164,7 +170,7 @@ const PostAJobFields = ({
                 addAction={
                   <Button
                     onClick={() => {
-                      setActiveKey("addPointOfContent");
+                      setActiveKey("addPointOfContact");
                       setISOpenSidebar(true);
                     }}
                     className="rounded-full"
@@ -174,7 +180,7 @@ const PostAJobFields = ({
                 }
               />
             ) : (
-              <PointOfContentPage />
+              <PointOfContactPage />
             )}
           </>
         )}

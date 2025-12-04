@@ -1,11 +1,11 @@
+import { useState } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { FaChevronDown } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface TagOption {
   value: string;
@@ -28,6 +28,27 @@ interface TagSelectFieldProps {
   disabled?: boolean;
 }
 
+/*
+ * TagSelectField Component
+ *
+ * This component is used to select tags from a dropdown menu.
+ *
+ * Props:
+ *
+ * - name (string): The name of the input field.
+ * - label (string): The label for the input field.
+ * - isShowLabel (boolean): Whether to show the label.
+ * - placeholder (string): The placeholder text for the input field.
+ * - required (boolean): Whether the input field is required.
+ * - rules (RegisterOptions): The validation rules for the input field.
+ * - leftIcon (React.ReactNode): The left icon to be displayed next to the input field.
+ * - containerClassName (string): The class name for the container element.
+ * - inputClassName (string): The class name for the input field.
+ * - maxTags (number): The maximum number of tags that can be selected.
+ * - options (TagOption[]): The options for the dropdown menu.
+ * - isTagCloseable (boolean): Whether to show a close icon next to each tag.
+ * - disabled (boolean): Whether the input field is disabled. 
+ */
 export const TagSelectField = ({
   name,
   label,

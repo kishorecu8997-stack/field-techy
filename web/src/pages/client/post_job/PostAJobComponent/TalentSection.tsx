@@ -4,13 +4,14 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { useNavigate } from "react-router-dom";
 import JobPostDropdown from "./JobPostDropdown";
+import type { PostOption } from "../types";
 
-export interface PostOption {
-  label: string;
-  value: string | number;
-  action?: () => void;
-}
-
+/**
+ * TalentSection Component
+ * A section for displaying a dropdown menu for selecting job posting options.
+ * It includes a list of options for dedicated, dispatch, and scheduled job services.
+ * @returns {JSX.Element} The rendered TalentSection component.
+ */
 export default function TalentSection() {
   const navigate = useNavigate();
   const { setCurrentLocation } = usePostAJobStore();

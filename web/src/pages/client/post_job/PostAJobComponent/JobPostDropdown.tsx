@@ -1,7 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import type { PostOption } from "./TalentSection";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import type { PostOption } from "../types";
 
+/**
+ * JobPostDropdown Component
+ * A dropdown component for selecting a job posting option.
+ * @param {Object} props - The component props.
+ * @param {PostOption[]} props.options - The list of job posting options.
+ * @param {boolean} [props.showViewAll] - Whether to show the "View All" option.
+ * @param {string} [props.label] - The label for the dropdown button.
+ *
+ * @returns {JSX.Element} The rendered dropdown component.
+ */
 export default function JobPostDropdown({
   options,
   showViewAll = false,

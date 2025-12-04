@@ -91,7 +91,7 @@ export interface DetailSection {
 
 export interface InfoItem {
   label: string;
-  value: string;
+  value: any;
 }
 
 export interface CardProps {
@@ -149,4 +149,24 @@ export interface PostAJobFieldsProps {
   JobOccurrenceEndDate: Date | null;
   estimatedDuration: string;
   saveAsTemplate: boolean;
+}
+
+export interface PostOption {
+  label: string;
+  value: string | number;
+  action?: () => void;
+}
+
+export interface SectionData {
+  title: string;
+  items: InfoItem[];
+  onEdit: () => void;
+  onDelete: () => Promise<void>;
+}
+
+export interface MultiCardProps {
+  sections: SectionData[];
+  addAction?: React.ReactNode; // common add component
+  title?: string;
+  disabled?: boolean;
 }

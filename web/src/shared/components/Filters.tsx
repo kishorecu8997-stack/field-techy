@@ -1,18 +1,27 @@
-import React, { useState } from "react";
-import {
-  LOCATION_OPTIONS,
-  BUDGET_OPTIONS,
-  RATING_OPTIONS,
-} from "@/shared/libs/constants/filterOptions";
+import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
 import type {
   BudgetValue,
+  LocationValue,
   RatingValue,
 } from "@/shared/libs/constants/filterOptions";
-import type { LocationValue } from "@/shared/libs/constants/filterOptions";
-import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
+import {
+  BUDGET_OPTIONS,
+  LOCATION_OPTIONS,
+  RATING_OPTIONS,
+} from "@/shared/libs/constants/filterOptions";
+import React, { useState } from "react";
 import { usePopupStore } from "../store/popupStore";
 import { Button } from "./commonUI/Buttons";
 
+/*
+ * Filters
+ *
+ * A component that displays a filter panel for job listings.
+ * It includes options for location, budget, rating, experience, and skills.
+ *
+ * @returns {JSX.Element} The rendered filter panel component.
+ * @constructor
+ */
 const Filters: React.FC = () => {
   const [location, setLocation] = useState<LocationValue>("all");
   const [budget, setBudget] = useState<BudgetValue>("hourly");

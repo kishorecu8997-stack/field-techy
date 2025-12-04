@@ -1,6 +1,13 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
+/*
+ *  Client Interviewer Card
+ *    - Displays a card with client interviewer details
+ *    - Provides a button to edit the client interviewer
+ * @returns {JSX.Element} The rendered Client Interviewer Card
+ * @constructor 
+ */
 export default function ClientInterviewerCard() {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 

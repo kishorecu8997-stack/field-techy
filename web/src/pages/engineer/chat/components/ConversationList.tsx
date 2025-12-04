@@ -10,6 +10,18 @@ interface ConversationListProps {
   onSelectConversation: (id: string) => void;
 }
 
+/*
+ * ConversationList
+ *
+ * A component that displays a list of conversations.
+ *
+ * @param {ChatMode} mode - The current chat mode.
+ * @param {Conversation[]} conversations - The list of conversations.
+ * @param {string | null} selectedConversationId - The ID of the selected conversation.
+ * @param {(id: string) => void} onSelectConversation - A callback function to handle conversation selection.
+ * @returns {JSX.Element} The rendered conversation list component.
+ * @constructor
+ */
 export const ConversationList: React.FC<ConversationListProps> = ({
   conversations,
   selectedConversationId,

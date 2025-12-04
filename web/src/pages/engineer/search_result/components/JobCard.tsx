@@ -52,7 +52,7 @@ const JobCard: React.FC<{
 
         {showBookmark && (
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <button
+            <div
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -65,7 +65,7 @@ const JobCard: React.FC<{
               ) : (
                 <icons.bookmark className="h-4 w-4 flex-shrink-0 " />
               )}
-            </button>
+            </div>
             <span>{job.postedTime}</span>
           </div>
         )}

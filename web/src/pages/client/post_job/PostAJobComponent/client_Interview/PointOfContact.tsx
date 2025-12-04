@@ -5,7 +5,15 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/shared/libs/utils";
 import { validateEmail } from "@/utils/validate";
 
-const ClientFields = () => {
+/*
+ *  Point of Contact
+ *    - Displays a form to add point of Contact
+ *    - Uses react-hook-form for form state management
+ *    - Submits form data to the server
+ * @returns {JSX.Element} The rendered Point of Contact
+ * @constructor
+ */
+const PointOfContact = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col overflow-auto flex-grow gap-2">
@@ -52,4 +60,4 @@ const ClientFields = () => {
   );
 };
 
-export default ClientFields;
+export default PointOfContact;

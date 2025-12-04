@@ -1,16 +1,24 @@
-import { pointOfContact } from "@/dummy_data/admin/postAJob";
+import { pointOfContactData } from "@/dummy_data/admin/post_a_Job";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { pointOfContentTypes } from "../../types";
-import PointOfContent from "./PointOfContent";
+import PointOfContact from "./PointOfContact";
 import { usePopupStore } from "@/shared/store/popupStore";
 
+/*
+ *  Edit Point of Contact Page
+ *    - Displays a form to edit point of Contact
+ *    - Uses react-hook-form for form state management
+ *    - Submits form data to the server
+ * @returns {JSX.Element} The rendered Edit Point of Contact page
+ * @constructor
+ */
 const EditPOC = () => {
   const { selectedId } = useDrawerStore();
   const { showPopup } = usePopupStore();
-  const value = pointOfContact.find((item) => item.id === selectedId);
+  const value = pointOfContactData.find((item) => item.id === selectedId);
 
   const formCtx = useForm<pointOfContentTypes>({
     defaultValues: {
@@ -52,7 +60,7 @@ const EditPOC = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
-      <PointOfContent />
+      <PointOfContact />
     </FormContainer>
   );
 };

@@ -8,6 +8,16 @@ interface ChatHeaderProps {
   group: GroupConversation | null;
 }
 
+/*
+ * ChatHeader
+ *
+ * A component that displays a header for the chat window.
+ *
+ * @param {Conversation} conversation - The selected conversation.
+ * @param {GroupConversation | null} group - The group conversation if applicable.
+ * @returns {JSX.Element} The rendered chat header component.
+ * @constructor
+ */
 export const ChatHeader: React.FC<ChatHeaderProps> = ({
   conversation,
   group,

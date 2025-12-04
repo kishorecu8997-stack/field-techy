@@ -67,7 +67,7 @@ export default function AllowAccessPopup({
           </Button>
 
           {/* Deny Location */}
-          <button
+          <Button
             type="button"
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
@@ -77,7 +77,7 @@ export default function AllowAccessPopup({
             }}
           >
             Deny Access
-          </button>
+          </Button>
         </div>
       ) : (
         /* STEP 2 — NOTIFICATION PERMISSION */
@@ -108,7 +108,7 @@ export default function AllowAccessPopup({
           </Button>
 
           {/* Deny Notification */}
-          <button
+          <Button
             type="button"
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
@@ -118,7 +118,7 @@ export default function AllowAccessPopup({
             }}
           >
             Deny Access
-          </button>
+          </Button>
         </div>
       )}
     </Popup>
