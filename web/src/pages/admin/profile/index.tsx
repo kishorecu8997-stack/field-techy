@@ -32,7 +32,7 @@ export default function Profile() {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(absoluteUrls.admin.home.dashbaord)}
+          onClick={() => navigate(absoluteUrls.admin.home.dashboard)}
         >
           Back
         </Button>

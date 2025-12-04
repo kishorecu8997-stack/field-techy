@@ -65,7 +65,7 @@ const ManageEngineer: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: `${status.toLocaleLowerCase() === "approve" ? "primary" : "danger"}`,
+          variant: status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);

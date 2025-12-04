@@ -84,14 +84,19 @@ export const SelectField = ({
     let parent = buttonRef.current.parentElement;
     while (parent && parent !== document.body) {
       const style = window.getComputedStyle(parent);
-      if (
-        style.overflowY === "auto" ||
-        style.overflowY === "scroll" ||
-        (style.maxHeight && style.maxHeight !== "none")
-      ) {
+      const isOverflowingY =
+        (style.overflowY === "auto" || style.overflowY === "scroll") &&
+        parent.scrollHeight > parent.clientHeight;
+
+      const isOverflowingX =
+        (style.overflowX === "auto" || style.overflowX === "scroll") &&
+        parent.scrollWidth > parent.clientWidth;
+
+      if (isOverflowingY || isOverflowingX) {
         scrollContainer = parent;
         break;
       }
+
       parent = parent.parentElement;
     }
 

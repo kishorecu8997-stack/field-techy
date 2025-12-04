@@ -85,7 +85,7 @@ export const urls = {
       otp: "otp",
     },
     home: {
-      dashbaord: "dashboard",
+      dashboard: "dashboard",
       manage_engineer: "users",
       manage_engineer_add: "users/add",
       manage_engineer_edit: "users/edit",
@@ -189,7 +189,7 @@ export const absoluteUrls = {
       otp: `${BASE.ADMIN_AUTH}/otp`,
     },
     home: {
-      dashbaord: `${BASE.ADMIN}/dashboard`,
+      dashboard: `${BASE.ADMIN}/dashboard`,
       manage_engineer: `${BASE.ADMIN}/users`,
       manage_engineer_add: `${BASE.ADMIN}/users/add`,
       manage_engineer_edit: `${BASE.ADMIN}/users/edit`,

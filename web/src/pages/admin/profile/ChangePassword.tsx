@@ -50,7 +50,7 @@ export default function ChangePassword() {
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Password changed successfully!");
-            navigate(absoluteUrls.admin.home.dashbaord);
+            navigate(absoluteUrls.admin.home.dashboard);
             methods.reset();
             close(true);
           },

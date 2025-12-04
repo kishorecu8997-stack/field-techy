@@ -4,13 +4,14 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useState } from "react";
+import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useToggleStatus from "@/shared/components/ToggleStatus";
 
 /**
  * ManageRateCards Component
@@ -32,20 +33,15 @@ import { usePopupStore } from "@/shared/store/popupStore";
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const [status, setStatus] = useState<Record<string, boolean>>(() => {
+
+  const initialStatus = React.useMemo(() => {
     const initial: Record<string, boolean> = {};
     RateCardData.forEach((rateCard) => {
       initial[rateCard.id] = Boolean(rateCard.status);
     });
     return initial;
-  });
-
-  const toggleStatus = (id: string) => {
-    setStatus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  }, []);
+  const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation
   const handleDeleteJob = async (job: RateCardProps) => {
@@ -93,14 +89,14 @@ const ManageRateCards: React.FC = () => {
       key: "status",
       label: "Status",
       renderCell: (row: RateCardProps) => {
-        const val = status[row.id] ?? row.status;
+        const val = get(row.id) ?? row.status;
 
         return (
           <div
             className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
               val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
-            onClick={() => toggleStatus(row.id)}
+            onClick={() => toggle(row.id)}
           >
             {val ? "On" : "Off"}
           </div>

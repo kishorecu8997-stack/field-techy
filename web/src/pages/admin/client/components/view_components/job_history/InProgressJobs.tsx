@@ -17,6 +17,7 @@ import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useToggleStatus from "@/shared/components/ToggleStatus";
 
 /**
  * InProgressJobs component displays a table of jobs that are currently in progress and a chart visualizing related data.
@@ -28,20 +29,14 @@ const InProgressJobs: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 
-  const [status, setStatus] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    postedJobsData.forEach((job) => {
-      initial[job.jObID] = Boolean(job.status);
-    });
-    return initial;
-  });
-
-  const toggleStatus = (id: string) => {
-    setStatus((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+   const initialStatus = React.useMemo(() => {
+     const initial: Record<string, boolean> = {};
+     postedJobsData.forEach((job) => {
+       initial[job.jObID] = Boolean(job.status);
+     });
+     return initial;
+   }, []);
+   const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation
   const handleDeleteJob = async (job: InProgressJobsProps) => {
@@ -85,14 +80,14 @@ const InProgressJobs: React.FC = () => {
       key: "status",
       label: "Status",
       renderCell: (row: InProgressJobsProps) => {
-        const val = status[row.jObID] ?? row.status;
+        const val = get(row.jObID) ?? row.status;
 
         return (
           <div
             className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
               val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
-            onClick={() => toggleStatus(row.jObID)}
+            onClick={() => toggle(row.jObID)}
           >
             {val ? "On" : "Off"}
           </div>

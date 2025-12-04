@@ -56,7 +56,7 @@ export default function PersonalDetails() {
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Profile updated successfully!");
-            navigate(absoluteUrls.admin.home.dashbaord);
+            navigate(absoluteUrls.admin.home.dashboard);
             methods.reset();
             close(true);
           },

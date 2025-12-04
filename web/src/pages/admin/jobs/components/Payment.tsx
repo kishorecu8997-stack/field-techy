@@ -15,7 +15,7 @@ const Payment = () => {
     if (!data.status) return;
     const status = data.status;
     await showPopup({
-      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Paymnet`,
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Payment`,
       body: `Are you sure you want to ${
         status?.charAt(0).toUpperCase() + status?.slice(1)
       } this Payment?`,

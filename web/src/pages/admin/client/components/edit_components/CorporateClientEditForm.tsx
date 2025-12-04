@@ -97,7 +97,7 @@ const CorporateClientEditForm: React.FC = () => {
             console.log("Deleting job:", close);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Client information upadted successfully!");
+            toast.success("Client information updated successfully!");
             navigate(absoluteUrls.admin.home.manage_client);
             methods.reset();
             close(true);
