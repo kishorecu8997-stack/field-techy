@@ -1,56 +1,5 @@
 import type React from "react";
 
-export interface JobPostFormData {
-  jobTitle: string;
-  jobDescription: string;
-  jobType: string;
-  country: string;
-  state: string;
-  city: string;
-  startDate: string;
-  startTime: string;
-  numberOfVacancy: string;
-  timePeriod: string;
-  skills: string;
-  requirements: string;
-  otherInfo: string;
-  toolName: string;
-  toolImage: File | null;
-  additionalBudget: string;
-  experienceLevel: string;
-  engagementModel: string;
-  projectDeadline: string;
-  milestoneStructure: string;
-  attachments: File | null;
-  jobVisibility: string;
-}
-
-// Define FormData type
-interface FormData {
-  jobTitle: string;
-  jobDescription: string;
-  jobType: string;
-  country: string;
-  state: string;
-  city: string;
-  startDate: Date | null;
-  startTime?: string;
-  numberOfVacancy: string;
-  timePeriod: string;
-  skills: string;
-  requirements: string;
-  otherInfo: string;
-  toolName: string;
-  toolImage: File | null;
-  additionalBudget: string;
-  experienceLevel: string;
-  engagementModel: string;
-  projectDeadline: Date | null;
-  milestoneStructure: string;
-  attachments: File | null;
-  jobVisibility: string;
-}
-
 export interface PaymentCardOption {
   id: string;
   last4: string;
@@ -82,20 +31,20 @@ export const OccurrenceEndType = {
 export type OccurrenceEndTypeType =
   (typeof OccurrenceEndType)[keyof typeof OccurrenceEndType];
 
-  export const locationType = {
-    remote: "remote",
-    onsite: "onsite",
-  };
+export const locationType = {
+  remote: "remote",
+  onsite: "onsite",
+};
 
-  export type locationTypeType = (typeof locationType)[keyof typeof locationType];
+export type locationTypeType = (typeof locationType)[keyof typeof locationType];
 
-  export const backFillsType = {
-    required: "required",
-    notRequired: "not-required",
-  };
+export const backFillsType = {
+  required: "required",
+  notRequired: "not-required",
+};
 
-  export type backFillsTypeType = (typeof backFillsType)[keyof typeof backFillsType];
-  
+export type backFillsTypeType =
+  (typeof backFillsType)[keyof typeof backFillsType];
 
 export interface ClientFieldsTypes {
   id: string | number;
@@ -153,7 +102,6 @@ export interface CardProps {
   addAction?: React.ReactNode;
 }
 
-
 export interface pointOfContentTypes {
   id: number;
   firstName: string;
@@ -172,10 +120,10 @@ export interface PostAJobFieldsProps {
   location: string;
   experienceLevel: string;
   numberOfVacancy: string;
-  skills: [string];
-  tools: [string];
-  safetyWears: [string];
-  task: [string];
+  skills: string[];
+  tools: string[];
+  safetyWears: string[];
+  task: string[];
   description: string;
   backFills: backFillsTypeType;
   budget: string;

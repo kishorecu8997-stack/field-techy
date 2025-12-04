@@ -11,8 +11,8 @@ const AddPOC = () => {
   const formCtx = useForm();
   const handleSubmit = async (data: any) => {
     await showPopup({
-      title: "Add Point Of Content",
-      body: "Are you sure you want to add this point of content?",
+      title: "Add Point of Contact",
+      body: "Are you sure you want to add this Point of Contact?",
       actionButtons: [
         {
           label: "cancel",
@@ -25,7 +25,7 @@ const AddPOC = () => {
           variant: "primary",
           action: async (close) => {
             console.log("Submitted data:", data);
-            toast.success("Point of Content Added Successfully");
+            toast.success("Point of Contact Added Successfully");
             close(true);
           },
         },

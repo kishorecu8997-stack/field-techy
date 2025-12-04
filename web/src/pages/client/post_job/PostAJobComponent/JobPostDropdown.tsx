@@ -60,7 +60,9 @@ export default function JobPostDropdown({
         onClick={() => setOpen(!open)}
         className="px-4 py-2 rounded-full transition flex items-center gap-2 justify-center bg-emerald-600 text-neutral-200 dark:text-neutral-800 hover:bg-emerald-700 dark:hover:bg-emerald-500 cursor-pointer"
       >
-        <span className="font-semibold text-md">{selected ? selected.label : label ||"Post A Job"}</span>
+        <span className="font-semibold text-md">
+          {selected ? selected.label : label || "Post A Job"}
+        </span>
         <span className="text-xl">▾</span>
       </div>
 

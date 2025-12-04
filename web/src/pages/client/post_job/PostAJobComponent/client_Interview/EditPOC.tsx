@@ -1,4 +1,4 @@
-import { pointOfContent } from "@/dummy_data/admin/PostAJob";
+import { pointOfContact } from "@/dummy_data/admin/postAJob";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 const EditPOC = () => {
   const { selectedId } = useDrawerStore();
   const { showPopup } = usePopupStore();
-  const value = pointOfContent.find((item) => item.id === selectedId);
+  const value = pointOfContact.find((item) => item.id === selectedId);
 
   const formCtx = useForm<pointOfContentTypes>({
     defaultValues: {
@@ -24,8 +24,8 @@ const EditPOC = () => {
 
   const handleSubmit = async (data: any) => {
     await showPopup({
-      title: "Update Point Of Content",
-      body: "Are you sure you want to update this point of content?",
+      title: "Update Point of Contact",
+      body: "Are you sure you want to update this Point of Contact?",
       actionButtons: [
         {
           label: "cancel",
@@ -38,7 +38,7 @@ const EditPOC = () => {
           variant: "primary",
           action: async (close) => {
             console.log("Submitted data:", data);
-            toast.success("Point of Content Updated Successfully");
+            toast.success("Point of Contact Updated Successfully");
             close(true);
           },
         },

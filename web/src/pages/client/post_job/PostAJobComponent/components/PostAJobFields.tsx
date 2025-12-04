@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { interviewerData, pointOfContent } from "@/dummy_data/admin/PostAJob";
+import { interviewerData, pointOfContact } from "@/dummy_data/admin/postAJob";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
@@ -56,7 +56,7 @@ const PostAJobFields = ({
     });
   };
 
-  const pointOfContactSection = pointOfContent.map((item) => ({
+  const pointOfContactSection = pointOfContact.map((item) => ({
     title: `Point of Contact`,
     items: [
       { label: "First Name", value: item.firstName },
@@ -146,7 +146,7 @@ const PostAJobFields = ({
                     }}
                     className="rounded-full"
                   >
-                    Add Point of Content
+                    Add Client Interviewer
                   </Button>
                 }
               />
@@ -156,11 +156,11 @@ const PostAJobFields = ({
           </>
         ) : (
           <>
-            {pointOfContent.length ? (
+            {pointOfContact.length ? (
               <ClientInterviewerSection
                 disabled={isDisable}
                 sections={pointOfContactSection}
-                title="Point Of Content"
+                title="Point of Contact"
                 addAction={
                   <Button
                     onClick={() => {
@@ -169,7 +169,7 @@ const PostAJobFields = ({
                     }}
                     className="rounded-full"
                   >
-                    Add Point of Content
+                    Add Point of Contact
                   </Button>
                 }
               />

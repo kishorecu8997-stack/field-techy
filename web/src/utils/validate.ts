@@ -1,9 +1,9 @@
-import xss from "xss";
-import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
 import type {
   PricingField,
   PricingRelations,
 } from "@/pages/admin/rate_card/types";
+import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
+import xss from "xss";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -472,59 +472,59 @@ const luhnCheck = (cardNumber: string) => {
     sum += n;
     alternate = !alternate; // Toggle alternate flag
   }
-  
+
   return sum % 10 === 0; // Valid if sum is a multiple of 10
 };
 
 export const expiryDateValidation = (value: string) => {
-    const raw = value?.trim() || "";
-  
-    if (!raw) {
-        return "Expiry date is required.";
-    }
+  const raw = value?.trim() || "";
 
-    if (/^\s|\s$/.test(raw)) {
-        return "Expiry date must not start or end with a space.";
-    }
+  if (!raw) {
+    return "Expiry date is required.";
+  }
 
-    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
-        return "Invalid date format. Use MM/YY.";
-    }
+  if (/^\s|\s$/.test(raw)) {
+    return "Expiry date must not start or end with a space.";
+  }
 
-    const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
-    if (!match) {
-        return "Invalid date format.";
-    }
+  if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
+    return "Invalid date format. Use MM/YY.";
+  }
 
-    const [, monthStr, yearStr] = match;
-    const expiryMonth = parseInt(monthStr, 10);
-    const currentYear = new Date().getFullYear();
-    const twoDigitYear = parseInt(yearStr, 10);
-  
-    // Determine full year based on the current year
-    const expiryYear = currentYear - (currentYear % 100) + twoDigitYear;
+  const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
+  if (!match) {
+    return "Invalid date format.";
+  }
 
-    const now = new Date();
-    const maxExpiryYear = currentYear + 5; // Maximum expiry year set to 5 years from now
+  const [, monthStr, yearStr] = match;
+  const expiryMonth = parseInt(monthStr, 10);
+  const currentYear = new Date().getFullYear();
+  const twoDigitYear = parseInt(yearStr, 10);
 
-    // Check if the expiry year exceeds the max allowed
-    if (expiryYear > maxExpiryYear) {
-        return `Expiry date cannot be more than 5 years from the current year (${maxExpiryYear}).`;
-    }
+  // Determine full year based on the current year
+  const expiryYear = currentYear - (currentYear % 100) + twoDigitYear;
 
-    // Set to the first day of the expiry month for comparison
-    const expiryDate = new Date(expiryYear, expiryMonth - 1, 1);
+  const now = new Date();
+  const maxExpiryYear = currentYear + 5; // Maximum expiry year set to 5 years from now
 
-    // Check if the expiry date is valid
-    if (expiryDate > now || (expiryYear === currentYear && expiryMonth >= (now.getMonth() + 1))) {
-        return true; // Validation successful
-    }
+  // Check if the expiry year exceeds the max allowed
+  if (expiryYear > maxExpiryYear) {
+    return `Expiry date cannot be more than 5 years from the current year (${maxExpiryYear}).`;
+  }
 
-    return "Card has expired.";
+  // Set to the first day of the expiry month for comparison
+  const expiryDate = new Date(expiryYear, expiryMonth - 1, 1);
+
+  // Check if the expiry date is valid
+  if (
+    expiryDate > now ||
+    (expiryYear === currentYear && expiryMonth >= now.getMonth() + 1)
+  ) {
+    return true; // Validation successful
+  }
+
+  return "Card has expired.";
 };
-
-
-
 
 export const cvvValidation = (value: string) => {
   const raw = value || "";
@@ -941,22 +941,6 @@ export const validateCheckboxGroup = (
   return true;
 };
 
-export const validatePhone = (value: string) => {
-  const v = (value || "").trim();
-  if (!v) return "Phone is required";
-
-  // A more comprehensive regex for phone validation
-  const phoneRegex =
-    /^[0-9]{10,15}$/;
-
-  if (!phoneRegex.test(v)) {
-    return "Please enter a valid phone number";
-  }
-
-  return true;
-};
-
-
 export default {
   validateName,
   validateEmail,
@@ -986,6 +970,5 @@ export default {
   validateNotificationTitle,
   validateNotificationMessage,
   validateCategoryName,
-  validatePhone,
   validateCheckboxGroup,
 };

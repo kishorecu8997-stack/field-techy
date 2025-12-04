@@ -4,7 +4,6 @@ import MapSearch from "@/shared/components/MapWithSearch";
 import SectionHeader from "../SectionHeader";
 
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
-console.log('isDisable :', isDisable);
   return (
     <div>
       <SectionHeader title="Location" />

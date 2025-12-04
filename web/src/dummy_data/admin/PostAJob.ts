@@ -6,7 +6,7 @@ export const interviewerData: ClientFieldsTypes[] = [
     firstName: "Ram",
     lastName: "Risi",
     email: "ramrisi@xyz.in",
-    mobile: "9876543210",
+    mobile: "+91 9876543210",
     startDate: "2025-12-01",
     startTime: "01:00",
   },
@@ -15,20 +15,20 @@ export const interviewerData: ClientFieldsTypes[] = [
     firstName: "grish",
     lastName: "kumar",
     email: "grish@gmail.com",
-    mobile: "9876543210",
+    mobile: "+91 9876543210",
     startDate: "2025-12-01",
     startTime: "12:00",
   },
 ];
 
 
-export const pointOfContent = [
+export const pointOfContact = [
    {
     id: 1,
     firstName: "Ram",
     lastName: "Risi",
     email: "ramrisi@xyz.in",
-    mobile: "9876543210",
+    mobile: "+91 9876543210",
     contactType: "Primary",
   },
   {
@@ -36,7 +36,7 @@ export const pointOfContent = [
     firstName: "grish",
     lastName: "kumar",
     email: "grish@gmail.com",
-    mobile: "9876543210",
+    mobile: "+91 9876543210",
     contactType: "Primary",
   },
-]
+];

@@ -1,3 +1,7 @@
+export type OptionsType = {
+  label: string;
+  value: string;
+};
 
 export function getOrdinal(num: number): string {
   const suffixes: Record<number, string> = {
@@ -17,8 +21,8 @@ export function getOrdinal(num: number): string {
   return `${num}${suffixes[lastDigit] || "th"}`;
 }
 
-export function getOrdinalList(): { label: string; value: string }[] {
-  const list = [];
+export function getOrdinalList(): OptionsType[] {
+  const list: OptionsType[] = [];
 
   for (let i = 1; i <= 31; i++) {
     const ordinal = getOrdinal(i);
@@ -31,7 +35,7 @@ export function getOrdinalList(): { label: string; value: string }[] {
   return list;
 }
 
-export function getMonthList(): { label: string; value: string }[] {
+export function getMonthList(): OptionsType[] {
   const months = [
     "January",
     "February",

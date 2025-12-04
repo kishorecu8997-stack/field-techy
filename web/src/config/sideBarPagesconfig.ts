@@ -250,10 +250,10 @@ export const sectionConfig: Record<
   },
   addPointOfContent: {
     component: AddPOC,
-    title: "Add Point Of Content",
+    title: "Add Point of Contact",
   },
   editPointOfContent: {
     component: EditPOC,
-    title: "Edit Point Of Content",
+    title: "Edit Point of Contact",
   },
 };

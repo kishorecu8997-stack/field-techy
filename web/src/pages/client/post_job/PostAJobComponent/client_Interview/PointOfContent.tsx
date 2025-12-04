@@ -1,8 +1,9 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
+import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateName } from "@/shared/libs/utils";
-import { validateEmail, validatePhone } from "@/utils/validate";
+import { validateEmail } from "@/utils/validate";
 
 const ClientFields = () => {
   return (
@@ -30,13 +31,7 @@ const ClientFields = () => {
             placeholder="Client Email"
             rules={{ validate: (v) => validateEmail(v) }}
           />
-          <InputField
-            required
-            label="Phone"
-            name="mobile"
-            placeholder="Client Phone"
-            rules={{ validate: (v) => validatePhone(v) }}
-          />
+          <PhoneInputField name="mobile" label="Client Phone" required />
           <SelectField
             label="Contact Type"
             name="contactType"

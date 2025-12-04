@@ -95,7 +95,7 @@ export const TagSelectField = ({
           className={`
             block mb-1 text-md font-semibold
             ${disabled ? "text-gray-400" : "text-gray-700"} 
-            dark:${disabled ? "text-gray-500" : "text-gray-300"}
+            ${disabled ? "dark:text-gray-500" : "dark:text-gray-300"}
           `}
         >
           {label} {required && <span className="text-red-600">*</span>}

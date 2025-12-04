@@ -1,4 +1,4 @@
-import { interviewerData } from "@/dummy_data/admin/PostAJob";
+import { interviewerData } from "@/dummy_data/admin/postAJob";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";

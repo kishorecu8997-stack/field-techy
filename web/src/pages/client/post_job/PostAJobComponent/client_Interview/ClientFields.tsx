@@ -2,7 +2,8 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
-import { validateEmail, validateName, validatePhone } from "@/utils/validate";
+import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
 
@@ -34,13 +35,7 @@ const ClientFields = () => {
             placeholder="Client Email"
             rules={{ validate: (v) => validateEmail(v) }}
           />
-          <InputField
-            required
-            label="Phone"
-            name="mobile"
-            placeholder="Client Phone"
-            rules={{ validate: (v) => validatePhone(v) }}
-          />
+          <PhoneInputField name="mobile" label="Phone Number" required />
           <SectionHeader title=" Interview Schedule Info" />
           <div className="relative w-full">
             <Controller
