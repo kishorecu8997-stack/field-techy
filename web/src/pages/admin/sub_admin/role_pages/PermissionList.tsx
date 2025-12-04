@@ -18,7 +18,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const PermissionList = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const endpoint = location.pathname.split("/").filter(Boolean).pop() || "";
+  const endpoint = location.pathname.split("/").pop();
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
