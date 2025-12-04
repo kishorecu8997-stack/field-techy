@@ -22,10 +22,10 @@ import { InputField } from "@/shared/components/commonUI/inputs";
  */
 export default function ProjectBudget({
   isDisable,
-  billingcurreny,
+  billingCurreny,
 }: {
   isDisable: boolean;
-  billingcurreny: string;
+  billingCurreny: string;
 }) {
   return (
     <div>
@@ -33,7 +33,9 @@ export default function ProjectBudget({
       <InputField
         disabled={isDisable}
         name="budget"
-        label={`Approved Budget (in ${billingcurreny})`}
+        label={`Approved Budget ${
+          billingCurreny ? `(in ${billingCurreny})` : ""
+        }`}
         placeholder="Enter Budget"
         required
         rules={{ validate: (v: string) => validateBudget(v) }}

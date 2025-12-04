@@ -48,7 +48,7 @@ export default function CreateProjectForm({
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
   const [members, setMembers] = useState(projectMembers);
 
-  const billingcurreny = ctx.watch("curency");
+  const billingCurreny = ctx.watch("curency");
 
   const handleDeleteConfirmation = async (id: number) => {
     await showPopup({
@@ -108,7 +108,7 @@ export default function CreateProjectForm({
               required
               label={"Project Name"}
               placeholder={"Enter Project Name"}
-              rules={{ validate: (v: string) => validateProjectName(v) }}
+              rules={{ validate: (v: string) => validateProjectName(v, "Project Name") }}
             />
             <InputField
               disabled={isDisable}
@@ -116,7 +116,7 @@ export default function CreateProjectForm({
               required
               label={"Project Type"}
               placeholder={"Enter Project Type"}
-              rules={{ validate: (v: string) => validateProjectName(v) }}
+              rules={{ validate: (v: string) => validateProjectName(v, "Project Type") }}
             />
 
             <LocationPage isDisable={isDisable} />
@@ -125,7 +125,10 @@ export default function CreateProjectForm({
 
             <EngineerGroups isDisable={isDisable} />
 
-            <ProjectBudget isDisable={isDisable} billingcurreny={billingcurreny} />
+            <ProjectBudget
+              isDisable={isDisable}
+              billingCurreny={billingCurreny}
+            />
 
             <ProjectJobSetting isDisable={isDisable} />
 

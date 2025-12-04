@@ -207,7 +207,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
 
   // Handle map click
   const handleMapClick = (latlng: { lat: number; lng: number }) => {
-    console.log("latlng :", latlng);
+    // console.log("latlng :", latlng);
     const newPos: [number, number] = [latlng.lat, latlng.lng];
     setPosition(newPos);
     onMapClick(latlng);

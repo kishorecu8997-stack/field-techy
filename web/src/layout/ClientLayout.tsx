@@ -51,7 +51,6 @@ const ClientLayout = (): JSX.Element => {
           <div className="xl:container mx-auto px-6">
             <NavbarClient
               onDrawerToggle={() => {
-                console.log("drawer", isOpenSidebar);
                 if (isOpenSidebar) {
                   localStorage.removeItem("projectSiteCoordinates");
                 }

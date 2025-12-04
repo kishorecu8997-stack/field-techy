@@ -50,7 +50,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
             </div>
             <>
               <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
-                {action && action}
+                {action}
                 {isReport && (
                   <div
                     className="underline cursor-pointer hover:text-teal-900"

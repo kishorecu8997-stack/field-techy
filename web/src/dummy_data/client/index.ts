@@ -60,7 +60,7 @@ export const workTypes = [
   { label: "On-site", value: "onsite" },
 ];
 
-export const projectCoutries = [
+export const projectCountries = [
   { label: "United Kingdom", value: "UK" },
   { label: "India", value: "IN" },
 ];

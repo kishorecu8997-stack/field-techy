@@ -941,30 +941,27 @@ export const validateCheckboxGroup = (
   return true;
 };
 
-export const validateProjectName = (value: string) => {
+export const validateProjectName = (value: string, fieldName: string) => {
   const raw = value || "";
 
-  // Reject leading or trailing spaces
   if (raw !== raw.trim()) {
-    return `${value} must not have leading or trailing spaces`;
+    return `${fieldName} must not have leading or trailing spaces`;
   }
 
-  // Reject consecutive spaces
   if (/ {2,}/.test(raw)) {
-    return `${value} must not contain consecutive spaces`;
+    return `${fieldName} must not contain consecutive spaces`;
   }
 
-  // Allowed characters: alphanumeric + # @ _ - .
   if (!/^[A-Za-z0-9#@_. -]+$/i.test(raw)) {
-    return `${value} can only contain letters, numbers, and the following symbols: # @ _ - . or space`;
+    return `${fieldName} can only contain letters, numbers, and the following symbols: # @ _ - . or space`;
   }
 
-  // Length requirement: 2 to 50 characters
   if (raw.length < 2) {
-    return `${value} must be at least 2 characters`;
+    return `${fieldName} must be at least 2 characters`;
   }
+
   if (raw.length > 50) {
-    return `${value} must not exceed 50 characters`;
+    return `${fieldName} must not exceed 50 characters`;
   }
 
   return true;
@@ -1102,7 +1099,7 @@ export const validateSiteName = (value: string) => {
     return "Site name must be at least 2 characters long";
   }
   if (raw.length > 200) {
-    return "Site name must not exceed 500 characters";
+    return "Site name must not exceed 200 characters";
   }
 
   // 2. No leading or trailing spaces

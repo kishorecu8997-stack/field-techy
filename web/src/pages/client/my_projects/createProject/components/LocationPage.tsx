@@ -1,4 +1,8 @@
-import { currencyTypes, projectCoutries, workTypes } from "@/dummy_data/client";
+import {
+  currencyTypes,
+  projectCountries,
+  workTypes,
+} from "@/dummy_data/client";
 import SectionHeader from "./SectionHeader";
 import { CheckboxField } from "@/shared/components/commonUI/inputs/CheckBoxField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -42,7 +46,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Select countries from the list"
         required
         disabled={isDisable}
-        options={projectCoutries}
+        options={projectCountries}
       />
       <TagSelectField
         disabled={isDisable}
@@ -50,7 +54,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         label="Remote Countries"
         placeholder="Select countries from the list"
         required
-        options={projectCoutries}
+        options={projectCountries}
       />
 
       <RadioField
@@ -83,7 +87,7 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         disabled={isDisable}
         name="curency"
         label="Billing Currency"
-        placeholder="Select Cuureny"
+        placeholder="Select Curreny"
         required
         options={currencyTypes}
       />
