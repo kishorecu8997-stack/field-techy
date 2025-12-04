@@ -159,7 +159,7 @@ const AllJob: React.FC = () => {
           onChange={setFilterRegion}
           options={Region}
         />
-        <InputOutline placeholder="Budget" name="budget" className="w-40" />
+        <InputOutline placeholder="Budget" name="budget" className="w-40" onlyNumbers />
         <SelectMenu
           className="absolute z-20"
           placeholder="Job Type"
