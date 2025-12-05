@@ -16,19 +16,12 @@ import { CommissionValidation } from "@/utils/validate";
  * @returns {JSX.Element} The Commission settings form.
  */
 export default function Commission() {
-  /**
-   * React Hook Form methods for managing the commission form state.
-   */
   const methods = useForm<SettingsFormData>({
     defaultValues: {
       commission: "",
     },
   });
 
-  /**
-   * Handle form submit. Displays a success toast when the commission is saved.
-   * @returns {void}
-   */
   const handleSubmit = () => {
     // console.log("Profile Submitted");
     toast.success("Added Successfully!");
@@ -39,7 +32,7 @@ export default function Commission() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
         <div className="flex-1 w-1/2">
           <InputField

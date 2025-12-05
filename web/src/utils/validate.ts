@@ -688,9 +688,14 @@ export const validatePricingModel = (
   // RELATIONAL VALIDATION (IMPROVED TEXT)
   // -----------------------------------
   switch (field) {
-    case "hourly":
-      return "";
-
+    // case "hourly":
+    //   return "";
+    case "hourly": {
+      // if (num == null || num === 0) {
+      //   return "Hourly rate is required and must be at least 1";
+      // }
+      return true;
+    }
     case "halfDay": {
       if (hourly == null) return "Please enter hourly rate first";
       const min = hourly * 4;
@@ -881,8 +886,8 @@ export const validateAlphabeticTextArea = (
     return "Consecutive spaces are not allowed";
   }
 
-  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
-  const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
+  // Allowed characters: letters, spaces, numbers and special characters such as / ( ) , . ' #
+  const defaultPattern = /^[a-zA-Z0-9 /().,'#-]+$/;
   const pattern =
     options?.regex instanceof RegExp ? options.regex : defaultPattern;
 
