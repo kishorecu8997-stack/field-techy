@@ -221,6 +221,15 @@ const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
 );
+const ClientMyProjectsPage = React.lazy(
+  () => import("@/pages/client/my_projects/project")
+);
+const ClientProjectDetailsPage = React.lazy(
+  () => import("@/pages/client/my_projects/projectDetail")
+);
+const ClientCreateProjectPage = React.lazy(
+  () => import("@/pages/client/my_projects/createProject")
+);
 const ClientDashboard = React.lazy(
   () => import("@/pages/client/dashboard/Dashboard")
 );
@@ -399,6 +408,18 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
+        path: urls.client.home.my_projects,
+        element: withSuspense(ClientMyProjectsPage),
+      },
+      {
+        path: `${urls.client.home.my_projects}/:projectId`,
+        element: withSuspense(ClientProjectDetailsPage),
+      },
+      {
+        path: urls.client.home.create_project,
+        element: withSuspense(ClientCreateProjectPage),
+      },
+      {
         path: urls.client.home.dashboard,
         element: withSuspense(ClientDashboard),
       },
@@ -421,6 +442,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
+      },
+      {
+        path: urls.client.home.ClientJobInvite,
+        element: withSuspense(ClientJobInvite),
       },
     ],
   },
@@ -465,6 +490,45 @@ export const routes = createBrowserRouter([
       },
     ],
   },
+  // {
+  //   path: BASE.CLIENT,
+  //   element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
+  //   children: [
+  //     { index: true, element: withSuspense(ClientMyJobsPage) },
+  //     {
+  //       path: urls.client.home.my_jobs,
+  //       element: withSuspense(ClientMyJobsPage),
+  //     },
+  //     {
+  //       path: urls.client.home.dashboard,
+  //       element: withSuspense(ClientDashboard),
+  //     },
+  //     {
+  //       path: urls.client.home.client_Explore_engineers,
+  //       element: withSuspense(ClientExploreEngineers),
+  //     },
+  //     {
+  //       path: urls.client.home.post_JobPage,
+  //       element: withSuspense(ClientPostJobPage),
+  //     },
+  //     {
+  //       path: urls.client.home.manage_proposal,
+  //       element: withSuspense(ClientManageProposal),
+  //     },
+  //     {
+  //       path: urls.client.home.search_result,
+  //       element: withSuspense(ClientSearchResult),
+  //     },
+  //     {
+  //       path: urls.client.home.client_Explore_engineers_details,
+  //       element: withSuspense(ClientExploreEngDetails),
+  //     },
+  //     {
+  //       path: urls.client.home.ClientJobInvite,
+  //       element: withSuspense(ClientJobInvite),
+  //     },
+  //   ],
+  // },
 
   {
     path: absoluteUrls.engineer.auth.privacy_policy,

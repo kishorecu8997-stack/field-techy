@@ -67,7 +67,7 @@ export default function AddNotification() {
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+          className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
           <div className="grid md:flex gap-4 w-full">
             <div className="md:w-1/2">
