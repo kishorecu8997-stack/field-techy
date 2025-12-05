@@ -52,12 +52,21 @@ export const CheckboxInput = ({
                 type="checkbox"
                 id={name}
                 checked={field.value || false}
-                className="accent-primary"
+                aria-controls="endDateSection"
+                className="accent-primary mt-[2px]"
+                onChange={(e) => {
+                  field.onChange(e);  
+                  if (rules?.onChange) {
+                    rules.onChange(e);
+                  }
+                }}
               />
+
+
               {isShowLabel && (
                 <label
                   htmlFor={name}
-                  className="text-gray-700 font-bold dark:text-gray-300"
+                  className="text-gray-700 font-medium dark:text-gray-300"
                 >
                   {label} {required && <span className="text-red-600">*</span>}
                 </label>

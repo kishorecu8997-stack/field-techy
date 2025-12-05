@@ -7,6 +7,8 @@ import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerI
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+
 import {
   designationOptions,
   employmentTypeOptions,
@@ -65,11 +67,11 @@ const EditExperiences = () => {
   }, []);
 
   useEffect(() => {
-  const endDate = methods.getValues("endDate");
-  if (!endDate) {
-    methods.setValue("isCurrent", true);
-  }
-   }, []);
+    const endDate = methods.getValues("endDate");
+    if (!endDate) {
+      methods.setValue("isCurrent", true);
+    }
+  }, []);
 
 
   return (
@@ -129,52 +131,46 @@ const EditExperiences = () => {
           }}
         />
 
-        <div id="endDateSection">
-          {!methods.watch("isCurrent") && (
-            <DatePickerInput
-              name="endDate"
-              label="End Date"
-              isShowLabel={false}
-              placeholder="End date (required if not current)"
-              minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-              required={!methods.watch("isCurrent")}
-              rules={{
-                validate: (value) => {
-                  if (!methods.watch("isCurrent") && !value) {
-                    return "End date is required when not currently working";
-                  }
-                  return true;
-                },
-                onChange: () => methods.trigger("startDate")
-              }}
-            />
-          )}
-        </div>
+    
+        {!methods.watch("isCurrent") && (
+          <DatePickerInput
+            name="endDate"
+            label="End Date"
+            isShowLabel={false}
+            placeholder="End date (required if not current)"
+            minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+            required={!methods.watch("isCurrent")}
+            rules={{
+              validate: (value) => {
+                if (!methods.watch("isCurrent") && !value) {
+                  return "End date is required when not currently working";
+                }
+                return true;
+              },
+              onChange: () => methods.trigger("startDate")
+            }}
+          />
+        )}
+    
 
-        {/* Checkbox lable */}
-        <div className="flex items-center gap-2 mt-2 ">
-          <input
-            type="checkbox"
-            id="isCurrent"
-            aria-controls="endDateSection"
-            {...methods.register("isCurrent")}
-            onChange={(e) => {
-              const checked = e.target.checked;
-
-              methods.setValue("isCurrent", checked);
+        {/* Checkbox label */}
+        <CheckboxInput
+          name="isCurrent"
+          label="I currently work here"
+          isShowLabel={true}
+          rules={{
+            onChange: (e) => {
+             const checked = e.target.checked;
 
               if (checked) {
-                methods.setValue("endDate", null)//Remove end date
+                methods.setValue("endDate", null);
               }
-            }}
-            className="w-4 h-4"
-          />
+            }
+          }}
 
-          <label htmlFor="isCurrent" className="text-[16px] font-medium text-gray-500">
-            I currently work here
-          </label>
-        </div>
+        />
       </div>
+
 
       {/* Fixed bottom button */}
       <div className="bg-white ">
