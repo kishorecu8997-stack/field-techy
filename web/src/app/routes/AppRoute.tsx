@@ -61,6 +61,10 @@ const ExploreJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreJobs")
 );
 
+const ExploreSavedJobs = React.lazy(
+  () => import("@/pages/engineer/home/components/ExploreSavedJobs")
+);
+
 //client
 const ClientSignInPage = React.lazy(
   () => import("@/pages/client/auth/components/signin_pages/SignInPage")
@@ -314,6 +318,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.explore_jobs,
         element: withSuspense(ExploreJobs),
+      },      
+      {
+        path: urls.engineer.home.saved_jobs,
+        element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {

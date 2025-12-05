@@ -1,11 +1,11 @@
+import { useState } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { useState } from "react";
-import { toast } from "react-toastify";
 import { FaChevronDown } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface TagOption {
   value: string;
@@ -177,42 +177,31 @@ export const TagSelectField = ({
                 </p>
               )}
 
-              {/* TAG LIST */}
-              <div
-                className={`flex flex-wrap gap-2 ${value.length ? "py-2" : ""}`}
-              >
-                {value.map((tagValue: string, index: number) => {
-                  const tagLabel =
-                    options.find((opt) => opt.value === tagValue)?.label ||
-                    tagValue;
+              {/* Render selected tags */}
+              <div className="flex flex-wrap gap-2 py-2">
+                {value &&
+                  value.map((tagValue: string, index: number) => {
+                    // Find the label for display
+                    const tagLabel =
+                      options.find((opt) => opt.value === tagValue)?.label ||
+                      tagValue;
 
-                  return (
-                    <span
-                      key={index}
-                      className="
-                        inline-flex items-center gap-1 px-3 py-1 text-sm 
-                        bg-teal-100 dark:bg-teal-900 
-                        text-teal-800 dark:text-teal-200 
-                        rounded-full border border-teal-300 dark:border-teal-700
-                      "
-                    >
-                      {tagLabel}
-                      {isTagCloseable && !disabled && (
-                        <button
-                          type="button"
+                    return (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
+                      >
+                        {tagLabel}
+                        <div
                           onClick={() => removeTag(index, onChange, value)}
-                          className="
-                            ml-1 text-teal-600 dark:text-teal-400 
-                            hover:text-teal-800 dark:hover:text-teal-200
-                            focus:outline-none
-                          "
+                          className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none cursor-pointer"
+                          aria-label={`Remove tag ${tagLabel}`}
                         >
                           ×
-                        </button>
-                      )}
-                    </span>
-                  );
-                })}
+                        </div>
+                      </span>
+                    );
+                  })}
               </div>
             </>
           );

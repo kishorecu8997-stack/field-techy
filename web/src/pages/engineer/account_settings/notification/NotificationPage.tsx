@@ -3,7 +3,7 @@ import NotificationPanel from "./NotificationPanel";
 /**
  * Page component that centers the notification panel in the viewport for displaying grouped notifications.
  */
-function NotofocationPage() {
+function NotificationPage() {
   return (
     <div className=" flex justify-center items-start">
       <NotificationPanel />
@@ -11,4 +11,4 @@ function NotofocationPage() {
   );
 }
 
-export default NotofocationPage;
+export default NotificationPage;

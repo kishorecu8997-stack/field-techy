@@ -17,7 +17,7 @@ const JobCard: React.FC<{
   showBookmark?: boolean;
   navigateToJob?: string;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
-  const [isBookmarked, setBookmark] = useState(false);
+  const [isBookmarked, setBookmark] = useState(job.isBookmarked);
 
   return (
     <Link
@@ -48,7 +48,7 @@ const JobCard: React.FC<{
 
         {showBookmark && (
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <button
+            <div
               onClick={(e) => {
                 e.preventDefault();
                 setBookmark(!isBookmarked);
@@ -60,7 +60,7 @@ const JobCard: React.FC<{
               ) : (
                 <icons.bookmark className="h-4 w-4 flex-shrink-0 " />
               )}
-            </button>
+            </div>
             <span>{job.postedTime}</span>
           </div>
         )}
