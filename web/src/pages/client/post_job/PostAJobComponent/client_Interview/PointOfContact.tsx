@@ -44,7 +44,10 @@ const PointOfContact = () => {
             label="Contact Type"
             name="contactType"
             required
-            options={[]}
+            options={[
+              { value: "Email", label: "Email" },
+              { value: "Phone", label: "Phone" },
+            ]}
           />
         </div>
       </div>
