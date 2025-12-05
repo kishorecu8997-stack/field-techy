@@ -73,15 +73,15 @@ export const InputField = ({
     };
   }
 
-  // Alphabet + space validation
+  // Alphabet
   if (alphabetOnly) {
     validationRules.validate = (value: string) => {
       if (!value || value.trim() === "")
         return requiredMessage || "This field is required.";
 
-      // allow letters + spaces: /^[a-zA-Z\s]*$/
+      // allow letters
       if (/[^a-zA-Z\s]/.test(value))
-        return "Only letters  are allowed.";
+        return "Only letters are allowed.";
 
       return true;
     };

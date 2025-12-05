@@ -71,8 +71,7 @@ const ClientEdit: React.FC = () => {
             name="industry"
             placeholder="Select Industry"
             options={industries}
-            required
-            
+            required            
           />
 
           <SelectField

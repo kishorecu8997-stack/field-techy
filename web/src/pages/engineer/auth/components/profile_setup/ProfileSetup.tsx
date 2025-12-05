@@ -214,7 +214,6 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Company/Employer"
         required
-        alphabetOnly
         rules={{ validate: (v: string) => validateCompany(v) }}
       />
       <InputField
