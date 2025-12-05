@@ -38,7 +38,6 @@ const PersonalInformation: React.FC = () => {
    * @param {EditProfileFormData} data - The validated form data.
    */
   const handleSubmit = async (data: EditProfileFormData) => {
-    console.log("Form submitted with data:", data);
     await showPopup({
       title: "Update Profile",
       body: "Are you sure you want to update your profile?",
@@ -58,6 +57,7 @@ const PersonalInformation: React.FC = () => {
           variant:"primary",
           action: async (close) => {
             toast.success("Profile Updated Successfully");
+            console.log("Form submitted with data:", data);
             close(true);
             setActiveKey("profile");
           },

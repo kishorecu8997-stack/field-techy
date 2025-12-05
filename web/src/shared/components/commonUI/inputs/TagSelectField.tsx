@@ -6,6 +6,7 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { FaChevronDown } from "react-icons/fa";
+import { Button } from "../Buttons";
 
 interface TagOption {
   value: string;
@@ -170,14 +171,13 @@ export const TagSelectField = ({
                         className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
                       >
                         {tagLabel}
-                        <button
-                          type="button"
+                        <div
                           onClick={() => removeTag(index, onChange, value)}
                           className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 focus:outline-none cursor-pointer"
                           aria-label={`Remove tag ${tagLabel}`}
                         >
                           ×
-                        </button>
+                        </div>
                       </span>
                     );
                   })}

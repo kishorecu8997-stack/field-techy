@@ -4,7 +4,6 @@ import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
-  JOB_STATUSES,
   SORT_OPTIONS,
   type Filters,
 } from "@/pages/engineer/search_result/types";
@@ -27,12 +26,9 @@ const ExploreSavedJobs = () => {
     budgetType: null,
     skills: [],
   });
-  
+
   const allSavedJobs = useMemo(() => {
-    return sampleJobs.filter(
-      (job) =>
-        job.isBookmarked === true
-    );
+    return sampleJobs.filter((job) => job.isBookmarked === true);
   }, []);
 
   // Pagination settings

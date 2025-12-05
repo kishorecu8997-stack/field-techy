@@ -5,13 +5,7 @@ import { initialDocuments } from "@/dummy_data/documents";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
-/**
- * Props for the Documents component.
- */
-interface DrawerMenuProps {
-  /** Callback when a menu item is clicked */
-  onMenuItemClick: (key: string) => void;
-}
+
 /**
  * The Documents component manages and displays a user's documents.
  * @param {DrawerMenuProps} props - The props for the component.
@@ -29,9 +23,8 @@ const Documents: React.FC= () => {
    * @param {number} id - The ID of the document to be deleted.
    */
   const handleDeleteDocument = async(id: number) => {
-    console.log("Form submitted with data:", id);
-        await showPopup({
-          title: "Delete Document",
+    await showPopup({
+      title: "Delete Document",
           body: "Are you sure you want to delete the document?",
           actionButtons: [
             {
@@ -49,6 +42,7 @@ const Documents: React.FC= () => {
               variant:"primary",
               action: async (close) => {
                 toast.success("Document Deleted Successfully");
+                console.log("Form submitted with data:", id);
                 close(true);
                 setActiveKey("profile");
               },

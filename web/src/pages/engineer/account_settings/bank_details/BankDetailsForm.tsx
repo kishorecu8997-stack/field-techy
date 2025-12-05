@@ -7,66 +7,64 @@ import {
   validateAddress,
   validateIBANForCountrywise,
   validateNameWithSpace,
-  validateSWIFTBank
+  validateSWIFTBank,
 } from "../validation";
-
 
 /**
  * Reusable form component for adding or editing bank details, with fields for bank name, account number,
  * SWIFT code, address, IBAN, and account holder name. Submit button text adapts based on `formType`.
  */
 const BankDetailsForm = ({ formType }: { formType?: string }) => {
-  
   return (
     <div className="flex flex-col h-full pb-4">
       <div className="flex flex-col overflow-auto flex-grow gap-4">
         <div className="p-4">
-        <SelectField
-          name="bankName"
-          label="Bank"
-          options={bankList}
-          placeholder="Select a bank"
-          required
-          />          
-        <InputField
-          name="bankAddress"
-          label="Bank Address"
-          placeholder="Bank address"
-          required
-          rules={{ validate: validateAddress }}
-        />
-        <InputField
-          name="name"
-          label="Name"
-          placeholder="Name"
-          required
-          rules={{             
-            validate: (value) => validateNameWithSpace(value, "Name")
-          }}
-        />
-        <InputField
-          name="accountNumber"
-          label="Account Number"
-          placeholder="Account number"
-          required
-          rules={{ validate: validateAccNumber }}
-        />
-        <InputField
-          name="iban"
-          label="IBAN"
-          placeholder="IBAN"
-          required
-          rules={{ validate: validateIBANForCountrywise }}
-        />
-        <InputField
-          name="swiftcode"
-          label="Swift Code"
-          placeholder="SWIFT code"
-          required
-          rules={{ validate: validateSWIFTBank }}
-        />
+          <SelectField
+            name="bankName"
+            label="Bank"
+            options={bankList}
+            placeholder="Select a bank"
+            required
+          />
+          <InputField
+            name="bankAddress"
+            label="Bank Address"
+            placeholder="Bank address"
+            required
+            rules={{ validate: validateAddress }}
+          />
+          <InputField
+            name="name"
+            label="Name"
+            placeholder="Name"
+            required
+            rules={{
+              validate: (value) => validateNameWithSpace(value, "Name"),
+            }}
+          />
+          <InputField
+            name="accountNumber"
+            label="Account Number"
+            placeholder="Account number"
+            required
+            rules={{ validate: validateAccNumber }}
+          />
+          <InputField
+            name="iban"
+            label="IBAN"
+            placeholder="IBAN"
+            required
+            rules={{ validate: validateIBANForCountrywise }}
+          />
+          <InputField
+            name="swiftcode"
+            label="Swift Code"
+            placeholder="SWIFT code"
+            required
+            rules={{ validate: validateSWIFTBank }}
+          />
+        </div>
       </div>
-</div>
       <div className="mt-auto flex justify-end">
         <Button
           type="submit"

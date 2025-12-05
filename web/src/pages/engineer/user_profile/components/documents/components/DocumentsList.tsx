@@ -4,6 +4,7 @@
  * It handles the display of documents, provides an "Add" button, and delegates
  * edit/delete actions to parent components via callbacks.
  */
+import { Button } from "@/shared/components/commonUI/Buttons";
 import DocumentCard from "@/shared/components/DocumentCard";
 import React from "react";
 
@@ -56,7 +57,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     <div className="bg-white rounded-lg ">
       {onAddDocument && (
         <div className="flex justify-end items-center mb-4">
-          <button
+          <Button
             onClick={onAddDocument}
             className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
           >
@@ -73,7 +74,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
               />
             </svg>
             Add Document
-          </button>
+          </Button>
         </div>
       )}
 

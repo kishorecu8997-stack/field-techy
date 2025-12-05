@@ -41,6 +41,7 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Deleted Successfully");
+            console.log("Yes button clicked", id);
             close(true);
             setActiveKey("experiences");
           },

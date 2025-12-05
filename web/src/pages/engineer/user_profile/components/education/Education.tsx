@@ -37,7 +37,6 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           value: "no",
           variant: "secondary",
           action: async (close) => {
-            console.log("No button clicked");
             close(true);
           },
         },
@@ -48,6 +47,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           action: async (close) => {
             toast.success("Education Deleted Successfully");
             close(true);
+            console.log("Yes button clicked", id);
             setActiveKey("education");
           },
         },

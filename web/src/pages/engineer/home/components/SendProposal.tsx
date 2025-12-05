@@ -47,7 +47,7 @@ const SendProposal = () => {
           },
         },
         {
-          label: "yes, submit",
+          label: "Yes, submit",
           value: "ok",
           variant: "primary",
           action: async (close) => {

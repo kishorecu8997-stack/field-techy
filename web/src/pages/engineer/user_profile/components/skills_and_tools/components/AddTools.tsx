@@ -42,7 +42,6 @@ const AddTools = () => {
           value: "no",
           variant: "secondary",
           action: async (close) => {
-            console.log("No button clicked");
             close(true);
           },
         },

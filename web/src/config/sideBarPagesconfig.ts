@@ -14,7 +14,7 @@ import TransactionDashboard from "@/pages/engineer/account_settings/bank_details
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
-import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
+import NotificationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
 import CancelJopOffer from "@/pages/engineer/my_job/job_details_components/CancelJopOffer";
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
@@ -172,7 +172,7 @@ export const sectionConfig: Record<
   myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
   withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
   notification: {
-    component: NotofocationPage,
+    component: NotificationPage,
     title: "Notification",
     parent: "settings",
   },

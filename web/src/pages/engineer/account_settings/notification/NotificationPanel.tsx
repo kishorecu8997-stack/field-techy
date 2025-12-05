@@ -12,7 +12,6 @@ const groupNotificationsByDate = (
   };
 
   notifications.forEach((notif) => {
-    console.log('notif.id :', notif.id);
     if (notif.id <= 2) {
       grouped.Today.push(notif);
     } else {
@@ -28,9 +27,7 @@ const groupNotificationsByDate = (
  * Renders each notification through the NotificationItem component with proper grouping and layout.
  */
 const NotificationPanel: React.FC = () => {
-
   const grouped = groupNotificationsByDate(mockNotifications);
-
   return (
     <div className="max-w-md w-full max-h-full overflow-y-auto">
       <div className="space-y-6">

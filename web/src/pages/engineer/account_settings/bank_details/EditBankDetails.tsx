@@ -19,7 +19,6 @@ const EditBankDetails = () => {
   );
 
   const formCtx = useForm<bankDetails>({
-    // ✅ Typed correctly
     mode: "onChange",
     delayError: 500,
     defaultValues: {
@@ -33,7 +32,6 @@ const EditBankDetails = () => {
   });
 
   const handleSubmit = async (data: bankDetails) => {
-    console.log("Submitted bank details:", data);
     await showPopup({
       title: "Edit Bank Details",
       body: "Are you sure you want to edit bank details?",
@@ -54,6 +52,7 @@ const EditBankDetails = () => {
           action: async (close) => {
             close(true);
             toast.success("Bank Details updated successfully!");
+            console.log("Submitted bank details:", data);
             setActiveKey("manageBankAccounts");
           },
         },

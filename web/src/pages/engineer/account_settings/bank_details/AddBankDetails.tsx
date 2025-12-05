@@ -26,7 +26,7 @@ const AddBankDetails = () => {
 
   const handleSubmit = async (data: bankDetails) => {
     await showPopup({
-      title: " Add Bank Details",
+      title: "Add Bank Details",
       body: "Are you sure you want to Add Bank Details?",
       actionButtons: [
         {
