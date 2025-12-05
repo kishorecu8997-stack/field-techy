@@ -1,3 +1,5 @@
+import { icons } from "@/config/icons";
+
 export interface DetailsTypes {
   name: string;
   phone: string;
@@ -461,6 +463,8 @@ export const Employement = [
 ];
 
 export const JobStatus = [
-  { value: "approve", label: "Approve" },
-  { value: "reject", label: "Reject" },
+  { value: "approve", label: "Approve", bg: "bg-green-100 text-green-700",  icon: icons.check },
+  { value: "pending", label: "Pending", bg: "bg-yellow-100 text-yellow-700",  icon: icons.pending },
+  { value: "reject", label: "Reject", bg: "bg-red-100 text-red-700",  icon: icons.close },
 ];
+

@@ -16,6 +16,8 @@ import { BiSolidMessageRounded } from "react-icons/bi";
 import { IoWalletOutline } from "react-icons/io5";
 import { MdOutlineImageNotSupported } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
+import { FaHourglass } from "react-icons/fa";
+ 
 
 
 /**
@@ -50,4 +52,5 @@ export const icons = {
   message: BiSolidMessageRounded,
   noImage: MdOutlineImageNotSupported,
   add: IoMdAdd,
+  pending:FaHourglass
 };

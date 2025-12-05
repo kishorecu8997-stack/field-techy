@@ -99,6 +99,7 @@ const ManagePayment: React.FC = () => {
                   [row.id]: value ?? "",
                 }));
               }}
+              badge
               options={JobStatus}
             />
           </div>

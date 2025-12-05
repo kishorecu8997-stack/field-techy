@@ -113,6 +113,7 @@ const AllJob: React.FC = () => {
                 }));
               }}
               options={AllJobStatus}
+              badge
             />
           </div>
         );
