@@ -15,33 +15,32 @@ import { toast } from "react-toastify";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { validateProjectName } from "@/utils/validate";
 import { useFormContext } from "react-hook-form";
-
+/**
+ * CreateProjectForm
+ *
+ * Multi-section form used to create a new project. This component composes
+ * multiple page sections (location, scheduling, engineers, budget, job settings,
+ * and service configuration) into a single form and exposes project member
+ * management on the sidebar.
+ *
+ * Behavior:
+ * - Uses `useFormContext` to access form state managed by a surrounding
+ *   `FormProvider`.
+ * - Manages local `members` state and shows a `MemberPopup` for adding members.
+ * - Opens sidebars/popups through shared UI stores (`useDrawerStore`, `usePopupStore`).
+ * - Shows toasts for user actions (delete, edit flows).
+ *
+ * Props:
+ * @param {{ isDisable: boolean }} props - `isDisable` disables inputs when true.
+ *
+ * @component
+ * @returns {JSX.Element} The create-project form UI
+ */
 export default function CreateProjectForm({
   isDisable,
 }: {
   isDisable: boolean;
 }) {
-  /**
-   * CreateProjectForm
-   *
-   * Multi-section form used to create a new project. This component composes
-   * multiple page sections (location, scheduling, engineers, budget, job settings,
-   * and service configuration) into a single form and exposes project member
-   * management on the sidebar.
-   *
-   * Behavior:
-   * - Uses `useFormContext` to access form state managed by a surrounding
-   *   `FormProvider`.
-   * - Manages local `members` state and shows a `MemberPopup` for adding members.
-   * - Opens sidebars/popups through shared UI stores (`useDrawerStore`, `usePopupStore`).
-   * - Shows toasts for user actions (delete, edit flows).
-   *
-   * Props:
-   * @param {{ isDisable: boolean }} props - `isDisable` disables inputs when true.
-   *
-   * @component
-   * @returns {JSX.Element} The create-project form UI
-   */
   const ctx = useFormContext();
   const [isMember, setIsMember] = useState<boolean>(false);
   const { showPopup } = usePopupStore();
@@ -108,7 +107,9 @@ export default function CreateProjectForm({
               required
               label={"Project Name"}
               placeholder={"Enter Project Name"}
-              rules={{ validate: (v: string) => validateProjectName(v, "Project Name") }}
+              rules={{
+                validate: (v: string) => validateProjectName(v, "Project Name"),
+              }}
             />
             <InputField
               disabled={isDisable}
@@ -116,7 +117,9 @@ export default function CreateProjectForm({
               required
               label={"Project Type"}
               placeholder={"Enter Project Type"}
-              rules={{ validate: (v: string) => validateProjectName(v, "Project Type") }}
+              rules={{
+                validate: (v: string) => validateProjectName(v, "Project Type"),
+              }}
             />
 
             <LocationPage isDisable={isDisable} />

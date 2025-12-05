@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import type { CreateProjectFormValues } from "../types";
 
-export default function CreateProject() {
 /**
  * CreateProject
  *
@@ -32,6 +31,7 @@ export default function CreateProject() {
  * @component
  * @returns {JSX.Element} The Create Project page with form and actions
  */
+export default function CreateProject() {
   const methods = useForm<CreateProjectFormValues>({
     defaultValues: { engineerLevel: "Level 1 - Level 2", discount: 10 },
     mode: "onChange",
