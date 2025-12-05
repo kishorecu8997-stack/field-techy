@@ -2,8 +2,7 @@ import {
   experienceLevel,
   safetyWears,
   skills,
-  task,
-  tools,
+  tools
 } from "@/dummy_data/client";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -12,6 +11,7 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { validateName } from "../../Validates";
 import SectionHeader from "../SectionHeader";
 /*
  *  Requirements
@@ -60,12 +60,13 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         options={tools}
       />
       {currentLocation !== CurrentLocation.dedicated && (
-        <TagSelectField
+        <InputField
           name="task"
           placeholder="Select a Task"
           label="Task"
           required
-          options={task}
+          rules={{ validate: (v: string) => validateName(v) }}
+          // options={task}
         />
       )}
       <TagSelectField

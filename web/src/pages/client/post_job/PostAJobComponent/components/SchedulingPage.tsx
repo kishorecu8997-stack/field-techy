@@ -315,11 +315,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           {...field}
                           required
                         />
-                        {/* {error && (
-                          <p className="text-red-600 text-sm">
-                            {error.message}
-                          </p>
-                        )} */}
                       </>
                     )}
                   />
@@ -329,7 +324,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                   disabled={isDisable}
                   required
                   name="after"
-                  label="After (Number of Occurrences"
+                  label="After (Number of Occurrences)"
                   placeholder="Enter number of occurrences"
                   type="number"
                 />
@@ -361,11 +356,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                               {...field}
                               required
                             />
-                            {/* {error && (
-                              <p className="text-red-600 text-sm">
-                                {error.message}
-                              </p>
-                            )} */}
                           </>
                         )}
                       />
@@ -397,11 +387,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                               {...field}
                               required
                             />
-                            {/* {error && (
-                              <p className="text-red-600 text-sm">
-                                {error.message}
-                              </p>
-                            )} */}
                           </>
                         )}
                       />
