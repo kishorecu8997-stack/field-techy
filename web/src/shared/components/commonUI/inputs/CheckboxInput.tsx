@@ -60,7 +60,7 @@ export const CheckboxInput = ({
               {isShowLabel && (
                 <label
                   htmlFor={name}
-                  className="text-gray-700 font-bold dark:text-gray-300"
+                  className="text-gray-700 font-semibold dark:text-gray-300"
                 >
                   {label} {required && <span className="text-red-600">*</span>}
                 </label>

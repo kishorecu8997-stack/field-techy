@@ -47,7 +47,7 @@ interface TagSelectFieldProps {
  * - maxTags (number): The maximum number of tags that can be selected.
  * - options (TagOption[]): The options for the dropdown menu.
  * - isTagCloseable (boolean): Whether to show a close icon next to each tag.
- * - disabled (boolean): Whether the input field is disabled. 
+ * - disabled (boolean): Whether the input field is disabled.
  */
 export const TagSelectField = ({
   name,
@@ -161,11 +161,15 @@ export const TagSelectField = ({
                   }}
                   className={`
                     ${inputClassName}
+                     ${
+                       error && !disabled
+                         ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                         : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                     }
                     ${leftIcon ? "pl-10" : ""}
                     pr-10 appearance-none cursor-pointer
                     disabled:bg-gray-100 disabled:text-gray-400 
                     dark:disabled:bg-gray-700 dark:disabled:text-gray-500
-                    /* Placeholder style for select */
                     [&>*:disabled]:text-gray-400 
                     dark:[&>*:disabled]:text-gray-500
                   `}
@@ -199,7 +203,9 @@ export const TagSelectField = ({
               )}
 
               {/* TAG LIST */}
-              <div className={`flex flex-wrap gap-2 ${value.length ? "py-2" : ""}`}>
+              <div
+                className={`flex flex-wrap gap-2 ${value.length ? "py-2" : ""}`}
+              >
                 {value.map((tagValue: string, index: number) => {
                   const tagLabel =
                     options.find((opt) => opt.value === tagValue)?.label ||

@@ -8,10 +8,7 @@ import DaySelector from "@/shared/components/DaySelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import {
-  getDurationString,
-  getMinTentativeEndDate
-} from "@/utils";
+import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { useEffect } from "react";
@@ -419,6 +416,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           validateDateRange(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
+                      disabled={isDisable}
                       render={({ field }) => (
                         <>
                           <DatePickerInput
@@ -429,11 +427,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             required
                             maxDate={endDate ? endDate : null}
                           />
-                          {/* {error && (
-                            <p className="text-red-600 text-sm">
-                              {error.message}
-                            </p>
-                          )} */}
                         </>
                       )}
                     />
@@ -467,11 +460,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             minDate={startDate ? startDate : null}
                             disabled={isDisable}
                           />
-                          {/* {error && (
-                            <p className="text-red-600 text-sm">
-                              {error.message}
-                            </p>
-                          )} */}
                         </>
                       )}
                     />

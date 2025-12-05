@@ -74,7 +74,7 @@ export const TemplateData = [
     numberOfVacancy: "2",
     skills: ["skill1"],
     tools: ["tool1"],
-    task: ["task1"],
+    task: "task1",
     safetyWears: ["safetyWear1"],
     description: "Need a frontend developer to redesign the company website.",
     backFills: "not-required",

@@ -46,7 +46,7 @@ const PostJobPage = () => {
       skills: [],
       tools: [],
       safetyWears: [],
-      task: [],
+      task: '',
       description: "",
       backFills: backFillsType.required,
       budget: "",

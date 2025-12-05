@@ -2,7 +2,7 @@ import {
   experienceLevel,
   safetyWears,
   skills,
-  tools
+  tools,
 } from "@/dummy_data/client";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -40,6 +40,16 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           label="Number of Persons Required"
           inputMode="number"
           required
+          rules={{
+            min: {
+              value: 1,
+              message: "Number of persons should be allowed in min 1",
+            },
+            max: {
+              value: 20,
+              message: "Number of persons should be allowed in 20",
+            },
+          }}
           disabled={isDisable}
         />
       </div>
@@ -53,7 +63,6 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
       />
       <TagSelectField
         disabled={isDisable}
-        required
         placeholder="Select a Tools"
         name="tools"
         label="Tools"
@@ -62,11 +71,9 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
       {currentLocation !== CurrentLocation.dedicated && (
         <InputField
           name="task"
-          placeholder="Select a Task"
+          placeholder="Task"
           label="Task"
           required
-          rules={{ validate: (v: string) => validateName(v) }}
-          // options={task}
         />
       )}
       <TagSelectField

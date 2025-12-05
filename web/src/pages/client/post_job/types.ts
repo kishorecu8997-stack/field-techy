@@ -123,7 +123,7 @@ export interface PostAJobFieldsProps {
   skills: string[];
   tools: string[];
   safetyWears: string[];
-  task: string[];
+  task: string;
   description: string;
   backFills: backFillsTypeType;
   budget: string;

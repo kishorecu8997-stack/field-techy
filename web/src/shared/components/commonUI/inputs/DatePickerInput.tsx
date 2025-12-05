@@ -247,7 +247,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
         return (
           <div className={containerClassName}>
             {isShowLabel && (
-              <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+              <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
                 {label}{" "}
                 {required !== false && <span className="text-red-600">*</span>}
               </label>
@@ -255,8 +255,19 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
             <div className={`relative ${className}`} ref={datePickerRef}>
               <div
-                className="flex items-center h-[50.23px] px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary cursor-pointer"
-                onClick={() => setIsOpen(!isOpen)}
+                className={`flex items-center h-[50.23px] px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary cursor-pointer
+                      ${
+                        disabled
+                          ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                          : "cursor-text bg-white dark:bg-gray-800"
+                      }
+                   ${
+                     error && !disabled
+                       ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                       : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                   }
+                  `}
+                onClick={() => !disabled && setIsOpen(!isOpen)}
               >
                 <input
                   type="text"

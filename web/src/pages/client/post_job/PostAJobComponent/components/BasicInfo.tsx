@@ -35,13 +35,16 @@ const BasicInfo = ({ isDisable }: { isDisable: boolean }) => {
         disabled={isDisable}
         rules={{ validate: (v: string) => validateName(v) }}
       />
-      <InputField
+      <SelectField
         label="Job Title"
         name="jobTitle"
         placeholder="Job Title"
         required
+        options={[
+          { label: "Job 1", value: "job1" },
+          { label: "job 2", value: "Job2" },
+        ]}
         disabled={isDisable}
-        rules={{ validate: (v: string) => validateName(v) }}
       />
     </div>
   );

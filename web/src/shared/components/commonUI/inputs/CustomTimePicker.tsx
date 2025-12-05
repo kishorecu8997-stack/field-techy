@@ -51,7 +51,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   maxTime,
   onChange,
   containerClassName = "w-full",
-  inputClassName = "w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer hover:border-blue-400 shadow-sm",
+  inputClassName = "w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
 }) => {
   const { control } = useFormContext();
   const [open, setOpen] = useState(false);
@@ -183,7 +183,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     <div className={`${containerClassName} relative`} ref={wrapperRef}>
       {isShowLabel && (
         <label
-          className={`block mb-1 text-md font-bold 
+          className={`block mb-1 text-md font-semibold 
             ${
               disabled
                 ? "text-gray-400 dark:text-gray-400"
@@ -236,9 +236,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 type="button"
                 onClick={handleInputClick}
                 disabled={disabled}
-                className={`${inputClassName} ${
-                  disabled ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-                }`}
+                className={`${inputClassName} 
+                ${
+                  disabled
+                    ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                    : "cursor-text bg-white dark:bg-gray-800"
+                } }
+                 ${
+                   error && !disabled
+                     ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                     : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                 }`}
               >
                 <span className="text-gray-900 text-base">
                   {rawValue

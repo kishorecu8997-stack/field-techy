@@ -316,7 +316,7 @@ export const FileUpload = ({
     <div className={containerClassName}>
       {isShowLabel && (
         <label
-          className={`block mb-1 text-md font-bold 
+          className={`block mb-1 text-md font-semibold 
             ${
               disabled
                 ? "text-gray-400 dark:text-gray-400"

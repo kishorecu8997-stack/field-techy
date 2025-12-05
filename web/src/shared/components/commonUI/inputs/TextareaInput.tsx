@@ -55,7 +55,7 @@ export const TextareaInput = ({
 
   return (
     <div className={containerClassName}>
-       {isShowLabel && (
+      {isShowLabel && (
         <label
           className={`block mb-1 text-md font-bold 
             ${
@@ -83,7 +83,13 @@ export const TextareaInput = ({
                 disabled
                   ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
                   : "cursor-text bg-white dark:bg-gray-800"
-              }`}
+              }
+               ${
+                 error && !disabled
+                   ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+               }
+              `}
               rows={4}
             />
             {error && (

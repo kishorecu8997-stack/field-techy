@@ -1,5 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
-import { interviewerData, pointOfContactData } from "@/dummy_data/admin/post_a_Job";
+import {
+  interviewerData,
+  pointOfContactData,
+} from "@/dummy_data/admin/post_a_Job";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
@@ -20,6 +23,12 @@ import LocationPage from "./LocationPage";
 import OtherDetails from "./OtherDetails";
 import Requirements from "./Requirements";
 import SchedulingPage from "./SchedulingPage";
+import { useFormContext } from "react-hook-form";
+import {
+  dedicatedFields,
+  dispatchFields,
+  scheduledFields,
+} from "./triggerfilelds";
 
 /*
  *  PostAJobFields
@@ -38,6 +47,26 @@ const PostAJobFields = ({
   const { currentLocation } = usePostAJobStore();
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
+  const { trigger } = useFormContext();
+
+  const handleTrigger = async () => {
+    let isValid = false;
+    const currentValidatedFields =
+      currentLocation === CurrentLocation.dedicated
+        ? dedicatedFields
+        : currentLocation === CurrentLocation.dispatch
+        ? dispatchFields
+        : scheduledFields;
+
+    isValid = await trigger(currentValidatedFields);
+
+    if (isValid) {
+    console.log('isValid :', isValid);
+      setIsDisable(true);
+    } else {
+      toast.error("Please fill all the required fields");
+    }
+  };
 
   const handleDeleteInterviewer = async (id: number) => {
     await showPopup({
@@ -126,7 +155,7 @@ const PostAJobFields = ({
             <Button
               isScrollToTop
               onClick={() => {
-                setIsDisable(true);
+                handleTrigger();
               }}
               className="rounded-full"
             >
