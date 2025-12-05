@@ -34,79 +34,78 @@ export default function AllowAccessPopup({
 }: AllowAccessPopupProps) {
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
 
-useEffect(() => {
-  const checkPermissions = async () => {
-    try {
-      const geo = await navigator.permissions.query({ name: "geolocation" });
-      const notif = Notification.permission;
+  useEffect(() => {
+    const checkPermissions = async () => {
+      try {
+        const geo = await navigator.permissions.query({ name: "geolocation" });
+        const notif = Notification.permission;
 
-      // --- CASE 1 ---
-      // Notification is granted but location still needs permission => show LOCATION popup only
-      if (notif === "granted" && geo.state === "prompt") {
-        setEnableNotification(false); // show location step
-        return;
-      }
+        // --- CASE 1 ---
+        // Notification is granted but location still needs permission => show LOCATION popup only
+        if (notif === "granted" && geo.state === "prompt") {
+          setEnableNotification(false); // show location step
+          return;
+        }
 
-      // --- CASE 2 ---
-      // If BOTH are decided => hide popup forever
-      if (
-        (geo.state === "granted" || geo.state === "denied") &&
-        (notif === "granted" || notif === "denied")
-      ) {
+        // --- CASE 2 ---
+        // If BOTH are decided => hide popup forever
+        if (
+          (geo.state === "granted" || geo.state === "denied") &&
+          (notif === "granted" || notif === "denied")
+        ) {
+          setAccessPopup(false);
+          return;
+        }
+
+        // --- CASE 3 ---
+        // If location still needs prompting => show first step
+        if (geo.state === "prompt") {
+          setEnableNotification(false);
+          return;
+        }
+
+        // --- CASE 4 ---
+        // If location done but notification not decided => second step
+        if (
+          (geo.state === "granted" || geo.state === "denied") &&
+          notif === "default"
+        ) {
+          setEnableNotification(true);
+          return;
+        }
+
+        // fallback
         setAccessPopup(false);
-        return;
+      } catch (err) {
+        console.error(err, "Error checking permissions");
       }
+    };
 
-      // --- CASE 3 ---
-      // If location still needs prompting => show first step
-      if (geo.state === "prompt") {
-        setEnableNotification(false);
-        return;
-      }
-
-      // --- CASE 4 ---
-      // If location done but notification not decided => second step
-      if (
-        (geo.state === "granted" || geo.state === "denied") &&
-        notif === "default"
-      ) {
-        setEnableNotification(true);
-        return;
-      }
-
-      // fallback
-      setAccessPopup(false);
-    } catch (err) {
-      console.error(err, "Error checking permissions");
-    }
-  };
-
-  if (accessPopup) checkPermissions();
-}, [accessPopup, setAccessPopup]);
-
+    if (accessPopup) checkPermissions();
+  }, [accessPopup, setAccessPopup]);
 
   if (!accessPopup) return null;
 
-const handleRealLocationRequest = () => {
-  navigator.geolocation.getCurrentPosition(
-    () => {
-      // Success
-      if (Notification.permission === "default") {
-        setEnableNotification(true); // Go to notification step
-      } else {
-        setAccessPopup(false); // Done
+  const handleRealLocationRequest = () => {
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        // Success
+        if (Notification.permission === "default") {
+          setEnableNotification(true); // Go to notification step
+        } else {
+          setAccessPopup(false); // Done
+        }
+      },
+      () => {
+        // User denied location
+        if (Notification.permission === "default") {
+          setEnableNotification(true); // Ask for notifications anyway
+        } else {
+          setAccessPopup(false);
+        }
       }
-    },
-    () => {
-      // User denied location
-      if (Notification.permission === "default") {
-        setEnableNotification(true); // Ask for notifications anyway
-      } else {
-        setAccessPopup(false);
-      }
-    }
-  );
-};
+    );
+  };
 
   // Request actual notifications from browser
   const handleRealNotificationRequest = async () => {
@@ -147,13 +146,13 @@ const handleRealLocationRequest = () => {
           <button
             type="button"
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
-           onClick={() => {
-            if (Notification.permission === "default") {
-              setEnableNotification(true); // Move to notification popup
-            } else {
-              setAccessPopup(false);
-            }
-          }}
+            onClick={() => {
+              if (Notification.permission === "default") {
+                setEnableNotification(true); // Move to notification popup
+              } else {
+                setAccessPopup(false);
+              }
+            }}
           >
             Deny Access
           </button>
