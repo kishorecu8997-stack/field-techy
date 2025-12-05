@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { ProposalsList } from "@/dummy_data/client/ManageProposal";
+import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import { earningsData } from "@/dummy_data/jobDetails";
 import ExploreEngineerHeaderCard from "@/shared/components/cards/client/ExploreEngineerHeaderCard";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -23,7 +23,6 @@ const ManageExploreEngineer = () => {
   const navigate = useNavigate();
 
   const handleAccept = async () => {
-    console.log("Accepted");
     await showPopup({
       title: "Assign Job",
       body: "Are you sure you want to assign this job?",

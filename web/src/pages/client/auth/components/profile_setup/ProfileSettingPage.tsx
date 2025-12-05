@@ -194,14 +194,13 @@ const CorporateMultiStepRegistration = () => {
       >
         {currentStep > 1 && (
           <div className="flexed absolute top-6 left-6 md:left-[20rem] lg:left-[40rem] z-10">
-            <button
-              type="button"
+            <div
               onClick={goToPreviousStep}
               className="p-2 rounded-full cursor-pointer hover:bg-teal-700 text-gray-700 hover:text-white bg-white shadow-md transition-colors"
               aria-label="Go back"
             >
               <FaAngleLeft className="text-xl" />
-            </button>
+            </div>
           </div>
         )}
 

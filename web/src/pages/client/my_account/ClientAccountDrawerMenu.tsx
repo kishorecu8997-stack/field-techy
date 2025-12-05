@@ -102,7 +102,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
           {menuItems.map((item, index, array) => (
             <React.Fragment key={item.key}>
-              <button
+              <div
                 onClick={() => {
                   if (item.key === "logout") {
                     setIsOpen(true);
@@ -154,7 +154,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
                 transition-colors
               `}
                 />
-              </button>
+              </div>
               {index < array.length - 1 && (
                 <div className="border-t border-gray-200 dark:border-gray-700"></div>
               )}

@@ -14,6 +14,12 @@ export interface ExploreEngineerHeaderCardProps {
   onDecline?: () => void;
 }
 
+/*
+ * ExploreEngineerHeaderCard
+ *    - Displays a card with details about an engineer
+ * @param {ExploreEngineerHeaderCardProps} props - The props for the ExploreEngineerHeaderCard component.
+ * @returns {JSX.Element} The rendered ExploreEngineerHeaderCard component.
+ */
 const ExploreEngineerHeaderCard: React.FC<ExploreEngineerHeaderCardProps> = ({
   name,
   rating,

@@ -20,7 +20,6 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const { showPopup } = usePopupStore();
 
   const handleSubmit = async () => {
-    console.log("Submitted");
     await showPopup({
       title: "Update Status",
       body: "Are you sure you want to update this job status?",

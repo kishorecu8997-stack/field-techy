@@ -12,7 +12,7 @@ export const messages: ChatMessage[] = [
     userId: 1,
     fromMe: false,
     message: "Your payment for the job listing has been processed.",
-    timestamp: "16:56", 
+    timestamp: "16:56",
   },
   {
     id: 2,
@@ -54,8 +54,6 @@ export const messages: ChatMessage[] = [
     timestamp: "11:00",
   },
 ];
-
-
 
 export const quillContent = `
 <h1>Hello User!</h1>

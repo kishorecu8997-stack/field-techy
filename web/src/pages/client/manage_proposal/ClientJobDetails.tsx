@@ -1,4 +1,4 @@
-import { ProposalsList } from "@/dummy_data/client/ManageProposal";
+import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
 import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";

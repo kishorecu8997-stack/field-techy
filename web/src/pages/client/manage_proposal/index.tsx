@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { ProposalsList } from "@/dummy_data/client/ManageProposal";
+import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import ManageProposalCard from "@/shared/components/cards/client/ManageProposalCard";
 import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -24,7 +24,10 @@ const ManageProposal = () => {
   // Pagination
   const totalPages = Math.ceil(filteredProposalList.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const List = filteredProposalList.slice(startIndex, startIndex + itemsPerPage);
+  const List = filteredProposalList.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 py-6">
@@ -40,9 +43,8 @@ const ManageProposal = () => {
           <div className="lg:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {List.map((proposal) => (
-                <div className="cursor-pointer">
+                <div className="cursor-pointer" key={proposal.id}>
                   <ManageProposalCard
-                    key={proposal.id} // add key if available
                     availability={proposal.availability}
                     bidAmount={proposal.bitAmount}
                     name={proposal.engineerName}

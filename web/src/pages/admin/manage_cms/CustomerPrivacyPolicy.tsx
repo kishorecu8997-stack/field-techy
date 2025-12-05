@@ -19,10 +19,9 @@ import { useState } from "react";
  * @returns {JSX.Element} The rendered CustomerPrivacyPolicy component.
  */
 export default function CustomerPrivacyPolicy() {
-const [content, setContent] = useState(quillContent);
+  const [content, setContent] = useState(quillContent);
 
   const onChange = (html: string) => {
-    console.log("onChange:", html);
     setContent(html);
   };
   return (

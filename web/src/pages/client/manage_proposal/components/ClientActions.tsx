@@ -1,6 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useNavigate } from "react-router-dom";
+import { createPathBuilder } from "@/utils";
+import { useNavigate, useParams } from "react-router-dom";
 
 /**
  * ClientActions Component
@@ -9,12 +10,18 @@ import { useNavigate } from "react-router-dom";
  * */
 const ClientActions = () => {
   const navigate = useNavigate();
+
+  const { id } = useParams();
+
+  const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
+  const URl = makeUrl({ id: id as string });
+
   return (
     <div className="flex flex-row justify-end">
       <Button
         variant="primary"
         onClick={() => {
-          navigate(absoluteUrls.client.home.SelectEngineer);
+          navigate(URl);
         }}
       >
         Invite a job

@@ -12,6 +12,13 @@ export interface ManageProposalCardProps {
   onClick?: () => void;
 }
 
+/**
+ * ManageProposalCard Component
+ * A reusable card component for displaying details about a proposal.
+ *
+ * @param {ManageProposalCardProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered ManageProposalCard component.
+ */
 const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
   name,
   rating,

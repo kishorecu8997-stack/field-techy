@@ -2,7 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import {
   EngineersList,
   ProposalsList,
-} from "@/dummy_data/client/ManageProposal";
+} from "@/dummy_data/client/manage-proposal";
 import { sampleJobs } from "@/dummy_data/searchData";
 import FreelancerCard from "@/shared/components/cards/client/FreelancerCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -57,7 +57,6 @@ const SelectEngineer = () => {
   };
 
   const handleInvite = async () => {
-    console.log("Invited");
     await showPopup({
       title: "Invite to Job",
       body: "Are you sure you want to invite this engineer?",
@@ -84,7 +83,6 @@ const SelectEngineer = () => {
     });
   };
 
-  console.log(matchedJob);
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
