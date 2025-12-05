@@ -234,11 +234,11 @@ const CorporateMultiStepRegistration = () => {
                   : "Complete Registration"
                 : "Next"}
             </Button>
-                      {/* Allow access popup */}
-                      <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />
           </div>
         </div>
-      </FormContainer>      
+      </FormContainer>  
+      {/* Allow access popup */}
+      <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />    
     </>
   );
 };
