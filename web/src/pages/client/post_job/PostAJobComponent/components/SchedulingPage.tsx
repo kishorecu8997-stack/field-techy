@@ -8,7 +8,10 @@ import DaySelector from "@/shared/components/DaySelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { getDuration } from "@/utils";
+import {
+  getDurationString,
+  getMinTentativeEndDate
+} from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { useEffect } from "react";
@@ -41,18 +44,73 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const startDate = ctx.watch("startDate");
   const endDate = ctx.watch("endDate");
 
+  const minTentativeEndDate = getMinTentativeEndDate(
+    applicationEndDate,
+    tentativeStartDate
+  );
+
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
-      const duration = getDuration(tentativeStartDate, tentativeEndDate);
+      const duration = getDurationString({
+        startDateStr: tentativeStartDate,
+        endDateStr: tentativeEndDate,
+      });
       ctx.setValue("jobDuration", duration);
     }
   }, [tentativeStartDate, tentativeEndDate]);
+
+  useEffect(() => {
+    if (startDate && endDate && startTime && endTime) {
+      const duration = getDurationString({
+        startDateStr: startDate,
+        endDateStr: endDate,
+        startTime: startTime,
+        endTime: endTime,
+      });
+      ctx.setValue("estimatedDuration", duration);
+    }
+  }, [startDate, startTime, endDate, endTime]);
 
   return (
     <>
       <SectionHeader title="Scheduling" />
       {currentLocation === CurrentLocation.dedicated ? (
         <div className="w-full space-y-2">
+          <div className="flex flex-row w-full gap-4 items-center">
+            <div className="relative w-full">
+              <Controller
+                name="applicationEndDate"
+                rules={{
+                  validate: (value) =>
+                    validateDateRange(
+                      value,
+                      ctx.getValues("applicationEndDate")
+                    ),
+                }}
+                control={ctx.control}
+                render={({ field }) => (
+                  <>
+                    <DatePickerInput
+                      disabled={isDisable}
+                      label=" Application End Date"
+                      placeholder="Select Application End date"
+                      {...field}
+                      required
+                      maxDate={tentativeStartDate ? tentativeStartDate : null}
+                    />
+                  </>
+                )}
+              />
+            </div>
+            <div className="w-full">
+              <CustomTimePicker
+                disabled={isDisable}
+                label="Application End Time"
+                name="applicationEndTime"
+                required
+              />
+            </div>
+          </div>
           <div className="flex flex-row w-full gap-4 items-center">
             <div className="relative w-full">
               <Controller
@@ -76,9 +134,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       minDate={applicationEndDate ? applicationEndDate : null}
                       maxDate={tentativeEndDate ? tentativeEndDate : null}
                     />
-                    {/* {error && (
-                      <p className="text-red-600 text-sm">{error.message}</p>
-                    )} */}
                   </>
                 )}
               />
@@ -98,55 +153,15 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
-                      minDate={applicationEndDate ? applicationEndDate : null}
+                      minDate={minTentativeEndDate}
                       required
                     />
-                    {/* {error && (
-                      <p className="text-red-600 text-sm">{error.message}</p>
-                    )} */}
                   </>
                 )}
               />
             </div>
           </div>
-          <div className="flex flex-row w-full gap-4 items-center">
-            <div className="relative w-full">
-              <Controller
-                name="applicationEndDate"
-                rules={{
-                  validate: (value) =>
-                    validateDateRange(
-                      value,
-                      ctx.getValues("applicationEndDate")
-                    ),
-                }}
-                control={ctx.control}
-                render={({ field }) => (
-                  <>
-                    <DatePickerInput
-                      disabled={isDisable}
-                      label=" Application End Date"
-                      placeholder="Select Application End date"
-                      {...field}
-                      required
-                      maxDate={tentativeStartDate ? tentativeStartDate : null}
-                    />
-                    {/* {error && (
-                      <p className="text-red-600 text-sm">{error.message}</p>
-                    )} */}
-                  </>
-                )}
-              />
-            </div>
-            <div className="w-full">
-              <CustomTimePicker
-                disabled={isDisable}
-                label="Application End Time"
-                name="applicationEndTime"
-                required
-              />
-            </div>
-          </div>
+
           <InputField
             disabled={true}
             name={"jobDuration"}
@@ -203,11 +218,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             {...field}
                             required
                           />
-                          {/* {error && (
-                            <p className="text-red-600 text-sm">
-                              {error.message}
-                            </p>
-                          )} */}
                         </>
                       )}
                     />
@@ -493,7 +503,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                 </div>
               </div>
               <InputField
-                disabled={isDisable}
+                disabled={true}
                 name={"estimatedDuration"}
                 label={"Estimated Duration"}
                 placeholder={"Enter Estimated Duration"}

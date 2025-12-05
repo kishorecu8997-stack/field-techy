@@ -39,6 +39,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
           name="numberOfVacancy"
           label="Number of Persons Required"
           inputMode="number"
+          required
           disabled={isDisable}
         />
       </div>

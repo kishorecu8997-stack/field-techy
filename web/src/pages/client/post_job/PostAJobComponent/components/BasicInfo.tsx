@@ -3,6 +3,7 @@ import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
 import { validateName } from "../../Validates";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 
 /*
  *  Basic Info
@@ -15,13 +16,16 @@ const BasicInfo = ({ isDisable }: { isDisable: boolean }) => {
 
   return (
     <div className="w-full space-y-2">
-      <InputField
+      <SelectField
         label="Project Name"
         name="projectName"
         placeholder="Project Name"
-        disabled={isDisable}
         required={currentLocation === CurrentLocation.dedicated}
-        rules={{ validate: (v: string) => validateName(v) }}
+        options={[
+          { label: "Project 1", value: "project1" },
+          { label: "Project 2", value: "project2" },
+        ]}
+        disabled={isDisable}
       />
       <InputField
         label="Job Name"

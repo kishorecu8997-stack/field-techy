@@ -8,7 +8,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import type { DatePickerInputProps } from "./types";
 
-
 // /**
 //  * Props for the DatePickerInput component.
 //  */
@@ -262,6 +261,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                 <input
                   type="text"
                   value={inputValue}
+                  disabled={disabled}
                   placeholder={placeholder}
                   onChange={handleInputChange}
                   onBlur={handleInputBlur}
