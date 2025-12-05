@@ -14,17 +14,13 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   onDownload
 }) => {
   if (!isOpen) return null;
- 
   // Function to generate A4 PDF and download directly
   const generateAndDownloadPDF = async () => {
     try {
- 
       const today = new Date();
- 
       // Use user's locale for formatting
       const locale = (navigator && navigator.language) || 'en-US';
       const currency = 'USD'; // sample currency - replace with real currency when available
- 
       // Sample transaction data (use your real transaction object when available)
       const sampleTransaction = {
         transactionId: `TX-${String(100000 + Math.floor(Math.random() * 899999))}`,
@@ -42,7 +38,6 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
         balanceBefore: 1000.0,
         supportContact: 'support@fieldtechy.com',
       };
- 
       // compute totals dynamically so amounts always reflect items
       const itemsTotal = sampleTransaction.items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
       const taxRate = 0; // set if you need tax (e.g., 0.1 for 10%)
@@ -78,7 +73,7 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
         const total = item.qty * item.unitPrice;
         return `<tr><td style="padding:12px; border:1px solid #ddd;">${item.description}</td><td style="padding:12px; text-align:center; border:1px solid #ddd;">${item.qty}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(item.unitPrice)}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(total)}</td></tr>`;
       }).join('');
- 
+    //  Here I used custom CSS, not Tailwind, because I’m using jsPDF and html2canvas. These tools work with raw HTML and CSS, so that’s why.
       container.innerHTML = `
         <div style="font-family: Arial, sans-serif; max-width: 210mm; background: white; color: #333;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
@@ -154,7 +149,7 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
             <div style="margin-top:6px; color:#999;">Generated on ${df.format(new Date())}</div>
           </div>
         </div>
-      `;
+      `; 
  
       // Append hidden container to DOM to allow html2canvas to render styles
       container.style.position = 'fixed';
@@ -162,11 +157,10 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
       document.body.appendChild(container);
  
       // Create canvas from the container
+      // @ts-ignore
       const canvas = await html2canvas(container, { scale: 2, useCORS: true });
- 
       // Remove temporary container
       document.body.removeChild(container);
- 
       // Create PDF using jsPDF
       const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -208,10 +202,8 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
           yOffset += pageHeightPx;
         }
       }
- 
       // Save PDF directly using required filename format
       pdf.save(filename);
- 
       // Close modal
       onClose();
     } catch (error) {
@@ -254,7 +246,7 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
  
           {/* Description */}
           <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
-            Do You Want to Download Invoice as PDF Document?
+            Do You Want to Download Invoice as a PDF Document?
           </p>
  
           {/* Download Button */}
@@ -270,6 +262,5 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
     </div>
   );
 };
- 
 export default DownloadInvoice;
  
