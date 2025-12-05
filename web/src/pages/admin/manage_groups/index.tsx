@@ -9,6 +9,10 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import type { ManageGroups } from "./type";
 import { CiEdit } from "react-icons/ci";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
@@ -24,9 +28,37 @@ const HandleStatus = ({ status: value }: { status: boolean }) => {
   );
 };
 
-const ManageGroupList: React.FC = () => { 
+const ManageGroupList: React.FC = () => {
+  const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation handler
+  const handleDelete = (row: ManageGroups) => {
+    showPopup({
+      title: "Delete Group",
+      body: "Are you sure you want to delete this group?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "danger",
+          action: async (close) => {
+            console.log("Deleted group:", row);
+            toast.success("Group deleted successfully");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<ManageGroups>[] = [
-    { key: "srNo", label: "S. No" },
+    { key: "srNo", label: "Sr.No." },
     { key: "groupName", label: "Group Name" },
     { key: "groupDescription", label: "Group Description" },
     { key: "noOfEngineers", label: "No. of Engineers" },
@@ -42,7 +74,7 @@ const ManageGroupList: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: ManageGroups) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
@@ -61,7 +93,10 @@ const ManageGroupList: React.FC = () => {
             />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">
-            <RiDeleteBin6Line className="text-red-600" />
+            <RiDeleteBin6Line
+              className="text-red-600"
+              onClick={() => handleDelete(row)}
+            />
           </div>
         </div>
       ),
@@ -70,15 +105,13 @@ const ManageGroupList: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center">
         <h1 className="font-semibold">Manage group</h1>
         <div className="flex gap-4">
           <Button
             type="submit"
             className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            // onClick={() =>
-            //   navigate(absoluteUrls.admin.home.manage_engineer_add)
-            // }
+            onClick={() => navigate(absoluteUrls.admin.home.manage_groups_add)}
           >
             Add Group
           </Button>
@@ -98,5 +131,5 @@ const ManageGroupList: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 export default ManageGroupList;

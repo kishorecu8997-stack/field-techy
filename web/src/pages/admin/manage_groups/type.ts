@@ -9,3 +9,9 @@ export interface ManageGroups {
   updatedBy: string;
   status: boolean;
 }
+
+
+export interface AddGroup {
+  groupName: string;
+  groupDescription: string;
+}

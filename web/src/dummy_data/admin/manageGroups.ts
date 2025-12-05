@@ -112,3 +112,111 @@ export const manageGroups: ManageGroups[] = [
     status: true,
   },
 ];
+
+
+export interface DetailsTypes {
+  name: string;
+  phone: string;
+  email: string;
+}
+export interface SelectEngineerProps {
+  id: number;
+  engineerID: number | string;
+  details: DetailsTypes;
+  documents: string;
+  location: string;
+  registrationDate: string;
+  walletBalance: string;
+  kycStatus: string;
+  employementStatus: string;
+  avgRating: number;
+  approvalStatus: string;
+}
+
+export const SelectEngineer: SelectEngineerProps[] = [
+  {
+    id: 1,
+    engineerID: "ENG-1001",
+    details: {
+      name: "Alice Johnson",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
+    documents: "View",
+    location: "Mumbai, India",
+    registrationDate: "2024-02-15",
+    walletBalance: "₹2,500",
+    kycStatus: "Verified",
+    employementStatus: "Active",
+    avgRating: 4.7,
+    approvalStatus: "Approved",
+  },
+  {
+    id: 2,
+    engineerID: "ENG-1002",
+    details: {
+      name: "Brian Lee",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
+    documents: "View",
+    location: "Pune, India",
+    registrationDate: "2024-03-10",
+    walletBalance: "₹1,200",
+    kycStatus: "Pending",
+    employementStatus: "Inactive",
+    avgRating: 3.9,
+    approvalStatus: "Under Review",
+  },
+  {
+    id: 3,
+    engineerID: "ENG-1003",
+    details: {
+      name: "Chloe Smith",
+      phone: "+91 95765 43210",
+      email: "chloe.smith@example.com",
+    },
+    documents: "View",
+    location: "Bangalore, India",
+    registrationDate: "2024-05-21",
+    walletBalance: "₹4,800",
+    kycStatus: "Verified",
+    employementStatus: "Active",
+    avgRating: 4.5,
+    approvalStatus: "Approved",
+  },
+  {
+    id: 4,
+    engineerID: "ENG-1004",
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
+    documents: "View",
+    location: "Delhi, India",
+    registrationDate: "2024-06-30",
+    walletBalance: "₹3,100",
+    kycStatus: "Rejected",
+    employementStatus: "Suspended",
+    avgRating: 3.4,
+    approvalStatus: "Rejected",
+  },
+  {
+    id: 5,
+    engineerID: "ENG-1005",
+    details: {
+      name: "Arjun Mehta",
+      phone: "+91 98765 43210",
+      email: "alice.johnson@example.com",
+    },
+    documents: "View",
+    location: "Hyderabad, India",
+    registrationDate: "2024-07-14",
+    walletBalance: "₹6,000",
+    kycStatus: "Verified",
+    employementStatus: "Active",
+    avgRating: 4.9,
+    approvalStatus: "Approved",
+  },
+];

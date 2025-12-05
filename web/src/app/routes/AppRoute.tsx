@@ -211,6 +211,9 @@ const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
 const ManageGroups = React.lazy(() => import("@/pages/admin/manage_groups"));
+const ManageGroupsAdd = React.lazy(
+  () => import("@/pages/admin/manage_groups/AddGroup")
+);
 
 const OfferPages = React.lazy(
   () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
@@ -645,6 +648,10 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_groups,
             element: withSuspense(ManageGroups),
+          },
+          {
+            path: urls.admin.home.manage_groups_add,
+            element: withSuspense(ManageGroupsAdd),
           },
         ],
       },
