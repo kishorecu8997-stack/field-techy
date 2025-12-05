@@ -1,10 +1,11 @@
+import { combineTo24, time24ToMinutes, to24 } from "@/utils";
+import { Clock } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { Clock } from "lucide-react";
 
 interface TimePickerProps {
   name: string;
@@ -20,29 +21,28 @@ interface TimePickerProps {
   inputClassName?: string;
 }
 
-/* -------- Helpers -------- */
-
-const to24 = (time: string) => {
-  if (!time) return "";
-  const [hhmm, period] = time.split(" ");
-  // eslint-disable-next-line prefer-const
-  let [hour, minute] = hhmm.split(":").map(Number);
-
-  if (period === "PM" && hour !== 12) hour += 12;
-  if (period === "AM" && hour === 12) hour = 0;
-
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-};
-
-const combineTo24 = (h: string, m: string, p: string) => to24(`${h}:${m} ${p}`);
-
-const time24ToMinutes = (value24: string | null | undefined) => {
-  if (!value24) return null;
-  const [h, m] = value24.split(":").map(Number);
-  if (Number.isNaN(h) || Number.isNaN(m)) return null;
-  return h * 60 + m;
-};
-
+/**
+ * A custom time picker component that allows users to select hours and minutes.
+ *
+ * Features:
+ * - A simple, intuitive UI with up/down arrows for hours and minutes.
+ * - Automatically detects and applies dark mode styling based on system preferences.
+ * - Can be used as a controlled component by passing `value` and `onChange` props.
+ * - Closes automatically when clicking outside the component.
+ * - Supports a label, placeholder, and required indicator.
+ *
+ * @component
+ * @example
+ * const [time, setTime] = useState('14:30');
+ * return (
+ *   <TimePicker
+ *     label="Appointment Time"
+ *     value={time}
+ *     onChange={setTime}
+ *     required
+ *   />
+ * );
+ */
 export const TimePicker: React.FC<TimePickerProps> = ({
   name,
   label = "Select Time",
@@ -54,11 +54,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   maxTime,
   onChange,
   containerClassName = "w-full",
-  inputClassName = "w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer hover:border-blue-400 shadow-sm",
+  inputClassName = "w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
 }) => {
   const { control } = useFormContext();
   const [open, setOpen] = useState(false);
-  const [direction, setDirection] = useState<"up" | "down">("down");
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   const hours = Array.from({ length: 12 }, (_, i) =>
@@ -87,32 +86,6 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
-  /* ---- Smart popup positioning ---- */
-  useEffect(() => {
-    const recompute = () => {
-      if (!wrapperRef.current) return;
-      const rect = wrapperRef.current.getBoundingClientRect();
-      const viewH = window.innerHeight;
-      const dropdownH = 250;
-
-      const spaceBelow = viewH - rect.bottom;
-      const spaceAbove = rect.top;
-
-      if (spaceBelow < dropdownH && spaceAbove > spaceBelow) setDirection("up");
-      else setDirection("down");
-    };
-
-    if (open) recompute();
-
-    window.addEventListener("scroll", recompute, true);
-    window.addEventListener("resize", recompute);
-
-    return () => {
-      window.removeEventListener("scroll", recompute, true);
-      window.removeEventListener("resize", recompute);
-    };
-  }, [open]);
 
   /* ---- Required message ---- */
   let requiredMessage: string | false = false;
@@ -186,7 +159,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
     <div className={`${containerClassName} relative`} ref={wrapperRef}>
       {isShowLabel && (
         <label
-          className={`block mb-1 text-md font-bold 
+          className={`block mb-1 text-md font-semibold 
             ${
               disabled
                 ? "text-gray-400 dark:text-gray-400"
@@ -239,9 +212,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 type="button"
                 onClick={handleInputClick}
                 disabled={disabled}
-                className={`${inputClassName} ${
-                  disabled ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""
-                }`}
+                className={`${inputClassName} 
+                ${
+                  disabled
+                    ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                    : "cursor-text bg-white dark:bg-gray-800"
+                } 
+                 ${
+                   error && !disabled
+                     ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                     : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                 }`}
               >
                 <span className="text-gray-900 text-base">
                   {rawValue
@@ -251,21 +232,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 <Clock className="w-5 h-5 text-gray-600" />
               </button>
 
-              {/* ---- UPDATED DROPDOWN ---- */}
+              {/* ---- POPUP ALWAYS OPENS ABOVE ---- */}
               <div
                 className={`
                   absolute z-50 bg-white shadow-lg border rounded-lg p-3 flex gap-4
                   transition-all duration-200 ease-out transform
 
-                  ${
-                    direction === "down"
-                      ? "top-full mt-2 origin-top"
-                      : "bottom-full mb-2 origin-bottom"
-                  }
+                  bottom-full mb-2 origin-bottom
 
                   ${
                     open
-                      ? "opacity-100 scale-100 overflow-visible"
+                      ? "opacity-100 scale-100 overflow-visible pointer-events-auto"
                       : "opacity-0 scale-95 pointer-events-none overflow-hidden"
                   }
                 `}

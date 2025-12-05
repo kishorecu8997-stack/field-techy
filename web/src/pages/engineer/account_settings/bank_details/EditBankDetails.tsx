@@ -60,6 +60,7 @@ const EditBankDetails = () => {
     });
   };
 
+
   return (
     <FormContainer
       methods={formCtx}

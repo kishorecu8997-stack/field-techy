@@ -214,9 +214,8 @@ const roleListPage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
-const OfferPages = React.lazy(
-  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
-);
+const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
@@ -445,6 +444,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientSearchResult),
       },
       {
+        path: urls.client.home.post_a_job,
+        element: withSuspense(PostAJobPage),
+      },
+       {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },

@@ -1,9 +1,9 @@
-import xss from "xss";
-import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
 import type {
   PricingField,
   PricingRelations,
 } from "@/pages/admin/rate_card/types";
+import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
+import xss from "xss";
 
 export const validateName = (value: string) => {
   const raw = value || "";

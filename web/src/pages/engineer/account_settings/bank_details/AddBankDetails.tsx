@@ -27,30 +27,28 @@ const AddBankDetails = () => {
   const handleSubmit = async (data: bankDetails) => {
     await showPopup({
       title: "Add Bank Details",
-      body: "Are you sure you want to Add Bank Details?",
+      body: "Are you sure you want to add this bank details?",
       actionButtons: [
         {
           label: "Cancel",
-          value: "no",
-          variant: "secondary",
-          action: async (close) => {
-            console.log("No button clicked");
-            close(true);
-          },
+          value: "cancel",
+          variant: "outline",
         },
         {
-          label: "Yes, Add",
+          label: "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Bank Details added Successfully");
+            console.log("Submitted data:", data);
+            toast.success("Bank details added successfully");
             close(true);
-            setActiveKey("settings");
+            setActiveKey("manageBankAccounts");
           },
         },
       ],
-    });   
+    });
   };
+
   return (
     <FormContainer
       methods={fromCtx}

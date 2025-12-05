@@ -343,7 +343,7 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
   const raw = value || "";
 
     // Reject any whitespace (leading/trailing/internal)
-    if (/\s/.test(raw)) return `${fieldLabel} must not start or end with a space`;
+    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
 
     // Only letters allowed (A-Z)
     if (!/^[A-Za-z]+$/.test(raw))

@@ -2,10 +2,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { validatePassword } from "./validation";
-import type { bankDetails } from "./types";
-import PasswordSection from "../auth/components/PasswordSection";
 import { toast } from "react-toastify";
+import PasswordSection from "../auth/components/PasswordSection";
+import type { bankDetails } from "./types";
+import { validatePassword } from "./validation";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
@@ -14,46 +14,33 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * Uses React Hook Form for validation and submission handling.
  */
 const ChangePassword = () => {
-  return (
-    <div className="h-full">
-      <ChangePasswordFields />
-    </div>
-  );
-};
-
-export default ChangePassword;
-
-const ChangePasswordFields = () => {
-  const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
   const FormCtx = useForm<bankDetails>();
+  const { setActiveKey } = useDrawerStore();
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = async(data: bankDetails) => {
-await showPopup({
+  const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
       title: "Change Password",
-      body: "Are you sure you want to update the password?",
+      body: "Are you sure you want to change your password?",
       actionButtons: [
         {
           label: "Cancel",
-          value: "no",
-          variant: "secondary",
-          action: async (close) => {
-            console.log("No button clicked");
-            close(true);
-          },
+          value: "cancel",
+          variant: "outline",
         },
         {
           label: "Yes, update",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Password Updated Successfully");
+            console.log("Submitted data:", data);
+            toast.success("Password changed successfully");
             close(true);
             setActiveKey("settings");
           },
         },
       ],
-    });   
+    });
   };
 
   return (
@@ -70,7 +57,6 @@ await showPopup({
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-
         <PasswordSection />
       </div>
 
@@ -85,3 +71,5 @@ await showPopup({
     </FormContainer>
   );
 };
+
+export default ChangePassword;
