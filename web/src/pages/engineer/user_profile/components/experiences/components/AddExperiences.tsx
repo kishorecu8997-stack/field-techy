@@ -3,7 +3,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm} from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange } from "../../../Validate";
+import { validateCompany, validateDateRange,validateEndDate } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
@@ -39,7 +39,7 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
     },
     mode: "onSubmit",
@@ -93,7 +93,7 @@ const AddExperiences = () => {
           name="startDate"
           label="Start Date"
           isShowLabel={false}
-          placeholder="Start date"
+          placeholder="DD/MM/YYYY"
           required
           maxDate={new Date()}
           rules={{
@@ -101,15 +101,20 @@ const AddExperiences = () => {
               validateDateRange(value, methods.getValues("endDate")),
           }}
         />
+        
         <DatePickerInput
           name="endDate"
           label="End Date"
           isShowLabel={false}
-          placeholder="End date (optional)"
+          placeholder="DD/MM/YYYY"
           minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
           maxDate={new Date()}
-          rules={{ onChange: () => methods.trigger("startDate") }}
-        />
+          rules={{
+            onChange: () => methods.trigger("startDate"),
+            validate: validateEndDate,
+          }}
+/>
+
       </div>
 
       {/* Fixed bottom button */}

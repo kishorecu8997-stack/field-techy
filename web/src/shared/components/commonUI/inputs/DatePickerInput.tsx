@@ -112,7 +112,8 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           const text = e.target.value;
           setInputValue(text);
           const parsed = parseDate(text);
-          if (parsed && isDateValid(parsed)) {
+         // if (parsed && isDateValid(parsed)) {////i changed here
+         if (parsed ) {
             onChange(parsed);
           } else if (text === "") {
             onChange(null);
@@ -120,7 +121,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
         };
 
         const handleInputBlur = () => {
-          setInputValue(formatDate(value));
+          //setInputValue(formatDate(value));//change here also
         };
 
         const handleDateSelect = (date: Date) => {

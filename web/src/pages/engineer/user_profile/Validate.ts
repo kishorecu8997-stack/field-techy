@@ -281,25 +281,22 @@ export const validateDateRange = (
 
   return true;
 };
-export const validatepastDateRange = (
-  startDate: Date | null,
-  endDate: Date | null
-) => {
-  if (!startDate) {
-    return "Start date is required";
-  }
 
-  if (startDate <= new Date()) {
-    return "Start date cannot be in the Past";
-  }
+export const validateEndDate = (value: Date | null) => {
+  if (!value) return "End date is required";
 
-  if (endDate && startDate >= endDate) {
-    return "Start date must be on or before the project end date";
+  const selected = new Date(value);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selected.setHours(0, 0, 0, 0);
+
+  if (selected > today) {
+    return "End date can't be in the future";
   }
 
   return true;
 };
-
 
 export const validateFilterDateRange = (
   startDate: Date | null,

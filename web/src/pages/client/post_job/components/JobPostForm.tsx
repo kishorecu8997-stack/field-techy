@@ -1,7 +1,6 @@
 import React from "react";
 import {  FormProvider, useFormContext } from "react-hook-form";
 import FormSection from "./FormSection";
-//import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 
 import {
   JOB_TYPES,
@@ -25,6 +24,10 @@ import {
   validateAlphabeticText,
   validateCurrencyText,
   validateAlphabeticTextArea,
+  validateTime,
+  normalize,
+  validateStartDate,
+  validateProjectDeadline
 } from "../Validates";
 
 /**
@@ -39,13 +42,9 @@ const JobPostForm: React.FC = () => {
    * @description Initializes `react-hook-form` with default values and submission mode.
    * This hook provides methods for form registration, submission, and state management.
    */
-     // const {watch, } = useForm();
  
 const methods = useFormContext();
-({
-  
-    
- 
+({    
 });
 
 
@@ -56,31 +55,9 @@ const methods = useFormContext();
   const inputClass = () =>
     "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
 
-  const normalize = (d: any) => {
-  if (!d) return null;
-  const date = d instanceof Date ? d : new Date(d);
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-};
-const validateTime = (selectedDate: any, selectedTime: string) => {
-  if (!selectedDate || !selectedTime) return true;
 
-  const now = new Date();
-  const date = new Date(selectedDate);
 
-  // Future dates → no restriction
-  if (date.toDateString() !== now.toDateString()) return true;
 
-  // Selected datetime
-  const [h, m] = selectedTime.split(":").map(Number);
-  const selected = new Date(date);
-  selected.setHours(h, m, 0, 0);
-
-  if (selected <= now) {
-    return "You cannot select a past time for today";
-  }
-
-  return true;
-};
 React.useEffect(() => {
   const date = methods.watch("startDate");
   const time = methods.watch("startTime");
@@ -112,6 +89,7 @@ React.useEffect(() => {
         <FormSection title="Basic Information">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
+              
               <InputField
                 name="jobTitle"
                 label="Job Title"
@@ -178,33 +156,30 @@ React.useEffect(() => {
                 required
               />
             </div>
-
-                <DatePickerInput
-                    name="startDate"
-                    label="Start Date"
-                    required
-                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
-                    maxDate={normalize(methods.watch("projectDeadline")) || undefined}
-                    rules={{
-                      validate: (startRaw) => {
-                        const endRaw = methods.getValues("projectDeadline");
-
-                        const start = normalize(startRaw);
-                        const end = normalize(endRaw);
-
-                        if (!start) return "Start date is required";
-                        if (start <= new Date()) {
-                           return "Past dates are not allowed—please choose today or a future date";
-                    }
-                        if (end && start > end)
-                          return "Start date must be before project deadline";
-
-                        return true;
-                      },
-                    }}
+<div>
+              
+            <DatePickerInput
+              name="startDate"
+              label="Start Date"
+              placeholder="DD/MM/YYYY"
+              minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+              maxDate={normalize(methods.watch("projectDeadline")) || undefined}
+              rules={{
+                validate: (value) =>
+                  validateStartDate(
+                    value,
+                    methods.getValues("projectDeadline"),
+                    normalize
+                  ),
+              }}
+              required
 />
+            <p className="text-gray-500 text-sm mt-1">
+                Select today or a future date. Past dates are not allowed.
+              </p>
+            </div>
 
-
+<div>
             <TimeInput 
               label="Start Time" 
               name="startTime" 
@@ -214,6 +189,7 @@ React.useEffect(() => {
                 validateTime(methods.watch("startDate"), value),
               }}
             />
+            </div>
 
                   
             <div>
@@ -371,30 +347,28 @@ React.useEffect(() => {
               required
             />
 
-                 
-      <DatePickerInput
-        name="projectDeadline"
-        label="Project Deadline"
-        required
-
-        minDate={normalize(methods.watch("startDate")) || new Date(new Date().setHours(0, 0, 0, 0))}
-        rules={{
-          validate: (endDateRaw) => {
-            const startRaw = methods.getValues("startDate");
-      
-            const start = normalize(startRaw);
-            const end = normalize(endDateRaw);
-      
-            if (!end) return "ProjectDeadline is required";
-            if (!start) return "Select start date first";
-      
-            if (end < start) return "ProjectDeadline must be after start date";
-      
-            return true;
-          },
-        }}
-      /> 
-
+                 <div>
+                    <DatePickerInput
+          name="projectDeadline"
+          label="Project Deadline"
+          placeholder="DD/MM/YYYY"
+          required
+          minDate={
+            normalize(methods.watch("startDate")) ||
+            new Date(new Date().setHours(0, 0, 0, 0))
+          }
+          rules={{
+            validate: (value) =>
+              validateProjectDeadline(
+                value,
+                methods.getValues("startDate"),
+                normalize
+              ),
+          }}
+        />
+       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+End date must be after Start date to enable available dates.  </p>
+</div>
       
             <div className="md:col-span-2">
               <SelectField
