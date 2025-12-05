@@ -8,7 +8,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import type { DatePickerInputProps } from "./types";
 
-
 /**
  * A react-hook-form compatible date picker input component.
  *
@@ -110,7 +109,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
         // Handle manual input
         const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const text = e.target.value;
-          const sanitized = text.replace(/[^0-9/]/g, "");
+          const sanitized = String(text || "").replace(/[^0-9/]/g, "");
           setInputValue(sanitized);
           const parsed = parseDate(sanitized);
           if (parsed && isDateValid(parsed)) {

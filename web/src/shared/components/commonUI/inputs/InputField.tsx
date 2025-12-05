@@ -27,6 +27,15 @@ interface InputFieldProps {
     | "currency";
 }
 
+/**
+ * InputField - A reusable input component for react-hook-form.
+ *
+ * Supports text, email, number, and date types.
+ * Integrates with react-hook-form using Controller.
+ * Shows a * if required.
+ * Supports left icons and custom styling.
+ */
+
 export const InputField = ({
   name,
   label,
@@ -39,7 +48,7 @@ export const InputField = ({
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
   showValidationCheck = false,
-  disabled = false,
+  disabled = false, // Added disabled default to false
   onChange,
   allowedCharacters,
 }: InputFieldProps) => {
@@ -60,12 +69,12 @@ export const InputField = ({
     ...rules,
   };
 
-  // Email pattern
+  // Add email pattern validation if type is email (unless overridden in rules)
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "Please enter a valid email address",
-      ...rules?.pattern,
+      ...rules?.pattern, // merge with custom pattern if provided
     };
   }
 
@@ -124,6 +133,7 @@ export const InputField = ({
               <input
                 {...field}
                 id={name}
+                // Note: HTML required attribute is not needed when using RHF + noValidate
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
