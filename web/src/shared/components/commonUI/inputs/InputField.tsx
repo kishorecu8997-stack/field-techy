@@ -30,7 +30,6 @@ interface InputFieldProps {
  * Shows a * if required.
  * Supports left icons and custom styling.
  */
- 
 
 export const InputField = ({
   name,
@@ -54,7 +53,7 @@ export const InputField = ({
   // Build required validation message
   let requiredMessage: string | false = false;
   if (typeof required === "string") {
-    requiredMessage = required; // custom message
+    requiredMessage = required;
   } else if (required === true) {
     requiredMessage = `${label || name} is required`;
   }
@@ -65,7 +64,7 @@ export const InputField = ({
     ...rules,
   };
 
-  // Add email pattern validation if type is email (unless overridden in rules)
+  // Email validation (unless overridden)
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -74,11 +73,16 @@ export const InputField = ({
     };
   }
 
-  // Add alphabet-only validation
+  // Alphabet
   if (alphabetOnly) {
     validationRules.validate = (value: string) => {
-      if (!value || value.trim() === "") return requiredMessage || "This field is required.";
-      if (/[^a-zA-Z]/.test(value)) return "This field may contain letters only. Numbers are not allowed.";
+      if (!value || value.trim() === "")
+        return requiredMessage || "This field is required.";
+
+      // allow letters
+      if (/[^a-zA-Z\s-]/.test(value))
+        return "Only letters are allowed.";
+
       return true;
     };
   }
@@ -87,9 +91,12 @@ export const InputField = ({
     <div className={containerClassName}>
       {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required !== false && <span className="text-red-600">*</span>}
-        </label>
+  {label}
+  {required !== false && <span className="text-red-600">*</span>}
+</label>
+
       )}
+
       <Controller
         name={name}
         control={control}
@@ -102,6 +109,7 @@ export const InputField = ({
                   {leftIcon}
                 </div>
               )}
+
               <input
                 {...field}
                 id={name}
@@ -111,19 +119,20 @@ export const InputField = ({
                 className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
                   showValidationCheck && isDirty && !invalid ? "pr-10" : ""
                 } ${invalid ? "border-red-500 dark:border-red-400" : ""}`}
-                onChange={(e) => {
+              onChange={(e) => {
                   let value = e.target.value;
 
-                  // alphabet-only sanitization
+                  // alphabet-only sanitization: letters + spaces only
                   if (alphabetOnly) {
-                    const sanitized = value.replace(/[^a-zA-Z]/g, "");
-                    setAttemptedInvalid(sanitized !== value); // show inline error
+                    const sanitized = value.replace(/[^a-zA-Z\s-]/g, "");
+                    setAttemptedInvalid(sanitized !== value);
                     value = sanitized;
                   }
 
                   field.onChange(value);
                 }}
               />
+
               {showValidationCheck && isDirty && !invalid && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500">
                   ✓
@@ -134,7 +143,7 @@ export const InputField = ({
             {/* Inline error from attempted invalid input */}
             {alphabetOnly && attemptedInvalid && (
               <p className="mt-1 text-sm text-red-600" role="alert">
-                This field may contain letters only. Numbers are not allowed.
+                Only letters  are allowed.
               </p>
             )}
 
@@ -144,8 +153,6 @@ export const InputField = ({
                 {error.message}
               </p>
             )}
-
-          
           </>
         )}
       />
