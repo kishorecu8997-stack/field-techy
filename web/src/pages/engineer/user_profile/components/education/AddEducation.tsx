@@ -30,7 +30,6 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
     toast.success("Education Added Successfully");
     console.log("Form submitted with data:", data);
     // TODO: Replace with actual submission logic (e.g., API call)
-
   };
 
   
@@ -77,31 +76,6 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
           required
         />
 
-      {/*
-         * <SelectField
-          label="University"
-          isShowLabel={false}
-          name="university"
-          placeholder="University"
-          options={universities.map((u) => ({
-            value: u.key,
-            label: u.label,
-          }))}
-          required
-        />
-
-        <SelectField
-          label="Major Subject"
-          isShowLabel={false}
-          name="majorSubject"
-          placeholder="Major Subject"
-          options={majors.map((m) => ({
-            value: m.key,
-            label: m.label,
-          }))}
-          required
-        />
-      */}
 
          <InputField 
           label="University"
@@ -117,8 +91,8 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
         <InputField
           label="Major Subject"
           isShowLabel={true}
-          name="major_subject"
-          placeholder="Enter major subject name (e.g. Physics.)"
+          name="major_Subject"
+          placeholder="Enter major subject name (e.g. Physics)"
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateMajorSubject(v) }}

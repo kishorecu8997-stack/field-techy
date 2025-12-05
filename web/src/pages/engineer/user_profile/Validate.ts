@@ -230,7 +230,7 @@ export const validateUniversity = (
 ) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null if it give error message 
+  //  Check the field is Required or null it will give error message 
   if (required && !trimmed) {
     return "Please enter a university name.";
   }
@@ -239,7 +239,6 @@ export const validateUniversity = (
   if (trimmed.length > 200) {
     return "University must not exceed 200 characters";
   }
-
   return true;
 };
 
@@ -251,17 +250,15 @@ export const validateMajorSubject = (
 ) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null if it give error message 
+  //  Check the field is Required or null  it will  give error message 
   if (required && !trimmed) {
     return "Please enter a major subject name.";
   }
-
 
   // Length check above 200 characters 
   if (trimmed.length > 200) {
     return "Major Subject must not exceed 200 characters";
   }
-
   return true;
 };
 
