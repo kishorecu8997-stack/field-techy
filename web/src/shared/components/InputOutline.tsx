@@ -31,7 +31,9 @@ export function InputOutline({
   };
 
   // Prevent typing invalid characters
-  const handleBeforeInput = (e: React.FormEvent<HTMLInputElement> & { data?: string }) => {
+  const handleBeforeInput = (
+    e: React.FormEvent<HTMLInputElement> & { data?: string }
+  ) => {
     if (!onlyNumbers) return;
 
     const input = e.currentTarget;
@@ -39,7 +41,7 @@ export function InputOutline({
     if (!char) return;
 
     // Allow digits, dot, and $ only at start
-    if (!/[0-9.]|\$/.test(char)) {
+    if (!/[0-9.$]/.test(char)) {
       e.preventDefault();
       return;
     }
