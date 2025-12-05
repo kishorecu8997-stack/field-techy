@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import type { ClientFieldsTypes } from "../../types";
 import ClientFields from "./ClientFields";
 import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  *    Add Client Page
@@ -16,6 +17,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 const AddClient = () => {
   const FormCtx = useForm<ClientFieldsTypes>();
   const { showPopup } = usePopupStore();
+  const {setISOpenSidebar} = useDrawerStore()
 
   const handleSubmit = async (data: ClientFieldsTypes) => {
     await showPopup({
@@ -35,6 +37,7 @@ const AddClient = () => {
             console.log("Submitted data:", data);
             toast.success("Client Interviewer Added Successfully");
             close(true);
+            setISOpenSidebar(false);
           },
         },
       ],

@@ -57,9 +57,6 @@ const ClientFields = () => {
                     {...field}
                     required
                   />
-                  {error && (
-                    <p className="text-red-600 text-sm">{error.message}</p>
-                  )}
                 </>
               )}
             />

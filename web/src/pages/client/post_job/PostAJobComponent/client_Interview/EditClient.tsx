@@ -16,7 +16,7 @@ import { interviewerData } from "@/dummy_data/admin/post_a_Job";
  * @constructor
  */
 const EditClient = () => {
-  const { selectedId } = useDrawerStore();
+  const { selectedId, setISOpenSidebar } = useDrawerStore();
   const { showPopup } = usePopupStore();
   const value = interviewerData.find((item) => item.id === selectedId);
 
@@ -49,6 +49,7 @@ const EditClient = () => {
             console.log("Submitted data:", data);
             toast.success("Client Interviewer Updated Successfully");
             close(true);
+            setISOpenSidebar(false);
           },
         },
       ],
