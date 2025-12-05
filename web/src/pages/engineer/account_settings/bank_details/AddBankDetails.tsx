@@ -21,7 +21,6 @@ const AddBankDetails = () => {
       name: "",
     },
   });
-
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 

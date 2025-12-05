@@ -18,7 +18,7 @@ const JobCard: React.FC<{
   showBookmark?: boolean;
   navigateToJob?: string;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
-  const [isBookmarked, setBookmark] = useState(false);
+  const [isBookmarked, setBookmark] = useState(job.isBookmarked);
 
   return (
     <Link

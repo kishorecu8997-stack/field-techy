@@ -25,6 +25,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "featured",
+    isBookmarked: true,
   },
   {
     title: "Python Engineer",
@@ -75,6 +76,7 @@ export const sampleJobs: Job[] = [
     duration: "10 Hours of Work",
     pay: "500",
     place: "featured",
+    isBookmarked: true,
   },
   {
     id: 4,
@@ -97,6 +99,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    isBookmarked: true,
   },
   {
     id: 5,
@@ -141,6 +144,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    isBookmarked: true,
   },
   {
     id: 7,

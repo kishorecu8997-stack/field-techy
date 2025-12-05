@@ -2,15 +2,16 @@ import {
   Controller,
   type Control,
   type FieldValues,
-  type Path,
   type RegisterOptions,
+  type Path,
 } from "react-hook-form";
 
-interface DaySelectorProps<T extends FieldValues> {
+interface CheckboxSelectorProps<T extends FieldValues> {
   name: Path<T>;
-  control: Control<T>;
+  control?: Control<T>;
   label?: string;
   required?: boolean | string;
+  options: string[]; //NEW – dynamic options
   rules?: RegisterOptions<T>;
   isShowLabel?: boolean;
   containerClassName?: string;
@@ -29,6 +30,7 @@ const DaySelector = <T extends FieldValues>({
   control,
   label,
   required = false,
+  options,
   rules = {},
   isShowLabel = true,
   containerClassName = "flex flex-col py-1 w-full",
@@ -51,24 +53,15 @@ const DaySelector = <T extends FieldValues>({
       }),
   };
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
   return (
     <Controller
       name={name}
       control={control}
       rules={finalRules}
       render={({ field: { value, onChange }, fieldState: { error } }) => {
-        const selectedDays = (Array.isArray(value) ? value : []) as string[];
+        const selected = Array.isArray(value) ? value : [];
 
+<<<<<<< HEAD
         const handleToggle = (day: string) => {
           if (disabled) return; // 🚫 Prevent toggle when disabled
 
@@ -95,6 +88,22 @@ const DaySelector = <T extends FieldValues>({
               >
                 {label}{" "}
                 {required !== false && <span className="text-red-600">*</span>}
+=======
+        const toggleOption = (item: string) => {
+          if (disabled) return;
+          const updated = selected.includes(item)
+            ? selected.filter((x) => x !== item)
+            : [...selected, item];
+          onChange(updated);
+        };
+
+        return (
+          <div className={containerClassName}>
+            {isShowLabel && label && (
+              <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+                {label}
+                {required && <span className="text-red-600">*</span>}
+>>>>>>> remotes/origin/dev
               </label>
             )}
 
@@ -105,6 +114,7 @@ const DaySelector = <T extends FieldValues>({
                   : ""
               } ${selectorClassName}`}
             >
+<<<<<<< HEAD
               {days.map((day) => {
                 const isSelected = selectedDays.includes(day);
 
@@ -113,17 +123,29 @@ const DaySelector = <T extends FieldValues>({
                     key={day}
                     className={`flex items-center ${
                       disabled ? "cursor-not-allowed" : "cursor-pointer"
+=======
+              {options.map((item) => {
+                const selectedItem = selected.includes(item);
+                return (
+                  <label
+                    key={item}
+                    className={`flex items-center ${
+                      disabled
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+>>>>>>> remotes/origin/dev
                     } dark:text-white`}
                   >
                     <input
                       type="checkbox"
-                      checked={isSelected}
-                      onChange={() => handleToggle(day)}
+                      checked={selectedItem}
+                      onChange={() => toggleOption(item)}
                       className="sr-only"
                       disabled={disabled}
                     />
 
                     <div
+<<<<<<< HEAD
                       className={`flex items-center justify-center h-4 w-4 rounded border transition
                         ${
                           disabled
@@ -154,6 +176,20 @@ const DaySelector = <T extends FieldValues>({
                       }`}
                     >
                       {day}
+=======
+                      className={`flex items-center justify-center h-4 w-4 rounded border ${
+                        selectedItem
+                          ? "bg-teal-900 border-teal-900"
+                          : "border-gray-300 dark:border-gray-600"
+                      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+                    >
+                      {selectedItem && (
+                        <span className="text-xs text-white">✓</span>
+                      )}
+                    </div>
+                    <span className="ml-2 text-sm text-gray-800 dark:text-gray-200">
+                      {item}
+>>>>>>> remotes/origin/dev
                     </span>
                   </label>
                 );
@@ -172,4 +208,4 @@ const DaySelector = <T extends FieldValues>({
   );
 };
 
-export default DaySelector;
+export default CheckboxSelector;

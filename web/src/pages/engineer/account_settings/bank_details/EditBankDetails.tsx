@@ -11,13 +11,14 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
  */
 const EditBankDetails = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
   const bankData = bankDetailsData.find(
     (bank) => bank.bankName === "Bank of America"
   );
 
-  const { showPopup } = usePopupStore();
   const formCtx = useForm<bankDetails>({
-    // ✅ Typed correctly
     mode: "onChange",
     delayError: 500,
     defaultValues: {
@@ -30,25 +31,28 @@ const EditBankDetails = () => {
     },
   });
 
-  const {setActiveKey} = useDrawerStore()
- const handleSubmit = async (data: bankDetails) => {
+  const handleSubmit = async (data: bankDetails) => {
     await showPopup({
-      title: "Update Bank Details",
-      body: "Are you sure you want to update this bank details?",
+      title: "Edit Bank Details",
+      body: "Are you sure you want to edit bank details?",
       actionButtons: [
         {
           label: "Cancel",
-          value: "cancel",
-          variant: "outline",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
         },
         {
-          label: "Yes, update",
+          label: "Yes, Edit",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            console.log("Submitted data:", data);
-            toast.success("Bank details updated successfully");
             close(true);
+            toast.success("Bank Details updated successfully!");
+            console.log("Submitted bank details:", data);
             setActiveKey("manageBankAccounts");
           },
         },

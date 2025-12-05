@@ -18,7 +18,7 @@ import TransactionDashboard from "@/pages/engineer/account_settings/bank_details
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
-import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
+import NotificationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
 import CancelJopOffer from "@/pages/engineer/my_job/job_details_components/CancelJopOffer";
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
@@ -41,6 +41,11 @@ import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
+import AddProject from "@/pages/client/my_projects/projectDetail/AddProject";
+import EditProject from "@/pages/client/my_projects/projectDetail/EditProject";
+import AddProjectMember from "@/pages/client/my_projects/createProject/components/AddProjectMember";
+import AddExistingFTMember from "@/pages/client/my_projects/createProject/components/AddExistingFTMember";
+import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -178,7 +183,7 @@ export const sectionConfig: Record<
   myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
   withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
   notification: {
-    component: NotofocationPage,
+    component: NotificationPage,
     title: "Notification",
     parent: "settings",
   },
@@ -233,6 +238,31 @@ export const sectionConfig: Record<
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "clientWallet",
+  },
+
+  addclientProject: {
+    component: AddProject,
+    title: "Add Project Site",
+  }, // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+
+  editclientProject: {
+    component: EditProject,
+    title: "Edit Project Site",
+  },
+
+  addProjectMember : {
+    component: AddProjectMember,
+    title: "Add New Project Member",
+  },
+
+  addExistingProjectMember : {
+    component: AddExistingFTMember,
+    title: "Add Existing FT Project Member",
+  },
+
+  editProjectMember : {
+    component: EditProjectMember,
+    title: "Edit Project Member Details",
   },
   engineerRecentTransactions: {
     component: TransactionDashboard,
