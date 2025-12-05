@@ -15,6 +15,12 @@ interface IFormInput {
   feedback: string;
 }
 
+/*
+ * FeedbackForm
+ *    - Displays a form to submit feedback
+ * @param {FeedbackFormProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered FeedbackForm component.
+ */
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
   onClose,

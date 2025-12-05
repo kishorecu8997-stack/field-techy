@@ -1,11 +1,11 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { validateDescription } from "../Validation";
-import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
 
 export type EditDocumentFormData = {
   notes: string;
@@ -17,6 +17,10 @@ interface RequestRevisionProps {
   onSubmit: (data: { notes: string; file?: File }) => void;
 }
 
+/*
+ * RequestRevision component is used to request a revision of a document
+ * It contains a form for entering notes and a file upload
+ */
 const RequestRevision: React.FC<RequestRevisionProps> = ({
   onClose,
   onSubmit,
@@ -54,7 +58,7 @@ const RequestRevision: React.FC<RequestRevisionProps> = ({
             />
             <FileUpload
               name="file"
-              label="Attach File(lf any)"
+              label="Attach File(if any)"
               required
               accept=".pdf,.jpg,.png"
               maxPages={5}

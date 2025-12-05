@@ -22,7 +22,7 @@ export const WORKING_TYPES = {
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
-}
+} as const;
 
 export type LogStatus = "check-in" | "in-progress" | "delayed" | "approved";
 export const LOG_STATUSES = {

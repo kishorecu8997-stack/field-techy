@@ -13,8 +13,6 @@ import EngineerListPage from "./components/EngineerListPage";
  * and a set of filters (`Filters`) in a sidebar.
  */
 const ExploreEngineer = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 8;
 
   const [filters, setFilters] = useState<Filters>({
     location: [],
@@ -27,7 +25,6 @@ const ExploreEngineer = () => {
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1);
   };
 
   const handleClearAllFilters = () => {
@@ -39,7 +36,6 @@ const ExploreEngineer = () => {
       budgetType: null,
       skills: [],
     });
-    setCurrentPage(1);
   };
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">

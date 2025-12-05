@@ -1,14 +1,21 @@
+import React from "react";
 import { IoMdTime } from "react-icons/io";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import {
-  IoLocationOutline,
   IoCalendarOutline,
   IoConstructOutline,
+  IoLocationOutline,
 } from "react-icons/io5";
-import React from "react";
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import type { Job } from "../../search_result/types";
 
+/**
+ * `InProgressJobCard` is a component that displays a summary of an in-progress job.
+ * It shows the job title, duration, location, and engineers involved.
+ * The component supports both light and dark themes.
+ * @param {InProgressJobCardProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered InProgressJobCard component.
+ */
 const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
   job,
   navigateToJob = "#",

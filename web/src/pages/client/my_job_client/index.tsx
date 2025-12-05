@@ -1,13 +1,12 @@
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
+import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
 import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
 import JobCard from "./components/JobCard";
-import Pagination from "@/pages/engineer/search_result/components/Pagination";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -16,7 +15,6 @@ import Pagination from "@/pages/engineer/search_result/components/Pagination";
  * @returns {React.ReactElement} The rendered "My Jobs" page for the client.
  */
 const MyJobsClient: React.FC = () => {
-  const params = useParams();
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
 
   const filteredJobs = useMemo(() => {

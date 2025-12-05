@@ -15,6 +15,10 @@ import { sampleJobs } from "@/dummy_data/searchDataClient";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { absoluteUrls } from "@/config/urls";
 
+/*
+ * JobCardDetailsHeader component is used to display the job details header
+ * It contains the job title, job status, working type, and job actions
+ */
 const JobCardDetailsHeader = () => {
   const navigate = useNavigate();
   const params = useParams();
@@ -144,7 +148,7 @@ const JobCardDetailsHeader = () => {
                 onClick={() => {
                   setIsRatingUpdated(true);
                   setActiveKey("clientFeedback");
-                  setISOpenSidebar(true);                  
+                  setISOpenSidebar(true);
                 }}
               >
                 Rate Engineer

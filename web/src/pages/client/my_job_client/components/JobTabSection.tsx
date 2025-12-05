@@ -47,7 +47,6 @@ const JobTabSection = ({
   isJobAccepted?: boolean;
   activeTab?: string;
 }) => {
-  console.log('isJobAccepted :', isJobAccepted);
   const tabs = [
     {
       label: "Engineers Logs",

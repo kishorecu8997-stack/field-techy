@@ -1,15 +1,12 @@
-import React, { useState } from "react";
-import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { earningsData } from "@/dummy_data/jobDetails";
-import JobCardDetailsHeader from "./JobCardDetailsHeader";
-import FilterButton from "@/shared/components/commonUI/FilterButton";
-import ClientHeader from "./ClientHeader";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
-import JobTabSection from "./JobTabSection";
-import { useParams } from "react-router-dom";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
-import { jobHeaderData } from "@/dummy_data/jobDetailsClient";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
+import JobCardDetailsHeader from "./JobCardDetailsHeader";
+import JobTabSection from "./JobTabSection";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
@@ -18,8 +15,6 @@ import { jobHeaderData } from "@/dummy_data/jobDetailsClient";
  * @returns {React.ReactElement} The rendered job details page.
  */
 const JobsDetails: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
-
   const jobFilters = [
     "Engineers Logs",
     "Work Submissions",
@@ -30,10 +25,10 @@ const JobsDetails: React.FC = () => {
     "Proposal's Terms & Conditions",
   ];
   const params = useParams();
-  const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
-  const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isJobAccepted, setIsJobAccepted] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [isWorkSubmitted] = useState(false);
+  const [isSendProposal] = useState(false);
+  const [isJobAccepted] = useState(false);
+  const [activeTab] = useState("Job Information");
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -44,14 +39,13 @@ const JobsDetails: React.FC = () => {
     <div className="min-h-screen transition-colors duration-200">
       <div className="container  mx-auto px-4 py-6">
         <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-
-        <MyJobsHeader
-          title="Job Details"
-          currentSort={SORT_OPTIONS.NEWEST}
-          isReport
-          onSortChange={() => {}}
+          <MyJobsHeader
+            title="Job Details"
+            currentSort={SORT_OPTIONS.NEWEST}
+            isReport
+            onSortChange={() => {}}
           />
-          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">

@@ -1,10 +1,16 @@
-import React from "react";
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import React from "react";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { FaRegCircle } from "react-icons/fa";
 import type { EngineerInviteCardProps } from "../../types";
 
+/**
+ * EngineerInviteCard Component
+ * Renders a card for displaying details about an engineer.
+ * @param {EngineerInviteCardProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered EngineerInviteCard component.   
+ */
 const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
   engineer,
   onSelectionToggle,

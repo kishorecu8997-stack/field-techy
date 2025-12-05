@@ -53,7 +53,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
           </div>
           <>
             <div className="flex flex-row flex-shrink-0 justify-end items-center gap-4">
-              {action && action}
+              {action}
               {isReport && (
                 <div
                   className="underline cursor-pointer hover:text-teal-900"
@@ -75,7 +75,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   type="submit"
                   className="bg-teal-800 dark:bg-teal text-white"
                 >
-                  {buttonText && buttonText}
+                  {buttonText}
                 </Button>
               )}
             </div>

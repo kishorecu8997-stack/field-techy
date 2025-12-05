@@ -1,6 +1,10 @@
 import { sampleJobs } from "@/dummy_data/searchDataClient";
 import JobCard from "./JobCard";
 
+/*
+ * JobList component is used to display the list of jobs
+ * It contains the job cards for each job
+ */
 const JobList = () => {
   return (
     <div className="lg:col-span-2">

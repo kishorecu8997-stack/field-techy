@@ -20,7 +20,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ activeFilter, onFilterChang
     <div className="overflow-x-auto py-3">
       <div className="flex gap-2">
         {filters.map((filter) => (
-          <button
+          <div
             key={filter}
             onClick={() => onFilterChange(filter)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -30,7 +30,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({ activeFilter, onFilterChang
             }`}
           >
             {filter}
-          </button>
+          </div>
         ))}
       </div>
     </div>
