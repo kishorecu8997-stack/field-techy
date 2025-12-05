@@ -3,9 +3,8 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import PaymentMethod, {
-  type PaymentCardOption,
-} from "@/shared/components/commonUI/PaymentMethod";
+import type { PaymentCardOption } from "@/shared/components/type";
+import PaymentMethod from "@/shared/components/commonUI/PaymentMethod";
 import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
 import { validateAmount, validatePaymentMethods } from "@/utils/validate";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
@@ -26,20 +25,19 @@ export interface AddFundFormData {
  * @description A component that renders a form for adding funds to a user's wallet.
  * It includes fields for the amount and payment method selection.
  */
-const AddFund = () => {  
+const AddFund = () => {
   /**
    * @description Handles the submission of the add fund form.
    * @param {AddFundFormData} data - The data from the form.
    */
- const { setActiveKey } = useDrawerStore();
-  const handleSubmit = (data: AddFundFormData) => {    
-   console.log('data :', data);
-    // TODO: Replace with actual submission logic (e.g., API call)    
+  const { setActiveKey } = useDrawerStore();
+  const handleSubmit = (data: AddFundFormData) => {
+    // TODO: Replace with actual submission logic (e.g., API call)
     toast.success(`Funds added successfully`);
     setActiveKey("clientWallet");
   };
 
- const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const methods = useForm<AddFundFormData>({
     defaultValues: {
@@ -81,10 +79,9 @@ const AddFund = () => {
             label="Amount"
             name="amount"
             placeholder="Enter Amount e.g., $10"
-  z  
-  ///           allowedCharacters="currency"
+            allowedCharacters="currency"
+            required
             rules={{ validate: (v: string) => validateAmount(v) }}
-          
           />
           <div className="space-y-3">
             <PaymentMethod
@@ -95,7 +92,7 @@ const AddFund = () => {
               onAddNew={handleAddNewCard}
               isOpen={isOpen}
               isShowRadio={true}
-              setIsOpen={setIsOpen}              
+              setIsOpen={setIsOpen}
               rules={{
                 validate: (v: SelectOption) => validatePaymentMethods(v),
               }}
@@ -105,17 +102,14 @@ const AddFund = () => {
 
         <div className="bg-white ">
           <Button
-            type="submit"             
+            type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Add Fund
           </Button>
         </div>
       </FormContainer>
-      <AddPaymentMethod
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
+      <AddPaymentMethod isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 };
