@@ -190,9 +190,9 @@ export const InputField = ({
                 {allowedCharacters === "alphanumeric" &&
                   "Only letters and numbers are allowed."}
                 {allowedCharacters === "digits-slash" &&
-                  "Only digits and '/' are allowed."}
+                  "Please enter a valid date format."}
                 {allowedCharacters === "currency" &&
-                  "Only numbers, '.' and '$' are allowed."}
+                  "Please enter a valid currency amount."}
               </p>
             )}
           </>
