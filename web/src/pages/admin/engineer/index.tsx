@@ -45,7 +45,7 @@ const ManageEngineer: React.FC = () => {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No" },
+    { key: "id", label: "Sr.No." },
     {
       key: "engineerID",
       label: "Engineer ID",

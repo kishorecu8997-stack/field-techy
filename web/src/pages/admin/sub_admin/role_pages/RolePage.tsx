@@ -37,7 +37,7 @@ const RolePage: React.FC = () => {
   };
 
   const columns: Column<RoleListType>[] = [
-    { key: "id", label: "Sr.No" },
+    { key: "id", label: "Sr.No." },
     { key: "roleName", label: "Role Name" },
     {
       key: "status",

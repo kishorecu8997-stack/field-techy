@@ -10,6 +10,7 @@ import type { ProfileFormData } from "./types";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -31,9 +32,31 @@ export default function PersonalDetails() {
       profileImage: null,
     },
   });
-  const handleSubmit = () => {
-    toast.success("Profile Updated Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord);
+
+  const { showPopup } = usePopupStore();
+
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Profile Update",
+      body: "Are you sure you want to update this profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Profile Updated Successfully!");
+            close(true);
+            navigate(absoluteUrls.admin.home.dashbaord);
+          },
+        },
+      ],
+    });
   };
 
   return (

@@ -53,7 +53,7 @@ const ManageJobCategory: React.FC = () => {
   const navigate = useNavigate();
 
   const columns: Column<ServerCategoryProps>[] = [
-    { key: "id", label: "Sr.No" },
+    { key: "id", label: "Sr.No." },
     {
       key: "categoryImg",
       label: "Category Image",

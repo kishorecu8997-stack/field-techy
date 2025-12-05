@@ -32,7 +32,7 @@ const CorporateClient: React.FC = () => {
    * @type {Column<ManageClientProps>[]}
    */
   const columns: Column<ManageClientProps>[] = [
-    { key: "id", label: "Sr.No" },
+    { key: "id", label: "Sr.No." },
     {
       key: "clientID",
       label: "Client ID",

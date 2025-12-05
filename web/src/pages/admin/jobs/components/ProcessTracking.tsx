@@ -15,7 +15,7 @@ import MapComponent from "@/shared/components/MapComponent";
  */
 const ProcessTracking = () => {
   const columns = [
-    { key: "id", label: "Sr.No" },
+    { key: "id", label: "Sr.No." },
     { key: "date", label: "Date & Time" },
     { key: "checkIn", label: "Check In Time" },
     { key: "checkOut", label: "Check Out Time" },

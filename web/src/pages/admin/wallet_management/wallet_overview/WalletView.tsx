@@ -30,7 +30,7 @@ export default function WalletView() {
   const walletDetails = engineerData.find((user) => user.sno.toString() === id);
 
   const columns: Column<WalletViewProps>[] = [
-    { key: "sno", label: "Sr.No" },
+    { key: "sno", label: "Sr.No." },
     { key: "dateTime", label: "Date & Time" },
     { key: "transactionId", label: "Transaction ID" },
     { key: "transactionType", label: "Transaction Type" },

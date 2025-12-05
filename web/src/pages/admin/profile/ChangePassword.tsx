@@ -8,6 +8,7 @@ import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPass
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -25,9 +26,30 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
-  const handleSubmit = () => {
-    toast.success("Password Changed Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+  const { showPopup } = usePopupStore();
+
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Password Change",
+      body: "Are you sure you want to change your password?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, change",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Password Changed Successfully!");
+            close(true);
+            navigate(absoluteUrls.admin.home.dashbaord);
+          },
+        },
+      ],
+    });
   };
 
   return (
