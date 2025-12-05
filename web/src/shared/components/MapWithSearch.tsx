@@ -102,7 +102,7 @@ const MapSearchBar: React.FC<{
 
   return (
     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] md:w-72 xl:w-full max-w-md">
-      <div className="relative">
+      <div className="relative w-9/12 mx-auto">
         <input
           type="text"
           value={query}
@@ -186,19 +186,42 @@ const MapSearch: React.FC<MapComponentProps> = ({
   markers = [],
   onMapClick = () => {},
   viewOnly = false,
+  onPositionChange,
+  className,
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
   const [searchLocation, setSearchLocation] = useState<L.LatLng | null>(null);
+  // 🔁 Notify parent whenever position changes
+  useEffect(() => {
+    if (onPositionChange) {
+      onPositionChange(position);
+    }
+  }, [position, onPositionChange]);
+
+  // Handle search selection
+  const handleSearchSelect = (latlng: L.LatLng) => {
+    const newPos: [number, number] = [latlng.lat, latlng.lng];
+    setPosition(newPos);
+    setSearchLocation(latlng);
+  };
+
+  // Handle map click
+  const handleMapClick = (latlng: { lat: number; lng: number }) => {
+    // console.log("latlng :", latlng);
+    const newPos: [number, number] = [latlng.lat, latlng.lng];
+    setPosition(newPos);
+    onMapClick(latlng);
+  };
 
   return (
-    <div className="relative w-full z-50">
+    <div className={`relative w-full z-40 ${className}`}>
       {/* Hide search bar in viewOnly */}
-      {!viewOnly && <MapSearchBar onSelect={setSearchLocation} />}
+      {!viewOnly && <MapSearchBar onSelect={handleSearchSelect} />}
 
       <MapContainer
         center={initialPosition}
         zoom={initialZoom}
-        zoomControl={!viewOnly}
+        zoomControl={!viewOnly} 
         dragging={!viewOnly}
         scrollWheelZoom={!viewOnly}
         doubleClickZoom={!viewOnly}
@@ -231,7 +254,9 @@ const MapSearch: React.FC<MapComponentProps> = ({
 
         <MapEventHandler
           disabled={viewOnly}
-          onMapClick={onMapClick}
+          onMapClick={(data: { lat: number; lng: number }) => {
+            handleMapClick({ lat: data.lat, lng: data.lng });
+          }}
           setPosition={setPosition}
         />
 

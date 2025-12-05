@@ -12,7 +12,7 @@ export const messages: ChatMessage[] = [
     userId: 1,
     fromMe: false,
     message: "Your payment for the job listing has been processed.",
-    timestamp: "16:56", 
+    timestamp: "16:56",
   },
   {
     id: 2,
@@ -52,5 +52,152 @@ export const messages: ChatMessage[] = [
     fromMe: false,
     message: "Is the meeting still scheduled?",
     timestamp: "11:00",
+  },
+];
+
+export const workTypes = [
+  { label: "Remote", value: "remote" },
+  { label: "On-site", value: "onsite" },
+];
+
+export const projectCountries = [
+  { label: "United Kingdom", value: "UK" },
+  { label: "India", value: "IN" },
+];
+
+export const currencyTypes = [
+  { label: "GBP", value: "GBP" },
+  { label: "INR", value: "INR" },
+];
+
+export const projectGroups = [
+  { label: "Engineering", value: "engineering" },
+  { label: "Product", value: "product" },
+  { label: "Design", value: "design" },
+  { label: "Marketing", value: "marketing" },
+  { label: "Sales", value: "sales" },
+  { label: "Operations", value: "operations" },
+];
+
+export const projectRateCards = [
+  {
+    id: 1,
+    service: "Breakfix",
+    skill: "Hardware Repair",
+    sla: "4H",
+    level: "L1",
+    country: "India",
+    rate: "₹1,500/hr",
+  },
+  {
+    id: 2,
+    service: "Breakfix",
+    skill: "Onsite Diagnostics",
+    sla: "2H",
+    level: "L2",
+    country: "India",
+    rate: "₹2,200/hr",
+  },
+  {
+    id: 3,
+    service: "Security",
+    skill: "Penetration Testing",
+    sla: "48H",
+    level: "L3",
+    country: "United Kingdom",
+    rate: "£80/hr",
+  },
+  {
+    id: 4,
+    service: "Database",
+    skill: "PostgreSQL Optimization",
+    sla: "8H",
+    level: "L2",
+    country: "United Kingdom",
+    rate: "£52/hr",
+  },
+  {
+    id: 5,
+    service: "Backend",
+    skill: "Node.js API Development",
+    sla: "12H",
+    level: "L3",
+    country: "India",
+    rate: "₹2,300/hr",
+  },
+  {
+    id: 6,
+    service: "Cloud",
+    skill: "Azure Infrastructure Setup",
+    sla: "8H",
+    level: "L3",
+    country: "India",
+    rate: "₹2,800/hr",
+  },
+  {
+    id: 7,
+    service: "Breakfix",
+    skill: "Hardware Replacement",
+    sla: "4H",
+    level: "L1",
+    country: "United Kingdom",
+    rate: "£42/hr",
+  },
+  {
+    id: 8,
+    service: "Network",
+    skill: "Firewall Configuration",
+    sla: "6H",
+    level: "L2",
+    country: "United Kingdom",
+    rate: "£58/hr",
+  },
+  {
+    id: 9,
+    service: "Frontend",
+    skill: "Angular Development",
+    sla: "24H",
+    level: "L3",
+    country: "United Kingdom",
+    rate: "£65/hr",
+  },
+  {
+    id: 10,
+    service: "DevOps",
+    skill: "Kubernetes Deployment",
+    sla: "12H",
+    level: "L3",
+    country: "United Kingdom",
+    rate: "£72/hr",
+  },
+];
+
+export const memberRoles = [
+  { label: "Manager", value: "Manager" },
+  { label: "Engineer", value: "Engineer" },
+  { label: "Designer", value: "Designer" },
+  { label: "Lead", value: "Lead" },
+];
+
+export const existingMembers = [
+  {
+    label: "Alice",
+    value: "alice",
+  },
+  {
+    label: "Smith",
+    value: "smith",
+  },
+  {
+    label: "Sita",
+    value: "sita",
+  },
+  {
+    label: "David",
+    value: "david",
+  },
+  {
+    label: "Kiran",
+    value: "kiran",
   },
 ];
