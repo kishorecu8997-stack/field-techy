@@ -211,9 +211,7 @@ const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
 const ManageGroups = React.lazy(() => import("@/pages/admin/manage_groups"));
-const ManageGroupsAdd = React.lazy(
-  () => import("@/pages/admin/manage_groups/AddGroup")
-);
+const ManageGroupsAdd = React.lazy(() => import("@/pages/admin/manage_groups/components/AddGroup"));
 
 const OfferPages = React.lazy(
   () => import("@/pages/engineer/my_job/job_details_components/OfferPages")

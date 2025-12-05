@@ -18,7 +18,8 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify/unstyled";
-import type { AddGroup } from "./type";
+import type { AddGroup } from "../type";
+import { validateJobDescription, validateName } from "@/utils/validate";
 
 export default function AddGroup() {
   const methods = useForm({
@@ -32,6 +33,7 @@ export default function AddGroup() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+  console.log("Selecte ID", selectedIds);
 
   const columns: Column<SelectEngineerProps>[] = [
     {
@@ -189,12 +191,14 @@ export default function AddGroup() {
               label="Group Name"
               required
               placeholder="Enter Group Name"
+              // rules={{ validate: (v: string) => validateName(v) }}
             />
             <InputField
               name="groupDescription"
               label="Group Description"
               required
               placeholder="Enter Group Description"
+              // rules={{ validate: (v: string) => validateJobDescription(v) }}
             />
           </div>
           <div className="flex justify-between items-center">
