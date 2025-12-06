@@ -34,7 +34,7 @@ export default function WalletTransactionRequests() {
     <div className="flex flex-col h-full w-full p-4 gap-2">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold">Transaction Requests</h1>
-        <Button className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500">
+        <Button variant="solid">
           Export CSV
         </Button>
       </div>

@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
@@ -69,9 +70,9 @@ const ManageJobCategory: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting job:", job.id);
+            toast.success("Job category deleted successfully!");
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);
@@ -139,7 +140,7 @@ const ManageJobCategory: React.FC = () => {
           Add Category
         </Button>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div>
           <SearchInput />
         </div>

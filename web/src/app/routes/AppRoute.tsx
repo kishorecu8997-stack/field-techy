@@ -211,6 +211,9 @@ const adminEditRolePage = React.lazy(
 const roleListPage = React.lazy(
   () => import("@/pages/admin/sub_admin/role_pages/RolePage")
 );
+const AddRolePage = React.lazy(
+  () => import("@/pages/admin/sub_admin/role_pages/PermissionList")
+);
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
@@ -692,6 +695,10 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.roleList,
             element: withSuspense(roleListPage),
+          },
+          {
+            path: urls.admin.home.add_role,
+            element: withSuspense(AddRolePage),
           },
           {
             path: urls.admin.home.manage_jobs_view,

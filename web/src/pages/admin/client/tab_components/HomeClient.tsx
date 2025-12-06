@@ -155,7 +155,7 @@ const HomeClient: React.FC = () => {
     },
   ];
   return (
-    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
+    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
         <SearchInput />
         <Button

@@ -77,7 +77,9 @@ const RolePage: React.FC = () => {
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
             className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              currentStatus ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              currentStatus
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {currentStatus ? "On" : "Off"}
@@ -110,17 +112,22 @@ const RolePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 ">
+    <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex items-center justify-between">
         <h1 className="font-semibold">Manage Roles</h1>
-        <Button
-          className="bg-neutral-800 text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"
-          onClick={() => navigate(-1)}
-        >
-          Back
-        </Button>
+        <div className="gap-2">
+          <Button
+            onClick={() => navigate(absoluteUrls.admin.home.add_role)}
+            className="w-fit mr-2 bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          >
+            Add Role
+          </Button>
+          <Button variant="solid" onClick={() => navigate(-1)}>
+            Back
+          </Button>
+        </div>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div>
           <SearchInput />
         </div>

@@ -10,7 +10,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import SelectMenu from "@/shared/components/SelectMenu";
+import SelectMenu from "@/shared/components/Temp";
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import type { ManageEngineerProps } from "./types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import type { adminJobsStatus } from "../jobs/types";
+import { toast } from "react-toastify";
 
 /**
  * ManageEngineer Component
@@ -64,8 +65,16 @@ const ManageEngineer: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
+          variant:
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
           action: async (close) => {
+            toast.success(
+              `Job ${
+                status.toLocaleLowerCase() === "approve"
+                  ? "approved"
+                  : "rejected"
+              } successfully!`
+            );
             // await handlePostAJob(data);
             close(true);
           },
@@ -88,9 +97,9 @@ const ManageEngineer: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting job:", job.id);
+            toast.success("Job deleted successfully!");
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);
@@ -252,7 +261,7 @@ const ManageEngineer: React.FC = () => {
           </Button>
         </div>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
           <SearchInput />
           <SelectMenu
