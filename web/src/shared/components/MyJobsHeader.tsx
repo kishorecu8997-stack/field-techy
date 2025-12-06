@@ -27,8 +27,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   const [isShowReport, setIsShowReport] = React.useState(false);
 
   return (
-    <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
-      <div className="py-2">
+    <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900 mb-2">
+      <div className="">
         <header className="sticky top-[80px] z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
