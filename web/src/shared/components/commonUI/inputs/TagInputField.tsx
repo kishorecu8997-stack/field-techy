@@ -72,7 +72,7 @@ export const TagInputField = ({
   return (
     <div className={containerClassName}>
       {label && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}

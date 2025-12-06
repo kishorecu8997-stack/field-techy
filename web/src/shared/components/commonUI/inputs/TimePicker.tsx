@@ -121,7 +121,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className={`block mb-1 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+        <label className={`block mb-1 text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>

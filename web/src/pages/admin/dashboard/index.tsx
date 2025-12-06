@@ -3,7 +3,7 @@ import Users from "./Users";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
-import SimpleSelect from "@/shared/components/SelectMenu";
+import SimpleSelect from "@/shared/components/Temp";
 import { useState } from "react";
 import { days, client, status } from "@/dummy_data/adminDashboard";
 import JobsMetrics from "./JobMetrics";
@@ -57,7 +57,7 @@ export default function Dashboard() {
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between">
-        <p className="mt-2 mb-6 font-semibold">Manage Dashbaord</p>
+        <p className="mt-2 mb-6 font-semibold">Manage Dashboard</p>
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Users" />
