@@ -1,8 +1,4 @@
-export interface FaqItem {
-  id: number;
-  question: string;
-  answer: string;
-}
+import type { FaqItem } from "@/pages/admin/manage_cms/types";
 
 export const faqList: FaqItem[] = [
   {
