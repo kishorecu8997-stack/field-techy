@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../search_result/components/Pagination";
+import Popup from "@/shared/components/Popup";
+import InvitationSentModal from "../explore_engineer/components/invite_job/InvitationSentModal";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -23,6 +25,7 @@ const SelectEngineer = () => {
   const params = useParams();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isOpen, setIsOpen] = useState(false);
 
   const itemsPerPage = 8;
 
@@ -76,7 +79,8 @@ const SelectEngineer = () => {
           action: (close) => {
             toast.success("Job invited successfully");
             close(true);
-            navigate(absoluteUrls.client.home.my_jobs);
+            setIsOpen(true);
+            // ;
           },
         },
       ],
@@ -123,6 +127,14 @@ const SelectEngineer = () => {
           </div>
         </div>
       </div>
+      <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+        <InvitationSentModal
+          onClose={() => {
+            setIsOpen(false);
+            navigate(absoluteUrls.client.home.my_jobs);
+          }}
+        />
+      </Popup>
     </div>
   );
 };

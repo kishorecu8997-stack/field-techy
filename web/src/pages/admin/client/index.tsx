@@ -42,7 +42,7 @@ const ManageClient: React.FC = () => {
         </Button>
       </div>
 
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate Client" />
       </div>
     </div>

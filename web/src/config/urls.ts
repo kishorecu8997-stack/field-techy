@@ -106,7 +106,7 @@ export const urls = {
       manage_categories_add: "categories/add",
       manage_categories_edit: "categories/edit",
       manage_rate_card: "rate-card",
-      edit_role: "edit-role",
+      edit_role: "sub-admins/edit-role",
       manage_notification_add: "notifications/add",
       manage_payment: "revenue",
       manage_transactions: "transaction",
@@ -122,6 +122,7 @@ export const urls = {
       profile: "profile",
       received_notification: "received-notification",
       roleList: "sub-admins/roles",
+      add_role: "sub-admins/add-role",
       corporateClientAdd: "client/add",
       homeClientAdd: "client/add",
       corporateClientEdit: "client/edit",
@@ -199,8 +200,6 @@ export const absoluteUrls = {
       ClientJobDetails:`${BASE.CLIENT}/jobs-details/in-progress`,
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
-
-
     },
   },
 
@@ -240,6 +239,7 @@ export const absoluteUrls = {
       received_notification: `${BASE.ADMIN}/received-notification`,
       edit_role: `${BASE.ADMIN}/edit-role`,
       roleList: `${BASE.ADMIN}/sub-admins/roles`,
+      add_role: `${BASE.ADMIN}/sub-admins/add-role`,
       corporateClientAdd: `${BASE.ADMIN}/client/add`,
       homeClientAdd: `${BASE.ADMIN}/client/add`,
       corporateClientEdit: `${BASE.ADMIN}/client/edit`,
