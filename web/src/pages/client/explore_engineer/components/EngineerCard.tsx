@@ -31,8 +31,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          <NavLink
-            to={absoluteUrls.client.home.client_Explore_engineers_details}
+          <NavLink               
+             to={absoluteUrls.client.home.client_Explore_engineers_details}            
             className="hover:text-teal-900 text-[1rem] whitespace-nowrap"
           >
             <Button

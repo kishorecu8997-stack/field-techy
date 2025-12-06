@@ -24,14 +24,46 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-/* -------SEARCH BAR -------------- */
-/**
- * A search bar component that allows users to search for locations using the Nominatim API.
- * It provides suggestions as the user types and allows selecting a location.
- * @param {object} props - The component props.
- * @param {(latlng: L.LatLng, name: string) => void} props.onSelect - Callback function to be called when a location is selected.
- * @returns {React.ReactElement} The rendered search bar component.
- */
+/* ===========================================================
+   DYNAMIC MAP INTERACTION CONTROLLER (IMPORTANT)
+   =========================================================== */
+const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
+  viewOnly,
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (viewOnly) {
+      map.dragging.disable();
+      map.scrollWheelZoom.disable();
+      map.doubleClickZoom.disable();
+      map.boxZoom.disable();
+      map.keyboard.disable();
+      map.touchZoom.disable();
+
+      // Remove zoom control visually
+      //@ts-ignore
+      map.zoomControl?.remove();
+    } else {
+      map.dragging.enable();
+      map.scrollWheelZoom.enable();
+      map.doubleClickZoom.enable();
+      map.boxZoom.enable();
+      map.keyboard.enable();
+      map.touchZoom.enable();
+
+      // Re-enable zoom control
+      //@ts-ignore
+      map.zoomControl?.addTo(map);
+    }
+  }, [viewOnly, map]);
+
+  return null;
+};
+
+/* ===========================================================
+   SEARCH BAR COMPONENT
+   =========================================================== */
 const MapSearchBar: React.FC<{
   onSelect: (latlng: L.LatLng, name: string) => void;
 }> = ({ onSelect }) => {
@@ -69,6 +101,7 @@ const MapSearchBar: React.FC<{
   const handleSelect = (place: any) => {
     const lat = parseFloat(place.lat);
     const lon = parseFloat(place.lon);
+
     onSelect(L.latLng(lat, lon), place.display_name);
     setQuery(place.display_name);
     setSuggestions([]);
@@ -114,8 +147,9 @@ const MapSearchBar: React.FC<{
           placeholder="Search location..."
           className="w-full py-2 px-4 border bg-white dark:bg-gray-800 rounded-lg shadow-md text-sm"
         />
+
         {suggestions.length > 0 && (
-          <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto z-[1000]">
+          <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto">
             {suggestions.map((item, index) => (
               <li
                 key={index}
@@ -132,17 +166,9 @@ const MapSearchBar: React.FC<{
   );
 };
 
-/* -------------- MAP CLICK HANDLER (DISABLED WHEN viewOnly = true) ------------- */
-/**
- * A component that handles map click events.
- * When the map is clicked, it updates the position and calls the onMapClick callback.
- * This handler can be disabled.
- * @param {object} props - The component props.
- * @param {boolean} props.disabled - If true, click events are ignored.
- * @param {(latlng: { lat: number; lng: number }) => void} props.onMapClick - Callback function for map clicks.
- * @param {React.Dispatch<React.SetStateAction<[number, number]>>} props.setPosition - State setter to update the marker's position.
- * @returns {null} This component does not render anything.
- */
+/* ===========================================================
+   MAP CLICK HANDLER (RESPECTS viewOnly)
+   =========================================================== */
 const MapEventHandler: React.FC<{
   disabled: boolean;
   onMapClick: (latlng: { lat: number; lng: number }) => void;
@@ -151,6 +177,7 @@ const MapEventHandler: React.FC<{
   useMapEvents({
     click(e) {
       if (disabled) return;
+
       const { lat, lng } = e.latlng;
       setPosition([lat, lng]);
       onMapClick(e.latlng);
@@ -160,8 +187,9 @@ const MapEventHandler: React.FC<{
   return null;
 };
 
-/* --------------
-FLY MAP TO (disabled if viewOnly -------------- */
+/* ===========================================================
+   FLY TO LOCATION (disabled with viewOnly)
+   =========================================================== */
 const MapFlyTo: React.FC<{
   disabled: boolean;
   location: L.LatLng | null;
@@ -179,7 +207,9 @@ const MapFlyTo: React.FC<{
   return null;
 };
 
-/* -------------- MAIN MAP COMPONENT -------------- */
+/* ===========================================================
+   MAIN MAP COMPONENT (FULLY UPDATED)
+   =========================================================== */
 const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
@@ -233,6 +263,8 @@ const MapSearch: React.FC<MapComponentProps> = ({
           border: "1px solid #e2e8f0",
         }}
       >
+        <MapInteractionController viewOnly={viewOnly} />
+
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {markers.map((marker, index) => (
@@ -245,7 +277,6 @@ const MapSearch: React.FC<MapComponentProps> = ({
           </Marker>
         ))}
 
-        {/* Selected / searched marker */}
         <Marker position={position}>
           <Popup>
             Lat: {position[0]}, Lng: {position[1]}

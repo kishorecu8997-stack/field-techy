@@ -1,4 +1,3 @@
-
 /**
  * Application route URLs.
  *
@@ -36,7 +35,8 @@ export const urls = {
       privacy_policy: "privacy-policy",
       about_app: "about-app",
       explore_jobs: "explore-jobs",
-      chat: "chat",
+      chat: "messages",
+      saved_jobs: "saved-jobs",
     },
     auth: {
       login: "login",
@@ -60,12 +60,16 @@ export const urls = {
       client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
+      post_a_job: "post-a-job",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
+      Client_Job_Details:"jobs-details/in-progress",
+      ClientSelectEngineers: "select-engineers",
+
     },
     auth: {
       login: "login",
@@ -154,7 +158,8 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
-      chat: `${BASE.ENGINEER}/chat`,
+      chat: `${BASE.ENGINEER}/messages`,
+      saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
     },
   },
   client: {
@@ -181,8 +186,18 @@ export const absoluteUrls = {
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      post_a_job: `${BASE.CLIENT}/post-a-job`,
       client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
+      client_Invite_Explore_engineers_details: `${BASE.CLIENT}/jobs-details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
+
+      
+      ClientJobDetails:`${BASE.CLIENT}/jobs-details/in-progress`,
+      ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
+
+      ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
+
+
     },
   },
 

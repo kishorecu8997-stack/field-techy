@@ -152,7 +152,7 @@ export const VerifiedPhoneInputField = ({
     <div className="w-full">
       <div className="flex flex-col py-1">
         {isShowLabel && (
-          <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+          <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
             {label} {required && <span className="text-red-600">*</span>}
           </label>
         )}

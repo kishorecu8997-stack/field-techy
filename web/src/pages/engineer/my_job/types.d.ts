@@ -30,9 +30,12 @@ export interface MyJobsHeaderProps {
   onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
+  isReport?: boolean;
   isShowSort?: boolean;
-  isReport?:boolean;
   action?: React.ReactNode;
+  isShowButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
 }
 
 /**
@@ -78,13 +81,19 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: string;
   status?: StatusType | string;
-  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>
-  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>
-  isSendProposal?: boolean
-  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>
-  setActiveTab?: Dispatch<SetStateAction<string>>
-  setOfferJobStatus?: Dispatch<SetStateAction<string>>
-  OfferJobStatus?: "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
+  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
+  isSendProposal?: boolean;
+  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
+  setActiveTab?: Dispatch<SetStateAction<string>>;
+  setOfferJobStatus?: Dispatch<SetStateAction<string>>;
+  OfferJobStatus?:
+    | "initial"
+    | "accepted"
+    | "declined"
+    | "started"
+    | "checked-in"
+    | undefined;
 }
 
 export interface JobTabsProps {

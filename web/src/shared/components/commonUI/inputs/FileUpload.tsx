@@ -36,10 +36,12 @@ export const FileUpload = ({
   minSize = 50 * 1024, // ✅ Minimum file size: 50 KB
   maxSize = 350 * 1024, // ✅ Maximum file size: 350 KB
   containerClassName = "flex flex-col py-1",
-  placeholder = "Add a file",
+  placeholder = "upload a document",
   validatePDF = true,
   minPages = 1,
+  disabled = false,
   maxPages = 5,
+  isShowLabel = true,
 }: FileUploadProps) => {
   const { control, getValues } = useFormContext();
   const [fileName, setFileName] = useState<string | null>(null);
@@ -312,9 +314,17 @@ export const FileUpload = ({
   // ✅ Render
   return (
     <div className={containerClassName}>
-      {label && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+      {isShowLabel && (
+        <label
+          className={`block mb-1 text-md font-semibold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -327,10 +337,12 @@ export const FileUpload = ({
           return (
             <>
               <div
-                className={`relative border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition ${
-                  displayError
-                    ? "border-red-500"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${
+                  disabled
+                    ? "border-gray-400  cursor-not-allowed opacity-50"
+                    : displayError
+                    ? "border-red-500  cursor-pointer"
+                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500  cursor-pointer"
                 }`}
                 onClick={() =>
                   !fileName && document.getElementById(name)?.click()
@@ -397,9 +409,12 @@ export const FileUpload = ({
                     <p className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                       {placeholder}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                      Format: {formatAllowedTypes()} • Min {50} - Max {maxSize / 1024} KB
-                      {validatePDF && accept.toLowerCase().includes("pdf") && ` • ${minPages}–${maxPages} pages`}                     
+                    <p className="text-xs text-gray-500 mt-1">
+                      Format: {formatAllowedTypes()}• Min 50 KB • Max{" "}
+                      {maxSize / 1024} KB
+                      {validatePDF &&
+                        accept.toLowerCase().includes("pdf") &&
+                        ` • ${minPages}–${maxPages} pages`}
                     </p>
                   </>
                 )}
@@ -407,6 +422,7 @@ export const FileUpload = ({
                 <input
                   id={name}
                   type="file"
+                  disabled={disabled}
                   accept={accept}
                   onChange={(e) => handleChange(e, field)}
                   className="hidden"
