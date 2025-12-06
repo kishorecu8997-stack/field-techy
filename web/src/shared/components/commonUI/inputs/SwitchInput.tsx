@@ -1,4 +1,8 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 interface SwitchFieldProps {
   name: string;
@@ -37,7 +41,7 @@ export const SwitchInput = ({
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className="mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label className="mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
         </label>
@@ -54,7 +58,9 @@ export const SwitchInput = ({
               disabled={disabled}
               onClick={() => field.onChange(!field.value)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-                field.value ? "bg-emerald-700" : "bg-gray-200 dark:bg-gray-700"
+                field.value
+                  ? "bg-emerald-700 cursor-pointer"
+                  : "bg-gray-200 dark:bg-gray-700 cursor-pointer"
               } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <span

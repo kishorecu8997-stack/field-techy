@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Filters } from '../types';
+import { usePopupStore } from '@/shared/store/popupStore';
 
 /**
  * FilterPanel component provides filtering options for job listings
@@ -95,16 +96,42 @@ const FilterPanel: React.FC<{
     onClearAll();
   };
 
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmClearAll = async () => {
+    await showPopup({
+      title: "Clear All Filters",
+      body: "Are you sure you want to clear all filters?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, clear",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            handleClearAll();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 h-fit border border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Filters</h2>
-        <button 
-          onClick={handleClearAll}
+        <div 
+          onClick={handleConfirmClearAll}
           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium cursor-pointer"
         >
           CLEAR ALL
-        </button>
+        </div>
       </div>
 
       {/* Location Filter */}

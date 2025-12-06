@@ -85,7 +85,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
             setActiveKey("myEarning");
             setISOpenSidebar(true);
           }}
-          className="text-sm text-teal-800 dark:text-teal-400 hover:underline"
+          className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
         >
           View all
         </div>

@@ -6,32 +6,28 @@ import { AiOutlineClose } from "react-icons/ai";
 
 /**
  * Props for the AllowAccessPopup component.
- *
- * @property {boolean} accessPopup - Whether the access popup is visible.
- * @property {Dispatch<SetStateAction<boolean>>} setAccessPopup - Setter to toggle popup visibility.
  */
 interface AllowAccessPopupProps {
   accessPopup: boolean;
   setAccessPopup: Dispatch<SetStateAction<boolean>>;
+  onAllowLocation?: () => void;
+  onAllowNotification?: () => void;
+  onDenyLocation?: () => void;
+  onDenyNotification?: () => void;
 }
 
 /**
- * AllowAccessPopup
- *
- * A small two-step permission popup shown to clients:
- * - First step: ask for location access (shows location icon and description).
- * - Second step: when the user clicks "Allow Access" on the first step, show
- *   the notifications permission step.
- *
- * The component renders nothing when `accessPopup` is false.
- *
- * @param {AllowAccessPopupProps} props - Component props
- * @returns {JSX.Element | null} The popup element when visible or null when hidden
+ * AllowAccessPopup – Two-step Permission Popup
  */
 export default function AllowAccessPopup({
   accessPopup,
   setAccessPopup,
+  onAllowLocation,
+  onAllowNotification,
+  onDenyLocation,
+  onDenyNotification,
 }: AllowAccessPopupProps) {
+
   const [enableNotification, setEnableNotification] = useState<boolean>(false);
 
   useEffect(() => {
@@ -86,6 +82,7 @@ export default function AllowAccessPopup({
 
   if (!accessPopup) return null;
 
+
   const handleRealLocationRequest = () => {
     navigator.geolocation.getCurrentPosition(
       () => {
@@ -122,6 +119,7 @@ export default function AllowAccessPopup({
         <AiOutlineClose />
       </div>
 
+
       {!enableNotification ? (
         <div className="pb-6 px-10 text-center">
           <img
@@ -139,9 +137,11 @@ export default function AllowAccessPopup({
             type="button"
             className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={handleRealLocationRequest}
+
           >
             Allow Access
           </Button>
+
 
           <button
             type="button"
@@ -173,9 +173,11 @@ export default function AllowAccessPopup({
             type="button"
             className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={handleRealNotificationRequest}
+
           >
             Allow Access
           </Button>
+
 
           <button
             type="button"
@@ -186,6 +188,7 @@ export default function AllowAccessPopup({
           >
             Deny Access
           </button>
+
         </div>
       )}
     </Popup>

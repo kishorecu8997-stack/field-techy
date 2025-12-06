@@ -8,6 +8,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import type { ClientFormData } from "../../types";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * CorporateClientForm component for adding new corporate client information.
@@ -63,17 +64,44 @@ const CorporateClientForm: React.FC = () => {
     }
   };
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: ClientFormData) => {
+    await showPopup({
+      title: "Add Client",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          action: async (close) => {
+            console.log("data :", data);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Client information saved successfully!");
+            navigate(absoluteUrls.admin.home.manage_client);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
       setIsSubmitting(true);
       try {
         const formData = methods.getValues();
-        console.log("Form submitted:", formData);
-        toast.success("Client information saved successfully!");
-        navigate(absoluteUrls.admin.home.manage_client);
-        methods.reset();
         setActiveTab("Basic Information");
+        handleSaveConfirmation(formData);
       } catch (error) {
         console.error("Error saving client information:", error);
         toast.error("An error occurred while saving client information.");
@@ -82,7 +110,6 @@ const CorporateClientForm: React.FC = () => {
       }
     }
   };
-
   const tabs = [
     {
       label: "Basic Information",
@@ -96,11 +123,10 @@ const CorporateClientForm: React.FC = () => {
     },
   ];
 
-  const isLastTab = activeTab === "Documents";
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Add Client</h1>
+        <h1 className="font-semibold ">Add Client</h1>
         <Button
           variant="solid"
           className=""
@@ -108,8 +134,8 @@ const CorporateClientForm: React.FC = () => {
         >
           Back
         </Button>
-      </div>   
-      
+      </div>
+
       <FormProvider {...methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
           <AdminTabComponent

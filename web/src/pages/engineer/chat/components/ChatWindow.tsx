@@ -1,44 +1,71 @@
-import type { ChatMessage, ChatUser } from "../types";
+// src/components/ChatWindow/ChatWindow.tsx
+import React from "react";
+import type {
+  ChatMessage,
+  ChatMode,
+  Conversation,
+  GroupConversation,
+} from "../types";
+import { ChatHeader } from "./ChatHeader";
+import { ChatInput } from "./ChatInput";
 import { MessageBubble } from "./MessageBubble";
 
-interface Props {
-  user: ChatUser | null;
+interface ChatWindowProps {
+  mode: ChatMode;
+  conversation: Conversation | null;
   messages: ChatMessage[];
 }
 
-/**
- * The window for the chat page.
- * @param user - The user to display in the window.
- * @param messages - The list of messages to display in the window.
- * @returns The chat window.  
+/*
+ * ChatWindow
+ *
+ * A component that displays a chat window with a header, input bar, and message bubbles.
+ *
+ * @param {ChatMode} mode - The current chat mode.
+ * @param {Conversation | null} conversation - The selected conversation.
+ * @param {ChatMessage[]} messages - The list of chat messages.
+ * @returns {JSX.Element} The rendered chat window component.
+ * @constructor
  */
-export const ChatWindow = ({ user, messages }: Props) => {
-  if (!user)
-    return <div className="flex-1 flex items-center justify-center">Select user</div>;
+export const ChatWindow: React.FC<ChatWindowProps> = ({
+  mode,
+  conversation,
+  messages,
+}) => {
+  if (!conversation) {
+    return (
+      <div className="flex-1 flex items-center justify-center text-gray-400">
+        Select a {mode === "group" ? "group" : "conversation"} to start chatting
+      </div>
+    );
+  }
+
+  const isGroup = conversation.type === "group";
+  const groupConv = isGroup ? (conversation as GroupConversation) : null;
 
   return (
-    <section className="flex flex-col flex-1 bg-white">
-      <div className="p-4 border-b">
-        <p className="font-semibold">{user.name}</p>
-        <p className="text-xs text-gray-500">Status: Online</p>
-      </div>
+    <div className="flex flex-col flex-1 min-h-[70vh] max-h-80vh] overflow-y-auto">
+      <ChatHeader conversation={conversation} group={groupConv} />
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} />
+      <div className="flex-1 overflow-y-auto px-16 py-8 space-y-6 bg-gray-50">
+        <div className="text-center text-sm text-gray-500">Today</div>
+
+        {messages.map((m) => (
+          <MessageBubble key={m.id} message={m} />
         ))}
       </div>
 
-      <div className="p-4 border-t flex items-center gap-3">
-        <input
-          type="text"
-          placeholder="Write text here..."
-          className="flex-1 border rounded-xl px-4 py-2"
-        />
-        <div className="h-10 w-10 bg-green-600 text-white rounded-full flex items-center justify-center">
-          ▶
-        </div>
-      </div>
-    </section>
+      <ChatInput
+        onSend={(text) => {
+          console.log("send", text);
+        }}
+        onUploadFile={(file) => {
+          console.log("upload file", file);
+        }}
+        onStartVoiceMessage={() => {
+          console.log("start voice message recording");
+        }}
+      />
+    </div>
   );
 };
