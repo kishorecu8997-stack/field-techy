@@ -326,6 +326,7 @@ export const routes = createBrowserRouter([
         path: urls.engineer.auth.background_verification,
         element: withSuspense(BackgroundVerification),
       },
+
     ],
   },
 
@@ -367,6 +368,7 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+      {path: urls.engineer.home.chat, element: withSuspense(EngineerChatPage)},
     ],
   },
 
