@@ -1,6 +1,7 @@
 import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import { earningsData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchData";
+import { sampleJobs } from "@/dummy_data/searchDataClient";
+import { sampleJobs as sampleJobs1 } from "@/dummy_data/searchData";
 import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTabSection";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -23,20 +24,21 @@ const ClientJobDetails = () => {
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
 
-  const jobId = Number(params.id);
+  const jobId = Number(params.jobId);
+  const id = Number(params.id);
 
-  const proposal = ProposalsList.find((job) => job.id === jobId);
+  const proposal = ProposalsList.find((job) => job.id === id);
+  const data = sampleJobs.find((job) => job.id === jobId);
   const matchedJob = proposal
-    ? sampleJobs.find((job) => job.id === proposal.jobID)
+    ? sampleJobs1.find((job) => job.id === proposal.jobID)
+    : data
+    ? sampleJobs.find((job) => job.id === jobId)
     : null;
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
-        <MyJobsHeader
-          title="Job Details"
-          isShowBreadcrumb
-        />
+        <MyJobsHeader title="Job Details" isShowBreadcrumb />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
@@ -61,7 +63,6 @@ const ClientJobDetails = () => {
             />
           </div>
           <SidebarJobPostWallet earnings={earningsData} />
-        
         </div>
       </div>
     </div>

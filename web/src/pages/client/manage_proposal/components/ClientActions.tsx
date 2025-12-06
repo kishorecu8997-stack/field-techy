@@ -11,10 +11,10 @@ import { useNavigate, useParams } from "react-router-dom";
 const ClientActions = () => {
   const navigate = useNavigate();
 
-  const { id } = useParams();
+  const { id, jobId } = useParams();
 
   const makeUrl = createPathBuilder(absoluteUrls.client.home.SelectEngineer);
-  const URl = makeUrl({ id: id as string });
+  const URl = makeUrl({ id: String(id || jobId) });
 
   return (
     <div className="flex flex-row justify-end">
