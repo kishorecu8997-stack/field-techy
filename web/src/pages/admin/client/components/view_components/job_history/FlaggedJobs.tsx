@@ -8,7 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import type { FlaggedJobsProps } from "../../../types";
-import SimpleSelect from "@/shared/components/Temp";
+import SimpleSelect from "@/shared/components/SelectMenu";
 import { postedJobsData } from "@/dummy_data/ClientViewData";
 import GeneralChart from "@/shared/components/AdminChart";
 import { days } from "@/dummy_data/adminDashboard";
