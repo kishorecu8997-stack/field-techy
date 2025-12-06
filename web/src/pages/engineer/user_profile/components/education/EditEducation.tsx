@@ -9,6 +9,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { educationLevels, courses, universities, majors,educationEdit} from "@/dummy_data/engineer_profile/education-data";
 
+interface EditEducationProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * The EditEducation component renders a form to modify an existing education entry.
  * It uses `react-hook-form` for form management and validation. The form is
@@ -16,7 +20,8 @@ import { educationLevels, courses, universities, majors,educationEdit} from "@/d
  * @param {EditEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
-const EditEducation = () => {
+
+const EditEducation: React.FC<EditEducationProps> = ({ onMenuItemClick, onClose }) => {
   const getEducationById = () => {
     const id = localStorage.getItem("editEducationId");
     const educationId = id ;
@@ -33,6 +38,7 @@ const EditEducation = () => {
   const handleSubmit = (data: EducationFormData) => {
     toast.success("Education Updated Successfully");
     console.log("Form submitted with updated data:", data);
+    onMenuItemClick("education");
     // TODO: Replace with actual submission logic (e.g., API call to update)
   };
 

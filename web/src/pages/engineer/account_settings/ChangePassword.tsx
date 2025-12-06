@@ -7,26 +7,32 @@ import type { bankDetails } from "./types";
 import PasswordSection from "../auth/components/PasswordSection";
 import { toast } from "react-toastify";
 
+interface ChangePasswordProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
  * Uses React Hook Form for validation and submission handling.
  */
-const ChangePassword = () => {
+  const ChangePassword: React.FC<ChangePasswordProps> = ({onMenuItemClick,onClose}) => {
   return (
     <div className="h-full">
-      <ChangePasswordFields />
+      <ChangePasswordFields onMenuItemClick={onMenuItemClick} />
     </div>
   );
 };
 
 export default ChangePassword;
 
-const ChangePasswordFields = () => {
+const ChangePasswordFields = ({ onMenuItemClick }: { onMenuItemClick: (key: string) => void }) => {
+
   const FormCtx = useForm<bankDetails>();
 
   const handleSubmit = (data: bankDetails) => {
     console.log("Submitted data:", data);
     toast.success("Password updated successfully!");
+    onMenuItemClick("settings")
   };
 
   return (
@@ -57,4 +63,5 @@ const ChangePasswordFields = () => {
       </div>
     </FormContainer>
   );
+
 };

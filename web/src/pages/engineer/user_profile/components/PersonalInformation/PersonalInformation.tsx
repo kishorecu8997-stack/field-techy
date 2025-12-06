@@ -17,13 +17,17 @@ import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/Verifie
 import { toast } from "react-toastify";
 import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
 
+interface PersonalInfoProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * The PersonalInformation component renders a form for editing user profile details.
  * It uses `react-hook-form` for state management and validation.
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const PersonalInformation: React.FC = () => {
+const PersonalInformation: React.FC<PersonalInfoProps> = ({onMenuItemClick,onClose}) => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
@@ -36,6 +40,7 @@ const PersonalInformation: React.FC = () => {
   const handleSubmit = (data: EditProfileFormData) => {
     console.log("Form submitted with data:", data);
     toast.success("Profile Updated Successfully");
+    onMenuItemClick("profile")
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

@@ -4,11 +4,14 @@ import BankDetailsForm from "./BankDetailsForm";
 import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
 
-
+interface AddBankDetailsProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * Page component for adding new bank details using a controlled form with React Hook Form.
  */
-const AddBankDetails = () => {
+const AddBankDetails: React.FC<AddBankDetailsProps> = ({onMenuItemClick,onClose}) => {
   const fromCtx = useForm({
     mode:"onSubmit",
     defaultValues: {
@@ -23,6 +26,7 @@ const AddBankDetails = () => {
   const handleSubmit = (data: bankDetails) => {
     console.log(data);
     toast.success("Bank details added successfully");
+   onMenuItemClick("manageBankAccounts");
   };
   return (
     <FormContainer

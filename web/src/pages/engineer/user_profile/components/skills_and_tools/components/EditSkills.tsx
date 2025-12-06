@@ -6,6 +6,11 @@ import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
+interface EditSkillsProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
+
 export type EditSkillsFormData = {
   skills: string[];
 };
@@ -20,7 +25,8 @@ interface EditSkillsProps {
  * @param {EditSkillsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditSkills form component.
  */
-const EditSkills: React.FC<EditSkillsProps> = () => {
+// const EditSkills: React.FC<EditSkillsProps> = () => {
+  const EditSkills: React.FC<EditSkillsProps> = ({onMenuItemClick,onClose}) => {
   const initialSkillIds = useMemo(() => {
     const storedIds = localStorage.getItem("editSkillsId");
     if (storedIds) {
@@ -70,6 +76,7 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
   const onSubmit = (data: EditSkillsFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Skills Updated Successfully");
+    onMenuItemClick("skillsAndTools")
     // TODO: API call
   };
 

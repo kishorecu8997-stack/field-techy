@@ -75,6 +75,7 @@ const EditRateCard = () => {
   const onSubmit = (data: any) => {
     console.log(data);
     toast.success("Rate card updated successfully")
+    navigate(-1);
   };
 
   const isEdit = path.includes("/edit");

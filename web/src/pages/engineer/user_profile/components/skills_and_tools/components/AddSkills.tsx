@@ -5,6 +5,10 @@ import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
+interface AddSkillsProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * Defines the shape of the form data for adding skills.
  * @typedef {Object} AddSkillsFormData
@@ -20,7 +24,8 @@ export type AddSkillsFormData = {
  *
  * @returns {React.ReactElement} The rendered AddSkills form component.
  */
-const AddSkills = () => {
+
+const AddSkills: React.FC<AddSkillsProps> = ({onMenuItemClick,onClose}) => {
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
@@ -30,6 +35,7 @@ const AddSkills = () => {
   const onSubmit = (data: AddSkillsFormData) => {
     toast.success("Skills Saved Successfully");  
     console.log("Form data:", data);
+    onMenuItemClick("skillsAndTools"); 
     // TODO: Replace with actual submission logic (e.g., API call)
   };
   

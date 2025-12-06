@@ -6,6 +6,11 @@ import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
+interface EditToolsProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
+
 /**
  * Defines the shape of the form data for editing tools.
  * @typedef {Object} EditToolsFormData
@@ -29,7 +34,8 @@ interface EditToolsProps {
  * @param {EditToolsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditTools form component.
  */
-const EditTools: React.FC<EditToolsProps> = () => {
+// const EditTools: React.FC<EditToolsProps> = () => {
+const EditTools: React.FC<EditToolsProps> = ({onMenuItemClick,onClose}) => {
   const initialToolIds = useMemo(() => {
     const storedIds = localStorage.getItem("editToolsId");
     if (storedIds) {
@@ -48,6 +54,7 @@ const EditTools: React.FC<EditToolsProps> = () => {
   const onSubmit = (data: EditToolsFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Tools Updated Successfully");
+    onMenuItemClick("skillsAndTools")
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

@@ -4,6 +4,10 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
+interface EditDocumentProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * Defines the shape of the form data for editing a document.
  * @typedef {Object} EditDocumentFormData
@@ -19,7 +23,8 @@ export type EditDocumentFormData = {
  * @param {EditDocumentProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditDocument form component.
  */
-const EditDocument = () => {
+
+const EditDocument: React.FC<EditDocumentProps> = ({onMenuItemClick,onClose}) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -29,6 +34,7 @@ const EditDocument = () => {
   const onSubmit = (data: EditDocumentFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Document Updated Successfully");
+    onMenuItemClick("document")
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

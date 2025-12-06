@@ -13,14 +13,18 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import {workPreferenceData} from "@/dummy_data/engineer_profile/workPreferenceData";
 
-
+interface WorkPreferenceProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
  * It uses `react-hook-form` for state management and validation.
  * @param {WorkPreferenceProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
-const WorkPreference = () => {
+
+const WorkPreference: React.FC<WorkPreferenceProps> = ({onMenuItemClick,onClose}) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -30,6 +34,7 @@ const WorkPreference = () => {
   const handleSubmit = (data: WorkPreferenceFormData) => {
     toast.success("Work Preferences Saved Successfully");
     console.log("Form submitted with data:", data);
+    onMenuItemClick("profile")
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

@@ -21,13 +21,17 @@ import countries, {
 } from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
 
+interface ClientPersonalInformationProps {
+  onMenuItemClick: (key: string) => void;
+  onClose: () => void;
+}
 /**
  * The PersonalInformation component renders a form for editing user profile details.
  * It uses `react-hook-form` for state management and validation.
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const ClientPersonalInformation: React.FC = () => {
+const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({onMenuItemClick,onClose}) => {
   /**
    * Initializes `react-hook-form` with default values for the personal information form.
    */
@@ -55,6 +59,8 @@ const ClientPersonalInformation: React.FC = () => {
   const handleSubmit = (data: PersonalInfo) => {
     console.log("Form submitted with data:", data);
     toast.success("Profile Updated Successfully");
+    onMenuItemClick("clientAccount");
+    
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 
