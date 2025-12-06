@@ -13,7 +13,26 @@ import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
+import Popup from "@/shared/components/Popup";
+import { IoCloseSharp } from "react-icons/io5";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm } from "react-hook-form";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
 
+/**
+ * HandleStatus
+ *
+ * Small toggle component that displays and allows toggling of a boolean status.
+ * Shows "On" (green) when true and "Off" (red) when false. Clicking the badge
+ * toggles the local state.
+ *
+ * Props:
+ * - `status` (boolean): Initial status value to display.
+ *
+ * @component
+ * @param {{ status: boolean }} props
+ * @returns {JSX.Element} A clickable status badge
+ */
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
   return (
@@ -28,9 +47,30 @@ const HandleStatus = ({ status: value }: { status: boolean }) => {
   );
 };
 
+/**
+ * ManageGroupList
+ *
+ * Admin page component for managing engineer groups. Displays a searchable table
+ * of groups with view/edit/delete actions. On deletion, shows a remarks popup
+ * to collect deletion feedback before confirming.
+ *
+ * Features:
+ * - Searchable table with group metadata (name, description, engineer count, dates)
+ * - Status toggle column (On/Off) for group status
+ * - Action buttons: View, Edit, Delete
+ * - Delete confirmation popup with remarks form
+ * - Navigation to add/view/edit group pages
+ *
+ * @component
+ * @returns {JSX.Element} The manage groups page with table and actions
+ */
 const ManageGroupList: React.FC = () => {
+  const methods = useForm<{ remarks: string }>({
+    defaultValues: { remarks: "" },
+  });
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const [remarks, setRemarks] = useState<boolean>(false);
 
   //Delete confirmation handler
   const handleDelete = (row: ManageGroups) => {
@@ -49,7 +89,8 @@ const ManageGroupList: React.FC = () => {
           variant: "danger",
           action: async (close) => {
             console.log("Deleted group:", row);
-            toast.success("Group deleted successfully");
+            setRemarks(true);
+            // toast.success("Group deleted successfully");
             close(true);
           },
         },
@@ -78,18 +119,22 @@ const ManageGroupList: React.FC = () => {
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            // onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+            onClick={() =>
+              navigate(
+                `${absoluteUrls.admin.home.manage_groups_view}/${row.srNo}`
+              )
+            }
           >
             <FiEye className="text-yellow-600" />
           </div>
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
             <CiEdit
               className="text-blue-600"
-              // onClick={() =>
-              //   navigate(
-              //     `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`
-              //   )
-              // }
+              onClick={() =>
+                navigate(
+                  `${absoluteUrls.admin.home.manage_groups_edit}/${row.srNo}`
+                )
+              }
             />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer">
@@ -102,6 +147,12 @@ const ManageGroupList: React.FC = () => {
       ),
     },
   ];
+
+  const handleSubmit = async (data: { remarks: string }) => {
+    console.log("Remarks for deletion:", data.remarks);
+    setRemarks(false);
+    toast.success("Group deleted successfully");
+  };
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
@@ -117,7 +168,7 @@ const ManageGroupList: React.FC = () => {
           </Button>
         </div>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex gap-4 items-center">
           <SearchInput />
         </div>
@@ -129,6 +180,43 @@ const ManageGroupList: React.FC = () => {
           />
         </div>
       </div>
+      {remarks && (
+        <Popup open={remarks} onClose={() => setRemarks(false)}>
+          <div className="p-4">
+            <div className="flex justify-between items-center">
+              <span className="font-bold">Remarks</span>
+              <div
+                className="text-xl font-semibold cursor-pointer"
+                onClick={() => setRemarks(false)}
+              >
+                <IoCloseSharp />
+              </div>
+            </div>
+            <FormContainer methods={methods} onSubmit={handleSubmit}>
+              <TextareaInput
+                name="remarks"
+                label="Remarks"
+                isShowLabel={false}
+              />
+              <div className="flex justify-end mt-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setRemarks(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="w-fit rounded-md bg-gradient-to-r bg-teal-900 text-white py-2 hover:opacity-90 transition"
+                >
+                  Submit
+                </Button>
+              </div>
+            </FormContainer>
+          </div>
+        </Popup>
+      )}
     </div>
   );
 };

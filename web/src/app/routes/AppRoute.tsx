@@ -221,9 +221,22 @@ const ManageGroups = React.lazy(() => import("@/pages/admin/manage_groups"));
 const ManageGroupsAdd = React.lazy(
   () => import("@/pages/admin/manage_groups/components/AddGroup")
 );
+const ManageGroupsEdit = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/EditGroup")
+);
+const ManageGroupsView = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/ViewGroup")
+);
+const ManageGroupsAddEngineer = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/SelectEngineers")
+);
 
-const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
-const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
+const OfferPages = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
+);
+const PostAJobPage = React.lazy(
+  () => import("@/pages/client/post_job/PostAJobComponent/PostJobPage")
+);
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
@@ -334,7 +347,6 @@ export const routes = createBrowserRouter([
         path: urls.engineer.auth.background_verification,
         element: withSuspense(BackgroundVerification),
       },
-
     ],
   },
 
@@ -348,7 +360,7 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.explore_jobs,
         element: withSuspense(ExploreJobs),
-      },      
+      },
       {
         path: urls.engineer.home.saved_jobs,
         element: withSuspense(ExploreSavedJobs),
@@ -376,7 +388,10 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
-      {path: urls.engineer.home.chat, element: withSuspense(EngineerChatPage)},
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
     ],
   },
 
@@ -440,7 +455,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
-         path: `${urls.client.home.my_jobs}/:jobId`,
+        path: `${urls.client.home.my_jobs}/:jobId`,
         element: withSuspense(ClientJobDetails),
       },
       {
@@ -492,7 +507,7 @@ export const routes = createBrowserRouter([
         path: urls.client.home.post_a_job,
         element: withSuspense(PostAJobPage),
       },
-       {
+      {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },
@@ -715,6 +730,18 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_groups_add,
             element: withSuspense(ManageGroupsAdd),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_edit}/:id?`,
+            element: withSuspense(ManageGroupsEdit),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_view}/:id?`,
+            element: withSuspense(ManageGroupsView),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_addEngineer}/:id?`,
+            element: withSuspense(ManageGroupsAddEngineer),
           },
         ],
       },

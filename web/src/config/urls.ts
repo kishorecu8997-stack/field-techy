@@ -136,6 +136,9 @@ export const urls = {
       jobOffer: "job-offer",
       manage_groups: "manage-groups",
       manage_groups_add: "manage-groups/add",
+      manage_groups_edit: "manage-groups/edit",
+      manage_groups_view: "manage-groups/view",
+      manage_groups_addEngineer: "manage-groups/add-engineer",
     },
   },
 } as const;
@@ -253,6 +256,9 @@ export const absoluteUrls = {
       jobOffer: `${BASE.ADMIN}/job-offer`,
       manage_groups: `${BASE.ADMIN}/manage-groups`,
       manage_groups_add: `${BASE.ADMIN}/manage-groups/add`,
+      manage_groups_edit: `${BASE.ADMIN}/manage-groups/edit`,
+      manage_groups_view: `${BASE.ADMIN}/manage-groups/view`,
+      manage_groups_addEngineer: `${BASE.ADMIN}/manage-groups/add-engineer`,
     },
   },
 } as const;

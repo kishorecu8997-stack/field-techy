@@ -1,6 +1,4 @@
-import { absoluteUrls } from "@/config/urls";
 import {
-  manageGroups,
   SelectEngineer,
   type SelectEngineerProps,
 } from "@/dummy_data/admin/manageGroups";
@@ -9,60 +7,81 @@ import {
   CustomTable,
   type Column,
 } from "@/shared/components/commonUI/custom_table";
-import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import Popup from "@/shared/components/Popup";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUserCircle } from "react-icons/fa";
-import { IoCloseSharp } from "react-icons/io5";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { AddGroup } from "../type";
-import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { absoluteUrls } from "@/config/urls";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import Popup from "@/shared/components/Popup";
+import { IoCloseSharp } from "react-icons/io5";
 
 /**
- * EditGroup
+ * SelectEngineers
  *
- * Page component for editing an existing engineer group. Allows the user to
- * update the group name and description, and manage engineers within the group
- * (view documents, add new engineers, remove existing engineers).
+ * Page component for selecting engineers to add to an existing group.
+ * Displays a searchable, multi-select table of available engineers with
+ * bulk selection support (select-all checkbox) and document viewing capability.
  *
  * Features:
- * - Pre-fills form with existing group data based on route parameter `id`
- * - Editable group name and description fields
- * - Displays table of engineers currently in the group
+ * - Multi-select checkbox table with select-all header checkbox
+ * - Searchable engineer list showing name, contact, and KYC details
  * - View documents modal for each engineer
- * - Add Engineer button to navigate to engineer selection page
- * - Remove Engineer action with confirmation popup
- * - Update group confirmation before saving changes
+ * - Add to Group confirmation popup before submission
+ * - Submit button disabled until at least one engineer is selected
  * - Navigation back to manage groups on success
  *
- * Route params:
- * - `id`: The group serial number (srNo) to identify which group to edit
+ * State management:
+ * - Uses `react-hook-form` for form integration
+ * - Local state for modal visibility, selected engineer IDs, and selected row
+ * - Uses `usePopupStore` for confirmation dialogs and `useNavigate` for routing
  *
  * @component
- * @returns {JSX.Element} The edit group form page with engineer management
+ * @returns {JSX.Element} Engineer selection table with multi-select and modals
  */
-export default function EditGroup() {
+export default function SelectEngineers() {
+  const methods = useForm({ defaultValues: { selectedIds: [] } });
   const { showPopup } = usePopupStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-
-  const editGroup = manageGroups.find((item) => item.srNo === Number(id));
-
-  const methods = useForm({
-    defaultValues: {
-      groupName: editGroup?.groupName || "",
-      groupDescription: editGroup?.groupDescription || "",
-    },
-  });
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
 
   const columns: Column<SelectEngineerProps>[] = [
+    {
+      key: "select",
+      label: (
+        <input
+          type="checkbox"
+          checked={selectedIds.length === SelectEngineer.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(SelectEngineer.map((item) => item.engineerID));
+            } else {
+              setSelectedIds([]);
+            }
+          }}
+        />
+      ),
+      renderCell: (row: SelectEngineerProps) => (
+        <input
+          type="checkbox"
+          checked={selectedIds.includes(row.engineerID)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds((prev) => [...prev, row.engineerID]);
+            } else {
+              setSelectedIds((prev) =>
+                prev.filter((id) => id !== row.engineerID)
+              );
+            }
+          }}
+        />
+      ),
+    },
     { key: "id", label: "Sr.No." },
     {
       key: "engineerID",
@@ -135,55 +154,12 @@ export default function EditGroup() {
       key: "avgRating",
       label: "Avg Rating",
     },
-    {
-      key: "actions",
-      label: "Actions",
-      renderCell: (row: SelectEngineerProps) => (
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
-            <IoIosRemoveCircleOutline
-              className="text-red-600"
-              onClick={() => handleRemove(row)}
-            />
-          </div>
-        </div>
-      ),
-    },
   ];
 
-  const handleRemove = (row: SelectEngineerProps) => {
+  const handleSubmit = async (selectedIds: string[]) => {
     showPopup({
-      title: "Remove Engineer",
-      body: (
-        <>
-          Are you sure you want to remove engineer{" "}
-          <strong>{row.details.name}</strong> from the group?
-        </>
-      ),
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
-        {
-          label: "Yes",
-          value: "yes",
-          variant: "danger",
-          action: async (close) => {
-            console.log("Deleting engineer:", row.id);
-            toast.success("Engineer removed successfully");
-            close(true);
-          },
-        },
-      ],
-    });
-  };
-
-  const handleSubmit = async (data: AddGroup) => {
-    showPopup({
-      title: "Update Group",
-      body: "Are you sure you want to update this group?",
+      title: "Add to Group",
+      body: "Are you sure you want to add these engineers to the group?",
       actionButtons: [
         {
           label: "Cancel",
@@ -195,8 +171,8 @@ export default function EditGroup() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            console.log("Submitted data:", data);
-            toast.success("Group updated successfully");
+            console.log("Submitted data:", selectedIds);
+            toast.success("Group added successfully");
             methods.reset();
             setIsModalOpen(false);
             navigate(absoluteUrls.admin.home.manage_groups);
@@ -209,47 +185,18 @@ export default function EditGroup() {
 
   return (
     <div className="w-full h-full  flex flex-col p-3">
-      <div className="flex justify-between mb-2 items-center">
-        <h1 className="font-semibold">Edit group</h1>
-        <div className="flex gap-4">
-          <Button variant="solid" onClick={() => navigate(-1)}>
-            Back
-          </Button>
-        </div>
-      </div>
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <FormContainer
-          methods={methods}
+          methods={methods as any}
           className="flex flex-col gap-2"
           onSubmit={handleSubmit}
         >
-          <div className="grid md:flex gap-4">
-            <InputField
-              name="groupName"
-              label="Group Name"
-              required
-              placeholder="Enter Group Name"
-              // rules={{ validate: (v: string) => validateName(v) }}
-            />
-            <InputField
-              name="groupDescription"
-              label="Group Description"
-              placeholder="Enter Group Description"
-            />
-          </div>
           <div className="flex justify-between items-center">
-            <div className="font-semibold">Engineers</div>
+            <div className="font-semibold">Select Engineers</div>
             <div className="flex gap-2 items-center">
               <SearchInput />
-              <Button
-                className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-md hover:opacity-90 transition"
-                onClick={() =>
-                  navigate(
-                    `${absoluteUrls.admin.home.manage_groups_addEngineer}/${id}`
-                  )
-                }
-              >
-                Add Engineer
+              <Button variant="solid" onClick={() => navigate(-1)}>
+                Back
               </Button>
             </div>
           </div>
@@ -264,8 +211,9 @@ export default function EditGroup() {
             <Button
               type="submit"
               className="mr-0 w-fit bg-gradient-to-r bg-teal-900 text-white"
+              disabled={selectedIds.length === 0}
             >
-              Save
+              Add to Group
             </Button>
           </div>
         </FormContainer>

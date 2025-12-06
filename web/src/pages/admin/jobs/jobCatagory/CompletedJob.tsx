@@ -10,7 +10,7 @@ import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { InputOutline } from "@/shared/components/InputOutline";
-import SelectMenu from "@/shared/components/Temp";
+import SelectMenu from "@/shared/components/SelectMenu";
 import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";

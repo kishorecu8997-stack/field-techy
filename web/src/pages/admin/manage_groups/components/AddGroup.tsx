@@ -19,8 +19,29 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify/unstyled";
 import type { AddGroup } from "../type";
-import { validateJobDescription, validateName } from "@/utils/validate";
 
+/**
+ * AddGroup
+ *
+ * Page component for creating a new engineer group in the admin panel.
+ * Allows the user to enter group name/description and select engineers to add to the group.
+ *
+ * Features:
+ * - Form inputs for group name and description
+ * - Searchable table of available engineers with multi-select checkboxes
+ * - Select-all checkbox header for bulk selection
+ * - View documents modal for each engineer
+ * - Confirmation popup before submitting the group
+ * - Navigation back to manage groups page on success
+ *
+ * State management:
+ * - Uses `react-hook-form` for form state
+ * - Local state for modal visibility and selected engineer IDs
+ * - Uses `usePopupStore` for confirmation dialogs and `useNavigate` for routing
+ *
+ * @component
+ * @returns {JSX.Element} The add group form page with engineer selection table
+ */
 export default function AddGroup() {
   const methods = useForm({
     defaultValues: {
@@ -158,10 +179,10 @@ export default function AddGroup() {
           variant: "primary",
           action: async (close) => {
             console.log("Submitted data:", payload);
+            toast.success("Group added successfully");
             methods.reset();
             setIsModalOpen(false);
             navigate(absoluteUrls.admin.home.manage_groups);
-            toast.success("Group added successfully");
             close(true);
           },
         },
@@ -174,12 +195,12 @@ export default function AddGroup() {
       <div className="flex justify-between mb-2 items-center">
         <h1 className="font-semibold">Add group</h1>
         <div className="flex gap-4">
-          <Button type="submit" variant="solid" onClick={() => navigate(-1)}>
+          <Button variant="solid" onClick={() => navigate(-1)}>
             Back
           </Button>
         </div>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <FormContainer
           methods={methods}
           className="flex flex-col gap-2"
@@ -196,7 +217,6 @@ export default function AddGroup() {
             <InputField
               name="groupDescription"
               label="Group Description"
-              required
               placeholder="Enter Group Description"
               // rules={{ validate: (v: string) => validateJobDescription(v) }}
             />

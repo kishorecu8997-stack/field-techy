@@ -3,7 +3,7 @@ import Users from "./Users";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
-import SimpleSelect from "@/shared/components/Temp";
+import SimpleSelect from "@/shared/components/SelectMenu";
 import { useState } from "react";
 import { days, client, status } from "@/dummy_data/adminDashboard";
 import JobsMetrics from "./JobMetrics";
