@@ -17,44 +17,48 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowBreadcrumb = true,
   description,
   isShowSort = true,
-  isReport = false,
+  isReport = true,
+  action,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
 
   return (
-    <div className="py-2">
-      <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-              {title}
-            </h1>
-            <div className="mt-1">
-              {isShowBreadcrumb && (
-                <Breadcrumb
-                  customLabels={{
-                    "my-jobs": "My Jobs",
-                    "in-progress": "In Progress",
-                  }}
-                />
-              )}
-              {description && (
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {description}
-                </p>
-              )}
+    <>
+      <div className="py-2 sticky top-18 z-20">
+        <header className=" bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-4 md:px-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                {title}
+              </h1>
+              <div className="mt-1">
+                {isShowBreadcrumb && (
+                  <Breadcrumb
+                    customLabels={{
+                      "my-jobs": "My Jobs",
+                      "in-progress": "In Progress",
+                      home: "Home",
+                    }}
+                  />
+                )}
+                {description && (
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {description}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-          <>
+            <>
               <div className="flex flex-row flex-shrink-0 justify-center items-center gap-4">
+                {action}
                 {isReport && (
-                <div
-                  className="underline cursor-pointer hover:text-teal-900"
-                  onClick={() => setIsShowReport(true)}
-                >
-                  Report
-                </div>
-              )}
+                  <div
+                    className="underline cursor-pointer hover:text-teal-900"
+                    onClick={() => setIsShowReport(true)}
+                  >
+                    Report
+                  </div>
+                )}
                 {isShowSort && (
                   <SortDropdown
                     currentSort={currentSort}
@@ -62,11 +66,12 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                   />
                 )}
               </div>
-          </>
-        </div>
-      </header>
+            </>
+          </div>
+        </header>
+      </div>
       <ReportPage open={isShowReport} onClose={() => setIsShowReport(false)} />
-    </div>
+    </>
   );
 };
 

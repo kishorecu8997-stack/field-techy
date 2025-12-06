@@ -7,8 +7,14 @@ import { validatePassingYear } from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
-import { educationLevels, courses, universities, majors} from "@/dummy_data/engineer_profile/education-data";
-
+import {
+  educationLevels,
+  courses,
+  universities,
+  majors,
+} from "@/dummy_data/engineer_profile/education-data";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 interface AddEducationProps {
   onMenuItemClick: (key: string) => void;
@@ -22,11 +28,35 @@ interface AddEducationProps {
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
 const AddEducation: React.FC<AddEducationProps> = ({}) => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = (data: EducationFormData) => {
-    toast.success("Education Added Successfully");
-    console.log("Form submitted with data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const handleSubmit = async (data: EducationFormData) => {
+    await showPopup({
+      title: "Add Education",
+      body: "Are you sure you want to add this education?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Education Added Successfully");
+            close(true);
+            setActiveKey("education");
+          },
+        },
+      ],
+    });
   };
   const methods = useForm<EducationFormData>({
     defaultValues: {

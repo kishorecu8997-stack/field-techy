@@ -7,7 +7,7 @@ export const bankDetails = [
     swiftcode: "1234567890",
     bankAddress: "1234 Main Street, Anytown, USA",
     iban: "1234567890",
-    name: " Doe",
+    name: "Doe",
   },
   {
     bankName: "Bank of America",
