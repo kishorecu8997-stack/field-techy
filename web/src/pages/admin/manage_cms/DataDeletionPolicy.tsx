@@ -1,6 +1,7 @@
 "use client";
+import { quillContent } from "@/dummy_data/client";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useQuillEditor } from "@/shared/components/commonUI/text_editor";
+import QuillEditor from "@/shared/components/QuillEditor";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -20,17 +21,14 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered DataDeletionPolicy component.
  */
 export default function DataDeletionPolicy() {
-  const [value, setValue] =
-    useState(`<p>This policy explains how users can request the removal of their personal data.
-We ensure all deletion requests are processed securely and within the required timeframe.
-Once deleted, the data cannot be recovered and is permanently removed from our systems.</p>`);
-  const { containerRef } = useQuillEditor({ value, onChange: setValue });
+  const [content, setContent] = useState(quillContent);
 
   const { showPopup } = usePopupStore();
+
   //Save confirmation
   const handleSaveConfirmation = async () => {
     await showPopup({
-      title: "Data Deletion Policy",
+      title: "Customer Privacy Policy",
       body: "Are you sure you want to save this details?",
       actionButtons: [
         {
@@ -47,7 +45,7 @@ Once deleted, the data cannot be recovered and is permanently removed from our s
             console.log("Deleting:", close);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Data Deletion Policy added successfully!");
+            toast.success("Customer privacy policy added successfully!");
             close(true);
           },
         },
@@ -55,9 +53,17 @@ Once deleted, the data cannot be recovered and is permanently removed from our s
     });
   };
 
+  const onChange = (html: string) => {
+    setContent(html);
+  };
   return (
     <div className="w-full h-full flex flex-col">
-      <div ref={containerRef} className="h-full w-full" />
+      <QuillEditor
+        value={content}
+        onChange={onChange}
+        placeholder={"Start writing..."}
+        isEdit={true}
+      />
       <div className="w-full flex justify-end ">
         <Button
           className="w-fit mt-6 bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"

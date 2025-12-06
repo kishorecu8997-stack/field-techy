@@ -1,35 +1,38 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
-import type { MenuItem } from "./types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import type { MenuItem } from "@/pages/engineer/account_settings/types";
 
 /**
  * Main account settings page displaying a list of configurable options including security, bank details,
  * notifications toggle, support links, and logout. Integrates navigation, drawer control, and a logout confirmation modal.
  */
-const AccountSettings: React.FC<DrawerMenuProps> = ({
+const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
+  const location = useLocation();
+  const isClient = location.pathname.includes("client");
   const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
   const menuItems: MenuItem[] = [
     {
-      label: "Change Password",
-      icon: icons.lock,
-      id: "changePassword",
-      onClick: () => onMenuItemClick("changePassword"),
-    },
-    {
-      label: "Manage Bank Accounts",
-      icon: icons.wallet,
-      id: "manageBankAccounts",
-      onClick: () => onMenuItemClick("manageBankAccounts"),
+      label: "FAQs",
+      icon: icons.fileLines,
+      id: "faqs",
+      onClick: () => {
+        navigate(
+          isClient
+            ? absoluteUrls.client.home.faq
+            : absoluteUrls.engineer.home.faq
+        );
+        onClose();
+      },
     },
     {
       id: "notifications",
@@ -39,37 +42,27 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       toggleValue: notificationsEnabled,
       onToggleChange: setNotificationsEnabled,
     },
-    {
-      label: "Contact Us",
-      icon: icons.contactSupport,
-      id: "contactUs",
-      onClick: () => onMenuItemClick("contactUs"),
-    },
-    {
-      label: "FAQs",
-      icon: icons.fileLines,
-      id: "faqs",
-      onClick: () => {
-        navigate(`${absoluteUrls.engineer.home.faq}`);
-        onClose();
-      },
-    },
+
     {
       label: "Terms & Conditions",
       icon: icons.fileLines,
       id: "termsConditions",
       onClick: () => {
-        navigate(`${absoluteUrls.engineer.home.terms_and_conditions}`);
+        navigate(
+          isClient
+            ? absoluteUrls.client.home.terms_and_conditions
+            : absoluteUrls.engineer.home.terms_and_conditions
+        );
         onClose();
       },
     },
+
     {
-      label: "About App",
-      icon: icons.danger,
-      id: "aboutApp",
+      label: "Logout",
+      icon: icons.signOut,
+      id: "logout",
       onClick: () => {
-        navigate(`${absoluteUrls.engineer.home.about_app}`);
-        onClose();
+        setIsOpen(true);
       },
     },
   ];
@@ -82,7 +75,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
           onClose();
-          navigate(absoluteUrls.engineer.auth.login);
+          navigate(isClient ? absoluteUrls.client.auth.login : absoluteUrls.engineer.auth.login);
         }}
         onCancel={() => setIsOpen(false)}
       />
@@ -90,4 +83,4 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
   );
 };
 
-export default AccountSettings;
+export default AccountSettingsDrawerMenu;

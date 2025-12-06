@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import { mockEngineers } from "@/dummy_data/engineers";
-import ProposalCard from "./ProposalCard";
+import React, { useState } from "react";
 import Pagination from "../../search_result/components/Pagination";
+import ProposalCard from "./ProposalCard";
 
 /**
  * `ProposalListPage` is a component that displays a paginated list of proposals from engineers.

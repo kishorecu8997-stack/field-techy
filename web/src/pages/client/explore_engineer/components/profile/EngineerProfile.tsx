@@ -1,22 +1,21 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
-import EngineerProfileCard from "./EngineerProfileCard";
-import dummyProfiles from "@/dummy_data/engineerProfileCardData";
-import CategoryTag from "@/shared/components/CategoryTag";
-import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { earningsData } from "@/dummy_data/jobDetails";
-import ClientHeader from "@/shared/components/ClientHeader";
-import InformationCard from "@/shared/components/InformationCard";
-import informationCards from "@/dummy_data/informationCardData";
 import {
   categoriesSkills,
   categoriesTools,
   portfoloioLink,
 } from "@/dummy_data/categoryTagData";
+import dummyProfiles from "@/dummy_data/engineerProfileCardData";
+import informationCards from "@/dummy_data/informationCardData";
+import { earningsData } from "@/dummy_data/jobDetails";
+import { SORT_OPTIONS } from "@/pages/client/search_result/types";
+import CategoryTag from "@/shared/components/CategoryTag";
+import InformationCard from "@/shared/components/InformationCard";
 import InformationCardTools from "@/shared/components/InformationCardTools";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS } from "@/pages/client/search_result/types";
+import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import EngineerProfileCard from "./EngineerProfileCard";
 
 const portfolioLink = portfoloioLink;
 

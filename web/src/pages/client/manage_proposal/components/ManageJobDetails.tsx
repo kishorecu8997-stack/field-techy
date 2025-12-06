@@ -1,24 +1,24 @@
-import { client, jobHeaderData } from "@/dummy_data/jobDetails";
+import { client } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
+import ClientInfoCard from "@/pages/engineer/my_job/job_details_components/ClientInfoCard";
+import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";
+import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTabSection";
+import { SORT_OPTIONS, type JobStatus } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
-import ClientInfoCard from "./ClientInfoCard";
-import JobHeaderCard from "./jobHeaderComponents/JobHeaderCard";
-import JobTabSection from "./JobTabSection";
 
 /**
  * Page component displaying detailed information about a specific job.
  *
  * @returns {JSX.Element} Job details page layout.
  */
-const OfferPages = () => {
+const ManageJobDetails = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isJobAccepted, setIsJobAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
+  const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
 
   const filter = () => {
     return sampleJobs.find((job) => {
@@ -37,30 +37,31 @@ const OfferPages = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={jobHeaderData.title}
-              client={jobHeaderData.client}
-              duration={jobHeaderData.duration}
+              title={filter()?.title as string}
+              client={filter()?.client as string}
+              duration={filter()?.duration as string}
               type={filter()?.type}
               status={filter()?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
-              setIsJobAccepted={setIsJobAccepted}
               setActiveTab={setActiveTab}
+              setOfferJobStatus={setOfferJobStatus}
+              OfferJobStatus={OfferJobStatus}
             />
             <JobTabSection
               status={filter()?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted}
               activeTab={activeTab}
+              OfferJobStatus={OfferJobStatus}
             />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={client.name}
+              name={filter()?.client as string}
               memberSince={client.memberSince}
-              location={client.location}
+              location={filter()?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
@@ -72,4 +73,4 @@ const OfferPages = () => {
   );
 };
 
-export default OfferPages;
+export default ManageJobDetails;
