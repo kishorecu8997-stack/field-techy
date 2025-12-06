@@ -236,6 +236,12 @@ const ClientDashboard = React.lazy(
 const ClientManageProposal = React.lazy(
   () => import("@/pages/client/manage_proposal")
 );
+const ClientManageProposalDetails = React.lazy(
+  () => import("@/pages/client/manage_proposal/ManageExploreEngineer")
+);
+const ClientJobDetails = React.lazy(
+  () => import("@/pages/client/manage_proposal/ClientJobDetails")
+);
 const ClientPostJobPage = React.lazy(
   () => import("@/pages/client/post_job/MultiStepPostJob")
 );
@@ -253,10 +259,9 @@ const ClientJobInvite = React.lazy(
   () =>
     import("@/pages/client/explore_engineer/components/invite_job/InviteJob")
 );
-const ClientJobDetails = React.lazy(
-  () => import("@/pages/client/my_job_client/components/JobDetails")
+const SelectEngineer = React.lazy(
+  () => import("@/pages/client/manage_proposal/SelectEngineer")
 );
-
 const ClientInviteEngineers = React.lazy(
   () =>
     import(
@@ -457,9 +462,22 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientManageProposal),
       },
       {
+        path: `${urls.client.home.manage_proposal}/:id`,
+        element: withSuspense(ClientManageProposalDetails),
+      },
+      {
+        path: `${urls.client.home.job_details}/:id`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
         path: urls.client.home.search_result,
         element: withSuspense(ClientSearchResult),
       },
+      {
+        path: urls.engineer.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       {
         path: urls.client.home.post_a_job,
         element: withSuspense(PostAJobPage),
@@ -491,6 +509,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.client.home.ClientJobInvite,
         element: withSuspense(ClientJobInvite),
+      },
+      {
+        path: urls.client.home.SelectEngineer,
+        element: withSuspense(SelectEngineer),
       },
     ],
   },

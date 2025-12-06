@@ -1,6 +1,7 @@
 "use client";
+import { quillContent } from "@/dummy_data/client";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useQuillEditor } from "@/shared/components/commonUI/text_editor";
+import QuillEditor from "@/shared/components/QuillEditor";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -20,12 +21,7 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered AboutUs component.
  */
 export default function AboutUs() {
-  const [value, setValue] =
-    useState(`<p>We are a dedicated team focused on delivering high-quality services to our customers.
-Our mission is to create innovative solutions that make a meaningful impact.
-With a commitment to excellence, we continuously strive to improve and grow.
-We believe in building long-term relationships based on trust and reliability.</p>`);
-  const { containerRef } = useQuillEditor({ value, onChange: setValue });
+  const [content, setContent] = useState(quillContent);
 
   const { showPopup } = usePopupStore();
 
@@ -57,9 +53,18 @@ We believe in building long-term relationships based on trust and reliability.</
     });
   };
 
+  const onChange = (html: string) => {
+    setContent(html);
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
-      <div ref={containerRef} className="h-full w-full" />
+      <QuillEditor
+        value={content}
+        onChange={onChange}
+        placeholder={"Start writing..."}
+        isEdit={true}
+      />
       <div className="w-full flex justify-end ">
         <Button
           className="w-fit mt-6 bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"

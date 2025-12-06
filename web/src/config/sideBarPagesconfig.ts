@@ -37,9 +37,12 @@ import EditTools from "@/pages/engineer/user_profile/components/skills_and_tools
 import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools";
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
+
+import AccountSettingsDrawerMenu from "@/pages/client/account_settings";
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
+import DrawerPaymentSection from "@/pages/client/my_account/DrawerPaymentSection";
 import AddProject from "@/pages/client/my_projects/projectDetail/AddProject";
 import EditProject from "@/pages/client/my_projects/projectDetail/EditProject";
 import AddProjectMember from "@/pages/client/my_projects/createProject/components/AddProjectMember";
@@ -180,8 +183,8 @@ export const sectionConfig: Record<
     parent: "manageBankAccounts",
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
-  myEarning: { component: MyEarning, title: "My Earning", parent: "settings" },
-  withdraw: { component: Withdraw, title: "Withdraw", parent: "settings" },
+  myEarning: { component: MyEarning, title: "My Earning",  },
+  withdraw: { component: Withdraw, title: "Withdraw",  },
   notification: {
     component: NotificationPage,
     title: "Notification",
@@ -190,12 +193,6 @@ export const sectionConfig: Record<
 
   //client
   clientAccount: { component: ClientAccountDrawerMenu, title: "My Profile" },
-  proposal: {
-    component: "test",
-    title: "Manage Proposal",
-    parent: "clientAccount",
-  },
-
   company: {
     component: ClientPersonalInformation,
     title: "Company Information",
@@ -213,17 +210,17 @@ export const sectionConfig: Record<
     parent: "document",
   },
   payment: {
-    component: "test",
+    component: DrawerPaymentSection,
     title: "Payment Methods",
     parent: "clientAccount",
   },
   changePwd: {
-    component: "test",
+    component: ChangePassword,
     title: "Change Password",
     parent: "clientAccount",
   },
   clientAcc: {
-    component: "test",
+    component: AccountSettingsDrawerMenu,
     title: "Account Setting",
     parent: "clientAccount",
   },

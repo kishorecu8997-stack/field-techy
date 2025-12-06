@@ -1,8 +1,8 @@
-import React from "react";
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { NavLink } from "react-router-dom";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -13,8 +13,14 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @param {object} props.engineer An object containing the engineer's details.
  */
 const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
+  const navigate = useNavigate();
   return (
-    <div className="p-4 rounded-lg flex items-center gap-4 bg-slate-100 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer">
+    <div
+      className="p-4 rounded-lg flex items-center gap-4 bg-slate-100 dark:bg-teal-800 text-gray-800 dark:text-white transition-colors duration-300 cursor-pointer"
+      onClick={() =>
+        navigate(absoluteUrls.client.home.client_Explore_engineers_details)
+      }
+    >
       <img
         // src={engineer.imageUrl}
         src={assetsConfig.images.users.user}
@@ -30,6 +36,13 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           </span>
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>
+        <p className="text-sm font-medium">
+          <span className="text-gray-500">Pay Type:</span> {engineer.pay_type}
+        </p>
+        <p className="text-sm font-medium">
+          <span className="text-gray-500">Availability:</span>{" "}
+          {engineer.availability}
+        </p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <NavLink               
              to={absoluteUrls.client.home.client_Explore_engineers_details}            
