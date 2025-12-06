@@ -7,6 +7,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,34 @@ import { useNavigate } from "react-router-dom";
  */
 const ManageNotification: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteNotification = async (notification: NotificationProps) => {
+    await showPopup({
+      title: "Delete Notification",
+      body: "Are you sure you want to delete this notification?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting notification:", notification.id);
+            // TODO: call your delete API here
+            // await deleteNotification(notification.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<NotificationProps>[] = [
     { key: "id", label: "Sr.No." },
@@ -39,9 +68,12 @@ const ManageNotification: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: NotificationProps) => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteNotification(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>

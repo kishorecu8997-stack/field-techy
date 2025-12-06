@@ -550,7 +550,7 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: withSuspense(AdminDashboard) },
           {
-            path: urls.admin.home.dashbaord,
+            path: urls.admin.home.dashboard,
             element: withSuspense(AdminDashboard),
           },
           {

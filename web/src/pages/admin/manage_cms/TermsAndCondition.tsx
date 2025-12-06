@@ -2,7 +2,9 @@
 import { quillContent } from "@/dummy_data/client";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import QuillEditor from "@/shared/components/QuillEditor";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /**
  * TermsAndCondition Component
@@ -24,6 +26,37 @@ export default function TermsAndCondition() {
   const onChange = (html: string) => {
     setContent(html);
   };
+
+  const { showPopup } = usePopupStore();
+
+  //Save confirmation
+  const handleSaveConfirmation = async () => {
+    await showPopup({
+      title: "Customer Privacy Policy",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Customer privacy policy added successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <div className="w-full h-full flex flex-col">
       <QuillEditor
@@ -35,7 +68,7 @@ export default function TermsAndCondition() {
       <div className="w-full flex justify-end ">
         <Button
           className="w-fit mt-6 bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          onClick={() => alert(content)}
+          onClick={handleSaveConfirmation}
         >
           Save
         </Button>

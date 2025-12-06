@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import RateCardForm from "./RateCardForm";
@@ -6,6 +7,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import RateCardDetails from "./RateCardDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * EditRateCard Component
@@ -27,6 +30,7 @@ import { toast } from "react-toastify";
 const EditRateCard = () => {
   const path = useLocation().pathname;
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
 
   const methods = useForm({
     defaultValues: {
@@ -72,9 +76,39 @@ const EditRateCard = () => {
       ],
     },
   });
+
+  const handleSaveConfirmation = async (data: any) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Rate Card",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Rate card updated successfully!");
+            navigate(absoluteUrls.admin.home.manage_rate_card);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const onSubmit = (data: any) => {
-    console.log(data);
-    toast.success("Rate card updated successfully")
+    handleSaveConfirmation(data);
   };
 
   const isEdit = path.includes("/edit");
@@ -83,7 +117,7 @@ const EditRateCard = () => {
   return (
     <div className="bg-white dark:bg-neutral-700 w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-900">
+        <h2 className="font-bold text-gray-900">
           {isEdit
             ? "Edit Rate Card"
             : isView
@@ -108,7 +142,10 @@ const EditRateCard = () => {
 
         {isEdit && (
           <div className="flex justify-end">
-            <Button type="submit" className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
+            <Button
+              type="submit"
+              className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700"
+            >
               Submit
             </Button>
           </div>

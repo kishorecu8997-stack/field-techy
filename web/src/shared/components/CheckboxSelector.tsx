@@ -19,6 +19,34 @@ interface CheckboxSelectorProps<T extends FieldValues> {
   disabled?: boolean;
 }
 
+/**
+ * CheckboxSelector
+ *
+ * Generic, form-connected multi-select checkbox component built on top of
+ * `react-hook-form`'s `Controller`. It renders a group of options as
+ * selectable checkboxes and synchronizes the selected values (string[])
+ * with the form state.
+ *
+ * Type parameters:
+ * - `T` extends `FieldValues`: the form values type used by `react-hook-form`.
+ *
+ * Props summary (see `CheckboxSelectorProps`):
+ * - `name`: form field path for the selected values (stored as `string[]`).
+ * - `control`: optional `react-hook-form` control instance.
+ * - `options`: array of option labels (strings) to render as checkboxes.
+ * - `required` / `rules`: validation rules passed to `Controller`.
+ * - `isShowLabel`, `containerClassName`, `selectorClassName`, `disabled`: UI helpers.
+ *
+ * Returns a `Controller`-wrapped UI that calls `onChange(updatedArray)` when
+ * toggling items. Validation errors are displayed below the selector.
+ *
+ * Example:
+ * ```tsx
+ * <FormProvider {...methods}>
+ *   <CheckboxSelector name="skills" options={["plumbing","electrical"]} />
+ * </FormProvider>
+ * ```
+ */
 const CheckboxSelector = <T extends FieldValues>({
   name,
   control,
