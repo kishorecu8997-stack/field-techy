@@ -24,12 +24,12 @@ export default function JobDetailsMenuButton() {
 
   return (
     <div className="relative inline-block" ref={menuRef}>
-      <button
+      <div
         onClick={toggleMenu}
         className="text-xl px-2 py-1 rounded hover:bg-gray-200"
       >
         ⋮
-      </button>
+      </div>
 
       {open && (
         <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md p-2 z-20">
