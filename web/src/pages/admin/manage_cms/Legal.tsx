@@ -31,7 +31,7 @@ export default function CMSLegal() {
   //Save confirmation
   const handleSaveConfirmation = async () => {
     await showPopup({
-      title: "Customer Privacy Policy",
+      title: "Legal",
       body: "Are you sure you want to save this details?",
       actionButtons: [
         {
@@ -48,7 +48,7 @@ export default function CMSLegal() {
             console.log("Deleting:", close);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Customer privacy policy added successfully!");
+            toast.success("Legal added successfully!");
             close(true);
           },
         },

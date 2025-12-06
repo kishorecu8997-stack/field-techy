@@ -32,7 +32,7 @@ export default function TermsAndCondition() {
   //Save confirmation
   const handleSaveConfirmation = async () => {
     await showPopup({
-      title: "Customer Privacy Policy",
+      title: "Terms and Conditions",
       body: "Are you sure you want to save this details?",
       actionButtons: [
         {
@@ -49,7 +49,7 @@ export default function TermsAndCondition() {
             console.log("Deleting:", close);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Customer privacy policy added successfully!");
+            toast.success("Terms and Conditions added successfully!");
             close(true);
           },
         },
