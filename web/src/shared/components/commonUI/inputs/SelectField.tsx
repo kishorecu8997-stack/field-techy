@@ -57,15 +57,19 @@ export const SelectField = ({
 
   return (
     <div className="flex flex-col">
-      {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label}
-          {(required === true || typeof required === "string") && (
-            <span className="text-red-600">*</span>
-          )}
+    {isShowLabel && (
+        <label
+          className={` block mb-1 text-md font-semibold
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
-
       <Controller
         name={name}
         control={control}
@@ -113,7 +117,7 @@ export const SelectField = ({
               py-3 pl-5 pr-10 flex items-center justify-start text-left
               ${
                 disabled
-                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                  ? " text-gray-400 cursor-not-allowed"
                   : "bg-white dark:bg-gray-800 cursor-pointer"
               }
               ${
@@ -167,7 +171,7 @@ export const SelectField = ({
 
                           {filteredOptions.length === 0 ? (
                             <div className="py-2 px-4 text-gray-500 dark:text-gray-400">
-                              No matching results
+                              No results found
                             </div>
                           ) : (
                             filteredOptions.map((option) => (

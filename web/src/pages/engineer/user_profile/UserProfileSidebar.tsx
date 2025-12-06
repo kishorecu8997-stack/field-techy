@@ -89,20 +89,20 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
       id: "documents",
       onClick: () => onMenuItemClick("documents"),
     },
-    {
-      label: "Settings",
-      icon: FaCog,
-      id: "settings",
-      onClick: () => onMenuItemClick("settings"),
-    },
-    {
-      label: "Logout",
-      icon: FaSignOutAlt,
-      id: "logout",
-      onClick: () => {
-        setIsOpen(true);
-      },
-    },
+    // {
+    //   label: "Settings",
+    //   icon: FaCog,
+    //   id: "settings",
+    //   onClick: () => onMenuItemClick("settings"),
+    // },
+    // {
+    //   label: "Logout",
+    //   icon: FaSignOutAlt,
+    //   id: "logout",
+    //   onClick: () => {
+    //     setIsOpen(true);
+    //   },
+    // },
   ];
 
   const navigate = useNavigate();

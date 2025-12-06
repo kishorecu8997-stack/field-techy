@@ -37,7 +37,7 @@ export const InputField = ({
   isShowLabel = true,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
+  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
   showValidationCheck = false,
   disabled = false,
   onChange,
@@ -46,7 +46,6 @@ export const InputField = ({
   const { control } = useFormContext();
   const [attemptedInvalid, setAttemptedInvalid] = useState(false);
 
-  // Build required validation message
   let requiredMessage: string | false = false;
   if (typeof required === "string") {
     requiredMessage = required;
@@ -54,7 +53,6 @@ export const InputField = ({
     requiredMessage = `${label || name} is required`;
   }
 
-  // Merge required with other rules
   const validationRules: RegisterOptions = {
     required: requiredMessage,
     ...rules,
@@ -99,10 +97,30 @@ export const InputField = ({
     };
   }
 
+  /** Restriction logic based on inputMode */
+  const allowInput = (value: string) => {
+    if (inputMode === "number") {
+      return /^\d*\.?\d*$/.test(value);
+    }
+
+    if (inputMode === "string") {
+      return /^[A-Za-z\s]*$/.test(value); // Only letters
+    }
+
+    return true; // both allowed
+  };
+
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+        <label
+          className={` block mb-1 text-md font-semibold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
         </label>
@@ -127,9 +145,6 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
-                className={`${inputClassName} ${leftIcon ? "pl-10" : ""} ${
-                  showValidationCheck && isDirty && !invalid ? "pr-10" : ""
-                }`}
                 onChange={(e) => {
                   let value = e.target.value;
 
@@ -154,6 +169,26 @@ export const InputField = ({
                   field.onChange(value);
                   onChange?.(value);
                 }}
+                onBlur={(e) => {
+                  if (type === "number") {
+                    const trimmed = e.target.value.trim();
+                    field.onChange(trimmed);
+                  }
+                }}
+                className={`${inputClassName}
+                       ${leftIcon ? "pl-10" : ""} 
+                  ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""} 
+                  ${
+                    disabled
+                      ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                      : "cursor-text bg-white dark:bg-gray-800"
+                  }
+               ${
+                 error && !disabled
+                   ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+               }
+              `}
               />
 
               {showValidationCheck && isDirty && !invalid && (

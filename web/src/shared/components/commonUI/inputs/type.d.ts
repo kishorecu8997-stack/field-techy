@@ -96,6 +96,8 @@ interface FileUploadProps {
   validatePDF?: boolean;
   minPages?: number;
   maxPages?: number;
+  disabled?: boolean;
+  isShowLabel?: boolean;
 }
 
 /**
@@ -109,6 +111,7 @@ export interface ImageUploadFieldProps {
   maxSize?: number;
   accept?: string;
   allowUpload?: boolean;
+  disabled?: boolean;
 }
 
 /**
