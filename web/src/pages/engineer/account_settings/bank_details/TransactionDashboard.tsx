@@ -90,13 +90,13 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           Recent Transactions
         </h2>
         {onViewAllClick && (
-          <button
+          <div
             onClick={onViewAllClick}
             className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
             aria-label="View all transactions"
           >
             View All
-          </button>
+          </div>
         )}
       </div>
 

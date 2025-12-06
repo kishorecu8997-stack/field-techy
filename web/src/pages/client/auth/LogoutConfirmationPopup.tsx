@@ -1,3 +1,4 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import React from "react";
 import { IoCloseSharp } from "react-icons/io5";
@@ -6,23 +7,12 @@ interface LogoutProps {
   onConfirm: () => void;
   onCancel: () => void;
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () => void;  
 }
 
 /**
  * LogoutConfirmationPopup component displays a modal asking user to confirm logout.
  * Features dark mode support, centered content, and action buttons.
- * 
- * @component
- * @param {Object} props - Component props
- * @param {Function} props.onConfirm - Function called when user confirms logout
- * @param {Function} props.onCancel - Function called when user cancels logout
- * 
- * @example
- * <LogoutConfirmationPopup 
- *   onConfirm={() => console.log('Logged out')} 
- *   onCancel={() => console.log('Cancelled')} 
- * />
  */
 const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   isOpen,
@@ -30,46 +20,52 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  return (
+  return (    
     <Popup open={isOpen} onClose={onClose}>
-    <div className="flex items-center justify-center z-50">
-      <div className="relative w-full max-w-md  dark:from-gray-800 dark:via-gray-700 dark:to-gray-900 rounded-lg shadow-xl overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+        {/* Header with close button */}
         <div className="p-6 pb-4">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Log Out</h2>
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                Log Out
+              </h2>
               <p className="text-gray-600 dark:text-gray-300 mt-2">
                 Are you sure you want to log out of your Field Techy account?
               </p>
             </div>
-            <button
+            <div
               onClick={onClose}
-              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+              aria-label="Close"
+              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
             >
-              <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-            </button>
+              <IoCloseSharp className="h-6 w-6" />
+            </div>
           </div>
         </div>
 
-        {/* Body & Buttons */}
-        <div className="p-6 pt-4">
+        {/* Action buttons */}
+        <div className="p-6 pt-0">
           <div className="flex space-x-3">
-            <button
+            <Button
+              type="button"
+              variant="secondary"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              Cancel
-            </button>
-            <button
+              Cancelss
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
               onClick={onConfirm}
-              className="flex-1 px-4 py-2 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2 bg-emerald-700 text-white rounded-lg font-medium hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors"
             >
               Logout
-            </button>
+            </Button>
           </div>
         </div>
       </div>
-    </div>
     </Popup>
   );
 };

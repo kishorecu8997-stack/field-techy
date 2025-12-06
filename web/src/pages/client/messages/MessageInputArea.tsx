@@ -30,9 +30,9 @@ const MessageInputArea: React.FC<MessageInputAreaProps> = ({
     <div className="border-t border-gray-200 p-4">
       <div className="flex items-center space-x-2">
         <div className="flex-1 relative bg-gray-100 rounded-lg px-3 py-2 flex items-center">
-          <button className="p-1 text-gray-500 hover:text-gray-700">
+          <div className="p-1 text-gray-500 hover:text-gray-700">
             <MdOutlineKeyboardVoice size={20} />
-          </button>
+          </div>
 
           <input
             type="text"
@@ -44,20 +44,20 @@ const MessageInputArea: React.FC<MessageInputAreaProps> = ({
           />
 
           <div className="flex space-x-1 ml-2">
-            <button className="p-2 rounded-full hover:bg-gray-100">
+            <div className="p-2 rounded-full hover:bg-gray-100">
               <HiOutlinePlus size={20} className="text-gray-600" />
-            </button>
+            </div>
 
-            <button
+            <div
               onClick={onSendMessage}
               className="p-2 rounded-full bg-teal-800 text-white hover:bg-teal-900"
             >
               <VscSend size={20} />
-            </button>
+            </div>
 
-            <button className="p-2 rounded-full bg-teal-800 text-white hover:bg-teal-900">
+            <div className="p-2 rounded-full bg-teal-800 text-white hover:bg-teal-900">
               <LuScreenShare size={20} />
-            </button>
+            </div>
           </div>
         </div>
       </div>
