@@ -70,6 +70,9 @@ export const urls = {
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
       SelectEngineer:":id/select-engineer",
+      Client_Job_Details:"jobs-details/in-progress",
+      ClientSelectEngineers: "select-engineers",
+
     },
     auth: {
       login: "login",
@@ -187,9 +190,15 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
       post_a_job: `${BASE.CLIENT}/post-a-job`,
       client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
+      client_Invite_Explore_engineers_details: `${BASE.CLIENT}/jobs-details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
       job_details: `${BASE.CLIENT}/job-details`,
       SelectEngineer:`${BASE.CLIENT}/:id/select-engineer`,
+      ClientJobDetails:`${BASE.CLIENT}/jobs-details/in-progress`,
+      ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
+      ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
+
+
     },
   },
 

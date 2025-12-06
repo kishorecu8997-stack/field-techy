@@ -262,6 +262,19 @@ const ClientJobInvite = React.lazy(
 const SelectEngineer = React.lazy(
   () => import("@/pages/client/manage_proposal/SelectEngineer")
 );
+const ClientInviteEngineers = React.lazy(
+  () =>
+    import(
+      "@/pages/client/my_job_client/components/ClientInviteJob/EngineerInviteListPage"
+    )
+);
+const ClientFAQ = React.lazy(() => import("@/pages/client/privacy_policy/FAQ"));
+const ClientTermsAndConditions = React.lazy(
+  () => import("@/pages/client/privacy_policy/TermsAndConditions")
+);
+const ClientPrivacyPolicy = React.lazy(
+  () => import("@/pages/client/privacy_policy/PolicyPage")
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -354,10 +367,6 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
-      {
-        path: urls.engineer.home.chat,
-        element: withSuspense(EngineerChatPage),
-      },
     ],
   },
 
@@ -421,6 +430,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
+         path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
         path: urls.client.home.my_projects,
         element: withSuspense(ClientMyProjectsPage),
       },
@@ -472,6 +485,26 @@ export const routes = createBrowserRouter([
        {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
+      },
+      {
+        path: urls.client.home.Client_Job_Details,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: urls.client.home.ClientSelectEngineers,
+        element: withSuspense(ClientInviteEngineers),
+      },
+      {
+        path: urls.client.home.faq,
+        element: withSuspense(ClientFAQ),
+      },
+      {
+        path: urls.client.home.terms_and_conditions,
+        element: withSuspense(ClientTermsAndConditions),
+      },
+      {
+        path: urls.client.home.privacy_policy,
+        element: withSuspense(ClientPrivacyPolicy),
       },
       {
         path: urls.client.home.ClientJobInvite,

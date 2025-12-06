@@ -35,17 +35,17 @@ const EngineerProfile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 ">
+          <div className="w-full sticky top-16 z-10 ">
+          <MyJobsHeader
+            title="Explore Engineers"
+            currentSort={SORT_OPTIONS.NEWEST}
+            isShowBreadcrumb={false}
+            description={`10 jobs found`} // ✅ Updated count
+          />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">             
-              <MyJobsHeader
-                title="Explore Engineers"
-                currentSort={SORT_OPTIONS.NEWEST}
-                isShowBreadcrumb={false}
-                description={`10 jobs found`} // ✅ Updated count
-              />
-            </div>
             <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
               <div className="max-w-4xl mx-auto">
                 <EngineerProfileCard

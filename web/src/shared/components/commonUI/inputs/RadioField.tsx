@@ -14,7 +14,6 @@ interface RadioFieldProps {
   label?: string;
   required?: boolean;
   options: RadioOption[];
-  disabled?: boolean;
   isShowLabel?: boolean;
   rules?: RegisterOptions;
   direction?: "vertical" | "horizontal"; // 👈 new prop
@@ -41,7 +40,6 @@ export const RadioField = ({
   options,
   rules,
   isShowLabel = true,
-  disabled = false,
   direction = "vertical", // 👈 default layout
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",

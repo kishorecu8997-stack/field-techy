@@ -1,7 +1,8 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 /**
  * `EngineerCard` is a component that displays a summary of an engineer's profile.
@@ -42,6 +43,19 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
           <span className="text-gray-500">Availability:</span>{" "}
           {engineer.availability}
         </p>
+        <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <NavLink               
+             to={absoluteUrls.client.home.client_Explore_engineers_details}            
+            className="hover:text-teal-900 text-[1rem] whitespace-nowrap"
+          >
+            <Button
+              variant="primary"    
+              className="bg-teal-800 dark:bg-teal text-white"                        
+            >
+              Invite to Job
+            </Button>
+          </NavLink>
+        </nav>
       </div>
     </div>
   );
