@@ -1,5 +1,3 @@
-
-
 /**
  * Application route URLs.
  *
@@ -10,26 +8,35 @@
  * - Use relative paths only for route definitions
  * - Group related routes under common base
  * - Use consistent naming
+ *
+ * this should be use to app routes definitions etc.
  */
 export const BASE = {
   CLIENT: "/client",
   CLIENT_AUTH: "/client/auth",
   ENGINEER: "/engineer",
-  AUTH: "/engineer/auth", 
+  AUTH: "/engineer/auth",
+  ADMIN: "/admin",
+  ADMIN_AUTH: "/admin/auth",
 } as const;
 
 export const urls = {
   engineer: {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
+    terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
 
     home: {
+      dashboard: "dashboard",
       my_jobs: "my-jobs",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
       about_app: "about-app",
+      explore_jobs: "explore-jobs",
+      chat: "messages",
+      saved_jobs: "saved-jobs",
     },
     auth: {
       login: "login",
@@ -48,18 +55,28 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
-      explore_engineers: "explore-engineers",
+      my_projects: "my-projects",
+      create_project: "my-projects/create-project",
+      client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
+      post_a_job: "post-a-job",
       search_result: "search-result",
       faq: "faq",
+      job_details: "job-details",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
-      messages:"messages",
+      client_Explore_engineers_details: "explore-engineers/details",
+      ClientJobInvite: "explore-engineers/select-jobs",
+      SelectEngineer: ":id/select-engineer",
+      Client_Job_Details: "jobs-details/in-progress",
+      ClientSelectEngineers: "select-engineers",
+      chat: "messages",
     },
     auth: {
       login: "login",
       signup: "signup",
+      account_type: "account-type",
       profile_setup: "profile-setup",
       forget_password: "forget-password",
       reset_password: "reset-password",
@@ -67,9 +84,59 @@ export const urls = {
       background_verification: "background-verification",
     },
   },
+
+  //Admin urls
+  admin: {
+    auth: {
+      login: "login",
+      forget_password: "forget-password",
+      reset_password: "reset-password",
+      otp: "otp",
+    },
+    home: {
+      dashboard: "dashboard",
+      manage_engineer: "users",
+      manage_engineer_add: "users/add",
+      manage_engineer_edit: "users/edit",
+      manage_engineer_view: "users/view",
+      manage_client: "client",
+      manage_jobs: "jobs",
+      manage_categories: "categories",
+      manage_categories_add: "categories/add",
+      manage_categories_edit: "categories/edit",
+      manage_rate_card: "rate-card",
+      edit_role: "edit-role",
+      manage_notification_add: "notifications/add",
+      manage_payment: "revenue",
+      manage_transactions: "transaction",
+      wallet_overview: "wallet-overview",
+      wallet_overview_view: "wallet-overview/view",
+      wallet_transaction_requests: "wallet-requests",
+      manage_notification: "notifications",
+      manage_sub_admin: "sub-admins",
+      manage_sub_admin_add: "sub-admins/add",
+      manage_sub_admin_edit: "sub-admins/edit",
+      manage_cms: "cms",
+      settings: "settings",
+      profile: "profile",
+      received_notification: "received-notification",
+      roleList: "sub-admins/roles",
+      corporateClientAdd: "client/add",
+      homeClientAdd: "client/add",
+      corporateClientEdit: "client/edit",
+      homeClientEdit: "client/edit",
+      corporateClientView: "client/view",
+      homeClientView: "client/view",
+      edit_rate_card: "rate-card/edit",
+      view_rate_card: "rate-card/view",
+      add_rate_card: "rate-card/add",
+      manage_jobs_view: "jobs/view",
+      jobOffer: "job-offer",
+    },
+  },
 } as const;
 
-// ✅ Helper for absolute paths (for navigation/linking)
+// ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
 export const absoluteUrls = {
   engineer: {
     auth: {
@@ -84,12 +151,16 @@ export const absoluteUrls = {
       about_app: `${BASE.AUTH}/about-app`,
     },
     home: {
+      dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
       search_result: `${BASE.ENGINEER}/search-result`,
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
       about_app: `${BASE.ENGINEER}/about-app`,
+      explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
+      chat: `${BASE.ENGINEER}/messages`,
+      saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
     },
   },
   client: {
@@ -97,6 +168,7 @@ export const absoluteUrls = {
       login: `${BASE.CLIENT_AUTH}/login`,
       signup: `${BASE.CLIENT_AUTH}/signup`,
       profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      account_type: `${BASE.CLIENT_AUTH}/account-type`,
       forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
       reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
       set_password: `${BASE.CLIENT_AUTH}/set-password`,
@@ -106,13 +178,75 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
-      explore_engineers: `${BASE.CLIENT}/explore-engineers`,
+      my_projects: `${BASE.CLIENT}/my-projects`,
+      create_project: `${BASE.CLIENT}/my-projects/create-project`,
+      client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
       search_result: `${BASE.CLIENT}/search-result`,
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      post_a_job: `${BASE.CLIENT}/post-a-job`,
+      client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
+      client_Invite_Explore_engineers_details: `${BASE.CLIENT}/jobs-details`,
+      ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
+      job_details: `${BASE.CLIENT}/job-details`,
+      SelectEngineer: `${BASE.CLIENT}/:id/select-engineer`,
+      ClientJobDetails: `${BASE.CLIENT}/jobs-details/in-progress`,
+      ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
+      ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
+      chat: `${BASE.CLIENT}/messages`,
+    },
+  },
+
+  //Admin absolute URLs
+  admin: {
+    auth: {
+      login: `${BASE.ADMIN_AUTH}/login`,
+      forget_password: `${BASE.ADMIN_AUTH}/forget-password`,
+      reset_password: `${BASE.ADMIN_AUTH}/reset-password`,
+      otp: `${BASE.ADMIN_AUTH}/otp`,
+    },
+    home: {
+      dashboard: `${BASE.ADMIN}/dashboard`,
+      manage_engineer: `${BASE.ADMIN}/users`,
+      manage_engineer_add: `${BASE.ADMIN}/users/add`,
+      manage_engineer_edit: `${BASE.ADMIN}/users/edit`,
+      manage_engineer_view: `${BASE.ADMIN}/users/view`,
+      manage_client: `${BASE.ADMIN}/client`,
+      manage_jobs: `${BASE.ADMIN}/jobs`,
+      manage_categories: `${BASE.ADMIN}/categories`,
+      manage_categories_add: `${BASE.ADMIN}/categories/add`,
+      manage_categories_edit: `${BASE.ADMIN}/categories/edit`,
+      manage_rate_card: `${BASE.ADMIN}/rate-card`,
+      manage_payment: `${BASE.ADMIN}/revenue`,
+      manage_transactions: `${BASE.ADMIN}/transaction`,
+      wallet_overview: `${BASE.ADMIN}/wallet-overview`,
+      wallet_overview_view: `${BASE.ADMIN}/wallet-overview/view`,
+      wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
+      manage_notification: `${BASE.ADMIN}/notifications`,
+      manage_notification_add: `${BASE.ADMIN}/notifications/add`,
+      manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
+      manage_sub_admin_add: `${BASE.ADMIN}/sub-admins/add`,
+      manage_sub_admin_edit: `${BASE.ADMIN}/sub-admins/edit`,
+      manage_cms: `${BASE.ADMIN}/cms`,
+      settings: `${BASE.ADMIN}/settings`,
+      profile: `${BASE.ADMIN}/profile`,
+      received_notification: `${BASE.ADMIN}/received-notification`,
+      edit_role: `${BASE.ADMIN}/edit-role`,
+      roleList: `${BASE.ADMIN}/sub-admins/roles`,
+      corporateClientAdd: `${BASE.ADMIN}/client/add`,
+      homeClientAdd: `${BASE.ADMIN}/client/add`,
+      corporateClientEdit: `${BASE.ADMIN}/client/edit`,
+      homeClientEdit: `${BASE.ADMIN}/client/edit`,
+      corporateClientView: `${BASE.ADMIN}/client/view`,
+      homeClientView: `${BASE.ADMIN}/client/view`,
+      edit_rate_card: `${BASE.ADMIN}/rate-card/edit`,
+      view_rate_card: `${BASE.ADMIN}/rate-card/view`,
+      add_rate_card: `${BASE.ADMIN}/rate-card/add`,
+      manage_jobs_view: `${BASE.ADMIN}/jobs/view`,
+      jobOffer: `${BASE.ADMIN}/job-offer`,
     },
   },
 } as const;

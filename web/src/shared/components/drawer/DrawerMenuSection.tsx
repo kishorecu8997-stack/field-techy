@@ -1,6 +1,10 @@
-import React from "react";
-import type { MenuItem, SettingsMenuProps, ToggleSwitchProps } from "../../../pages/engineer/account_settings/types";
 import { icons } from "@/config/icons";
+import React from "react";
+import type {
+  MenuItem,
+  SettingsMenuProps,
+  ToggleSwitchProps,
+} from "../../../pages/engineer/account_settings/types";
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   checked,
@@ -55,12 +59,12 @@ const DrawerMenuSection: React.FC<SettingsMenuProps> = ({
             <div
               className={` w-full flex items-center justify-between px-4 py-4 
               transition-all duration-300 cursor-pointer text-gray-700 dark:text-gray-200 
-              hover:bg-gray-50 dark:hover:bg-gray-700 hover:pl-6 
+              hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:text-teal-600 dark:hover:text-teal-400
                 ${
                   item.disabled
                     ? "opacity-60 cursor-not-allowed"
-                    : "cursor-pointer dark:hover:bg-gray-750 hover:bg-gray-50 hover:text  hover:pl-5"
+                    : "cursor-pointer dark:hover:bg-gray-750 hover:bg-gray-50 hover:text "
                 }`}
               onClick={() => !item.disabled && handleItemClick(item)}
               role={item.isToggle ? "none" : "button"}

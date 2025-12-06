@@ -1,5 +1,6 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 
 /**
@@ -32,19 +33,21 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
   const { name, phone, role, profileCompletion } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
-          <FaUser />
+      <div className="flex flex-row justify-between">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
+            <FaUser />
+          </div>
+          <div>
+            <h3 className="font-bold text-white">{name}</h3>
+            <p className="text-sm opacity-90">{phone}</p>
+            <p className="text-xs opacity-80">{role}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold text-white">{name}</h3>
-          <p className="text-sm opacity-90">{phone}</p>
-          <p className="text-xs opacity-80">{role}</p>
-        </div>
+        <button className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
+          Complete Now
+        </button>
       </div>
-      <button className="w-full bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
-        Complete Profile
-      </button>
       <div className="mt-4">
         <div className="flex justify-between text-xs opacity-90 mb-1">
           <span>Profile Score</span>
@@ -69,6 +72,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
  */
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
+  const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -76,12 +80,15 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <h3 className="font-semibold text-gray-900 dark:text-white">
           My Earnings
         </h3>
-        <Link
-          to="#"
-          className="text-sm text-teal-800 dark:text-teal-400 hover:underline"
+        <div
+          onClick={() => {
+            setActiveKey("myEarning");
+            setISOpenSidebar(true);
+          }}
+          className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
         >
           View all
-        </Link>
+        </div>
       </div>
       <div className="text-center mb-4">
         <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -96,12 +103,24 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("manageBankAccounts");
+            setISOpenSidebar(true);
+          }}
+        >
           Bank Details
-        </button>
-        <button className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition">
+        </Button>
+        <Button
+          className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
+          onClick={() => {
+            setActiveKey("withdraw");
+            setISOpenSidebar(true);
+          }}
+        >
           Withdraw
-        </button>
+        </Button>
       </div>
     </div>
   );

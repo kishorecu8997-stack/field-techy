@@ -2,7 +2,7 @@ import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
+import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "./types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
@@ -67,17 +67,9 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       label: "About App",
       icon: icons.danger,
       id: "aboutApp",
-        onClick: () => {
+      onClick: () => {
         navigate(`${absoluteUrls.engineer.home.about_app}`);
         onClose();
-      },
-    },
-    {
-      label: "Logout",
-      icon: icons.signOut,
-      id: "logout",
-      onClick: () => {
-        setIsOpen(true);
       },
     },
   ];
@@ -88,7 +80,10 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       <LogoutConfirmationPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onConfirm={() => console.log("confirm")}
+        onConfirm={() => {
+          onClose();
+          navigate(absoluteUrls.engineer.auth.login);
+        }}
         onCancel={() => setIsOpen(false)}
       />
     </div>

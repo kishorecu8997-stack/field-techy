@@ -1,12 +1,14 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { ToastContainer } from "react-toastify";
 import App from "./app/App.tsx";
-import { ToastContainer } from 'react-toastify';
 import "./index.css";
+import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
+import React from "react";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-     <ToastContainer />
-      <App />    
-  </StrictMode>
+  <React.StrictMode>
+    <GlobalPopup />
+    <ToastContainer />
+    <App />
+  </React.StrictMode>
 );

@@ -11,10 +11,6 @@ import AddEditTools from "./addEditTools.json";
 import initialDocument from "./initialDocument.json";
 
 
-
-
-
-
 export const educationFieldData = educationField;
 export const educationData = education.education;
 export const jobSkillsData = jobSkills.jobSkills;

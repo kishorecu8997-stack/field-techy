@@ -1,4 +1,3 @@
-
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 import { clientTermsAndCondition } from "@/dummy_data/clientPolicyDatas";

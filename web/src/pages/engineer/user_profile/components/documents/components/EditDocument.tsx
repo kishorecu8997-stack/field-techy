@@ -2,6 +2,9 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Defines the shape of the form data for editing a document.
@@ -19,20 +22,37 @@ export type EditDocumentFormData = {
  * @returns {React.ReactElement} The rendered EditDocument form component.
  */
 const EditDocument = () => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to upload the user's document.
-   * @param {EditDocumentFormData} data - The validated form data.
-   */
-  const onSubmit = (data: EditDocumentFormData) => {
-    console.log("Form submitted with updated data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const onSubmit = async (data: EditDocumentFormData) => {
+    await showPopup({
+      title: "Update Document",
+      body: "Are you sure you want to update this document?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Document Updated Successfully");
+            close(true);
+            setActiveKey("documents");
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * Initializes `react-hook-form`.
-   */
   const methods = useForm<EditDocumentFormData>({ mode: "onSubmit" });
 
   return (

@@ -56,6 +56,7 @@ interface ConfirmPasswordInputProps {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
 }
 
@@ -87,12 +88,16 @@ interface FileUploadProps {
   label?: string;
   required?: boolean;
   accept?: string;
+  minSize?: number;
   maxSize?: number;
+  minSize?: number;
   containerClassName?: string;
   placeholder?: string;
   validatePDF?: boolean;
   minPages?: number;
   maxPages?: number;
+  disabled?: boolean;
+  isShowLabel?: boolean;
 }
 
 /**
@@ -105,6 +110,8 @@ export interface ImageUploadFieldProps {
   rules?: RegisterOptions;
   maxSize?: number;
   accept?: string;
+  allowUpload?: boolean;
+  disabled?: boolean;
 }
 
 /**
@@ -125,7 +132,8 @@ interface PasswordInputProps {
   name: string;
   label?: string;
   placeholder?: string;
-  required?: boolean;
+  required?: boolean;  
+  isShowLabel?:boolean;
   rules?: RegisterOptions;
 }
 
@@ -170,6 +178,9 @@ interface SwitchInputProps {
   name: string;
   label?: string;
   required?: boolean;
+  helperText?: string;
+  disabled?: boolean;
+  className?: string;
 }
 
 /**
@@ -215,8 +226,13 @@ interface TagSelectFieldProps {
 interface TextareaInputProps {
   name: string;
   label?: string;
+  isShowLabel?: boolean;
   placeholder?: string;
   required?: boolean;
+  rules?: RegisterOptions;
+  showValidationCheck?: boolean;
+  minLength?: number;
+  maxLength?: number;
 }
 
 /**
@@ -271,4 +287,6 @@ interface VerifyEmailModalProps {
   buttonText?: string;
   isSuccess?: boolean;
   name?: string;
+  isClose?: boolean;
+  footer?: React.ReactNode;
 }

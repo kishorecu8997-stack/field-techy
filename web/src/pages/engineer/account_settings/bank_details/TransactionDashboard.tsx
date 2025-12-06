@@ -1,4 +1,6 @@
-import React from 'react';
+import { transactions } from "@/dummy_data/bankDetails";
+import { formatCurrency, formatDate } from "@/shared/libs/utils";
+import React from "react";
 
 // Define TypeScript interfaces
 export interface Transaction {
@@ -6,11 +8,10 @@ export interface Transaction {
   description: string;
   amount: number; // positive = credit, negative = debit
   date: string; // ISO date string or formatted date
-  status?: 'processing' | 'completed' | 'failed'; // optional status
+  status?: "processing" | "completed" | "failed"; // optional status
 }
 
 interface TransactionDashboardProps {
-  transactions: Transaction[];
   onViewAllClick?: () => void;
 }
 
@@ -19,22 +20,8 @@ interface TransactionDashboardProps {
  * status badges, and formatted dates. Supports an optional "View All" action and handles empty states.
  */
 const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
-  transactions,
   onViewAllClick,
 }) => {
-  // Helper to format date as "DD MMM, YYYY | HH:MM AM/PM"
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleString('en-US', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
-
   // Group transactions by day (Today / Yesterday / Older)
   const groupTransactionsByDay = (txs: Transaction[]) => {
     const today = new Date();
@@ -59,23 +46,16 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     return { todayTxs, yesterdayTxs, olderTxs };
   };
 
-  const { todayTxs, yesterdayTxs, olderTxs } = groupTransactionsByDay(transactions);
-
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
+  const { todayTxs, yesterdayTxs, olderTxs } =
+    groupTransactionsByDay(transactions);
 
   // Render transaction item
   const renderTransaction = (tx: Transaction) => {
     const isCredit = tx.amount > 0;
     const amountColor = isCredit
-      ? 'text-emerald-600 dark:text-emerald-400'
-      : 'text-rose-600 dark:text-rose-400';
-    const sign = isCredit ? '+' : '-';
+      ? "text-emerald-600 dark:text-emerald-400"
+      : "text-rose-600 dark:text-rose-400";
+    const sign = isCredit ? "+" : "-";
 
     return (
       <div
@@ -89,7 +69,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {formatDate(tx.date)}
           </div>
-          {tx.status === 'processing' && (
+          {tx.status === "processing" && (
             <span className="inline-block mt-1 px-2 py-0.5 bg-amber-500 text-white text-xs rounded-full font-medium">
               Processing
             </span>
@@ -112,7 +92,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         {onViewAllClick && (
           <button
             onClick={onViewAllClick}
-            className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300"
+            className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
             aria-label="View all transactions"
           >
             View All

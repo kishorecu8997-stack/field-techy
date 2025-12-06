@@ -1,6 +1,6 @@
+import { clientFAQData } from "@/dummy_data/clientPolicyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
-import { clientFAQData } from "@/dummy_data/clientPolicyDatas";
 
 /**
  * FAQ page displaying frequently asked questions using static dummy data.

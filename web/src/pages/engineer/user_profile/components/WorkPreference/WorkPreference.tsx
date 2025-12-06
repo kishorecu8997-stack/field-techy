@@ -1,16 +1,20 @@
+import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
+import { workPreferenceData } from "@/dummy_data/engineer_profile/workPreferenceData";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { RiTodoLine } from "react-icons/ri";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useForm } from "react-hook-form";
+import { CiWallet } from "react-icons/ci";
 import { FiLink2 } from "react-icons/fi";
 import { HiOutlineBriefcase } from "react-icons/hi2";
-import { CiWallet } from "react-icons/ci";
-import { useForm } from "react-hook-form";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
-import { validateRate } from "../../Validate";
-import { validatePortfolioLink } from "@/shared/libs/utils";
+import { RiTodoLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
+
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
@@ -19,15 +23,36 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
 const WorkPreference = () => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the preference data.
-   * @param {WorkPreferenceFormData} data - The validated form data.
-   */
-  const handleSubmit = (data: WorkPreferenceFormData) => {
-    console.log("Form submitted with data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+ 
+  const handleSubmit = async(data: WorkPreferenceFormData) => {
+    await showPopup({
+      title: "Update Work Preferences",
+      body: "Are you sure you want to update your work preferences?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Work Preferences Updated Successfully");
+            close(true);
+            setActiveKey("profile");
+          },
+        },
+      ],
+    }); 
   };
 
   /**
@@ -35,10 +60,10 @@ const WorkPreference = () => {
    */
   const methods = useForm<WorkPreferenceFormData>({
     defaultValues: {
-      portfolioLink: "",
-      preferredWorkTypes: "",
-      servicesCategories: "",
-      ratePreference: "",
+      portfolioLink:workPreferenceData[0].portfolioLink,
+      preferredWorkTypes: workPreferenceData[0].preferredWorkTypeIds,
+      servicesCategories: workPreferenceData[0].serviceCategoryIds,
+      ratePreference: workPreferenceData[0].ratePreference,
     },
     mode: "onSubmit",
   });
@@ -98,7 +123,7 @@ const WorkPreference = () => {
 
       <div className="bg-white ">
         <Button
-          type="submit"
+          type="submit"          
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
           Save Preferences

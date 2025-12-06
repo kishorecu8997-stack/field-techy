@@ -1,17 +1,21 @@
-import React from "react";
+import {
+  courses,
+  educationEdit,
+  educationLevels,
+  majors,
+  universities,
+} from "@/dummy_data/engineer_profile/education-data";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { validatePassingYear } from "../../Validate";
-import { educationFieldData } from "@/dummy_data";
 import type { EducationFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-
-interface EditEducationProps {
-  /** The education data to pre-fill in the form for editing. */
-  educationData?: EducationFormData; // Optional for demonstration
-}
 
 /**
  * The EditEducation component renders a form to modify an existing education entry.
@@ -20,22 +24,53 @@ interface EditEducationProps {
  * @param {EditEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
-const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
-  const handleSubmit = (data: EducationFormData) => {
-    console.log("Form submitted with updated data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call to update)
+const EditEducation = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+  const getEducationById = () => {
+    const id = localStorage.getItem("editEducationId");
+    const educationId = id;
+    return educationEdit.find((edu) => edu.id === +(educationId ?? ""));
+  };
+
+  useEffect(() => {
+    // to prevent it from being used again accidentally.
+    return () => {
+      localStorage.removeItem("editEducationId");
+    };
+  }, []);
+
+  const handleSubmit = async (data: EducationFormData) => {
+    await showPopup({
+      title: "Update Education",
+      body: "Are you sure you want to update this education?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Education Updated Successfully");
+            close(true);
+            setActiveKey("education");
+          },
+        },
+      ],
+    });
   };
 
   const methods = useForm<EducationFormData>({
-    defaultValues: educationData || {
-      educationLevel: "",
-      course: "",
-      university: "",
-      majorSubject: "",
-      passingYear: "",
-    },
+    defaultValues: getEducationById(),
     mode: "onSubmit",
-  });  
+  });
 
   return (
     <FormContainer
@@ -47,9 +82,9 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
         <SelectField
           label="Education Level"
           isShowLabel={false}
-          name="educationLevel"
+          name="level"
           placeholder="Education Level"
-          options={educationFieldData.educationLevels.map((e) => ({
+          options={educationLevels.map((e) => ({
             value: e.key,
             label: e.label,
           }))}
@@ -61,7 +96,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
           isShowLabel={false}
           name="course"
           placeholder="Course"
-          options={educationFieldData.courses.map((c) => ({
+          options={courses.map((c) => ({
             value: c.key,
             label: c.label,
           }))}
@@ -73,7 +108,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
           isShowLabel={false}
           name="university"
           placeholder="University"
-          options={educationFieldData.universities.map((u) => ({
+          options={universities.map((u) => ({
             value: u.key,
             label: u.label,
           }))}
@@ -83,9 +118,9 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
         <SelectField
           label="Major Subject"
           isShowLabel={false}
-          name="majorSubject"
+          name="major"
           placeholder="Major Subject"
-          options={educationFieldData.majors.map((m) => ({
+          options={majors.map((m) => ({
             value: m.key,
             label: m.label,
           }))}
@@ -94,7 +129,7 @@ const EditEducation: React.FC<EditEducationProps> = ({ educationData }) => {
         <InputField
           label="Passing Year"
           isShowLabel={false}
-          name="passingYear"
+          name="year"
           placeholder="Passing Year"
           required
           rules={{ validate: (v: string) => validatePassingYear(v) }}

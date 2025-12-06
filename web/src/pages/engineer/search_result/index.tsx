@@ -5,6 +5,7 @@ import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
 import { SORT_OPTIONS, type Filters, type Job } from "./types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * Main application component for job search results
@@ -127,10 +128,10 @@ const SearchResult = () => {
           description={`${filteredJobs.length} jobs found`}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
             {currentJobs.map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard key={job.id} job={job} navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}/>
             ))}
 
             <Pagination

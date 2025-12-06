@@ -5,16 +5,16 @@ import SignUpWithNumber from "./SignUpWithNumber";
 /**
  * Sign Up page component that provides both email and phone number registration options.
  * Manages the state to toggle between email signup and phone number signup components.
- * 
+ *
  * @component
  * @example
  * return (
  *   <SignUpPage />
  * )
- * 
+ *
  * @returns {JSX.Element} The rendered Sign Up page component with conditional rendering
  */
-const SignUpPage = () => {
+const ClientSignUpPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
   return (
@@ -28,4 +28,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default ClientSignUpPage;

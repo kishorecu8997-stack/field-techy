@@ -30,4 +30,4 @@ const ProfileSettingPage = () => {
   );
 }
 
-export default ProfileSettingPage
+export default ProfileSettingPage;

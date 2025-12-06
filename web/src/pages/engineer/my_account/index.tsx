@@ -1,5 +1,4 @@
 import { assetsConfig } from "@/assets";
-import LogoutConfirmationPopup from "@/pages/engineer/auth/LogoutConfirmationPopup";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import React, { useState } from "react";
@@ -15,6 +14,9 @@ import {
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import { absoluteUrls } from "@/config/urls";
+import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useNavigate } from "react-router-dom";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -30,6 +32,7 @@ import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
  */
 const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
+  onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({
@@ -39,10 +42,34 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   });
 
   const menuItems: MenuItem[] = [
-    { label: "My Profile", icon: FaUser, id: "profile" },
-    { label: "My Jobs", icon: FaBriefcase, id: "jobs" },
-    { label: "My Earning", icon: FaWallet, id: "earning" },
-    { label: "Saved Jobs", icon: FaBookmark, id: "saved" },
+    {
+      label: "My Profile",
+      icon: FaUser,
+      id: "profile",
+      onClick: () => onMenuItemClick("profile"),
+    },
+    {
+      label: "My Jobs",
+      icon: FaBriefcase,
+      id: "jobs",
+      onClick: () =>{
+        onClose();
+        navigate(absoluteUrls.engineer.home.my_jobs)},
+    },
+    {
+      label: "My Earning",
+      icon: FaWallet,
+      id: "earning",
+      onClick: () => onMenuItemClick("earning"),
+    },
+    {
+      label: "Saved Jobs",
+      icon: FaBookmark,
+      id: "saved",
+      onClick: () =>{
+        onClose();
+        navigate(absoluteUrls.engineer.home.saved_jobs)},
+    },
     {
       label: "Settings",
       icon: FaCog,
@@ -58,14 +85,14 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
-
+  const navigate = useNavigate();
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Michel Brown"
+            name="Nick Wilson"
             title="Software Engineer"
             rating={4}
             reviewCount={10}
@@ -80,7 +107,10 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <LogoutConfirmationPopup
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          onConfirm={() => console.log("confirm")}
+          onConfirm={() => {
+            onClose();
+            navigate(absoluteUrls.engineer.auth.login);
+          }}
           onCancel={() => setIsOpen(false)}
         />
       </FormContainer>

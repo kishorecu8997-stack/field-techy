@@ -1,15 +1,27 @@
+import location from "./location.svg";
+import notification from "./notification_big.svg";
 import securePayments from "./secure-payments.png";
 import skillsMatching from "./skills-matching.png";
 import workTracking from "./work-tracking.png";
 import companyLogo from "./company-logo.png";
 import ftLogo from "./ft_logo.svg";
 import defaultProfileImage from "./default_profile_img.jpg";
+import attachment from "./attachment_01.png";
+import suitcase from "./suitcase.svg";
+import people from "./people.svg";
+import ftLogoWhite from "./ft_logo_white.svg";
+import placeholderImage from "./placeholder_img.svg";
+import adminCard from "./admin-card-icon.svg";
+import user from "./user-image/user.png";
+import circle_tick from "./circle_tick_icon.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
   logos: {
     ftLogo,
     companyLogo,
+    circle_tick,
+    ftLogoWhite,
   },
   images: {
     profile: {
@@ -20,5 +32,25 @@ export const assetsConfig = {
       skillsMatching,
       workTracking,
     },
+    users: {
+      user,
+    },
+     dashboard: {
+      attachment,
+    },
+    admin: {
+      adminCard,
+    },
+  },
+  placeholder: placeholderImage,
+  icons: {
+    suitcase,
+    people,
+    location,
+    notification,
+  },
+  admin: {
+    adminCard,
   },
 };
+

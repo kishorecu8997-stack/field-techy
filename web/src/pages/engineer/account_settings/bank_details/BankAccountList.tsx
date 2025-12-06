@@ -9,13 +9,13 @@ const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex justify-end">
-        <button
+        <div
           onClick={() => onMenuItemClick("addBankdetails")}
-           className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
+          className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
           aria-label="Add Bank"
         >
           Add Bank
-        </button>
+        </div>
       </div>
 
       {bankDetails.map((bank, index) => (
@@ -27,19 +27,26 @@ const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               {bank.bankName}
             </h3>
-            <button
+            <div
               onClick={() => onMenuItemClick("editBankdetails")}
               className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
               aria-label={`Edit details for ${bank.bankName}`}
             >
               Edit details
-            </button>
+            </div>
           </div>
 
           <div className="space-y-1 text-gray-600 dark:text-gray-400 text-sm">
-            <div>Account Number: <span className="font-mono">{bank.accountNumber}</span></div>
-            <div>SWIFT Code: <span className="font-mono">{bank.swiftcode}</span></div>
-            <div>IBAN: <span className="font-mono">{bank.iban}</span></div>
+            <div>
+              Account Number:{" "}
+              <span className="font-mono">{bank.accountNumber}</span>
+            </div>
+            <div>
+              SWIFT Code: <span className="font-mono">{bank.swiftcode}</span>
+            </div>
+            <div>
+              IBAN: <span className="font-mono">{bank.iban}</span>
+            </div>
           </div>
         </div>
       ))}

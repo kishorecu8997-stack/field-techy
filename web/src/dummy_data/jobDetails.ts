@@ -1,10 +1,9 @@
 import type {
+  JobInfoSectionProps,
   LogEntry,
   ProposalTermsProps,
-  JobInfoSectionProps,
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
-import type { Job } from "@/pages/engineer/search_result/types";
 
 export const logs: LogEntry[] = [
   {
@@ -75,22 +74,22 @@ export const termsData: ProposalTermsProps = {
 export const job: JobInfoSectionProps = {
   jobTitle: "Angular Developer",
   terms: {
-    title: "Proposal's Terms & Conditions",
+    title: "Job information",
     items: [
       {
-        text: "Produce clean, efficient code; test and deploy program and systems",
+        text: "Created on 10-Feb-2024, 09:00 AM",
       },
       {
-        text: "Review feedback and make necessary adjustments by 15-Feb-2024.",
+        text: "Tentative Start on: 12-Feb-2024.",
+      },
+      {
+        text: "Review feedback and make necessary adjustments by 15-Feb-2024",
       },
       {
         text: "Implementation phase begins on 16-Feb-2024",
       },
       {
         text: "Conduct user acceptance testing and finalize documentation",
-      },
-      {
-        text: "Launch the project to users on 01-Mar-2024",
       },
     ],
   },
@@ -129,53 +128,6 @@ export const requirements: ProposalTermsProps = {
   },
 };
 
-export const jobs: Job[] = [
-  {
-    id: "1",
-    title: "Install Security System at Client.",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "completed",
-    type: "on-site",
-  },
-  {
-    id: "2",
-    title: "Mobile App UI/UX Designer and Product Designer",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "applied",
-    type: "remote",
-  },
-  {
-    id: "3",
-    title: "Mobile App UI/UX Designer and Product Designer",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "inprogress",
-    type: "remote",
-  },
-  {
-    id: "4",
-    title: "Install Security System at Client.",
-    client: "SafeHomes Inc.",
-    startDate: "May 28, 2025, 10:00 AM",
-    duration: "8 Hours of Work",
-    location: "San Francisco, CA",
-    pay: "400",
-    status: "completed",
-    type: "on-site",
-  },
-];
-
 export const jobHeaderData = {
   title: "Mobile App UI/UX Designer and Product Designer",
   client: "TechNova Co",
@@ -208,7 +160,7 @@ export const exampleMarkers = {
 };
 
 export const userData = {
-  name: "Michel Brown",
+  name: "Nick Wilson",
   phone: "+91 74582405XX",
   role: "Software Engineer",
   profileCompletion: 39,
@@ -217,3 +169,40 @@ export const userData = {
 export const earningsData = {
   balance: 8250.56,
 };
+
+// Example usage
+export const jobData = [
+  {
+    id: 1,
+    title: "Software Engineer",
+    company: "Google",
+    companyLogo: "/logos/google.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+  {
+    id: 2,
+    title: "Python Engineer",
+    company: "Facebook",
+    companyLogo: "/logos/facebook.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+  {
+    id: 3,
+    title: "Project Manager",
+    company: "Google",
+    companyLogo: "/logos/google.png",
+    category: "IT",
+    employmentType: "Full-Time",
+    locationType: "On Site",
+    salary: "$180,000/year",
+    location: "California, USA",
+  },
+];

@@ -1,0 +1,142 @@
+import type { BankCardData, CompanyInfo, PostedJobsProps, walletViewData } from "@/pages/admin/client/types";
+
+
+export const ClientViewData: CompanyInfo = {
+  profileImage: 'https://via.placeholder.com/100',
+  companyName: 'ABC Pvt Ltd',
+  businessType: 'Retail',
+  country: 'India',
+  postalCode: '110001',
+  contactPersonName: 'John Doe',
+  industry: 'E-commerce',
+  state: 'Delhi',
+  taxDocument: 'VAT Type A',
+  phoneNumber: '+91 9876543210',
+  address: '123 Business Street, Sector 45',
+  city: 'New Delhi',
+  vatRegistrationNumber: 'VAT12345678',
+
+};
+
+export const bankCardData: BankCardData = {
+  bankName: 'ENDB Bank',
+  cardNumber: '9876541320',
+  bankAddress: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut, modi animi et distinctio ipsum corrupti.',
+  ibanNumber: '456789',
+  cardHolderName: 'kishore',
+  swiftCode: 'AHGFH456',
+  walletBalance: 'ADE 500',
+};
+
+export const walletData: walletViewData[] = [
+  {
+    id: 1,
+    dateTime: "13-11-2025 09:15:00",
+    transactionId: "TXN1001",
+    transactionType: "Deposit",
+    amount: "2500.00",
+    status: "Completed"
+  },
+  {
+    id: 2,
+    dateTime: "12-11-2025 14:30:00",
+    transactionId: "TXN1002",
+    transactionType: "Withdrawal",
+    amount: "800.50",
+    status: "Completed"
+  },
+  {
+    id: 3,
+    dateTime: "11-11-2025 11:45:00",
+    transactionId: "TXN1003",
+    transactionType: "Transfer",
+    amount: "1200.00",
+    status: "Pending"
+  },
+  {
+    id: 4,
+    dateTime: "10-11-2025 16:20:00",
+    transactionId: "TXN1004",
+    transactionType: "Deposit",
+    amount: "3000.75",
+    status: "Failed"
+  },
+  {
+    id: 5,
+    dateTime: "09-11-2025 10:05:00",
+    transactionId: "TXN1005",
+    transactionType: "Withdrawal",
+    amount: "450.25",
+    status: "Completed"
+  }
+];
+
+
+
+export const postedJobsData: PostedJobsProps[] = [
+  {
+   jObID: "JB001",
+  postedBy: "Company A",
+  jObTitle: "Plumbing Work",
+  jobDescription: "Fix leaking pipes and faucets",
+  jobType: "Full-time",
+  country: "USA",
+  state: "California",
+  city: "Los Angeles",
+  startDateTime: "2023-10-01T09:00:00",
+  createdDate: "2023-09-25",
+  status: true,
+  },
+  {
+    jObID: "JB002",
+    postedBy: "Company B",
+    jObTitle: "Electrical Maintenance",
+    jobDescription: "Repair electrical wiring and fixtures",
+    jobType: "Part-time",
+    country: "Canada",
+    state: "Ontario",
+    city: "Toronto",
+    startDateTime: "2023-10-05T10:00:00",
+    createdDate: "2023-09-28",
+    status: false,
+  },
+  {
+    jObID: "JB003",
+    postedBy: "Company C",
+    jObTitle: "Landscaping Services",
+    jobDescription: "Garden maintenance and landscaping",
+    jobType: "Contract",
+    country: "Australia",
+    state: "New South Wales",
+    city: "Sydney",
+    startDateTime: "2023-10-10T14:00:00",
+    createdDate: "2023-09-30",
+    status: true,
+  },
+  {
+    jObID: "JB004",
+    postedBy: "Company D",
+    jObTitle: "House Cleaning",
+    jobDescription: "Residential cleaning services",
+    jobType: "Full-time",
+    country: "Germany",
+    state: "Bavaria",
+    city: "Munich",
+    startDateTime: "2023-10-15T08:00:00",
+    createdDate: "2023-10-01",
+    status: false,
+  },
+  {
+    jObID: "JB005",
+    postedBy: "Company E",
+    jObTitle: "Painting Services",
+    jobDescription: "Interior and exterior painting",
+    jobType: "Part-time",
+    country: "France",
+    state: "Île-de-France",
+    city: "Paris",
+    startDateTime: "2023-10-20T13:00:00",
+    createdDate: "2023-10-03",
+    status: true,
+    },
+];

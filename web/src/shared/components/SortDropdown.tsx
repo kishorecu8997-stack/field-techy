@@ -14,7 +14,7 @@ import type { SortDropdownProps } from "./type";
  * @returns {JSX.Element} Rendered dropdown
  */
 const SortDropdown: React.FC<SortDropdownProps> = ({
-  currentSort,
+  currentSort = SORT_OPTIONS.NEWEST,
   onSortChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);

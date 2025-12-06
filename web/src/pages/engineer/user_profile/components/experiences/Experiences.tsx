@@ -1,13 +1,11 @@
+import { workExperienceList } from "@/dummy_data/engineer_profile/work-experience";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
-import { experienceData } from "@/dummy_data";
-import { type WorkExperience, WorkExperienceList } from "./components/WorkExperienceList";
 import { toast } from "react-toastify";
+import { WorkExperienceList } from "./components/WorkExperienceList";
 
-/**
- * Props for components rendered within a drawer that require navigation and close actions.
- */
 interface DrawerMenuProps {
-  /** Callback to navigate to a different view within the drawer (e.g., 'addExperiences'). */
   onMenuItemClick: (key: string) => void;
 }
 
@@ -19,18 +17,51 @@ interface DrawerMenuProps {
  * @param {DrawerMenuProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered Experiences component.
  */
-const Experiences: React.FC<DrawerMenuProps> = ({
-  onMenuItemClick,
-}) => {
+const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const handleDeleteExperience = async (id: number) => {
+    await showPopup({
+      title: "Delete Experience",
+      body: "Are you sure you want to delete this experience?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, delete",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Experience Deleted Successfully");
+            console.log("Yes button clicked", id);
+            close(true);
+            setActiveKey("experiences");
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <div className="">
       <WorkExperienceList
         title="Experiences"
-        items={experienceData as WorkExperience[]}
+        items={workExperienceList}
         onAddAction={() => onMenuItemClick(`addExperiences`)}
-        onEditAction={(id) => onMenuItemClick(`editExperiences-${id}`)}
+        onEditAction={(id) => {
+          localStorage.setItem("editExperiencesId", id.toString());
+          onMenuItemClick("editExperiences");
+        }}
         // TODO: Implement a proper confirmation modal for deletion instead of a browser alert.
-        onDeleteAction={(id) => toast.info(`Delete experience at index ${id}`)}
+        onDeleteAction={(id) => handleDeleteExperience(Number(id))}
       />
     </div>
   );

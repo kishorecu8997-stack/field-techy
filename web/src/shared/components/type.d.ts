@@ -39,6 +39,9 @@ interface MapComponentProps {
   initialZoom?: number;
   markers?: MapMarker[];
   onMapClick?: (latlng: { lat: number; lng: number }) => void;
+  viewOnly?: boolean;
+  onPositionChange?: (position: [number, number]) => void;
+  className?: string;
 }
 
 /**
@@ -56,6 +59,7 @@ type PopupProps = {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  inputClassName?: string;
 };
 
 /**
@@ -81,4 +85,112 @@ interface TabItem {
 interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+//Notification popover
+export interface NotificationDropdownProps {
+  title?: string;
+  seeAllLink?: string;
+  onClose?: () => void;
+  children: React.ReactNode;
+  className?: string;
+}
+
+//chart
+export interface SeriesConfig {
+  dataKey: string;
+  name: string;
+  stroke?: string;
+  fill?: string;
+  strokeWidth?: number;
+  dot?: boolean | { r: number };
+  activeDot?: boolean | { r: number };
+}
+export interface LegendConfig {
+  verticalAlign?: "top" | "bottom" | "middle";
+  align?: "left" | "center" | "right";
+  wrapperStyle?: React.CSSProperties;
+}
+
+export interface GeneralChartProps<
+  T extends Record<string, unknown> = Record<string, unknown>
+> {
+  data: T[];
+  chartType: ChartType;
+  xAxisDataKey: keyof T;
+  height?: number;
+  showLegend?: boolean;
+  showTooltip?: boolean;
+  showGrid?: boolean;
+  aspectRatio?: number;
+  yAxisDomain?: [
+    number | "auto" | "dataMin" | "dataMax",
+    number | "auto" | "dataMin" | "dataMax"
+  ];
+  customTooltip?: React.ComponentType<TooltipProps<number, string>>;
+  className?: string;
+  series: SeriesConfig[];
+  legend?: LegendConfig;
+}
+
+export type ChartType = "line" | "bar";
+
+export interface Category {
+  id: string;
+  items: string;
+}
+
+interface InformationCardProps {
+  title: string;
+  description: string;
+  details: {
+    label: string;
+    value: string;
+  }[];
+  className?: string;
+}
+
+export interface InformationCardPropsTools {
+  title: string;
+  description: string;
+  category: string[];
+  className?: string;
+}
+
+export interface PaymentMethodSelectorProps {
+  name: string;
+  label?: string;
+  isShowLabel?: boolean;
+  isShowRadio?: boolean;
+  required?: boolean;
+  rules?: RegisterOptions;
+  options?: PaymentCardOption[];
+  onAddNew?: (cardData: CardFormData) => void;
+  isOpen?: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface HeaderProps {
+  title?: string;
+  currentPath: string;
+  showSearchBar?: boolean;
+  showButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
+}
+
+export interface CategoryTagProps {
+  category: string[];
+  label?: string;
+  isShowLabel?: boolean;
+  required?: boolean;
+}
+
+
+export interface PaymentCardOption {
+  id: string;
+  last4: string;
+  brand: "visa" | "mastercard" | "amex" | "discover" | string;
+  name: string;
 }

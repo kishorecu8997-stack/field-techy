@@ -30,7 +30,12 @@ export interface MyJobsHeaderProps {
   onSortChange?: (sort: SortOption) => void;
   isShowBreadcrumb?: boolean;
   description?: string;
+  isReport?: boolean;
   isShowSort?: boolean;
+  action?: React.ReactNode;
+  isShowButton?: boolean;
+  buttonText?: string;
+  onClick?: () => void;
 }
 
 /**
@@ -70,9 +75,27 @@ export interface ClientInfoCardProps {
   verifications: string[];
 }
 
-/**
- * Props for the tab navigation component within a job view.
- */
+export interface JobHeaderCardProps {
+  title: string;
+  client: string;
+  duration: string;
+  type?: string;
+  status?: StatusType | string;
+  setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
+  isSendProposal?: boolean;
+  setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
+  setActiveTab?: Dispatch<SetStateAction<string>>;
+  setOfferJobStatus?: Dispatch<SetStateAction<string>>;
+  OfferJobStatus?:
+    | "initial"
+    | "accepted"
+    | "declined"
+    | "started"
+    | "checked-in"
+    | undefined;
+}
+
 export interface JobTabsProps {
   activeTab: string;
   tabs: string[];

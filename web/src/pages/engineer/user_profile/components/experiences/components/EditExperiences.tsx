@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm, Controller } from "react-hook-form";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange } from "../../../Validate";
-import type { ExperiencesFormData } from "./types";
+import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
-
-/**
- * Props for the EditExperiences component.
- */
-interface EditExperiencesProps {
-  /** The experience data to pre-fill in the form for editing. */
-  experienceData?: ExperiencesFormData;
-}
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { validateCompany, validateDateRange } from "../../../Validate";
+import {
+  designationOptions,
+  employmentTypeOptions,
+  workLocationTypeOptions,
+} from "./constants";
+import type { ExperiencesFormData } from "./types";
 
 /**
  * The EditExperiences component renders a form to modify an existing work experience.
@@ -24,47 +24,65 @@ interface EditExperiencesProps {
  * @param {EditExperiencesProps} props - Component props.
  * @returns {React.ReactElement} The rendered EditExperiences form component.
  */
-const EditExperiences: React.FC<EditExperiencesProps> = ({
-  experienceData,
-}) => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to update the experience data.
-   * @param {EditExperiencesFormData} data - The validated form data.
-   */
-  const handleSubmit = (data: ExperiencesFormData) => {
-    console.log("Form submitted with updated data:", data);
-    // TODO: integrate submission logic here (e.g., API call)
-    // Example: await api.experiences.update(experienceData.id, data);
+const EditExperiences = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const handleSubmit = async (data: ExperiencesFormData) => {
+    await showPopup({
+      title: "Update Experience",
+      body: "Are you sure you want to update this experience?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Experience Updated Successfully");
+            close(true);
+            setActiveKey("experiences");
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * Initializes `react-hook-form` with default values for the experience form.
-   * If `experienceData` is provided, it's used to pre-fill the form.
-   */
+  const getExperienceById = () => {
+    const id = localStorage.getItem("editExperiencesId");
+    console.log(id);
+    const experienceId = id;
+    const found = experianceEdit.find((exp) => exp.id === experienceId);
+
+    if (!found) return undefined;
+
+    // Convert string dates to Date objects (handle empty/undefined endDate)
+    return {
+      ...found,
+      startDate: found.startDate ? new Date(found.startDate) : undefined,
+      endDate: found.endDate ? new Date(found.endDate) : undefined,
+    };
+  };
+
   const methods = useForm<ExperiencesFormData>({
-    defaultValues: experienceData || {
-      designation: "",
-      employer: "",
-      workLocationType: "",
-      employmentType: "",
-      startDate: null,
-      endDate: null,
-    },
+    defaultValues: getExperienceById(),
     mode: "onSubmit",
   });
 
-  /**
-   * Effect to reset the form values if the `experienceData` prop changes.
-   * This ensures the form updates if the user selects a different experience
-   * entry to edit without closing the drawer.
-   */
   useEffect(() => {
-    if (experienceData) {
-      methods.reset(experienceData);
-    }
-  }, [experienceData, methods]);
+    // Clean up the ID from localStorage after the component has mounted
+    // to prevent it from being used again accidentally.
+    return () => {
+      localStorage.removeItem("editExperiencesId");
+    };
+  }, []);
 
   return (
     <FormContainer
@@ -80,7 +98,7 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
           placeholder="Designation"
           options={designationOptions.map((e) => ({
             value: e.id,
-            label: e.title
+            label: e.title,
           }))}
           required
         />
@@ -110,44 +128,25 @@ const EditExperiences: React.FC<EditExperiencesProps> = ({
           options={employmentTypeOptions}
           required
         />
-        <Controller
+        <DatePickerInput
           name="startDate"
-          control={methods.control}
+          label="Start Date"
+          isShowLabel={false}
+          placeholder="Start date"
+          required
+          maxDate={new Date()}
           rules={{
             validate: (value) =>
-              validateDateRange(value, methods.getValues("endDate")),
+              validateDateRange(value, methods.getValues("endDate") || null),
           }}
-          render={({ field, fieldState: { error } }) => (
-            <>
-              <DatePickerInput
-                label="Start Date"
-                isShowLabel={false}
-                placeholder="Start date"
-                value={field.value}
-                onChange={field.onChange}
-                minDate={new Date(1970, 0, 1)}
-                maxDate={new Date()}
-              />
-              {error && <p className="text-red-600 text-sm">{error.message}</p>}
-            </>
-          )}
         />
-        <Controller
+        <DatePickerInput
           name="endDate"
-          control={methods.control}
-          render={({ field }) => (
-            <DatePickerInput
-              label="End Date"
-              isShowLabel={false}
-              placeholder="End date (optional)"
-              value={field.value}
-              onChange={(date) => {
-                field.onChange(date);
-                methods.trigger("startDate"); // Re-validate start date
-              }}
-              minDate={methods.getValues("startDate") || new Date(1970, 0, 1)}
-            />
-          )}
+          label="End Date"
+          isShowLabel={false}
+          placeholder="End date (optional)"
+          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+          rules={{ onChange: () => methods.trigger("startDate") }}
         />
       </div>
 

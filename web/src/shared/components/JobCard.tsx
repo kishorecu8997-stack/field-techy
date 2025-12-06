@@ -2,9 +2,11 @@ import { absoluteUrls } from "@/config/urls";
 import {
   JOB_STATUSES,
   WORKING_TYPES,
+  WORKING_TYPES_PROPERTY,
   type Job,
   type JobStatus,
 } from "@/pages/engineer/search_result/types";
+import { scrollToTop } from "@/utils";
 import { FaDollarSign } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -39,15 +41,10 @@ const JobCard: React.FC<Job> = ({
     }
   };
 
-  const getTypeColor = () => {
-    return type === WORKING_TYPES.onsite
-      ? "bg-teal-800 text-white dark:bg-teal-700"
-      : "bg-purple-600 text-white dark:bg-purple-700";
-  };
-
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
+      onClick={() => scrollToTop()}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex justify-between items-start mb-3">
@@ -55,9 +52,9 @@ const JobCard: React.FC<Job> = ({
           {title}
         </h3>
         <span
-          className={`px-2.5 py-1 rounded-full text-xs font-medium ${getTypeColor()}`}
+          className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
-          {type}
+          {type === WORKING_TYPES.onsite ? WORKING_TYPES_PROPERTY.onsite : WORKING_TYPES_PROPERTY.remote}
         </span>
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">

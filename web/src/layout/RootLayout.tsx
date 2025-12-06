@@ -1,6 +1,6 @@
-import Drawer from "@/shared/components/drawer/Drawer";
 import Footer from "@/shared/components/Footer";
 import Navbar from "@/shared/components/Navbar";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -23,8 +23,9 @@ import { Outlet } from "react-router-dom";
  *   <MyJobsPage />
  * </RootLayout>
  */
+
 const RootLayout = (): JSX.Element => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -39,40 +40,44 @@ const RootLayout = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
-      <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white dark:bg-gray-800 shadow-sm"
-            : "bg-transparent dark:bg-transparent shadow-none"
-        }`}
-      >
-        <div className="xl:container mx-auto px-6">
-          <Navbar
-            onDrawerToggle={() => setIsDrawerOpen(!isDrawerOpen)}
-            isDrawerOpen={isDrawerOpen}
-          />
-        </div>
-      </header>
+    <>
+      <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
+        <header
+          className={`sticky top-0 z-50 transition-all duration-300 ${
+            isScrolled
+              ? "bg-white dark:bg-gray-800 shadow-sm"
+              : "bg-transparent dark:bg-transparent shadow-none"
+          }`}
+        >
+          <div className="xl:container mx-auto px-6">
+            <Navbar
+              onDrawerToggle={() => {
+                setISOpenSidebar(!isOpenSidebar);
+                setActiveKey("myAccount");
+              }}
+              isDrawerOpen={isOpenSidebar}
+            />
+          </div>
+        </header>
 
-      <main className="flex-1 container mx-auto px-6 py-4">
-        <Outlet />
-      </main>
+        <main className="flex-1 container mx-auto px-6 py-4">
+          <Outlet />
+        </main>
 
-      <footer className="bg-teal-900 text-white py-12 mt-12">
-        <div className="container mx-auto px-6 flex flex-wrap justify-center">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Finding a Job is Easy</h2>
-            <div className="mt-6 max-w-prose">
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout.
+        <footer className="bg-teal-900 text-white py-12 mt-12">
+          <div className="container mx-auto px-6 flex flex-wrap justify-center">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold mb-4">Finding a Job is Easy</h2>
+              <div className="mt-6 max-w-prose">
+                It is a long established fact that a reader will be distracted
+                by the readable content of a page when looking at its layout.
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-      <Footer />
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
-    </div>
+        </footer>
+        <Footer />
+      </div>
+    </>
   );
 };
 

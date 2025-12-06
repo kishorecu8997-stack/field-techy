@@ -1,5 +1,4 @@
-import type { Section } from "../type";
-
+import type { Section } from "./types";
 
 const ContentPage = ({ content }: { content: Section[] }) => {
   return (
@@ -22,7 +21,7 @@ const ContentPage = ({ content }: { content: Section[] }) => {
             <ul className="space-y-3">
               {section.items.map((item, i) => (
                 <li key={i} className="flex items-start">
-                  <span className="inline-block w-1.5 h-1.5 bg-neutral-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                  <span className="inline-block w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                   <div>
                     {item.title && <strong className="">{item.title}:</strong>}{" "}
                     {item.description}

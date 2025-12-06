@@ -2,7 +2,7 @@
   "workExperience": [
      {
       "id": "1",
-      "title": "Angular Developer",
+      "designation": "Angular Developer",
       "employer": "Zoho Corp",
       "workLocationType": "on-site",
       "employmentType": "full-time",
@@ -11,7 +11,7 @@
     },
     {
       "id": "2",
-      "title": "Angular Developer",
+      "designation": "Angular Developer",
       "employer": "Freshworks",
       "workLocationType": "hybrid",
       "employmentType": "full-time",
@@ -20,7 +20,7 @@
     },
     {
       "id": "3",
-      "title": "Angular Developer",
+      "designation": "Angular Developer",
       "employer": "Accenture",
       "workLocationType": "remote",
       "employmentType": "full-time",
@@ -29,7 +29,7 @@
     },
     {
       "id": "4",
-      "title": "Angular Developer",
+      "designation": "Angular Developer",
       "employer": "TCS",
       "workLocationType": "remote",
       "employmentType": "full-time",

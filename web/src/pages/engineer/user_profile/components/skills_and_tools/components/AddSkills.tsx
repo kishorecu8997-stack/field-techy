@@ -1,8 +1,11 @@
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for adding skills.
@@ -20,30 +23,42 @@ export type AddSkillsFormData = {
  * @returns {React.ReactElement} The rendered AddSkills form component.
  */
 const AddSkills = () => {
-  /**
-   * Initializes `react-hook-form` with default values for the skills form.
-   */
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
     },
   });
 
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the selected skills.
-   * @param {AddSkillsFormData} data - The validated form data containing an array of skill IDs.
-   */
-  const onSubmit = (data: AddSkillsFormData) => {
-    console.log("Form data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const onSubmit = async (data: AddSkillsFormData) => {
+    await showPopup({
+      title: "Add Skills",
+      body: "Are you sure you want to add these skills?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Skills Added Successfully");
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * Transforms the raw skills data into a format suitable for the `TagSelectField` component.
-   * @type {Array<{label: string, value: string}>}
-   */
   const skillOptions = skillsData.map((skill) => ({
     label: skill.label,
     value: skill.id.toString(),

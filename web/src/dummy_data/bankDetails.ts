@@ -7,15 +7,15 @@ export const bankDetails = [
     swiftcode: "1234567890",
     bankAddress: "1234 Main Street, Anytown, USA",
     iban: "1234567890",
-    name: "John Doe",
+    name: "Doe",
   },
   {
     bankName: "Bank of America",
-    accountNumber: "1234567890",
-    swiftcode: "1234567890",
+    accountNumber: "9344567890",
+    swiftcode: "8934567890",
     bankAddress: "1234 Main Street, Anytown, USA",
-    iban: "1234567890",
-    name: "John Doe",
+    iban: "10976567890",
+    name: "John ",
   },
 ];
 
@@ -62,4 +62,9 @@ export const bankList = [
   { value: "bank-of-america", label: "Bank of America" },
   { value: "citi", label: "Citi" },
   { value: "hsbc", label: "HSBC" },
+];
+
+export const bankListData = [
+  { value: "SBI", label: "SBI" },
+  { value: "ICICI", label: "ICICI" },
 ];

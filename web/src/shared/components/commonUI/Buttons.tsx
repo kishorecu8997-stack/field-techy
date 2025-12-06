@@ -1,32 +1,42 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../libs/utils";
 import Loader2 from "../Loader2";
+import { scrollToTop } from "@/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline" | "link" | "text";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "ghost"
+    | "danger"
+    | "outline"
+    | "link"
+    | "text"
+    | "solid";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  isScrollToTop?: boolean;
 }
 
 /**
- * Button Component
+ * Button - A reusable button component for React.
  *
- * A reusable styled button component with support for variants, sizes, icons, and loading state.
- *
- * @param {ButtonProps} props - Props for the button
- * @returns {JSX.Element} The rendered button
- *
- * @example
- * <Button variant="primary" size="md" loading leftIcon={<Icon />}>
- *   Click Me
- * </Button>
+ * Features:
+ * - Supports primary, secondary, ghost, danger, outline, link, and solid variants.
+ * - Supports small, medium, large, and icon sizes.
+ * - Supports loading state.
+ * - Supports left and right icons.
+ * - Supports custom class names.
+ * - Supports full width.
+ * - Supports scroll to top on click.      
  */
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   className,
@@ -38,6 +48,8 @@ export const Button: React.FC<ButtonProps> = ({
   leftIcon,
   rightIcon,
   type = "button",
+  isScrollToTop = false,
+  onClick,
   ...rest
 }) => {
   const baseStyles =
@@ -45,7 +57,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles: Record<string, string> = {
     primary:
-      "bg-cyan-600 hover:bg-cyan-700 font-semibold text-white focus:ring-cyan-500",
+      "bg-emerald-600 hover:bg-emerald-700 font-semibold text-white focus:ring-emerald-500",
     secondary:
       "bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-300",
     ghost:
@@ -53,7 +65,9 @@ export const Button: React.FC<ButtonProps> = ({
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     outline:
       "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
-    link: "bg-transparent underline-offset-4 hover:underline text-cyan-600 hover:text-cyan-700 ",
+    link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
+    solid:
+      "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -63,8 +77,14 @@ export const Button: React.FC<ButtonProps> = ({
     icon: "h-10 w-10",
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isScrollToTop) scrollToTop();
+    if (onClick) onClick(e);
+  };
+
   return (
     <button
+      onClick={handleClick}
       type={type}
       className={cn(
         baseStyles,

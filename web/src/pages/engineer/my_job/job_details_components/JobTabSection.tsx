@@ -6,13 +6,17 @@ import {
   termsData,
   workSubmissions,
 } from "@/dummy_data/jobDetails";
-import { JOB_STATUSES, type JobStatus } from "@/pages/engineer/search_result/types";
+import {
+  JOB_STATUSES,
+  type JobStatus,
+  type OfferedJobStatusType,
+} from "@/pages/engineer/search_result/types";
 import TabComponent from "@/shared/components/TabComponent";
-
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import LogComponent from "./tab_components/LogComponent";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
+import SendProposal from "@/pages/engineer/home/components/SendProposal";
 import Proposal from "@/shared/components/Proposal";
 
 /**
@@ -29,17 +33,39 @@ import Proposal from "@/shared/components/Proposal";
  * @example
  * <JobTabSection status={JOB_STATUSES.in_progress} />
  */
-const JobTabSection = ({ status }: { status: JobStatus }) => {
+const JobTabSection = ({
+  status,
+  isWorkSubmitted,
+  isSendProposal,
+  activeTab,
+  OfferJobStatus,
+}: {
+  status: JobStatus;
+  isWorkSubmitted?: boolean;
+  isSendProposal?: boolean;
+  activeTab?: string;
+  OfferJobStatus?: OfferedJobStatusType;
+}) => {
+  const shouldHideLogs = !(
+    status === JOB_STATUSES.inprogress ||
+    status === JOB_STATUSES.completed ||
+    OfferJobStatus === "checked-in"
+  );
   const tabs = [
     {
       label: "Logs",
       content: <LogComponent logs={logs} />,
-      hide: status === JOB_STATUSES.applied,
+      hide: shouldHideLogs,
     },
     {
       label: "Work Submissions",
-      content: <WorkSubmissionComponent workSubmissions={workSubmissions} />,
-      hide: status === JOB_STATUSES.applied,
+      content: (
+        <WorkSubmissionComponent
+          workSubmissions={workSubmissions}
+          isWorkSubmitted={isWorkSubmitted}
+        />
+      ),
+      hide: shouldHideLogs,
     },
     {
       label: "Job Information",
@@ -74,7 +100,14 @@ const JobTabSection = ({ status }: { status: JobStatus }) => {
 
   return (
     <div className="">
-      <TabComponent tabs={tabs} defaultActiveTab="Job Information" />
+      {isSendProposal ? (
+        <SendProposal />
+      ) : (
+        <TabComponent
+          tabs={tabs}
+          defaultActiveTab={activeTab || "Job Information"}
+        />
+      )}
     </div>
   );
 };

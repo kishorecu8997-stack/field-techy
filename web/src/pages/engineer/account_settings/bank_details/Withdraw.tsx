@@ -1,19 +1,46 @@
+import { bankListData } from "@/dummy_data/bankDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import type { bankDetails } from "../types";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
-
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import type { bankDetails } from "../types";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
 const Withdraw = () => {
-  const FormCtx = useForm<bankDetails>(); // ✅ Typed correctly
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = (data: bankDetails) => {
-    console.log(data);
+  const FormCtx = useForm<bankDetails>({
+    mode: "onSubmit",
+  });
+
+  const availableBalance = 1000;
+  const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
+      title: "Withdrawal Initiated",
+      body: "Are you sure you want to initiate this withdrawal?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "Yes, initiate",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Withdrawal initiated successfully");
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -31,20 +58,19 @@ const Withdraw = () => {
             name="bank"
             label="Bank"
             required
-            options={[
-              { value: "SBI", label: "SBI" },
-              { value: "ICICI", label: "ICICI" },
-            ]}
+            options={bankListData}
           />
           <InputField
             name="amount"
             label="Amount"
+            inputMode="number"
             required
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);
                 if (isNaN(numeric)) return "Please enter a valid amount";
-                if (numeric > 1000) return "Amount cannot exceed available balance ($1000)";
+                if (numeric > availableBalance)
+                  return `Amount cannot exceed available balance $${availableBalance}`;
                 return true;
               },
             }}

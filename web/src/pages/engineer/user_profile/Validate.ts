@@ -73,14 +73,14 @@ export const validateZipcode = (value: string, country?: string) => {
  * Validate address - allow letters, numbers and spaces only; length 20-50
  */
 export const validateAddress = (value: string) => {
-  if (!value) return "Address must be at least 20 characters";
+  if (!value) return "Address must be at least 6 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
     return "Address must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 20) return "Address must be at least 20 characters";
+  if (v.length < 6) return "Address must be at least 6 characters";
   if (v.length > 50) return "Address must not exceed 50 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
@@ -282,6 +282,46 @@ export const validateDateRange = (
   return true;
 };
 
+
+
+export const validateFilterDateRange = (
+  startDate: Date | null,
+  endDate: Date | null
+): true | string => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Optional: normalize to start of day for comparison
+
+  if (!startDate) {
+    return "Start date is required";
+  }
+
+  if (!endDate) {
+    return "End date is required";
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Normalize time part if you only care about dates (optional)
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  if (start > today) {
+    return "Start date cannot be in the future";
+  }
+
+  if (end > today) {
+    return "End date cannot be in the future";
+  }
+
+  if (start > end) {
+    return "Start date cannot be after end date";
+  }
+
+  return true;
+};
+
+
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "Rate must not start or end with a space";
@@ -306,7 +346,6 @@ export const validateRate = (value: string) => {
 
   return true;
 };
-
 
 export const validatePortfolioLink = (value: string) => {
   if (!value) return "Portfolio link is required";
@@ -363,23 +402,24 @@ export const validatePortfolioLink = (value: string) => {
 
     // Block dangerous or irrelevant domains
     const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
-    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    const suspiciousKeywords =
+      /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
     if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
       return "Domain is not allowed";
     }
-
     // Normalize path: must be clean and minimal
     const path = url.pathname;
 
-    // Remove trailing slash for comparison, but original must not have excess
-    
-
     // Define allowed profiles
     const isGitHub =
-      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+      hostname === "github.com" &&
+      /^\/[a-zA-Z0-9._-]+$/.test(path) &&
+      !path.includes("..");
 
     // Allow /in/username with an optional trailing slash
-    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+    const isLinkedIn =
+      hostname === "www.linkedin.com" &&
+      /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
 
     const isExample = hostname === "example.com" && path === "/";
 
@@ -415,6 +455,22 @@ export const validateIsVerified = (verified: boolean, fieldName: string) => {
 export const validateIsPhoneVerified = (verified: boolean) => {
   return validateIsVerified(verified, "Phone number");
 };
+export const validateFormat = (
+  value: string,
+  regex: RegExp,
+  message: string
+): true | string => {
+  if (!value) return true; // Optional: let 'required' handle emptiness
+  return regex.test(value.trim()) ? true : message;
+};
+
+export const validateVatNumber = (vatNumber: string): true | string => {
+  return validateFormat(
+    vatNumber,
+    /^[A-Za-z0-9\-/ ]{2,16}$/,
+    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces."
+  );
+};
 
 export default {
   validateName,
@@ -432,4 +488,5 @@ export default {
   validatePortfolioLink,
   validateIsVerified,
   validateIsPhoneVerified,
+  validateVatNumber,
 };

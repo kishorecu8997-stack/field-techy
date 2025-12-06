@@ -1,69 +1,104 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
-/**
- * Defines the shape of the form data for editing skills.
- * @typedef {Object} EditSkillsFormData
- * @property {string[]} skills - An array of selected skill IDs.
- */
 export type EditSkillsFormData = {
   skills: string[];
 };
-
-/**
- * Props for the EditSkills component.
- */
 interface EditSkillsProps {
-  /** An array of the user's current skill IDs to pre-populate the form. */
   currentSkills?: string[];
 }
 
 /**
  * The EditSkills component renders a form to modify a user's professional skills.
- * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing skills.
+ * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing skills
+ * retrieved from localStorage.
  * @param {EditSkillsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditSkills form component.
  */
-const EditSkills: React.FC<EditSkillsProps> = ({ currentSkills }) => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to update the user's skills.
-   * @param {EditSkillsFormData} data - The validated form data.
-   */
-  const onSubmit = (data: EditSkillsFormData) => {
-    console.log("Form submitted with updated data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
-  };
+const EditSkills: React.FC<EditSkillsProps> = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
 
+  const initialSkillIds = useMemo(() => {
+    const storedIds = localStorage.getItem("editSkillsId");
+    if (storedIds) {
+      try {
+        const parsedIds: (string | number)[] = JSON.parse(storedIds);
+        // Ensure all IDs are strings for the form field
+        return parsedIds.map(String);
+      } catch (error) {
+        console.error("Failed to parse skill IDs from localStorage", error);
+        return [];
+      }
+    }
+    return [];
+  }, []);
   /**
-   * Initializes `react-hook-form` and sets default values from the `currentSkills` prop.
-   */
-  const methods = useForm<EditSkillsFormData>({
-    defaultValues: { skills: currentSkills || [] },
-  });
-
-  /**
-   * Effect to reset the form values if the `currentSkills` prop changes.
-   * This ensures the form updates correctly if the underlying data changes
-   * while the component is mounted.
-   */
-  useEffect(() => {
-    methods.reset({ skills: currentSkills || [] });
-  }, [currentSkills, methods]);
-
-  /**
-   * Transforms the raw skills data into a format suitable for the `TagSelectField` component.
-   * @type {Array<{label: string, value: string}>}
+   * Transforms skillsData into select options.
    */
   const skillOptions = skillsData.map((skill) => ({
     label: skill.label,
-    value: skill.id.toString(),
+    value: skill.id.toString(), // assuming skill.id is number
   }));
+
+  /**
+   * Initializes `react-hook-form` with default values for the edit skills form.
+   */
+  const methods = useForm<EditSkillsFormData>({
+    defaultValues: {
+      skills: initialSkillIds,
+    },
+  });
+
+  /**
+   * Effect hook to clean up the `editSkillsId` from localStorage when the component unmounts.
+   */
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("editSkillsId");
+    };
+  }, []);
+
+  /**
+   * Handles the form submission for updating skills.
+   * Currently logs the data to the console and shows a success toast.
+   *
+   * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
+   */
+  const onSubmit = async (data: EditSkillsFormData) => {
+    await showPopup({
+      title: "Update Skills",
+      body: "Are you sure you want to update these skills?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Skills Updated Successfully");
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
+  };
 
   return (
     <FormContainer
@@ -83,7 +118,7 @@ const EditSkills: React.FC<EditSkillsProps> = ({ currentSkills }) => {
         />
       </div>
 
-      <div className="bg-white ">
+      <div className="bg-white">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
