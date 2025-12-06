@@ -524,6 +524,10 @@ export const routes = createBrowserRouter([
         path: urls.client.home.SelectEngineer,
         element: withSuspense(SelectEngineer),
       },
+      {
+        path: urls.client.home.chat,
+        element: withSuspense(EngineerChatPage),
+      }
     ],
   },
 

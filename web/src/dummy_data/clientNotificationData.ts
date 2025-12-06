@@ -1,13 +1,4 @@
-
-export interface NotificationProps {
-  
-  id: number;
-  type: 'proposal_received' | 'application_viewed';
-  title: string;
-  message: string;
-  timestamp: string;
-  icon: string;
-}
+import type { NotificationProps } from "@/pages/engineer/account_settings/types";
 
 export const mockNotifications: NotificationProps[] = [
   {

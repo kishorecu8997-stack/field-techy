@@ -1,6 +1,7 @@
 import React from 'react';
 import NotificationItem from './NotificationItem';
-import { mockNotifications, type NotificationProps } from '@/dummy_data/clientNotificationData';
+import { mockNotifications } from '@/dummy_data/clientNotificationData';
+import type { NotificationProps } from '@/pages/engineer/account_settings/types';
 
 const groupNotificationsByDate = (
   notifications: NotificationProps[]

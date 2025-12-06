@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useNavigate } from "react-router-dom";
-import { JobSearchBarClient } from "./jobSearchBarClient";
-import Drawer from "./drawer/Drawer";
 import useDrawerStore from "../store/useDrawerStore";
+import Drawer from "./drawer/Drawer";
+import { JobSearchBarClient } from "./jobSearchBarClient";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -130,7 +130,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
               >
                 <div className="flex items-center space-x-3">My Account</div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  navigate(absoluteUrls.client.home.chat);
+                }}
+              >
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
                   <span>Notifications</span>
@@ -155,18 +160,23 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
 
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
-        <div className="relative p-2 text-gray-600 hover:text-gray-900">
+        <div
+          className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          onClick={() => {
+            navigate(absoluteUrls.client.home.chat);
+          }}
+        >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
             3
           </span>
         </div>
         <div
-          className="p-2 text-gray-600 hover:text-gray-900"
-          // onClick={() => {
-          //   onDrawerToggle();
-          //   // setActiveKey("notification");
-          // }}
+          className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          onClick={() => {
+            onDrawerToggle();
+            setActiveKey("clientNotification");
+          }}
         >
           <FaBell size={20} />
         </div>
