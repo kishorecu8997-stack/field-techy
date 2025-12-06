@@ -66,7 +66,7 @@ const RolePage: React.FC = () => {
   };
 
   const columns: Column<RoleListType>[] = [
-    { key: "id", label: "Sr. No" },
+    { key: "id", label: "Sr.No." },
     { key: "roleName", label: "Role Name" },
     {
       key: "status",
@@ -76,10 +76,8 @@ const RolePage: React.FC = () => {
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              currentStatus
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
+            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              currentStatus ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
           >
             {currentStatus ? "On" : "Off"}

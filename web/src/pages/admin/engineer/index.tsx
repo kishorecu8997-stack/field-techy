@@ -101,7 +101,7 @@ const ManageEngineer: React.FC = () => {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr. NO" },
+    { key: "id", label: "Sr.No." },
     {
       key: "engineerID",
       label: "Engineer ID",

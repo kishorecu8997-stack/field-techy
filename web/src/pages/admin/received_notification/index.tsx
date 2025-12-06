@@ -8,6 +8,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 /**
  * ReceviedNotification Component
@@ -39,6 +40,7 @@ const ReceivedNotification: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("Deleting notification:", notification.id);
+            toast.success("Notification deleted successfully!");
             // TODO: call your delete API here
             // await deleteNotification(notification.id);
             close(true);

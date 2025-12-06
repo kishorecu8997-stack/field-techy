@@ -35,11 +35,10 @@ export default function PersonalDetails() {
 
   const { showPopup } = usePopupStore();
 
-  const handleSaveConfirmation = async (data: ProfileFormData) => {
-    console.log("data :", data);
+  const handleSubmit = async () => {
     await showPopup({
-      title: "Update Profile",
-      body: "Are you sure you want to update this details?",
+      title: "Profile Update",
+      body: "Are you sure you want to update this profile?",
       actionButtons: [
         {
           label: "Cancel",
@@ -47,26 +46,17 @@ export default function PersonalDetails() {
           variant: "outline",
         },
         {
-          label: "Save",
-          value: "save",
+          label: "Yes, update",
+          value: "yes",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Profile updated successfully!");
-            navigate(absoluteUrls.admin.home.dashboard);
-            methods.reset();
+          action: async (close) => {
+            toast.success("Profile Updated Successfully!");
             close(true);
+            navigate(absoluteUrls.admin.home.dashboard);
           },
         },
       ],
     });
-  };
-
-  const handleSubmit = () => {
-    handleSaveConfirmation(methods.getValues());
   };
 
   return (
@@ -74,9 +64,9 @@ export default function PersonalDetails() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
-        <div className="mb-6 mt-2 w-fit">
+        <div className="mb-4 w-fit">
           <ImageUploaderField label="Profile Image" name="profileImage" />
         </div>
         <div className="flex gap-4 w-full">

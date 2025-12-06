@@ -62,7 +62,7 @@ export default function ManageSubAdmin() {
   const columns: Column<UserItem>[] = [
     {
       key: "id",
-      label: "Sr. No.",
+      label: "Sr.No.",
       renderCell: (row: UserItem) => <span>{row.id}</span>,
     },
     {
@@ -101,7 +101,7 @@ export default function ManageSubAdmin() {
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
               isOn ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
           >

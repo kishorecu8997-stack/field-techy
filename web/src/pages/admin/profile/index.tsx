@@ -10,7 +10,7 @@ import { absoluteUrls } from "@/config/urls";
  * Utilizes AdminTabComponent for tabbed UI and react-router for navigation.
  *
  * @component
- */ 
+ */
 export default function Profile() {
   const navigate = useNavigate();
   const tabs = [

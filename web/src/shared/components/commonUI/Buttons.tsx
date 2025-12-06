@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../libs/utils";
 import Loader2 from "../Loader2";
+import { scrollToTop } from "@/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
@@ -20,21 +21,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  isScrollToTop?: boolean;
 }
 
 /**
- * Button Component
+ * Button - A reusable button component for React.
  *
- * A reusable styled button component with support for variants, sizes, icons, and loading state.
- *
- * @param {ButtonProps} props - Props for the button
- * @returns {JSX.Element} The rendered button
- *
- * @example
- * <Button variant="primary" size="md" loading leftIcon={<Icon />}>
- *   Click Me
- * </Button>
+ * Features:
+ * - Supports primary, secondary, ghost, danger, outline, link, and solid variants.
+ * - Supports small, medium, large, and icon sizes.
+ * - Supports loading state.
+ * - Supports left and right icons.
+ * - Supports custom class names.
+ * - Supports full width.
+ * - Supports scroll to top on click.      
  */
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   className,
@@ -46,6 +48,8 @@ export const Button: React.FC<ButtonProps> = ({
   leftIcon,
   rightIcon,
   type = "button",
+  isScrollToTop = false,
+  onClick,
   ...rest
 }) => {
   const baseStyles =
@@ -73,8 +77,14 @@ export const Button: React.FC<ButtonProps> = ({
     icon: "h-10 w-10",
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isScrollToTop) scrollToTop();
+    if (onClick) onClick(e);
+  };
+
   return (
     <button
+      onClick={handleClick}
       type={type}
       className={cn(
         baseStyles,

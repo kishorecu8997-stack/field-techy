@@ -17,9 +17,6 @@ import { usePopupStore } from "@/shared/store/popupStore";
  * @returns {JSX.Element} The Commission settings form.
  */
 export default function Commission() {
-  /**
-   * React Hook Form methods for managing the commission form state.
-   */
   const methods = useForm<SettingsFormData>({
     defaultValues: {
       commission: "",
@@ -34,7 +31,6 @@ export default function Commission() {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: SettingsFormData) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Commission",
       body: "Are you sure you want to save this details?",
@@ -48,9 +44,8 @@ export default function Commission() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("Deleting job:", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Commission added successfully!");
@@ -70,7 +65,7 @@ export default function Commission() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
         <div className="flex-1 w-1/2">
           <InputField

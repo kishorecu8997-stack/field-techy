@@ -29,7 +29,6 @@ const SkillAccordion: React.FC<{
 
   //Delete confirmation
   const handleDeleteSkill = async (skill: SkillPricing) => {
-    console.log("skill :", skill.id);
     await showPopup({
       title: "Delete Skill",
       body: "Are you sure you want to delete this skill?",
@@ -43,8 +42,8 @@ const SkillAccordion: React.FC<{
           label: "Delete",
           value: "delete",
           variant: "danger",
-          action: async (close: any) => {
-            console.log("Deleting:", close);
+          action: async (close) => {
+            console.log("Deleting:", skill.id);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);
@@ -61,7 +60,6 @@ const SkillAccordion: React.FC<{
 
   //Save confirmation
   const handleSaveConfirmation = async (data: any) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Skill",
       body: "Are you sure you want to save this details?",
@@ -75,9 +73,8 @@ const SkillAccordion: React.FC<{
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting:", close);
+          action: async (close) => {
+            console.log("Deleting:", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Skill added successfully!");

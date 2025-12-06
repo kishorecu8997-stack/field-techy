@@ -1,5 +1,8 @@
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
-
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 
 export interface TextareaInputProps {
   name: string;
@@ -31,7 +34,7 @@ export const TextareaInput = ({
   required = false,
   rules,
   containerClassName = "flex flex-col py-1 w-full",
-  textareaClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
+  textareaClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
   disabled = false,
 }: TextareaInputProps) => {
   const { control } = useFormContext();
@@ -52,10 +55,14 @@ export const TextareaInput = ({
 
   return (
     <div className={containerClassName}>
-      {isShowLabel && label && (
+      {isShowLabel && (
         <label
-          htmlFor={name}
-          className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300"
+          className={`block mb-1 text-md font-bold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
         >
           {label}{" "}
           {required !== false && <span className="text-red-600">*</span>}
@@ -72,7 +79,17 @@ export const TextareaInput = ({
               id={name}
               placeholder={placeholder || label}
               disabled={disabled}
-              className={textareaClassName}
+              className={`${textareaClassName} ${
+                disabled
+                  ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                  : "cursor-text bg-white dark:bg-gray-800"
+              }
+               ${
+                 error && !disabled
+                   ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+               }
+              `}
               rows={4}
             />
             {error && (
