@@ -52,5 +52,5 @@ export const icons = {
   message: BiSolidMessageRounded,
   noImage: MdOutlineImageNotSupported,
   add: IoMdAdd,
-  pending:FaHourglass
+  pending: FaHourglass
 };

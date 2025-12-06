@@ -130,9 +130,9 @@ export const manageJobs: ManageJobProps[] = [
 ];
 
 export const AllJobStatus = [
-  { value: "approve", label: "Approve",bg: "bg-green-100 text-green-700",  icon: icons.check },
-  { value: "pending", label: "Pending", bg: "bg-yellow-100 text-yellow-700",  icon: icons.pending },
-   { value: "reject", label: "Reject", bg: "bg-red-100 text-red-700",  icon: icons.close },
+  { value: "approve", label: "Approve",bg: "bg-green-100 text-green-700", icon: icons.check },
+  { value: "pending", label: "Pending", bg: "bg-yellow-100 text-yellow-700", icon: icons.pending },
+   { value: "reject", label: "Reject", bg: "bg-red-100 text-red-700", icon: icons.close },
 ];
 
 export const AllJobsFilterBy = [

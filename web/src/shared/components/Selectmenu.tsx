@@ -11,7 +11,7 @@ interface Option {
   value: string;
   label: string;
   bg?: string;
-  icon?: any;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 /**
@@ -83,8 +83,8 @@ const SelectMenu = ({
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
-  const [selectedBadge, setSelectedBadge] = useState<any>("");
-  const [selectedIcon, setSelectedIcon] = useState<any>("");
+  const [selectedBadge, setSelectedBadge] = useState<any>(selectedOption?.bg ?? "");
+  const [selectedIcon, setSelectedIcon] = useState<any>(selectedOption?.icon ?? "");
 
   return (
     <div className={`relative inline-block ${className}`} ref={wrapperRef}>
@@ -92,8 +92,8 @@ const SelectMenu = ({
         onClick={toggleDropdown}
         className={`flex space-x-2 items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
          ${
-           badge ? `${selectedBadge}` : "bg-white text-white"
-         } dark:bg-gray-800 cursor-pointer hover:border-gray-400 min-w-[120px]`}
+           badge ? `${selectedBadge}` : "bg-white dark:bg-gray-800"
+         } cursor-pointer hover:border-gray-400 min-w-[120px]`}
       >
         <span
           className={` ${
@@ -104,7 +104,7 @@ const SelectMenu = ({
         </span>
 
         {badge ? (
-          <span className=" w-4 h-4">
+          <span className="mt-0.5 w-4 h-4">
             {selectedOption ? (
               selectedIcon
             ) : (
@@ -133,19 +133,19 @@ const SelectMenu = ({
             <li
               key={option.value}
               onClick={() => {
-                handleSelect(option),
-                  setSelectedBadge(option.bg),
-                  setSelectedIcon(option.icon);
+                handleSelect(option);
+                setSelectedBadge(option.bg);
+                setSelectedIcon(option.icon);
               }}
               className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm ${
                 badge
-                  ? `${option?.bg}`
+                  ? `${option?.bg ?? "bg-gray-100"}`
                   : option.value === selectedValue
                   ? "bg-emerald-100 text-gray-900 font-medium"
                   : "hover:bg-gray-100 dark:hover:bg-blue-400"
               }`}
             >
-              {badge && <option.icon className="inline w-4 h-4 ml-2" />}
+               {badge && option.icon && <option.icon className="inline w-4 h-4 ml-2" />}
 
               {option.label}
             </li>
