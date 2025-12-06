@@ -19,7 +19,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
- * 
+ *
  * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
  * @returns {JSX.Element} The rendered JobHeaderCard component.
  */
@@ -113,7 +113,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     });
   };
 
- 
   const handleViewJobPosting = async () => {
     await showPopup({
       title: "View Job Posting",
@@ -130,7 +129,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           variant: "primary",
           action: async (close) => {
             close(true);
-            setSendProposal?.(false)
+            setSendProposal?.(false);
           },
         },
       ],
@@ -293,7 +292,6 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const { showPopup } = usePopupStore();
 
   const handleSubmit = async () => {
-    console.log("Submitted");
     await showPopup({
       title: "Update Status",
       body: "Are you sure you want to update this job status?",
@@ -308,7 +306,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Job status updated successfully!");
+            toast.success("Job status updated successfully");
             close(true);
             onClose();
           },
@@ -316,6 +314,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
       ],
     });
   };
+
   return (
     <div className="flex flex-col p-6">
       <div className="flex justify-end">
@@ -343,12 +342,13 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           name="remarks"
           label="Remarks"
           required
-          rules={validateDescription(5, 2000, "remarks")}
+          rules={validateDescription(50, 2000, "remarks")}
         />
         <FileUpload
           name="workScreenShot"
           label="Work Screenshot"
           required
+          placeholder="Work screenshot"
           accept=".pdf"
           maxPages={5}
           validatePDF={true}
