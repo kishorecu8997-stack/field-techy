@@ -2,7 +2,6 @@ import { absoluteUrls, BASE, urls } from "@/config/urls";
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
-// import AdminProtectedRoute from "@/layout/admin/AdminProtectedRoute";
 
 const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
@@ -11,9 +10,6 @@ const SignInPage = React.lazy(
 const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
-// const ProfileSettingPage = React.lazy(
-//   () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
-// );
 const MultiStepRegistrationForm = React.lazy(
   () =>
     import(
@@ -217,8 +213,12 @@ const AddRolePage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
-const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
-const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
+const OfferPages = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
+);
+const PostAJobPage = React.lazy(
+  () => import("@/pages/client/post_job/PostAJobComponent/PostJobPage")
+);
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
@@ -279,11 +279,6 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
-const ClientMessages = React.lazy(
-  () => import("@/pages/client/messages/MessagesPage")
-);
-
-
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -334,7 +329,6 @@ export const routes = createBrowserRouter([
         path: urls.engineer.auth.background_verification,
         element: withSuspense(BackgroundVerification),
       },
-
     ],
   },
 
@@ -348,7 +342,7 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.explore_jobs,
         element: withSuspense(ExploreJobs),
-      },      
+      },
       {
         path: urls.engineer.home.saved_jobs,
         element: withSuspense(ExploreSavedJobs),
@@ -376,7 +370,10 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
-      {path: urls.engineer.home.chat, element: withSuspense(EngineerChatPage)},
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
     ],
   },
 
@@ -440,7 +437,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
-         path: `${urls.client.home.my_jobs}/:jobId`,
+        path: `${urls.client.home.my_jobs}/:jobId`,
         element: withSuspense(ClientJobDetails),
       },
       {
@@ -492,7 +489,7 @@ export const routes = createBrowserRouter([
         path: urls.client.home.post_a_job,
         element: withSuspense(PostAJobPage),
       },
-       {
+      {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },
@@ -527,12 +524,11 @@ export const routes = createBrowserRouter([
       {
         path: urls.client.home.chat,
         element: withSuspense(EngineerChatPage),
-      }
+      },
     ],
   },
 
-
-   {
+  {
     path: BASE.AUTH,
     element: withSuspense(Layout),
     children: [
@@ -585,8 +581,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientTermsAndConditions),
       },
       { path: urls.client.home.faq, element: withSuspense(ClientFAQ) },
-      {path : urls.client.home.chat, element: withSuspense(ClientMessages)}      
-     
+      { path: urls.client.home.chat, element: withSuspense(EngineerChatPage) },
     ],
   },
 
