@@ -11,6 +11,7 @@ import ReportPage from "@/pages/engineer/report";
 import { useState } from "react";
 import { assetsConfig } from "@/assets";
 import useDrawerStore from "../store/useDrawerStore";
+import { scrollToTop } from "@/utils";
 
 /**
  * Main footer component with company info, quick links, support options,
@@ -61,7 +62,12 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <NavLink
-                  to={isClient ? absoluteUrls.client.home.my_jobs : absoluteUrls.engineer.home.my_jobs}
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.my_jobs
+                      : absoluteUrls.engineer.home.my_jobs
+                  }
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   My Jobs
@@ -69,7 +75,12 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={isClient ? absoluteUrls.client.home.client_Explore_engineers : absoluteUrls.engineer.home.explore_jobs}
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.client_Explore_engineers
+                      : absoluteUrls.engineer.home.explore_jobs
+                  }
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Explore Jobs
@@ -126,7 +137,12 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={isClient ? absoluteUrls.client.home.faq : absoluteUrls.engineer.home.faq}
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.faq
+                      : absoluteUrls.engineer.home.faq
+                  }
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   FAQ
@@ -134,7 +150,12 @@ const Footer = () => {
               </li>
               <li>
                 <NavLink
-                  to={isClient ? absoluteUrls.client.home.terms_and_conditions : absoluteUrls.engineer.home.terms_and_conditions}
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.terms_and_conditions
+                      : absoluteUrls.engineer.home.terms_and_conditions
+                  }
+                  onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
                   Terms & Conditions
@@ -143,7 +164,12 @@ const Footer = () => {
               <li>
                 <NavLink
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
-                  to={isClient ? absoluteUrls.client.home.privacy_policy : absoluteUrls.engineer.home.privacy_policy}
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.privacy_policy
+                      : absoluteUrls.engineer.home.privacy_policy
+                  }
+                  onClick={() => scrollToTop()}
                 >
                   Privacy Policy
                 </NavLink>

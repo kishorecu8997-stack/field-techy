@@ -14,11 +14,15 @@ interface RadioFieldProps {
   label?: string;
   required?: boolean;
   options: RadioOption[];
+  disabled?: boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
   direction?: "vertical" | "horizontal"; // 👈 new prop
   containerClassName?: string;
   radioItemClassName?: string;
   radioInputClassName?: string;
+  wrapperClassName?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -36,10 +40,14 @@ export const RadioField = ({
   required = false,
   options,
   rules,
+  isShowLabel = true,
+  disabled = false,
   direction = "vertical", // 👈 default layout
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",
   radioInputClassName = "h-4 w-4 text-blue-600 dark:text-blue-500 focus:ring-blue-500 focus:ring-2",
+  wrapperClassName,
+  disabled = false,
 }: RadioFieldProps) => {
   const { control } = useFormContext();
 
@@ -57,9 +65,17 @@ export const RadioField = ({
 
   return (
     <div className={containerClassName}>
-      {label && (
-        <label className="block mb-2 text-md font-bold text-gray-700 dark:text-gray-300">
-          {label} {required && <span className="text-red-600">*</span>}
+       {isShowLabel && (
+        <label
+          className={`block mb-1 text-md font-semibold 
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
+            }`}
+        >
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -71,17 +87,31 @@ export const RadioField = ({
           fieldState: { error },
         }) => (
           <>
-            <div className={layoutClass}>
+            <div
+              className={`${wrapperClassName} ${layoutClass} ${
+                disabled ? "opacity-60 pointer-events-none" : ""
+              }`}
+            >
               {options.map((option) => (
-                <label key={option.value} className={radioItemClassName}>
+                <label
+                  key={option.value}
+                  className={`${radioItemClassName} ${
+                    disabled
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer"
+                  }`}
+                >
                   <input
                     type="radio"
                     name={fieldName}
+                    disabled={disabled}
                     value={option.value}
                     checked={value === option.value}
-                    onChange={() => onChange(option.value)}
+                    onChange={() => !disabled && onChange(option.value)}
                     onBlur={onBlur}
-                    className={radioInputClassName}
+                    className={`${radioInputClassName} ${
+                      disabled ? "cursor-not-allowed opacity-50" : ""
+                    }`}
                   />
                   <span className="ml-2 text-gray-700 dark:text-gray-300">
                     {option.label}

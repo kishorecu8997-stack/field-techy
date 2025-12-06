@@ -8,6 +8,7 @@ import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
+import { scrollToTop } from "@/utils";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -58,7 +59,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           src={assetsConfig.logos.ftLogo}
           alt="FT Logo"
           className="h-12 w-auto cursor-pointer"
-          onClick={() => navigate(absoluteUrls.engineer.home.dashboard)}
+          onClick={() => {
+            navigate(absoluteUrls.engineer.home.dashboard);
+            scrollToTop();
+          }}
         />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
           <NavLink
@@ -144,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       <div className="hidden md:flex items-center space-x-4">
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-          //  onClick={() => navigate(absoluteUrls.engineer.home.chat)}
+           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">

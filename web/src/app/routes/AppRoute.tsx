@@ -61,6 +61,10 @@ const ExploreJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreJobs")
 );
 
+const ExploreSavedJobs = React.lazy(
+  () => import("@/pages/engineer/home/components/ExploreSavedJobs")
+);
+
 //client
 const ClientSignInPage = React.lazy(
   () => import("@/pages/client/auth/components/signin_pages/SignInPage")
@@ -210,12 +214,21 @@ const roleListPage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
-const OfferPages = React.lazy(
-  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
-);
+const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
+const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
+);
+const ClientMyProjectsPage = React.lazy(
+  () => import("@/pages/client/my_projects/project")
+);
+const ClientProjectDetailsPage = React.lazy(
+  () => import("@/pages/client/my_projects/projectDetail")
+);
+const ClientCreateProjectPage = React.lazy(
+  () => import("@/pages/client/my_projects/createProject")
 );
 const ClientDashboard = React.lazy(
   () => import("@/pages/client/dashboard/Dashboard")
@@ -321,6 +334,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.explore_jobs,
         element: withSuspense(ExploreJobs),
+      },      
+      {
+        path: urls.engineer.home.saved_jobs,
+        element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
       {
@@ -408,8 +425,20 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
-        path: `${urls.client.home.my_jobs}/:jobId`,
+         path: `${urls.client.home.my_jobs}/:jobId`,
         element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: urls.client.home.my_projects,
+        element: withSuspense(ClientMyProjectsPage),
+      },
+      {
+        path: `${urls.client.home.my_projects}/:projectId`,
+        element: withSuspense(ClientProjectDetailsPage),
+      },
+      {
+        path: urls.client.home.create_project,
+        element: withSuspense(ClientCreateProjectPage),
       },
       {
         path: urls.client.home.dashboard,
@@ -432,6 +461,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientSearchResult),
       },
       {
+        path: urls.client.home.post_a_job,
+        element: withSuspense(PostAJobPage),
+      },
+       {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },

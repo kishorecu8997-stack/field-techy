@@ -33,7 +33,7 @@ export default function ManageSubAdmin() {
   const columns: Column<UserItem>[] = [
     {
       key: "id",
-      label: "Sr. No.",
+      label: "Sr.No.",
       renderCell: (row: UserItem) => <span>{row.id}</span>,
     },
     {
@@ -72,10 +72,8 @@ export default function ManageSubAdmin() {
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`px-3 py-1 w-fit rounded-md text-sm font-medium cursor-pointer ${
-              isOn
-                ? "bg-white text-gray-700 border border-gray-300"
-                : "bg-gray-100 text-gray-700 border border-gray-300"
+            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              isOn ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
           >
             {currentStatus}
@@ -91,7 +89,9 @@ export default function ManageSubAdmin() {
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_sub_admin_edit}/${row.id}`)
+              navigate(
+                `${absoluteUrls.admin.home.manage_sub_admin_edit}/${row.id}`
+              )
             }
           >
             <CiEdit className="text-blue-600" />

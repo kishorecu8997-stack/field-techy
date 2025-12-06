@@ -22,7 +22,7 @@ const EngineerWallet: React.FC = () => {
   const columns: Column<EngineerPage>[] = [
     {
       key: "sno",
-      label: "S. No",
+      label: "Sr.No.",
     },
     {
       key: "clientDetails",
