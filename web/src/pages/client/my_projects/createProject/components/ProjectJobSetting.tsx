@@ -1,5 +1,5 @@
 import SectionHeader from "./SectionHeader";
-import CheckboxSelector from "@/shared/components/DaySelector";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { validateDescription } from "@/utils/validate";
