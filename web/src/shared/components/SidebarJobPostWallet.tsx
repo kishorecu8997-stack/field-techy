@@ -1,6 +1,4 @@
-import useDrawerStore from "../store/useDrawerStore";
-import { TalentSeekerCard } from "./TalentSeekerCard";
-import { WalletCard } from "./WalletCard";
+import TalentSection from "@/pages/client/post_job/PostAJobComponent/TalentSection";
 
 interface EarningsData {
   balance: number;
@@ -10,18 +8,10 @@ interface SidebarProfileProps {
   earnings: EarningsData;
 }
 
-const SidebarJobPostWallet: React.FC<SidebarProfileProps> = ({ earnings }) => {
-  const { setISOpenSidebar,  isOpenSidebar, setActiveKey} = useDrawerStore();
+const SidebarJobPostWallet: React.FC<SidebarProfileProps> = () => {
   return (
     <div className="space-y-6">
-      <TalentSeekerCard />
-      <WalletCard
-        earnings={earnings}
-        onDrawerToggle={(key) => {
-          setISOpenSidebar(!isOpenSidebar);
-          setActiveKey(key);
-        }}
-      />
+      <TalentSection />
     </div>
   );
 };

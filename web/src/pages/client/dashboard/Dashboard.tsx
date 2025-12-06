@@ -1,17 +1,15 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  inProgressJobsData,
-  jobOverviewData,
-  serviceCategoriesData,
-} from "@/dummy_data/dashboard";
+import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
-import React, { useEffect } from "react";
+import { sampleJobs } from "@/dummy_data/searchDataClient";
+import React, { useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
 import AllowAccessPopup from "../auth/components/AccessPopup";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
+import type { Job } from "../search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
@@ -21,6 +19,11 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  */
 const Dashboard: React.FC = () => {
   const [accessPopup, setAccessPopup] = React.useState<boolean>(false);
+
+  const inProgressJobsData = useMemo(
+    () => sampleJobs.filter((job) => job.status === "inprogress"),
+    []
+  );
 
   useEffect(() => {
     setAccessPopup(true);
@@ -80,12 +83,18 @@ const Dashboard: React.FC = () => {
                   to={absoluteUrls.client.home.my_jobs}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >
-                  <Button variant="link">View all</Button>
+                  <div className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                    View all
+                  </div>
                 </NavLink>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
-                {inProgressJobsData.map((job) => (
-                  <InProgressJobCard key={job.id} {...job} />
+                {inProgressJobsData.map((job:Job) => (
+                  <InProgressJobCard
+                    key={job.id}
+                    job={job}
+                    navigateToJob={`${absoluteUrls.client.home.my_jobs}/${job.id}`}
+                  />
                 ))}
               </div>
             </div>
