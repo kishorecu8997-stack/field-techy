@@ -9,6 +9,7 @@ import type { RoleListType } from "../types";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * RolePage Component
@@ -26,6 +27,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 const RolePage: React.FC = () => {
   const [statuses, setStatuses] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
 
   const getStatus = (row: RoleListType) => {
     // If status was never toggled, fallback to row.status
@@ -36,8 +38,35 @@ const RolePage: React.FC = () => {
     setStatuses((prev) => ({ ...prev, [id]: !current }));
   };
 
+  //Delete confirmation
+  const handleDeleteJob = async (job: RoleListType) => {
+    await showPopup({
+      title: "Delete Role",
+      body: "Are you sure you want to delete this role?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<RoleListType>[] = [
-    { key: "id", label: "Sr. No" },
+    { key: "id", label: "Sr.No." },
     { key: "roleName", label: "Role Name" },
     {
       key: "status",
@@ -47,10 +76,8 @@ const RolePage: React.FC = () => {
         return (
           <div
             onClick={() => toggleStatus(row.id, currentStatus)}
-            className={`px-3 py-1 w-fit rounded-md text-sm font-medium cursor-pointer ${
-              currentStatus
-                ? "bg-white text-gray-700 border border-gray-300"
-                : "bg-gray-100 text-gray-700 border border-gray-300"
+            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              currentStatus ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
           >
             {currentStatus ? "On" : "Off"}
@@ -71,7 +98,10 @@ const RolePage: React.FC = () => {
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -82,7 +112,7 @@ const RolePage: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold ">Manage Roles</h1>
+        <h1 className="font-semibold">Manage Roles</h1>
         <Button
           className="bg-neutral-800 text-white px-4 py-2 rounded-md hover:bg-neutral-700 w-fit cursor-pointer"
           onClick={() => navigate(-1)}

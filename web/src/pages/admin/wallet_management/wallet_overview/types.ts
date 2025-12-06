@@ -1,3 +1,5 @@
+import type { adminJobsStatus } from "../../jobs/types";
+
 export interface EngineerPage {
   sno: number;
   details: DetailsTypes;
@@ -13,7 +15,7 @@ export interface TransactionRequest {
   sno: number;
   details: DetailsTypes;
   walletBalance: number;
-  status: string;
+  status?: adminJobsStatus;
 }
 
 export const StatusTypes = {

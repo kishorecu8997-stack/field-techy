@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { HiChevronDown, HiOutlineLogout } from "react-icons/hi";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { SidebarProps } from "./types";
+import { toast } from "react-toastify";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * Sidebar
@@ -67,9 +69,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         if (hasChildren) {
           return (
             <div key={item.name} className="w-full">
-              <button
+              <div
                 onClick={() => toggle(item.name)}
-                className={`flex items-center justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
+                className={`flex items-center cursor-pointer justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
                   isCollapsed ? "justify-center pl-0" : "px-3"
                 }`}
               >
@@ -84,7 +86,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                     }`}
                   />
                 )}
-              </button>
+              </div>
 
               {/* Submenu Items */}
               {!isCollapsed && isExpanded && (
@@ -131,16 +133,19 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
       })}
 
       <div className="absolute bottom-0 w-58 mb-2">
-        <button
-          onClick={() => navigate("/admin/auth/login")}
+        <div
+          onClick={() => {
+            navigate(absoluteUrls.admin.auth.login);
+            toast.success("Logged out successfully!");
+          }}
           className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors mt-auto ${
-            isCollapsed ? "justify-center px-2" : "w-58"
+            isCollapsed ? "justify-center px-2 w-fit" : "w-58"
           }`}
           aria-label="Logout"
         >
           <HiOutlineLogout className="text-lg" />
           {!isCollapsed && <span>Logout</span>}
-        </button>
+        </div>
       </div>
     </div>
   );

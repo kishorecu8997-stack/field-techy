@@ -5,6 +5,8 @@ import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectFie
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 export type EditSkillsFormData = {
   skills: string[];
@@ -21,6 +23,9 @@ interface EditSkillsProps {
  * @returns {React.ReactElement} The rendered EditSkills form component.
  */
 const EditSkills: React.FC<EditSkillsProps> = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
   const initialSkillIds = useMemo(() => {
     const storedIds = localStorage.getItem("editSkillsId");
     if (storedIds) {
@@ -67,10 +72,32 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
    *
    * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
    */
-  const onSubmit = (data: EditSkillsFormData) => {
-    console.log("Form submitted with updated data:", data);
-    toast.success("Skills Updated Successfully");
-    // TODO: API call
+  const onSubmit = async (data: EditSkillsFormData) => {
+    await showPopup({
+      title: "Update Skills",
+      body: "Are you sure you want to update these skills?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Skills Updated Successfully");
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
   };
 
   return (

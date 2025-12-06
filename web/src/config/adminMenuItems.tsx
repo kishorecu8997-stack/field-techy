@@ -49,7 +49,7 @@ export interface MenuItem {
 export const menuItems: MenuItem[] = [
   {
     name: "Dashboard",
-    path: absoluteUrls.admin.home.dashbaord,
+    path: absoluteUrls.admin.home.dashboard,
     icon: <TbLayoutDashboard className="text-lg" />,
   },
   {

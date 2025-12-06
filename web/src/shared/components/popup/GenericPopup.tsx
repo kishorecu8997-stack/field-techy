@@ -43,7 +43,7 @@ export function GenericPopup(props: GenericPopupProps) {
         </h2>
       </div>
 
-      <div className="px-4 py-2 flex-grow overflow-y-auto bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200">
+      <div className="px-4 pb-2 flex-grow overflow-y-auto bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200">
         {typeof props.body === "string" ? <p>{props.body}</p> : props.body}
       </div>
 
