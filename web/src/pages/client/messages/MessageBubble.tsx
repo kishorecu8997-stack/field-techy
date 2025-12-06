@@ -14,6 +14,13 @@ interface MessageBubbleProps {
   chatAvatar: string;
 }
 
+/**
+ * MessageBubble component displays a message bubble with sender's avatar, message text, and timestamp.
+ *
+ * @param {Message} message - The message object.
+ * @param {string} chatAvatar - The chat avatar URL or avatar initials.
+ * @returns {JSX.Element} The MessageBubble component.
+ */
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message, chatAvatar }) => {
   return (
     <div

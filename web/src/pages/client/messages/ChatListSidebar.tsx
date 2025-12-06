@@ -17,7 +17,17 @@ interface ChatListSidebarProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }
-
+/**
+ * ChatListSidebar component displays a list of chats with search and filter functionality.
+ * It also provides a way to select a chat and navigate to its details.
+ *
+ * @param {ChatItem[]} chats - An array of chat objects.
+ * @param {number} selectedChatId - The ID of the selected chat.
+ * @param {(id: number) => void} onSelectChat - A function to handle chat selection.
+ * @param {string} searchTerm - The current search term.
+ * @param {(term: string) => void} onSearchChange - A function to handle search changes.
+ * @returns {JSX.Element} The ChatListSidebar component.
+ */
 const ChatListSidebar: React.FC<ChatListSidebarProps> = ({
   chats,
   selectedChatId,

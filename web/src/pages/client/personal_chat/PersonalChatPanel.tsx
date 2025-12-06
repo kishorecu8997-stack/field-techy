@@ -1,8 +1,12 @@
-// src/components/messages/PersonalChatPanel.tsx
+import { mockPersonalChatUsers } from '@/dummy_data/personalChatData';
 import React, { useState } from 'react';
 import PersonalChatItem from './PersonalChatItem';
-import { mockPersonalChatUsers } from '@/dummy_data/personalChatData';
 
+/**
+ * PersonalChatPanel component displays a list of personal chat participants and a message input area.
+ *
+ * @returns {JSX.Element} The PersonalChatPanel component.  
+ */
 const PersonalChatPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 

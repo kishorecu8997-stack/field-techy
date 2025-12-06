@@ -1,10 +1,16 @@
+import type { NotificationProps } from '@/pages/engineer/account_settings/types';
 import React from 'react';
-import type { NotificationProps } from '@/dummy_data/clientNotificationData';
 
 interface NotificationItemProps {
   notification: NotificationProps;
 }
 
+/**
+ * NotificationItem component displays a single notification item with an icon, title, and message.
+ *
+ * @param {NotificationProps} notification - The notification object.
+ * @returns {JSX.Element} The NotificationItem component.
+ */
 const NotificationItem: React.FC<NotificationItemProps> = ({ notification }) => {
   const { title, message, timestamp, icon } = notification;
 

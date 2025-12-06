@@ -32,6 +32,17 @@ interface ChatViewProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
+/**
+ * ChatView component displays the chat view with a header, message input area, and message bubbles.
+ *
+ * @param {Chat} currentChat - The current chat object.
+ * @param {Message[]} messages - An array of message objects.
+ * @param {string} newMessage - The new message text.
+ * @param {(text: string) => void} onMessageChange - A function to handle message changes.
+ * @param {() => void} onSendMessage - A function to handle message sending.
+ * @param {(e: React.KeyboardEvent<HTMLInputElement>) => void} onKeyDown - A function to handle keyboard events.
+ * @returns {JSX.Element} The ChatView component.
+ */
 const ChatView: React.FC<ChatViewProps> = ({
   currentChat,
   messages,

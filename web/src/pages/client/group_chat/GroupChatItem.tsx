@@ -12,7 +12,14 @@ interface GroupChatItemProps {
   isSelected: boolean;
   onToggle: () => void;
 }
-
+/**
+ * GroupChatItem component displays a list item for a group chat participant.
+ *
+ * @param {object} user - An object representing the user's information.
+ * @param {boolean} isSelected - A flag indicating whether the user is selected.
+ * @param {() => void} onToggle - A function to toggle the user's selection.
+ * @returns {JSX.Element} The GroupChatItem component.
+ */
 const GroupChatItem: React.FC<GroupChatItemProps> = ({ user, isSelected, onToggle }) => {
   return (
     <div

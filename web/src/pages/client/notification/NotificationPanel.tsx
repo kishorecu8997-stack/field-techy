@@ -12,6 +12,12 @@ const groupNotificationsByDate = (
   };
 };
 
+/**
+ * NotificationPanel component displays a list of notifications grouped by date.
+ * It includes a search bar and a button to create a new notification.
+ *
+ * @returns {JSX.Element} The NotificationPanel component.    
+ */
 const NotificationPanel: React.FC = () => {
   const grouped = groupNotificationsByDate(mockNotifications);
 

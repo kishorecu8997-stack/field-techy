@@ -24,6 +24,7 @@ const groupNotificationsByDate = (
 
 /**
  * Page component that centers the notification panel in the viewport for displaying grouped notifications.
+ * @returns {JSX.Element} The rendered ClientNotification component.
  */
 function ClientNotification() {
 const grouped = groupNotificationsByDate(mockClientNotificationsData);

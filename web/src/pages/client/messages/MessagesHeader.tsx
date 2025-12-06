@@ -9,6 +9,15 @@ interface MessagesHeaderProps {
   onDrawerToggle: () => void;
 }
 
+/**
+ * MessagesHeader component displays a header with a plus button, dropdown menu, and tab buttons.
+ * It also provides functionality to toggle the drawer and switch between personal and group chats.
+ *
+ * @param {"personal" | "group"} activeTab - The current active tab.
+ * @param {(tab: "personal" | "group") => void} setActiveTab - A function to handle tab changes.
+ * @param {() => void} onDrawerToggle - A function to toggle the drawer.
+ * @returns {JSX.Element} The MessagesHeader component.
+ */
 const MessagesHeader: React.FC<MessagesHeaderProps> = ({
   activeTab,
   setActiveTab,  

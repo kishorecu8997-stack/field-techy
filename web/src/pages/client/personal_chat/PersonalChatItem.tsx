@@ -12,6 +12,13 @@ interface PersonalChatItemProps {
   onClick: () => void;
 }
 
+/**
+ * PersonalChatItem component displays a list item for a personal chat participant.
+ *
+ * @param {object} user - An object representing the user's information.
+ * @param {() => void} onClick - A function to handle click events.
+ * @returns {JSX.Element} The PersonalChatItem component.
+ */
 const PersonalChatItem: React.FC<PersonalChatItemProps> = ({ user, onClick }) => {
   return (
     <div

@@ -8,6 +8,12 @@ import {
 import MessagesHeader from "./MessagesHeader";
 import MessageInputArea from "./MessageInputArea";
 
+/**
+ * MessagesPage component displays a list of chats and a message input area.
+ * It also includes a search bar and a button to create a new chat.
+ *
+ * @returns {JSX.Element} The MessagesPage component.
+ */ 
 const MessagesPage: React.FC<{ onDrawerToggle: () => void }> = ({
   onDrawerToggle,
 }) => {

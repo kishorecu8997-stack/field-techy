@@ -4,6 +4,12 @@ import GroupChatItem from './GroupChatItem';
 import { mockGroupChatUsers } from '@/dummy_data/groupChatData';
 import useDrawerStore from '@/shared/store/useDrawerStore';
 
+/**
+ * GroupChatPanel component displays a list of group chat participants and a message input.
+ * It also includes a search bar and a continue button.
+ *
+ * @returns {JSX.Element} The GroupChatPanel component. 
+ */
 const GroupChatPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { setActiveKey } = useDrawerStore();

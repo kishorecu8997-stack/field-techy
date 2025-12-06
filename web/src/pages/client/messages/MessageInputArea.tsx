@@ -1,5 +1,5 @@
 // src/components/messages/MessageInputArea.tsx
-import React from 'react';
+import React from "react";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { VscSend } from "react-icons/vsc";
@@ -11,7 +11,15 @@ interface MessageInputAreaProps {
   onSendMessage: () => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
-
+/**
+ * MessageInputArea component displays a message input area with buttons for voice, screen sharing, and more.
+ *
+ * @param {string} newMessage - The new message text.
+ * @param {(text: string) => void} onMessageChange - A function to handle message changes.
+ * @param {() => void} onSendMessage - A function to handle message sending.
+ * @param {(e: React.KeyboardEvent<HTMLInputElement>) => void} onKeyDown - A function to handle keyboard events.
+ * @returns {JSX.Element} The MessageInputArea component.
+ */
 const MessageInputArea: React.FC<MessageInputAreaProps> = ({
   newMessage,
   onMessageChange,

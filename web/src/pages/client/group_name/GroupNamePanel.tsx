@@ -1,7 +1,7 @@
 // src/components/messages/GroupNamePanel.tsx
+import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { InputField } from "@/shared/components/commonUI/inputs";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -10,6 +10,12 @@ interface GroupNameForm {
   profileImage: string | File | null;
 }
 
+/**
+ * GroupNamePanel component displays a form for creating a new group.
+ * It includes an avatar uploader and a text input for the group name.
+ *
+ * @returns {JSX.Element} The GroupNamePanel component. 
+ */
 const GroupNamePanel: React.FC = () => {
   const methods = useForm<GroupNameForm>({
     defaultValues: {

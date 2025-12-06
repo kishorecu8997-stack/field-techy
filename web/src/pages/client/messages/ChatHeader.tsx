@@ -7,7 +7,14 @@ interface ChatHeaderProps {
   avatar: string;
   status: string;
 }
-
+/**
+ * ChatHeader component displays the header of a chat with avatar, name, and status.
+ *
+ * @param {string} name - The name of the chat participant.
+ * @param {string} avatar - The URL or avatar of the chat participant.
+ * @param {string} status - The status of the chat participant.
+ * @returns {JSX.Element} The ChatHeader component.
+ */
 const ChatHeader: React.FC<ChatHeaderProps> = ({ name, avatar, status }) => {
   return (
     <div className="border-b border-gray-200 p-4 flex items-center justify-between">
