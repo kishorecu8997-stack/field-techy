@@ -44,6 +44,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
+  const homepath = `${isEngineerIndex}/dashboard`;
+
   return (
     <nav aria-label="Breadcrumb" className="text-sm text-gray-500 dark:text-gray-300">
       <ol className="flex items-center space-x-1">

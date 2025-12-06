@@ -19,6 +19,7 @@ import {
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -191,12 +192,20 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
               />
               {watchRepeatedBy === RepeatByFields.week ? (
                 <>
-                  <DaySelector
-                    control={ctx.control}
+                  <CheckboxSelector
+                    disabled={isDisable}
                     name="repeatOn"
                     label="Repeat On (Days)"
                     required
-                    disabled={isDisable}
+                    options={[
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ]}
                   />
                   <div className="relative w-full">
                     <Controller
