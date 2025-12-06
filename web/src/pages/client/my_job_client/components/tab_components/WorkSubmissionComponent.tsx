@@ -12,6 +12,7 @@ import SignatureField from "@/shared/components/commonUI/inputs/SignatureField";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
+import { scrollToTop } from "@/utils";
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -55,6 +56,7 @@ const WorkSubmissionComponent: React.FC<{
     console.log("Submitted");
     toast.success("Work submission submitted successfully!");
     navigate(absoluteUrls.engineer.home.my_jobs);
+    scrollToTop();
   };
 
   return (
