@@ -30,15 +30,13 @@ const ManageProposal = () => {
   );
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
-        <div className="sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-          <MyJobsHeader
-            title="Manage Proposal"
-            currentSort="newest"
-            isShowBreadcrumb={false}
-            description={`${List.length} jobs found`}
-          />
-        </div>
+      <div className="container mx-auto ">
+        <MyJobsHeader
+          title="Manage Proposal"
+          currentSort="newest"
+          isShowBreadcrumb={false}
+          description={`${List.length} jobs found`}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           <div className="lg:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">

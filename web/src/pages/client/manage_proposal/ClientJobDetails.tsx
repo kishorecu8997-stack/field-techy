@@ -38,7 +38,9 @@ const ClientJobDetails = () => {
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
-        <MyJobsHeader title="Job Details" isShowBreadcrumb />
+        <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
+          <MyJobsHeader title="Job Details" isShowBreadcrumb />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
