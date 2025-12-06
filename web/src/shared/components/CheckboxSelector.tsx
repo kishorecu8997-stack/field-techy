@@ -53,7 +53,7 @@ const CheckboxSelector = <T extends FieldValues>({
       control={control}
       rules={finalRules}
       render={({ field: { value, onChange }, fieldState: { error } }) => {
-        const selected = Array.isArray(value) ? value : [];
+        const selected = Array.isArray(value) ? (value as string[]) : [];
 
         const toggleOption = (item: string) => {
           if (disabled) return;

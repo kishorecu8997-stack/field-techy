@@ -69,7 +69,8 @@ export default function AllowAccessPopup({
           {/* Deny Location */}
           <Button
             type="button"
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            variant="secondary"
+            className=" w-full "
             onClick={() => {
               onDenyLocation?.();
               localStorage.setItem("location_permission", "denied");
@@ -110,7 +111,8 @@ export default function AllowAccessPopup({
           {/* Deny Notification */}
           <Button
             type="button"
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            variant="secondary"
+            className=" w-full "
             onClick={() => {
               onDenyNotification?.();
               localStorage.setItem("notification_permission", "denied");
