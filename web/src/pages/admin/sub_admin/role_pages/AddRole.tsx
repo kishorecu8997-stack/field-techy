@@ -24,7 +24,7 @@ const AddRole = () => {
   });
 
   return (
-    <div className="h-full w-full flex flex-col bg-white rounded-md">
+    <div className="h-full w-full flex flex-col bg-white dark:bg-gray-700 rounded-md">
       <FormContainer
         methods={formCtx}
         className="flex items-center gap-3 flex-wrap w-full"
