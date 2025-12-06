@@ -36,7 +36,6 @@ const AddRateCard = () => {
   const { showPopup } = usePopupStore();
 
   const handleSaveConfirmation = async (data: any) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Rate Card",
       body: "Are you sure you want to save this details?",
@@ -50,9 +49,8 @@ const AddRateCard = () => {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("Deleting job:", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Rate card added successfully!");
@@ -69,33 +67,33 @@ const AddRateCard = () => {
     handleSaveConfirmation(data);
   };
   return (
-    <div className="bg-white dark:bg-neutral-700 w-full h-full flex flex-col overflow-y-auto p-4">
+    <div className="w-full h-full flex flex-col overflow-y-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-gray-900">Add Rate Card</h2>
-        <Button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="bg-neutral-900 text-neutral-200 hover:bg-neutral-800 dark:bg-neutral-600 dark:text-neutral-950"
-        >
+        <h2 className="font-bold text-gray-900 dark:text-white">
+          Add Rate Card
+        </h2>
+        <Button type="button" onClick={() => navigate(-1)} variant="solid">
           Back
         </Button>
       </div>
-      <FormContainer
-        methods={methods}
-        onSubmit={onSubmit}
-        className="w-full h-full flex-1 overflow-y-auto"
-      >
-        <RateCardForm />
-        <PricingModel />
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="bg-emerald-600 text-white px-4 py-2 rounded-md cursor-pointer"
-          >
-            Submit
-          </Button>
-        </div>
-      </FormContainer>
+      <div className="bg-white dark:bg-gray-700 rounded-md p-4">
+        <FormContainer
+          methods={methods}
+          onSubmit={onSubmit}
+          className="w-full h-full flex-1 overflow-y-auto"
+        >
+          <RateCardForm />
+          <PricingModel />
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="bg-emerald-600 text-white px-4 py-2 rounded-md cursor-pointer"
+            >
+              Submit
+            </Button>
+          </div>
+        </FormContainer>
+      </div>
     </div>
   );
 };

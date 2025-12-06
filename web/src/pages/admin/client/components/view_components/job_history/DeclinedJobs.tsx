@@ -8,7 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import type { DeclinedJobsProps } from "../../../types";
-import SimpleSelect from "@/shared/components/SelectMenu";
+import SimpleSelect from "@/shared/components/Temp";
 import { postedJobsData } from "@/dummy_data/ClientViewData";
 import GeneralChart from "@/shared/components/AdminChart";
 import { days } from "@/dummy_data/adminDashboard";
@@ -29,15 +29,14 @@ const DeclinedJobs: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 
-   const initialStatus = React.useMemo(() => {
-     const initial: Record<string, boolean> = {};
-     postedJobsData.forEach((job) => {
-       initial[job.jObID] = Boolean(job.status);
-     });
-     return initial;
-   }, []);
-   const { get, toggle } = useToggleStatus(initialStatus);
-
+  const initialStatus = React.useMemo(() => {
+    const initial: Record<string, boolean> = {};
+    postedJobsData.forEach((job) => {
+      initial[job.jObID] = Boolean(job.status);
+    });
+    return initial;
+  }, []);
+  const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation
   const handleDeleteJob = async (job: DeclinedJobsProps) => {

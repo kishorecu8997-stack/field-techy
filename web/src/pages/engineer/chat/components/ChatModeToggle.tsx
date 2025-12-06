@@ -24,9 +24,8 @@ export const ChatModeToggle: React.FC<ChatModeToggleProps> = ({
 }) => {
   return (
     <div className="inline-flex rounded-full border bg-white overflow-hidden">
-      <Button
-        type="button"
-        className={`px-4 py-2 text-sm ${
+      <div
+        className={`px-4 py-2 text-sm cursor-pointer ${
           mode === "personal"
             ? "bg-emerald-800 text-white"
             : "text-gray-700 hover:bg-gray-100"
@@ -34,10 +33,9 @@ export const ChatModeToggle: React.FC<ChatModeToggleProps> = ({
         onClick={() => onChange("personal")}
       >
         Personal Chat
-      </Button>
-      <Button
-        type="button"
-        className={`px-4 py-2 text-sm ${
+      </div>
+      <div
+        className={`px-4 py-2 text-sm cursor-pointer ${
           mode === "group"
             ? "bg-emerald-800 text-white"
             : "text-gray-700 hover:bg-gray-100"
@@ -45,7 +43,7 @@ export const ChatModeToggle: React.FC<ChatModeToggleProps> = ({
         onClick={() => onChange("group")}
       >
         Group Chat
-      </Button>
+      </div>
     </div>
   );
 };

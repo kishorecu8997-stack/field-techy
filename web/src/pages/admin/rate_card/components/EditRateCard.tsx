@@ -78,7 +78,6 @@ const EditRateCard = () => {
   });
 
   const handleSaveConfirmation = async (data: any) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Rate Card",
       body: "Are you sure you want to save this details?",
@@ -92,9 +91,8 @@ const EditRateCard = () => {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
+          action: async (close) => {
+            console.log("Deleting job:", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Rate card updated successfully!");

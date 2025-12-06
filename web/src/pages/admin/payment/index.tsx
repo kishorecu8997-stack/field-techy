@@ -3,7 +3,7 @@ import StateCard from "@/shared/components/AdminCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
-import SelectMenu from "@/shared/components/SelectMenu";
+import SelectMenu from "@/shared/components/Temp";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { PaymentProps } from "./types";
@@ -168,14 +168,11 @@ const ManagePayment: React.FC = () => {
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between">
         <h1 className="font-semibold">Manage Payments</h1>
-        <Button
-          className="whitespace-nowrap bg-neutral-900 dark:bg-neutral-500"
-          onClick={() => console.log("export csv")}
-        >
+        <Button variant="solid" onClick={() => console.log("export csv")}>
           Export CSV
         </Button>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="max-w-80 my-2">
           <StateCard title="Total Payment" value={5000} />
         </div>

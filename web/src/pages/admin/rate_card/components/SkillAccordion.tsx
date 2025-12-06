@@ -44,6 +44,7 @@ const SkillAccordion: React.FC<{
           variant: "danger",
           action: async (close) => {
             console.log("Deleting:", skill.id);
+            toast.success("Skill deleted successfully!");
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);

@@ -11,6 +11,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * ManageNotification Component
@@ -46,11 +47,11 @@ const ManageNotification: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting notification:", notification.id);
             // TODO: call your delete API here
             // await deleteNotification(notification.id);
+            toast.success("Notification deleted successfully!");
             close(true);
           },
         },

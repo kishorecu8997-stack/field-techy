@@ -132,13 +132,13 @@ const ManageRateCards: React.FC = () => {
     },
   ];
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 ">
+    <div className="w-full h-full flex flex-col p-3 gap-3">
       <h1 className="font-semibold ">Manage Rate Cards</h1>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput />
           <Button
-            className="whitespace-nowrap bg-emerald-900 hover:bg-emerald-800 dark:bg-emerald-600"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             onClick={() => navigate(absoluteUrls.admin.home.add_rate_card)}
           >
             Add New Rate Card

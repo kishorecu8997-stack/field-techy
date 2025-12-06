@@ -10,6 +10,7 @@ import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * `ManageSubAdmin` is a page component for displaying and managing sub-admin users.
@@ -47,11 +48,11 @@ export default function ManageSubAdmin() {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting job:", job.id);
             // TODO: call your delete API here
             // await deleteJob(job.id);
+            toast.success("Job deleted successfully!");
             close(true);
           },
         },
