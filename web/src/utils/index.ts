@@ -163,6 +163,5 @@ export function getMinTentativeEndDate(
 
   // Return whichever is higher (later in time)
   const finalValue = appEnd > tentStart ? appEnd : tentStart;
-  console.log("finalValue :", finalValue);
   return finalValue;
 }
