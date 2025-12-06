@@ -6,6 +6,7 @@ import {
   type Job,
   type JobStatus,
 } from "@/pages/engineer/search_result/types";
+import { scrollToTop } from "@/utils";
 import { FaDollarSign } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -43,6 +44,7 @@ const JobCard: React.FC<Job> = ({
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
+      onClick={() => scrollToTop()}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex justify-between items-start mb-3">

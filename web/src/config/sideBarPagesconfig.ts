@@ -5,6 +5,10 @@ import ClientRecentTransactions, {
   ActionButtonsForRecentTransactions,
 } from "@/pages/client/my_wallet/components/RecentTransactionsList";
 import ClientWalletComponent from "@/pages/client/my_wallet/components/WalletComponent";
+import AddClient from "@/pages/client/post_job/PostAJobComponent/client_Interview/AddClient";
+import AddPOC from "@/pages/client/post_job/PostAJobComponent/client_Interview/AddPOC";
+import EditClient from "@/pages/client/post_job/PostAJobComponent/client_Interview/EditClient";
+import EditPOC from "@/pages/client/post_job/PostAJobComponent/client_Interview/EditPOC";
 import AccountSettings from "@/pages/engineer/account_settings";
 import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBankDetails";
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
@@ -14,7 +18,7 @@ import TransactionDashboard from "@/pages/engineer/account_settings/bank_details
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
-import NotofocationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
+import NotificationPage from "@/pages/engineer/account_settings/notification/NotificationPage";
 import MyAccountDrawerMenu from "@/pages/engineer/my_account";
 import CancelJopOffer from "@/pages/engineer/my_job/job_details_components/CancelJopOffer";
 import EditDocument from "@/pages/engineer/user_profile/components/documents/components/EditDocument";
@@ -39,6 +43,11 @@ import ClientDocuments from "@/pages/client/my_account/components/documents/Clie
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
 import ClientPersonalInformation from "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation";
 import DrawerPaymentSection from "@/pages/client/my_account/DrawerPaymentSection";
+import AddProject from "@/pages/client/my_projects/projectDetail/AddProject";
+import EditProject from "@/pages/client/my_projects/projectDetail/EditProject";
+import AddProjectMember from "@/pages/client/my_projects/createProject/components/AddProjectMember";
+import AddExistingFTMember from "@/pages/client/my_projects/createProject/components/AddExistingFTMember";
+import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -64,6 +73,10 @@ export const sectionConfig: Record<
   }
 > = {
   myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+  cancelOffer: {
+    component: CancelJopOffer,
+    title: "Do you want to cancel the job?",
+  },
   profile: {
     component: UserProfileSidebar,
     title: "My Profile",
@@ -172,7 +185,7 @@ export const sectionConfig: Record<
   myEarning: { component: MyEarning, title: "My Earning",  },
   withdraw: { component: Withdraw, title: "Withdraw",  },
   notification: {
-    component: NotofocationPage,
+    component: NotificationPage,
     title: "Notification",
     parent: "settings",
   },
@@ -223,15 +236,50 @@ export const sectionConfig: Record<
     parent: "clientWallet",
   },
 
-  cancelOffer: {
-    component: CancelJopOffer,
-    title: "Do you want to cancel the job?",
+  addclientProject: {
+    component: AddProject,
+    title: "Add Project Site",
+  }, // myAccount: { component: MyAccountDrawerMenu, title: "My Account" },
+
+  editclientProject: {
+    component: EditProject,
+    title: "Edit Project Site",
   },
- 
+
+  addProjectMember : {
+    component: AddProjectMember,
+    title: "Add New Project Member",
+  },
+
+  addExistingProjectMember : {
+    component: AddExistingFTMember,
+    title: "Add Existing FT Project Member",
+  },
+
+  editProjectMember : {
+    component: EditProjectMember,
+    title: "Edit Project Member Details",
+  },
   engineerRecentTransactions: {
     component: TransactionDashboard,
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "myEarning",
+  },
+  clientInterviewer: {
+    component: AddClient,
+    title: "Client Interviewer",
+  },
+  editClientInterviewer: {
+    component: EditClient,
+    title: "Edit Client Interviewer Details",
+  },
+  addPointOfContact: {
+    component: AddPOC,
+    title: "Add Point of Contact",
+  },
+  editPointOfContent: {
+    component: EditPOC,
+    title: "Edit Point of Contact",
   },
 };

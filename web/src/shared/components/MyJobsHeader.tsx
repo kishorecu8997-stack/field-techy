@@ -17,7 +17,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowBreadcrumb = true,
   description,
   isShowSort = true,
-  isReport = false,
+  isReport = true,
   action,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);

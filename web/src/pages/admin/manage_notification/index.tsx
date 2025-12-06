@@ -30,7 +30,7 @@ const ManageNotification: React.FC = () => {
   const navigate = useNavigate();
 
   const columns: Column<NotificationProps>[] = [
-    { key: "id", label: "Sr. No." },
+    { key: "id", label: "Sr.No." },
     { key: "title", label: "Title" },
     { key: "message", label: "Message" },
     { key: "type", label: "Type" },

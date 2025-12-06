@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import {
-  LOCATION_OPTIONS,
-  BUDGET_OPTIONS,
-  RATING_OPTIONS,
-} from "@/shared/libs/constants/filterOptions";
+import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
 import type {
   BudgetValue,
+  LocationValue,
   RatingValue,
 } from "@/shared/libs/constants/filterOptions";
-import type { LocationValue } from "@/shared/libs/constants/filterOptions";
-import { initialSkills, type Skill } from "@/dummy_data/InitialSkill";
+import {
+  BUDGET_OPTIONS,
+  LOCATION_OPTIONS,
+  RATING_OPTIONS,
+} from "@/shared/libs/constants/filterOptions";
+import React, { useState } from "react";
+import { usePopupStore } from "../store/popupStore";
 import { Button } from "./commonUI/Buttons";
 
+/*
+ * Filters
+ *
+ * A component that displays a filter panel for job listings.
+ * It includes options for location, budget, rating, experience, and skills.
+ *
+ * @returns {JSX.Element} The rendered filter panel component.
+ * @constructor
+ */
 const Filters: React.FC = () => {
   const [location, setLocation] = useState<LocationValue>("all");
   const [budget, setBudget] = useState<BudgetValue>("hourly");
@@ -44,17 +54,43 @@ const Filters: React.FC = () => {
 
   const visibleSkills = showAllSkills ? skills : skills.slice(0, 6);
 
+  const { showPopup } = usePopupStore();
+
+  const handleConfirmClearAll = async () => {
+    await showPopup({
+      title: "Clear All Filters",
+      body: "Are you sure you want to clear all filters?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, clear",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            clearAllFilters();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
+
   return (
     <div className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold">Filters</h2>
-        <Button
-          onClick={clearAllFilters}
-          className="text-sm font-medium text-teal-800 hover:text-gray-50 dark:text-gray-100 dark:hover:text-gray-400 underline"
+        <div
+          onClick={handleConfirmClearAll}
+          className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
         >
           CLEAR ALL
-        </Button>
+        </div>
       </div>
 
       {/* Location */}

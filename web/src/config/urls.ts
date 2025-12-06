@@ -36,7 +36,8 @@ export const urls = {
       privacy_policy: "privacy-policy",
       about_app: "about-app",
       explore_jobs: "explore-jobs",
-      chat: "chat",
+      chat: "messages",
+      saved_jobs: "saved-jobs",
     },
     auth: {
       login: "login",
@@ -55,9 +56,12 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
+      my_projects: "my-projects",
+      create_project: "my-projects/create-project",
       client_Explore_engineers: "explore-engineers",
       manage_proposal: "manage-proposals",
       post_JobPage: "post-job",
+      post_a_job: "post-a-job",
       search_result: "search-result",
       faq: "faq",
       job_details: "job-details",
@@ -153,8 +157,8 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,
       about_app: `${BASE.ENGINEER}/about-app`,
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
-      chat: `${BASE.ENGINEER}/chat`,
-
+      chat: `${BASE.ENGINEER}/messages`,
+      saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
     },
   },
   client: {
@@ -172,6 +176,8 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
       my_jobs: `${BASE.CLIENT}/my-jobs`,
+      my_projects: `${BASE.CLIENT}/my-projects`,
+      create_project: `${BASE.CLIENT}/my-projects/create-project`,
       client_Explore_engineers: `${BASE.CLIENT}/explore-engineers`,
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
@@ -179,6 +185,7 @@ export const absoluteUrls = {
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
+      post_a_job: `${BASE.CLIENT}/post-a-job`,
       client_Explore_engineers_details: `${BASE.CLIENT}/explore-engineers/details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
       job_details: `${BASE.CLIENT}/job-details`,

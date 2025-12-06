@@ -343,7 +343,7 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
   const raw = value || "";
 
     // Reject any whitespace (leading/trailing/internal)
-    if (/\s/.test(raw)) return `${fieldLabel} must not start or end with a space`;
+    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
 
     // Only letters allowed (A-Z)
     if (!/^[A-Za-z]+$/.test(raw))
@@ -353,6 +353,30 @@ export const validateName = (value: string, fieldLabel = 'Name') => {
     if (raw.length < 2) return `${fieldLabel} must be at least 2 characters`;
     if (raw.length > 50) return `${fieldLabel} must not exceed 50 characters`;
 
+
+  return true;
+};
+
+export const validateNameWithSpace = (value: string, fieldLabel = "Name") => {
+  const raw = value || "";
+
+  // Reject leading or trailing spaces
+  if (/^\s|\s$/.test(raw)) {
+    return `${fieldLabel} must not start or end with a space`;
+  }
+
+  // Allow letters + internal spaces only
+  if (!/^[A-Za-z ]+$/.test(raw)) {
+    return `${fieldLabel} must contain only alphabetic characters and spaces`;
+  }
+
+  // Length requirement: 2 to 50 characters
+  if (raw.length < 2) {
+    return `${fieldLabel} must be at least 2 characters`;
+  }
+  if (raw.length > 50) {
+    return `${fieldLabel} must not exceed 50 characters`;
+  }
 
   return true;
 };
