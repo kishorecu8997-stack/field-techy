@@ -9,8 +9,8 @@ import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
-import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
+import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 
 /**
  * A multi-step registration form component that guides users through

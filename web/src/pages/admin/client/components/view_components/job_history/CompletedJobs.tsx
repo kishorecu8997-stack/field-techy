@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import { absoluteUrls } from "@/config/urls";
+import { days } from "@/dummy_data/adminDashboard";
+import { chartData } from "@/dummy_data/chart";
+import { postedJobsData } from "@/dummy_data/ClientViewData";
+import GeneralChart from "@/shared/components/AdminChart";
+import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import {
   CustomTable,
   type Column,
 } from "@/shared/components/commonUI/custom_table";
-import { FiEye } from "react-icons/fi";
-import { CiEdit } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import type { CompletedJobsProps } from "../../../types";
-import SimpleSelect from "@/shared/components/Temp";
-import { postedJobsData } from "@/dummy_data/ClientViewData";
-import GeneralChart from "@/shared/components/AdminChart";
-import { days } from "@/dummy_data/adminDashboard";
-import CustomTooltip from "@/shared/components/ChartCustomTooltip";
-import { chartData } from "@/dummy_data/chart";
-import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
-import { usePopupStore } from "@/shared/store/popupStore";
+import SelectMenu from "@/shared/components/SelectMenu";
 import useToggleStatus from "@/shared/components/ToggleStatus";
+import { usePopupStore } from "@/shared/store/popupStore";
+import React, { useState } from "react";
+import { CiEdit } from "react-icons/ci";
+import { FiEye } from "react-icons/fi";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import type { CompletedJobsProps } from "../../../types";
 
 /**
  * CompletedJobs component displays a table of completed jobs and a chart visualizing job completion data.
@@ -152,7 +152,7 @@ const CompletedJobs: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                 Total Jobs Completed
               </h3>
-              <SimpleSelect
+              <SelectMenu
                 placeholder="Select Filter"
                 className="w-32"
                 options={days}

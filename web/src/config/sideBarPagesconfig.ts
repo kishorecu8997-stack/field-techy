@@ -49,6 +49,7 @@ import AddProjectMember from "@/pages/client/my_projects/createProject/component
 import AddExistingFTMember from "@/pages/client/my_projects/createProject/components/AddExistingFTMember";
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
+import ClientNotification from "@/pages/client/messages/ClientNotification";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -184,11 +185,14 @@ export const sectionConfig: Record<
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
   myEarning: { component: MyEarning, title: "My Earning",  },
-  withdraw: { component: Withdraw, title: "Withdraw",  },
+  withdraw: { component: Withdraw, title: "Withdraw", parent :"myEarning"  },
   notification: {
     component: NotificationPage,
     title: "Notification",
-    parent: "settings",
+  },
+  clientNotification: {
+    component: ClientNotification,
+    title: "Notification",
   },
 
   //client

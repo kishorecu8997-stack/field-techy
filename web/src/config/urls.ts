@@ -1,4 +1,3 @@
-
 /**
  * Application route URLs.
  *
@@ -69,10 +68,10 @@ export const urls = {
       privacy_policy: "privacy-policy",
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
-      SelectEngineer:":id/select-engineer",
-      Client_Job_Details:"jobs-details/in-progress",
+      SelectEngineer: ":id/select-engineer",
+      Client_Job_Details: "jobs-details/in-progress",
       ClientSelectEngineers: "select-engineers",
-
+      chat: "messages",
     },
     auth: {
       login: "login",
@@ -194,10 +193,11 @@ export const absoluteUrls = {
       client_Invite_Explore_engineers_details: `${BASE.CLIENT}/jobs-details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
       job_details: `${BASE.CLIENT}/job-details`,
-      SelectEngineer:`${BASE.CLIENT}/:id/select-engineer`,
-      ClientJobDetails:`${BASE.CLIENT}/jobs-details/in-progress`,
+      SelectEngineer: `${BASE.CLIENT}/:id/select-engineer`,
+      ClientJobDetails: `${BASE.CLIENT}/jobs-details/in-progress`,
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
+      chat: `${BASE.CLIENT}/messages`,
     },
   },
 

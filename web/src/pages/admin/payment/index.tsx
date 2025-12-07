@@ -3,7 +3,7 @@ import StateCard from "@/shared/components/AdminCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
-import SelectMenu from "@/shared/components/Temp";
+import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { PaymentProps } from "./types";
