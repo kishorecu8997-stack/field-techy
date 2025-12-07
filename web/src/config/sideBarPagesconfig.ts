@@ -185,7 +185,7 @@ export const sectionConfig: Record<
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
   myEarning: { component: MyEarning, title: "My Earning",  },
-  withdraw: { component: Withdraw, title: "Withdraw",  },
+  withdraw: { component: Withdraw, title: "Withdraw", parent :"myEarning"  },
   notification: {
     component: NotificationPage,
     title: "Notification",
