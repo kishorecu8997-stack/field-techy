@@ -43,7 +43,9 @@ import { IoCloseSharp } from "react-icons/io5";
  * @returns {JSX.Element} Engineer selection table with multi-select and modals
  */
 export default function SelectEngineers() {
-  const methods = useForm({ defaultValues: { selectedIds: [] } });
+  const methods = useForm<{ selectedIds: string[] }>({
+    defaultValues: { selectedIds: [] },
+  });
   const { showPopup } = usePopupStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
@@ -187,9 +189,9 @@ export default function SelectEngineers() {
     <div className="w-full h-full  flex flex-col p-3">
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <FormContainer
-          methods={methods as any}
+          methods={methods}
           className="flex flex-col gap-2"
-          onSubmit={handleSubmit}
+          onSubmit={(data) => handleSubmit(data.selectedIds)}
         >
           <div className="flex justify-between items-center">
             <div className="font-semibold">Select Engineers</div>

@@ -19,6 +19,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify/unstyled";
 import type { AddGroup } from "../type";
+import { validateGroupName } from "@/utils/validate";
 
 /**
  * AddGroup
@@ -212,13 +213,12 @@ export default function AddGroup() {
               label="Group Name"
               required
               placeholder="Enter Group Name"
-              // rules={{ validate: (v: string) => validateName(v) }}
+              rules={{ validate: (v: string) => validateGroupName(v) }}
             />
             <InputField
               name="groupDescription"
               label="Group Description"
               placeholder="Enter Group Description"
-              // rules={{ validate: (v: string) => validateJobDescription(v) }}
             />
           </div>
           <div className="flex justify-between items-center">

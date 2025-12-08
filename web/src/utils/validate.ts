@@ -1133,6 +1133,37 @@ export const validateSiteName = (value: string) => {
   return true;
 };
 
+export const validateGroupName = (value: string) => {
+  const raw = value || "";
+
+  if (raw.length < 3) {
+    return "Group name must be at least 3 characters long";
+  }
+  if (raw.length > 100) {
+    return "Group name must not exceed 100 characters";
+  }
+
+  if (raw !== raw.trim()) {
+    return "Group name must not have leading or trailing spaces";
+  }
+
+  if (raw.includes("  ")) {
+    return "Group name must not contain consecutive spaces";
+  }
+
+  const allowedPattern = /^[A-Za-z0-9\s#.&_\-()/:;]+$/;
+  if (!allowedPattern.test(raw)) {
+    return "Group name can only contain letters, numbers, spaces, and these symbols: # . & _ - ( ) / : ;";
+  }
+
+  const effectiveLength = raw.trim().length;
+  if (effectiveLength < 3) {
+    return "Group name must contain at least 3 valid characters (excluding surrounding spaces)";
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
