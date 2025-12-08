@@ -1,6 +1,7 @@
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
 import { validatePassword } from "@/shared/libs/utils";
+import { useFormContext } from "react-hook-form";
 
 /**
  * A reusable component that groups password and confirm password input fields for creation or updates.
@@ -12,6 +13,10 @@ import { validatePassword } from "@/shared/libs/utils";
  * @returns {JSX.Element} The rendered section containing the password and confirm password fields.
  */
 const PasswordSection = () => {
+  const ctx = useFormContext();
+  const { watch } = ctx;
+  const currentPassword = watch("currentPassword");
+
   return (
     <div className="flex flex-col gap-4">
       <PasswordInput
@@ -19,13 +24,14 @@ const PasswordSection = () => {
         label="New Password"
         rules={{
           required: "Password is required",
-          validate: validatePassword,
+          validate:(v)=>validatePassword(v, currentPassword),
         }}
       />
       <ConfirmPassword
         name="confirmPassword"
         label="Confirm New Password"
         passwordField="password"
+        required
       />
     </div>
   );
