@@ -4,7 +4,6 @@ import {
   EngineerStatus,
   JobStatus,
   manageEngineer,
-  type ManageEngineerProps,
 } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -19,6 +18,10 @@ import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import type { ManageEngineerProps } from "./types";
+import { usePopupStore } from "@/shared/store/popupStore";
+import type { adminJobsStatus } from "../jobs/types";
+import { toast } from "react-toastify";
 
 /**
  * ManageEngineer Component
@@ -38,14 +41,76 @@ import { useNavigate } from "react-router-dom";
  */
 const ManageEngineer: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
   const [employementType, setEmployementType] = useState<string | null>();
   const [status, setStatus] = useState<string | null>();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
+  const handleStatusChange = async (data: ManageEngineerProps) => {
+    if (!data.status) return;
+    const status = data.status;
+    await showPopup({
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this job?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant:
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
+          action: async (close) => {
+            toast.success(
+              `Job ${
+                status.toLocaleLowerCase() === "approve"
+                  ? "approved"
+                  : "rejected"
+              } successfully!`
+            );
+            // await handlePostAJob(data);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+  //Delete confirmation
+  const handleDeleteJob = async (job: ManageEngineerProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: async (close) => {
+            console.log("Deleting job:", job.id);
+            toast.success("Job deleted successfully!");
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr. NO" },
+    { key: "id", label: "Sr.No." },
     {
       key: "engineerID",
       label: "Engineer ID",
@@ -131,6 +196,10 @@ const ManageEngineer: React.FC = () => {
                   ...prev,
                   [row.id]: value ?? "",
                 }));
+                handleStatusChange({
+                  ...row,
+                  status: value as adminJobsStatus,
+                });
               }}
               options={JobStatus}
               badge
@@ -163,7 +232,10 @@ const ManageEngineer: React.FC = () => {
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -174,7 +246,7 @@ const ManageEngineer: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between mt-4">
-        <h1 className="text-xl font-semibold ">Manage Engineers</h1>
+        <h1 className="font-semibold ">Manage Engineers</h1>
         <div className="flex gap-4">
           <Button
             type="submit"
@@ -190,8 +262,8 @@ const ManageEngineer: React.FC = () => {
           </Button>
         </div>
       </div>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
-        <div className="flex gap-4 items-center">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
+        <div className="flex flex-wrap gap-4 items-center">
           <SearchInput />
           <SelectMenu
             className="absolute z-20"

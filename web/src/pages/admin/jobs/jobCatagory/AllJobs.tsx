@@ -6,17 +6,18 @@ import {
   AllJobType,
   manageJobs,
   Region,
-  type ManageJobProps,
 } from "@/dummy_data/admin/manageJobs";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { InputOutline } from "@/shared/components/InputOutline";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import type { adminJobsStatus, ManageJobProps } from "../types";
 
 /**
  * Renders the "All Jobs" tab content within the manage jobs page.
@@ -30,13 +31,70 @@ import { useNavigate } from "react-router-dom";
  * @returns {JSX.Element} The rendered "All Jobs" view with filters and a data table.
  */
 const AllJob: React.FC = () => {
+  const { showPopup } = usePopupStore();
+  const navigate = useNavigate();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [filterBy, setFilterBy] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
 
-  const navigate = useNavigate();
+  const handleStatusChange = async (data: ManageJobProps) => {
+    if (!data.status) return;
+    const status = data.status;
+    await showPopup({
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this job?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("close :", close);
+            // await handlePostAJob(data);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+  //Delete confirmation
+  const handleDeleteJob = async (job: ManageJobProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<ManageJobProps>[] = [
     { key: "id", label: "Job ID" },
@@ -106,11 +164,15 @@ const AllJob: React.FC = () => {
             <SelectMenu
               placeholder="Select"
               value={rowStatuses[row.id] || ""}
-              onChange={(value: string | null) => {
+              onChange={(value: string | null | adminJobsStatus) => {
                 setRowStatuses((prev) => ({
                   ...prev,
                   [row.id]: value ?? "",
                 }));
+                handleStatusChange({
+                  ...row,
+                  status: value as adminJobsStatus,
+                });
               }}
               options={AllJobStatus}
               badge
@@ -122,12 +184,18 @@ const AllJob: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: ManageJobProps) => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer" onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}>
+          <div
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+            onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+          >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -137,7 +205,7 @@ const AllJob: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-wrap gap-4 items-center">
         <SearchInput />
         <SelectMenu
           className="absolute z-20"
