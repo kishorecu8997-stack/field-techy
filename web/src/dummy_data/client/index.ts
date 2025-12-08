@@ -375,3 +375,13 @@ export const existingMembers = [
     value: "kiran",
   },
 ];
+
+export const quillContent = `
+<h1>Hello User!</h1>
+<p>This is a <strong>dummy example</strong> content for testing.</p>
+<ul>
+  <li>Point 1</li>
+  <li>Point 2</li>
+  <li>Point 3</li>
+</ul>
+`;

@@ -11,6 +11,7 @@ import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
+import type { PaymentCardOption } from "@/shared/components/type";
 
 
 /**
