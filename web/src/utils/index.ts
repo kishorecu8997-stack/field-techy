@@ -1,3 +1,12 @@
+export function createPathBuilder(pathTemplate: string) {
+  return (params: Record<string, string | number>) => {
+    let path = pathTemplate;
+    for (const [key, value] of Object.entries(params)) {
+      path = path.replace(`:${key}`, String(value));
+    }
+    return path;
+  };
+}
 export function scrollToTop() {
   window.scrollTo({
     top: 0,
@@ -154,6 +163,5 @@ export function getMinTentativeEndDate(
 
   // Return whichever is higher (later in time)
   const finalValue = appEnd > tentStart ? appEnd : tentStart;
-  console.log("finalValue :", finalValue);
   return finalValue;
 }

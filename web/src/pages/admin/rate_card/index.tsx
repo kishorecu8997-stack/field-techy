@@ -4,12 +4,14 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React, { useState } from "react";
+import React from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { RateCardProps } from "./types";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useToggleStatus from "@/shared/components/ToggleStatus";
 
 /**
  * ManageRateCards Component
@@ -30,6 +32,43 @@ import type { RateCardProps } from "./types";
 
 const ManageRateCards: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  const initialStatus = React.useMemo(() => {
+    const initial: Record<string, boolean> = {};
+    RateCardData.forEach((rateCard) => {
+      initial[rateCard.id] = Boolean(rateCard.status);
+    });
+    return initial;
+  }, []);
+  const { get, toggle } = useToggleStatus(initialStatus);
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: RateCardProps) => {
+    await showPopup({
+      title: "Rate Card",
+      body: "Are you sure you want to delete this rate card?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<RateCardProps>[] = [
     {
@@ -50,16 +89,16 @@ const ManageRateCards: React.FC = () => {
       key: "status",
       label: "Status",
       renderCell: (row: RateCardProps) => {
-        const [status, setStatus] = useState<boolean>(row.status);
+        const val = get(row.id) ?? row.status;
 
         return (
           <div
-            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
-            onClick={() => setStatus(!status)}
+            onClick={() => toggle(row.id)}
           >
-            {status ? "On" : "Off"}
+            {val ? "On" : "Off"}
           </div>
         );
       },
@@ -82,7 +121,10 @@ const ManageRateCards: React.FC = () => {
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -90,13 +132,13 @@ const ManageRateCards: React.FC = () => {
     },
   ];
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 ">
-      <h1 className="text-xl font-semibold ">Manage Rate Cards</h1>
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+    <div className="w-full h-full flex flex-col p-3 gap-3">
+      <h1 className="font-semibold ">Manage Rate Cards</h1>
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex justify-between">
           <SearchInput />
           <Button
-            className="whitespace-nowrap bg-emerald-900 hover:bg-emerald-800 dark:bg-emerald-600"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-lg hover:opacity-90 transition"
             onClick={() => navigate(absoluteUrls.admin.home.add_rate_card)}
           >
             Add New Rate Card

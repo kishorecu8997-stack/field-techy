@@ -7,7 +7,6 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { bankDetails } from "../types";
-
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.

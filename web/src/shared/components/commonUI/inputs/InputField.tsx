@@ -116,7 +116,7 @@ export const InputField = ({
     <div className={containerClassName}>
       {isShowLabel && (
         <label
-          className={` block mb-1 text-md font-semibold 
+          className={` block  text-md font-semibold 
             ${
               disabled
                 ? "text-gray-400 dark:text-gray-400"
@@ -178,6 +178,7 @@ export const InputField = ({
                   }
                 }}
                 className={`${inputClassName}
+                w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition
                        ${leftIcon ? "pl-10" : ""} 
                   ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""} 
                   ${

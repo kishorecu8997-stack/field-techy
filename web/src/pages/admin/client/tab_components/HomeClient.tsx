@@ -12,6 +12,7 @@ import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
 import ViewFileComponent from "./ViewFileComponent";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * HomeClient Component
@@ -27,10 +28,35 @@ import ViewFileComponent from "./ViewFileComponent";
 const HomeClient: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
-  /**
-   * Column definitions for the home client table.
-   * @type {Column<ManageClientProps>[]}
-   */
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteClient = async (client: ManageClientProps) => {
+    await showPopup({
+      title: "Delete Client",
+      body: "Are you sure you want to delete this client?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting client:", client.id);
+            // TODO: call your delete API here
+            // await deleteClient(client.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<ManageClientProps>[] = [
     { key: "id", label: "Sr.No." },
     {
@@ -71,7 +97,10 @@ const HomeClient: React.FC = () => {
       renderCell: (row: ManageClientProps) => {
         const name = row.documents || "N/A";
         return (
-          <Button className="w-fit " onClick={() => setIsOpen(true)}>
+          <Button
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
+            onClick={() => setIsOpen(true)}
+          >
             {name}
           </Button>
         );
@@ -103,7 +132,7 @@ const HomeClient: React.FC = () => {
             onClick={() =>
               navigate(`${absoluteUrls.admin.home.homeClientView}`)
             }
-            className="p-2 bg-yellow-100 rounded-md"
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
           >
             <FiEye className="text-yellow-600 " />
           </div>
@@ -111,11 +140,14 @@ const HomeClient: React.FC = () => {
             onClick={() =>
               navigate(`${absoluteUrls.admin.home.homeClientEdit}`)
             }
-            className="p-2 bg-blue-100 rounded-md"
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteClient(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -123,10 +155,11 @@ const HomeClient: React.FC = () => {
     },
   ];
   return (
-    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md">
+    <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
         <SearchInput />
         <Button
+          className="w-fit bg-gradient-to-r bg-teal-900 text-white"
           onClick={() => navigate(`${absoluteUrls.admin.home.homeClientAdd}`)}
         >
           Add Client

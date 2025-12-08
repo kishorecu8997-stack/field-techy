@@ -5,10 +5,12 @@ import CustomTable, {
   type Column,
 } from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * `ManageSubAdmin` is a page component for displaying and managing sub-admin users.
@@ -20,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 export default function ManageSubAdmin() {
   const [statuses, setStatuses] = useState<Record<number, "On" | "Off">>({});
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
 
   const getStatus = (row: UserItem) => {
     return statuses[row.id] ?? row.status;
@@ -28,6 +31,33 @@ export default function ManageSubAdmin() {
   const toggleStatus = (id: number, current: "On" | "Off") => {
     const newStatus = current === "On" ? "Off" : "On";
     setStatuses((prev) => ({ ...prev, [id]: newStatus }));
+  };
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: UserItem) => {
+    await showPopup({
+      title: "Delete Sub-Admin",
+      body: "Are you sure you want to delete this sub-admin?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: async (close) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Job deleted successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   const columns: Column<UserItem>[] = [
@@ -96,7 +126,10 @@ export default function ManageSubAdmin() {
           >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -118,7 +151,7 @@ export default function ManageSubAdmin() {
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_sub_admin_add}`)
+              navigate(absoluteUrls.admin.home.manage_sub_admin_add)
             }
           >
             Add Sub Admin

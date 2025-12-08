@@ -92,6 +92,7 @@ const ClientPersonalInformation: React.FC = () => {
         <VerifiedPhoneInputField
           name="phoneNumber"
           label="Phone Number"
+          isShowLabel={true}
           placeholder="Enter Phone Number"
           required
           rules={{
