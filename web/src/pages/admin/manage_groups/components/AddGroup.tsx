@@ -17,9 +17,9 @@ import { useForm } from "react-hook-form";
 import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify/unstyled";
 import type { AddGroup } from "../type";
 import { validateGroupName } from "@/utils/validate";
+import { toast } from "react-toastify";
 
 /**
  * AddGroup

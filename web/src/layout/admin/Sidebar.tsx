@@ -5,6 +5,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { SidebarProps } from "./types";
 import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Sidebar
@@ -28,6 +29,33 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleLogout = async () => {
+    await showPopup({
+      title: "Logout",
+      body: "Are you sure you want to logout?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "danger",
+          action: async (close) => {
+            navigate(absoluteUrls.admin.auth.login);
+            toast.success("Logged out successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   // Auto-expand if any child is active
   useEffect(() => {
@@ -134,10 +162,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
       <div className="absolute bottom-0 w-58 mb-2">
         <div
-          onClick={() => {
-            navigate(absoluteUrls.admin.auth.login);
-            toast.success("Logged out successfully!");
-          }}
+          onClick={handleLogout}
           className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors mt-auto ${
             isCollapsed ? "justify-center px-2 w-fit" : "w-58"
           }`}
