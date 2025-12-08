@@ -5,7 +5,6 @@ import type {
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
 
-
 export const logs: LogEntry[] = [
   {
     title: "Check In To Office",

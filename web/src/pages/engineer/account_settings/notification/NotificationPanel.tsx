@@ -1,33 +1,11 @@
-import React from "react";
+import type { GroupedNotifications } from "../types";
 import NotificationItem from "./NotificationItem";
-import type { GroupedNotifications, NotificationProps } from "../types";
-import { mockNotifications } from "@/dummy_data/notificationData";
-
-const groupNotificationsByDate = (
-  notifications: NotificationProps[]
-): GroupedNotifications => {
-  const grouped: GroupedNotifications = {
-    Today: [],
-    Yesterday: [],
-  };
-
-  notifications.forEach((notif) => {
-    if (notif.id <= 2) {
-      grouped.Today.push(notif);
-    } else {
-      grouped.Yesterday.push(notif);
-    }
-  });
-
-  return grouped;
-};
 
 /**
  * Displays notifications grouped by date (e.g., Today, Yesterday) using mock data.
  * Renders each notification through the NotificationItem component with proper grouping and layout.
  */
-const NotificationPanel: React.FC = () => {
-  const grouped = groupNotificationsByDate(mockNotifications);
+const NotificationPanel = ({ grouped }: { grouped: GroupedNotifications }) => {
   return (
     <div className="max-w-md w-full max-h-full overflow-y-auto">
       <div className="space-y-6">
