@@ -9,6 +9,7 @@ import type { EngineerPage } from "../types";
 import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * @component ClientWallet
@@ -19,11 +20,39 @@ import { absoluteUrls } from "@/config/urls";
  */
 const ClientWallet: React.FC = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteJob = async (data: EngineerPage) => {
+    await showPopup({
+      title: "Delete Client",
+      body: "Are you sure you want to delete this client?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", data);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<EngineerPage>[] = [
     {
       key: "sno",
-      label: "S. No",
+      label: "Sr.No.",
     },
     {
       key: "clientDetails",
@@ -57,9 +86,12 @@ const ClientWallet: React.FC = () => {
               )
             }
           >
-            <FiEye className="text-yellow-600 " />
+            <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>

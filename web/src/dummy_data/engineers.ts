@@ -5,6 +5,8 @@ export interface Engineer {
   reviewCount: number;
   title: string;
   imageUrl: string;
+  pay_type?: string;
+  availability?: string;
 }
 
 export const mockEngineers: Engineer[] = [
@@ -13,6 +15,8 @@ export const mockEngineers: Engineer[] = [
     name: "Ablert Brown",
     rating: 4.5,
     reviewCount: 36,
+    pay_type: "Fixed",
+    availability: "Immediate",
     title: "Python Developer",
     imageUrl: "https://picsum.photos/seed/dev101/200/200",
   },
@@ -21,6 +25,8 @@ export const mockEngineers: Engineer[] = [
     name: "Sophia Turner",
     rating: 4.8,
     reviewCount: 42,
+    pay_type: "Fixed",
+    availability: "Immediate",
     title: "Full Stack Engineer",
     imageUrl: "https://picsum.photos/seed/dev102/200/200",
   },
@@ -29,6 +35,8 @@ export const mockEngineers: Engineer[] = [
     name: "Liam Patel",
     rating: 4.2,
     reviewCount: 28,
+    pay_type: "Fixed",
+    availability: "Immediate",
     title: "Backend Specialist",
     imageUrl: "https://picsum.photos/seed/dev103/200/200",
   },
@@ -36,6 +44,8 @@ export const mockEngineers: Engineer[] = [
     id: 4,
     name: "Emma Zhang",
     rating: 4.9,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 51,
     title: "Machine Learning Engineer",
     imageUrl: "https://picsum.photos/seed/dev104/200/200",
@@ -44,6 +54,8 @@ export const mockEngineers: Engineer[] = [
     id: 5,
     name: "Noah Kim",
     rating: 4.3,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 33,
     title: "DevOps Engineer",
     imageUrl: "https://picsum.photos/seed/dev105/200/200",
@@ -52,6 +64,8 @@ export const mockEngineers: Engineer[] = [
     id: 6,
     name: "Olivia Davis",
     rating: 4.6,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 39,
     title: "Frontend Developer",
     imageUrl: "https://picsum.photos/seed/dev106/200/200",
@@ -60,6 +74,8 @@ export const mockEngineers: Engineer[] = [
     id: 7,
     name: "Ethan Garcia",
     rating: 4.4,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 30,
     title: "Cloud Architect",
     imageUrl: "https://picsum.photos/seed/dev107/200/200",
@@ -68,6 +84,8 @@ export const mockEngineers: Engineer[] = [
     id: 8,
     name: "Isabella Nguyen",
     rating: 4.7,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 45,
     title: "Data Scientist",
     imageUrl: "https://picsum.photos/seed/dev108/200/200",
@@ -76,6 +94,8 @@ export const mockEngineers: Engineer[] = [
     id: 9,
     name: "Isabella Nguyen",
     rating: 4.7,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 45,
     title: "Data Scientist",
     imageUrl: "https://picsum.photos/seed/dev108/200/200",
@@ -84,6 +104,8 @@ export const mockEngineers: Engineer[] = [
     id: 10,
     name: "Isabella Nguyen",
     rating: 4.7,
+    pay_type: "Fixed",
+    availability: "Immediate",
     reviewCount: 45,
     title: "Data Scientist",
     imageUrl: "https://picsum.photos/seed/dev108/200/200",
