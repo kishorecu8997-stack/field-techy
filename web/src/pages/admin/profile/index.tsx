@@ -10,7 +10,7 @@ import { absoluteUrls } from "@/config/urls";
  * Utilizes AdminTabComponent for tabbed UI and react-router for navigation.
  *
  * @component
- */ 
+ */
 export default function Profile() {
   const navigate = useNavigate();
   const tabs = [
@@ -32,7 +32,7 @@ export default function Profile() {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(absoluteUrls.admin.home.dashbaord)}
+          onClick={() => navigate(absoluteUrls.admin.home.dashboard)}
         >
           Back
         </Button>

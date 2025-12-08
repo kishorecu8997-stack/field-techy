@@ -12,6 +12,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `AddSubAdmin` is a page component for adding a new sub-admin user.
@@ -30,11 +31,38 @@ export default function AddSubAdmin() {
   });
 
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: AddSubAdminForm) => {
+    await showPopup({
+      title: "Add Sub-Admin",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          action: async (close) => {
+            console.log("data :", data);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Sub-Admin added successfully!");
+            navigate(absoluteUrls.admin.home.manage_sub_admin);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const handleSubmit = (data: AddSubAdminForm) => {
-    console.log("data", data);
-    toast.success("Sub Admin Added Successfully");
-    navigate(absoluteUrls.admin.home.manage_sub_admin);
+    handleSaveConfirmation(data);
   };
 
   return (
@@ -44,9 +72,7 @@ export default function AddSubAdmin() {
         <Button
           variant="solid"
           className=""
-          onClick={() =>
-            navigate(`${absoluteUrls.admin.home.manage_sub_admin}`)
-          }
+          onClick={() => navigate(absoluteUrls.admin.home.manage_sub_admin)}
         >
           Back
         </Button>

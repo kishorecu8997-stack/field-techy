@@ -6,6 +6,8 @@ interface DrawerState {
   reset: () => void;
   isOpenSidebar: boolean;
   setISOpenSidebar: (isOpen: boolean) => void;
+  selectedId: string | number;
+  setSelectedId: (id: string | number) => void;
 }
 
 /**
@@ -17,6 +19,8 @@ const useDrawerStore = create<DrawerState>((set) => ({
   reset: () => set({ activeKey: 'myAccount' }),
   isOpenSidebar: false,
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
+  selectedId: '',
+  setSelectedId: (id) => set({ selectedId: id }),
 }));
 
 export default useDrawerStore;

@@ -4,6 +4,7 @@ import { BiDollar } from "react-icons/bi";
 import { IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
+import { scrollToTop } from "@/utils";
 /**
  * JobCard component displays a single job listing
  *
@@ -17,11 +18,14 @@ const JobCard: React.FC<{
   showBookmark?: boolean;
   navigateToJob?: string;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
-  const [isBookmarked, setBookmark] = useState(false);
+  const [isBookmarked, setBookmark] = useState(job.isBookmarked);
 
   return (
     <Link
       to={navigateToJob}
+      onClick={() => {
+        scrollToTop();
+      }}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm sm:p-6 mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
@@ -48,9 +52,10 @@ const JobCard: React.FC<{
 
         {showBookmark && (
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <button
+            <div
               onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 setBookmark(!isBookmarked);
               }}
               className={`p-2 rounded-full  hover:bg-gray-100 transition-colors cursor-pointer`}
@@ -60,7 +65,7 @@ const JobCard: React.FC<{
               ) : (
                 <icons.bookmark className="h-4 w-4 flex-shrink-0 " />
               )}
-            </button>
+            </div>
             <span>{job.postedTime}</span>
           </div>
         )}
