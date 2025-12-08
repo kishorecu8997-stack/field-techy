@@ -2,31 +2,45 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import { validatePassword } from "./validation";
-import type { bankDetails } from "./types";
-import PasswordSection from "../auth/components/PasswordSection";
 import { toast } from "react-toastify";
+import PasswordSection from "../auth/components/PasswordSection";
+import type { bankDetails } from "./types";
+import { validatePassword } from "./validation";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
  * Uses React Hook Form for validation and submission handling.
  */
 const ChangePassword = () => {
-  return (
-    <div className="h-full">
-      <ChangePasswordFields />
-    </div>
-  );
-};
-
-export default ChangePassword;
-
-const ChangePasswordFields = () => {
   const FormCtx = useForm<bankDetails>();
+  const { setActiveKey } = useDrawerStore();
+  const { showPopup } = usePopupStore();
 
-  const handleSubmit = (data: bankDetails) => {
-    console.log("Submitted data:", data);
-    toast.success("Password updated successfully!");
+  const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
+      title: "Change Password",
+      body: "Are you sure you want to change your password?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Password changed successfully");
+            close(true);
+            setActiveKey("settings");
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -43,7 +57,6 @@ const ChangePasswordFields = () => {
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-
         <PasswordSection />
       </div>
 
@@ -58,3 +71,5 @@ const ChangePasswordFields = () => {
     </FormContainer>
   );
 };
+
+export default ChangePassword;

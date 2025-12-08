@@ -17,6 +17,14 @@ body.drawer-open,
   overflow: hidden !important;
 }
 
+.view-mode .ql-container {
+  border: none !important;
+}
+
+.view-mode .ql-editor {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 
 /* Optional: Add subtle right padding via appearance adjustment */
 input[type="time"] {
