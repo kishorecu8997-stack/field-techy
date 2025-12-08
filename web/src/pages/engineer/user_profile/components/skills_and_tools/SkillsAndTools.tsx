@@ -2,13 +2,8 @@ import React from "react";
 import ChipsCard from "@/shared/components/ChipsCard";
 import { jobSkillsData, toolsData } from "@/dummy_data";
 
-/**
- * Props for components rendered within a drawer that require navigation and close actions.
- */
 interface DrawerMenuProps {
-  /** Callback to navigate to a different view within the drawer (e.g., 'addSkills'). */
   onMenuItemClick: (key: string) => void;
-  /** Callback to close the parent drawer or sidebar. */
   onClose: () => void;
 }
 
@@ -37,8 +32,8 @@ const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
         <ChipsCard
           title="Tools"
           chips={toolsData.map((tool) => tool.label)}
-          onAddAction={() => onMenuItemClick(`addTools`)}          
-           onEditAction={() => {
+          onAddAction={() => onMenuItemClick(`addTools`)}
+          onEditAction={() => {
             onMenuItemClick(`editTools`);
             localStorage.setItem(
               "editToolsId",

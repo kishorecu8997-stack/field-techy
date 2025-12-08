@@ -10,6 +10,7 @@ import type { EngineerFormData } from "../types";
 import BasicInformation from "./BasicInformation";
 import Documents from "./Documents";
 import ExperienceDetails from "./ExperienceDetails";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * AddEngineer component provides a multi-step form interface for adding new engineers to the system.
@@ -89,6 +90,38 @@ export default function AddEngineer() {
     }
   };
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: EngineerFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Engineer",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Engineer added successfully!");
+            navigate(absoluteUrls.admin.home.manage_engineer);
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
@@ -96,9 +129,7 @@ export default function AddEngineer() {
       try {
         const data = methods.getValues();
         console.log("Full form ", data);
-        toast.success("Engineer added successfully!");
-        navigate(absoluteUrls.admin.home.manage_engineer);
-        methods.reset();
+        handleSaveConfirmation(data);
       } finally {
         setIsSubmitting(false);
       }
