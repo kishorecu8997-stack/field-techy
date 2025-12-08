@@ -25,6 +25,10 @@ export type PermissionStep =
 interface AllowAccessPopupProps {
   accessPopup: boolean;
   setAccessPopup: Dispatch<SetStateAction<boolean>>;
+  onAllowLocation?: () => void;
+  onAllowNotification?: () => void;
+  onDenyLocation?: () => void;
+  onDenyNotification?: () => void;
 }
 
 /**
@@ -43,6 +47,10 @@ interface AllowAccessPopupProps {
 export default function AllowAccessPopup({
   accessPopup,
   setAccessPopup,
+  onAllowLocation,
+  onAllowNotification,
+  onDenyLocation,
+  onDenyNotification,
 }: AllowAccessPopupProps) {
   const [step, setStep] = useState<PermissionStep>(PERMISSION_STEPS.LOCATION);
 
