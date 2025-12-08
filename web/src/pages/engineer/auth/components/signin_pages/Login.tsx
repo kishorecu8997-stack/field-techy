@@ -20,6 +20,8 @@ import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -73,9 +75,9 @@ const Login = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+           <IconWithTheme
+              lightLogo={assetsConfig.logos.companyLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>

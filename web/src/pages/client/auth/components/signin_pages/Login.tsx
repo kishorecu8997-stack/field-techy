@@ -1,5 +1,7 @@
 import { assetsConfig } from "@/assets";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -13,9 +15,9 @@ import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import type { LoginFormData } from "../../../../engineer/auth/components/types";
-import { toast } from "react-toastify";
 
 /**
  * Type representing the data structure for the Login form.
@@ -66,27 +68,29 @@ const Login = ({
 
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="p-10 w-full max-w-lg">
-        <div className="text-center mb-6">
-          <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+      <div className="px-10 w-full max-w-lg ">
+        <div className="flex text-center flex-col mb-6 gap-5">
+          <div className="flex justify-center ">
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Sign In
-          </h2>
-          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
-            Don't have an account?{" "}
-            <NavLink
-              to={absoluteUrls.client.auth.signup}
-              className="text-teal-900 dark:text-teal-400 underline font-semibold"
-            >
-              Sign Up
-            </NavLink>
-          </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Sign In
+            </h2>
+            <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
+              Don't have an account?{" "}
+              <NavLink
+                to={absoluteUrls.client.auth.signup}
+                className="text-teal-900 dark:text-teal-400 underline font-semibold "
+              >
+                Sign Up
+              </NavLink>
+            </h2>
+          </div>
         </div>
         <FormContainer
           methods={methods}
@@ -147,7 +151,7 @@ const Login = ({
             handleNavigate={() => {
               setIsOpen(false);
               navigate(absoluteUrls.client.home.dashboard);
-              toast.success("Logged in successfully")
+              toast.success("Logged in successfully");
             }}
           />
         </Popup>

@@ -11,6 +11,8 @@ import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 export type LoginFormData = {
   phone: string;
@@ -49,9 +51,9 @@ const LoginWithNumber = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
@@ -81,10 +83,10 @@ const LoginWithNumber = ({
           </Button>
         </FormContainer>
         <div
-          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer dark:text-neutral-300"
           onClick={() => setIsNumberLogin(false)}
         >
-          <icons.email className="text-lg text-gray-500" />
+          <icons.email className="text-lg dark:text-gray-300" />
           Sign in with Email
         </div>
         <div className="flex flex-row items-center justify-center gap-4 pt-5">

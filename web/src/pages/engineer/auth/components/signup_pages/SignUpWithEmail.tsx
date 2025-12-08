@@ -12,6 +12,8 @@ import { LuPhone } from "react-icons/lu";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 export interface SignUpFormData {
   email: string;
@@ -71,9 +73,9 @@ const SignUpWithEmail = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+              <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
@@ -82,7 +84,7 @@ const SignUpWithEmail = ({
             Already have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.login}
-              className="text-teal-900 hover:underline font-semibold"
+              className="text-teal-900 hover:underline font-semibold dark:text-teal-400"
             >
               Sign In
             </NavLink>
@@ -109,7 +111,7 @@ const SignUpWithEmail = ({
               secondaryLabel="I have read and agree to the"
             />
             <NavLink
-              className="text-teal-900 underline font-semibold pl-1"
+              className="text-teal-900 underline font-semibold pl-1 dark:text-teal-400"
               to={absoluteUrls.engineer.auth.signup}
             >
               Terms and Conditions
@@ -128,7 +130,7 @@ const SignUpWithEmail = ({
           </Button>
         </FormContainer>
         <div
-          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+          className="dark:text-neutral-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
           <LuPhone />

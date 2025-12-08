@@ -11,6 +11,8 @@ import { MdEmail } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import { toast } from "react-toastify";
+import logo_light from "@/assets/logo/logo_light.svg";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 
 export type LoginFormData = {
   phone: string;
@@ -49,12 +51,12 @@ const LoginWithNumber = ({
   };
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="p-10 w-full max-w-lg">
+      <div className="px-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.companyLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
@@ -63,7 +65,7 @@ const LoginWithNumber = ({
             Don’t have an account?{" "}
             <NavLink
               to={absoluteUrls.client.auth.signup}
-              className="text-teal-900 hover:underline font-semibold"
+              className="text-teal-900 hover:underline font-semibold dark:text-teal-400"
             >
               Sign Up
             </NavLink>
@@ -84,7 +86,7 @@ const LoginWithNumber = ({
           </Button>
         </FormContainer>
         <div
-          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer dark:text-neutral-300"
           onClick={() => setIsNumberLogin(false)}
         >
           <MdEmail />

@@ -11,6 +11,8 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuMail } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 export type LoginFormData = {
   phone: string;
@@ -81,9 +83,9 @@ const SignUpWithNumber = ({
       <div className="p-10 w-full">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.companyLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
