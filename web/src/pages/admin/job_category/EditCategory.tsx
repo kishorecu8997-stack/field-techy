@@ -8,6 +8,7 @@ import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
 import { serviceCategoriesData } from "@/dummy_data/admin";
 import type { ServerCategoryProps } from ".";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `EditCategory` component renders a page with a form to edit an existing job category.
@@ -35,8 +36,38 @@ export default function EditCategory() {
     },
   });
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: CategoryFormData) => {
+    await showPopup({
+      title: "Update Category",
+      body: "Are you sure you want to update this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          action: async (close) => {
+            console.log("data :", data);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Job category updated successfully!");
+            methods.reset();
+            navigate(absoluteUrls.admin.home.manage_categories);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    toast.success("Job category updated successfully!");
+    handleSaveConfirmation(methods.getValues());
   };
   return (
     <div className="w-full h-full p-4">
@@ -54,7 +85,7 @@ export default function EditCategory() {
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+          className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
           <JobCategoryForm />
           <div className="flex justify-end mt-2">

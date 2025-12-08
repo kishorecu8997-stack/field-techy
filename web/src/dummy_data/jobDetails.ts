@@ -5,7 +5,6 @@ import type {
   WorkSubmissionComponentProps,
 } from "@/pages/engineer/my_job/types";
 
-
 export const logs: LogEntry[] = [
   {
     title: "Check In To Office",
@@ -75,22 +74,22 @@ export const termsData: ProposalTermsProps = {
 export const job: JobInfoSectionProps = {
   jobTitle: "Angular Developer",
   terms: {
-    title: "Proposal's Terms & Conditions",
+    title: "Job information",
     items: [
       {
-        text: "Produce clean, efficient code; test and deploy program and systems",
+        text: "Created on 10-Feb-2024, 09:00 AM",
       },
       {
-        text: "Review feedback and make necessary adjustments by 15-Feb-2024.",
+        text: "Tentative Start on: 12-Feb-2024.",
+      },
+      {
+        text: "Review feedback and make necessary adjustments by 15-Feb-2024",
       },
       {
         text: "Implementation phase begins on 16-Feb-2024",
       },
       {
         text: "Conduct user acceptance testing and finalize documentation",
-      },
-      {
-        text: "Launch the project to users on 01-Mar-2024",
       },
     ],
   },
