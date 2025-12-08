@@ -90,7 +90,6 @@ const ManageGroupList: React.FC = () => {
           action: async (close) => {
             console.log("Deleted group:", row);
             setRemarks(true);
-            // toast.success("Group deleted successfully");
             close(true);
           },
         },

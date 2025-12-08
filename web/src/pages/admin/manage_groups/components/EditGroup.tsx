@@ -22,6 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { AddGroup } from "../type";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { validateGroupName } from "@/utils/validate";
 
 /**
  * EditGroup
@@ -229,7 +230,7 @@ export default function EditGroup() {
               label="Group Name"
               required
               placeholder="Enter Group Name"
-              // rules={{ validate: (v: string) => validateName(v) }}
+              rules={{ validate: (v: string) => validateGroupName(v) }}
             />
             <InputField
               name="groupDescription"

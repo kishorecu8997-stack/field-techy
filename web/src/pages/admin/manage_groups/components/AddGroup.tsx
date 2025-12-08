@@ -55,7 +55,6 @@ export default function AddGroup() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
-  console.log("Selecte ID", selectedIds);
 
   const columns: Column<SelectEngineerProps>[] = [
     {
