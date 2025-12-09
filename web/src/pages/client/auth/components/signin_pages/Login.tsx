@@ -1,5 +1,6 @@
 import { assetsConfig } from "@/assets";
 import logo_light from "@/assets/logo/logo_light.svg";
+import { useClientSignin } from "@/shared/apiServices/client/clientService";
 import { absoluteUrls } from "@/config/urls";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
@@ -45,6 +46,18 @@ const Login = ({
 }) => {
   const navigate = useNavigate();
 
+  const { mutate, isPending } = useClientSignin({
+    onSuccess: (data: any) => {
+      console.log(data);
+      setIsOpen(true);
+      toast.success("OTP sent explicitly (Simulated)");
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast.error("Login failed");
+    },
+  });
+
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -62,8 +75,12 @@ const Login = ({
    * implementations should validate credentials against an API and only
    * open the OTP/modal on success.
    */
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = (data: LoginFormData) => {
+    mutate({
+      email: data.email,
+      password: data.password,
+      rememberMe: data.rememberMe,
+    });
   };
 
   return (
@@ -115,6 +132,7 @@ const Login = ({
           </div>
           <Button
             type="submit"
+            loading={isPending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit

@@ -1,4 +1,8 @@
-export const CLIENT_USER_ROUTER_PATHS = {
-  GET_CLIENT_USER: "/client-user",
-  GET_CLIENT_USER_BY_ID: (id: string) => `/client-user/${id}`,
+export const CLIENT_ROUTER_PATHS = {
+  SIGNUP: "/client/api/v1/clients/signup",
+  SIGNIN: "/user/api/v1/users/signin",
+  GET_BY_ID: (id: string) => `/client/api/v1/clients/${id}`,
+  GET_PAGED: "/client/api/v1/clients/paged",
+  UPDATE: (id: string) => `/client/api/v1/clients/update/${id}`,
+  DELETE: (id: string) => `/client/api/v1/clients/delete/${id}`,
 };

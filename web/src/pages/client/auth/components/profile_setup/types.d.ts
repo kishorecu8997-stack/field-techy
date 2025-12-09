@@ -3,6 +3,7 @@ export type CompleteRegistrationData = {
   profileImage?: File;
   companyName: string;
   contactPersonName: string;
+  email: string;
   phoneNumber: string;
   businessType: string;
   industry: string;

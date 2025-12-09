@@ -1,7 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
+import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -13,18 +13,30 @@ import { toast } from "react-toastify";
 
 /**
  * Multi-step Registration Form
+ * 
+ * This component is a multi-step registration form that guides the user through the registration process.
+ * It consists of three steps: Profile Setting, Background Verification, and Password Setting.
+ * 
+ * The form is divided into two parts: the first part (Profile Setting) is where the user sets up their profile information,
+ * such as name, email, phone number, address, skills, portfolio, service category, amount, designation, company, and experience.
+ * 
+ * The second part (Background Verification) is where the user verifies their identity by providing government ID and certificate.
+ * 
+ * The third part (Password Setting) is where the user sets up their password and confirms it.
  */
 const MultiStepRegistrationForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { mutate } = usePostData<CompleteRegistrationData>({
-    url: "/e/api/v1/eng/signup",
-    urlType: "prod",
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
     onSuccess: () => {
       toast.success("Completed registration successfully");
       navigate("/engineer/auth");
     },
+    onError: (error: any) => {
+      console.error("Submit error:", error);
+      toast.error("Registration failed. Please try again.");
+    }
   });
 
   const methods = useForm<CompleteRegistrationData>({
@@ -103,45 +115,10 @@ const MultiStepRegistrationForm = () => {
   };
 
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
-    setIsSubmitting(true);
-
     try {
-      // 1️⃣ Create nested object for all non-file data
-      const engineerPayload = {
-        email: data.email,
-        phoneNumber: data.phone,
-        password: data.password,
-        fullName: `${data.firstName} ${data.lastName}`,
-        address: data.address,
-        jobSkills: data.skills,
-        portfolioLink: data.portfolio ?? "",
-        serviceCategory: data.serviceCategory ?? "",
-        budget: "",
-        experienceYears: data.experience ?? "",
-        designation: data.designation ?? "",
-        company: data.company ?? "",
-        postalCode: data.postalCode ?? "",
-        country: data.country ?? "",
-        resume: data.resume,
-        rate: "",
-        experiences: [],
-        governmentIdProofDocument: data.governmentId,
-        certificateQualificationsDocument: data.certificate,
-        educations: [],
-        tools: [],
-        preferedWorkType: "",
-        enableNotifications: false,
-        profilePicture: "",
-        isApproved: false,
-        location: "",
-        averageRating: 0,
-      };
-
-      await mutate(engineerPayload);
+      await signup(data);
     } catch (error) {
-      console.error("Submit error:", error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Submit error:", error);  
     }
   };
 

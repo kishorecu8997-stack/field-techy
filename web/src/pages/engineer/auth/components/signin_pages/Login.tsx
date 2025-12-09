@@ -19,7 +19,8 @@ import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
-import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
+// import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
+import { useEngineerSignin } from "@/shared/apiServices/engineer/engineerService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import logo_light from "@/assets/logo/logo_light.svg";
 
@@ -45,12 +46,16 @@ const Login = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { goToHome } = useHomeNavigation();
-  const { mutate } = usePostData({
-    url: "/u/api/v1/usr/signIn",
+  const { mutate, isPending } = useEngineerSignin({ 
     onSuccess: (data) => {
       console.log(data);
       setIsOpen(true);
+      toast.success("OTP sent explicitly (Simulated)"); 
     },
+    onError: (error: any) => {
+       console.error(error);
+       toast.error("Login failed");
+    }
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +68,7 @@ const Login = ({
   });
 
   const handleSubmit = async (data: LoginFormData) => {
-    await mutate({
+    mutate({
       email: data.email,
       password: data.password,
       rememberMe: data.rememberMe,
@@ -112,7 +117,7 @@ const Login = ({
             required
             rules={{
               required: "Password is required",
-              validate: validatePassword,
+              validate:(value)=> validatePassword(value),
             }}
           />
           <div className="flex items-center justify-between flex-wrap">

@@ -1,17 +1,19 @@
 import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import type { ClientData } from "@/shared/apiServices/client/clientAdapter";
+import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import SetPassword from "./SetPassword";
+import { FaAngleLeft } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
-import { FaAngleLeft } from "react-icons/fa";
-import AllowAccessPopup from "../AccessPopup";
-import { useNavigate, useParams } from "react-router-dom";
-import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
-import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * A multi-step registration form component that guides users through
@@ -32,7 +34,7 @@ const CorporateMultiStepRegistration = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [accessPopup, setAccessPopup] = useState<boolean>(false);
   const { role } = useParams<{ role?: string }>();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const methods = useForm<CompleteRegistrationData>({
     mode: "onSubmit",
@@ -41,6 +43,7 @@ const CorporateMultiStepRegistration = () => {
       profileImage: undefined,
       companyName: "",
       contactPersonName: "",
+      email: "",
       phoneNumber: "",
       businessType: "",
       industry: "",
@@ -64,6 +67,7 @@ const CorporateMultiStepRegistration = () => {
   });
 
   const { trigger } = methods;
+  const { showPopup } = usePopupStore();
 
   /**
    * handleStepSubmit
@@ -123,7 +127,7 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
-  /**
+  /*
    * submitCompleteForm
    *
    * Final submission routine called when the user completes the last step.
@@ -132,45 +136,70 @@ const CorporateMultiStepRegistration = () => {
    *
    * @param {CompleteRegistrationData} data - The fully collected registration data
    */
-  const submitCompleteForm = async (data: CompleteRegistrationData) => {
-    
-    setIsSubmitting(true);
-    try {
-      // MOCK API CALL (replace with real fetch when backend is ready)
-      console.log("Submitting registration data:", data);
 
-      // Simulate network delay
-      await new Promise((r) => setTimeout(r, 800));
-      setAccessPopup(true);
-
-      // Simulate success
-       navigate(absoluteUrls.client.auth.login);
-    } catch (error) {
-      console.error("Network error:", error);
-    } finally {
+  const { mutate: signupClient, isPending } = useClientSignup({
+    onSuccess: (data) => {
+      console.log("Signup success:", data);
       setIsSubmitting(false);
-    }
+      setAccessPopup(true);
+      navigate(absoluteUrls.client.auth.login);
+    },
+    onError: (error) => {
+      console.error("Signup error:", error);
+      setIsSubmitting(false);
+    },
+  });
+
+  const submitCompleteForm = async (data: CompleteRegistrationData) => {
+    setIsSubmitting(true);
+    let clientData: ClientData = {
+      companyName: data.companyName,
+      contactPersonName: data.contactPersonName,
+      phoneNumber: data.phoneNumber,
+      businessType: data.businessType,
+      industry: data.industry,
+      address: data.address,
+      state: data.state,
+      city: data.city,
+      vatRegistrationNumber: data.vatRegistrationNumber,
+      taxDocumentVat: data.vat,
+      password: data.password,
+      email: data.email,
+    };
+
+    await showPopup({
+      title: "Client Signup",
+      body: "Are you sure you want to signup client",
+      actionButtons: [
+        {
+          label: "Yes",
+          variant: "primary",
+          value: "yes",
+          action(close) {
+            console.log("Yes clicked");
+            signupClient(clientData);
+            close(true);
+          },
+        },
+        {
+          label: "No",
+          variant: "secondary",
+          value: "no",
+          action: (close) => {
+            console.log("No clicked");
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * goToPreviousStep
-   *
-   * Move the flow back one step if possible. Used by the back button in the UI.
-   */
   const goToPreviousStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  /**
-   * renderStep
-   *
-   * Returns the JSX for the currently active step of the registration flow.
-   * Centralizes which step component should be displayed for the `currentStep` value.
-   *
-   * @returns {JSX.Element} The step component to render
-   */
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -229,14 +258,14 @@ const CorporateMultiStepRegistration = () => {
               className="w-[30rem] bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             >
               {currentStep === 4
-                ? isSubmitting
+                ? isPending || isSubmitting
                   ? "Submitting..."
                   : "Complete Registration"
                 : "Next"}
             </Button>
           </div>
         </div>
-      </FormContainer>      
+      </FormContainer>
     </>
   );
 };
