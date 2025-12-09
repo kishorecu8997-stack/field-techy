@@ -1,3 +1,4 @@
+/* For Client SignUp, SignIn, Retrieve, Delete */
 export const CLIENT_ROUTER_PATHS = {
   SIGNUP: "/client/api/v1/clients/signup",
   SIGNIN: "/user/api/v1/users/signin",

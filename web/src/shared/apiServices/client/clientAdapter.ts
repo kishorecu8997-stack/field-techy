@@ -33,6 +33,17 @@ export interface ClientPaginationParams {
   direction?: "ASC" | "DESC";
 }
 
+
+/*
+ * ClientAdapter
+ *
+ * Responsible for making API calls to the client-related endpoints.
+ * Provides methods for signing up, signing in, getting a client by ID,
+ * getting all clients, updating a client, and deleting a client.
+ *
+ * The adapter also includes a helper function for converting pagination
+ * parameters into the expected format for the API.
+ */
 export class ClientAdapter {
   static async signup(data: ClientData): Promise<ClientData> {
     const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);

@@ -1,6 +1,12 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 
-
+/*
+ * axiosInstance
+ *
+ * Configures and creates an axios instance with the base URL and timeout.
+ * The instance is used throughout the application to make API calls.
+ *
+ */
 const axiosInstance = axios.create({
 	baseURL: "https://dvocdd2ubhpp7dj6ujozgvendorfiledtechy.demotechhub.xyz/",
 	timeout: 10_000,
