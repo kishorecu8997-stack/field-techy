@@ -25,20 +25,7 @@ import { IoCloseSharp } from "react-icons/io5";
  * Page component for selecting engineers to add to an existing group.
  * Displays a searchable, multi-select table of available engineers with
  * bulk selection support (select-all checkbox) and document viewing capability.
- *
- * Features:
- * - Multi-select checkbox table with select-all header checkbox
- * - Searchable engineer list showing name, contact, and KYC details
- * - View documents modal for each engineer
- * - Add to Group confirmation popup before submission
- * - Submit button disabled until at least one engineer is selected
- * - Navigation back to manage groups on success
- *
- * State management:
- * - Uses `react-hook-form` for form integration
- * - Local state for modal visibility, selected engineer IDs, and selected row
- * - Uses `usePopupStore` for confirmation dialogs and `useNavigate` for routing
- *
+ * Utilizes a form with validation and a table for managing engineers.
  * @component
  * @returns {JSX.Element} Engineer selection table with multi-select and modals
  */

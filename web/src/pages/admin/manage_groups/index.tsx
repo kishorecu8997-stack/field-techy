@@ -19,20 +19,6 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 
-/**
- * HandleStatus
- *
- * Small toggle component that displays and allows toggling of a boolean status.
- * Shows "On" (green) when true and "Off" (red) when false. Clicking the badge
- * toggles the local state.
- *
- * Props:
- * - `status` (boolean): Initial status value to display.
- *
- * @component
- * @param {{ status: boolean }} props
- * @returns {JSX.Element} A clickable status badge
- */
 const HandleStatus = ({ status: value }: { status: boolean }) => {
   const [status, setStatus] = useState<boolean>(value);
   return (
@@ -53,14 +39,7 @@ const HandleStatus = ({ status: value }: { status: boolean }) => {
  * Admin page component for managing engineer groups. Displays a searchable table
  * of groups with view/edit/delete actions. On deletion, shows a remarks popup
  * to collect deletion feedback before confirming.
- *
- * Features:
- * - Searchable table with group metadata (name, description, engineer count, dates)
- * - Status toggle column (On/Off) for group status
- * - Action buttons: View, Edit, Delete
- * - Delete confirmation popup with remarks form
- * - Navigation to add/view/edit group pages
- *
+ * Utilizes a table component for listing groups and a popup for remarks.
  * @component
  * @returns {JSX.Element} The manage groups page with table and actions
  */
@@ -126,21 +105,21 @@ const ManageGroupList: React.FC = () => {
           >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-blue-100 rounded-md cursor-pointer">
-            <CiEdit
-              className="text-blue-600"
-              onClick={() =>
-                navigate(
-                  `${absoluteUrls.admin.home.manage_groups_edit}/${row.srNo}`
-                )
-              }
-            />
+          <div
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+            onClick={() =>
+              navigate(
+                `${absoluteUrls.admin.home.manage_groups_edit}/${row.srNo}`
+              )
+            }
+          >
+            <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
-            <RiDeleteBin6Line
-              className="text-red-600"
-              onClick={() => handleDelete(row)}
-            />
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDelete(row)}
+          >
+            <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
       ),

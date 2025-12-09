@@ -26,22 +26,9 @@ import { toast } from "react-toastify";
  *
  * Page component for creating a new engineer group in the admin panel.
  * Allows the user to enter group name/description and select engineers to add to the group.
- *
- * Features:
- * - Form inputs for group name and description
- * - Searchable table of available engineers with multi-select checkboxes
- * - Select-all checkbox header for bulk selection
- * - View documents modal for each engineer
- * - Confirmation popup before submitting the group
- * - Navigation back to manage groups page on success
- *
- * State management:
- * - Uses `react-hook-form` for form state
- * - Local state for modal visibility and selected engineer IDs
- * - Uses `usePopupStore` for confirmation dialogs and `useNavigate` for routing
- *
+ * Utilizes a form with validation and a table for selecting engineers.
  * @component
- * @returns {JSX.Element} The add group form page with engineer selection table
+ * @returns {JSX.Element} The add group form page with engineer selection
  */
 export default function AddGroup() {
   const methods = useForm({

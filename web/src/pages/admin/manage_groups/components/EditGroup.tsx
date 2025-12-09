@@ -30,20 +30,7 @@ import { validateGroupName } from "@/utils/validate";
  * Page component for editing an existing engineer group. Allows the user to
  * update the group name and description, and manage engineers within the group
  * (view documents, add new engineers, remove existing engineers).
- *
- * Features:
- * - Pre-fills form with existing group data based on route parameter `id`
- * - Editable group name and description fields
- * - Displays table of engineers currently in the group
- * - View documents modal for each engineer
- * - Add Engineer button to navigate to engineer selection page
- * - Remove Engineer action with confirmation popup
- * - Update group confirmation before saving changes
- * - Navigation back to manage groups on success
- *
- * Route params:
- * - `id`: The group serial number (srNo) to identify which group to edit
- *
+ * Utilizes a form with validation and a table for managing engineers.
  * @component
  * @returns {JSX.Element} The edit group form page with engineer management
  */

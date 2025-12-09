@@ -26,18 +26,6 @@ import { useNavigate, useParams } from "react-router-dom";
  * Displays group name, description, and a list of engineers in the group with their
  * metadata. Provides an Edit button to navigate to the edit page and a documents
  * viewing modal.
- *
- * Features:
- * - Pre-fills disabled form fields with existing group data based on route parameter `id`
- * - Displays read-only group name and description
- * - Searchable, read-only table of engineers in the group
- * - View documents modal for each engineer
- * - Edit button that navigates to the edit page for this group
- * - Back button for navigation
- *
- * Route params:
- * - `id`: The group serial number (srNo) to identify which group to view
- *
  * @component
  * @returns {JSX.Element} The view group page with read-only details and engineer list
  */

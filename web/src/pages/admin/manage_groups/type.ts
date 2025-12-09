@@ -10,7 +10,6 @@ export interface ManageGroups {
   status: boolean;
 }
 
-
 export interface AddGroup {
   groupName: string;
   groupDescription: string;
