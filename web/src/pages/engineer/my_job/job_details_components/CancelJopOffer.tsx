@@ -16,7 +16,9 @@ import { validateDescription } from "../../home/validation";
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
 export default function CancelJopOffer() {
-  const { setISOpenSidebar } = useDrawerStore();
+  const { setISOpenSidebar, setActiveKey } = useDrawerStore();
+  const { showPopup } = usePopupStore();
+  const navigate = useNavigate();
 
   const formCtx = useForm({
     defaultValues: {
@@ -25,8 +27,6 @@ export default function CancelJopOffer() {
       isChecked: false,
     },
   });
-  const { showPopup } = usePopupStore();
-  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     await showPopup({
@@ -41,12 +41,13 @@ export default function CancelJopOffer() {
         {
           label: "Yes, decline",
           value: "yes",
-          variant: "danger",
+          variant: "primary",
           action: async (close) => {
-            toast.success("Job offer declined successfully!");
+            toast.success("Job offer declined successfully");
             close(true);
+            setActiveKey("cancelOffer");
             setISOpenSidebar(false);
-            navigate(absoluteUrls.engineer.home.my_jobs);
+            navigate(absoluteUrls.engineer.home.my_jobs, { replace: true });
           },
         },
       ],
@@ -92,14 +93,14 @@ export default function CancelJopOffer() {
         <div className="flex flex-row gap-4">
           <Button
             variant="secondary"
-            className="flex-1 py-3 rounded-lg font-medium"
-            onClick={() => setISOpenSidebar(false)}
+            className="flex-1  py-3 rounded-lg font-medium"
+            onClick={()=> setISOpenSidebar(false)}  
           >
             Cancel
           </Button>
           <Button
             variant="danger"
-            className="flex-1  py-3 rounded-lg font-medium"
+            className="flex-1 py-3 rounded-lg font-medium"
             type="submit"
           >
             Decline

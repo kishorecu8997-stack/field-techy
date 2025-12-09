@@ -1,15 +1,14 @@
 import { bankList } from "@/dummy_data/bankDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
+import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import {
   validateAccNumber,
-  validateIBANForCountrywise,
-  validateSWIFTBank,
   validateAddress,
-  validateName,
+  validateIBANForCountrywise,
+  validateNameWithSpace,
+  validateSWIFTBank,
 } from "../validation";
-import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
-
 
 /**
  * Reusable form component for adding or editing bank details, with fields for bank name, account number,
@@ -40,7 +39,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           placeholder="Name"
           required
           rules={{             
-            validate: (value) => validateName(value),
+            validate: (value) => validateNameWithSpace(value, "Name"),
           }}
         />
         <InputField
@@ -65,7 +64,6 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           rules={{ validate: validateSWIFTBank }}
         />
       </div>
-</div>
       <div className="mt-auto flex justify-end">
         <Button
           type="submit"
@@ -73,6 +71,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
         >
           {formType === "add" ? "Add Account" : "Save Bank Details"}
         </Button>
+      </div>
       </div>
     </div>
   );

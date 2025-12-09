@@ -8,6 +8,7 @@ import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPass
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -18,6 +19,8 @@ import { absoluteUrls } from "@/config/urls";
  */
 export default function ChangePassword() {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
       oldPassword: "",
@@ -25,9 +28,29 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
-  const handleSubmit = () => {
-    toast.success("Password Changed Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Password Change",
+      body: "Are you sure you want to change your password?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, change",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Password Changed Successfully!");
+            close(true);
+            navigate(absoluteUrls.admin.home.dashboard);
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -35,7 +58,7 @@ export default function ChangePassword() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
         <div className="flex gap-4 w-full">
           <div className="flex-1">

@@ -5,6 +5,7 @@ import type { ClientData } from "@/shared/apiServices/client/clientAdapter";
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { FaAngleLeft } from "react-icons/fa";
@@ -13,7 +14,6 @@ import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
-import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * A multi-step registration form component that guides users through
@@ -224,14 +224,13 @@ const CorporateMultiStepRegistration = () => {
       >
         {currentStep > 1 && (
           <div className="flexed absolute top-6 left-6 md:left-[20rem] lg:left-[40rem] z-10">
-            <button
-              type="button"
+            <div
               onClick={goToPreviousStep}
               className="p-2 rounded-full cursor-pointer hover:bg-teal-700 text-gray-700 hover:text-white bg-white shadow-md transition-colors"
               aria-label="Go back"
             >
               <FaAngleLeft className="text-xl" />
-            </button>
+            </div>
           </div>
         )}
 
