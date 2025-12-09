@@ -75,18 +75,19 @@ export const InputField = ({
 
   // Alphabet
   if (alphabetOnly) {
-    validationRules.validate = (value: string) => {
-      if (!value || value.trim() === "")
-        return requiredMessage || "This field is required.";
-
-      // allow letters
-      if (/[^a-zA-Z\s-]/.test(value))
-        return "Only letters are allowed.";
-
-      return true;
-    };
+  validationRules.validate = (value: string) => {
+    const trimmedValue = value?.trim() || ""; // <-- Trim here
+ 
+    if (!trimmedValue)
+      return requiredMessage || "This field is required.";
+ 
+    // allow letters
+    if (/[^a-zA-Z\s-]/.test(trimmedValue)) // <-- use trimmedValue here
+      return "Only letters are allowed.";
+ 
+    return true;
   }
-
+}
   return (
     <div className={containerClassName}>
       {isShowLabel && (
