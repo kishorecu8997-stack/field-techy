@@ -45,7 +45,15 @@ export default function SelectEngineers() {
       label: (
         <input
           type="checkbox"
+          aria-label="Select all"
           checked={selectedIds.length === SelectEngineer.length}
+          ref={(input) => {
+            if (input) {
+              input.indeterminate =
+                selectedIds.length > 0 &&
+                selectedIds.length < SelectEngineer.length;
+            }
+          }}
           onChange={(e) => {
             if (e.target.checked) {
               setSelectedIds(SelectEngineer.map((item) => item.engineerID));
@@ -58,6 +66,7 @@ export default function SelectEngineers() {
       renderCell: (row: SelectEngineerProps) => (
         <input
           type="checkbox"
+          aria-label="Select all"
           checked={selectedIds.includes(row.engineerID)}
           onChange={(e) => {
             if (e.target.checked) {
@@ -136,8 +145,8 @@ export default function SelectEngineers() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -162,9 +171,8 @@ export default function SelectEngineers() {
           action: async (close) => {
             console.log("Submitted data:", selectedIds);
             toast.success("Group added successfully");
-            methods.reset();
-            setIsModalOpen(false);
             navigate(absoluteUrls.admin.home.manage_groups);
+            methods.reset();
             close(true);
           },
         },

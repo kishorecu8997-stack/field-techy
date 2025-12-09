@@ -1156,11 +1156,6 @@ export const validateGroupName = (value: string) => {
     return "Group name can only contain letters, numbers, spaces, and these symbols: # . & _ - ( ) / : ;";
   }
 
-  const effectiveLength = raw.trim().length;
-  if (effectiveLength < 3) {
-    return "Group name must contain at least 3 valid characters (excluding surrounding spaces)";
-  }
-
   return true;
 };
 

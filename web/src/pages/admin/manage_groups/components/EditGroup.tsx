@@ -116,8 +116,8 @@ export default function EditGroup() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -223,6 +223,12 @@ export default function EditGroup() {
               name="groupDescription"
               label="Group Description"
               placeholder="Enter Group Description"
+              rules={{
+                maxLength: {
+                  value: 200,
+                  message: "Description must be at most 200 characters",
+                },
+              }}
             />
           </div>
           <div className="flex justify-between items-center">

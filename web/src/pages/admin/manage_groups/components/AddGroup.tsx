@@ -35,6 +35,7 @@ export default function AddGroup() {
     defaultValues: {
       groupName: "",
       groupDescription: "",
+      selectedIds: [],
     },
   });
   const { showPopup } = usePopupStore();
@@ -49,7 +50,15 @@ export default function AddGroup() {
       label: (
         <input
           type="checkbox"
+          aria-label="Select all"
           checked={selectedIds.length === SelectEngineer.length}
+          ref={(input) => {
+            if (input) {
+              input.indeterminate =
+                selectedIds.length > 0 &&
+                selectedIds.length < SelectEngineer.length;
+            }
+          }}
           onChange={(e) => {
             if (e.target.checked) {
               setSelectedIds(SelectEngineer.map((item) => item.engineerID));
@@ -62,6 +71,7 @@ export default function AddGroup() {
       renderCell: (row: SelectEngineerProps) => (
         <input
           type="checkbox"
+          aria-label="Select all"
           checked={selectedIds.includes(row.engineerID)}
           onChange={(e) => {
             if (e.target.checked) {
@@ -140,8 +150,8 @@ export default function AddGroup() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -168,7 +178,6 @@ export default function AddGroup() {
             console.log("Submitted data:", payload);
             toast.success("Group added successfully");
             methods.reset();
-            setIsModalOpen(false);
             navigate(absoluteUrls.admin.home.manage_groups);
             close(true);
           },
@@ -205,6 +214,12 @@ export default function AddGroup() {
               name="groupDescription"
               label="Group Description"
               placeholder="Enter Group Description"
+              rules={{
+                maxLength: {
+                  value: 200,
+                  message: "Description must be at most 200 characters",
+                },
+              }}
             />
           </div>
           <div className="flex justify-between items-center">

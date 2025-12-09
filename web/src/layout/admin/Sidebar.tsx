@@ -69,15 +69,21 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   }, [location.pathname]);
 
   const toggle = (name: string) => {
-    setOpenMenus((prev) => {
-      const isCurrentlyOpen = prev[name];
-      const newState: Record<string, boolean> = {};
+    // setOpenMenus((prev) => {
+    //   const isCurrentlyOpen = prev[name];
 
-      if (!isCurrentlyOpen) {
-        newState[name] = true;
-      }
-      return newState;
-    });
+    //   // New state: CLOSE ALL, then open only the clicked one (if not already open)
+    //   const newState: Record<string, boolean> = {};
+
+    //   if (!isCurrentlyOpen) {
+    //     newState[name] = true;
+    //   }
+    //   return newState;
+    // });
+     setOpenMenus((prev) => ({
+       ...prev,
+       [name]: !prev[name],
+     }));
   };
 
   return (

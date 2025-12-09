@@ -8,7 +8,7 @@ import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import type { ManageGroups } from "./type";
 import { CiEdit } from "react-icons/ci";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -18,20 +18,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
-
-const HandleStatus = ({ status: value }: { status: boolean }) => {
-  const [status, setStatus] = useState<boolean>(value);
-  return (
-    <div
-      className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-        status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-      }`}
-      onClick={() => setStatus(!status)}
-    >
-      {status ? "On" : "Off"}
-    </div>
-  );
-};
+import useToggleStatus from "@/shared/components/ToggleStatus";
 
 /**
  * ManageGroupList
@@ -43,13 +30,22 @@ const HandleStatus = ({ status: value }: { status: boolean }) => {
  * @component
  * @returns {JSX.Element} The manage groups page with table and actions
  */
-const ManageGroupList: React.FC = () => {
+export default function ManageGroupList() {
   const methods = useForm<{ remarks: string }>({
     defaultValues: { remarks: "" },
   });
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const [remarks, setRemarks] = useState<boolean>(false);
+
+  const initialStatus = React.useMemo(() => {
+      const initial: Record<string, boolean> = {};
+      manageGroups.forEach((group) => {
+        initial[group.srNo] = Boolean(group.status);
+      });
+      return initial;
+    }, []);
+  const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation handler
   const handleDelete = (row: ManageGroups) => {
@@ -88,7 +84,19 @@ const ManageGroupList: React.FC = () => {
     {
       key: "status",
       label: "Status",
-      renderCell: (row: ManageGroups) => <HandleStatus status={row.status} />,
+      renderCell: (row: ManageGroups) => {
+        const val = get(row.srNo) ?? row.status;
+        return (
+          <div
+            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            }`}
+            onClick={() => toggle(row.srNo)}
+          >
+            {val ? "On" : "Off"}
+          </div>
+        );
+      },
     },
     {
       key: "action",
@@ -197,5 +205,4 @@ const ManageGroupList: React.FC = () => {
       )}
     </div>
   );
-};
-export default ManageGroupList;
+}
