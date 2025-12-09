@@ -2,7 +2,7 @@ import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axio
 
 
 const axiosInstance = axios.create({
-	baseURL: "https://api.example.com",
+	baseURL: "http://dvocdd2ubhpp7dj6ujozgvendorfiledtechy.demotechhub.xyz/",
 	timeout: 10_000,
 });
 
