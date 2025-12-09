@@ -44,20 +44,20 @@ const MultiStepRegistrationForm = () => {
     defaultValues: {
       // Step 1: Profile Setup
       profileImage: undefined,
-      firstName: "testing",
-      lastName: "example",
+      firstName: "",
+      lastName: "",
       email: "",
-      phone: "+91 8220932517",
-      address: "123 Main Street, City, State 12345",
-      skills: ["HTML"],
-      portfolio: "https://johndoe.dev",
-      amount: "50",
-      designation: "Developer",
-      company: "Labs",
+      phone: "",
+      address: "",
+      skills: [],
+      portfolio: "",
+      amount: "",
+      designation: "",
+      company: "",
       country: "",
-      postalCode: "638701",
-      serviceCategory: "Web Development",
-      experience: "6",
+      postalCode: "",
+      serviceCategory: "",
+      experience: "",
       resume: undefined,
 
       // Step 2: Background Verification
@@ -65,11 +65,11 @@ const MultiStepRegistrationForm = () => {
       certificate: undefined,
 
       // Step 3: Password Create
-      password: "P@ssw0rd",
-      confirmPassword: "P@ssw0rd",
+      password: "",
+      confirmPassword: "",
 
-      mobileOTP: "1234",
-      emailOTP: "1234",
+      mobileOTP: "",
+      emailOTP: "",
     },
   });
 
