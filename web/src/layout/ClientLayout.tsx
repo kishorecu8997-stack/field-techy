@@ -51,6 +51,9 @@ const ClientLayout = (): JSX.Element => {
           <div className="xl:container mx-auto px-6">
             <NavbarClient
               onDrawerToggle={() => {
+                if (isOpenSidebar) {
+                  localStorage.removeItem("projectSiteCoordinates");
+                }
                 setISOpenSidebar(!isOpenSidebar);
                 setActiveKey("myAccount");
               }}

@@ -25,6 +25,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "featured",
+    isBookmarked: true,
   },
   {
     title: "Python Engineer",
@@ -64,7 +65,7 @@ export const sampleJobs: Job[] = [
     client: "Google",
     time: "10 Hours of Jobs",
     description:
-      "innovate tech is a startup that is looking for a talented software engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
+      "test",
     postedTime: "2h ago",
     rating: 5,
     experience: 4,
@@ -75,6 +76,7 @@ export const sampleJobs: Job[] = [
     duration: "10 Hours of Work",
     pay: "500",
     place: "featured",
+    isBookmarked: true,
   },
   {
     id: 4,
@@ -97,6 +99,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    isBookmarked: true,
   },
   {
     id: 5,
@@ -141,6 +144,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    isBookmarked: true,
   },
   {
     id: 7,
@@ -170,7 +174,7 @@ export const sampleJobs: Job[] = [
     client: "Innovate Tech Co",
     time: "10 Hours of Jobs",
     description:
-      "innovate tech is a startup that is looking for a talented software engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
+      "Test2",
     location: "New York, USA",
     salary: "5000",
     postedTime: "2h ago",
@@ -192,7 +196,7 @@ export const sampleJobs: Job[] = [
     client: "Innovate Tech",
     time: "10 Hours of Jobs",
     description:
-      "innovate tech is a startup that is looking for a talented software engineer to join our growing team. You'll be working on cutting-edge applications and collaborating with cross-functional teams to deliver high-quality software solutions.",
+      "Test3",
     location: "New York, USA",
     salary: "5000",
     postedTime: "2h ago",

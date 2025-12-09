@@ -1,13 +1,21 @@
+import {
+  courses,
+  educationEdit,
+  educationLevels,
+  majors,
+  universities,
+} from "@/dummy_data/engineer_profile/education-data";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { validatePassingYear } from "../../Validate";
 import type { EducationFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
-import { educationLevels, courses, universities, majors,educationEdit} from "@/dummy_data/engineer_profile/education-data";
 
 /**
  * The EditEducation component renders a form to modify an existing education entry.
@@ -17,10 +25,12 @@ import { educationLevels, courses, universities, majors,educationEdit} from "@/d
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
 const EditEducation = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
   const getEducationById = () => {
     const id = localStorage.getItem("editEducationId");
-    const educationId = id ;
-    return educationEdit.find((edu) => edu.id === +(educationId??""));
+    const educationId = id;
+    return educationEdit.find((edu) => edu.id === +(educationId ?? ""));
   };
 
   useEffect(() => {
@@ -30,16 +40,37 @@ const EditEducation = () => {
     };
   }, []);
 
-  const handleSubmit = (data: EducationFormData) => {
-    toast.success("Education Updated Successfully");
-    console.log("Form submitted with updated data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call to update)
+  const handleSubmit = async (data: EducationFormData) => {
+    await showPopup({
+      title: "Update Education",
+      body: "Are you sure you want to update this education?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Education Updated Successfully");
+            close(true);
+            setActiveKey("education");
+          },
+        },
+      ],
+    });
   };
 
   const methods = useForm<EducationFormData>({
     defaultValues: getEducationById(),
     mode: "onSubmit",
-  });  
+  });
 
   return (
     <FormContainer

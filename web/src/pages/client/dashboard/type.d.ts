@@ -18,7 +18,7 @@ export interface ServiceCategory {
 }
 
 export interface InProgressJob {
-  id: number;
+  id: number | string;
   title: string;
   date: string;
   location: string;
@@ -29,4 +29,31 @@ export interface InProgressJob {
   engineerAvatars: string[];
   WorkLocationType: string;
   status?: string;
+}
+
+export interface Job {
+  id: number | string;
+  title?: string;
+  client?: string;
+  time?: string;
+  description?: string;
+  location?: string;
+  salary?: string;
+  postedTime?: string;
+  category?: string;
+  rating?: number;
+  experience?: number;
+  budgetType?: BudgetType | null;
+  skills?: string[];
+  startDate?: string;
+  duration?: string;
+  pay?: string;
+  status?: JobStatus;
+  type?: WorkingType;
+  companyLogo?: string;
+  company?: string;
+  employmentType?: string;
+  engineers?: string;
+  engineerAvatars?: string[];  
+  serviceType?: string;
 }

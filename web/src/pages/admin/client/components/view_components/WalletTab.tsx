@@ -15,7 +15,7 @@ import { bankCardData, walletData} from "@/dummy_data/ClientViewData";
 const WalletTab: React.FC = () => {
   /** Column definitions for the wallet transaction history table. */
   const columns: Column<walletViewData>[] = [
-    { key: "id", label: "Sr. NO" },
+    { key: "id", label: "Sr.No." },
     { key: "dateTime", label: "Date & Time" },
     { key: "transactionType", label: "Transaction Type" },
     { key: "amount", label: "Amount" },

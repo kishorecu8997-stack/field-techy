@@ -21,7 +21,7 @@ const ToggleStatus: React.FC<ToggleStatusProps> = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <label className="text-sm font-semibold dark:text-white text-gray-700">{label}</label>
       <div
         className={`${baseClasses} ${
           isActive ? activeClasses : inactiveClasses
@@ -56,13 +56,12 @@ const ToggleStatus: React.FC<ToggleStatusProps> = ({
  *
  * @returns {JSX.Element} A responsive row of privilege toggle cards for engineer management.
  */
-
 export default function Previlege() {
   const [topRated, setTopRated] = React.useState(true);
   const [blacklist, setBlacklist] = React.useState(true);
   const [priorityAccess, setPriorityAccess] = React.useState(false);
   return (
-    <div className="flex flex-col md:flex-row gap-6 justify-between p-4 w-6/12">
+    <div className="flex flex-col md:flex-row gap-6 mb-4 justify-between my-auto px-4 w-6/12">
       <ToggleStatus
         label="Top Rated Engineer"
         status={topRated ? "Yes" : "No"}

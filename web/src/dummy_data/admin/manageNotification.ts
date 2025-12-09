@@ -18,57 +18,57 @@ export interface NotificationProps {
 export const notifications: NotificationProps[] = [
   {
     id: 1,
-    title: "What is Lorem Ipsum?",
+    title: "System Maintenance Scheduled",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
-    type: "broadcast",
-    sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+      "Routine maintenance will occur on Dec 10, 2025, from 2 AM to 4 AM IST. The platform may be briefly unavailable during this window.",
+    type: "email",
+    sendTo: "engineer",
+    createdDate: "5 Dec, 2025",
   },
   {
     id: 2,
-    title: "What is Lorem Ipsum?",
+    title: "New Feature: Dark Mode Now Live",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+      "Switch to dark mode under Settings > Appearance for a better viewing experience at night.",
     type: "broadcast",
     sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+    createdDate: "3 Dec, 2025",
   },
   {
     id: 3,
-    title: "What is Lorem Ipsum?",
+    title: "Security Alert: Unusual Login Attempt",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+      "We detected a login from a new device in Mumbai. If this wasn’t you, please secure your account immediately.",
     type: "broadcast",
-    sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+    sendTo: "client",
+    createdDate: "2 Dec, 2025",
   },
   {
     id: 4,
-    title: "What is Lorem Ipsum?",
+    title: "Your Monthly Usage Report Is Ready",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
-    type: "broadcast",
-    sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+      "View your usage summary for November 2025, including API calls, storage, and active projects.",
+    type: "email",
+    sendTo: "both",
+    createdDate: "1 Dec, 2025",
   },
   {
     id: 5,
-    title: "What is Lorem Ipsum?",
+    title: "Profile Update Required",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
-    type: "broadcast",
+      "Please verify your updated contact information to ensure service continuity and compliance.",
+    type: "notification",
     sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+    createdDate: "28 Nov, 2025",
   },
   {
     id: 6,
-    title: "What is Lorem Ipsum?",
+    title: "API Quota Warning",
     message:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
-    type: "broadcast",
-    sendTo: "Users",
-    createdDate: "1 Nov, 2024",
+      "You’ve used 85% of your monthly API quota. Upgrade your plan or monitor usage to avoid disruption.",
+    type: "notification",
+    sendTo: "subAdmin",
+    createdDate: "25 Nov, 2025",
   },
 ];
 

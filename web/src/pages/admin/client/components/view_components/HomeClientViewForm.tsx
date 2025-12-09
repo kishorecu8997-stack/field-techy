@@ -51,22 +51,23 @@ const HomeClientViewForm: React.FC = () => {
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold ">Client Details</h1>
-        <div className="flex items-center gap-2"> 
-        <Button
-          variant="primary"
-          size="sm"
-          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
-          onClick={() => toast.success("Client has been blocked successfully!") }
-        >
-          Block Client
-        </Button>
-        <Button
-          variant="solid"
-          className=""
-          onClick={() => navigate(`${absoluteUrls.admin.home.manage_client}`)}
-        >
-          Back
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="primary"
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-md hover:opacity-90 transition"
+            onClick={() =>
+              toast.success("Client has been blocked successfully!")
+            }
+          >
+            Block Client
+          </Button>
+          <Button
+            variant="solid"
+            className=""
+            onClick={() => navigate(`${absoluteUrls.admin.home.manage_client}`)}
+          >
+            Back
+          </Button>
         </div>
       </div>
 

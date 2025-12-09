@@ -64,6 +64,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
    */
   const handleAddCard = async () => {
     const isValid = await methods.trigger();
+    console.log('isValid :', isValid);
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);
