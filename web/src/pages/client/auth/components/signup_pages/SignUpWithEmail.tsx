@@ -1,6 +1,197 @@
+// import { assetsConfig } from "@/assets";
+// import { absoluteUrls } from "@/config/urls";
+// import { useClientSignup } from "@/shared/apiServices/client/clientService";
+// import { Button } from "@/shared/components/commonUI/Buttons";
+// import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
+// import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+// import Popup from "@/shared/components/Popup";
+// import React, { useState } from "react";
+// import { useForm } from "react-hook-form";
+// import { BiLogoLinkedin } from "react-icons/bi";
+// import { LuPhone } from "react-icons/lu";
+// import { NavLink, useNavigate } from "react-router-dom";
+// import OTPPage from "../../../../engineer/auth/components/OTPPage";
+// import IconWithTheme from "@/shared/components/IconWithTheme";
+// import logo_light from "@/assets/logo/logo_light.svg";
+
+// export interface SignUpFormData {
+//   email: string;
+//   terms: boolean;
+// }
+
+// /**
+//  * Sign-up form component for new engineer users.
+//  * Collects the user's email and consent to terms, then triggers an OTP verification flow
+//  * via a modal popup. Also provides alternative login options:
+//  * - Switch to phone number login
+//  * - Continue with LinkedIn
+//  *
+//  * Features:
+//  * - Form validation using `react-hook-form`
+//  * - Terms & Conditions acceptance enforcement (submit disabled until accepted)
+//  * - Navigation to Sign In page for existing users
+//  * - Modal-based OTP verification after form submission
+//  *
+//  * @component
+//  * @param {Object} props - Component props
+//  * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - Callback to switch to phone-based login flow
+//  *
+//  * @example
+//  * <SignUp setIsNumberLogin={setIsNumberLogin} />
+//  *
+//  * @returns {JSX.Element} The sign-up form UI with email input, terms checkbox, and action buttons.
+//  */
+// const SignUp = ({
+//   setIsNumberLogin,
+// }: {
+//   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
+// }) => {
+//   const navigate = useNavigate();
+//   const [isOpen, setIsOpen] = useState(false);
+//   const methods = useForm<SignUpFormData>({
+//     defaultValues: {
+//       email: "",
+//       terms: false,
+//     },
+//   });
+
+//   const handleOTPVerified = () => {
+//     setIsOpen(false);
+//     // navigate(absoluteUrls.client.auth.account_type);
+//     navigate(absoluteUrls.client.auth.account_type, {
+//       state: {
+//         signupEmail: methods.getValues("email"),
+//         emailVerified: true, // Pre-verified
+//         disableEmail: true, // Lock email in ProfileSetup
+//         disableMobile: false, // Mobile should be editable in ProfileSetup
+//       },
+//     });
+//   };
+
+//   const { mutate, isPending } = useClientSignup({
+//     onSuccess: (data: any) => {
+//       console.log(data);
+//       setIsOpen(true);
+//       // toast.success("OTP sent explicitly (Simulated)"); // Signup logic usually involves OTP verification next
+//     },
+//     onError: (error: any) => {
+//       console.error(error);
+//       // toast.error("Signup failed");
+//     },
+//   });
+
+//   const termsAccepted = methods.watch("terms");
+
+//   const handleSubmit = (data: SignUpFormData) => {
+//     // Note: data only contains email and terms.
+//     // ClientData requires more fields, but for this step we might only be collecting email.
+//     // We'll pass partial data for now, assuming backend or adapter handles it or it's a multi-step process like engineer.
+//     // However, the current adapter expects ClientData.
+//     // If this is just Step 1, maybe we need to adjust the flow.
+//     // Given the prompt "Integrate client signup", and this form only has email,
+//     // I will map email to ClientData and send it.
+//     mutate({
+//        email: data.email,
+//        // other required fields might be missing, but let's assume partial signup is allowed or handled
+//     });
+//   };
+
+//   return (
+//     <div className="flex items-center justify-center max-w-lg">
+//       <div className="p-10 w-full">
+//         <div className="text-center mb-6">
+//           <div className="flex justify-center mb-8">
+//             <IconWithTheme
+//               lightLogo={assetsConfig.logos.companyLogo}
+//               darkLogo={logo_light}
+//               className="h-20 w-24"
+//             />
+//           </div>
+//           <h2 className="text-3xl font-bold">Sign Up</h2>
+//           <h2 className="text-md font-extralight">
+//             Already have an account?{" "}
+//             <NavLink
+//               to={absoluteUrls.client.auth.login}
+//               className="text-teal-900 hover:underline font-semibold"
+//             >
+//               Log In
+//             </NavLink>
+//           </h2>
+//         </div>
+//         <FormContainer
+//           methods={methods}
+//           onSubmit={handleSubmit}
+//           className="flex flex-col gap-3 p-2"
+//         >
+//           <InputField
+//             name="email"
+//             label="Email Address"
+//             type="email"
+//             required
+//           />
+//           <div className="flex items-center w-full flex-col md:flex-row">
+//             <CheckboxInput
+//               name="terms"
+//               secondaryLabel="I have read and agree to the"
+//             />
+//             <NavLink
+//               className="text-teal-900 underline font-semibold pl-1"
+//               to={absoluteUrls.client.auth.signup}
+//             >
+//               Terms and Services
+//             </NavLink>
+//           </div>
+//           <Button
+//             type="submit"
+//             disabled={!termsAccepted}
+//             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+//               !termsAccepted
+//                 ? "opacity-50 cursor-not-allowed"
+//                 : "hover:opacity-90"
+//             }`}
+//           >
+//             Create Account
+//           </Button>
+//         </FormContainer>
+//         <div
+//           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+//           onClick={() => setIsNumberLogin(true)}
+//         >
+//           <LuPhone />
+//           Sign up with Phone Number
+//         </div>
+//         <div className="flex flex-row items-center justify-center gap-4 pt-5">
+//           <hr className="flex-1 border-t border-gray-300" />
+//           <span className="text-gray-500 text-sm">or</span>
+//           <hr className="flex-1 border-t border-gray-300" />
+//         </div>
+//         <div className="flex flex-col gap-2 items-center justify-center pt-5">
+//           <Button
+//             className="w-full"
+//             variant="outline"
+//             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
+//           >
+//             <span className="whitespace-nowrap">LinkedIn</span>
+//           </Button>
+//         </div>
+//         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+//           <OTPPage
+//             header="Enter the OTP"
+//             description="We sent you an OTP code"
+//             onClose={() => setIsOpen(false)}
+//             handleNavigate={handleOTPVerified}
+//           />
+//         </Popup>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default SignUp;
+
+
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -68,32 +259,10 @@ const SignUp = ({
     });
   };
 
-  const { mutate, isPending } = useClientSignup({
-    onSuccess: (data: any) => {
-      console.log(data);
-      setIsOpen(true);
-      // toast.success("OTP sent explicitly (Simulated)"); // Signup logic usually involves OTP verification next
-    },
-    onError: (error: any) => {
-      console.error(error);
-      // toast.error("Signup failed");
-    },
-  });
-
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = (data: SignUpFormData) => {
-    // Note: data only contains email and terms.
-    // ClientData requires more fields, but for this step we might only be collecting email.
-    // We'll pass partial data for now, assuming backend or adapter handles it or it's a multi-step process like engineer.
-    // However, the current adapter expects ClientData.
-    // If this is just Step 1, maybe we need to adjust the flow.
-    // Given the prompt "Integrate client signup", and this form only has email,
-    // I will map email to ClientData and send it.
-    mutate({
-       email: data.email,
-       // other required fields might be missing, but let's assume partial signup is allowed or handled
-    });
+  const handleSubmit = () => {
+    setIsOpen(true);
   };
 
   return (

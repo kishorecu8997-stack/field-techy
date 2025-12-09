@@ -50,7 +50,7 @@ const Login = ({
     onSuccess: (data) => {
       console.log(data);
       setIsOpen(true);
-      toast.success("OTP sent explicitly (Simulated)"); 
+      // toast.success("OTP sent explicitly (Simulated)"); 
     },
     onError: (error: any) => {
        console.error(error);
@@ -83,7 +83,7 @@ const Login = ({
            <IconWithTheme
               lightLogo={assetsConfig.logos.companyLogo}
               darkLogo={logo_light}
-              className="h-20 w-24"
+               className="h-15 w-20"
             />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">

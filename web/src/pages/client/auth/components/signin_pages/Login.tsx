@@ -84,14 +84,14 @@ const Login = ({
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="px-10 w-full max-w-lg ">
-        <div className="flex text-center flex-col mb-6 gap-5">
-          <div className="flex justify-center ">
+    <div className="flex items-center justify-center w-full">
+      <div className="px-10 w-full max-w-lg">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
               darkLogo={logo_light}
-              className="h-20 w-24"
+              className="h-15 w-20"
             />
           </div>
           <div>
@@ -112,7 +112,7 @@ const Login = ({
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2 w-full"
+          className="flex flex-col gap-3 w-full"
         >
           <InputField
             name="email"
