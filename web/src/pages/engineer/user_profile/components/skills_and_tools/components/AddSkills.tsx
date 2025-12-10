@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 interface AddSkillsProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * Defines the shape of the form data for adding skills.
@@ -25,7 +24,7 @@ export type AddSkillsFormData = {
  * @returns {React.ReactElement} The rendered AddSkills form component.
  */
 
-const AddSkills: React.FC<AddSkillsProps> = ({onMenuItemClick,onClose}) => {
+const AddSkills: React.FC<AddSkillsProps> = ({ onMenuItemClick }) => {
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],

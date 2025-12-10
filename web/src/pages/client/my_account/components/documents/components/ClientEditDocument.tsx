@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 interface ClientEditDocumentProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * Defines the shape of the form data for editing a document.
@@ -23,8 +22,8 @@ export type EditDocumentFormData = {
  * @param {EditDocumentProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditDocument form component.
  */
-// const ClientEditDocument = () => {
-  const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({onMenuItemClick,onClose}) => {
+
+  const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({ onMenuItemClick }) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -34,7 +33,7 @@ export type EditDocumentFormData = {
   const onSubmit = (data: EditDocumentFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Document Updated Successfully");
-    onMenuItemClick("document")
+    onMenuItemClick("document");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

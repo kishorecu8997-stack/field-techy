@@ -8,14 +8,13 @@ import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
 
 interface WithdrawProps {
-  onMenuItemClick: (key: string) => void;
   onClose: () => void;
 }
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
-const Withdraw: React.FC<WithdrawProps> = ({onMenuItemClick,onClose}) => {
+const Withdraw: React.FC<WithdrawProps> = ({ onClose }) => {
   const FormCtx = useForm<bankDetails>({
     mode: "onSubmit",
   });

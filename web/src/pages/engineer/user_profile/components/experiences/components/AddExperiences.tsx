@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 
 interface AddExperiencesProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -19,7 +18,7 @@ interface AddExperiencesProps {
  * @param {AddExperiencesProps} props - Component props.
  * @returns {React.ReactElement} The rendered AddExperiences form component.
  */
-const AddExperiences: React.FC<AddExperiencesProps> = ({onMenuItemClick,onClose}) => {
+const AddExperiences: React.FC<AddExperiencesProps> = ({ onMenuItemClick }) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -29,8 +28,7 @@ const AddExperiences: React.FC<AddExperiencesProps> = ({onMenuItemClick,onClose}
   const handleSubmit = (data: ExperiencesFormData) => {
     toast.success("Experience Added Successfully");
     console.log("Form submitted with data:", data);
-
-    onMenuItemClick("experiences")
+    onMenuItemClick("experiences");
     // TODO: integrate submission logic here (e.g., API call)
     // Example: await api.experiences.create(data);
   };

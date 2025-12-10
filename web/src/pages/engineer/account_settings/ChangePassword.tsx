@@ -9,13 +9,12 @@ import { toast } from "react-toastify";
 
 interface ChangePasswordProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
  * Uses React Hook Form for validation and submission handling.
  */
-  const ChangePassword: React.FC<ChangePasswordProps> = ({onMenuItemClick,onClose}) => {
+  const ChangePassword: React.FC<ChangePasswordProps> = ({ onMenuItemClick }) => {
   return (
     <div className="h-full">
       <ChangePasswordFields onMenuItemClick={onMenuItemClick} />
@@ -32,7 +31,7 @@ const ChangePasswordFields = ({ onMenuItemClick }: { onMenuItemClick: (key: stri
   const handleSubmit = (data: bankDetails) => {
     console.log("Submitted data:", data);
     toast.success("Password updated successfully!");
-    onMenuItemClick("settings")
+    onMenuItemClick("settings");
   };
 
   return (

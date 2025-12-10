@@ -15,7 +15,6 @@ import {workPreferenceData} from "@/dummy_data/engineer_profile/workPreferenceDa
 
 interface WorkPreferenceProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
@@ -24,7 +23,7 @@ interface WorkPreferenceProps {
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
 
-const WorkPreference: React.FC<WorkPreferenceProps> = ({onMenuItemClick,onClose}) => {
+const WorkPreference: React.FC<WorkPreferenceProps> = ({ onMenuItemClick }) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
@@ -34,7 +33,7 @@ const WorkPreference: React.FC<WorkPreferenceProps> = ({onMenuItemClick,onClose}
   const handleSubmit = (data: WorkPreferenceFormData) => {
     toast.success("Work Preferences Saved Successfully");
     console.log("Form submitted with data:", data);
-    onMenuItemClick("profile")
+    onMenuItemClick("profile");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

@@ -26,7 +26,6 @@ export default function AddCategory() {
   const handleSubmit = () => {
     toast.success("Job category added successfully!");
     navigate(absoluteUrls.admin.home.manage_categories);
-
   };
   return (
     <div className="w-full h-full p-4">

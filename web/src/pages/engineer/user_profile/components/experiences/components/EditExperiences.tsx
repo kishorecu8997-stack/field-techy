@@ -18,7 +18,6 @@ import {experianceEdit} from "@/dummy_data/engineer_profile/work-experience";
 
 interface EditExperiencesProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 
 /**
@@ -28,11 +27,11 @@ interface EditExperiencesProps {
  * @param {EditExperiencesProps} props - Component props.
  * @returns {React.ReactElement} The rendered EditExperiences form component.
  */
-const EditExperiences: React.FC<EditExperiencesProps> = ({onMenuItemClick,onClose}) => {
+const EditExperiences: React.FC<EditExperiencesProps> = ({ onMenuItemClick }) => {
   const handleSubmit = (data: ExperiencesFormData) => {
     toast.success("Experience Updated Successfully");
     console.log("Form submitted with updated data:", data);
-    onMenuItemClick("experiences")
+    onMenuItemClick("experiences");
     // TODO: integrate submission logic here (e.g., API call)
     // Example: await api.experiences.update(experienceData.id, data);
   };

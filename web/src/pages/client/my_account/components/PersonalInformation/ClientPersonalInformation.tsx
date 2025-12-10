@@ -23,7 +23,6 @@ import { TbFileText } from "react-icons/tb";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -31,7 +30,7 @@ interface ClientPersonalInformationProps {
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({onMenuItemClick,onClose}) => {
+const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({ onMenuItemClick }) => {
   /**
    * Initializes `react-hook-form` with default values for the personal information form.
    */

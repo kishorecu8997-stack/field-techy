@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 
 interface EditToolsProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 
 /**
@@ -34,8 +33,8 @@ interface EditToolsProps {
  * @param {EditToolsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditTools form component.
  */
-// const EditTools: React.FC<EditToolsProps> = () => {
-const EditTools: React.FC<EditToolsProps> = ({onMenuItemClick,onClose}) => {
+
+const EditTools: React.FC<EditToolsProps> = ({ onMenuItemClick }) => {
   const initialToolIds = useMemo(() => {
     const storedIds = localStorage.getItem("editToolsId");
     if (storedIds) {
@@ -54,7 +53,7 @@ const EditTools: React.FC<EditToolsProps> = ({onMenuItemClick,onClose}) => {
   const onSubmit = (data: EditToolsFormData) => {
     console.log("Form submitted with updated data:", data);
     toast.success("Tools Updated Successfully");
-    onMenuItemClick("skillsAndTools")
+    onMenuItemClick("skillsAndTools");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

@@ -7,13 +7,12 @@ import { bankDetails as bankDetailsData } from "@/dummy_data/bankDetails";
 
 interface EditBankDetailsProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * Page component for editing existing bank details, pre-filled with default values using React Hook Form.
  */
 
-  const EditBankDetails: React.FC<EditBankDetailsProps> = ({onMenuItemClick,onClose}) => {
+  const EditBankDetails: React.FC<EditBankDetailsProps> = ({ onMenuItemClick }) => {
   const bankData = bankDetailsData.find(
     (bank) => bank.bankName === "Bank of America"
   );
@@ -35,7 +34,7 @@ interface EditBankDetailsProps {
   const handleSubmit = (data: bankDetails) => {
     console.log("Submitted bank details:", data);
     toast.success("Bank details updated successfully");
-    onMenuItemClick("manageBankAccounts")
+    onMenuItemClick("manageBankAccounts");
   };
 
   return (

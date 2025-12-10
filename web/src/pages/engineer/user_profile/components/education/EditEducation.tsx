@@ -11,7 +11,6 @@ import { educationLevels, courses, universities, majors,educationEdit} from "@/d
 
 interface EditEducationProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * The EditEducation component renders a form to modify an existing education entry.
@@ -21,7 +20,7 @@ interface EditEducationProps {
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
 
-const EditEducation: React.FC<EditEducationProps> = ({ onMenuItemClick, onClose }) => {
+const EditEducation: React.FC<EditEducationProps> = ({ onMenuItemClick }) => {
   const getEducationById = () => {
     const id = localStorage.getItem("editEducationId");
     const educationId = id ;

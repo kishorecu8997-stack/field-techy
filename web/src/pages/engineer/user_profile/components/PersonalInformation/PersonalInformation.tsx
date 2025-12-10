@@ -19,7 +19,6 @@ import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
 
 interface PersonalInfoProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -27,7 +26,7 @@ interface PersonalInfoProps {
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const PersonalInformation: React.FC<PersonalInfoProps> = ({onMenuItemClick,onClose}) => {
+const PersonalInformation: React.FC<PersonalInfoProps> = ({ onMenuItemClick }) => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
@@ -40,7 +39,7 @@ const PersonalInformation: React.FC<PersonalInfoProps> = ({onMenuItemClick,onClo
   const handleSubmit = (data: EditProfileFormData) => {
     console.log("Form submitted with data:", data);
     toast.success("Profile Updated Successfully");
-    onMenuItemClick("profile")
+    onMenuItemClick("profile");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 

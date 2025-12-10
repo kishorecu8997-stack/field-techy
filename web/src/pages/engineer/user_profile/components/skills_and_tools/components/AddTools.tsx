@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 interface AddToolsProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
 }
 
 /**
@@ -25,7 +24,7 @@ export type AddToolsFormData = {
  * @param {AddToolsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddTools form component.
  */
-const AddTools: React.FC<AddToolsProps> = ({onMenuItemClick,onClose}) => {
+const AddTools: React.FC<AddToolsProps> = ({ onMenuItemClick }) => {
   /**
    * Initializes `react-hook-form` with default values for the tools form.
    */
@@ -44,7 +43,7 @@ const AddTools: React.FC<AddToolsProps> = ({onMenuItemClick,onClose}) => {
   const onSubmit = (data: AddToolsFormData) => {
     console.log("Form data:", data);
     toast.success("Tools Saved Successfully");  
-    onMenuItemClick("skillsAndTools")
+    onMenuItemClick("skillsAndTools");
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 
