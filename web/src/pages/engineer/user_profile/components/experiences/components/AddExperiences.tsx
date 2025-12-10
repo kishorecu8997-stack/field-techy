@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -65,7 +67,6 @@ const AddExperiences = () => {
       startDate: new Date(),
       endDate: null,
       isCurrent: false
-
     },
     mode: "onSubmit",
   });
@@ -158,16 +159,13 @@ const AddExperiences = () => {
             onChange: (e) => {
               const checked = e.target.checked;
               methods.setValue("isCurrent", checked)
-              
               if (checked) {
               methods.setValue("endDate", null); // Remove end date
               }
             }
-
           }}
         />
       </div>
-
 
       {/* Fixed bottom button */}
       <div className=" bg-white ">

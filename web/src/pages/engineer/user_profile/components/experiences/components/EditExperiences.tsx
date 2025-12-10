@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 
 import {
@@ -19,9 +18,7 @@ import {
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-import { toast } from "react-toastify";
 import { experienceData } from "@/dummy_data";
-import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 
 
 /**
@@ -128,7 +125,6 @@ const EditExperiences = () => {
           required
           rules={{ validate: (v: string) => validateCompany(v) }}
         />
-
         <SelectField
           label="Work Location Type"
           isShowLabel={false}
@@ -137,7 +133,6 @@ const EditExperiences = () => {
           options={workLocationTypeOptions}
           required
         />
-
         <SelectField
           label="Employment Type"
           isShowLabel={false}
@@ -159,7 +154,6 @@ const EditExperiences = () => {
           }}
         />
 
-    
         {!methods.watch("isCurrent") && (
           <DatePickerInput
             name="endDate"
@@ -178,8 +172,7 @@ const EditExperiences = () => {
               onChange: () => methods.trigger("startDate")
             }}
           />
-        )}
-    
+        )}   
 
         {/* Checkbox label */}
         <CheckboxInput
@@ -189,13 +182,11 @@ const EditExperiences = () => {
           rules={{
             onChange: (e) => {
              const checked = e.target.checked;
-
               if (checked) {
                 methods.setValue("endDate", null);
               }
             }
           }}
-
         />
       </div>
 

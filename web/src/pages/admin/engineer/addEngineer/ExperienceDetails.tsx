@@ -92,13 +92,10 @@ export default function ExperienceDetails() {
             required
             rules={{ validate: (v: string) => validateExperience(v) }}
           />
-
-
         </div>
       </div>
 
       <div className="w-full flex items-center gap-2 mt-2 justify-start">
-
         <CheckboxInput
           name="isCurrent"
           label="I currently work here"
@@ -111,8 +108,6 @@ export default function ExperienceDetails() {
             }
           }}
         />
-
-
       </div>
     </div>
   );

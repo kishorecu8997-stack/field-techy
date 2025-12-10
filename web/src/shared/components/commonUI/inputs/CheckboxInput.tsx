@@ -56,6 +56,7 @@ export const CheckboxInput = ({
                 checked={field.value || false}
                 aria-controls="endDateSection"
                 className="accent-primary mt-[2px]"
+                disabled={disabled}
                 onChange={(e) => {
                   field.onChange(e);  
                   if (rules?.onChange) {
