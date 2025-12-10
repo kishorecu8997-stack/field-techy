@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "./querykeys";
 import { ClientUserAdapter } from "./clientUserAdapter";
+import { queryKeys } from "../queryKeys";
 
 
 export async function getClientDetails(id: string) {
@@ -8,10 +8,9 @@ export async function getClientDetails(id: string) {
 	return response;
 }
 
-
-export function useClientGetDetails(filter:) {
+export function useClientGetDetails(id: string) {
 	return useQuery({
-		queryKey: [queryKeys.CLIENT_USER_BY_ID(id)],
+		queryKey: [queryKeys.client.byId(id)],
 		queryFn: () => getClientDetails(id),
 		enabled: !!id,
 	})

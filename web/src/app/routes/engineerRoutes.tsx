@@ -1,0 +1,111 @@
+import React from "react";
+import { Navigate, type RouteObject } from "react-router-dom";
+import { BASE, urls, absoluteUrls } from "@/config/urls";
+import { withSuspense } from "./WithSuspense";
+
+const Layout = React.lazy(() => import("@/layout/auth-pannel"));
+const SignInPage = React.lazy(() => import("@/pages/engineer/auth/components/signin_pages/SignInPage"));
+const SignUpPage = React.lazy(() => import("@/pages/engineer/auth/components/signup_pages/SignUpPage"));
+const MultiStepRegistrationForm = React.lazy(() => import("@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "));
+const ForgetPassword = React.lazy(() => import("@/pages/engineer/auth/components/ForgetPassword"));
+const ResetPassword = React.lazy(() => import("@/pages/engineer/auth/components/ResetPassword"));
+const BackgroundVerification = React.lazy(() => import("@/pages/engineer/auth/components/profile_setup/BackgroundVerification"));
+const SetPassword = React.lazy(() => import("@/pages/engineer/auth/components/profile_setup/SetPassword"));
+
+const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const Home = React.lazy(() => import("@/pages/engineer/home"));
+const ExploreJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreJobs"));
+const ExploreSavedJobs = React.lazy(() => import("@/pages/engineer/home/components/ExploreSavedJobs"));
+const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
+const JobDetailsPage = React.lazy(() => import("@/pages/engineer/my_job/JobDetailsPage"));
+const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
+const SearchResult = React.lazy(() => import("@/pages/engineer/search_result"));
+const PrivacyPolicy = React.lazy(() => import("@/pages/engineer/privacy_policy/PolicyPage"));
+const TermsAndConditions = React.lazy(() => import("@/pages/engineer/privacy_policy/TermsAndConditions"));
+const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const AboutApp = React.lazy(() => import("@/pages/engineer/privacy_policy/AboutApp"));
+const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
+
+export const engineerRoutes: RouteObject[] = [
+  // Engineer Auth Routes
+  {
+    path: BASE.AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { index: true, element: <Navigate to="login" replace /> },
+      { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
+      { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
+      {
+        path: urls.engineer.auth.profile_setup,
+        element: withSuspense(MultiStepRegistrationForm),
+      },
+      {
+        path: urls.engineer.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.engineer.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: urls.engineer.auth.set_password,
+        element: withSuspense(SetPassword),
+      },
+      {
+        path: urls.engineer.auth.background_verification,
+        element: withSuspense(BackgroundVerification),
+      },
+    ],
+  },
+
+  // Engineer Main Routes
+  {
+    path: BASE.ENGINEER,
+    element: withSuspense(RootLayout),
+    children: [
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
+      {
+        path: urls.engineer.home.explore_jobs,
+        element: withSuspense(ExploreJobs),
+      },
+      {
+        path: urls.engineer.home.saved_jobs,
+        element: withSuspense(ExploreSavedJobs),
+      },
+      { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId`,
+        element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId`,
+        element: withSuspense(OfferPages),
+      },
+      {
+        path: urls.engineer.home.search_result,
+        element: withSuspense(SearchResult),
+      },
+      {
+        path: urls.engineer.home.privacy_policy,
+        element: withSuspense(PrivacyPolicy),
+      },
+      {
+        path: urls.engineer.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
+    ],
+  },
+  
+  // Standalone Privacy Policy
+  {
+    path: absoluteUrls.engineer.auth.privacy_policy,
+    element: withSuspense(PrivacyPolicy),
+  },
+];
