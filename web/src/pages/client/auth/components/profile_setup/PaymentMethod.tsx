@@ -14,7 +14,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @property {string} brand - Card brand (visa, mastercard, amex, discover, etc.)
  * @property {string} name - Cardholder or card display name
  */
- export interface PaymentCardOption {
+export interface PaymentCardOption {
   id: string;
   last4: string;
   brand: "visa" | "mastercard" | "amex" | "discover" | string;
@@ -24,6 +24,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 interface PaymentMethodSelectorProps {
   options?: PaymentCardOption[];
   selectedId?: string | null;
+  isHeader?: boolean;
   onChange?: (id: string) => void;
   onAddNew?: (cardData: CardFormData) => void;
 }
@@ -39,6 +40,7 @@ interface PaymentMethodSelectorProps {
 const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
   selectedId,
   onAddNew,
+  isHeader = true,
 }) => {
   /**
    * PaymentMethod
@@ -61,7 +63,7 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
     onAddNew?.(cardData);
     setIsOpen(false);
   };
-  
+
   /**
    * handleAddCard
    *
@@ -73,12 +75,14 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
 
   return (
     <div>
-      <div className="p-2 flex flex-col gap-2 items-center justify-center">
-        <h2 className="text-3xl font-bold">Set Payment Method</h2>
-        <p className="text-md text-center text-gray-600 mb-6 px-3">
-          Complete your profile to unlock opportunities.
-        </p>
-      </div>
+      {isHeader && (
+        <div className="p-2 flex flex-col gap-2 items-center justify-center">
+          <h2 className="text-3xl font-bold">Set Payment Method</h2>
+          <p className="text-md text-center text-gray-600 mb-6 px-3">
+            Complete your profile to unlock opportunities.
+          </p>
+        </div>
+      )}
 
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 w-[30rem]">
         <div className="space-y-4">

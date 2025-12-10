@@ -41,7 +41,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    navigate(`${absoluteUrls.admin.home.dashbaord}`);
+    navigate(`${absoluteUrls.admin.home.dashboard}`);
     toast.success("Logged in successfully!");
   };
 

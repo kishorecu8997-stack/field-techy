@@ -133,7 +133,7 @@ export const validatePassword = (value: string) => {
     return "Password must include at least one special character";
   }
   if (/\s/.test(value)) {
-    return "Password must not start or end with a space";
+    return "Password must not contain spaces";
   }
   return true;
 };
@@ -203,15 +203,15 @@ export function validateSWIFTForBank(
 export function validateSWIFTBank(swift: string): true | string {
   // 1. Required check
   if (!swift) {
-    return "SWIFT code is required";
+    return "SWIFT/BIC code is required";
   }
 
   // 2. Reject leading/trailing/internal spaces
   if (/^\s|\s$/.test(swift)) {
-    return "SWIFT code must not start or end with a space";
+    return "SWIFT/BIC must not start or end with a space";
   }
   if (/\s/.test(swift)) {
-    return "SWIFT code must not contain spaces";
+    return "SWIFT/BIC must not contain spaces";
   }
 
   // 3. Normalize
@@ -219,15 +219,15 @@ export function validateSWIFTBank(swift: string): true | string {
 
   // 4. Length check: must be between 8 and 11 characters
   if (normalized.length < 8) {
-    return "SWIFT code must be at least 8 characters long";
+    return "SWIFT/BIC must be at least 8 characters long";
   }
   if (normalized.length > 11) {
-    return "SWIFT code must not exceed 11 characters";
+    return "SWIFT/BIC must not exceed 11 characters";
   }
 
   // 5. Alphanumeric check
   if (!/^[A-Z0-9]+$/.test(normalized)) {
-    return "SWIFT code must contain only letters and digits";
+    return "SWIFT/BIC must contain only letters and digits";
   }
 
   // ✅ Valid
@@ -297,7 +297,7 @@ export function validateAccNumber(value: string): true | string {
 
   // 2. No spaces allowed
   if (/\s/.test(value)) {
-    return "Account number must not start or end with a space";
+    return "Account number must not contain spaces";
   }
 
   // 3. Digit-only check (no letters or symbols)

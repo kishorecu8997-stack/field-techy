@@ -29,18 +29,17 @@ const MyProjects: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-      <div className="container mx-auto px-4 py-6">
+      <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
+        <MyJobsHeader
+          title="My Projects"
+          currentSort={SORT_OPTIONS.NEWEST}
+          onSortChange={() => {}}
+          isReport={false}
+        />
+      </div>
+      <div className="container mx-auto ">
         <div className="flex flex-col">
-          <div className="lg:col-span-2">
-            <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
-              <MyJobsHeader
-                title="My Projects"
-                currentSort={SORT_OPTIONS.NEWEST}
-                onSortChange={() => {}}
-                isReport={false}
-              />
-            </div>
-          </div>
+          <div className="lg:col-span-2"></div>
           <div className="space-y-6">
             <FilterButton
               activeFilter={activeFilter}

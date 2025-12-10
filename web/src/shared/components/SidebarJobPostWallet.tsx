@@ -1,4 +1,6 @@
 import TalentSection from "@/pages/client/post_job/PostAJobComponent/TalentSection";
+import { WalletCard } from "./WalletCard";
+import useDrawerStore from "../store/useDrawerStore";
 
 interface EarningsData {
   balance: number;
@@ -9,9 +11,11 @@ interface SidebarProfileProps {
 }
 
 const SidebarJobPostWallet: React.FC<SidebarProfileProps> = () => {
+
   return (
     <div className="space-y-6">
       <TalentSection />
+      <WalletCard earnings={{balance: 1000}}   />
     </div>
   );
 };
