@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { CategoryFormData } from "./types";
 import JobCategoryForm from "./JobCategoryForm";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `AddCategory` component renders a page with a form to add a new job category.
@@ -23,8 +24,40 @@ export default function AddCategory() {
   });
   const navigate = useNavigate();
 
+  const { showPopup } = usePopupStore();
+
+  const handleSaveConfirmation = async (data: CategoryFormData) => {
+    console.log("data :", data);
+    await showPopup({
+      title: "Add Category",
+      body: "Are you sure you want to save this details?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Save",
+          value: "save",
+          variant: "primary",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", close);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            toast.success("Job category added successfully!");
+            methods.reset();
+            navigate(absoluteUrls.admin.home.manage_categories);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const handleSubmit = () => {
-    toast.success("Job category added successfully!");
+    handleSaveConfirmation(methods.getValues());
   };
   return (
     <div className="w-full h-full p-4">
@@ -41,7 +74,7 @@ export default function AddCategory() {
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+          className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
         >
           <JobCategoryForm />
           <div className="flex justify-end mt-2">

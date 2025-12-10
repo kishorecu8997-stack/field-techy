@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { scrollToTop } from "@/utils";
 
 /**
  * A reusable component displaying a complete work submission panel.
@@ -86,6 +87,7 @@ const WorkSubmissionComponent: React.FC<{
             close(true);
             navigate(absoluteUrls.engineer.home.my_jobs);
             console.log("Submitted");
+            scrollToTop();
           },
         },
       ],

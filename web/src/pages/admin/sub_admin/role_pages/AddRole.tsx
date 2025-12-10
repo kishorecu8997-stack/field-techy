@@ -24,7 +24,7 @@ const AddRole = () => {
   });
 
   return (
-    <div className="h-full w-full flex flex-col bg-white rounded-md">
+    <div className="h-full w-full flex flex-col bg-white dark:bg-gray-700 rounded-md">
       <FormContainer
         methods={formCtx}
         className="flex items-center gap-3 flex-wrap w-full"
@@ -39,8 +39,11 @@ const AddRole = () => {
             />
           </div>
           <RoleTable />
-          <div className="px-3">
-            <Button type="submit" className="w-fit bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700">
+          <div className="px-3 flex justify-end">
+            <Button
+              type="submit"
+              className="w-fit bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            >
               Submit
             </Button>
           </div>

@@ -12,6 +12,7 @@ interface CheckboxInputProps {
   secondaryLabel?: string;
   /** Optional react-hook-form validation rules */
   rules?: RegisterOptions;
+  disabled?: boolean;
 }
 
 /**
@@ -29,6 +30,7 @@ export const CheckboxInput = ({
   required = false,
   rules,
   secondaryLabel,
+  disabled = false,
 }: CheckboxInputProps) => {
   const { control } = useFormContext();
 
@@ -53,11 +55,12 @@ export const CheckboxInput = ({
                 id={name}
                 checked={field.value || false}
                 className="accent-primary"
+                disabled={disabled}
               />
               {isShowLabel && (
                 <label
                   htmlFor={name}
-                  className="text-gray-700 font-bold dark:text-gray-300"
+                  className="text-gray-700 font-semibold dark:text-gray-300"
                 >
                   {label} {required && <span className="text-red-600">*</span>}
                 </label>

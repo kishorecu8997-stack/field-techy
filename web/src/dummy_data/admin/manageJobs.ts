@@ -25,6 +25,7 @@ export interface ManageJobProps {
   createdDate: string;
   approvalStatus: string;
 }
+import type { ManageFlaggedJobProps, ManageJobProps } from "@/pages/admin/jobs/types";
 
 export const manageJobs: ManageJobProps[] = [
   {
@@ -172,20 +173,6 @@ export const AllJobType = [
   { value: "onSite", label: "On Site" },
 ];
 
-//Manage Flagged Jobs
-export interface ManageFlaggedJobProps {
-  id: number;
-  postedBy: {
-    name: string;
-    email: string;
-  };
-  jobTitle: string;
-  jobDescription: string;
-  issueCategory: string;
-  issueDescription: string;
-  priority: string;
-  createdDate: string;
-}
 
 export const manageFlaggedJobs: ManageFlaggedJobProps[] = [
   {

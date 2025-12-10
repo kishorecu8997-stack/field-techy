@@ -8,9 +8,9 @@ import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/Verifie
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { validateName } from "@/shared/libs/utils";
 import {
   validateAddress,
+  validateName,
   validateVatNumber,
   validateZipcode,
 } from "@/pages/engineer/user_profile/Validate";

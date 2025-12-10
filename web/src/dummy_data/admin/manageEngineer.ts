@@ -18,6 +18,7 @@ export interface ManageEngineerProps {
   avgRating: number;
   approvalStatus: string;
 }
+import type { ManageEngineerProps } from "@/pages/admin/engineer/types";
 
 export const manageEngineer: ManageEngineerProps[] = [
   {
