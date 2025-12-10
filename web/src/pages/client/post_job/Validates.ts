@@ -136,7 +136,7 @@ export const validateDateRange = (
   endDate: Date | null
 ) => {
   if (!startDate) {
-    return "Start date is required.......";
+    return "Start date is required";
   }
 
   if (startDate < new Date(new Date().setHours(0, 0, 0, 0))) {
