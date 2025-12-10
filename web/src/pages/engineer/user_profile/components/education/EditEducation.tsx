@@ -2,25 +2,18 @@ import {
   courses,
   educationEdit,
   educationLevels,
-  majors,
-  universities,
 } from "@/dummy_data/engineer_profile/education-data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { validatePassingYear } from "../../Validate";
 import type { EducationFormData } from "./types";
-
 
 /**
  * The EditEducation component renders a form to modify an existing education entry.
@@ -30,8 +23,6 @@ import type { EducationFormData } from "./types";
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
 
-
-const EditEducation =() => {
 const EditEducation = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
@@ -119,8 +110,7 @@ const EditEducation = () => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateUniversity(v) }}
-        
-        />
+      />
     
         <InputField
           label="Major Subject"
@@ -130,8 +120,7 @@ const EditEducation = () => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateMajorSubject(v) }}
-        
-        />
+       />
  
         <InputField
           label="Passing Year"

@@ -9,9 +9,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import {
   educationLevels,
-  courses,
-  universities,
-  majors,
+  courses
 } from "@/dummy_data/engineer_profile/education-data";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
@@ -21,7 +19,6 @@ interface AddEducationProps {
   onClose: () => void;
 }
 
-
 /**
  * The AddEducation component renders a form for adding a new education entry.
  * It uses `react-hook-form` for form management and validation.
@@ -29,8 +26,6 @@ interface AddEducationProps {
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
 
-
-const AddEducation: React.FC<AddEducationProps> = ({ }) => {
 const AddEducation: React.FC<AddEducationProps> = ({}) => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
@@ -116,8 +111,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           aria-required="true"
           required
           rules={{ validate: (v: string ) => validateUniversity(v) }}
-        
-        />
+      />
 
         <InputField
           label="Major Subject"
@@ -127,8 +121,7 @@ const AddEducation: React.FC<AddEducationProps> = ({}) => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateMajorSubject(v) }}
-        
-        />
+      />
 
         <InputField
           label="Passing Year"
