@@ -83,8 +83,6 @@ const SelectMenu = ({
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
-  const [selectedBadge, setSelectedBadge] = useState<any>(selectedOption?.bg ?? "");
-  const [selectedIcon, setSelectedIcon] = useState<any>(selectedOption?.icon ?? "");
 
   return (
     <div className={`relative inline-block ${className}`} ref={wrapperRef}>
@@ -92,12 +90,12 @@ const SelectMenu = ({
         onClick={toggleDropdown}
         className={`flex space-x-2 items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
          ${
-           badge ? `${selectedBadge}` : "bg-white dark:bg-gray-800"
+           badge ? `${selectedOption?.bg ?? ""}` : "bg-white dark:bg-gray-800"
          } cursor-pointer hover:border-gray-400 min-w-[120px]`}
       >
         <span
           className={` ${
-            badge ? `${selectedBadge}` : " text-gray-700"
+            badge ? `${selectedOption?.bg ?? ""}` : " text-gray-700"
           } truncate text-sm dark:text-[#979ba2]`}
         >
           {selectedOption ? selectedOption.label : placeholder}
@@ -105,8 +103,8 @@ const SelectMenu = ({
 
         {badge ? (
           <span className="mt-0.5 w-4 h-4">
-            {selectedOption ? (
-              selectedIcon
+            {selectedOption?.icon ? (
+              <selectedOption.icon className="w-4 h-4" />
             ) : (
               <MdKeyboardArrowDown
                 className={`text-xl text-gray-500 transition-transform ${
@@ -134,8 +132,6 @@ const SelectMenu = ({
               key={option.value}
               onClick={() => {
                 handleSelect(option);
-                setSelectedBadge(option.bg);
-                setSelectedIcon(option.icon);
               }}
               className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm ${
                 badge
@@ -145,7 +141,9 @@ const SelectMenu = ({
                   : "hover:bg-gray-100 dark:hover:bg-blue-400"
               }`}
             >
-               {badge && option.icon && <option.icon className="inline w-4 h-4 ml-2" />}
+              {badge && option.icon && (
+                <option.icon className="inline w-4 h-4 ml-2" />
+              )}
 
               {option.label}
             </li>
