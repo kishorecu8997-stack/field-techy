@@ -8,6 +8,7 @@ import { AiOutlineClose } from "react-icons/ai";
  * Permission step constants and derived union type:
  * "location" | "notification"
  */
+
 export const PERMISSION_STEPS = {
   LOCATION: "location",
   NOTIFICATION: "notification",
@@ -15,6 +16,26 @@ export const PERMISSION_STEPS = {
 
 export type PermissionStep =
   (typeof PERMISSION_STEPS)[keyof typeof PERMISSION_STEPS];
+
+  // LOCATION permission states from navigator.permissions
+export const GEO_STATES = {
+  GRANTED: "granted",
+  DENIED: "denied",
+  PROMPT: "prompt",
+} as const;
+
+export type GeoPermissionState =
+  (typeof GEO_STATES)[keyof typeof GEO_STATES];
+
+// Notification.permission states
+export const NOTIFICATION_STATES = {
+  DEFAULT: "default",
+  GRANTED: "granted",
+  DENIED: "denied",
+} as const;
+
+export type NotificationPermissionState =
+  (typeof NOTIFICATION_STATES)[keyof typeof NOTIFICATION_STATES];
 
 /**
  * Props for the AllowAccessPopup component.
@@ -62,37 +83,40 @@ export default function AllowAccessPopup({
 
         // --- CASE 1 ---
         // Notification granted but location undecided => show LOCATION step
-        if (notif === "granted" && geo.state === "prompt") {
+        if (notif === NOTIFICATION_STATES.GRANTED && geo.state === GEO_STATES.PROMPT) {
           setStep(PERMISSION_STEPS.LOCATION);
           return;
         }
 
         // --- CASE 2 ---
         // Both location + notification decided => close popup
-        if (
-          (geo.state === "granted" || geo.state === "denied") &&
-          (notif === "granted" || notif === "denied")
-        ) {
-          setAccessPopup(false);
-          return;
-        }
+if (
+  (geo.state === GEO_STATES.GRANTED || geo.state === GEO_STATES.DENIED) &&
+  (notif === NOTIFICATION_STATES.GRANTED || notif === NOTIFICATION_STATES.DENIED)
+) {
+  setAccessPopup(false);
+  return;
+}
+
 
         // --- CASE 3 ---
         // Location undecided => first step
-        if (geo.state === "prompt") {
-          setStep(PERMISSION_STEPS.LOCATION);
-          return;
-        }
+if (geo.state === GEO_STATES.PROMPT) {
+  setStep(PERMISSION_STEPS.LOCATION);
+  return;
+}
+
 
         // --- CASE 4 ---
         // Location decided but notification undecided => second step
-        if (
-          (geo.state === "granted" || geo.state === "denied") &&
-          notif === "default"
-        ) {
-          setStep(PERMISSION_STEPS.NOTIFICATION);
-          return;
-        }
+if (
+  (geo.state === GEO_STATES.GRANTED || geo.state === GEO_STATES.DENIED) &&
+  notif === NOTIFICATION_STATES.DEFAULT
+) {
+  setStep(PERMISSION_STEPS.NOTIFICATION);
+  return;
+}
+
 
         // fallback
         setAccessPopup(false);
@@ -113,7 +137,7 @@ export default function AllowAccessPopup({
     navigator.geolocation.getCurrentPosition(
       () => {
         // Success: location allowed
-        if (Notification.permission === "default") {
+        if (Notification.permission === NOTIFICATION_STATES.DEFAULT) {
           setStep(PERMISSION_STEPS.NOTIFICATION);
         } else {
           setAccessPopup(false);
@@ -121,7 +145,7 @@ export default function AllowAccessPopup({
       },
       () => {
         // Location denied
-        if (Notification.permission === "default") {
+        if (Notification.permission === NOTIFICATION_STATES.DEFAULT) {
           setStep(PERMISSION_STEPS.NOTIFICATION);
         } else {
           setAccessPopup(false);
