@@ -139,7 +139,7 @@ const AddExperiences = () => {
               methods.setValue("isCurrent", checked)
               
               if (checked) {
-                methods.setValue("endDate", null);
+              methods.setValue("endDate", null); // Remove end date
               }
             }
 
