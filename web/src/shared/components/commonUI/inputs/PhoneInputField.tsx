@@ -9,23 +9,24 @@ import { CountrySelect } from "./CountrySelect";
 import type { PhoneInputFieldProps } from "./type";
 import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
 
-/**
- * A reusable phone number input field with a country code selector.
- *
- * This component integrates with `react-hook-form` and provides a composite
- * input for entering international phone numbers. It includes a dropdown for
- * selecting the country code and validates the phone number format based on
- * the selected country.
- *
- * @param {PhoneInputFieldProps} props - The props for the component.
- * @param {string} props.name - The name of the field for `react-hook-form`.
- * @param {string} [props.label] - The text label displayed above the input field.
- * @param {string} [props.placeholder="Enter mobile number"] - The placeholder text for the number input.
- * @param {boolean} [props.required=false] - Whether the field is mandatory.
- * @param {RegisterOptions} [props.rules] - Additional validation rules for `react-hook-form`.
- * @param {boolean} [props.disabled] - Disables the entire input field.
- * @param {string} [props.inputClassName] - Custom CSS classes for the phone number input element.
- */
+// --- Added ENUM-LIKE Object + Type ---
+export const COUNTRIES = {
+  india: "india",
+  uk: "uk",
+  australia: "australia",
+  brazil: "brazil",
+  china: "china",
+  egypt: "egypt",
+  france: "france",
+  germany: "germany",
+  japan: "japan",
+  spain: "spain",
+  usa: "usa",
+  uae: "uae",
+} as const;
+
+export type CountriesType = (typeof COUNTRIES)[keyof typeof COUNTRIES];
+
 export const PhoneInputField = ({
   name,
   label,
@@ -68,60 +69,60 @@ export const PhoneInputField = ({
 
     const { validationKey } = selectedCountry;
 
-    if (validationKey === "india") {
+    if (validationKey === COUNTRIES.india) {
       if (phoneNumber.length !== 10) {
         return "India mobile number must be exactly 10 digits long";
       }
       if (!/^[6-9]/.test(phoneNumber)) {
         return "India mobile numbers must start with 6, 7, 8, or 9";
       }
-    } else if (validationKey === "uk") {
+    } else if (validationKey === COUNTRIES.uk) {
       if (phoneNumber.length !== 10) {
         return "UK mobile number must be exactly 10 digits long";
       }
       if (!/^[789]/.test(phoneNumber)) {
         return "UK mobile numbers must start with 7, 8, or 9";
       }
-    } else if (validationKey === "australia") {
+    } else if (validationKey === COUNTRIES.australia) {
       if (phoneNumber.length !== 9) {
         return "Australia mobile number must be exactly 9 digits long";
       }
-    } else if (validationKey === "brazil") {
+    } else if (validationKey === COUNTRIES.brazil) {
       if (phoneNumber.length !== 11) {
         return "Brazil mobile number must be exactly 11 digits long";
       }
-    } else if (validationKey === "china") {
+    } else if (validationKey === COUNTRIES.china) {
       if (phoneNumber.length !== 11) {
         return "China mobile number must be exactly 11 digits long";
       }
-    } else if (validationKey === "egypt") {
+    } else if (validationKey === COUNTRIES.egypt) {
       if (phoneNumber.length !== 10) {
         return "Egypt mobile number must be exactly 10 digits long";
       }
-    } else if (validationKey === "france") {
+    } else if (validationKey === COUNTRIES.france) {
       if (phoneNumber.length !== 9) {
         return "France mobile number must be exactly 9 digits long";
       }
       if (!/^[67]/.test(phoneNumber)) {
         return "France mobile numbers must start with 6 or 7";
       }
-    } else if (validationKey === "germany") {
+    } else if (validationKey === COUNTRIES.germany) {
       if (phoneNumber.length < 10 || phoneNumber.length > 11) {
         return "Germany mobile number must be 10 to 11 digits long";
       }
-    } else if (validationKey === "japan") {
+    } else if (validationKey === COUNTRIES.japan) {
       if (phoneNumber.length !== 10) {
         return "Japan mobile number must be exactly 10 digits long";
       }
-    } else if (validationKey === "spain") {
+    } else if (validationKey === COUNTRIES.spain) {
       if (phoneNumber.length !== 9) {
         return "Spain mobile number must be exactly 9 digits long";
       }
-    } else if (validationKey === "usa") {
+    } else if (validationKey === COUNTRIES.usa) {
       if (phoneNumber.length !== 10) {
         return "United States mobile number must be exactly 10 digits long";
       }
-    } else if (validationKey === "uae") {
+    } else if (validationKey === COUNTRIES.uae) {
       if (phoneNumber.length !== 9) {
         return "UAE mobile number must be exactly 9 digits long";
       }
@@ -162,26 +163,26 @@ export const PhoneInputField = ({
 
           if (selectedCountry) {
             if (
-              selectedCountry.validationKey === "india" ||
-              selectedCountry.validationKey === "uk" ||
-              selectedCountry.validationKey === "japan" ||
-              selectedCountry.validationKey === "egypt" ||
-              selectedCountry.validationKey === "usa"
+              selectedCountry.validationKey === COUNTRIES.india ||
+              selectedCountry.validationKey === COUNTRIES.uk ||
+              selectedCountry.validationKey === COUNTRIES.japan ||
+              selectedCountry.validationKey === COUNTRIES.egypt ||
+              selectedCountry.validationKey === COUNTRIES.usa
             ) {
               maxLength = 10;
             } else if (
-              selectedCountry.validationKey === "australia" ||
-              selectedCountry.validationKey === "uae" ||
-              selectedCountry.validationKey === "spain" ||
-              selectedCountry.validationKey === "france"
+              selectedCountry.validationKey === COUNTRIES.australia ||
+              selectedCountry.validationKey === COUNTRIES.uae ||
+              selectedCountry.validationKey === COUNTRIES.spain ||
+              selectedCountry.validationKey === COUNTRIES.france
             ) {
               maxLength = 9;
             } else if (
-              selectedCountry.validationKey === "brazil" ||
-              selectedCountry.validationKey === "china"
+              selectedCountry.validationKey === COUNTRIES.brazil ||
+              selectedCountry.validationKey === COUNTRIES.china
             ) {
               maxLength = 11;
-            } else if (selectedCountry.validationKey === "germany") {
+            } else if (selectedCountry.validationKey === COUNTRIES.germany) {
               maxLength = 11;
             }
           }
