@@ -5,17 +5,18 @@ import {
   AllJobType,
   manageJobs,
   Region,
-  type ManageJobProps,
 } from "@/dummy_data/admin/manageJobs";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { InputOutline } from "@/shared/components/InputOutline";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import type { ManageJobProps } from "../types";
 
 /**
  * Renders the "Completed" jobs tab content.
@@ -32,7 +33,35 @@ const CompletedJob: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: ManageJobProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<ManageJobProps>[] = [
     { key: "id", label: "Job ID" },
@@ -97,14 +126,18 @@ const CompletedJob: React.FC = () => {
     {
       key: "action",
       label: "Action",
-      renderCell: () => (
+      renderCell: (row: ManageJobProps) => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-          onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
+          <div
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+            onClick={() => navigate(absoluteUrls.admin.home.manage_jobs_view)}
           >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer">
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteJob(row)}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -114,7 +147,7 @@ const CompletedJob: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-wrap gap-4 items-center">
         <SearchInput />
         <SelectMenu
           className="absolute z-20"

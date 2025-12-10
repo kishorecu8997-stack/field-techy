@@ -9,6 +9,7 @@ import Pagination from "../search_result/components/Pagination";
 import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
+import { scrollToTop } from "@/utils";
 
 /**
  * Home page component.
@@ -21,6 +22,7 @@ const Home = () => {
   const [accessPopup, setAccessPopup] = useState(false);
 
   const handleExploreJobs = () => {
+    scrollToTop();
     navigate(absoluteUrls.engineer.home.explore_jobs);
   };
 
@@ -45,7 +47,15 @@ const Home = () => {
 
 
   useEffect(() => {
-    setAccessPopup(true);
+    const locationPermission = localStorage.getItem("location_permission");
+    const notificationPermission = localStorage.getItem(
+      "notification_permission"
+    );
+
+    // SHOW popup only if ANY permission is missing
+    if (!locationPermission || !notificationPermission) {
+      setAccessPopup(true);
+    }
   }, []);
 
   return (
@@ -79,7 +89,10 @@ const Home = () => {
           </div>
 
           {/* Allow access popup */}
-          <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />
+          <AllowAccessPopup
+            accessPopup={accessPopup}
+            setAccessPopup={setAccessPopup}
+          />
         </div>
       </div>
     </div>

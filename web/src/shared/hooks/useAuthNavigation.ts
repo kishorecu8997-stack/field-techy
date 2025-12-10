@@ -15,6 +15,7 @@ export const useAuthNavigation = () => {
     goToForgetPassword: () => navigate(absoluteUrls.engineer.auth.forget_password),
     goToResetPassword: () => navigate(absoluteUrls.engineer.auth.reset_password),
     goToSetPassword: () => navigate(absoluteUrls.engineer.auth.set_password),
-    goToBackgroundVerification: () => navigate(absoluteUrls.engineer.auth.background_verification),
+    goToBackgroundVerification: () => navigate(absoluteUrls.engineer.auth.background_verification)    
+  
   };
 };

@@ -31,7 +31,7 @@ export default function BasicInformation() {
       <h1 className="font-bold">Personal Details</h1>
       <FormContainer
         methods={methods}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
         <label className="block text-sm text-gray-500 mb-1">
           Profile Image
