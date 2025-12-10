@@ -77,7 +77,7 @@ export default function PersonalDetails() {
               type="text"
               placeholder="Enter Name"
               required
-              alphabetOnly
+              inputMode="string" 
               rules={{ validate: (v: string) => validateName(v) }}
             />
           </div>
