@@ -6,6 +6,7 @@ import {
   validateAccNumber,
   validateAddress,
   validateIBANForCountrywise,
+  validateName,
   validateNameWithSpace,
   validateSWIFTBank,
 } from "../validation";
@@ -39,7 +40,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           placeholder="Name"
           required
           rules={{             
-            validate: (value) => validateNameWithSpace(value, "Name"),
+              validate: (value) => validateNameWithSpace(value, "Name"),
           }}
         />
         <InputField

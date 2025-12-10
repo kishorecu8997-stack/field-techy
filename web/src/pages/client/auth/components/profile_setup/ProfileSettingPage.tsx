@@ -40,18 +40,20 @@ const CorporateMultiStepRegistration = () => {
     mode: "onSubmit",
     defaultValues: {
       // Profile Setup
+      country: "in",
       profileImage: undefined,
-      companyName: "",
-      contactPersonName: "",
-      email: "",
-      phoneNumber: "",
+      companyName: "praxio",
+      contactPersonName: "karthi",
+      email: "karthi001@gmai.com",
+      fullName: "karthi",
+      phoneNumber: "8220932517",
       businessType: "",
-      industry: "",
-      address: "",
-      state: "",
-      city: "",
-      vat: "",
-      vatRegistrationNumber: "",
+      industry: "praxio",
+      address: "5th avenue",
+      state: "1",
+      city: "1",
+      vat: "123456789",
+      vatRegistrationNumber: "wewe",
 
       // Background Verification
       governmentId: undefined,
@@ -69,20 +71,9 @@ const CorporateMultiStepRegistration = () => {
   const { trigger } = methods;
   const { showPopup } = usePopupStore();
 
-  /**
-   * handleStepSubmit
-   *
-   * Submission handler used by the `FormContainer`. Validates the current
-   * step's fields (using react-hook-form's `trigger`) and advances the
-   * step when validation succeeds. On the final step it calls
-   * `submitCompleteForm` to perform the final submission.
-   *
-   * @param {CompleteRegistrationData} data - The collected form data across all steps
-   */
   const handleStepSubmit: SubmitHandler<CompleteRegistrationData> = async (
     data
   ) => {
-    console.log("vall");
     let isValid = false;
 
     switch (currentStep) {
@@ -127,15 +118,6 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
-  /*
-   * submitCompleteForm
-   *
-   * Final submission routine called when the user completes the last step.
-   * This toggles the `isSubmitting` state, performs the network call (here
-   * simulated), and shows the success popup on completion.
-   *
-   * @param {CompleteRegistrationData} data - The fully collected registration data
-   */
 
   const { mutate: signupClient, isPending } = useClientSignup({
     onSuccess: (data) => {
@@ -150,7 +132,7 @@ const CorporateMultiStepRegistration = () => {
     },
   });
 
-  const submitCompleteForm = async (data: CompleteRegistrationData) => {
+  const submitCompleteForm = async (data: ClientData) => {
     setIsSubmitting(true);
     let clientData: ClientData = {
       companyName: data.companyName,
@@ -165,6 +147,14 @@ const CorporateMultiStepRegistration = () => {
       taxDocumentVat: data.vat,
       password: data.password,
       email: data.email,
+      certificationQualificationsDocument:"",
+      governmentIdProofDocument:"",
+      profilePicture:"",
+      enableNotifications:data.enableNotifications,
+      isApproved:true,
+      clientType:data.clientType,
+      country:data.country,
+      postalCode:data.postalCode,
     };
 
     await showPopup({
