@@ -8,6 +8,7 @@ import {
   validateIBANForCountrywise,
   validateNameWithSpace,
   validateSWIFTBank,
+  validateName
 } from "../validation";
 
 /**
@@ -73,6 +74,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           {formType === "add" ? "Add Account" : "Save Bank Details"}
         </Button>
       </div>
+    </div>
     </div>
   );
 };
