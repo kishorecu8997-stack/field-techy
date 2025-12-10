@@ -24,6 +24,9 @@ export interface ClientData {
   certificationQualificationsDocument?: string;
   enableNotifications?: boolean;
   isApproved?: boolean;
+  vat?: string;
+  fullName?: string;
+  confirmPassword?: string;
 }
 
 export interface ClientPaginationParams {

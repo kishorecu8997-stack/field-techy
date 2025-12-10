@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { PopupProps } from "./type";
 
 /**
@@ -59,7 +60,7 @@ const Popup = ({
     return null;
   }
 
-  return (
+  return createPortal(
     <div
       ref={modalRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(61,63,66,0.6)] animate-fade-in"
@@ -72,7 +73,8 @@ const Popup = ({
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -1,6 +1,6 @@
+
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -68,37 +68,15 @@ const SignUp = ({
     });
   };
 
-  const { mutate, isPending } = useClientSignup({
-    onSuccess: (data: any) => {
-      console.log(data);
-      setIsOpen(true);
-      // toast.success("OTP sent explicitly (Simulated)"); // Signup logic usually involves OTP verification next
-    },
-    onError: (error: any) => {
-      console.error(error);
-      // toast.error("Signup failed");
-    },
-  });
-
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = (data: SignUpFormData) => {
-    // Note: data only contains email and terms.
-    // ClientData requires more fields, but for this step we might only be collecting email.
-    // We'll pass partial data for now, assuming backend or adapter handles it or it's a multi-step process like engineer.
-    // However, the current adapter expects ClientData.
-    // If this is just Step 1, maybe we need to adjust the flow.
-    // Given the prompt "Integrate client signup", and this form only has email,
-    // I will map email to ClientData and send it.
-    mutate({
-       email: data.email,
-       // other required fields might be missing, but let's assume partial signup is allowed or handled
-    });
+  const handleSubmit = () => {
+    setIsOpen(true);
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+      <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <IconWithTheme

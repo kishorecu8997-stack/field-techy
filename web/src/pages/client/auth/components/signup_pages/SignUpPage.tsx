@@ -18,7 +18,7 @@ const ClientSignUpPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
   return (
-    <div>
+    <div className="flex w-full justify-center">
       {isNumberLogin ? (
         <SignUpWithNumber setIsNumberLogin={setIsNumberLogin} />
       ) : (
