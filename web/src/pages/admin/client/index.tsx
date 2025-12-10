@@ -36,17 +36,13 @@ const ManageClient: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3 ">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold ">Manage Clients</h1>
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={() => alert("Export CSV")}
-        >
+        <h1 className="font-semibold ">Manage Clients</h1>
+        <Button variant="solid" onClick={() => alert("Export CSV")}>
           Export CSV
         </Button>
       </div>
 
-      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
+      <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <AdminTabComponent tabs={tabs} defaultActiveTab="Corporate Client" />
       </div>
     </div>

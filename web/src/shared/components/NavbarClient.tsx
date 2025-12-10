@@ -1,4 +1,3 @@
-
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
@@ -69,6 +68,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           onClick={() => navigate(absoluteUrls.client.home.dashboard)}
         />
         <NavLink
+          to={absoluteUrls.client.home.my_projects}
+          className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+        >
+          My Projects
+        </NavLink>
+        <NavLink
           to={absoluteUrls.client.home.my_jobs}
           className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
         >
@@ -87,7 +92,6 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
 
       <div className="flex-1 mx-4 max-w-[500px]">
         <JobSearchBarClient />
-        
       </div>
 
       <div className="flex items-center space-x-4 md:hidden">

@@ -24,7 +24,7 @@ export default function Wallet() {
   const data = BANK_CARD_DATA;
 
   const columns: Column<TransactionProps>[] = [
-    { key: "id", label: "Sr. No." },
+    { key: "id", label: "Sr.No." },
     { key: "date", label: "Date & Time" },
     { key: "transactionId", label: "Transaction ID" },
     { key: "type", label: "Transaction Type" },
