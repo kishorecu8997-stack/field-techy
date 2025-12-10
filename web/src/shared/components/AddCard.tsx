@@ -64,7 +64,6 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   const handleAddCard = async () => {
     const isValid = await methods.trigger();
     if (isValid) {
-      debugger
       const data = methods.getValues();
       console.log("Valid card data:", data);
       toast.success("Card added successfully.");
@@ -100,9 +99,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               placeholder="9999 9999 9999 9999"
               rules={{ validate: (v: string) => cardNumberValidation(v) }}
               required
-               allowedCharacters="numbers"  
-               
-              
+              allowedCharacters="numbers"
             />
           </div>
 
@@ -124,8 +121,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
                 required
-                 allowedCharacters="numbers" 
-                
+                allowedCharacters="numbers"
               />
             </div>
           </div>
