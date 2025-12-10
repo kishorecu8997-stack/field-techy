@@ -7,6 +7,14 @@ import question_icon from '@/assets/gif-file/question_icon.gif';
 import companyLogo from '@/assets/company-logo.png';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+
+/**
+ * DownloadInvoice Component
+ * This modal allows the user to download an invoice as a PDF using html2canvas and jsPDF.
+ * @param {boolean} isOpen - Controls whether the modal is visible.
+ * @param {() => void} onClose - Function to close the modal.
+ * @param {() => void} onDownload - Callback triggered after the download completes.
+ */
  
 const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   isOpen,
@@ -222,13 +230,14 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
       <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform transition-all">
         {/* Modal Content */}
         <div className="bg-white dark:bg-gray-900 p-6 relative">
+          
           {/* Close Button */}
-          <button
+          <Button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-0 bg-transparent hover:bg-transparent shadow-none"
           >
             <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-          </button>
+          </Button>
  
           {/* Header with Question Mark Icon */}
           <div className="flex justify-center mb-4 ">          
@@ -263,4 +272,3 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   );
 };
 export default DownloadInvoice;
- 
