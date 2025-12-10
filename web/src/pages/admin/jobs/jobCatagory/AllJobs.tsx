@@ -18,6 +18,7 @@ import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { adminJobsStatus, ManageJobProps } from "../types";
+import { validateBudget } from "@/utils/validate";
 
 /**
  * Renders the "All Jobs" tab content within the manage jobs page.
@@ -38,6 +39,17 @@ const AllJob: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
+
+  const [budget, setBudget] = useState("");
+  const [budgetError, setBudgetError] = useState<string | null>(null);
+
+  const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setBudget(value);
+
+    const result = validateBudget(value);
+    setBudgetError(result === true ? null : result);
+  };
 
   const handleStatusChange = async (data: ManageJobProps) => {
     if (!data.status) return;
@@ -227,7 +239,20 @@ const AllJob: React.FC = () => {
           onChange={setFilterRegion}
           options={Region}
         />
-        <InputOutline placeholder="Budget" name="budget" className="w-40" onlyNumbers />
+        <div>
+          <InputOutline
+            placeholder="Budget"
+            name="budget"
+            className="w-40"
+            value={budget}
+            onChange={handleBudgetChange}
+          />
+
+          {budgetError && (
+            <p className="text-red-500 text-xs mt-1">{budgetError}</p>
+          )}
+        </div>
+
         <SelectMenu
           className="absolute z-20"
           placeholder="Job Type"
