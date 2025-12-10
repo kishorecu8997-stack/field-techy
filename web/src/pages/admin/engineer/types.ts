@@ -71,5 +71,11 @@ export interface ManageEngineerProps {
   employementStatus: string;
   avgRating: number;
   approvalStatus: string;
+  lastActiveOn?: string;
+  suspendfrom?: string;
+  suspendto?: string;
+  suspendReason?: string;
+  suspendBy?: string;
+  suspendOn?: string;
+  currentStatus?: string;
 }
-

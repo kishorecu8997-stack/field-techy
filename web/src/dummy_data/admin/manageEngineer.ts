@@ -17,6 +17,8 @@ export const manageEngineer: ManageEngineerProps[] = [
     employementStatus: "Active",
     avgRating: 4.7,
     approvalStatus: "Approved",
+    lastActiveOn: "2024-02-15",
+    suspendReason: "Cancelled the job after accepting",
   },
   {
     id: 2,
@@ -34,6 +36,8 @@ export const manageEngineer: ManageEngineerProps[] = [
     employementStatus: "Inactive",
     avgRating: 3.9,
     approvalStatus: "Under Review",
+    lastActiveOn: "2024-03-11",
+    suspendReason: "Misbehaviour/fight with client",
   },
   {
     id: 3,
@@ -51,6 +55,8 @@ export const manageEngineer: ManageEngineerProps[] = [
     employementStatus: "Active",
     avgRating: 4.5,
     approvalStatus: "Approved",
+    lastActiveOn: "2024-05-21",
+    suspendReason: "Arrived late by 4 hours for work",
   },
   {
     id: 4,
@@ -68,6 +74,8 @@ export const manageEngineer: ManageEngineerProps[] = [
     employementStatus: "Suspended",
     avgRating: 3.4,
     approvalStatus: "Rejected",
+    lastActiveOn: "2024-07-14",
+    suspendReason: "Left the work premises withoutnotifying the client",
   },
   {
     id: 5,
@@ -85,6 +93,8 @@ export const manageEngineer: ManageEngineerProps[] = [
     employementStatus: "Active",
     avgRating: 4.9,
     approvalStatus: "Approved",
+    lastActiveOn: "2024-07-14",
+    suspendReason: "Arrived late by 5 hours for work",
   },
 ];
 
