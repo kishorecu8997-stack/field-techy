@@ -25,7 +25,7 @@ interface DocumentsListProps {
  * @param {DocumentsListProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered list of documents.
  */
-const DocumentsList: React.FC<DocumentsListProps> = ({
+const DocumentsList: React.FC<DocumentsListProps> = ({  
   documents,
   onAddDocument,
   onEditDocument,

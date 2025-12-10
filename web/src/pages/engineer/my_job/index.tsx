@@ -30,6 +30,7 @@ const MyJobsPage = () => {
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
+          isReport
         />
         <FilterButton
           activeFilter={activeFilter}

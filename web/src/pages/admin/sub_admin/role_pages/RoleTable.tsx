@@ -28,7 +28,7 @@ const RoleTable: React.FC = () => {
   const watchModuleNames = ctx.watch("moduleName");
 
   const columns: Column<PermissionListType>[] = [
-    { key: "id", label: "Sr. No" },
+    { key: "id", label: "Sr.No." },
     { key: "moduleName", label: "Module Name" },
 
     {

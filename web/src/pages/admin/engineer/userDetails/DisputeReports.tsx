@@ -30,7 +30,7 @@ const DisputeReports: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: Column<DisputeProps>[] = [
-    { key: "id", label: "Sr. No." },
+    { key: "id", label: "Sr.No." },
     { key: "raisedBy", label: "Raised By" },
     { key: "issueCategory", label: "Issue Category" },
     { key: "priorityLevel", label: "Priority Level" },

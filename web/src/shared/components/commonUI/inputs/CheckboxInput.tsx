@@ -12,6 +12,7 @@ interface CheckboxInputProps {
   secondaryLabel?: string;
   /** Optional react-hook-form validation rules */
   rules?: RegisterOptions;
+  disabled?: boolean;
 }
 
 /**
@@ -29,6 +30,7 @@ export const CheckboxInput = ({
   required = false,
   rules,
   secondaryLabel,
+  disabled = false,
 }: CheckboxInputProps) => {
   const { control } = useFormContext();
 

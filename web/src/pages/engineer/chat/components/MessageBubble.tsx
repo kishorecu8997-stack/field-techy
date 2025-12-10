@@ -1,17 +1,37 @@
+import React from "react";
 import type { ChatMessage } from "../types";
 
-/**
- * The bubble for the chat message.
- * @param message - The message to display in the bubble.
- * @returns The chat message bubble.  
- */ 
-export const MessageBubble = ({ message }: { message: ChatMessage }) => {
+interface MessageBubbleProps {
+  message: ChatMessage;
+}
+
+/*
+ * MessageBubble
+ *
+ * A component that displays a message bubble.
+ *
+ * @param {ChatMessage} message - The chat message object.
+ * @returns {JSX.Element} The rendered message bubble component.
+ * @constructor
+ */
+export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+  const isMe = message.from === "me";
+
   return (
-    <div className={`flex ${message.fromMe ? "justify-end" : "justify-start"}`}>
+    <div className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
       <div
-        className={`p-3 rounded-xl max-w-xs text-sm bg-gray-100`}
+        className={`max-w-xl rounded-3xl px-6 py-4 text-sm shadow-sm ${
+          isMe ? "bg-emerald-800 text-white" : "bg-white"
+        }`}
       >
-        {message.message}
+        <p>{message.text}</p>
+        <p
+          className={`mt-2 text-[10px] ${
+            isMe ? "text-emerald-100" : "text-gray-400"
+          }`}
+        >
+          Read {message.timestamp}
+        </p>
       </div>
     </div>
   );

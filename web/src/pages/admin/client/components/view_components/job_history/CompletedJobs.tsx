@@ -8,7 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import type { CompletedJobsProps } from "../../../types";
-import SimpleSelect from "@/shared/components/SelectMenu";
+import SimpleSelect from "@/shared/components/Temp";
 import { postedJobsData } from "@/dummy_data/ClientViewData";
 import GeneralChart from "@/shared/components/AdminChart";
 import { days } from "@/dummy_data/adminDashboard";
@@ -16,6 +16,8 @@ import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useToggleStatus from "@/shared/components/ToggleStatus";
 
 /**
  * CompletedJobs component displays a table of completed jobs and a chart visualizing job completion data.
@@ -25,10 +27,44 @@ import { absoluteUrls } from "@/config/urls";
  */
 const CompletedJobs: React.FC = () => {
   const navigate = useNavigate();
-  /**
-   * Column definitions for the completed jobs table.
-   * @type {Column<CompletedJobsProps>[]}
-   */
+  const { showPopup } = usePopupStore();
+
+  const initialStatus = React.useMemo(() => {
+    const initial: Record<string, boolean> = {};
+    postedJobsData.forEach((job) => {
+      initial[job.jObID] = Boolean(job.status);
+    });
+    return initial;
+  }, []);
+  const { get, toggle } = useToggleStatus(initialStatus);
+
+  //Delete confirmation
+  const handleDeleteJob = async (job: CompletedJobsProps) => {
+    await showPopup({
+      title: "Delete Job",
+      body: "Are you sure you want to delete this job?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("Deleting job:", job.id);
+            // TODO: call your delete API here
+            // await deleteJob(job.id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<CompletedJobsProps>[] = [
     { key: "jObID", label: "Job ID" },
     { key: "postedBy", label: "Posted By" },
@@ -44,16 +80,16 @@ const CompletedJobs: React.FC = () => {
       key: "status",
       label: "Status",
       renderCell: (row: CompletedJobsProps) => {
-        const [status, setStatus] = useState<boolean>(row.status);
+        const val = get(row.jObID) ?? row.status;
 
         return (
           <div
-            className={`flex items-center justify-center w-20 px-2 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
-              status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+            className={`flex items-center justify-center w-fit px-4 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 ${
+              val ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
             }`}
-            onClick={() => setStatus(!status)}
+            onClick={() => toggle(row.jObID)}
           >
-            {status ? "On" : "Off"}
+            {val ? "On" : "Off"}
           </div>
         );
       },
@@ -64,31 +100,29 @@ const CompletedJobs: React.FC = () => {
       label: "Actions",
       renderCell: (row: CompletedJobsProps) => (
         <div className="flex items-center gap-2">
-                  <div
-                    onClick={
-                      () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
-                    }
-                    className="p-2 bg-yellow-100 rounded-md"
-                  >
-                    <FiEye className="text-yellow-600 " />
-                  </div>
-                  <div
-                    onClick={
-                      () => navigate(`${absoluteUrls.admin.home.manage_categories}`) //Todo add correct url
-                    }
-                    className="p-2 bg-blue-100 rounded-md"
-                  >
-                    <CiEdit className="text-blue-600" />
-                  </div>
-                  <div
-                    onClick={
-                      () => navigate(absoluteUrls.admin.home.manage_categories) //Todo add correct url
-                    }
-                    className="p-2 bg-red-100 rounded-md"
-                  >
-                    <RiDeleteBin6Line className="text-red-600" />
-                  </div>
-                </div>
+          <div
+            onClick={() =>
+              navigate(`${absoluteUrls.admin.home.manage_categories}`)
+            }
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+          >
+            <FiEye className="text-yellow-600 " />
+          </div>
+          <div
+            onClick={() =>
+              navigate(`${absoluteUrls.admin.home.manage_categories}`)
+            }
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+          >
+            <CiEdit className="text-blue-600" />
+          </div>
+          <div
+            onClick={() => handleDeleteJob(row)}
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+          >
+            <RiDeleteBin6Line className="text-red-600" />
+          </div>
+        </div>
       ),
     },
   ];
@@ -154,4 +188,4 @@ const CompletedJobs: React.FC = () => {
   );
 };
 
-export default CompletedJobs
+export default CompletedJobs;
