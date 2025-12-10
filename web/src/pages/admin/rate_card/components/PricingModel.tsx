@@ -44,7 +44,7 @@ const PricingModel: React.FC = () => {
   return (
     <div className="px-2 py-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-neutral-200">
+        <h2 className="font-bold text-gray-900 dark:text-neutral-200">
           Pricing Models
         </h2>
         {!isView && (

@@ -1,36 +1,56 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import {
+  designationOptions,
+  employmentTypeOptions,
+  workLocationTypeOptions,
+} from "./constants";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
-interface AddExperiencesProps {
-  onMenuItemClick: (key: string) => void;
-}
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
  * It uses `react-hook-form` for form management, validation, and submission.
  * @param {AddExperiencesProps} props - Component props.
  * @returns {React.ReactElement} The rendered AddExperiences form component.
  */
-const AddExperiences: React.FC<AddExperiencesProps> = ({ onMenuItemClick }) => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the experience data.
-   * @param {AddExperiencesFormData} data - The validated form data.
-   */
-  const handleSubmit = (data: ExperiencesFormData) => {
-    toast.success("Experience Added Successfully");
-    console.log("Form submitted with data:", data);
-    onMenuItemClick("experiences");
-    // TODO: integrate submission logic here (e.g., API call)
-    // Example: await api.experiences.create(data);
+const AddExperiences = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const handleSubmit = async (data: ExperiencesFormData) => {
+    await showPopup({
+      title: "Add Experience",
+      body: "Are you sure you want to add this experience?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Experience Added Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("experiences");
+          },
+        },
+      ],
+    });
   };
 
   /**
@@ -63,7 +83,7 @@ const AddExperiences: React.FC<AddExperiencesProps> = ({ onMenuItemClick }) => {
           placeholder="Designation"
           options={designationOptions.map((e) => ({
             value: e.id,
-            label: e.title
+            label: e.title,
           }))}
           required
         />

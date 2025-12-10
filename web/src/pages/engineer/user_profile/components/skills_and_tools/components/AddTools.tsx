@@ -4,10 +4,8 @@ import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectFie
 import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
-
-interface AddToolsProps {
-  onMenuItemClick: (key: string) => void;
-}
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Defines the shape of the form data for adding tools.
@@ -24,33 +22,44 @@ export type AddToolsFormData = {
  * @param {AddToolsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddTools form component.
  */
-const AddTools: React.FC<AddToolsProps> = ({ onMenuItemClick }) => {
-  /**
-   * Initializes `react-hook-form` with default values for the tools form.
-   */
+const AddTools = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
   const methods = useForm<AddToolsFormData>({
     defaultValues: {
       tools: [],
     },
   });
 
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the selected tools.
-   * @param {AddToolsFormData} data - The validated form data containing an array of tool IDs.
-   */
-  const onSubmit = (data: AddToolsFormData) => {
-    console.log("Form data:", data);
-    toast.success("Tools Saved Successfully");  
-    onMenuItemClick("skillsAndTools");
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const onSubmit = async (data: AddToolsFormData) => {
+    await showPopup({
+      title: "Add Tools",
+      body: "Are you sure you want to add these tools?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Tools Added Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * Transforms the raw tools data into a format suitable for the `TagSelectField` component.
-   * @type {Array<{label: string, value: string}>}
-   */
   const toolOptions = addEditToolsData.map((tool) => ({
     label: tool.label,
     value: tool.id.toString(),

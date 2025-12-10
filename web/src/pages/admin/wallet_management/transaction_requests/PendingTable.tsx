@@ -1,4 +1,4 @@
-import { options, transactionRequest } from "@/dummy_data/admin";
+import { transactionRequest } from "@/dummy_data/admin";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { TransactionRequest } from "../wallet_overview/types";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import type { adminJobsStatus } from "../../jobs/types";
 
 /**
  * PendingTable Component
@@ -16,11 +18,43 @@ import { JobStatus } from "@/dummy_data/admin/manageEngineer";
  */
 const PendingTable: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const { showPopup } = usePopupStore();
+
+  const handleStatusChange = async (data: TransactionRequest) => {
+    if (!data.status) return;
+    const status = data.status;
+    await showPopup({
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this request?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          action: async (close: any) => {
+            console.log("close :", close);
+            // await handlePostAJob(data);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<TransactionRequest>[] = [
     {
       key: "sno",
-      label: "S. No",
+      label: "Sr.No.",
     },
     {
       key: "clientDetails",
@@ -43,17 +77,21 @@ const PendingTable: React.FC = () => {
     {
       key: "status",
       label: "Status",
-      renderCell: (row: any) => {
+      renderCell: (row: TransactionRequest) => {
         return (
           <div className="relative w-full">
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] || ""}
-              onChange={(value: string | null) => {
+              value={rowStatuses[row.sno] || ""}
+              onChange={(value: string | null | adminJobsStatus) => {
                 setRowStatuses((prev) => ({
                   ...prev,
-                  [row.id]: value ?? "",
+                  [row.sno]: value ?? "",
                 }));
+                handleStatusChange({
+                  ...row,
+                  status: value as adminJobsStatus,
+                });
               }}
               options={JobStatus}
             />
@@ -66,7 +104,7 @@ const PendingTable: React.FC = () => {
     <div className="w-full h-full flex flex-col gap-3 ">
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
         <SearchInput />
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<TransactionRequest>
             columns={columns}
             data={transactionRequest}
@@ -79,23 +117,3 @@ const PendingTable: React.FC = () => {
 };
 
 export default PendingTable;
-
-const PendingStatus = ({ row }: { row: string }) => {
-  const [status, setStatus] = useState<string>(row);
-
-  const handleChangeStatus = (value: string) => {
-    setStatus(value);
-  };
-
-  return (
-    <div className="text-sm ">
-      <SelectMenu
-        placeholder="Select Status"
-        className="w-36"
-        options={options}
-        value={status}
-        onChange={() => handleChangeStatus(row)}
-      />
-    </div>
-  );
-};

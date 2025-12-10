@@ -7,8 +7,6 @@ interface EarningsData {
 }
 interface WalletCardProps {
   earnings: EarningsData;
-  onDrawerToggle: () => void;
-  isDrawerOpen: boolean;
 }
 
 /**
@@ -20,18 +18,20 @@ interface WalletCardProps {
  * @param {WalletCardProps} props - The props for the component.
  * @returns {JSX.Element} The rendered WalletCard component.
  */
-export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle,isDrawerOpen }) => {
-  const { setActiveKey } = useDrawerStore();
-    
+export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
+  const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
+
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-gray-900 dark:text-white">My Wallet</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-white">
+          My Wallet
+        </h3>
         <Button
-        variant="text"
-           onClick={() => {
-            onDrawerToggle();
+          variant="text"
+          onClick={() => {
             setActiveKey("clientWallet");
+            setISOpenSidebar(true);
           }}
           className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
         >
@@ -40,9 +40,12 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
       </div>
 
       <div className="text-center mb-4">
-        <p className="text-xs text-gray-500 dark:text-gray-400">Current Balance</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          Current Balance
+        </p>
         <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-          ${earnings.balance.toLocaleString("en-US", {
+          $
+          {earnings.balance.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}
@@ -50,19 +53,20 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button 
+        <Button
           variant="primary"
-         className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
+          className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
           onClick={() => {
-            onDrawerToggle();
+            setISOpenSidebar(true);
             setActiveKey("clientAddFund");
           }}
         >
           Add Fund
         </Button>
-        <Button variant="primary"
+        <Button
+          variant="primary"
           onClick={() => {
-            onDrawerToggle();
+            setISOpenSidebar(true);
             setActiveKey("recentTransactions");
           }}
           className="bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
@@ -70,7 +74,10 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings, onDrawerToggle
           Transactions
         </Button>
       </div>
-      <Drawer isOpen={isDrawerOpen} onClose={onDrawerToggle} />
+      <Drawer
+        isOpen={isOpenSidebar}
+        onClose={() => setISOpenSidebar(false)}
+      ></Drawer>
     </div>
   );
 };

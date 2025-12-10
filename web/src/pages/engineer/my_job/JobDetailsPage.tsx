@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/JobHeaderCard";
+import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
 
 /**
@@ -33,6 +33,7 @@ const JobDetailsPage = () => {
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
+          isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">

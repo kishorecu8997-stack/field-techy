@@ -3,30 +3,47 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
-import type { bankDetails } from "../types";
 import { toast } from "react-toastify";
-
-interface WithdrawProps {
-  onClose: () => void;
-}
+import type { bankDetails } from "../types";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
-const Withdraw: React.FC<WithdrawProps> = ({ onClose }) => {
+const Withdraw = () => {
+  const { showPopup } = usePopupStore();
+  const { setISOpenSidebar } = useDrawerStore();
   const FormCtx = useForm<bankDetails>({
     mode: "onSubmit",
   });
-  
-const availableBalance = 1000;
-  const handleSubmit = (data: bankDetails) => {
-    console.log(data);
-    toast.success("Withdrawal initiated successfully!");
-    onClose();
+
+  const availableBalance = 1000;
+  const handleSubmit = async (data: bankDetails) => {
+    await showPopup({
+      title: "Withdrawal Initiated",
+      body: "Are you sure you want to initiate this withdrawal?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "cancel",
+          variant: "outline",
+        },
+        {
+          label: "Yes, initiate",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Submitted data:", data);
+            toast.success("Withdrawal initiated successfully");
+            close(true);
+            setISOpenSidebar(false);
+          },
+        },
+      ],
+    });
   };
-
-
 
   return (
     <div className="flex flex-col h-full">
@@ -48,12 +65,14 @@ const availableBalance = 1000;
           <InputField
             name="amount"
             label="Amount"
+            inputMode="number"
             required
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);
                 if (isNaN(numeric)) return "Please enter a valid amount";
-                if (numeric > availableBalance) return `Amount cannot exceed available balance $${(availableBalance)}`;
+                if (numeric > availableBalance)
+                  return `Amount cannot exceed available balance $${availableBalance}`;
                 return true;
               },
             }}
