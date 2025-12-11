@@ -66,7 +66,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);
-      toast.success("Card added successfullyy.");
+      toast.success("Card added successfully.");
       onClose();
       onAddCard(data);
     }
