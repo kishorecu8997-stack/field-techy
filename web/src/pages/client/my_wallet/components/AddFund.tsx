@@ -3,7 +3,6 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import type { PaymentCardOption } from "@/shared/components/type";
 import PaymentMethod from "@/shared/components/commonUI/PaymentMethod";
 import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
 import { validateAmount, validatePaymentMethods } from "@/utils/validate";
@@ -12,7 +11,6 @@ import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
 import type { PaymentCardOption } from "@/shared/components/type";
-
 
 /**
  * @description Defines the shape of the form data for adding funds to the wallet.

@@ -6,9 +6,8 @@ import {
   validateAccNumber,
   validateAddress,
   validateIBANForCountrywise,
-  validateNameWithSpace,
-  validateSWIFTBank,
   validateName,
+  validateSWIFTBank,
 } from "../validation";
 
 /**

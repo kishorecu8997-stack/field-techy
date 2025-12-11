@@ -13,6 +13,7 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { validateName } from "../../Validates";
 import SectionHeader from "../SectionHeader";
+
 /*
  *  Requirements
  *    - Displays a form to add requirements
@@ -38,7 +39,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         <InputField
           name="numberOfVacancy"
           label="Number of Persons Required"
-          inputMode="number"
+          allowedCharacters="numbers"
           required
           rules={{
             min: {
@@ -69,12 +70,7 @@ const Requirements = ({ isDisable }: { isDisable: boolean }) => {
         options={tools}
       />
       {currentLocation !== CurrentLocation.dedicated && (
-        <InputField
-          name="task"
-          placeholder="Task"
-          label="Task"
-          required
-        />
+        <InputField name="task" placeholder="Task" label="Task" required />
       )}
       <TagSelectField
         disabled={isDisable}
