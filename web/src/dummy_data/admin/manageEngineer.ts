@@ -19,6 +19,11 @@ export const manageEngineer: ManageEngineerProps[] = [
     approvalStatus: "Approved",
     lastActiveOn: "2024-02-15",
     suspendReason: "Cancelled the job after accepting",
+    suspendfrom: "01 February 2025",
+    suspendto: "15 January 2026",
+    suspendBy: "Admin2",
+    suspendOn: "05 December 2025",
+    currentStatus: "Inactive",
   },
   {
     id: 2,
@@ -38,6 +43,11 @@ export const manageEngineer: ManageEngineerProps[] = [
     approvalStatus: "Under Review",
     lastActiveOn: "2024-03-11",
     suspendReason: "Misbehaviour/fight with client",
+    suspendfrom: "01 February 2025",
+    suspendto: "30 June 2025",
+    suspendBy: "Admin4", // ✅ updated
+    suspendOn: "10 November 2025",
+    currentStatus: "Inactive",
   },
   {
     id: 3,
@@ -57,6 +67,11 @@ export const manageEngineer: ManageEngineerProps[] = [
     approvalStatus: "Approved",
     lastActiveOn: "2024-05-21",
     suspendReason: "Arrived late by 4 hours for work",
+    suspendfrom: "01 February 2023",
+    suspendto: "01 February 2024",
+    suspendBy: "Admin1",
+    suspendOn: "15 January 2024",
+    currentStatus: "Active",
   },
   {
     id: 4,
@@ -76,6 +91,11 @@ export const manageEngineer: ManageEngineerProps[] = [
     approvalStatus: "Rejected",
     lastActiveOn: "2024-07-14",
     suspendReason: "Left the work premises withoutnotifying the client",
+    suspendfrom: "01 February 2025",
+    suspendto: "28 February 2026",
+    suspendBy: "Security_Team",
+    suspendOn: "01 March 2025",
+    currentStatus: "Inactive",
   },
   {
     id: 5,
@@ -95,6 +115,11 @@ export const manageEngineer: ManageEngineerProps[] = [
     approvalStatus: "Approved",
     lastActiveOn: "2024-07-14",
     suspendReason: "Arrived late by 5 hours for work",
+    suspendfrom: "01 February 2025",
+    suspendto: "10 December 2025",
+    suspendBy: "Admin3",
+    suspendOn: "01 December 2025",
+    currentStatus: "Inactive",
   },
 ];
 
