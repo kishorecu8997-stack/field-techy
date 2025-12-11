@@ -12,12 +12,15 @@ import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, SuspendEngineerFormData } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { MdBlockFlipped, MdPauseCircleOutline } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import SuspendEngineer from "./SuspendEngineer";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 
 /**
  * ActiveUser Component
@@ -36,11 +39,21 @@ import { MdBlockFlipped, MdPauseCircleOutline } from "react-icons/md";
  * @returns {JSX.Element} The rendered ActiveUser component.
  */
 export default function ActiveUser() {
+  const methods = useForm<SuspendEngineerFormData>({
+    mode: "onChange",
+    defaultValues: {
+      suspendStartDate: null,
+      suspendEndDate: null,
+      reason: "",
+    },
+  });
+
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
+  const [isSuspendengineer, setIsSuspendengineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
 
@@ -152,7 +165,6 @@ export default function ActiveUser() {
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
         <div className="relative inline-block">
-          {/* Trigger (icon) */}
           <div
             ref={showAction === row.id ? triggerRef : null}
             onClick={(e) => {
@@ -164,7 +176,6 @@ export default function ActiveUser() {
             <HiOutlineDotsHorizontal />
           </div>
 
-          {/* Dropdown */}
           {showAction === row.id && (
             <div className="absolute right-0 mt-1 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-10 w-fit py-2">
               <div
@@ -190,7 +201,10 @@ export default function ActiveUser() {
                 <CiEdit className="text-blue-600" />
                 <span>Edit</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+              <div
+                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                onClick={() => setIsSuspendengineer(true)}
+              >
                 <MdPauseCircleOutline className="text-gray-300" />
                 Suspend
               </div>
@@ -216,6 +230,32 @@ export default function ActiveUser() {
     },
   ];
 
+  const handleSubmit = async (data: SuspendEngineerFormData) => {
+    await showPopup({
+      title: "Suspend Engineer",
+      body: "Are you sure you want to suspend this engineer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Suspend",
+          value: "save",
+          variant: "danger",
+          action: async (close) => {
+            console.log("data :", data);
+            close(true);
+            methods.reset();
+            setIsSuspendengineer(false);
+            toast.success("Engineer suspended successfully!");
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
@@ -230,23 +270,29 @@ export default function ActiveUser() {
           />
         </div>
       </div>
-      {isModalOpen && (
-        <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <div className="p-4">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">View File {selectedRowId}</span>
-              <div
-                className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <IoCloseSharp />
-              </div>
-            </div>
-            <div className="border border-gray-400 h-36 my-6">
-              <img src="https://via.placeholder.com/500" alt="file" />
+      <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="p-4">
+          <div className="flex justify-between items-center">
+            <span className="font-bold">View File {selectedRowId}</span>
+            <div
+              className="text-xl font-semibold cursor-pointer"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <IoCloseSharp />
             </div>
           </div>
-        </Popup>
+          <div className="border border-gray-400 h-36 my-6">
+            <img src="https://via.placeholder.com/500" alt="file" />
+          </div>
+        </div>
+      </Popup>
+      {isSuspendengineer && (
+        <FormContainer methods={methods} onSubmit={handleSubmit}>
+          <SuspendEngineer
+            isSuspendengineer={isSuspendengineer}
+            setIsSuspendengineer={setIsSuspendengineer}
+          />
+        </FormContainer>
       )}
     </div>
   );

@@ -2,10 +2,8 @@ import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
-import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
@@ -25,12 +23,6 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} The rendered SuspendedUser component.
  */
 export default function SuspendedUser() {
-  const [, setShowAction] = useState<number | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
-
-  useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
-
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
     {
@@ -75,7 +67,7 @@ export default function SuspendedUser() {
       key: "action",
       label: "Actions",
       align: "center",
-      renderCell: (row: ManageEngineerProps) => (
+      renderCell: () => (
         <div className="mx-auto text-center">
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Revoke

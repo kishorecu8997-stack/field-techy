@@ -1,15 +1,12 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  JobStatus,
-  manageEngineer,
-} from "@/dummy_data/admin/manageEngineer";
+import { JobStatus, manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
@@ -20,6 +17,7 @@ import type { ManageEngineerProps } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import type { adminJobsStatus } from "../../jobs/types";
 import { toast } from "react-toastify";
+import { useClickOutside } from "@/shared/components/UseclickOutside";
 
 /**
  * PendingRequest Component
@@ -45,6 +43,10 @@ export default function PendingRequest() {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  // useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;

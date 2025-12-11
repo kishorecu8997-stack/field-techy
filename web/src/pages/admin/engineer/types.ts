@@ -79,3 +79,8 @@ export interface ManageEngineerProps {
   suspendOn?: string;
   currentStatus?: string;
 }
+export interface SuspendEngineerFormData {
+  suspendStartDate: Date | null;
+  suspendEndDate: Date | null;
+  reason: string;
+}
