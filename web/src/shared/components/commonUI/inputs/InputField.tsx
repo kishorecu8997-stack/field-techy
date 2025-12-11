@@ -113,30 +113,8 @@ export const InputField = ({
                 onChange={async (e) => {
                   const value = e.target.value;
 
-                  // prevent invalid typing based on inputMode
-                  if (!allowInput(value)) {
-                    // For string mode, show error message immediately
-                    if (inputMode === "string") {
-                      const validationResult = validateName(value);
-                      if (validationResult !== true) {
-                        setError(name, {
-                          type: "pattern",
-                          message: validationResult,
-                        });
-                      }
-                    }
-                    return;
-                  }
-
                   field.onChange(value);
                   onChange?.(value);
-
-                  // Trigger validation to clear errors when input becomes valid
-                  try {
-                    await trigger(name);
-                  } catch (err) {
-                    // ignore
-                  }
                 }}
                 onBlur={(e) => {
                   if (type === "number") {

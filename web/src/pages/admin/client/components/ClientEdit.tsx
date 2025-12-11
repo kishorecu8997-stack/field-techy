@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import {
   businessTypes,
   citiesByCountry,
@@ -36,8 +36,12 @@ import { useFormContext } from "react-hook-form";
 const ClientEdit: React.FC = () => {
   const { watch } = useFormContext();
   const selectedCountry = watch("country");
-  const cityOptions = selectedCountry ? citiesByCountry[selectedCountry] || [] : [];
-  const stateOptions = selectedCountry ? statesByCountry[selectedCountry] || [] : [];
+  const cityOptions = selectedCountry
+    ? citiesByCountry[selectedCountry] || []
+    : [];
+  const stateOptions = selectedCountry
+    ? statesByCountry[selectedCountry] || []
+    : [];
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
@@ -71,7 +75,7 @@ const ClientEdit: React.FC = () => {
             name="industry"
             placeholder="Select Industry"
             options={industries}
-            required            
+            required
           />
 
           <SelectField
@@ -106,7 +110,7 @@ const ClientEdit: React.FC = () => {
             name="contactPersonName"
             placeholder="Enter Contact Person Name"
             required
-            inputMode="string" 
+            inputMode="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
 
@@ -138,7 +142,8 @@ const ClientEdit: React.FC = () => {
             placeholder="Enter Postal Code"
             required
             rules={{
-              validate: (value: string) => validateZipcode(value, selectedCountry),
+              validate: (value: string) =>
+                validateZipcode(value, selectedCountry),
             }}
           />
           <InputField
