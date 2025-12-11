@@ -7,12 +7,6 @@ import { IoMdAdd, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoClose, IoCloseSharp, IoHeadsetSharp, IoNotificationsSharp, IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
 import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
-import { FaPhoneAlt } from "react-icons/fa";
-import { IoHeadsetSharp } from "react-icons/io5";
-import { BiSolidMessageRounded } from "react-icons/bi";
-import { IoWalletOutline } from "react-icons/io5";
-import { MdOutlineImageNotSupported } from "react-icons/md";
-import { IoMdAdd } from "react-icons/io";
 import { FaHourglass } from "react-icons/fa";
  
 
