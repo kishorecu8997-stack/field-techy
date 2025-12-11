@@ -9,7 +9,7 @@ import { useState, useCallback } from "react";
 const useToggleStatus = (initialState: Record<string, boolean> = {}) => {
   const [status, setStatus] = useState<Record<string, boolean>>(initialState);
 
-  const toggle = useCallback((id: string) => {
+  const toggle = useCallback((id: string | number) => {
     setStatus((prev) => ({
       ...prev,
       [id]: !prev[id],
@@ -17,7 +17,7 @@ const useToggleStatus = (initialState: Record<string, boolean> = {}) => {
   }, []);
 
   const get = useCallback(
-    (id: string): boolean => {
+    (id: string | number): boolean => {
       return !!status[id]; // returns false if undefined
     },
     [status]
