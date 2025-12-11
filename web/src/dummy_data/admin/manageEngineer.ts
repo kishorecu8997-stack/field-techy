@@ -1,23 +1,4 @@
 import { icons } from "@/config/icons";
-
-export interface DetailsTypes {
-  name: string;
-  phone: string;
-  email: string;
-}
-export interface ManageEngineerProps {
-  id: number;
-  engineerID: string;
-  details: DetailsTypes;
-  documents: string;
-  location: string;
-  registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  employementStatus: string;
-  avgRating: number;
-  approvalStatus: string;
-}
 import type { ManageEngineerProps } from "@/pages/admin/engineer/types";
 
 export const manageEngineer: ManageEngineerProps[] = [

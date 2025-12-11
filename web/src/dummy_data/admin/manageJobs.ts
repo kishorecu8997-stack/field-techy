@@ -1,30 +1,4 @@
 import { icons } from "@/config/icons";
-
-export const ALL_JOBS_STATUS = {
-  approve: "Approve",
-  reject: "Reject",
-} as const;
-export type JobsStatus = (typeof ALL_JOBS_STATUS)[keyof typeof ALL_JOBS_STATUS];
-
-export interface ManageJobProps {
-  id: number;
-  postedBy: {
-    name: string;
-    email: string;
-  };
-  jobTitle: string;
-  jobDescription: string;
-  category: string;
-  jobType: string;
-  jobPrice: string;
-  priority: string;
-  country: string;
-  state: string;
-  city: string;
-  startDate: string;
-  createdDate: string;
-  approvalStatus: string;
-}
 import type { ManageFlaggedJobProps, ManageJobProps } from "@/pages/admin/jobs/types";
 
 export const manageJobs: ManageJobProps[] = [
