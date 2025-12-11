@@ -215,24 +215,22 @@ export default function SelectEngineers() {
           </div>
         </FormContainer>
       </div>
-      {isModalOpen && (
-        <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <div className="p-4">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">View File {selectedRowId}</span>
-              <div
-                className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <IoCloseSharp />
-              </div>
-            </div>
-            <div className="border border-gray-400 h-36 my-6">
-              <img src="https://via.placeholder.com/500" alt="file" />
+      <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="p-4">
+          <div className="flex justify-between items-center">
+            <span className="font-bold">View File {selectedRowId}</span>
+            <div
+              className="text-xl font-semibold cursor-pointer"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <IoCloseSharp />
             </div>
           </div>
-        </Popup>
-      )}
+          <div className="border border-gray-400 h-36 my-6">
+            <img src="https://via.placeholder.com/500" alt="file" />
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 }
