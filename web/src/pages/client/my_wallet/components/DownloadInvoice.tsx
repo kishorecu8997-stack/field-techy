@@ -15,7 +15,6 @@ import html2canvas from 'html2canvas';
  * @param {() => void} onClose - Function to close the modal.
  * @param {() => void} onDownload - Callback triggered after the download completes.
  */
- 
 const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   isOpen,
   onClose,
