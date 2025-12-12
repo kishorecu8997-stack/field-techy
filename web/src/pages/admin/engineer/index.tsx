@@ -1,6 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import PendingRequest from "./components/PendingRequest";
 import ActiveUser from "./components/ActiveUser";
