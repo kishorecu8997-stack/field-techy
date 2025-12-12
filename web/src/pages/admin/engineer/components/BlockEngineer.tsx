@@ -1,6 +1,7 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import Popup from "@/shared/components/Popup";
+import { validateDescription } from "@/utils/validate";
 import { IoCloseSharp } from "react-icons/io5";
 
 export default function BlockEngineer({
@@ -30,6 +31,7 @@ export default function BlockEngineer({
               label="Reason for Block"
               placeholder="Reason"
               required
+              rules={{ validate: (v: string) => validateDescription(v) }}
             />
           </div>
           <div className="flex justify-end gap-2">

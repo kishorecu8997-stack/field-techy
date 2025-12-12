@@ -145,7 +145,7 @@ export default function ActionsMenu({
             }}
             className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
           >
-            <MdPauseCircleOutline className="text-gray-300" />
+            <MdPauseCircleOutline className="text-orange-500" />
             <span>Suspend</span>
           </div>
 
@@ -156,7 +156,7 @@ export default function ActionsMenu({
             }}
             className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
           >
-            <MdBlockFlipped className="text-gray-300" />
+            <MdBlockFlipped className="text-gray-500" />
             <span>Block</span>
           </div>
 

@@ -2,6 +2,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import Popup from "@/shared/components/Popup";
+import { validateDescription } from "@/utils/validate";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
@@ -53,6 +54,7 @@ export default function SuspendEngineer({
               label="Reason for Suspension"
               placeholder="Reason"
               required
+              rules={{ validate: (v: string) => validateDescription(v) }}
             />
           </div>
           <div className="flex justify-end gap-2">
