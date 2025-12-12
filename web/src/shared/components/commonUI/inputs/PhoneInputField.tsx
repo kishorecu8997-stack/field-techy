@@ -8,7 +8,23 @@ import {
 import { CountrySelect } from "./CountrySelect";
 import type { PhoneInputFieldProps } from "./type";
 import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
-
+/**
+ * A reusable phone number input field with a country code selector.
+ *
+ * This component integrates with `react-hook-form` and provides a composite
+ * input for entering international phone numbers. It includes a dropdown for
+ * selecting the country code and validates the phone number format based on
+ * the selected country.
+ *
+ * @param {PhoneInputFieldProps} props - The props for the component.
+ * @param {string} props.name - The name of the field for `react-hook-form`.
+ * @param {string} [props.label] - The text label displayed above the input field.
+ * @param {string} [props.placeholder="Enter mobile number"] - The placeholder text for the number input.
+ * @param {boolean} [props.required=false] - Whether the field is mandatory.
+ * @param {RegisterOptions} [props.rules] - Additional validation rules for `react-hook-form`.
+ * @param {boolean} [props.disabled] - Disables the entire input field.
+ * @param {string} [props.inputClassName] - Custom CSS classes for the phone number input element.
+ */
 // --- Added ENUM-LIKE Object + Type ---
 export const COUNTRIES = {
   india: "india",
