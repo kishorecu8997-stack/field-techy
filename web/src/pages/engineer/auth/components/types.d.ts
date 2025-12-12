@@ -83,13 +83,17 @@ export type CompleteRegistrationData = {
   portfolio?: string;
   amount: string;
   designation: string;
+  tools: string[];
   serviceCategory: string;
   company: string;
   location: string;
   country: string;
   postalCode: string;
   experience: string;
+  educations?: string;
   resume?: File[];
+  budget?: string;
+  preferredWorkType?: string;
 
   // Background Verification
   governmentId?: File[];

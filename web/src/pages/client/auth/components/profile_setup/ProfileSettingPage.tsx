@@ -14,6 +14,7 @@ import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
+import { toast } from "react-toastify";
 
 /**
  * A multi-step registration form component that guides users through
@@ -127,8 +128,8 @@ const CorporateMultiStepRegistration = () => {
     }
   };
 
-  /*
-   * submitCompleteForm
+  /**
+   *  submitCompleteForm
    *
    * Final submission routine called when the user completes the last step.
    * This toggles the `isSubmitting` state, performs the network call (here
@@ -138,15 +139,14 @@ const CorporateMultiStepRegistration = () => {
    */
 
   const { mutate: signupClient, isPending } = useClientSignup({
-    onSuccess: (data) => {
-      console.log("Signup success:", data);
+    onSuccess: () => {
       setIsSubmitting(false);
       setAccessPopup(true);
       navigate(absoluteUrls.client.auth.login);
     },
-    onError: (error) => {
-      console.error("Signup error:", error);
+    onError: () => {
       setIsSubmitting(false);
+      toast.error("Signup failed. Please try again.");
     },
   });
 
@@ -176,7 +176,6 @@ const CorporateMultiStepRegistration = () => {
           variant: "primary",
           value: "yes",
           action(close) {
-            console.log("Yes clicked");
             signupClient(clientData);
             close(true);
           },
@@ -186,7 +185,6 @@ const CorporateMultiStepRegistration = () => {
           variant: "secondary",
           value: "no",
           action: (close) => {
-            console.log("No clicked");
             close(true);
           },
         },

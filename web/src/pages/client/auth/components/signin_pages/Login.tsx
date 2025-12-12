@@ -47,13 +47,11 @@ const Login = ({
   const navigate = useNavigate();
 
   const { mutate, isPending } = useClientSignin({
-    onSuccess: (data: any) => {
-      console.log(data);
+    onSuccess: () => {
       setIsOpen(true);
-      toast.success("OTP sent explicitly (Simulated)");
+      toast.success("OTP sent successfully");
     },
-    onError: (error: any) => {
-      console.error(error);
+    onError: () => {
       toast.error("Login failed");
     },
   });

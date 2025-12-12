@@ -1,4 +1,9 @@
-import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
+import axios, {
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 /*
  * axiosInstance
@@ -8,25 +13,23 @@ import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axio
  *
  */
 const axiosInstance = axios.create({
-	baseURL: "https://dvocdd2ubhpp7dj6ujozgvendorfiledtechy.demotechhub.xyz/",
-	timeout: 10_000,
+  baseURL: baseUrl,
+  timeout: 10_000,
 });
 
+console.log(baseUrl);
+
+const token = localStorage.getItem("authToken");
 export async function addAuthTokenIfExists(cfg: InternalAxiosRequestConfig) {
-	console.log(`[Interceptor] Method: ${cfg.method} | URL: ${cfg.url}`);
-	console.log("[Interceptor] Adding Auth Token to request");
-	const token = "Bearer something_secret_token";
-	cfg.headers.Authorization = token;
-	return cfg;
+  if (token) {
+    cfg.headers.Authorization = `Bearer ${token}`;
+  }
+  return cfg;
 }
 
 export async function responseLoggerInterceptor(response: AxiosResponse) {
-	console.log(
-		`[Response Interceptor] Response received from ${response.config.url} with status ${response.status}`,
-	);
-	return response;
+  return response;
 }
-
 
 axiosInstance.interceptors.request.use(addAuthTokenIfExists);
 axiosInstance.interceptors.response.use(responseLoggerInterceptor);

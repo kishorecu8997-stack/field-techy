@@ -1,6 +1,10 @@
 import { assetsConfig } from "@/assets";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import { useEngineerSignin } from "@/shared/apiServices/engineer/engineerService";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -15,14 +19,9 @@ import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
-// import { usePostData } from "@/shared/hooks/apiHooks/usePostData";
-import { useEngineerSignin } from "@/shared/apiServices/engineer/engineerService";
-import IconWithTheme from "@/shared/components/IconWithTheme";
-import logo_light from "@/assets/logo/logo_light.svg";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -46,16 +45,14 @@ const Login = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { goToHome } = useHomeNavigation();
-  const { mutate, isPending } = useEngineerSignin({ 
-    onSuccess: (data) => {
-      console.log(data);
+
+  const { mutate } = useEngineerSignin({
+    onSuccess: () => {
       setIsOpen(true);
-      // toast.success("OTP sent explicitly (Simulated)"); 
     },
-    onError: (error: any) => {
-       console.error(error);
-       toast.error("Login failed");
-    }
+    onError: () => {
+      toast.error("Login failed");
+    },
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -80,10 +77,10 @@ const Login = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-           <IconWithTheme
+            <IconWithTheme
               lightLogo={assetsConfig.logos.companyLogo}
               darkLogo={logo_light}
-               className="h-15 w-20"
+              className="h-15 w-20"
             />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -117,7 +114,7 @@ const Login = ({
             required
             rules={{
               required: "Password is required",
-              validate:(value)=> validatePassword(value),
+              validate: (value) => validatePassword(value),
             }}
           />
           <div className="flex items-center justify-between flex-wrap">

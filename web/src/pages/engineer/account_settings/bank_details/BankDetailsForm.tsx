@@ -16,16 +16,15 @@ import {
  */
 const BankDetailsForm = ({ formType }: { formType?: string }) => {
   return (
-    <div className="flex flex-col h-full pb-4">
-      <div className="flex flex-col overflow-auto flex-grow gap-4">
-        <div className="p-4">
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col overflow-auto flex-grow gap-2 p-1">
         <SelectField
           name="bankName"
           label="Bank"
           options={bankList}
           placeholder="Select a bank"
           required
-          />          
+        />
         <InputField
           name="bankAddress"
           label="Branch Address"
@@ -38,7 +37,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           label="Name"
           placeholder="Name"
           required
-          rules={{             
+          rules={{
             validate: (value) => validateNameWithSpace(value, "Name"),
           }}
         />
@@ -64,14 +63,15 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           rules={{ validate: validateSWIFTBank }}
         />
       </div>
-      <div className="mt-auto flex justify-end">
+
+      {/* Sticky button */}
+      <div className="sticky bottom-0 bg-white ">
         <Button
           type="submit"
           className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
         >
           {formType === "add" ? "Add Account" : "Save Bank Details"}
         </Button>
-      </div>
       </div>
     </div>
   );

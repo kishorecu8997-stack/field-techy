@@ -33,7 +33,6 @@ export interface ClientPaginationParams {
   direction?: "ASC" | "DESC";
 }
 
-
 /*
  * ClientAdapter
  *
@@ -52,12 +51,15 @@ export class ClientAdapter {
 
   static async signin(data: LoginFormData) {
     const payload = {
-       phoneOrEmail: data.email,
-       password: data.password
-    }
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNIN, payload);
+      phoneOrEmail: data.email,
+      password: data.password,
+    };
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SIGNIN,
+      payload
+    );
     return response.data;
- }
+  }
 
   static async getById(id: string): Promise<ClientData> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
@@ -65,7 +67,12 @@ export class ClientAdapter {
   }
 
   static async getAll(params: ClientPaginationParams = {}): Promise<any> {
-    const { page = 0, size = 10, sortBy = "createdAt", direction = "DESC" } = params;
+    const {
+      page = 0,
+      size = 10,
+      sortBy = "createdAt",
+      direction = "DESC",
+    } = params;
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
       params: { page, size, sortBy, direction },
     });
@@ -73,7 +80,10 @@ export class ClientAdapter {
   }
 
   static async update(id: string, data: ClientData): Promise<ClientData> {
-    const response = await axiosInstance.put(CLIENT_ROUTER_PATHS.UPDATE(id), data);
+    const response = await axiosInstance.put(
+      CLIENT_ROUTER_PATHS.UPDATE(id),
+      data
+    );
     return response.data;
   }
 

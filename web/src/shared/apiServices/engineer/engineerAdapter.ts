@@ -26,18 +26,18 @@ export class EngineerAdapter {
       address: data.address,
       portfolioLink: data.portfolio ?? "",
       serviceCategory: data.serviceCategory ?? "",
-      budget: "Negotiable", // Defaulting as per example
+      budget: data.budget ?? "Negotiable", // Default to "Negotiable" if not provided
       rate: data.amount ? parseFloat(data.amount) : 0,
       experienceYears: data.experience ? parseInt(data.experience) : 0,
-      preferredWorkType: "REMOTE HYBRID", // Defaulting as per example
+      preferredWorkType: data.preferredWorkType ?? "REMOTE HYBRID", // Default to "REMOTE HYBRID" if not provided
       enableNotifications: true,
       location: data.country ? `${data.country}, ${data.postalCode}` : "",
       averageRating: 0,
       status: "PENDING",
       jobSkills: data.skills || [],
-      tools: [], // Add tools if collected in form
-      experiences: [], // Add experiences if collected
-      educations: [], // Add educations if collected
+      tools: data.tools || [],
+      experiences: data.experience,
+      educations: data.educations,
       files: null, // As per example
     };
 
