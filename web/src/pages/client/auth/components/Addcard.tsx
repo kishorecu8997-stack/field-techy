@@ -61,7 +61,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
           placeholder="9999 9999 9999 9999"
           rules={{ validate: (v: string) => cardNumberValidation(v) }}
           required
-          allowedCharacters="numbers"   
+          allowedCharacters="numbers"
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -79,7 +79,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="Enter CVV"
             rules={{ validate: (v: string) => cvvValidation(v) }}
             required
-            allowedCharacters="numbers" 
+            allowedCharacters="numbers"
           />
         </div>
 

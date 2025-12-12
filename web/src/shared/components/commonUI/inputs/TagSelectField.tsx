@@ -199,6 +199,7 @@ interface TagSelectFieldProps {
   inputClassName?: string;
   maxTags?: number;
   options: TagOption[]; // ✅ Updated type
+  disabled?: boolean;
 }
 
 /**
@@ -217,6 +218,7 @@ export const TagSelectField = ({
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-4 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition",
   maxTags = 10,
   options = [],
+  disabled = false,
 }: TagSelectFieldProps) => {
   const { control } = useFormContext();
   const [selectedOption, setSelectedOption] = useState("");
@@ -269,6 +271,7 @@ export const TagSelectField = ({
         name={name}
         control={control}
         rules={validationRules}
+        disabled={disabled}
         render={({ field, fieldState: { error } }) => {
           const { onChange, value = [] } = field;
 
@@ -290,6 +293,7 @@ export const TagSelectField = ({
                 {/* Wrapper for custom arrow */}
                 <div className="relative">
                   <select
+                    disabled={disabled}
                     value={selectedOption}
                     onChange={(e) => {
                       const selected = e.target.value;

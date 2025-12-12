@@ -60,7 +60,6 @@ export const InputField = ({
     ...rules,
   };
 
-  // Email pattern
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -69,7 +68,6 @@ export const InputField = ({
     };
   }
 
-  // allowedCharacters validation
   if (allowedCharacters) {
     const patterns: Record<string, { regex: RegExp; message: string }> = {
       numbers: { regex: /^[0-9]*$/, message: "Only numbers are allowed." },
@@ -150,7 +148,9 @@ export const InputField = ({
                 onChange={(e) => {
                   let value = e.target.value;
 
-                  // Sanitization for allowedCharacters
+                  if (!allowInput(value)) return;
+                  value = e.target.value;
+
                   if (allowedCharacters) {
                     const sanitizeMap: Record<string, RegExp> = {
                       numbers: /[^0-9]/g,
@@ -201,14 +201,12 @@ export const InputField = ({
               )}
             </div>
 
-            {/* RHF validation error */}
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                 {error.message}
               </p>
             )}
 
-            {/* Inline error for attempted invalid input */}
             {attemptedInvalid && allowedCharacters && (
               <p className="mt-1 text-sm text-red-600" role="alert">
                 {allowedCharacters === "numbers" &&

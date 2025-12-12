@@ -12,7 +12,7 @@ import countries from "@/dummy_data/countries";
 import {
   validateZipcode,
   validateName,
-  validateAddress,  
+  validateAddress,
   validateAmount,
   validateCompany,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
@@ -88,7 +88,6 @@ const ProfileSetup = () => {
         type="text"
         placeholder="First Name"
         required
-
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />

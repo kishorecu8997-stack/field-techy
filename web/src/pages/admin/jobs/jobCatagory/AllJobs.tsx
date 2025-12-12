@@ -48,7 +48,6 @@ const AllJob: React.FC = () => {
     setBudget(value);
 
     const result = validateBudget(value);
-    setBudgetError(result === true ? null : result);
   };
 
   const handleStatusChange = async (data: ManageJobProps) => {
@@ -71,7 +70,6 @@ const AllJob: React.FC = () => {
           variant: `${
             status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
           }`,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("close :", close);
             // await handlePostAJob(data);
@@ -81,7 +79,8 @@ const AllJob: React.FC = () => {
       ],
     });
   };
-  //Delete confirmation
+
+  // Delete confirmation
   const handleDeleteJob = async (job: ManageJobProps) => {
     await showPopup({
       title: "Delete Job",
@@ -96,7 +95,6 @@ const AllJob: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("Deleting job:", job.id);
             // TODO: call your delete API here
@@ -239,7 +237,7 @@ const AllJob: React.FC = () => {
           onChange={setFilterRegion}
           options={Region}
         />
-        <div>
+        <div className="flex items-center gap-2">
           <InputOutline
             placeholder="Budget"
             name="budget"
@@ -248,18 +246,14 @@ const AllJob: React.FC = () => {
             onChange={handleBudgetChange}
           />
 
-          {budgetError && (
-            <p className="text-red-500 text-xs mt-1">{budgetError}</p>
-          )}
+          <SelectMenu
+            className="absolute z-20"
+            placeholder="Job Type"
+            value={filterType}
+            onChange={setFilterType}
+            options={AllJobType}
+          />
         </div>
-
-        <SelectMenu
-          className="absolute z-20"
-          placeholder="Job Type"
-          value={filterType}
-          onChange={setFilterType}
-          options={AllJobType}
-        />
       </div>
       <div className="h-full flex-1 overflow-y-auto my-4">
         <CustomTable<ManageJobProps>
