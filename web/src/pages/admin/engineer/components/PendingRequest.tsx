@@ -6,7 +6,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
@@ -17,7 +17,6 @@ import type { ManageEngineerProps } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import type { adminJobsStatus } from "../../jobs/types";
 import { toast } from "react-toastify";
-import { useClickOutside } from "@/shared/components/UseclickOutside";
 
 /**
  * PendingRequest Component
@@ -43,19 +42,15 @@ export default function PendingRequest() {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
-
-  // useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
     const status = data.status;
     await showPopup({
-      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
+      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Engineer`,
       body: `Are you sure you want to ${
         status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this job?`,
+      } this Engineer?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -85,8 +80,8 @@ export default function PendingRequest() {
   //Delete confirmation
   const handleDeleteJob = async (job: ManageEngineerProps) => {
     await showPopup({
-      title: "Delete Job",
-      body: "Are you sure you want to delete this job?",
+      title: "Delete Engineer",
+      body: "Are you sure you want to delete this engineer?",
       actionButtons: [
         {
           label: "Cancel",

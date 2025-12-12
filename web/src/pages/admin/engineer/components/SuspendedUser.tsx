@@ -5,6 +5,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * SuspendedUser Component
@@ -23,6 +24,31 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} The rendered SuspendedUser component.
  */
 export default function SuspendedUser() {
+  const { showPopup } = usePopupStore();
+
+  const handleRevoke = async (id: number) => {
+    await showPopup({
+      title: "Revoke",
+      body: "Are you sure you want to revoke suspension of this engineer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Revoke",
+          value: "save",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Revoking job:", id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
+
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
     {
@@ -67,8 +93,11 @@ export default function SuspendedUser() {
       key: "action",
       label: "Actions",
       align: "center",
-      renderCell: () => (
-        <div className="mx-auto text-center">
+      renderCell: (row: ManageEngineerProps) => (
+        <div
+          className="mx-auto text-center"
+          onClick={() => handleRevoke(row.id)}
+        >
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
             Revoke
           </Button>

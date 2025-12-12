@@ -1,4 +1,3 @@
-import { absoluteUrls } from "@/config/urls";
 import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
@@ -6,21 +5,21 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import { useRef, useState } from "react";
-import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
-import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps, SuspendEngineerFormData } from "../types";
+import type {
+  BlockEngineerFormData,
+  ManageEngineerProps,
+  SuspendEngineerFormData,
+} from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useClickOutside } from "@/shared/components/UseclickOutside";
-import { MdBlockFlipped, MdPauseCircleOutline } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import BlockEngineer from "./BlockEngineer";
+import ActionsMenu from "./ActionMenu";
 
 /**
  * ActiveUser Component
@@ -29,13 +28,6 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
  * - A search input for filtering results.
  * - A customizable table for viewing detailed engineer data.
  * - Actionable buttons for viewing document details.
- *
- * @component
- * @example
- * return (
- *   <ActiveUser />
- * );
- *
  * @returns {JSX.Element} The rendered ActiveUser component.
  */
 export default function ActiveUser() {
@@ -48,12 +40,12 @@ export default function ActiveUser() {
     },
   });
 
-  const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
   const [isSuspendengineer, setIsSuspendengineer] = useState<boolean>(false);
+  const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
 
@@ -62,8 +54,8 @@ export default function ActiveUser() {
   //Delete confirmation
   const handleDeleteJob = async (job: ManageEngineerProps) => {
     await showPopup({
-      title: "Delete Job",
-      body: "Are you sure you want to delete this job?",
+      title: "Delete Engineer",
+      body: "Are you sure you want to delete this engineer?",
       actionButtons: [
         {
           label: "Cancel",
@@ -164,92 +156,56 @@ export default function ActiveUser() {
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div className="relative inline-block">
-          <div
-            ref={showAction === row.id ? triggerRef : null}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowAction(showAction === row.id ? null : row.id);
-            }}
-            className="text-center text-lg cursor-pointer"
-          >
-            <HiOutlineDotsHorizontal />
-          </div>
-
-          {showAction === row.id && (
-            <div className="absolute right-0 mt-1 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-10 w-fit py-2">
-              <div
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => {
-                  setShowAction(null);
-                  navigate(absoluteUrls.admin.home.manage_engineer_view);
-                }}
-              >
-                <FiEye className="text-yellow-600" />
-                <span>View</span>
-              </div>
-
-              <div
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => {
-                  setShowAction(null);
-                  navigate(
-                    `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`
-                  );
-                }}
-              >
-                <CiEdit className="text-blue-600" />
-                <span>Edit</span>
-              </div>
-              <div
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => setIsSuspendengineer(true)}
-              >
-                <MdPauseCircleOutline className="text-gray-300" />
-                Suspend
-              </div>
-              <div className="flex items-center gap-2 px-3 py-2 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
-                <MdBlockFlipped className="text-gray-300" />
-                Block
-              </div>
-
-              <div
-                className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
-                onClick={() => {
-                  setShowAction(null);
-                  handleDeleteJob(row);
-                }}
-              >
-                <RiDeleteBin6Line className="text-red-600" />
-                <span>Delete</span>
-              </div>
-            </div>
-          )}
-        </div>
+        <ActionsMenu
+          row={row}
+          showAction={showAction}
+          setShowAction={setShowAction}
+          handleDelete={handleDeleteJob}
+          setIsSuspend={setIsSuspendengineer}
+          setIsBlock={setIsBlockEngineer}
+        />
       ),
     },
   ];
 
-  const handleSubmit = async (data: SuspendEngineerFormData) => {
+  const handleSuspendSubmit = async (data: SuspendEngineerFormData) => {
     await showPopup({
       title: "Suspend Engineer",
       body: "Are you sure you want to suspend this engineer?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Suspend",
           value: "save",
           variant: "danger",
           action: async (close) => {
-            console.log("data :", data);
+            console.log("Suspend data:", data);
             close(true);
             methods.reset();
             setIsSuspendengineer(false);
             toast.success("Engineer suspended successfully!");
+          },
+        },
+      ],
+    });
+  };
+
+  const handleBlockSubmit = async (data: BlockEngineerFormData) => {
+    await showPopup({
+      title: "Block Engineer",
+      body: "Are you sure you want to block this engineer?",
+      actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
+        {
+          label: "Block",
+          value: "save",
+          variant: "danger",
+          action: async (close) => {
+            console.log("Block data:", data);
+            close(true);
+            methods.reset();
+            setIsBlockEngineer(false);
+            toast.success("Engineer blocked successfully!");
           },
         },
       ],
@@ -287,10 +243,18 @@ export default function ActiveUser() {
         </div>
       </Popup>
       {isSuspendengineer && (
-        <FormContainer methods={methods} onSubmit={handleSubmit}>
+        <FormContainer methods={methods} onSubmit={handleSuspendSubmit}>
           <SuspendEngineer
             isSuspendengineer={isSuspendengineer}
             setIsSuspendengineer={setIsSuspendengineer}
+          />
+        </FormContainer>
+      )}
+      {isBlockEngineer && (
+        <FormContainer methods={methods} onSubmit={handleBlockSubmit}>
+          <BlockEngineer
+            isBlockEngineer={isBlockEngineer}
+            setIsBlockEngineer={setIsBlockEngineer}
           />
         </FormContainer>
       )}

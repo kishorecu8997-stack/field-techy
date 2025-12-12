@@ -2,11 +2,10 @@ import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import { useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
-import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * BlockedUser Component
@@ -25,11 +24,30 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} The rendered BlockedUser component.
  */
 export default function BlockedUser() {
-  const [, setShowAction] = useState<number | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const { showPopup } = usePopupStore();
 
-  useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
+  const handleUnblock = async (id: number) => {
+    await showPopup({
+      title: "Unblock",
+      body: "Are you sure you want to unblock this engineer?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Unblock",
+          value: "save",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Unlocking job:", id);
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
@@ -71,9 +89,12 @@ export default function BlockedUser() {
       label: "Actions",
       align: "center",
       renderCell: (row: ManageEngineerProps) => (
-        <div className="mx-auto text-center">
+        <div
+          className="mx-auto text-center"
+          onClick={() => handleUnblock(row.id)}
+        >
           <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white">
-            Unlock
+            Unblock
           </Button>
         </div>
       ),

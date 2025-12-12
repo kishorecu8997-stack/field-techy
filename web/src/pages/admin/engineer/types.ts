@@ -84,3 +84,7 @@ export interface SuspendEngineerFormData {
   suspendEndDate: Date | null;
   reason: string;
 }
+
+export interface BlockEngineerFormData {
+  reason: string;
+}
