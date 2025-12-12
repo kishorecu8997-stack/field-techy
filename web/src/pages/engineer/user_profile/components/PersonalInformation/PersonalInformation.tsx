@@ -105,7 +105,7 @@ const PersonalInformation: React.FC = () => {
           placeholder="Full Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          alphabetOnly   
+          inputMode="string"  
           rules={{ validate: (v: string) => validateName(v) }}
         />
 
