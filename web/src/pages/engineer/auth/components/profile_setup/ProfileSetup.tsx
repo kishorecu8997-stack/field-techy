@@ -12,7 +12,7 @@ import countries from "@/dummy_data/countries";
 import {
   validateZipcode,
   validateName,
-  validateAddress,  
+  validateAddress,
   validateAmount,
   validateCompany,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
@@ -88,7 +88,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="First Name"
         required
-        alphabetOnly
+        inputMode="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
@@ -98,7 +98,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Last Name"
         required
-        alphabetOnly
+        inputMode="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
@@ -205,7 +205,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Current Designation"
         required
-        alphabetOnly
+        inputMode="string"
         rules={{ validate: (v: string) => validateDesignation(v) }}
       />
       <InputField
@@ -214,7 +214,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Company/Employer"
         required
-        alphabetOnly
+        inputMode="string"
         rules={{ validate: (v: string) => validateCompany(v) }}
       />
       <InputField

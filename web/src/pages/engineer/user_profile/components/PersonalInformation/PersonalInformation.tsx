@@ -45,7 +45,7 @@ const PersonalInformation: React.FC = () => {
         {
           label: "Cancel",
           value: "no",
-          variant:"secondary",
+          variant: "secondary",
           action: async (close) => {
             console.log("No button clicked");
             close(true);
@@ -54,7 +54,7 @@ const PersonalInformation: React.FC = () => {
         {
           label: "Yes, update",
           value: "yes",
-          variant:"primary",
+          variant: "primary",
           action: async (close) => {
             toast.success("Profile Updated Successfully");
             console.log("Form submitted with data:", data);
@@ -105,7 +105,7 @@ const PersonalInformation: React.FC = () => {
           placeholder="Full Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          alphabetOnly   
+          inputMode="string"
           rules={{ validate: (v: string) => validateName(v) }}
         />
 
