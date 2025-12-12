@@ -1,5 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
-import { Navigate } from "react-router-dom"
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import useReady from "@/shared/hooks/useReady";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 
 
 /**
@@ -7,11 +11,23 @@ import { Navigate } from "react-router-dom"
  * @returns {JSX.Element} The landing route component.
  */
 export default function AppLandingRoute() {
+    const ready = useReady()
+    const navigate = useNavigate()
 
     //TODO: add navigation based on routes and auth
 
+    const userSession = useUserSessionStore(s => s.session);
 
-    return (
-        <Navigate to={absoluteUrls.client.auth.login} replace />   
-    );
+
+    useEffect(() => {
+        if (ready) {
+            if (userSession) {
+                navigate(absoluteUrls.client.home.dashboard, { replace: true })
+            } else {
+                navigate(absoluteUrls.client.auth.login, { replace: true })
+            }
+        }
+    }, [userSession, ready])
+
+    return <LoaderComponent />
 }

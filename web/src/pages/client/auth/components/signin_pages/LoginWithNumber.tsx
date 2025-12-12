@@ -13,6 +13,8 @@ import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import { toast } from "react-toastify";
 import logo_light from "@/assets/logo/logo_light.svg";
 import IconWithTheme from "@/shared/components/IconWithTheme";
+import { useUserSessionStore, type UserSession } from "@/shared/store/useUserSessionStore";
+import { useReqMobileVerificationOtpMutation, useVerifyMobileVerificationOtpMutation } from "@/shared/apiServices/auth/clients/clientAuthService";
 
 export type LoginFormData = {
   phone: string;
@@ -38,6 +40,9 @@ const LoginWithNumber = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
+  const reqMobileVerificationOtpMutation = useReqMobileVerificationOtpMutation();
+  const verifyMobileVerificationOtpMutation = useVerifyMobileVerificationOtpMutation();
+  const setUserSession = useUserSessionStore(s => s.setSession);
 
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
@@ -46,9 +51,60 @@ const LoginWithNumber = ({
     },
   });
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = async (data: LoginFormData) => {
+    await reqMobileVerificationOtpMutation.mutateAsync(data.phone, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        toast.success("OTP Requested, kindly check your phone for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    })
   };
+
+  const handleOtpSubmission = async (otp: string) => {
+    const phone = method.getValues("phone");
+    await verifyMobileVerificationOtpMutation.mutateAsync({ mobile: phone, otp }, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        //TODO: integrate the otp stubbed version
+        const stubbedResponse: UserSession = {
+          accessToken: "something fake",
+          userId: "uuid-123",
+          displayName: "John Doe",
+          metadata: {}
+        }
+
+        setIsOpen(false);
+        setUserSession(stubbedResponse);
+        navigate(absoluteUrls.client.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Verification failed");
+      },
+    })
+  }
+
+  const onResendOtp = async () => {
+    const phone = method.getValues("phone");
+    await reqMobileVerificationOtpMutation.mutateAsync(phone, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        toast.success("OTP Requested, kindly check your phone for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    })
+  }
+
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
       <div className="px-10 w-full max-w-lg">
@@ -80,6 +136,7 @@ const LoginWithNumber = ({
 
           <Button
             type="submit"
+            loading={reqMobileVerificationOtpMutation.isPending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Send OTP
@@ -99,8 +156,9 @@ const LoginWithNumber = ({
         </div>
         <div className="flex flex-col gap-2 items-center justify-center pt-5">
           <Button
-            className="w-full "
+            className="w-full"
             variant="outline"
+            disabled
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap">LinkedIn</span>
@@ -111,11 +169,8 @@ const LoginWithNumber = ({
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
-              setIsOpen(false);
-              navigate(absoluteUrls.client.home.dashboard);
-              toast.success("Logged in successfully");
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

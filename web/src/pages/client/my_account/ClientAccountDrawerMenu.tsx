@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -50,6 +51,9 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
+
+  const logoutTrigger = useUserSessionStore(s => s.logout)
+
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -80,11 +84,15 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       key: "logout",
       isLogout: true,
       onClick: () => {
-        console.log("Logout clicked");
         setIsOpen(true);
       },
     },
   ];
+
+  const handleConfirmationLogout = () => {
+    logoutTrigger()
+    navigate(absoluteUrls.root)
+  }
 
   return (
     <>
@@ -118,31 +126,28 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
-              }
+              ${item.isLogout
+                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    : ""
+                  }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
-                  }
+                  ${item.isLogout
+                        ? "text-red-600 dark:text-red-400 "
+                        : "text-gray-600 dark:text-gray-300 "
+                      }
                 `}
                   />
                   <span
                     className={`
-                ${
-                  item.isLogout
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200"
-                }
+                ${item.isLogout
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-gray-700 dark:text-gray-200"
+                      }
                 `}
                   >
                     {item.label}
@@ -163,10 +168,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
           <LogoutConfirmationPopup
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            onConfirm={() => {
-              onClose();
-              navigate(absoluteUrls.client.auth.login);
-            }}
+            onConfirm={handleConfirmationLogout}
             onCancel={() => setIsOpen(false)}
           />
         </div>

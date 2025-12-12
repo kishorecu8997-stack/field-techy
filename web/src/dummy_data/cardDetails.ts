@@ -1,4 +1,4 @@
-import type { PaymentCardOption } from "@/shared/components/commonUI/PaymentMethod";
+import type { PaymentCardOption } from "@/shared/components/type";
 
 export interface Card {
   id: string;

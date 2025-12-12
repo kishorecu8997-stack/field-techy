@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
@@ -36,6 +36,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { setActiveKey } = useDrawerStore();
 
   useEffect(() => {
@@ -69,13 +70,19 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         />
         <NavLink
           to={absoluteUrls.client.home.my_projects}
-          className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+              ? "text-teal-800 font-semibold"
+              : ""
+            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           to={absoluteUrls.client.home.my_jobs}
-          className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>

@@ -27,11 +27,11 @@ interface AddEducationProps {
  * @param {AddEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC<AddEducationProps> = ({}) => {
+const AddEducation: React.FC<AddEducationProps> = ({ }) => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (data: EducationFormData) => {
+  const handleSubmit = async (_: EducationFormData) => {
     await showPopup({
       title: "Add Education",
       body: "Are you sure you want to add this education?",

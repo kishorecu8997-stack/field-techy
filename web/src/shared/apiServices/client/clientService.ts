@@ -4,7 +4,6 @@ import {
   type ClientData,
   type ClientPaginationParams,
 } from "./clientAdapter";
-import type { LoginFormData } from "@/pages/engineer/auth/components/types";
 
 export const CLIENT_QUERY_KEYS = {
   all: ["clients"] as const,
@@ -15,31 +14,10 @@ export const CLIENT_QUERY_KEYS = {
 
 // --- Mutations ---
 
-export function useClientSignup(options?: {
-  onSuccess?: (data: ClientData) => void;
-  onError?: (error: any) => void;
-}) {
-  return useMutation({
-    mutationFn: (data: ClientData) => ClientAdapter.signup(data),
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
-}
-
-export function useClientSignin(options?: {
-  onSuccess?: (data: any) => void;
-  onError?: (error: any) => void;
-}) {
-  return useMutation({
-    mutationFn: (data: LoginFormData) => ClientAdapter.signin(data),
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
-}
 
 export function useClientUpdate(options?: {
   onSuccess?: (data: ClientData) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -60,7 +38,7 @@ export function useClientUpdate(options?: {
 
 export function useClientDelete(options?: {
   onSuccess?: () => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({

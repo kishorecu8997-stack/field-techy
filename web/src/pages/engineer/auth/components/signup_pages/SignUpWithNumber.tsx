@@ -108,11 +108,10 @@ const SignUpWithNumber = ({
           <Button
             type="submit"
             disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:opacity-90"
-            }`}
+              }`}
           >
             Create Account
           </Button>
@@ -143,7 +142,7 @@ const SignUpWithNumber = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={handleOTPVerified}
+            onSubmit={handleOTPVerified}
           />
         </Popup>
       </div>

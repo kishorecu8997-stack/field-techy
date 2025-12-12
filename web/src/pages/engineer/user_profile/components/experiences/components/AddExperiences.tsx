@@ -25,7 +25,7 @@ const AddExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (data: ExperiencesFormData) => {
+  const handleSubmit = async (_: ExperiencesFormData) => {
     await showPopup({
       title: "Add Experience",
       body: "Are you sure you want to add this experience?",

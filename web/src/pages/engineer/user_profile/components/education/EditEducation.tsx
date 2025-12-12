@@ -40,7 +40,7 @@ const EditEducation = () => {
     };
   }, []);
 
-  const handleSubmit = async (data: EducationFormData) => {
+  const handleSubmit = async (_: EducationFormData) => {
     await showPopup({
       title: "Update Education",
       body: "Are you sure you want to update this education?",

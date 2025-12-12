@@ -72,7 +72,7 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
    *
    * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
    */
-  const onSubmit = async (data: EditSkillsFormData) => {
+  const onSubmit = async (_: EditSkillsFormData) => {
     await showPopup({
       title: "Update Skills",
       body: "Are you sure you want to update these skills?",

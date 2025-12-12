@@ -17,13 +17,11 @@ import LoginWithNumber from "./LoginWithNumber";
 const ClientSignInPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
+
   return (
     <div className="flex w-full justify-center">
-      {isNumberLogin ? (
-        <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />
-      ) : (
-        <Login setIsNumberLogin={setIsNumberLogin} />
-      )}
+      {isNumberLogin && <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />}
+      {!isNumberLogin && <Login setIsNumberLogin={setIsNumberLogin} />}
     </div>
   );
 };

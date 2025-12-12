@@ -68,7 +68,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: validatePassword,
+                validate: (val) => validatePassword(val),
               }}
             />
           </div>
@@ -80,7 +80,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: validatePassword,
+                validate: (val, values) => validatePassword(val, values.oldPassword),
               }}
             />
           </div>

@@ -1,4 +1,5 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
+import { config } from "@/shared/config/configService";
 
 /*
  * axiosInstance
@@ -8,7 +9,7 @@ import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axio
  *
  */
 const axiosInstance = axios.create({
-	baseURL: "https://dvocdd2ubhpp7dj6ujozgvendorfiledtechy.demotechhub.xyz/",
+	baseURL: config.apiUrl,
 	timeout: 10_000,
 });
 
@@ -30,5 +31,13 @@ export async function responseLoggerInterceptor(response: AxiosResponse) {
 
 axiosInstance.interceptors.request.use(addAuthTokenIfExists);
 axiosInstance.interceptors.response.use(responseLoggerInterceptor);
+
+
+// ---------------------------------------------------------------------------
+
+export const uploadAxiosInstance = axios.create({
+	baseURL: config.apiUrl,
+	timeout: 10_000,
+});
 
 export default axiosInstance;

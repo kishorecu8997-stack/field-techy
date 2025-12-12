@@ -1,6 +1,5 @@
 import axiosInstance from "@/axiosInstance";
 import { CLIENT_ROUTER_PATHS } from "./clientRouterPaths";
-import type { LoginFormData } from "@/pages/engineer/auth/components/types";
 
 export interface ClientData {
   id?: string;
@@ -48,26 +47,14 @@ export interface ClientPaginationParams {
  * parameters into the expected format for the API.
  */
 export class ClientAdapter {
-  static async signup(data: ClientData): Promise<ClientData> {
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
-    return response.data;
-  }
 
-  static async signin(data: LoginFormData) {
-    const payload = {
-       phoneOrEmail: data.email,
-       password: data.password
-    }
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNIN, payload);
-    return response.data;
- }
 
   static async getById(id: string): Promise<ClientData> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
     return response.data;
   }
 
-  static async getAll(params: ClientPaginationParams = {}): Promise<any> {
+  static async getAll(params: ClientPaginationParams = {}): Promise<unknown> {
     const { page = 0, size = 10, sortBy = "createdAt", direction = "DESC" } = params;
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
       params: { page, size, sortBy, direction },

@@ -139,6 +139,7 @@ export const urls = {
 
 // ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
 export const absoluteUrls = {
+  root: "/",
   engineer: {
     auth: {
       login: `${BASE.AUTH}/login`,

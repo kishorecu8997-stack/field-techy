@@ -2,7 +2,6 @@ import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
 import type { ClientData } from "@/shared/apiServices/client/clientAdapter";
-import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -14,6 +13,7 @@ import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
+import { useClientProfileCreate } from "@/shared/apiServices/profiles/client/clientProfileService";
 
 /**
  * A multi-step registration form component that guides users through
@@ -32,7 +32,6 @@ import type { CompleteRegistrationData } from "./types";
 const CorporateMultiStepRegistration = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [accessPopup, setAccessPopup] = useState<boolean>(false);
   const { role } = useParams<{ role?: string }>();
   const navigate = useNavigate();
 
@@ -119,11 +118,11 @@ const CorporateMultiStepRegistration = () => {
   };
 
 
-  const { mutate: signupClient, isPending } = useClientSignup({
+  const { mutate: signupClient, isPending } = useClientProfileCreate({
     onSuccess: (data) => {
       console.log("Signup success:", data);
       setIsSubmitting(false);
-      setAccessPopup(true);
+      // setAccessPopup(true);
       navigate(absoluteUrls.client.auth.login);
     },
     onError: (error) => {
@@ -147,14 +146,14 @@ const CorporateMultiStepRegistration = () => {
       taxDocumentVat: data.vat,
       password: data.password,
       email: data.email,
-      certificationQualificationsDocument:"",
-      governmentIdProofDocument:"",
-      profilePicture:"",
-      enableNotifications:data.enableNotifications,
-      isApproved:true,
-      clientType:data.clientType,
-      country:data.country,
-      postalCode:data.postalCode,
+      certificationQualificationsDocument: "",
+      governmentIdProofDocument: "",
+      profilePicture: "",
+      enableNotifications: data.enableNotifications,
+      isApproved: true,
+      clientType: data.clientType,
+      country: data.country,
+      postalCode: data.postalCode,
     };
 
     await showPopup({

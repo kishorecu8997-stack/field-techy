@@ -73,7 +73,7 @@ const SignUpWithEmail = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-              <IconWithTheme
+            <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
               darkLogo={logo_light}
               className="h-20 w-24"
@@ -120,11 +120,10 @@ const SignUpWithEmail = ({
           <Button
             type="submit"
             disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:opacity-90"
-            }`}
+              }`}
           >
             Create Account
           </Button>
@@ -155,7 +154,7 @@ const SignUpWithEmail = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={handleOTPVerified}
+            onSubmit={handleOTPVerified}
           />
         </Popup>
       </div>

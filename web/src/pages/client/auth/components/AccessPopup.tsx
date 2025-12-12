@@ -100,6 +100,7 @@ export default function AllowAccessPopup({
             type="button"
             className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={() => {
+              console.log("Allowing notification permission")
               onAllowNotification?.();
               localStorage.setItem("notification_permission", "allowed");
               setAccessPopup(false);

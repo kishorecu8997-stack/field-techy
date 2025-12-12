@@ -199,6 +199,7 @@ interface TagSelectFieldProps {
   inputClassName?: string;
   maxTags?: number;
   options: TagOption[]; // ✅ Updated type
+  disabled?: boolean;
 }
 
 /**
@@ -217,6 +218,7 @@ export const TagSelectField = ({
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-4 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition",
   maxTags = 10,
   options = [],
+  // disabled = false,
 }: TagSelectFieldProps) => {
   const { control } = useFormContext();
   const [selectedOption, setSelectedOption] = useState("");
@@ -302,9 +304,8 @@ export const TagSelectField = ({
                         handleAddTag(selectedOption, onChange, value);
                       }
                     }}
-                    className={`${inputClassName} ${
-                      leftIcon ? "pl-10" : ""
-                    } pr-10 appearance-none`}
+                    className={`${inputClassName} ${leftIcon ? "pl-10" : ""
+                      } pr-10 appearance-none`}
                   >
                     <option value="" disabled hidden>
                       {placeholder}

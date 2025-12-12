@@ -14,7 +14,6 @@ import {
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import { toast } from "react-toastify";
-import { loginData } from "@/dummy_data/personalInfoData";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries, {
   BUSINESS_TYPES,

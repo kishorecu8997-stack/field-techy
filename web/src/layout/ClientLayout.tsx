@@ -23,9 +23,20 @@ import { Outlet } from "react-router-dom";
  *   <MyJobsPage />
  * </RootLayout>
  */
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
+
 const ClientLayout = (): JSX.Element => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
+
+  useEffect(() => {
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,11 +53,10 @@ const ClientLayout = (): JSX.Element => {
     <>
       <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
         <header
-          className={`sticky top-0 z-50 transition-all duration-300 ${
-            isScrolled
+          className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
               ? "bg-white dark:bg-gray-800 shadow-sm"
               : "bg-transparent dark:bg-transparent shadow-none"
-          }`}
+            }`}
         >
           <div className="xl:container mx-auto px-6">
             <NavbarClient

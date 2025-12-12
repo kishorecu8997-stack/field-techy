@@ -85,12 +85,12 @@ const ForgetPassword = () => {
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
             // handleNavigate={() => navigate(absoluteUrls.engineer.auth.reset_password)}
-            handleNavigate={() => {
-               if (location.pathname.includes("engineer")) {
-                 navigate(absoluteUrls.engineer.auth.reset_password);
-               } else if (location.pathname.includes("client")) {
-                 navigate(absoluteUrls.client.auth.reset_password);
-               }
+            onSubmit={() => {
+              if (location.pathname.includes("engineer")) {
+                navigate(absoluteUrls.engineer.auth.reset_password);
+              } else if (location.pathname.includes("client")) {
+                navigate(absoluteUrls.client.auth.reset_password);
+              }
             }}
           />
         </Popup>

@@ -1,8 +1,12 @@
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
+import { toast } from "react-toastify";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
 
 /**
  * Props for the AllowAccessPopup component.
@@ -27,8 +31,20 @@ export default function AllowAccessPopup({
   onDenyLocation,
   onDenyNotification,
 }: AllowAccessPopupProps) {
+  const { locationPermission } = useDeviceStore();
   // Step control: false = Location step, true = Notification step
-  const [isNotificationStep, setIsNotificationStep] = useState(false);
+  // If location is already granted, start at Notification step
+  const [isNotificationStep, setIsNotificationStep] = useState(locationPermission === 'granted');
+
+  const { requestLocation, loading: locationLoading } = useGeolocation();
+  const { requestNotificationPermission, loading: notificationLoading } = useFCM();
+
+  // Auto-advance if location permission becomes granted (e.g. via background check)
+  useEffect(() => {
+    if (locationPermission === 'granted') {
+      setIsNotificationStep(true);
+    }
+  }, [locationPermission]);
 
   return (
     <Popup open={accessPopup} onClose={() => setAccessPopup(false)}>
@@ -56,19 +72,28 @@ export default function AllowAccessPopup({
           {/* Allow Location */}
           <Button
             type="button"
+            disabled={locationLoading}
             className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            onClick={() => {
-              onAllowLocation?.();
-              localStorage.setItem("location_permission", "allowed");
-              setIsNotificationStep(true); // Move to Step 2
+            onClick={async () => {
+              const success = await requestLocation();
+              if (success) {
+                onAllowLocation?.();
+                localStorage.setItem("location_permission", "allowed");
+                setIsNotificationStep(true); // Move to Step 2
+              } else {
+                toast.error("Location access denied or failed.");
+                setIsNotificationStep(true); // Move to next step even on failure as per requirement? 
+                // User said: "else, throw a toast message saying the appropriate message and move to next"
+              }
             }}
           >
-            Allow Access
+            {locationLoading ? 'Allowing...' : 'Allow Access'}
           </Button>
 
           {/* Deny Location */}
           <button
             type="button"
+            disabled={locationLoading}
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyLocation?.();
@@ -97,19 +122,26 @@ export default function AllowAccessPopup({
           {/* Allow Notification */}
           <Button
             type="button"
+            disabled={notificationLoading}
             className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            onClick={() => {
-              onAllowNotification?.();
-              localStorage.setItem("notification_permission", "allowed");
+            onClick={async () => {
+              const success = await requestNotificationPermission();
+              if (success) {
+                onAllowNotification?.();
+                localStorage.setItem("notification_permission", "allowed");
+              } else {
+                toast.error("Notification access denied or failed.");
+              }
               setAccessPopup(false);
             }}
           >
-            Allow Access
+            {notificationLoading ? 'Allowing...' : 'Allow Access'}
           </Button>
 
           {/* Deny Notification */}
           <button
             type="button"
+            disabled={notificationLoading}
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyNotification?.();
