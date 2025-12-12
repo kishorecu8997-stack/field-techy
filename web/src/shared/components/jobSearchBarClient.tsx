@@ -4,7 +4,6 @@ import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // or use your own ic
 import { useNavigate } from "react-router-dom";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
-import { useEffect } from "react";
 
 /**
  * JobSearchBar component provides a dual-input search form for jobs and location.

@@ -36,7 +36,6 @@ const JobPostForm: React.FC = () => {
    * @description Initializes `react-hook-form` with default values and submission mode.
    * This hook provides methods for form registration, submission, and state management.
    */
- 
 
   /**
    * @description A helper function to generate consistent CSS classes for form inputs.
@@ -126,7 +125,7 @@ const JobPostForm: React.FC = () => {
                 required
                 minDate={new Date(1970, 0, 1)}
                 // maxDate={new Date(2030, 11, 31)}
-               
+
                 rules={{
                   validate: (value) => validateCurrentOrFutureDate(value),
                 }}
