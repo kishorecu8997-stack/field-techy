@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
+import { getExperienceLevel } from "../../search_result/types";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -19,6 +20,10 @@ import type { Job } from "../../search_result/types";
  * @param {string} props.location - Job location
  * @param {boolean} [props.isBookmarked=false] - Whether the job is bookmarked
  * @param {Function} [props.onBookmarkToggle] - Callback function when bookmark is toggled
+ * @param {string[]} props.skills - Array of required skills (e.g., "Figma", "UI/UX")
+ * @param {string[]} props.tools - Array of required tools or platforms.
+ * @param {string} props.slaLevel - Service Level Agreement response time (e.g., "4-hour response").
+ * @param {number} props.matchScore - Profile match percentage (0-100).
  *
  * @example
  * <JobCard
@@ -30,8 +35,74 @@ import type { Job } from "../../search_result/types";
  *   locationType="On Site"
  *   salary="$180,000/year"
  *   location="California, USA"
+ *   experience: "5",
+ *   skills: ["Figma", "Adobe XD", "UI/UX"],
+ *   tools: ["VS Code", "Git", "Jira"],
+ *   slaLevel: "4-hour response",
+ *   matchScore: 85,
  * />
  */
+
+/**
+ * Renders a circular progress ring for the match score.
+ * Uses SVG to create a stroke that fills based on the percentage score (0-100).
+ *
+ * @component
+ * @param {number} props.score - The match score percentage (0-100).
+ */
+const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
+  // SVG constants for a consistent circle size
+  const size = 38;
+  const strokeWidth = 3;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  // Calculate the stroke dash offset to control the fill percentage.
+  // A higher score results in a smaller offset (more fill).
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+
+  return (
+    <div
+      className="relative flex items-center justify-center flex-shrink-0"
+      style={{ width: size, height: size }}
+    >
+      <svg
+        className="w-full h-full transform -rotate-90"
+        viewBox={`0 0 ${size} ${size}`}
+      >
+        <circle
+          className="text-gray-200 dark:text-gray-700"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+
+        <circle
+          className="text-green-600 dark:text-green-400 transition-all duration-700 ease-out"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+          style={{
+            strokeDasharray: circumference,
+            strokeDashoffset: strokeDashoffset,
+            strokeLinecap: "round",
+          }}
+        />
+      </svg>
+
+      <span className="absolute text-xs font-bold text-gray-800 dark:text-white">
+        {score}%
+      </span>
+    </div>
+  );
+};
+
 const FeatureJobCard: React.FC<Job> = ({
   title,
   company,
@@ -41,6 +112,11 @@ const FeatureJobCard: React.FC<Job> = ({
   salary,
   location,
   isBookmarked = false,
+  experience,
+  skills,
+  tools,
+  slaLevel,
+  matchScore,
 }) => {
   const [isSelected, setSelected] = useState(isBookmarked);
   return (
@@ -56,20 +132,23 @@ const FeatureJobCard: React.FC<Job> = ({
             </p>
           </div>
         </div>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setSelected(!isSelected);
-          }}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
-          aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
-        >
-          {isSelected ? (
-            <icons.bookmarkFilled className="h-4 w-4 text-green-600 dark:text-green-400" />
-          ) : (
-            <icons.bookmark className="h-4 w-4" />
-          )}
+        <div className="flex items-center space-x-2">
+          {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setSelected(!isSelected);
+            }}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
+            aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
+          >
+            {isSelected ? (
+              <icons.bookmarkFilled className="h-4 w-4 text-green-600 dark:text-green-400" />
+            ) : (
+              <icons.bookmark className="h-4 w-4" />
+            )}
+          </div>
         </div>
       </div>
 
@@ -88,7 +167,45 @@ const FeatureJobCard: React.FC<Job> = ({
             {type}
           </span>
         )}
+        {experience && (
+          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+            {getExperienceLevel(experience)}
+          </span>
+        )}
+        {slaLevel && (
+          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+            {slaLevel}
+          </span>
+        )}
       </div>
+
+      {/* Skills Required */}
+      {skills && skills.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3 w-full py-1">
+          {skills.map((skill, idx) => (
+            <div
+              key={idx}
+              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded whitespace-nowrap"
+            >
+              {skill}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Tools section */}
+      {tools && tools.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
+          {tools.map((tool, idx) => (
+            <span
+              key={idx}
+              className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap"
+            >
+              {tool}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
@@ -122,13 +239,18 @@ const FeatureJobCard: React.FC<Job> = ({
  *       employmentType: "Full-Time",
  *       locationType: "On Site",
  *       salary: "$180,000/year",
- *       location: "California, USA"
+ *       location: "California, USA",
+ *       experience:"5",
+ *       skills: ["Figma", "Adobe XD", "UI/UX"],
+ *       tools: ["VS Code", "Git", "Jira"],
+ *       slaLevel: "4-hour response",
+ *       matchScore: "85",
  *     }
  *   ]}
  * />
  */
 interface FeaturedJobsProps {
-  jobs:Job[]
+  jobs: Job[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -182,4 +304,3 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   );
 };
 export { FeaturedJobs, FeatureJobCard };
-
