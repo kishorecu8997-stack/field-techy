@@ -79,150 +79,152 @@ const ProfileSetup = () => {
   }, [isMobileVerified, isEmailVerified, trigger]);
 
   return (
-    <div className="flex h-full flex-col gap-2 w-full ">
-      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-        Basic Details
-      </div>
-      <InputField
-        name="firstname"
-        label="First Name"
-        type="text"
-        placeholder="First Name"
-        required
-        leftIcon={<FaRegUser className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validateName(v, "First Name") }}
-      />
-      <InputField
-        name="lastname"
-        label="Last Name"
-        type="text"
-        placeholder="Last Name"
-        required
-        leftIcon={<FaRegUser className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validateName(v, "Last Name") }}
-      />
-      <Controller
-        name="isMobileVerified"
-        control={control}
-        defaultValue={!!mobileVerified}
-        render={({ field: { onChange, value } }) => (
-          <VerifiedPhoneInputField
-            name="phone"
-            required
-            verified={value}
-            setVerified={onChange}
-            disabled={disableMobile}
-          />
-        )}
-      />
-      <Controller
-        name="isEmailVerified"
-        control={control}
-        defaultValue={!!emailVerified}
-        render={({ field: { onChange, value } }) => (
-          <VerifiedEmailInputField
-            name="email"
-            required
-            verified={value}
-            setVerified={onChange}
-            disabled={disableEmail}
-          />
-        )}
-      />
+   <div>
+        <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          Basic Details
+        </div>
+        <InputField
+          name="firstname"
+          label="First Name"
+          type="text"
+          placeholder="First Name"
+          required
+          leftIcon={<FaRegUser className="text-lg text-gray-500" />}
+          rules={{ validate: (v: string) => validateName(v, "First Name") }}
+        />
+        <InputField
+          name="lastname"
+          label="Last Name"
+          type="text"
+          placeholder="Last Name"
+          required
+          leftIcon={<FaRegUser className="text-lg text-gray-500" />}
+          rules={{ validate: (v: string) => validateName(v, "Last Name") }}
+        />
+        <Controller
+          name="isMobileVerified"
+          control={control}
+          defaultValue={!!mobileVerified}
+          render={({ field: { onChange, value } }) => (
+            <VerifiedPhoneInputField
+              name="phone"
+              required
+              verified={value}
+              setVerified={onChange}
+              disabled={disableMobile}
+            />
+          )}
+        />
+        <Controller
+          name="isEmailVerified"
+          control={control}
+          defaultValue={!!emailVerified}
+          render={({ field: { onChange, value } }) => (
+            <VerifiedEmailInputField
+              name="email"
+              required
+              verified={value}
+              setVerified={onChange}
+              disabled={disableEmail}
+            />
+          )}
+        />
 
-      <InputField
-        name="address"
-        label="Address"
-        type="text"
-        placeholder="Address"
-        required
-        leftIcon={<CiLocationOn className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validateAddress(v) }}
-      />
-      <SelectField
-        name="country"
-        label="Country"
-        placeholder="Select Country"
-        options={countries}
-        required
-      />
-      <InputField
-        name="postalCode"
-        label="Postal Code"
-        type="text"
-        placeholder="Postal Code"
-        required
-        leftIcon={<HiOutlineLocationMarker className="text-lg text-gray-500" />}
-        rules={{
-          validate: (value: string) =>
-            validateZipcode(
-              value,
-              typeof country === "string" ? country : country?.value
-            ),
-        }}
-      />
-      <TagSelectField
-        name="skills"
-        label="Skills"
-        placeholder="Add your skills"
-        required
-        options={skills}
-        maxTags={15}
-      />
-      <InputField
-        name="portfolio"
-        label="Portfolio Link"
-        type="text"
-        placeholder="Portfolio Link"
-        leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
-        //rules={{ validate: (v: string) => validatePortfolio(v, country) }}
-        rules={{ validate: (v: string) => validatePortfolioLink(v) }}
-      />
-      <SelectField
-        name="serviceCategory"
-        label="Service Category"
-        placeholder="Select Category"
-        options={serviceCategories}
-        required
-      />
-      <InputField
-        name="amount"
-        label="Amount"
-        type="text"
-        placeholder="$50/hr"
-        required
-        leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
-        rules={{ validate: (v: string) => validateAmount(v) }}
-      />
+        <InputField
+          name="address"
+          label="Address"
+          type="text"
+          placeholder="Address"
+          required
+          leftIcon={<CiLocationOn className="text-lg text-gray-500" />}
+          rules={{ validate: (v: string) => validateAddress(v) }}
+        />
+        <SelectField
+          name="country"
+          label="Country"
+          placeholder="Select Country"
+          options={countries}
+          required
+        />
+        <InputField
+          name="postalCode"
+          label="Postal Code"
+          type="text"
+          placeholder="Postal Code"
+          required
+          leftIcon={
+            <HiOutlineLocationMarker className="text-lg text-gray-500" />
+          }
+          rules={{
+            validate: (value: string) =>
+              validateZipcode(
+                value,
+                typeof country === "string" ? country : country?.value
+              ),
+          }}
+        />
+        <TagSelectField
+          name="skills"
+          label="Skills"
+          placeholder="Add your skills"
+          required
+          options={skills}
+          maxTags={15}
+        />
+        <InputField
+          name="portfolio"
+          label="Portfolio Link"
+          type="text"
+          placeholder="Portfolio Link"
+          leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
+          //rules={{ validate: (v: string) => validatePortfolio(v, country) }}
+          rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+        />
+        <SelectField
+          name="serviceCategory"
+          label="Service Category"
+          placeholder="Select Category"
+          options={serviceCategories}
+          required
+        />
+        <InputField
+          name="amount"
+          label="Amount"
+          type="text"
+          placeholder="$50/hr"
+          required
+          leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
+          rules={{ validate: (v: string) => validateAmount(v) }}
+        />
 
-      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-        Experience Details
-      </div>
-      <InputField
-        name="designation"
-        label="Current Designation"
-        type="text"
-        placeholder="Current Designation"
-        required
-        rules={{ validate: (v: string) => validateDesignation(v) }}
-      />
-      <InputField
-        name="company"
-        label="Company/Employer"
-        type="text"
-        placeholder="Company/Employer"
-        required
-        rules={{ validate: (v: string) => validateCompany(v) }}
-      />
-      <InputField
-        name="experience"
-        label="Experience"
-        type="text"
-        placeholder="Experience Years"
-        required
-        rules={{ validate: (v: string) => validateExperience(v) }}
-      />
-      <SetPassword />
+        <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          Experience Details
+        </div>
+        <InputField
+          name="designation"
+          label="Current Designation"
+          type="text"
+          placeholder="Current Designation"
+          required
+          rules={{ validate: (v: string) => validateDesignation(v) }}
+        />
+        <InputField
+          name="company"
+          label="Company/Employer"
+          type="text"
+          placeholder="Company/Employer"
+          required
+          rules={{ validate: (v: string) => validateCompany(v) }}
+        />
+        <InputField
+          name="experience"
+          label="Experience"
+          type="text"
+          placeholder="Experience Years"
+          required
+          rules={{ validate: (v: string) => validateExperience(v) }}
+        />
+        <SetPassword />
     </div>
   );
 };

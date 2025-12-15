@@ -1,9 +1,12 @@
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ProfileSetup from "../ProfileSetup";
 import type { basicDetails } from "./types";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -13,6 +16,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * collects basic user details. It's designed to be displayed as the first view
  */
 const BasicDetails = () => {
+  const navigate = useNavigate();
   const formCtx = useForm<basicDetails>({
     defaultValues: {
       firstName: "",
@@ -47,6 +51,8 @@ const BasicDetails = () => {
           value: true,
           action: (close) => {
             console.log("Confirmed");
+            toast.success("Profile details submitted successfully!");
+            navigate(absoluteUrls.engineer.auth.updated_documents);
             close(true);
           },
         },
