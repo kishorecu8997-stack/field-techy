@@ -4,10 +4,12 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import {
+  validateCurrentOrFutureDate,
+} from "../../../post_job/Validates";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
@@ -221,8 +223,12 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
                             {...field}
                             required
+                            rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
                           />
                         </>
                       )}
@@ -236,6 +242,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         label="Start Time"
                         maxTime={endTime}
                         disabled={isDisable}
+                        
                       />
                     </div>
                     <div className="w-full">
