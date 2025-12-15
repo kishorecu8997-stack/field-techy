@@ -4,13 +4,15 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
+import {
+  validateCurrentOrFutureDate,
+} from "../../../post_job/Validates";
 import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -94,7 +96,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       placeholder="Select Application End date"
                       {...field}
                       required
+                      minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
                       maxDate={tentativeStartDate ? tentativeStartDate : null}
+                       rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
                     />
                   </>
                 )}
@@ -131,6 +137,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       required
                       minDate={applicationEndDate ? applicationEndDate : null}
                       maxDate={tentativeEndDate ? tentativeEndDate : null}
+                      rules={{
+                  validate: (value) => validateCurrentOrFutureDate(value),
+                }}
                     />
                   </>
                 )}
@@ -142,6 +151,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                 rules={{
                   validate: (value) =>
                     validateDateRange(value, ctx.getValues("tentativeEndDate")),
+                  
                 }}
                 control={ctx.control}
                 render={({ field }) => (
