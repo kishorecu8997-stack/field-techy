@@ -15,6 +15,7 @@ import ProfileSetup from "./ProfileSetup";
 import SetPassword from "./SetPassword";
 import type { CompleteRegistrationData } from "./types";
 import { toast } from "react-toastify";
+import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 
 /**
  * A multi-step registration form component that guides users through
@@ -262,7 +263,9 @@ const CorporateMultiStepRegistration = () => {
             </Button>
           </div>
         </div>
-      </FormContainer>
+      </FormContainer>  
+      {/* Allow access popup */}
+      <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />    
     </>
   );
 };
