@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "./types";
-import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer"; 
 
 /**
  * Main account settings page displaying a list of configurable options including security, bank details,
@@ -35,9 +35,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       id: "notifications",
       label: "Notifications",
       icon: icons.notifications,
-      isToggle: true,
-      toggleValue: notificationsEnabled,
-      onToggleChange: setNotificationsEnabled,
+      onClick: () => onMenuItemClick("notificationPreferences"),
     },
     {
       label: "Contact Us",

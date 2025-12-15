@@ -50,6 +50,7 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
+import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -190,6 +191,12 @@ export const sectionConfig: Record<
     component: NotificationPage,
     title: "Notification",
   },
+  
+  notificationPreferences: {
+    component: NotificationPreferences,
+    title: "Notification Preferences",
+  },
+
   clientNotification: {
     component: ClientNotification,
     title: "Notification",
