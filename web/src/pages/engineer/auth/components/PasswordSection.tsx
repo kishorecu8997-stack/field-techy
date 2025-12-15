@@ -16,7 +16,6 @@ const PasswordSection = () => {
   const ctx = useFormContext();
   const { watch } = ctx;
   const currentPassword = watch("currentPassword");
-
   return (
     <div className="flex flex-col gap-4">
       <PasswordInput

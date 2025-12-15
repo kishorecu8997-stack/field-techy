@@ -114,7 +114,7 @@ const Login = ({
             required
             rules={{
               required: "Password is required",
-              validate: (value) => validatePassword(value),
+              validate: (v) => validatePassword(v),
             }}
           />
           <div className="flex items-center justify-between flex-wrap">

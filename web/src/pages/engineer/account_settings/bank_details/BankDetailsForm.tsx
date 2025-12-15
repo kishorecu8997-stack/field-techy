@@ -16,52 +16,54 @@ import {
  */
 const BankDetailsForm = ({ formType }: { formType?: string }) => {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex flex-col overflow-auto flex-grow gap-2 p-1">
-        <SelectField
-          name="bankName"
-          label="Bank"
-          options={bankList}
-          placeholder="Select a bank"
-          required
-        />
-        <InputField
-          name="bankAddress"
-          label="Branch Address"
-          placeholder="Bank address"
-          required
-          rules={{ validate: validateAddress }}
-        />
-        <InputField
-          name="name"
-          label="Name"
-          placeholder="Name"
-          required
-          rules={{
-            validate: (value) => validateNameWithSpace(value, "Name"),
-          }}
-        />
-        <InputField
-          name="accountNumber"
-          label="Account Number"
-          placeholder="Account number"
-          required
-          rules={{ validate: validateAccNumber }}
-        />
-        <InputField
-          name="iban"
-          label="IBAN"
-          placeholder="IBAN"
-          required
-          rules={{ validate: validateIBANForCountrywise }}
-        />
-        <InputField
-          name="swiftcode"
-          label="Swift Code"
-          placeholder="SWIFT code"
-          required
-          rules={{ validate: validateSWIFTBank }}
-        />
+    <div className="flex flex-col h-full pb-4">
+      <div className="flex flex-col overflow-auto flex-grow gap-4">
+        <div className="p-4">
+          <SelectField
+            name="bankName"
+            label="Bank"
+            options={bankList}
+            placeholder="Select a bank"
+            required
+          />
+          <InputField
+            name="bankAddress"
+            label="Branch Address"
+            placeholder="Branch address"
+            required
+            rules={{ validate: validateAddress }}
+          />
+          <InputField
+            name="name"
+            label="Name"
+            placeholder="Name"
+            required
+            rules={{
+              validate: (value) => validateNameWithSpace(value, "Name"),
+            }}
+          />
+          <InputField
+            name="accountNumber"
+            label="Account Number"
+            placeholder="Account number"
+            required
+            rules={{ validate: validateAccNumber }}
+          />
+          <InputField
+            name="iban"
+            label="IBAN"
+            placeholder="IBAN"
+            required
+            rules={{ validate: validateIBANForCountrywise }}
+          />
+          <InputField
+            name="swiftcode"
+            label="Swift Code"
+            placeholder="SWIFT code"
+            required
+            rules={{ validate: validateSWIFTBank }}
+          />
+        </div>
       </div>
 
       {/* Sticky button */}

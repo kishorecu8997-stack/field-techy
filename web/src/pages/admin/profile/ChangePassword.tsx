@@ -23,14 +23,14 @@ export default function ChangePassword() {
 
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
-      oldPassword: "",
+      currentPassword: "",
       password: "",
       confirmPassword: "",
     },
   });
 
   const watch = methods.watch;
-  const oldPassword = watch("oldPassword");
+  const currentPassword = watch("currentPassword");
 
   const handleSubmit = async () => {
     await showPopup({
@@ -66,7 +66,7 @@ export default function ChangePassword() {
         <div className="flex gap-4 w-full">
           <div className="flex-1">
             <PasswordInput
-              name="oldPassword"
+              name="currentPassword"
               label="Old Password"
               required
               rules={{
@@ -83,7 +83,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: (v: string) => validatePassword(v, oldPassword),
+                validate: (v: string) => validatePassword(v, currentPassword),
               }}
             />
           </div>
