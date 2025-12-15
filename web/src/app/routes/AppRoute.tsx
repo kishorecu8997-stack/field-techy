@@ -293,6 +293,17 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
+
+//updated_profile_setup
+const engineerProfileSetup = React.lazy(
+  () => import("@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDetails")
+);
+const engineerDocuments = React.lazy(
+  () => import("@/pages/engineer/auth/components/profile_setup/updated_profile_setup/Documents")
+);
+
+
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -323,9 +334,17 @@ export const routes = createBrowserRouter([
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
       { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
+      // {
+      //   path: urls.engineer.auth.profile_setup,
+      //   element: withSuspense(MultiStepRegistrationForm),
+      // },
       {
-        path: urls.engineer.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
+        path: urls.engineer.auth.updated_basic_details,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.updated_documents,
+        element: withSuspense(engineerDocuments),   
       },
       {
         path: urls.engineer.auth.forget_password,

@@ -120,6 +120,7 @@ const MultiStepRegistrationForm = () => {
           "company",
           "location",
           "experience",
+          "password", "confirmPassword"
         ]);
         if (isValid) {
           setCurrentStep(2);
@@ -134,7 +135,6 @@ const MultiStepRegistrationForm = () => {
         break;
 
       case 3:
-        isValid = await trigger(["password", "confirmPassword"]);
         if (isValid) {
           await submitCompleteForm(data);
         }
@@ -145,13 +145,8 @@ const MultiStepRegistrationForm = () => {
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
     setIsSubmitting(true);
     try {
-      // 🔥 MOCK API CALL (replace with real fetch when backend is ready)
       console.log("Submitting registration data:", data);
-
-      // Simulate network delay
       await new Promise((r) => setTimeout(r, 800));
-
-      // Simulate success
       navigate("/engineer/auth");
     } catch (error) {
       console.error("Network error:", error);

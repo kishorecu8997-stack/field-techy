@@ -12,7 +12,7 @@ import countries from "@/dummy_data/countries";
 import {
   validateZipcode,
   validateName,
-  validateAddress,  
+  validateAddress,
   validateAmount,
   validateCompany,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
@@ -27,6 +27,7 @@ import skills from "@/dummy_data/skills";
 import { useLocation } from "react-router-dom";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
+import SetPassword from "./SetPassword";
 
 /**
  * A form component for collecting a user's detailed profile information.
@@ -78,7 +79,7 @@ const ProfileSetup = () => {
   }, [isMobileVerified, isEmailVerified, trigger]);
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+    <div className="flex h-full flex-col gap-2 w-full ">
       <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
         Basic Details
       </div>
@@ -221,14 +222,7 @@ const ProfileSetup = () => {
         required
         rules={{ validate: (v: string) => validateExperience(v) }}
       />
-      <FileUpload
-        name="resume"
-        label="Resume/CV"
-        required
-        accept=".pdf"
-        maxPages={5}
-        validatePDF={true}
-      />
+      <SetPassword />
     </div>
   );
 };

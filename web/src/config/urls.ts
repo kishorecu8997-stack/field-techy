@@ -46,6 +46,11 @@ export const urls = {
       reset_password: "reset-password",
       set_password: "set-password",
       background_verification: "background-verification",
+
+      //updated_profile_setup
+      updated_basic_details: "updated-basic-details",
+      updated_documents: "updated-documents",
+
     },
   },
   client: {
@@ -155,6 +160,8 @@ export const absoluteUrls = {
       background_verification: `${BASE.AUTH}/background-verification`,
       privacy_policy: `${BASE.AUTH}/policy`,
       about_app: `${BASE.AUTH}/about-app`,
+      updated_basic_details: `${BASE.AUTH}/updated-basic-details`,
+      updated_documents: `${BASE.AUTH}/updated-documents`,
     },
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,

@@ -48,7 +48,7 @@ const SignUpWithNumber = ({
   });
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.engineer.auth.profile_setup, {
+    navigate(absoluteUrls.engineer.auth.updated_basic_details, {
       state: {
         signupPhone: method.getValues("phone"),
         mobileVerified: true,
