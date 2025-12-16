@@ -37,6 +37,18 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       icon: icons.notifications,
       onClick: () => onMenuItemClick("notificationPreferences"),
     },
+        {
+      id: "security",
+      label: "Security",
+      icon: icons.security,
+      onClick: () => onMenuItemClick("security"),
+    },
+            {
+      id: "loginHistory",
+      label: "Login History",
+      icon: icons.history,
+      onClick: () => onMenuItemClick("loginHistory"), 
+    },
     {
       label: "Contact Us",
       icon: icons.contactSupport,

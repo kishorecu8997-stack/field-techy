@@ -1,44 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { icons } from "@/config/icons";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
-import { useEffect } from "react";
 
-/** 
+/**
+ * Custom hook for managing localStorage with error handling.
+ * @param key - The localStorage key.
+ * @param defaultValue - Default value if key is missing or invalid.
+ * @returns [value, setValue] tuple.
+ */
+function useLocalStorage<T>(key: string, defaultValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState<T>(() => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.log(`Error reading localStorage key "${key}":`, error);
+      return defaultValue;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.log(`Error writing to localStorage key "${key}":`, error);
+    }
+  }, [key, value]);
+
+  return [value, setValue];
+}
+
+/**
  * Notification preferences page allowing users to toggle email, SMS, and push notifications.
  * Utilizes DrawerMenuSection to present toggle options and manages state for each notification type.
  */
-
-
-//Fetching stored preferences from localStorage
-const storedPrefs = JSON.parse(
-  localStorage.getItem("notificationPreferences") || "{}"
-);
-
 const NotificationPreferences: React.FC<DrawerMenuProps> = () => {
-const [emailNotifications, setEmailNotifications] = React.useState(
-  storedPrefs.email ?? true
-);
-const [smsNotifications, setSmsNotifications] = React.useState(
-  storedPrefs.sms ?? false
-);
-const [pushNotifications, setPushNotifications] = React.useState(
-  storedPrefs.push ?? true
-);
+  const [preferences, setPreferences] = useLocalStorage("notificationPreferences", {
+    email: false,
+    sms: false,
+    push: false,
+  });
 
-
-//Updating localStorage whenever preferences change
-  useEffect(() => {
-  localStorage.setItem(
-    "notificationPreferences",
-    JSON.stringify({
-      email: emailNotifications,
-      sms: smsNotifications,
-      push: pushNotifications,
-    })
-  );
-}, [emailNotifications, smsNotifications, pushNotifications]);
+  const updatePreference = (key: keyof typeof preferences) => (value: boolean) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
+  };
 
   const menuItems: MenuItem[] = [
     {
@@ -46,24 +53,24 @@ const [pushNotifications, setPushNotifications] = React.useState(
       label: "Email Notifications",
       icon: icons.notifications,
       isToggle: true,
-      toggleValue: emailNotifications,
-      onToggleChange: setEmailNotifications,
+      toggleValue: preferences.email,
+      onToggleChange: updatePreference("email"),
     },
     {
       id: "sms_notifications",
       label: "SMS Notifications",
       icon: icons.notifications,
       isToggle: true,
-      toggleValue: smsNotifications,
-      onToggleChange: setSmsNotifications,
+      toggleValue: preferences.sms,
+      onToggleChange: updatePreference("sms"),
     },
     {
       id: "push_notifications",
       label: "Push Notifications",
       icon: icons.notifications,
       isToggle: true,
-      toggleValue: pushNotifications,
-      onToggleChange: setPushNotifications,
+      toggleValue: preferences.push,
+      onToggleChange: updatePreference("push"),
     },
   ];
 

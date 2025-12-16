@@ -21,7 +21,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   onCancel,
 }) => {
   return (    
-    <Popup open={isOpen} onClose={onClose}>
+<Popup open={isOpen} onClose={onClose}>
       <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
         {/* Header with close button */}
         <div className="p-6 pb-4">
@@ -46,7 +46,8 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
 
         {/* Action buttons */}
         <div className="p-6 pt-0">
-          <div className="flex space-x-3">
+          {/* Changed the button container to a grid layout */}
+          <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="secondary"
@@ -63,10 +64,20 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
             >
               Logout
             </Button>
+            {/* Added col-span-2 to make this button span both columns */}
+            <Button
+              type="button"
+              variant="primary"
+              // onClick={}
+             //Have to add logout all other sessions functionality later
+              className="col-span-2 px-4 py-2 bg-red-700 text-white rounded-lg font-medium hover:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 transition-colors"
+            >
+              Logout All Other Sessions
+            </Button>
           </div>
         </div>
       </div>
-    </Popup>
+    </Popup>  
   );
 };
 

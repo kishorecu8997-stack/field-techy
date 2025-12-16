@@ -51,6 +51,8 @@ import EditProjectMember from "@/pages/client/my_projects/createProject/componen
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
 import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
+import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
+import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -195,6 +197,18 @@ export const sectionConfig: Record<
   notificationPreferences: {
     component: NotificationPreferences,
     title: "Notification Preferences",
+    parent: "settings",
+  },
+
+  security: {
+    component: SecurityPage,
+    title: "Security",
+    parent: "settings",
+  },
+  loginHistory: {
+    component: LoginHistory,
+    title: "Login History",
+    parent: "settings",
   },
 
   clientNotification: {
