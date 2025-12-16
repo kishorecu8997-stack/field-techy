@@ -64,7 +64,7 @@ export default function PendingRequest() {
             status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
           action: async (close) => {
             toast.success(
-              `Job ${
+              `Enginner ${
                 status.toLocaleLowerCase() === "approve"
                   ? "approved"
                   : "rejected"
@@ -78,7 +78,7 @@ export default function PendingRequest() {
     });
   };
   //Delete confirmation
-  const handleDeleteJob = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -93,8 +93,8 @@ export default function PendingRequest() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting job:", job.id);
-            toast.success("Job deleted successfully!");
+            console.log("Deleting engineer:", job.id);
+            toast.success("Engineer deleted successfully!");
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);
@@ -170,8 +170,8 @@ export default function PendingRequest() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -228,7 +228,7 @@ export default function PendingRequest() {
           </div>
           <div
             className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteJob(row)}
+            onClick={() => handleDeleteEngineer(row)}
           >
             <RiDeleteBin6Line className="text-red-600" />
           </div>

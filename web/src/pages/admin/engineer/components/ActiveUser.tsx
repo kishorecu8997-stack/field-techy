@@ -7,10 +7,11 @@ import Popup from "@/shared/components/Popup";
 import { useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
-import type {
-  BlockEngineerFormData,
-  ManageEngineerProps,
-  SuspendEngineerFormData,
+import {
+  SUSPEND_ENGINEER_DEFAULT_VALUES,
+  type BlockEngineerFormData,
+  type ManageEngineerProps,
+  type SuspendEngineerFormData,
 } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
@@ -33,11 +34,7 @@ import ActionsMenu from "./ActionMenu";
 export default function ActiveUser() {
   const methods = useForm<SuspendEngineerFormData>({
     mode: "onChange",
-    defaultValues: {
-      suspendStartDate: null,
-      suspendEndDate: null,
-      reason: "",
-    },
+    defaultValues: SUSPEND_ENGINEER_DEFAULT_VALUES,
   });
 
   const { showPopup } = usePopupStore();
@@ -52,7 +49,7 @@ export default function ActiveUser() {
   useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
   //Delete confirmation
-  const handleDeleteJob = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -144,8 +141,8 @@ export default function ActiveUser() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -160,7 +157,7 @@ export default function ActiveUser() {
           row={row}
           showAction={showAction}
           setShowAction={setShowAction}
-          handleDelete={handleDeleteJob}
+          handleDelete={handleDeleteEngineer}
           setIsSuspend={setIsSuspendengineer}
           setIsBlock={setIsBlockEngineer}
         />

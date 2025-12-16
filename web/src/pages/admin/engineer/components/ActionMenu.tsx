@@ -24,8 +24,8 @@ interface Props {
  * Displays a dropdown menu for managing engineers, including:
  * - View Details
  * - Edit Details
- * - Suspend/Block Job
- * - Delete Job
+ * - Suspend/Block Engineer
+ * - Delete Engineer
  * @returns {JSX.Element} The rendered ActionsMenu component.
  */
 export default function ActionsMenu({

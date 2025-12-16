@@ -68,12 +68,12 @@ export interface ManageEngineerProps {
   registrationDate: string;
   walletBalance: string;
   kycStatus: string;
-  employementStatus: string;
+  employmentStatus: string;
   avgRating: number;
   approvalStatus: string;
   lastActiveOn?: string;
-  suspendfrom?: string;
-  suspendto?: string;
+  suspendFrom?: string;
+  suspendTo?: string;
   suspendReason?: string;
   suspendBy?: string;
   suspendOn?: string;
@@ -88,3 +88,9 @@ export interface SuspendEngineerFormData {
 export interface BlockEngineerFormData {
   reason: string;
 }
+
+export const SUSPEND_ENGINEER_DEFAULT_VALUES: SuspendEngineerFormData = {
+  suspendStartDate: null,
+  suspendEndDate: null,
+  reason: "",
+};

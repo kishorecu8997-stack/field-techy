@@ -7,10 +7,11 @@ import Popup from "@/shared/components/Popup";
 import { useRef, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
-import type {
-  BlockEngineerFormData,
-  ManageEngineerProps,
-  SuspendEngineerFormData,
+import {
+  SUSPEND_ENGINEER_DEFAULT_VALUES,
+  type BlockEngineerFormData,
+  type ManageEngineerProps,
+  type SuspendEngineerFormData,
 } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
@@ -33,11 +34,7 @@ import ActionsMenu from "./ActionMenu";
 export default function InactiveUser() {
   const methods = useForm<SuspendEngineerFormData>({
     mode: "onChange",
-    defaultValues: {
-      suspendStartDate: null,
-      suspendEndDate: null,
-      reason: "",
-    },
+    defaultValues: SUSPEND_ENGINEER_DEFAULT_VALUES,
   });
 
   const { showPopup } = usePopupStore();
@@ -52,10 +49,10 @@ export default function InactiveUser() {
   useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
   //Delete confirmation
-  const handleDeleteJob = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
-      title: "Delete Job",
-      body: "Are you sure you want to delete this job?",
+      title: "Delete Enginner",
+      body: "Are you sure you want to delete this enginner?",
       actionButtons: [
         {
           label: "Cancel",
@@ -67,8 +64,8 @@ export default function InactiveUser() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting job:", job.id);
-            toast.success("Job deleted successfully!");
+            console.log("Deleting engineer:", job.id);
+            toast.success("Engineer deleted successfully!");
             // TODO: call your delete API here
             // await deleteJob(job.id);
             close(true);
@@ -144,8 +141,8 @@ export default function InactiveUser() {
       label: "KYC Status",
     },
     {
-      key: "employementStatus",
-      label: "Employement Status",
+      key: "employmentStatus",
+      label: "Employment Status",
     },
     {
       key: "avgRating",
@@ -161,7 +158,7 @@ export default function InactiveUser() {
           row={row}
           showAction={showAction}
           setShowAction={setShowAction}
-          handleDelete={handleDeleteJob}
+          handleDelete={handleDeleteEngineer}
           setIsSuspend={setIsSuspendengineer}
           setIsBlock={setIsBlockEngineer}
         />

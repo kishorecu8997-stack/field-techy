@@ -41,7 +41,7 @@ export default function BlockedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Unlocking job:", id);
+            console.log("Unlocking engineer:", id);
             close(true);
           },
         },

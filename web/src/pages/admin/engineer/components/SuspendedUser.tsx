@@ -41,7 +41,7 @@ export default function SuspendedUser() {
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("Revoking job:", id);
+            console.log("Revoking engineer:", id);
             close(true);
           },
         },
@@ -82,10 +82,10 @@ export default function SuspendedUser() {
       label: "Reason for Suspension",
     },
     {
-      key: "suspendfrom",
+      key: "suspendFrom",
       label: "Suspend From",
     },
-    { key: "suspendto", label: "Suspend To" },
+    { key: "suspendTo", label: "Suspend To" },
     { key: "suspendBy", label: "Suspend By" },
     { key: "suspendOn", label: "Suspend On" },
     { key: "currentStatus", label: "Current Status" },
