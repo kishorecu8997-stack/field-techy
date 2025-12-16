@@ -1,9 +1,12 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
 import { getExperienceLevel } from "../../search_result/types";
+import jobSkillsData from "@/dummy_data/jobSkills.json";
+import toolsData from "@/dummy_data/tools.json";
+import { calculateMatchScore } from "@/utils/matchCalculator";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -27,39 +30,45 @@ import { getExperienceLevel } from "../../search_result/types";
  *
  * @example
  * <JobCard
- *   title="Software Engineer"
- *   company="Google"
- *   companyLogo="/logos/google.png"
- *   category="IT"
- *   employmentType="Full-Time"
- *   locationType="On Site"
- *   salary="$180,000/year"
- *   location="California, USA"
- *   experience: "5",
- *   skills: ["Figma", "Adobe XD", "UI/UX"],
- *   tools: ["VS Code", "Git", "Jira"],
- *   slaLevel: "4-hour response",
- *   matchScore: 85,
+ * title="Software Engineer"
+ * company="Google"
+ * companyLogo="/logos/google.png"
+ * category="IT"
+ * employmentType="Full-Time"
+ * locationType="On Site"
+ * salary="$180,000/year"
+ * location="California, USA"
+ * experience: "5",
+ * skills: ["Figma", "Adobe XD", "UI/UX"],
+ * tools: ["VS Code", "Git", "Jira"],
+ * slaLevel: "4-hour response",
+ * matchScore: 85,
  * />
  */
 
 /**
  * Renders a circular progress ring for the match score.
- * Uses SVG to create a stroke that fills based on the percentage score (0-100).
- *
- * @component
- * @param {number} props.score - The match score percentage (0-100).
+ * Dynamic coloring: Rose (<50%), Amber (50-79%), Green (80%+)
  */
 const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
-  // SVG constants for a consistent circle size
   const size = 38;
   const strokeWidth = 3;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  // Calculate the stroke dash offset to control the fill percentage.
-  // A higher score results in a smaller offset (more fill).
   const strokeDashoffset = circumference - (score / 100) * circumference;
+
+  /**
+   * INTERNAL HELPER: Logic to determine color classes based on score
+   * We apply this to both the ring stroke and the text for visual harmony.
+   */
+  const getColorClass = (val: number) => {
+    if (val >= 80) return "text-green-600 dark:text-green-400";
+    if (val >= 50) return "text-amber-500 dark:text-amber-400";
+    return "text-rose-500 dark:text-rose-400";
+  };
+
+  const activeColor = getColorClass(score);
 
   return (
     <div
@@ -81,7 +90,7 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
         />
 
         <circle
-          className="text-green-600 dark:text-green-400 transition-all duration-700 ease-out"
+          className={`${activeColor} transition-all duration-1000 ease-in-out`}
           stroke="currentColor"
           strokeWidth={strokeWidth}
           fill="transparent"
@@ -96,7 +105,7 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
         />
       </svg>
 
-      <span className="absolute text-xs font-bold text-gray-800 dark:text-white">
+      <span className={`absolute text-[10px] font-bold ${activeColor}`}>
         {score}%
       </span>
     </div>
@@ -224,30 +233,9 @@ const FeatureJobCard: React.FC<Job> = ({
  *
  * @component
  * @param {Object} props - Component props
- * @param {Array<Object>} props.jobs - Array of job objects to display
+ * @param {Job[]} props.jobs - Array of job objects to display
  * @param {string} [props.title="Featured Jobs"] - Title for the section
  * @param {Function} [props.onViewAll] - Callback function when "View all" is clicked
- *
- * @example
- * <FeaturedJobs
- *   jobs={[
- *     {
- *       title: "Software Engineer",
- *       company: "Google",
- *       companyLogo: "/logos/google.png",
- *       category: "IT",
- *       employmentType: "Full-Time",
- *       locationType: "On Site",
- *       salary: "$180,000/year",
- *       location: "California, USA",
- *       experience:"5",
- *       skills: ["Figma", "Adobe XD", "UI/UX"],
- *       tools: ["VS Code", "Git", "Jira"],
- *       slaLevel: "4-hour response",
- *       matchScore: "85",
- *     }
- *   ]}
- * />
  */
 interface FeaturedJobsProps {
   jobs: Job[];
@@ -272,6 +260,14 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   onViewAll,
 }) => {
   const navigate = useNavigate();
+
+  const userSkillsAndTools = useMemo(() => {
+    return [
+      ...jobSkillsData.jobSkills.map((s) => s.label),
+      ...toolsData.tools.map((t) => t.label),
+    ];
+  }, []);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
@@ -286,21 +282,30 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {jobs.map((job, index) => (
-          <div
-            key={index}
-            className={`rounded-xl p-4 shadow-sm cursor-pointer ${
-              jobCardGradients[index % jobCardGradients.length]
-            }`}
-            onClick={() => {
-              navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
-            }}
-          >
-            <FeatureJobCard {...job} />
-          </div>
-        ))}
+        {jobs.map((job, index) => {
+          const jobRequirements = [...(job.skills || []), ...(job.tools || [])];
+          const score = calculateMatchScore(
+            jobRequirements,
+            userSkillsAndTools
+          );
+
+          return (
+            <div
+              key={job.id || index}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
+                jobCardGradients[index % jobCardGradients.length]
+              }`}
+              onClick={() => {
+                navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
+              }}
+            >
+              <FeatureJobCard {...job} matchScore={score} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 export { FeaturedJobs, FeatureJobCard };

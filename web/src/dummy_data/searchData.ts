@@ -28,7 +28,7 @@ export const sampleJobs: Job[] = [
     isBookmarked: true,
     tools: ["VS Code", "Git", "Jira"],
     slaLevel: "4-hour",
-    matchScore: 85,
+    // matchScore: 85,
   },
   {
     title: "Python Engineer",
@@ -56,7 +56,7 @@ export const sampleJobs: Job[] = [
     place: "featured",
     tools: ["PyCharm", "GitHub", "Docker"],
     slaLevel: "6-hour",
-    matchScore: 45,
+    // matchScore: 45,
   },
   {
     title: "Project Manager",
@@ -84,7 +84,7 @@ export const sampleJobs: Job[] = [
     isBookmarked: true,
     tools: ["Jira", "Confluence", "MS Project"],
     slaLevel: "Thereafter",
-    matchScore: 30,
+    // matchScore: 30,
   },
   {
     id: 4,
@@ -110,7 +110,7 @@ export const sampleJobs: Job[] = [
     isBookmarked: true,
     tools: ["Figma", "Sketch", "Adobe Illustrator"],
     slaLevel: "Next day",
-    matchScore: 70,
+    // matchScore: 70,
   },
   {
     id: 5,
@@ -135,7 +135,7 @@ export const sampleJobs: Job[] = [
     place: "recommended",
     tools: ["Adobe Photoshop", "Illustrator", "After Effects"],
     slaLevel: "6-hour",
-    matchScore: 46,
+    // matchScore: 46,
   },
   {
     id: 6,
@@ -161,7 +161,7 @@ export const sampleJobs: Job[] = [
     isBookmarked: true,
     tools: ["VS Code", "Figma", "Chrome DevTools"],
     slaLevel: "4-hour",
-    matchScore: 58,
+    // matchScore: 58,
   },
   {
     id: 7,
@@ -186,7 +186,7 @@ export const sampleJobs: Job[] = [
     place: "recommended",
     tools: ["VS Code", "Git", "Jira"],
     slaLevel: "Thereafter",
-    matchScore: 35,
+    // matchScore: 35,
   },
   {
     id: 8,
@@ -210,7 +210,7 @@ export const sampleJobs: Job[] = [
     place: "recommended",
     tools: ["PyCharm", "Jupyter Notebook", "AWS Console"],
     slaLevel: "Next day",
-    matchScore: 65,
+    // matchScore: 65,
   },
   {
     id: 9,
@@ -234,7 +234,7 @@ export const sampleJobs: Job[] = [
     place: "recommended",
     tools: ["PyCharm", "Jupyter Notebook", "AWS Console"],
     slaLevel: "6-hour",
-    matchScore: 65,
+    // matchScore: 65,
   },
   {
     id: 10,
@@ -259,6 +259,6 @@ export const sampleJobs: Job[] = [
     place: "recommended",
     tools: ["Figma", "Sketch", "Adobe Illustrator"],
     slaLevel: "4-hour",
-    matchScore: 85,
+    // matchScore: 85,
   },
 ];
