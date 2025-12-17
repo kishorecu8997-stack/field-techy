@@ -19,11 +19,27 @@ export const WORKING_TYPES = {
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
-
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
 };
+
+export const getExperienceLevel = (years?: number) => {
+  if (!years) return "";
+  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years <= 3) return "L2"; // 2-3 years: Mid-level
+  return "L3"; // 4+ years: Senior/Expert-level
+};
+
+// types/UserProfile.ts
+export interface UserProfile {
+  skills: string[]; // e.g., ["React", "TypeScript", "Node.js"]
+  experienceYears: number; // e.g., 5
+  preferredLocation: string[]; // e.g., ["Remote", "San Francisco", "New York"]
+  preferredJobType: "remote" | "on-site" | "both";
+  minSalary?: number; // e.g., 80000
+  categories: string[]; // e.g., ["IT", "Designing"]
+}
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -32,6 +48,14 @@ export const LOG_STATUSES = {
   approved: "approved",
 } as const;
 export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
+
+export const SERVICE_TYPES = {
+  dedicated: "Dedicated",
+  dispatch: "Dispatch",
+  scheduled: "Scheduled",
+} as const;
+
+export type ServiceType = (typeof SERVICE_TYPES)[keyof typeof SERVICE_TYPES];
 
 /**
  * Represents a job listing
@@ -60,6 +84,15 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
+  ServiceType?: ServiceType;
+  languages?: string;
+  tools?: string[];
+  poc?: {
+    name: string; // e.g., "Raj Patel"
+    role?: string; // e.g., "Project Coordinator"
+    avatar?: string; // optional avatar URL
+  };
+  matchScore?: string[];
 }
 
 /**
@@ -74,24 +107,37 @@ export interface Filters {
   skills: string[];
 }
 
+/**
+ * Sort options
+ * Now includes all criteria you need for sorting jobs
+ */
 export const SORT_OPTIONS = {
-  NEWEST: "newest",
-  OLDEST: "oldest",
+  RELEVANCE: "relevance", // best match
+  DATE: "date", // posted date
+  SALARY: "salary", // highest pay
+  DISTANCE: "distance", // nearest first
 } as const;
+
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 
+/**
+ * Generic option shape (label/value)
+ */
 export interface Options {
   label: string;
   value: string;
 }
 
-
+/**
+ * Offered job status flow
+ */
 export const OfferedJobStatus = {
   initial: "initial",
   accepted: "accepted",
   declined: "declined",
   started: "started",
   checkedIn: "checked-in",
-};
+} as const;
 
-export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+export type OfferedJobStatusType =
+  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
