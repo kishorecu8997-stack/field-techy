@@ -14,7 +14,7 @@ import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBa
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
 import EditBankDetails from "@/pages/engineer/account_settings/bank_details/EditBankDetails";
 import MyEarning from "@/pages/engineer/account_settings/bank_details/MyEarning";
-import AllTransactionsPage from "@/pages/engineer/account_settings/bank_details/AllTransactionsPage";
+import TransactionDashboard from "@/pages/engineer/account_settings/bank_details/TransactionDashboard";
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
@@ -266,7 +266,7 @@ export const sectionConfig: Record<
     title: "Edit Project Member Details",
   },
   engineerRecentTransactions: {
-    component: AllTransactionsPage,
+    component: TransactionDashboard,
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "myEarning",
