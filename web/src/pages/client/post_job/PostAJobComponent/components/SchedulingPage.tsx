@@ -4,7 +4,6 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
@@ -68,6 +67,23 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       ctx.setValue("estimatedDuration", duration);
     }
   }, [startDate, startTime, endDate, endTime]);
+
+  const getDedicatedEndDateRange = (startDate: string | Date) => {
+    if (!startDate) {
+      return { min: undefined, max: undefined };
+    }
+    const start = new Date(startDate);
+
+    const min = new Date(start);
+    min.setMonth(min.getMonth() + 6);
+
+    const max = new Date(start);
+    max.setMonth(max.getMonth() + 24);
+
+    return { min, max };
+  };
+  const { min: minEndDate, max: maxEndDate } =
+    getDedicatedEndDateRange(tentativeStartDate);
 
   return (
     <>
@@ -151,7 +167,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
-                      minDate={minTentativeEndDate}
+                      minDate={minEndDate}
+                      maxDate={maxEndDate}
                       required
                     />
                   </>
