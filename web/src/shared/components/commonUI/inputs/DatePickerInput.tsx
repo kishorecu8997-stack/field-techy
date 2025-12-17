@@ -121,8 +121,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           }
         };
 
-        const handleInputBlur = () => {
-        };
+        const handleInputBlur = () => setInputValue(formatDate(value));
 
         const handleDateSelect = (date: Date) => {
           if (isDateValid(date)) {
