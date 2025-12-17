@@ -73,29 +73,18 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
 
   const minStartTime = useMemo(() => {
     if (startDate) {
-      // 1. Convert start date to a Date object (assuming 'startDate' is a date string/ISO format)
       const selectedDate = new Date(startDate);
-
-      // 2. Get today's date at midnight for comparison
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
-      // 3. Get the selected date at midnight for comparison
       const selectedDateOnly = new Date(selectedDate);
       selectedDateOnly.setHours(0, 0, 0, 0);
-
-      // 4. Check if the selected date is logically "today"
       if (selectedDateOnly.getTime() === today.getTime()) {
-        // If it is today, the minimum time should be the current time (plus a buffer, e.g., 1 minute)
         const now = new Date();
-        // Format the current time to "HH:mm" string
-        // The CustomTimePicker should handle this string format for minTime.
-        const hours = now.getHours().toString().padStart(2, '0');
+         const hours = now.getHours().toString().padStart(2, '0');
         const minutes = (now.getMinutes() + 1).toString().padStart(2, '0');
         return `${hours}:${minutes}`;
       }
     }
-    // If no date is selected, or the date is a future date, there is no minimum time constraint (null)
     return undefined;
   }, [startDate]);
 
@@ -388,7 +377,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             <DatePickerInput
                               disabled={isDisable}
                               label="Start Date"
-                              placeholder="Select. start date"
+                              placeholder="Select start date"
                               {...field}
                               required
                             />
@@ -467,8 +456,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
                             maxDate={endDate ? endDate : null}
                             rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
+                            validate: (value) => validateCurrentOrFutureDate(value),
+                            }}
                           />
                         </>
                       )}
