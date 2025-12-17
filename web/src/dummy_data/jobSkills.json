@@ -22,7 +22,6 @@
     { "id": 20, "label": "Adobe XD" },
     { "id": 21, "label": "Photoshop" },
     { "id": 22, "label": "Illustrator" },
-    { "id": 23, "label": "Prototype" },
-    { "id": 23, "label": "UI/UX" }
+    { "id": 23, "label": "Prototype" }
   ]
 }

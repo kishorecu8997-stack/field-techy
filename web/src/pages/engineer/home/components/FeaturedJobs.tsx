@@ -55,9 +55,7 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
   const strokeWidth = 3;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-
   const strokeDashoffset = circumference - (score / 100) * circumference;
-
   /**
    * INTERNAL HELPER: Logic to determine color classes based on score
    * We apply this to both the ring stroke and the text for visual harmony.
@@ -67,9 +65,7 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
     if (val >= 50) return "text-amber-500 dark:text-amber-400";
     return "text-rose-500 dark:text-rose-400";
   };
-
   const activeColor = getColorClass(score);
-
   return (
     <div
       className="relative flex items-center justify-center flex-shrink-0"
@@ -88,7 +84,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
           cx={size / 2}
           cy={size / 2}
         />
-
         <circle
           className={`${activeColor} transition-all duration-1000 ease-in-out`}
           stroke="currentColor"
@@ -141,6 +136,7 @@ const FeatureJobCard: React.FC<Job> = ({
             </p>
           </div>
         </div>
+
         <div className="flex items-center space-x-2">
           {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
           <div
@@ -188,7 +184,6 @@ const FeatureJobCard: React.FC<Job> = ({
         )}
       </div>
 
-      {/* Skills Required */}
       {skills && skills.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3 w-full py-1">
           {skills.map((skill, idx) => (
@@ -202,7 +197,6 @@ const FeatureJobCard: React.FC<Job> = ({
         </div>
       )}
 
-      {/* Tools section */}
       {tools && tools.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
           {tools.map((tool, idx) => (
@@ -233,16 +227,36 @@ const FeatureJobCard: React.FC<Job> = ({
  *
  * @component
  * @param {Object} props - Component props
- * @param {Job[]} props.jobs - Array of job objects to display
+ * @param {Array<Object>} props.jobs - Array of job objects to display
  * @param {string} [props.title="Featured Jobs"] - Title for the section
  * @param {Function} [props.onViewAll] - Callback function when "View all" is clicked
+ *
+ * @example
+ * <FeaturedJobs
+ *   jobs={[
+ *     {
+ *       title: "Software Engineer",
+ *       company: "Google",
+ *       companyLogo: "/logos/google.png",
+ *       category: "IT",
+ *       employmentType: "Full-Time",
+ *       locationType: "On Site",
+ *       salary: "$180,000/year",
+ *       location: "California, USA",
+ *       experience: "5",
+ *       skills: ["Figma", "Adobe XD", "UI/UX"],
+ *       tools: ["VS Code", "Git", "Jira"],
+ *       slaLevel: "4-hour response",
+ *       matchScore: 85,
+ *     }
+ *   ]}
+ * />
  */
 interface FeaturedJobsProps {
   jobs: Job[];
   title?: string;
   onViewAll?: () => void;
 }
-
 const jobCardGradients = [
   "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700",
   "bg-gradient-to-br from-green-50 to-green-100 dark:from-emerald-900/30 dark:to-emerald-800/30",
@@ -253,21 +267,18 @@ const jobCardGradients = [
   "bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/30 dark:to-teal-800/30",
   "bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20",
 ];
-
 const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   jobs,
   title = "Featured Jobs",
   onViewAll,
 }) => {
   const navigate = useNavigate();
-
   const userSkillsAndTools = useMemo(() => {
     return [
       ...jobSkillsData.jobSkills.map((s) => s.label),
       ...toolsData.tools.map((t) => t.label),
     ];
   }, []);
-
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
@@ -288,7 +299,6 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             jobRequirements,
             userSkillsAndTools
           );
-
           return (
             <div
               key={job.id || index}
