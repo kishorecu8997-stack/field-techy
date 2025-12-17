@@ -110,7 +110,7 @@ const NotificationPreferences = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-6 space-y-6">
+        <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl p-6 space-y-6">
           <DrawerMenuSection items={menuItems} className="h-full" />
           <div className="flex flex-row gap-2">
             {tabsitem.map((items: tabsitemProps) => {
