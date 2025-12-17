@@ -31,6 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
+  const notiflength = 20;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -148,7 +149,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       <div className="hidden md:flex items-center space-x-4">
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
+          onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
@@ -156,20 +157,25 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           </span>
         </div>
         <div
-          className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("notification");
           }}
         >
           <FaBell size={20} />
+          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+            {notiflength}
+          </span>
         </div>
         <div
           onClick={onDrawerToggle}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
-          <span className="max-w-[6rem] truncate text-left">Hi, Nick Wilson</span>
+          <span className="max-w-[6rem] truncate text-left">
+            Hi, Nick Wilson
+          </span>
           <img
             src={assetsConfig.images.users.user}
             alt="User"
