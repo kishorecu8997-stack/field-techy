@@ -13,7 +13,7 @@ import { validateDateRange } from "@/utils/validate";
 import {
   validateCurrentOrFutureDate,
 } from "../../../post_job/Validates";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   OccurrenceEndType,
@@ -49,6 +49,23 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
     tentativeStartDate
   );
 
+  const minStartTime = useMemo(() => {
+    if (applicationEndDate) {
+      const selectedDate = new Date(applicationEndDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDateOnly = new Date(selectedDate);
+      selectedDateOnly.setHours(0, 0, 0, 0);
+      if (selectedDateOnly.getTime() === today.getTime()) {
+        const now = new Date();
+         const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = (now.getMinutes() + 1).toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+    }
+    return undefined;
+  }, [applicationEndDate]);
+  
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
       const duration = getDurationString({
@@ -99,8 +116,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
                       maxDate={tentativeStartDate ? tentativeStartDate : null}
                        rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
+                        validate: (value) => validateCurrentOrFutureDate(value),
+                      }}
                     />
                   </>
                 )}
@@ -112,6 +129,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                 label="Application End Time"
                 name="applicationEndTime"
                 required
+                minTime={minStartTime}
               />
             </div>
           </div>
@@ -138,8 +156,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       minDate={applicationEndDate ? applicationEndDate : null}
                       maxDate={tentativeEndDate ? tentativeEndDate : null}
                       rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
+                      validate: (value) => validateCurrentOrFutureDate(value),
+                          }}
                     />
                   </>
                 )}
@@ -151,8 +169,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                 rules={{
                   validate: (value) =>
                     validateDateRange(value, ctx.getValues("tentativeEndDate")),
-                  
-                }}
+                    }}
                 control={ctx.control}
                 render={({ field }) => (
                   <>
