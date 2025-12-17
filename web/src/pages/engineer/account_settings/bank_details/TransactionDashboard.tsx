@@ -1,136 +1,228 @@
-import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency, formatDate } from "@/shared/libs/utils";
-import React from "react";
-
-// Define TypeScript interfaces
-export interface Transaction {
-  id: number;
-  description: string;
-  amount: number; // positive = credit, negative = debit
-  date: string; // ISO date string or formatted date
-  status?: "processing" | "completed" | "failed"; // optional status
-}
+import { useTransactionStore } from "@/dummy_data/transactionStore";
+import React, { useState } from "react";
+import { HiFilter, HiSearch } from "react-icons/hi";
 
 interface TransactionDashboardProps {
+  showAll?: boolean;
   onViewAllClick?: () => void;
 }
 
 /**
- * Displays a categorized list of financial transactions (Today, Yesterday, Earlier) with amount styling,
- * status badges, and formatted dates. Supports an optional "View All" action and handles empty states.
+ * Displays a table of transactions. Can show all or the last 10.
  */
 const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
+  showAll = false,
   onViewAllClick,
 }) => {
-  // Group transactions by day (Today / Yesterday / Older)
-  const groupTransactionsByDay = (txs: Transaction[]) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+  const { transactions } = useTransactionStore();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    const todayTxs: Transaction[] = [];
-    const yesterdayTxs: Transaction[] = [];
-    const olderTxs: Transaction[] = [];
+  // Filter out transactions with invalid dates and sort by date descending (newest first).
+  // This prevents crashes from invalid date objects and ensures the list is always ordered chronologically.
+  const validAndSortedTransactions = transactions
+    .filter((tx) => !isNaN(new Date(tx.date).getTime()))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    txs.forEach((tx) => {
-      const txDate = new Date(tx.date);
-      if (txDate.toDateString() === today.toDateString()) {
-        todayTxs.push(tx);
-      } else if (txDate.toDateString() === yesterday.toDateString()) {
-        yesterdayTxs.push(tx);
-      } else {
-        olderTxs.push(tx);
-      }
-    });
+  const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
 
-    return { todayTxs, yesterdayTxs, olderTxs };
+  const filteredTransactions = validAndSortedTransactions.filter((tx) => {
+    if (searchTerm && !tx.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+    const txDate = new Date(tx.date); // Already validated in the step above
+    const txDateStr = txDate.toISOString().split("T")[0];
+    if (filterDateFrom && txDateStr < filterDateFrom) return false;
+    if (filterDateTo && txDateStr > filterDateTo) return false;
+
+    return true;
+  });
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterDateFrom("");
+    setFilterDateTo("");
   };
 
-  const { todayTxs, yesterdayTxs, olderTxs } =
-    groupTransactionsByDay(transactions);
+  // Determine which transactions to display: all filtered, or the 10 most recent ones.
+  const transactionsToShow = showAll ? filteredTransactions : validAndSortedTransactions.slice(0, 10);
+  const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
-  // Render transaction item
-  const renderTransaction = (tx: Transaction) => {
-    const isCredit = tx.amount > 0;
-    const amountColor = isCredit
-      ? "text-emerald-600 dark:text-emerald-400"
-      : "text-rose-600 dark:text-rose-400";
-    const sign = isCredit ? "+" : "-";
-
-    return (
-      <div
-        key={tx.id}
-        className="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700"
-      >
-        <div>
-          <div className="font-medium text-gray-900 dark:text-gray-100">
-            {tx.description}
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {formatDate(tx.date)}
-          </div>
-          {tx.status === "processing" && (
-            <span className="inline-block mt-1 px-2 py-0.5 bg-amber-500 text-white text-xs rounded-full font-medium">
-              Processing
-            </span>
-          )}
-        </div>
-        <div className={`font-semibold ${amountColor}`}>
-          {sign}
-          {formatCurrency(Math.abs(tx.amount))}
-        </div>
-      </div>
-    );
+  const getStatusBadge = (status?: string) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+      case "Approved":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+      case "Failed":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+    }
   };
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="mb-4 flex justify-between items-center">
         <h2 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
-          Recent Transactions
+          {title}
         </h2>
-        {onViewAllClick && (
+        {!showAll && (
           <div
             onClick={onViewAllClick}
             className="text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
             aria-label="View all transactions"
           >
-            View All
+            View All Transactions
           </div>
         )}
       </div>
 
-      {todayTxs.length > 0 && (
-        <>
-          <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mt-4 mb-2">
-            Today
-          </h3>
-          {todayTxs.map(renderTransaction)}
-        </>
+      {showAll && (
+        <div className="mb-6 space-y-4">
+          <div className="flex gap-2">
+            <div className="relative flex-grow">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <HiSearch className="text-gray-400 text-lg" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by description..."
+                className="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-teal-500 focus:border-teal-500 p-2.5 text-sm outline-none transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`px-4 py-2 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
+                isFilterOpen
+                  ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
+                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              }`}
+            >
+              <HiFilter className="w-5 h-5" />
+              Filters
+            </button>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 text-sm font-medium transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          {isFilterOpen && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div>
+                <label className="block mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                  From Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-2 text-sm focus:ring-teal-500 focus:border-teal-500 outline-none"
+                  value={filterDateFrom}
+                  onChange={(e) => setFilterDateFrom(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                  To Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-2 text-sm focus:ring-teal-500 focus:border-teal-500 outline-none"
+                  value={filterDateTo}
+                  onChange={(e) => setFilterDateTo(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
-      {yesterdayTxs.length > 0 && (
-        <>
-          <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mt-4 mb-2">
-            Yesterday
-          </h3>
-          {yesterdayTxs.map(renderTransaction)}
-        </>
-      )}
+      <div className="overflow-x-auto">
+        <table className="min-w-full">
+          <thead className="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th
+                scope="col"
+                className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+              >
+                Description
+              </th>
+              <th
+                scope="col"
+                className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+              >
+                Amount
+              </th>
+              <th
+                scope="col"
+                className="px-8 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+              >
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            {transactionsToShow.map((tx) => {
+              const isCredit = tx.amount > 0;
+              const amountColor = isCredit
+                ? "text-emerald-600 dark:text-emerald-400"
+                : "text-rose-600 dark:text-rose-400";
+              const sign = isCredit ? "+" : "-";
+              const status = tx.status || "Completed";
 
-      {olderTxs.length > 0 && (
-        <>
-          <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mt-4 mb-2">
-            Earlier
-          </h3>
-          {olderTxs.map(renderTransaction)}
-        </>
-      )}
+              return (
+                <tr key={tx.id}>
+                  <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {tx.description}
+                  </td>
+                  <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {formatDate(new Date(tx.date).toISOString())}
+                  </td>
+                  <td
+                    className={`px-8 py-4 whitespace-nowrap text-sm font-semibold ${amountColor}`}
+                  >
+                    {sign}
+                    {formatCurrency(Math.abs(tx.amount))}
+                  </td>
+                  <td className="px-8 py-4 whitespace-nowrap text-sm">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
+                        status
+                      )}`}
+                    >
+                      {status}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-      {transactions.length === 0 && (
-        <p className="text-gray-500 dark:text-gray-400 text-center py-6">
-          No transactions yet.
-        </p>
+      {transactionsToShow.length === 0 && (
+        <div className="text-center py-10">
+          <p className="text-gray-500 dark:text-gray-400">
+            {hasActiveFilters ? "No transactions match your filters." : "No transactions found."}
+          </p>
+        </div>
       )}
     </div>
   );
