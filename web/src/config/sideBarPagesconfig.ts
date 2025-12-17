@@ -50,7 +50,6 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
-import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
 import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 
@@ -187,19 +186,12 @@ export const sectionConfig: Record<
     parent: "manageBankAccounts",
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
-  myEarning: { component: MyEarning, title: "My Earning",  },
-  withdraw: { component: Withdraw, title: "Withdraw", parent :"myEarning"  },
+  myEarning: { component: MyEarning, title: "My Earning" },
+  withdraw: { component: Withdraw, title: "Withdraw", parent: "myEarning" },
   notification: {
     component: NotificationPage,
     title: "Notification",
   },
-  
-  notificationPreferences: {
-    component: NotificationPreferences,
-    title: "Notification Preferences",
-    parent: "settings",
-  },
-
   security: {
     component: SecurityPage,
     title: "Security",
@@ -210,7 +202,6 @@ export const sectionConfig: Record<
     title: "Login History",
     parent: "settings",
   },
-
   clientNotification: {
     component: ClientNotification,
     title: "Notification",

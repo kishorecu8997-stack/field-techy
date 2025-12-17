@@ -35,7 +35,9 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       id: "notifications",
       label: "Notifications",
       icon: icons.notifications,
-      onClick: () => onMenuItemClick("notificationPreferences"),
+      isToggle: true,
+      toggleValue: notificationsEnabled,
+      onToggleChange: setNotificationsEnabled,
     },
         {
       id: "security",
