@@ -96,13 +96,16 @@ export const validateName = (value: string) => {
  * @returns {true | string} True if valid, otherwise an error message.
  */
 export const validateCurrentOrFutureDate = (date: Date | null): true | string => {
-   if (!date) {
-     return "Date must be selected";
-   }
+  if (!date) {
+    return "Date must be selected";
+  }
 
-  
-   return true;
- };
+  if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+    return "Date cannot be in the past";
+  }
+
+  return true;
+};
 
 export const validateEndDate = (endDate: Date | null, startDate: Date | null): true | string => {
    if (!endDate) {
