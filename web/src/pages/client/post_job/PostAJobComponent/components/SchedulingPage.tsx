@@ -13,7 +13,7 @@ import {
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
-import { useEffect } from "react";
+import { useEffect,useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   OccurrenceEndType,
@@ -70,6 +70,23 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       ctx.setValue("estimatedDuration", duration);
     }
   }, [startDate, startTime, endDate, endTime]);
+
+  const minStartTime = useMemo(() => {
+    if (startDate) {
+      const selectedDate = new Date(startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedDateOnly = new Date(selectedDate);
+      selectedDateOnly.setHours(0, 0, 0, 0);
+      if (selectedDateOnly.getTime() === today.getTime()) {
+        const now = new Date();
+         const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = (now.getMinutes() + 1).toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+    }
+    return undefined;
+  }, [startDate]);
 
   return (
     <>
@@ -227,8 +244,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             {...field}
                             required
                             rules={{
-                  validate: (value) => validateCurrentOrFutureDate(value),
-                }}
+                            validate: (value) => validateCurrentOrFutureDate(value),
+                            }}
                           />
                         </>
                       )}
@@ -242,7 +259,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         label="Start Time"
                         maxTime={endTime}
                         disabled={isDisable}
-                        
+                        minTime={minStartTime}
                       />
                     </div>
                     <div className="w-full">
