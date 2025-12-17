@@ -40,6 +40,12 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       onToggleChange: setNotificationsEnabled,
     },
     {
+      id: "activeSessions",
+      label: "Active Sessions",
+      icon: icons.sessions,
+      onClick: () => onMenuItemClick("activeSessions")
+    },
+    {
       label: "Contact Us",
       icon: icons.contactSupport,
       id: "contactUs",

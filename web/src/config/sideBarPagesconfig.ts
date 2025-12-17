@@ -50,6 +50,7 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
+import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -193,6 +194,11 @@ export const sectionConfig: Record<
   clientNotification: {
     component: ClientNotification,
     title: "Notification",
+  },
+  activeSessions: {
+    component: ActiveSessions,
+    title: "Active Sessions",
+    parent: "settings",
   },
 
   //client
