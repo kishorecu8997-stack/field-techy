@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
 
 /**
@@ -11,7 +12,9 @@ import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
  * This component is designed to be rendered within a `FormProvider` from `react-hook-form`
  * to connect the file inputs to the main form state.
  */
+
 const BackgroundVerification = () => {
+  const [expiryDate, setExpiryDate] = useState('');
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
       <div className="text-center mb-6">
@@ -32,11 +35,20 @@ const BackgroundVerification = () => {
       <FileUpload
         name="certificate"
         label="Certificate"
-        placeholder="Certificate"        
+        placeholder="Certificate"
         accept='.pdf'
         maxPages={5}
         validatePDF={true}
       />
+      <div className="flex items-center gap-2">
+        <label className="text-sm font-medium text-gray-700">Expiry Date of Certificate:</label>
+        <input
+              type="date"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
+              className="px-19 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+      </div>
     </div>
   );
 }

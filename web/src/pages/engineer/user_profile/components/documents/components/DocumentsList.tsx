@@ -1,14 +1,12 @@
-//DocumentsList.tsx
-
 /**
  * @file DocumentsList.tsx
  * @description A component that renders a list of `DocumentCard` components.
  * It handles the display of documents, provides an "Add" button, and delegates
  * edit/delete actions to parent components via callbacks.
  */
-import { Button } from "@/shared/components/commonUI/Buttons";
+//import { Button } from "@/shared/components/commonUI/Buttons";
 import DocumentCard from "@/shared/components/DocumentCard";
-import React, { useState } from "react";
+import React from "react";
 
 export interface Document {
   id: number;
@@ -42,7 +40,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   onEditDocument,
   onDeleteDocument,
   onExpiryDateChange,
-  onAddMoreCertificates,
+  //onAddMoreCertificates,
   onAddSingleCertificate,
 }) => {
   /**

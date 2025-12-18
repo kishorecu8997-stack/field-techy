@@ -1,5 +1,3 @@
-//DocumentCard.tsx
-
 import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -179,7 +177,29 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
           </button>
         </div>
       )}
-      {renderPreview(document)}
+      <div className="relative">
+        {renderPreview(document)}
+
+        <div className="absolute right-3 bottom-3 flex items-center space-x-2 z-20">
+          <button
+            onClick={() => onEdit(id)}
+            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
+            aria-label="Edit document"
+            title="Edit"
+          >
+            <FaRegEdit />
+          </button>
+
+          <button
+            onClick={() => onDelete(id)}
+            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
+            aria-label="Delete document"
+            title="Delete"
+          >
+            <RiDeleteBin6Line />
+          </button>
+        </div>
+      </div>
 
       {isEditing && (
         <div className="mt-2 p-2 bg-gray-50 rounded">
@@ -208,26 +228,6 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
           </div>
         </div>
       )}
-
-      <div className="absolute right-3 bottom-3 flex items-center space-x-2 z-20">
-        <button
-          onClick={() => onEdit(id)}
-          className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
-          aria-label="Edit document"
-          title="Edit"
-        >
-          <FaRegEdit />
-        </button>
-
-        <button
-          onClick={() => onDelete(id)}
-          className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
-          aria-label="Delete document"
-          title="Delete"
-        >
-          <RiDeleteBin6Line />
-        </button>
-      </div>
     </div>
   );
 };
