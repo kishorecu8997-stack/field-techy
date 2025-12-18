@@ -9,6 +9,7 @@ import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { calculateMatchScore } from "@/utils/matchCalculator";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 // Reusable Badge
 const Badge: React.FC<{
@@ -105,9 +106,9 @@ const WhyRecommendedPopover: React.FC<{
       {/* Popover Card */}
       <div className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300">
         {/* Close Button */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label="Close"
         >
           <svg
@@ -123,7 +124,7 @@ const WhyRecommendedPopover: React.FC<{
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
+        </Button>
 
         {/* Content */}
         <div className="text-center">
@@ -144,12 +145,12 @@ const WhyRecommendedPopover: React.FC<{
             this job aligns with your experience and expertise.
           </p>
 
-          <button
+          <Button
             onClick={onClose}
             className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors"
           >
             Got it
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -194,17 +195,19 @@ const JobCard: React.FC<{
                 {matchScore > 0 && <MatchScoreRing score={matchScore} />}
                 {/* Separate "Why recommended?" Button */}
                 {matchScore > 0 && (
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setShowWhyPopover(true);
                     }}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     aria-label="Why is this job recommended?"
+                    className="p-1 rounded-full  bg-white dark:hover:bg-gray-700 transition-colors "
+                    size="icon"
+                    variant="outline"
                   >
                     <IoHelpCircleOutline className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  </button>
+                  </Button>
                 )}
                 {job.ServiceType && (
                   <Badge
@@ -269,7 +272,7 @@ const JobCard: React.FC<{
               {showBookmark && (
                 <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                   {/* Bookmark Button */}
-                  <button
+                  <div
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -283,7 +286,7 @@ const JobCard: React.FC<{
                     ) : (
                       <icons.bookmark className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                     )}
-                  </button>
+                  </div>
 
                   <span className="whitespace-nowrap font-medium">
                     {job.postedTime || "Just now"}
