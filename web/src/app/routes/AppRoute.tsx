@@ -235,6 +235,10 @@ const PostAJobPage = React.lazy(
 );
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
+const BreakRequest = React.lazy(
+  () => import("@/pages/engineer/home/components/BreakRequest")
+);
+
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
 );
@@ -387,6 +391,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.chat,
         element: withSuspense(EngineerChatPage),
+      },
+       {
+        path: urls.engineer.home.break_request,
+        element: withSuspense(BreakRequest),
       },
     ],
   },

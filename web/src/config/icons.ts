@@ -8,6 +8,7 @@ import { IoClose, IoCloseSharp, IoHeadsetSharp, IoNotificationsSharp, IoUnlinkSh
 import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
 import { FaHourglass } from "react-icons/fa";
+import { FiZap } from "react-icons/fi";
  
 
 
@@ -44,5 +45,6 @@ export const icons = {
   message: BiSolidMessageRounded,
   noImage: MdOutlineImageNotSupported,
   add: IoMdAdd,
-  pending: FaHourglass
+  pending: FaHourglass,
+  active: FiZap,
 };

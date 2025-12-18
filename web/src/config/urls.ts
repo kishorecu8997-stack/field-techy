@@ -29,6 +29,7 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
+      break_request: "break-request",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
@@ -159,6 +160,7 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
+      break_request: `${BASE.ENGINEER}/break-request`,
       search_result: `${BASE.ENGINEER}/search-result`,
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
