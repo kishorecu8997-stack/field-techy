@@ -120,6 +120,15 @@ const BreakRequest = () => {
             } else {
               console.log("Break request submitted:", data);
               toast.success("Break request submitted successfully!");
+              methods.reset({
+              startDate: null,
+              startTime: null,
+              endDate: null,
+              endTime: null,
+              breakType: "",
+              purpose: "",
+              remarks: "",
+            });
             }
 
             close(true);

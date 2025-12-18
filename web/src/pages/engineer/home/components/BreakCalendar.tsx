@@ -1,7 +1,7 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-
+import { icons } from "@/config/icons";
 
 interface Break {
   id: string;
@@ -38,11 +38,26 @@ const breakData: Break[] = [
 const BreakCalendar: React.FC = () => {
   const statusConfig: Record<
     "Pending" | "Approved" | "Active",
-    { icon: string; bg: string; border: string; text: string }
+    { Icon: React.ComponentType; bg: string; border: string; text: string }
   > = {
-    Pending: { icon: "⏳", bg: "#fef3c7", border: "#f59e0b", text: "#92400e" },
-    Approved: { icon: "✓", bg: "#d1fae5", border: "#10b981", text: "#065f46" },
-    Active: { icon: "⚡", bg: "#dbeafe", border: "#3b82f6", text: "#1e40af" },
+    Pending: {
+      Icon: icons.pending,
+      bg: "#fef3c7",
+      border: "#f59e0b",
+      text: "#92400e",
+    },
+    Approved: {
+      Icon: icons.check,
+      bg: "#d1fae5",
+      border: "#10b981",
+      text: "#065f46",
+    },
+    Active: {
+      Icon: icons.active,
+      bg: "#dbeafe",
+      border: "#3b82f6",
+      text: "#1e40af",
+    },
   };
 
   const events = breakData.map((brk) => {
@@ -56,55 +71,55 @@ const BreakCalendar: React.FC = () => {
       borderColor: config.border,
       textColor: config.text,
       extendedProps: {
-        icon: config.icon,
+        Icon: config.Icon,
       },
       display: "block",
     };
   });
 
   return (
-    <div className="py-5 px-4 max-w-xl mx-aut">
-      <div className=" rounded-2xl overflow-hidden">
-        <div className="p-1">
+    <div className="py-5 px-4">
+      <div className="rounded-2xl overflow-hidden shadow-lg bg-white">
+        <div className="p-2">
           <FullCalendar
             plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
             initialDate="2025-12-01"
             headerToolbar={{
-              left: "prev,next",
+              left: "prev,next today",
               center: "title",
               right: "",
             }}
             height="auto"
             events={events}
             displayEventTime={false}
-            eventDidMount={(info) => {
-              const icon = (info.event.extendedProps as { icon: string }).icon;
+            eventContent={(arg) => {
+              const IconComponent = (
+                arg.event.extendedProps as {
+                  Icon: React.ComponentType<{ className?: string }>;
+                }
+              ).Icon;
 
-              const iconElement = document.createElement("div");
-              iconElement.innerHTML = icon;
-              iconElement.className =
-                "text-2xl font-bold flex items-center justify-center h-full";
-
-              info.el.innerHTML = "";
-              info.el.appendChild(iconElement);
-              info.el.classList.add("flex", "items-center", "justify-center");
+              return (
+                <div className="flex items-center justify-center h-full w-full">
+                  <IconComponent className="text-3xl" />
+                </div>
+              );
             }}
           />
         </div>
-
-        <div className="px-2 py-2">
-          <div className="flex flex-wrap justify-center gap-4 text-md">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">⚡</span>
+        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+          <div className="flex flex-wrap justify-center gap-8 text-sm">
+            <div className="flex items-center gap-3">
+              <icons.active className="text-2xl text-blue-600" />
               <span className="font-bold text-blue-800">Active</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl">✓</span>
+            <div className="flex items-center gap-3">
+              <icons.check className="text-2xl text-green-600" />
               <span className="font-bold text-green-800">Approved</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl">⏳</span>
+            <div className="flex items-center gap-3">
+              <icons.pending className="text-2xl text-amber-600" />
               <span className="font-bold text-amber-800">Pending</span>
             </div>
           </div>
