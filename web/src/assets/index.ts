@@ -25,6 +25,13 @@ import engineer from "./ft-landing/engineer.svg";
 import corporates from "./ft-landing/corporate.svg";
 import home_customers from "./ft-landing/home_end.svg";
 import work_flow from "./ft-landing/work_flow.png";
+import digital_job from "./ft-landing/digital_job.png";
+import customer_notification from "./ft-landing/customer_notification.png";
+import ratecard_management from "./ft-landing/ratecard_management.png";
+import service_insights from "./ft-landing/service_insights.png";
+import technician_tracking from "./ft-landing/technician_tracking.png";
+import smart_scheduling from "./ft-landing/smart_scheduling.png";
+import company_logo_white from "./company_logo_white.svg";
 
 // JSON format export with category-wise organization
 export const assetsConfig = {
@@ -33,6 +40,7 @@ export const assetsConfig = {
     companyLogo,
     circle_tick,
     ftLogoWhite,
+    company_logo_white,
   },
   images: {
     profile: {
@@ -73,6 +81,12 @@ export const assetsConfig = {
       for_corporates: for_corporates,
       for_home_customers: for_home_customers,
       work_flow: work_flow,
+      digital_job: digital_job,
+      customer_notification: customer_notification,
+      ratecard_management: ratecard_management,
+      service_insights: service_insights,
+      technician_tracking: technician_tracking,
+      smart_scheduling: smart_scheduling,
     },
     icons: {
       engineer,

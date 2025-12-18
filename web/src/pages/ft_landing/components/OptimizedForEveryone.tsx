@@ -3,9 +3,9 @@ import { experiences } from "../type";
 
 export default function OptimizedExperience() {
   return (
-    <section className="py-12 bg-white dark:bg-gray-900">
+    <section className="mb-12 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-xl md:text-2xl font-bold text-center text-gray-800 dark:text-white mb-8">
+        <h2 className="text-xl md:text-2xl font-semibold text-center text-gray-800 dark:text-white mb-8">
           Optimized Experiences For Everyone
         </h2>
 
@@ -26,7 +26,7 @@ export default function OptimizedExperience() {
 
               <div className="p-6 space-y-4">
                 <div className="flex items-start justify-between">
-                  <div>
+                  <div className="w-8/12">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                       {exp.title}
                     </h3>

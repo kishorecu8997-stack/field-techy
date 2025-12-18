@@ -11,15 +11,15 @@ export default function EngineeredForSpeedSection() {
   const currentSteps = steps[activeTab];
 
   return (
-    <section className="py-12 bg-white dark:bg-gray-900">
+    <section className="mb-12 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className="text-center mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">
-            Engineered For Speed
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-white">
+            How it Works
           </h2>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
-            From start to finish in four steps.
+            From start to finish in three steps.
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export default function EngineeredForSpeedSection() {
             <img
               src={assetsConfig.landing.job_platform.work_flow}
               alt="Workflow illustration"
-              className="w-full h-full xl:h-[30rem] object-cover"
+              className="w-full h-full xl:h-[31rem] object-cover"
             />
           </div>
         </div>

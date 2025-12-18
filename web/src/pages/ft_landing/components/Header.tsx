@@ -2,13 +2,14 @@ import { assetsConfig } from "@/assets";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { LuMenu } from "react-icons/lu";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed w-full z-10 bg-[#024e51] text-white border-b border-[#026e71]">
+    <header className="fixed w-full z-20 bg-[#024e51] text-white border-b border-[#026e71]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-14">
           <div>
@@ -34,8 +35,8 @@ export default function Header() {
             <Link to="" className="hover:text-[#95cc5c]">
               Features
             </Link>
-            <div className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit">
-              Login for
+            <div className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit">
+              Login for <MdKeyboardArrowDown className="ml-1 text-lg" />
             </div>
           </nav>
 
@@ -85,7 +86,9 @@ export default function Header() {
               >
                 Features
               </Link>
-              <div className="font-medium">Login For</div>
+              <div className="font-medium flex gap-1 items-center">
+                Login For <MdKeyboardArrowDown className="text-lg" />
+              </div>
               <Link
                 to=""
                 className="bg-[#95cc5c] text-black px-4 py-2 rounded-full font-medium text-center w-fit mx-auto hover:bg-[#85b850]"
