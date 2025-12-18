@@ -1,6 +1,8 @@
+import { useForm, FormProvider } from "react-hook-form";
 import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Pagination from "@/shared/components/commonUI/pagination/Pagination";
+import { CheckboxField } from "@/shared/components/commonUI/inputs/CheckBoxField";
 
 interface Session {
   id: string;
@@ -10,11 +12,14 @@ interface Session {
 
 interface ActiveSessionsProps {
   itemsPerPage?: number;
+  onLogout?: (sessionIds: string[]) => void;
 }
 
 const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   itemsPerPage = 4,
+  onLogout,
 }) => {
+  const methods = useForm({ defaultValues: {} });
   const [sessions, setSessions] = useState<Session[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
@@ -26,8 +31,6 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     const fetchSessions = async () => {
       try {
         setLoading(true);
-        // Placeholder for API call - replace with real API fetch when available
-        // const response = await fetch('/api/sessions'); const data = await response.json();
         const mockSessions: Session[] = [
           {
             id: "1",
@@ -49,8 +52,9 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
             device: "Chrome on Android",
           },
         ];
+        await new Promise((res) => setTimeout(res, 800));
         setSessions(mockSessions);
-      } catch (err) {
+      } catch {
         setError("Failed to load sessions. Please try again.");
       } finally {
         setLoading(false);
@@ -66,17 +70,10 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     [sessions, startIndex, itemsPerPage]
   );
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
-
-  const handleSelect = (id: string) => {
+  const toggleSelect = (id: string) => {
     setSelectedSessions((prev) =>
       prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
     );
-  };
-
-  const handleLogout = () => {
-    if (selectedSessions.length === 0) return;
-    setShowConfirm(true);
   };
 
   const confirmLogout = () => {
@@ -84,59 +81,61 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
       (s) => !selectedSessions.includes(s.id)
     );
     setSessions(updatedSessions);
+    if (onLogout) onLogout(selectedSessions);
     setSelectedSessions([]);
     setShowConfirm(false);
 
     const newTotalPages = Math.ceil(updatedSessions.length / itemsPerPage);
-    if (currentPage > newTotalPages && newTotalPages > 0) {
-      setCurrentPage(newTotalPages);
-    } else if (newTotalPages === 0) {
-      setCurrentPage(1);
-    }
+    setCurrentPage(
+      newTotalPages === 0 ? 1 : Math.min(currentPage, newTotalPages)
+    );
   };
 
-  if (loading) {
+  const handleLogoutClick = () => {
+    if (selectedSessions.length === 0) return;
+    setShowConfirm(true);
+  };
+
+  if (loading)
     return (
-      <div className="p-6 max-w-3xl mx-auto font-sans text-center">
-        <p>Loading sessions...</p>
+      <div className="p-6 max-w-3xl mx-auto font-sans text-center flex flex-col items-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-emerald-600 mb-4"></div>
+        <p className="text-gray-700 dark:text-gray-300">Loading sessions...</p>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <div className="p-6 max-w-3xl mx-auto font-sans text-center text-red-600">
         <p>{error}</p>
         <Button
           onClick={() => window.location.reload()}
-          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+          className="mt-4 bg-red-600 hover:bg-red-700 text-white"
         >
           Retry
         </Button>
       </div>
     );
-  }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto font-sans">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Where You're Logged In
-        </h1>
-        <p className="text-gray-500 text-sm">
-          Check the devices where you are currently logged in and secure your
-          account.
-        </p>
-      </header>
+    <FormProvider {...methods}>
+      <div className="p-6 max-w-3xl mx-auto font-sans">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Where You're Logged In
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Check the devices where you are currently logged in and secure your
+            account.
+          </p>
+        </header>
 
-      {sessions.length === 0 ? (
-        <div className="text-center text-gray-500">
-          <p>No active sessions found.</p>
-        </div>
-      ) : (
-        <>
-          {/* Grid Container */}
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
+        {sessions.length === 0 ? (
+          <div className="text-center text-gray-500">
+            <p>No active sessions found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 mb-6">
             {currentSessions.map((session) => {
               const isSelected = selectedSessions.includes(session.id);
               return (
@@ -149,17 +148,18 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                   }`}
                 >
                   <div className="mr-4">
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => handleSelect(session.id)}
-                      aria-label={`Select session on ${session.device}`}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    <CheckboxField
+                      name={`session_${session.id}`}
+                      options={[{ label: "", value: session.id }]}
+                      inputClassName="w-4 h-4 text-blue-600 border-gray-300 rounded cursor-pointer"
+                      wrapperClassName=""
+                      direction="horizontal"
+                      disabled={false}
+                      rules={{ onChange: () => toggleSelect(session.id) }}
                     />
                   </div>
-
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900 leading-tight mb-1">
+                    <div className="font-semibold text-gray-900 mb-1">
                       {session.device}
                     </div>
                     <div className="text-xs text-gray-500">
@@ -177,11 +177,13 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
               );
             })}
           </div>
+        )}
 
-          {/* Action Footer */}
+        {/* Action Footer */}
+        {sessions.length > 0 && (
           <div className="border-t border-gray-200 pt-5 flex flex-col items-center gap-4">
             <Button
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
               disabled={selectedSessions.length === 0}
               className={`w-full max-w-xs py-3 px-6 rounded-md font-bold transition-colors ${
                 selectedSessions.length > 0
@@ -200,41 +202,41 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  onPageChange={handlePageChange}
+                  onPageChange={setCurrentPage}
                 />
               </div>
             )}
           </div>
-        </>
-      )}
+        )}
 
-      {/* Confirmation Modal */}
-      {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-sm mx-4">
-            <h2 className="text-lg font-bold mb-4">Confirm Logout</h2>
-            <p className="mb-4">
-              Are you sure you want to logout {selectedSessions.length} selected
-              session(s)?
-            </p>
-            <div className="flex gap-4">
-              <Button
-                onClick={confirmLogout}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                Yes, Logout
-              </Button>
-              <Button
-                onClick={() => setShowConfirm(false)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800"
-              >
-                Cancel
-              </Button>
+        {/* Confirmation Modal */}
+        {showConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+              <h2 className="text-lg font-bold mb-4">Confirm Logout</h2>
+              <p className="mb-4">
+                Are you sure you want to logout {selectedSessions.length}{" "}
+                selected session(s)?
+              </p>
+              <div className="flex gap-4 justify-end">
+                <Button
+                  onClick={confirmLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Yes, Logout
+                </Button>
+                <Button
+                  onClick={() => setShowConfirm(false)}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </FormProvider>
   );
 };
 
