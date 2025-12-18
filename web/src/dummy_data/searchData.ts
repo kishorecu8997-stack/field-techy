@@ -93,7 +93,7 @@ export const sampleJobs: Job[] = [
     experience: 5,
     budgetType: "fixed",
     skills: ["Figma", "Adobe XD", "UI/UX"],
-    status: "applied",
+    status: "Hold",
     type: "remote",
     startDate: "May 28, 2025, 10:00 AM",
     duration: "8 Hours of Work",

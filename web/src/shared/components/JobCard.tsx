@@ -10,6 +10,10 @@ import { scrollToTop } from "@/utils";
 import { FaDollarSign } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge"; 
+interface JobCardProps extends Job {
+  allocationType?: "Automatic" | "Manual";
+}
 
 /**
  * Reusable job card component displaying key job details with status and type badges.
@@ -17,7 +21,7 @@ import { Link } from "react-router-dom";
  *
  * @param {Job} props - Job data including title, client, location, pay, status, etc.
  */
-const JobCard: React.FC<Job> = ({
+const JobCard: React.FC<JobCardProps> = ({
   id,
   title,
   client,
@@ -27,20 +31,8 @@ const JobCard: React.FC<Job> = ({
   pay,
   status,
   type,
+  allocationType="Automatic"
 }) => {
-  const getStatusColor = (status?: JobStatus) => {
-    switch (status) {
-      case JOB_STATUSES.completed:
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      case JOB_STATUSES.applied:
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
-      case JOB_STATUSES.inprogress:
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    }
-  };
-
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
@@ -79,16 +71,13 @@ const JobCard: React.FC<Job> = ({
           <span>{pay}</span>
         </div>
       </div>
-
-      <div className="mt-3">
-        <span
-          className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(
-            status
-          )}`}
-        >
-          {status}
-        </span>
-      </div>
+      
+      { <div className="mt-3">
+        <JobStatusBadge status={status} />
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
+          <span className="font-medium">Allocation:</span> {allocationType}
+        </div>
+      </div> }
     </Link>
   );
 };

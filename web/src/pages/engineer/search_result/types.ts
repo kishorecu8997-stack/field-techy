@@ -10,6 +10,17 @@ export const JOB_STATUSES = {
   inprogress: "inprogress",
   new: "new",
   offer: "offer",
+  Notified: "Notified",
+  Unallocated: "Unallocated",
+  PartiallyAssigned: "Partially Assigned",
+  Assigned: "Assigned",
+  Selected: "Selected",
+  Hold: "Hold",
+  Draft: "Draft",
+  Canceled: "Canceled",
+  EscalationInProgress: "Escalation In Progress",
+  WorkInProgress: "Work In Progress", 
+  Closed: "Closed"
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -60,6 +71,7 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
+  allocationType?: 'Automatic' | 'Manual';
 }
 
 /**
@@ -92,6 +104,7 @@ export const OfferedJobStatus = {
   declined: "declined",
   started: "started",
   checkedIn: "checked-in",
+  
 };
 
 export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
