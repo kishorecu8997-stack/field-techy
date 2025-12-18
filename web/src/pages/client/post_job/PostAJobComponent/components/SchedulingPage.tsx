@@ -73,13 +73,10 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       return { min: undefined, max: undefined };
     }
     const start = new Date(startDate);
-
     const min = new Date(start);
     min.setMonth(min.getMonth() + 6);
-
     const max = new Date(start);
     max.setMonth(max.getMonth() + 24);
-
     return { min, max };
   };
   const { min: minEndDate, max: maxEndDate } =
