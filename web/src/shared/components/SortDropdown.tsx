@@ -1,8 +1,9 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/engineer/search_result/types";
+import {
+  SORT_OPTIONS,
+  type SortOption,
+} from "@/pages/engineer/search_result/types";
 import React, { useState } from "react";
 import type { SortDropdownProps } from "./type";
-
-
 
 /**
  * SortDropdown Component
@@ -14,15 +15,16 @@ import type { SortDropdownProps } from "./type";
  * @returns {JSX.Element} Rendered dropdown
  */
 const SortDropdown: React.FC<SortDropdownProps> = ({
-  currentSort = SORT_OPTIONS.NEWEST,
+  currentSort = SORT_OPTIONS.RELEVANCE,
   onSortChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
-
   const options = [
-    { value: SORT_OPTIONS.NEWEST, label: "Newest" },
-    { value: SORT_OPTIONS.OLDEST, label: "Oldest" },
+    { value: SORT_OPTIONS.RELEVANCE, label: "Relevance" },
+    { value: SORT_OPTIONS.DATE, label: "Date" },
+    { value: SORT_OPTIONS.SALARY, label: "Salary" },
+    { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
   return (
     <div className="relative inline-block">

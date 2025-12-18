@@ -109,16 +109,16 @@ export interface Filters {
 
 /**
  * Sort options
- * Now includes all criteria you need for sorting jobs
  */
 export const SORT_OPTIONS = {
-  RELEVANCE: "relevance", // best match
-  DATE: "date", // posted date
-  SALARY: "salary", // highest pay
-  DISTANCE: "distance", // nearest first
+  RELEVANCE: "relevance",
+  DATE: "date",
+  SALARY: "salary",
+  DISTANCE: "distance",
 } as const;
 
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
+// → "relevance" | "date" | "salary" | "distance"
 
 /**
  * Generic option shape (label/value)
