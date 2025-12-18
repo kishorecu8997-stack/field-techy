@@ -100,7 +100,6 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     return (
       <div className="p-6 max-w-3xl mx-auto font-sans text-center flex flex-col items-center">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-emerald-600 mb-4"></div>
-        <p className="text-gray-700 dark:text-gray-300">Loading sessions...</p>
       </div>
     );
 
