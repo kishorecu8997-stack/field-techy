@@ -79,7 +79,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
         <div className="relative inline-block group">
           <CgDanger className="bg-gray-200 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors" />
           <div
-            className="absolute right-0 md:left-1/2 -translate-x-1/2 mt-2
+            className="absolute left-1/2 md:left-full-translate-x-1/2 mt-2
                 hidden group-hover:block
                 whitespace-nowrap
                 bg-gray-900 text-white text-xs
