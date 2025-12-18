@@ -34,7 +34,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * - Supports left and right icons.
  * - Supports custom class names.
  * - Supports full width.
- * - Supports scroll to top on click.      
+ * - Supports scroll to top on click.
  */
 
 export const Button: React.FC<ButtonProps> = ({
@@ -71,10 +71,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const sizeStyles: Record<string, string> = {
-    sm: "h-8 px-3 text-sm",
-    md: "h-10 px-4 text-sm",
-    lg: "h-12 px-6 text-base",
-    icon: "h-10 w-10",
+    sm: "h-8 px-3 text-sm min-h-[44px] min-w-[44px]",
+    md: "h-10 px-4 text-sm min-h-[44px] min-w-[44px]",
+    lg: "h-12 px-6 text-base min-h-[44px] min-w-[44px]",
+    icon: "h-10 w-10 min-h-[44px] min-w-[44px]",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
