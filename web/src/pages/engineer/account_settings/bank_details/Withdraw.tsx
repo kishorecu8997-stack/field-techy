@@ -185,28 +185,28 @@ const AvailableBalance = ({
       <div className="absolute top-4 right-4 flex gap-3">
         {currentView === "form" ? (
           <>
-            <button
+            <Button
               onClick={() => onViewChange("chart")}
               className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
               title="View Trend"
             >
               <HiChartBar className="w-5 h-5" />
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => onViewChange("history")}
               className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
               title="View History"
             >
             <HiClock className="w-4 h-4" /> History
-            </button>
+            </Button>
           </>
         ) : (
-          <button
+          <Button
             onClick={() => onViewChange("form")}
             className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
           >
             <HiArrowLeft className="w-4 h-4" /> Back
-          </button>
+          </Button>
         )}
       </div>
     </div>

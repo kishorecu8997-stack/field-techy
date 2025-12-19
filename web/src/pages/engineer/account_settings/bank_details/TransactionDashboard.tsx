@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 interface TransactionDashboardProps {
   showAll?: boolean;
@@ -100,7 +101,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                   inputClassName="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-teal-500 focus:border-teal-500 p-2.5 text-sm outline-none transition-all"
                 />
               </div>
-              <button
+              <Button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className={`px-4 py-2 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
                   isFilterOpen
@@ -110,14 +111,14 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
               >
                 <HiFilter className="w-5 h-5" />
                 Filters
-              </button>
+              </Button>
               {hasActiveFilters && (
-                <button
+                <Button
                   onClick={clearFilters}
                   className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 text-sm font-medium transition-colors"
                 >
                   Clear
-                </button>
+                </Button>
               )}
             </div>
 
