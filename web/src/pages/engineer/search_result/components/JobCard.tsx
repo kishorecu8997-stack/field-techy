@@ -183,7 +183,19 @@ const JobCard: React.FC<{
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
                 {job.title}
               </h3>
-             {job.status && (
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
+              {job.client && (
+                <span>
+                  Client:{" "}
+                  <strong className="text-gray-900 dark:text-white">
+                    {job.client}
+                  </strong>
+                </span>
+              )}
+              {job.time && <span>| {job.time}</span>}
+              {job.status && (
                 <Badge
                   variant={
                     job.status === "new"
@@ -217,18 +229,6 @@ const JobCard: React.FC<{
                 </button>
               )}
             </div>
-
-            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
-              {job.client && (
-                <span>
-                  Client:{" "}
-                  <strong className="text-gray-900 dark:text-white">
-                    {job.client}
-                  </strong>
-                </span>
-              )}
-              {job.time && <span>| {job.time}</span>}
-            </div>
           </div>
 
           {showBookmark && (
@@ -256,7 +256,7 @@ const JobCard: React.FC<{
         <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
           {job.description}
         </p>
-        
+
         {/* SKILLS & TOOLS */}
         {(job.skills?.length || job.tools?.length) && (
           <div className="flex flex-wrap gap-2 mb-4">
@@ -276,7 +276,6 @@ const JobCard: React.FC<{
                 {tool}
               </span>
             ))}
-            
           </div>
         )}
 
@@ -312,30 +311,30 @@ const JobCard: React.FC<{
             <div className="flex items-center gap-2">
               <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               <span className="font-medium text-gray-800 dark:text-gray-200">
-                L{job.experience} 
+                L{job.experience}
               </span>
             </div>
-            {/* POC Section */}
-            {job.poc && (
-              <div className="flex items-center gap-3 ml-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <div>
-                  <p className="text-[9px] font-semibold text-gray-900 dark:text-white">
-                    {" "}
-                    {/* changed from text-sm to text-xs */}
-                    Point of Contact
-                  </p>
-                  <p className="text-[9px] text-gray-700 dark:text-gray-300">
-                    {" "}
-                    {/* changed from text-sm to text-xs */}
-                    {job.poc.name}
-                    {job.poc.role && (
-                      <span className="text-gray-500"> • {job.poc.role}</span>
-                    )}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
+          {/* POC Section */}
+          {job.poc && (
+            <div className="flex items-center gap-3 ml-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+              <div>
+                <p className="text-[9px] font-semibold text-gray-900 dark:text-white">
+                  {" "}
+                  {/* changed from text-sm to text-xs */}
+                  Point of Contact
+                </p>
+                <p className="text-[9px] text-gray-700 dark:text-gray-300">
+                  {" "}
+                  {/* changed from text-sm to text-xs */}
+                  {job.poc.name}
+                  {job.poc.role && (
+                    <span className="text-gray-500"> • {job.poc.role}</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -347,8 +346,6 @@ const JobCard: React.FC<{
       )}
     </>
   );
-
-
 };
 
 export default JobCard;
