@@ -11,25 +11,21 @@ const getStatusIcon = (status: string) => {
   if (status === "pending") return "⏳";
   return "❌";
 };
-
 const getStatusColor = (status: string) => {
   if (status === "complete") return "text-green-600";
   if (status === "pending") return "text-orange-500";
   return "text-red-600";
 };
-
 const ProfileCompletionCard = () => {
   const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
     useDrawerStore();
 
   /* Overall Profile Completion Score Calculation according to each section fields */
   const totalFields = profileData.flatMap((s) => s.fields).length;
-
   const completedFields = profileData
     .flatMap((s) => s.fields)
     .filter((f) => f.status === "complete").length;
-
-  const overallCompletion = Math.round((completedFields / totalFields) * 100);
+const overallCompletion = Math.round((completedFields / totalFields) * 100);
 
   /* Comparison Logic for check engineer overall profile score */
   const getComparisonUI = (percentage: number) => {
@@ -42,7 +38,6 @@ const ProfileCompletionCard = () => {
         containerClass: "bg-red-50 border-red-200 text-red-700",
       };
     }
-
     if (percentage < 70) {
       return {
         title: "Good progress",
@@ -52,7 +47,6 @@ const ProfileCompletionCard = () => {
         containerClass: "bg-orange-50 border-orange-200 text-orange-700",
       };
     }
-
     return {
       title: " You’re doing great!",
       description:
@@ -61,10 +55,8 @@ const ProfileCompletionCard = () => {
       containerClass: "bg-teal-50 border-teal-200 text-teal-700",
     };
   };
-
-  const comparisonUI = getComparisonUI(overallCompletion);
-
-  return (
+ const comparisonUI = getComparisonUI(overallCompletion);
+return (
     <div className="space-y-6 p-4">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
       {/* Priority Guide for Profile Completion */}
@@ -101,7 +93,6 @@ const ProfileCompletionCard = () => {
         const completed = section.fields.filter(
           (f) => f.status === "complete"
         ).length;
-
         const percentage = Math.round((completed / total) * 100);
         const remaining = total - completed;
         const estimatedTime = remaining * section.estimatedMinutesPerField;

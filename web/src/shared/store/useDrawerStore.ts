@@ -43,13 +43,10 @@ const useDrawerStore = create<DrawerState>((set) => ({
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
   selectedId: "",
   setSelectedId: (id) => set({ selectedId: id }),
-
   navigationSource: "sidebar",
   returnToKey: undefined,
-
   setNavigationSource: (source, returnToKey) =>
     set({ navigationSource: source, returnToKey }),
-
   resetNavigationSource: () =>
     set({ navigationSource: "sidebar", returnToKey: undefined }),
 
