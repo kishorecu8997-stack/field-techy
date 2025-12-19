@@ -10,6 +10,7 @@ import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import { scrollToTop } from "@/utils";
+import OnboardingFlowGuide from "./components/OnboardingFlowGuide";
 
 /**
  * Home page component.
@@ -20,6 +21,7 @@ import { scrollToTop } from "@/utils";
 const Home = () => {
   const navigate = useNavigate();
   const [accessPopup, setAccessPopup] = useState(false);
+  const [onboarding, setOnboarding] = useState(false);
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -37,7 +39,7 @@ const Home = () => {
     return job.status === "new";
   });
 
-  const recommendedJobs  = findNewJobs.filter((job) => {
+  const recommendedJobs = findNewJobs.filter((job) => {
     return job.place === "recommended";
   });
 
@@ -45,16 +47,19 @@ const Home = () => {
     return job.place === "featured";
   });
 
-
   useEffect(() => {
     const locationPermission = localStorage.getItem("location_permission");
     const notificationPermission = localStorage.getItem(
       "notification_permission"
     );
+    const onboardingsteps = localStorage.getItem("onboarding_guide") === "true";
 
-    // SHOW popup only if ANY permission is missing
     if (!locationPermission || !notificationPermission) {
-      setAccessPopup(true);
+      if (!onboardingsteps) {
+        setOnboarding(true);
+      } else {
+        setAccessPopup(true);
+      }
     }
   }, []);
 
@@ -91,6 +96,12 @@ const Home = () => {
           {/* Allow access popup */}
           <AllowAccessPopup
             accessPopup={accessPopup}
+            setAccessPopup={setAccessPopup}
+          />
+
+          <OnboardingFlowGuide
+            onBoardOpen={onboarding}
+            setOnBoard={setOnboarding}
             setAccessPopup={setAccessPopup}
           />
         </div>

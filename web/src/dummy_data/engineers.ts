@@ -1,3 +1,10 @@
+import { icons } from "@/config/icons";
+import { LuHandshake } from "react-icons/lu";
+import { TfiLocationArrow } from "react-icons/tfi";
+import { MdBarChart } from "react-icons/md";
+import { MdOutlineDone } from "react-icons/md";
+import { PiLightbulbFilamentFill } from "react-icons/pi";
+
 export interface Engineer {
   id: number;
   name: string;
@@ -136,7 +143,7 @@ export const engineerCardList: EngineerCardListProps[] = [
     title: "Full-Stack Developer",
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/alex-johnson.jpg",
-    status:"new",
+    status: "new",
   },
   {
     id: 2,
@@ -148,7 +155,7 @@ export const engineerCardList: EngineerCardListProps[] = [
     title: "UI/UX Designer",
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/priya-mehta.jpg",
-    status:"new",
+    status: "new",
   },
   {
     id: 3,
@@ -161,7 +168,8 @@ export const engineerCardList: EngineerCardListProps[] = [
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/james-wilson.jpg",
     status: "applied",
-  },{
+  },
+  {
     id: 5,
     name: "John Wilson",
     rating: 4.6,
@@ -184,5 +192,52 @@ export const engineerCardList: EngineerCardListProps[] = [
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/james-wilson.jpg",
     status: "inprogress",
+  },
+];
+
+interface OnboardingStepsProps {
+  id: number;
+  title: string;
+  description: string;
+  icon: any;
+}
+
+export const OnboardingSteps: OnboardingStepsProps[] = [
+  {
+    id: 1,
+    title: "Welcome to Your Workspace",
+    description:
+      "We’re glad to have you here! This quick guide will walk you through the essentials so you can get started with confidence in just a few minutes.",
+    icon: LuHandshake,
+  },
+
+  {
+    id: 2,
+    title: "Guided Setup",
+    description:
+      "Follow a simple, step-by-step process designed to help you complete key setup tasks without feeling overwhelmed.",
+    icon: TfiLocationArrow,
+  },
+
+  {
+    id: 3,
+    title: "Track Your Progress",
+    description:
+      "See exactly where you are in the setup process and what’s left to complete, so you always know your next step.",
+    icon: MdBarChart,
+  },
+  {
+    id: 4,
+    title: "Success & Confirmation",
+    description:
+      "Get instant feedback when you complete a step, ensuring your actions are saved and everything is on track.",
+    icon: MdOutlineDone,
+  },
+  {
+    id: 5,
+    title: "Contextual Help",
+    description:
+      "Helpful tips and guidance appear exactly where you need them, making it easier to understand features and complete tasks quickly.",
+    icon: PiLightbulbFilamentFill,
   },
 ];
