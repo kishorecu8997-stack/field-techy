@@ -1,14 +1,19 @@
 import React from "react";
 import { FaRedo } from "react-icons/fa";
 import { ApplicationsData } from "@/dummy_data/engineer_profile/applicationData";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
-export type Application = typeof ApplicationsData[number];
+export type Application = (typeof ApplicationsData)[number];
 
 interface ApplicationCardProps {
   application: Application;
+  onReapply?: (application: Application) => void; // optional click handler
 }
 
-const ApplicationCard: React.FC<ApplicationCardProps> = ({ application }) => {
+const ApplicationCard: React.FC<ApplicationCardProps> = ({
+  application,
+  onReapply,
+}) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Applied":
@@ -22,6 +27,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application }) => {
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
+  };
+
+  const handleReapply = () => {
+    if (onReapply) onReapply(application);
   };
 
   return (
@@ -60,13 +69,21 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application }) => {
         <span className="font-medium">Company:</span> {application.company}
       </p>
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        <span className="font-medium">Applied on:</span> {application.appliedDate}
+        <span className="font-medium">Applied on:</span>{" "}
+        {application.appliedDate}
       </p>
 
-      <button className="mt-3 flex items-center gap-1 text-teal-700 text-sm font-medium hover:underline">
-        <FaRedo className="h-3 w-3" />
-        Re-apply
-      </button>
+      {application.status === "Rejected" && (
+        <Button
+          variant="solid" // solid so background & border are applied
+          size="sm"
+          leftIcon={<FaRedo className="h-3 w-3" />}
+          className="mt-3 border bg-teal-800 text-white border-teal-900"
+          onClick={handleReapply}
+        >
+          Re-apply
+        </Button>
+      )}
     </div>
   );
 };
