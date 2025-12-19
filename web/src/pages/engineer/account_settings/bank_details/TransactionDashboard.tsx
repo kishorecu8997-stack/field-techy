@@ -9,13 +9,11 @@ interface TransactionDashboardProps {
   showAll?: boolean;
   onViewAllClick?: () => void;
 }
-
 interface IFormInputs {
   searchTerm: string;
   filterDateFrom: string;
   filterDateTo: string;
 }
-
 /**
  * Displays a table of transactions. Can show all or the last 10.
  */
@@ -25,7 +23,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 }) => {
   const { transactions } = useTransactionStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
   const methods = useForm<IFormInputs>({
     defaultValues: {
       searchTerm: "",
@@ -33,10 +30,8 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
       filterDateTo: "",
     },
   });
-
   const { watch, reset } = methods;
   const { searchTerm, filterDateFrom, filterDateTo } = watch();
-
   // Filter out transactions with invalid dates and sort by date descending (newest first).
   // This prevents crashes from invalid date objects and ensures the list is always ordered chronologically.
   const validAndSortedTransactions = transactions
@@ -44,7 +39,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
-
   const filteredTransactions = validAndSortedTransactions.filter((tx) => {
     if (searchTerm && !tx.description.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
@@ -53,18 +47,14 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     const txDateStr = txDate.toISOString().split("T")[0];
     if (filterDateFrom && txDateStr < filterDateFrom) return false;
     if (filterDateTo && txDateStr > filterDateTo) return false;
-
     return true;
   });
-
   const clearFilters = () => {
     reset();
   };
-
   // Determine which transactions to display: all filtered, or the 10 most recent ones.
   const transactionsToShow = showAll ? filteredTransactions : validAndSortedTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
-
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case "Completed":
