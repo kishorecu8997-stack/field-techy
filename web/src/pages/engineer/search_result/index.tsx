@@ -1,9 +1,10 @@
 import { sampleJobs } from "@/dummy_data/searchData";
 import { useEffect, useState } from "react";
 import FilterPanel from "./components/FilterPanel";
+import AdvancedSearchBar from "./components/AdvancedSearchBar";
 import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
-import { SORT_OPTIONS, type Filters, type Job } from "./types";
+import { SORT_OPTIONS, type Filters, type Job, type SortOption } from "./types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { absoluteUrls } from "@/config/urls";
 
@@ -26,7 +27,18 @@ const SearchResult = () => {
     experience: 0,
     budgetType: null,
     skills: [],
+    serviceType: [],
+    tools: [],
+    experienceLevel: [],
+    jobType: [],
+    locationType: [],
+    locationRadius: 0,
+    budgetRange: { min: 0, max: 10000 },
+    primaryLanguage: '',
+    slaLevel: '',
   });
+
+  const [sortOption, setSortOption] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
 
   // Calculate total pages based on filtered jobs
   useEffect(() => {
@@ -79,9 +91,20 @@ const SearchResult = () => {
       );
     }
 
+    // Apply sorting
+    if (sortOption === SORT_OPTIONS.DATE) {
+      filtered.sort((a, b) => new Date(b.postedTime || '').getTime() - new Date(a.postedTime || '').getTime());
+    } else if (sortOption === SORT_OPTIONS.SALARY) {
+      filtered.sort((a, b) => parseFloat(b.salary || '0') - parseFloat(a.salary || '0'));
+    } else if (sortOption === SORT_OPTIONS.DISTANCE) {
+      // Assuming distance is based on location, sort by location string length as a proxy
+      filtered.sort((a, b) => (a.location || '').length - (b.location || '').length);
+    }
+    // Relevance is default, no sorting needed
+
     setFilteredJobs(filtered);
     setCurrentPage(1);
-  }, [jobs, filters]);
+  }, [jobs, filters, sortOption]);
 
   /**
    * Handle filter changes
@@ -102,6 +125,15 @@ const SearchResult = () => {
       experience: 0,
       budgetType: null,
       skills: [],
+      serviceType: [],
+      tools: [],
+      experienceLevel: [],
+      jobType: [],
+      locationType: [],
+      locationRadius: 0,
+      budgetRange: { min: 0, max: 10000 },
+      primaryLanguage: '',
+      slaLevel: '',
     });
   };
 
@@ -111,6 +143,14 @@ const SearchResult = () => {
    */
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  /**
+   * Handle sort change
+   * @param {string} sort - New sort option
+   */
+  const handleSortChange = (sort: string) => {
+    setSortOption(sort as SortOption);
   };
 
   // Get jobs for current page
@@ -123,9 +163,15 @@ const SearchResult = () => {
         <MyJobsHeader
           title="Search Result"
           isShowBreadcrumb={false}
-          onSortChange={() => {}}
-          currentSort={SORT_OPTIONS.NEWEST}
           description={`${filteredJobs.length} jobs found`}
+          isShowSort={false}
+        />
+
+        <AdvancedSearchBar
+          onFilterChange={handleFilterChange}
+          currentFilters={filters}
+          sortOption={sortOption}
+          onSortChange={handleSortChange}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
