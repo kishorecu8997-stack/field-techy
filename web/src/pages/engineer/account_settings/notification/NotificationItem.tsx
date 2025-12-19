@@ -1,9 +1,11 @@
 import React from "react";
 import type { NotificationProps } from "../types";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import useNotificationGate from "@/shared/store/useNotificationGate";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { AiFillThunderbolt } from "react-icons/ai";
 
 interface NotificationItemProps {
   notification: NotificationProps;
@@ -20,6 +22,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const index = "10";
 
   const {
+    id,
     type,
     title,
     message,
@@ -33,7 +36,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   } = notification;
   const navigate = useNavigate();
   const { setISOpenSidebar, setActiveKey } = useDrawerStore();
-
+  const { resume, pause } = useNotificationGate();
   const renderJobDetails = () => {
     if (!jobTitle) return null;
     return (
@@ -61,28 +64,35 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     );
   };
 
-  const renderActionButtons = () => {
-    if (type !== "job_offer") return null;
+  const renderActionButtons = (id: number) => {
+    if (type !== "job_offer" || !notification.requiresConfirmation) return null;
     return (
       <div className="flex gap-2 mt-4">
-        <Button
-          className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-md font-medium transition"
+        <AiFillThunderbolt
+          className="size-9 p-1 cursor-pointer rounded-full bg-blue-600 hover:bg-blue-700 text-white text-3xl font-medium transition"
           onClick={() => {
+            notification.confirmationStatus = "confirmed";
+            pause(id);
+          }}
+        />
+        <IoMdCheckmark
+          className="size-9 cursor-pointer p-1 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 text-3xl font-medium transition"
+          onClick={() => {
+            notification.confirmationStatus = "confirmed";
+            resume();
             navigate(`${absoluteUrls.engineer.home.my_jobs}/${index}`);
             setISOpenSidebar(false);
           }}
-        >
-          Accept
-        </Button>
-        <Button
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition"
+        />
+        <IoMdClose
+          className="size-9 p-1 cursor-pointer rounded-full bg-red-600 hover:bg-red-700 text-white text-3xl font-medium transition"
           onClick={() => {
+            notification.confirmationStatus = "declined";
+            resume();
             setActiveKey("cancelOffer");
             setISOpenSidebar(true);
           }}
-        >
-          Decline
-        </Button>
+        />
       </div>
     );
   };
@@ -102,7 +112,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               {message}
             </p>
             {renderJobDetails()}
-            {renderActionButtons()}
+            {renderActionButtons(id)}
           </div>
           <span className="text-xs text-gray-500 ml-4 whitespace-nowrap dark:text-gray-200">
             {timestamp}
