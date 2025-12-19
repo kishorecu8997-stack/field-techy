@@ -1,15 +1,14 @@
 import { icons } from "@/config/icons";
 import React, { useState } from "react";
-import { BiDollar, BiTimeFive, BiUser, BiWorld } from "react-icons/bi";
+import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoLocationSharp, IoHelpCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
 import { scrollToTop } from "@/utils";
-import { getExperienceLevel, JOB_STATUSES } from "../types";
+import { JOB_STATUSES } from "../types";
 import { calculateMatchScore } from "@/utils/matchCalculator";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
-import { Button } from "@/shared/components/commonUI/Buttons";
 
 // Reusable Badge
 const Badge: React.FC<{
@@ -49,7 +48,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
     return "text-rose-500 dark:text-rose-400";
   };
   const activeColor = getColorClass(score);
-
   return (
     <div
       className="relative flex items-center justify-center"
@@ -106,9 +104,9 @@ const WhyRecommendedPopover: React.FC<{
       {/* Popover Card */}
       <div className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300">
         {/* Close Button */}
-        <Button
+        <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label="Close"
         >
           <svg
@@ -124,7 +122,7 @@ const WhyRecommendedPopover: React.FC<{
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </Button>
+        </button>
 
         {/* Content */}
         <div className="text-center">
@@ -145,12 +143,12 @@ const WhyRecommendedPopover: React.FC<{
             this job aligns with your experience and expertise.
           </p>
 
-          <Button
+          <button
             onClick={onClose}
             className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors"
           >
             Got it
-          </Button>
+          </button>
         </div>
       </div>
     </div>
@@ -164,92 +162,28 @@ const JobCard: React.FC<{
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
   const [isBookmarked, setIsBookmarked] = useState(job.isBookmarked || false);
   const [showWhyPopover, setShowWhyPopover] = useState(false);
-  // Simulate user profile using dummy data
-  const userSkills = jobSkillsData.jobSkills.map(
-    (s: { label: string }) => s.label
+  const userSkills = jobSkillsData.jobSkills.map((s) => s.label);
+  const userTools = toolsData.tools.map((t) => t.label);
+  const matchScore = calculateMatchScore(
+    [...(job.skills || []), ...(job.tools || [])],
+    [...userSkills, ...userTools]
   );
-  const userTools = toolsData.tools.map((t: { label: string }) => t.label);
-  const userProfileItems = [...userSkills, ...userTools];
-  const jobRequirements = [...(job.skills || []), ...(job.tools || [])];
-  const matchScore = calculateMatchScore(jobRequirements, userProfileItems);
-  const experienceLabel = job.experience
-    ? `${getExperienceLevel(job.experience)} • ${job.experience}+ years`
-    : "Experience not specified";
 
   return (
     <>
       <Link
         to={navigateToJob}
         onClick={scrollToTop}
-        className="block p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm sm:p-1 mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
+        className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
       >
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2">
-                  {job.title || "Untitled Job"}
-                </h3>
-                {/* Match Score Ring */}
-                {matchScore > 0 && <MatchScoreRing score={matchScore} />}
-                {/* Separate "Why recommended?" Button */}
-                {matchScore > 0 && (
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowWhyPopover(true);
-                    }}
-                    aria-label="Why is this job recommended?"
-                    className="p-1 rounded-full  bg-white dark:hover:bg-gray-700 transition-colors "
-                    size="icon"
-                    variant="outline"
-                  >
-                    <IoHelpCircleOutline className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  </Button>
-                )}
-                {job.ServiceType && (
-                  <Badge
-                    variant={
-                      job.ServiceType === "Dedicated"
-                        ? "green"
-                        : job.ServiceType === "Dispatch"
-                        ? "blue"
-                        : job.ServiceType === "Scheduled"
-                        ? "purple"
-                        : "gray"
-                    }
-                  >
-                    {job.ServiceType}
-                  </Badge>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
-                {job.client && (
-                  <span className="font-medium">
-                    Client:{" "}
-                    <span className="text-gray-900 dark:text-white">
-                      {job.client}
-                    </span>
-                  </span>
-                )}
-                {job.time && (
-                  <>
-                    <span className="hidden sm:inline text-gray-400">•</span>
-                    <div className="flex items-center gap-1.5">
-                      <BiTimeFive className="w-4 h-4 text-gray-500" />
-                      <span>{job.time}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="flex flex-col items-end gap-3">
-              {job.status && (
+        {/* HEADER */}
+        <div className="flex justify-between items-start gap-3 mb-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                {job.title}
+              </h3>
+             {job.status && (
                 <Badge
                   variant={
                     job.status === "new"
@@ -268,114 +202,104 @@ const JobCard: React.FC<{
                   {JOB_STATUSES[job.status] || job.status}
                 </Badge>
               )}
+              {matchScore > 0 && <MatchScoreRing score={matchScore} />}
 
-              {showBookmark && (
-                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                  {/* Bookmark Button */}
-                  <div
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsBookmarked(!isBookmarked);
-                    }}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    aria-label="Bookmark job"
-                  >
-                    {isBookmarked ? (
-                      <icons.bookmarkFilled className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <icons.bookmark className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                    )}
-                  </div>
-
-                  <span className="whitespace-nowrap font-medium">
-                    {job.postedTime || "Just now"}
-                  </span>
-                </div>
+              {matchScore > 0 && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowWhyPopover(true);
+                  }}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                </button>
               )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
+              {job.client && (
+                <span>
+                  Client:{" "}
+                  <strong className="text-gray-900 dark:text-white">
+                    {job.client}
+                  </strong>
+                </span>
+              )}
+              {job.time && <span>| {job.time}</span>}
             </div>
           </div>
 
-          {/* Skills & Tools */}
-          {(job.skills?.length || job.tools?.length) && (
-            <div className="mb-5">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
-                {job.skills && job.skills.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold text-gray-600 dark:text-gray-400">
-                      Skills:
-                    </span>
-                    {job.skills.slice(0, 5).map((skill, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1.5 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-medium rounded-full"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {job.skills.length > 5 && (
-                      <span className="text-gray-500 dark:text-gray-400 font-medium">
-                        +{job.skills.length - 5} more
-                      </span>
-                    )}
-                  </div>
+          {showBookmark && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsBookmarked(!isBookmarked);
+                }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                {isBookmarked ? (
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
+                ) : (
+                  <icons.bookmark className="w-4 h-4" />
                 )}
-
-                {job.tools && job.tools.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold text-gray-600 dark:text-gray-400">
-                      Tools:
-                    </span>
-                    {job.tools.slice(0, 3).map((tool, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-medium rounded-full"
-                      >
-                        {tool}
-                      </span>
-                    ))}
-                    {job.tools.length > 3 && (
-                      <span className="text-gray-500 dark:text-gray-400 font-medium">
-                        +{job.tools.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
+              </button>
+              <span>{job.postedTime || "Just now"}</span>
             </div>
           )}
+        </div>
 
-          {/* Description */}
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">
-            {job.description || "No description available."}
-          </p>
+        {/* DESCRIPTION */}
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+          {job.description}
+        </p>
+        
+        {/* SKILLS & TOOLS */}
+        {(job.skills?.length || job.tools?.length) && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {job.skills?.slice(0, 5).map((skill, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
+              >
+                {skill}
+              </span>
+            ))}
+            {job.tools?.slice(0, 3).map((tool, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
+              >
+                {tool}
+              </span>
+            ))}
+            
+          </div>
+        )}
 
-          {/* Footer */}
-          <div className="flex flex-wrap items-center gap-7 text-sm border-t border-gray-100 dark:border-gray-700 pt-2">
-            {job.place && (
-              <div className="flex items-center gap-2">
-                <IoLocationSharp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                <span className="font-medium text-gray-800 dark:text-gray-200">
-                  {job.place}
+        {/* FOOTER BAR */}
+        <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
+          <div className="flex flex-wrap items-center gap-5">
+            {job.location && (
+              <div className="flex items-center gap-1.5">
+                <IoLocationSharp className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-800 dark:text-gray-200">
+                  {job.location}
                 </span>
               </div>
             )}
 
             {(job.salary || job.pay) && (
-              <div className="flex items-center gap-2">
-                <BiDollar className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                <span className="font-bold text-gray-900 dark:text-gray-100">
+              <div className="flex items-center gap-1.5">
+                <BiDollar className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-800 dark:text-gray-200">
                   {job.salary || job.pay}
                 </span>
               </div>
             )}
-
-            <div className="flex items-center gap-2">
-              <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="font-medium text-gray-800 dark:text-gray-200">
-                {experienceLabel}
-              </span>
-            </div>
 
             {job.languages && (
               <div className="flex items-center gap-2">
@@ -385,6 +309,12 @@ const JobCard: React.FC<{
                 </span>
               </div>
             )}
+            <div className="flex items-center gap-2">
+              <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              <span className="font-medium text-gray-800 dark:text-gray-200">
+                L{job.experience} 
+              </span>
+            </div>
             {/* POC Section */}
             {job.poc && (
               <div className="flex items-center gap-3 ml-2 pt-2 border-t border-gray-100 dark:border-gray-700">
@@ -409,7 +339,6 @@ const JobCard: React.FC<{
         </div>
       </Link>
 
-      {/* Why Recommended Popover */}
       {showWhyPopover && (
         <WhyRecommendedPopover
           score={matchScore}
@@ -418,6 +347,8 @@ const JobCard: React.FC<{
       )}
     </>
   );
+
+
 };
 
 export default JobCard;
