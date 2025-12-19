@@ -18,7 +18,8 @@ const AdvancedSearchBar: React.FC<{
   currentFilters: Filters;
   sortOption: SortOption;
   onSortChange: (sort: SortOption) => void;
-}> = ({ onFilterChange, currentFilters, sortOption, onSortChange }) => {
+  onSaveCurrentSearch: () => void;
+}> = ({ onFilterChange, currentFilters, sortOption, onSortChange, onSaveCurrentSearch }) => {
   const [localFilters, setLocalFilters] = useState<Filters>(() => {
     // Load filters from session storage on initial render
     const savedFilters = sessionStorage.getItem('advancedSearchFilters');
@@ -108,8 +109,7 @@ const AdvancedSearchBar: React.FC<{
   };
 
   const handleSaveSearch = () => {
-    // Placeholder for save search functionality
-    alert('Save search functionality to be implemented');
+    onSaveCurrentSearch();
   };
 
   return (

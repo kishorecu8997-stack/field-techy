@@ -7,6 +7,7 @@ import Pagination from "./components/Pagination";
 import { SORT_OPTIONS, type Filters, type Job, type SortOption } from "./types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { absoluteUrls } from "@/config/urls";
+import SearchHistory from "./components/SearchHistory.tsx";
 
 /**
  * Main application component for job search results
@@ -39,6 +40,13 @@ const SearchResult = () => {
   });
 
   const [sortOption, setSortOption] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+  // Search history state
+  const [searchHistory, setSearchHistory] = useState<Array<{id: string, filters: Filters, timestamp: Date}>>(() => {
+    const saved = localStorage.getItem('searchHistory');
+    return saved ? JSON.parse(saved).map((item: {id: string, filters: Filters, timestamp: string}) => ({ ...item, timestamp: new Date(item.timestamp) })) : [];
+  });
 
   // Calculate total pages based on filtered jobs
   useEffect(() => {
@@ -153,6 +161,38 @@ const SearchResult = () => {
     setSortOption(sort as SortOption);
   };
 
+  /**
+   * Handle applying history item
+   * @param {Filters} historyFilters - Filters from history to apply
+   */
+  const handleApplyHistory = (historyFilters: Filters) => {
+    setFilters(historyFilters);
+  };
+
+  /**
+   * Handle clearing search history
+   */
+  const handleClearHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem('searchHistory');
+  };
+
+  /**
+   * Handle saving current search to history
+   */
+  const handleSaveCurrentSearch = () => {
+    const newHistoryItem = {
+      id: Date.now().toString(),
+      filters: filters,
+      timestamp: new Date(),
+    };
+    setSearchHistory(prev => {
+      const updated = [newHistoryItem, ...prev.filter(item => JSON.stringify(item.filters) !== JSON.stringify(filters))].slice(0, 10);
+      localStorage.setItem('searchHistory', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   // Get jobs for current page
   const startIndex = (currentPage - 1) * 4;
   const currentJobs = filteredJobs.slice(startIndex, startIndex + 4);
@@ -167,12 +207,33 @@ const SearchResult = () => {
           isShowSort={false}
         />
 
-        <AdvancedSearchBar
-          onFilterChange={handleFilterChange}
-          currentFilters={filters}
-          sortOption={sortOption}
-          onSortChange={handleSortChange}
+        <SearchHistory
+          history={searchHistory}
+          onApplyHistory={handleApplyHistory}
+          onClearHistory={handleClearHistory}
         />
+
+        <div className="mb-4">
+          <button
+            onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+          >
+            <svg className={`w-4 h-4 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            Advanced Search
+          </button>
+        </div>
+
+        {showAdvancedSearch && (
+          <AdvancedSearchBar
+            onFilterChange={handleFilterChange}
+            currentFilters={filters}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            onSaveCurrentSearch={handleSaveCurrentSearch}
+          />
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
