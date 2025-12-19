@@ -1,3 +1,19 @@
+/**
+ * BreakCalendar
+ *
+ * Calendar component that displays break periods using FullCalendar.
+ * Breaks are visually differentiated by status (Pending, Approved, Active)
+ * using colors and icons.
+ *
+ * Features:
+ * - Month view calendar
+ * - Status-based color coding
+ * - Icon-only event rendering
+ * - Legend for break statuses
+ *
+ * @component
+ * @returns {JSX.Element} Rendered break calendar with legend
+ */
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";

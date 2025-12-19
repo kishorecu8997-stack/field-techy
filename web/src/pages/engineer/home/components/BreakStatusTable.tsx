@@ -1,3 +1,17 @@
+/**
+ * BreakStatusTable
+ *
+ * Table component that displays a list of breaks with their status.
+ * Uses CustomTable for rendering and applies status-based styling with icons.
+ *
+ * Features:
+ * - Status badges with colors and icons
+ * - Paginated table with initial page size
+ * - Columns: Break Type, Start, End, Status
+ *
+ * @component
+ * @returns {JSX.Element} Rendered table of breaks with styled status badges
+ */
 import React from "react";
 import {
   CustomTable,
@@ -92,9 +106,7 @@ const BreakStatusTable: React.FC = () => {
     },
   ];
 
-  return (
-    <CustomTable columns={columns} data={breakData} initialPageSize={3} />
-  );
+  return <CustomTable columns={columns} data={breakData} initialPageSize={3} />;
 };
 
 export default BreakStatusTable;

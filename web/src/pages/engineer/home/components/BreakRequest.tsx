@@ -1,3 +1,21 @@
+/**
+ * BreakRequest
+ *
+ * Form component used to create and submit a break request.
+ * Allows users to select break type, date, time, and provide a reason.
+ * Also displays existing break status information in table and calendar views.
+ *
+ * Features:
+ * - Uses react-hook-form for form state and validation
+ * - Supports date and time selection
+ * - Displays toast notifications on submit
+ * - Integrates popup state handling
+ *
+ * @component
+ *
+ * @returns {JSX.Element} Rendered break request form with status table and calendar
+ */
+
 import { useForm } from "react-hook-form";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
@@ -9,6 +27,24 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import BreakStatusTable from "./BreakStatusTable";
 import BreakCalendar from "./BreakCalendar";
+
+/**
+ * Job object used for conflict detection.
+ *
+ * @typedef {Object} Job
+ * @property {number} id - Unique job identifier
+ * @property {string} title - Job title
+ * @property {string} client - Client name
+ * @property {"inprogress" | "completed"} status - Job status
+ * @property {string} startDate - Job start datetime string
+ * @property {string} endDate - Job end datetime string
+ */
+
+/**
+ * Mock job list used to validate break date conflicts.
+ *
+ * @type {Job[]}
+ */
 
 const sampleJobs = [
   {
@@ -63,6 +99,15 @@ const BreakRequest = () => {
   const { showPopup } = usePopupStore();
 
   const handleSubmit = async (data: BreakRequestFormData) => {
+    methods.reset({
+      startDate: null,
+      startTime: null,
+      endDate: null,
+      endTime: null,
+      breakType: "",
+      purpose: "",
+      remarks: "",
+    });
     await showPopup({
       title: "Confirm Break Request",
       body: "Are you sure you want to submit this break request?",
@@ -120,15 +165,6 @@ const BreakRequest = () => {
             } else {
               console.log("Break request submitted:", data);
               toast.success("Break request submitted successfully!");
-              methods.reset({
-              startDate: null,
-              startTime: null,
-              endDate: null,
-              endTime: null,
-              breakType: "",
-              purpose: "",
-              remarks: "",
-            });
             }
 
             close(true);
@@ -142,7 +178,7 @@ const BreakRequest = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="lg:order-1">
+          <div>
             <div className="bg-white shadow-xl rounded-2xl p-6 lg:p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-8">
                 Request a Break
