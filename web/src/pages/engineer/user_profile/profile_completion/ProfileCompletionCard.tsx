@@ -19,18 +19,84 @@ const getStatusColor = (status: string) => {
 };
 
 const ProfileCompletionCard = () => {
-  const {
-    profileData,
-    setActiveKey,
-    setISOpenSidebar,
-    setNavigationSource,
-  } = useDrawerStore();
+  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
+    useDrawerStore();
+
+  /* Overall Profile Completion Score Calculation according to each section fields */
+  const totalFields = profileData.flatMap((s) => s.fields).length;
+
+  const completedFields = profileData
+    .flatMap((s) => s.fields)
+    .filter((f) => f.status === "complete").length;
+
+  const overallCompletion = Math.round((completedFields / totalFields) * 100);
+
+  /* Comparison Logic for check engineer overall profile score */
+  const getComparisonUI = (percentage: number) => {
+    if (percentage < 40) {
+      return {
+        title: "Profile needs improvement",
+        description:
+          "Your profile completion is low. Completing key sections will improve visibility.",
+        comparisonText: "Better than 25% of engineers",
+        containerClass: "bg-red-50 border-red-200 text-red-700",
+      };
+    }
+
+    if (percentage < 70) {
+      return {
+        title: "Good progress",
+        description:
+          "You're on the right track. Completing a few more sections will strengthen your profile.",
+        comparisonText: "Better than 50% of engineers",
+        containerClass: "bg-orange-50 border-orange-200 text-orange-700",
+      };
+    }
+
+    return {
+      title: " You’re doing great!",
+      description:
+        "Your profile is strong and stands out among other engineers.",
+      comparisonText: "Better than 65% of engineers",
+      containerClass: "bg-teal-50 border-teal-200 text-teal-700",
+    };
+  };
+
+  const comparisonUI = getComparisonUI(overallCompletion);
 
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
+      {/* Priority Guide for Profile Completion */}
+      <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
+        <h4 className="font-semibold text-gray-700">PriorityGuide</h4>
+        <ul className="space-y-1">
+          <li>
+            <span className="font-medium text-red-600">High impact:</span> Basic
+            details & identity
+          </li>
+          <li>
+            <span className="font-medium text-orange-500">Medium impact:</span>{" "}
+            Skills & experience
+          </li>
+          <li>
+            <span className="font-medium text-green-600">Low impact:</span>{" "}
+            Optional information
+          </li>
+        </ul>
+      </div>
+
+      {/* Comparison Information box */}
+      <div
+        className={`rounded-xl border p-4 text-sm ${comparisonUI.containerClass}`}
+      >
+        <p className="font-semibold">{comparisonUI.title}</p>
+        <p className="mt-1">{comparisonUI.description}</p>
+        <p className="mt-1 font-medium">{comparisonUI.comparisonText}</p>
+      </div>
+
       {/* Five Sections mentioned in user story */}
-      {profileData.map((section) => { 
+      {profileData.map((section) => {
         const total = section.fields.length;
         const completed = section.fields.filter(
           (f) => f.status === "complete"
@@ -62,10 +128,7 @@ const ProfileCompletionCard = () => {
             {/* Fields Those are under the specific section with their status*/}
             <ul className="space-y-1 text-sm">
               {section.fields.map((field, i) => (
-                <li
-                  key={i}
-                  className={getStatusColor(field.status)}
-                >
+                <li key={i} className={getStatusColor(field.status)}>
                   {getStatusIcon(field.status)} {field.label}
                   {field.status === "pending" && " (Awaiting Approval)"}
                 </li>
@@ -78,7 +141,10 @@ const ProfileCompletionCard = () => {
                 <button
                   onClick={() => {
                     // Navigation for specific form according to the section
-                    setNavigationSource("profilecompletion","profileCompletion");
+                    setNavigationSource(
+                      "profilecompletion",
+                      "profileCompletion"
+                    );
                     setActiveKey(section.navigateTo);
                     setISOpenSidebar(true);
                   }}
@@ -86,7 +152,6 @@ const ProfileCompletionCard = () => {
                 >
                   Complete This Section
                 </button>
-
                 <span className="text-gray-500">
                   {estimatedTime} minutes remaining
                 </span>

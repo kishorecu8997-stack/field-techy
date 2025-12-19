@@ -1,6 +1,5 @@
-import { create } from 'zustand';
-import { profileCompletionData } from '@/pages/engineer/user_profile/profile_completion/profileCompletionData';
-
+import { create } from "zustand";
+import { profileCompletionData } from "@/pages/engineer/user_profile/profile_completion/profileCompletionData";
 export type NavigationSource = "sidebar" | "profilecompletion" | "settings";
 export type FieldStatus = "complete" | "pending" | "rejected";
 
@@ -12,19 +11,18 @@ interface DrawerState {
   setISOpenSidebar: (isOpen: boolean) => void;
   selectedId: string | number;
   setSelectedId: (id: string | number) => void;
-  // Add Navigation function for drawer to redirect to the page that is opened 
+  // Add Navigation function for drawer to redirect to the page that is opened
   navigationSource: NavigationSource;
   returnToKey?: string;
   setNavigationSource: (source: NavigationSource, returnToKey?: string) => void;
   resetNavigationSource: () => void;
-   //  Profile completion  UI Only state 
+  //  Profile completion  UI Only state
   profileData: typeof profileCompletionData;
   updateFieldStatus: (
     sectionKey: string,
     fieldLabel: string,
     status: FieldStatus
   ) => void;
-
 }
 
 /**
@@ -66,9 +64,7 @@ const useDrawerStore = create<DrawerState>((set) => ({
           ? {
               ...section,
               fields: section.fields.map((field) =>
-                field.label === fieldLabel
-                  ? { ...field, status }
-                  : field
+                field.label === fieldLabel ? { ...field, status } : field
               ),
             }
           : section

@@ -6,12 +6,12 @@
  * `profileCompletionData` provides sample data for all profile sections including their fields and statuses.
  */
 export type FieldStatus = "complete" | "pending" | "rejected";
- 
+
 export interface ProfileField {
   label: string;
   status: FieldStatus;
 }
- 
+
 export interface ProfileSection {
   key: string;
   title: string;
@@ -19,7 +19,7 @@ export interface ProfileSection {
   estimatedMinutesPerField: number;
   fields: ProfileField[];
 }
- 
+
 export const profileCompletionData: ProfileSection[] = [
   {
     key: "personalInfo",
@@ -30,7 +30,7 @@ export const profileCompletionData: ProfileSection[] = [
       { label: "Full Name", status: "complete" },
       { label: "Phone Number", status: "complete" },
       { label: "Address", status: "pending" },
-      { label: "Email Verification", status: "pending" }
+      { label: "Email Verification", status: "pending" },
     ],
   },
   {
@@ -52,7 +52,7 @@ export const profileCompletionData: ProfileSection[] = [
       { label: "Work Experience", status: "complete" },
       { label: "Work Experience", status: "pending" },
       { label: "Work Experience", status: "pending" },
-      { label: "Work Experience", status: "rejected" }
+      { label: "Work Experience", status: "rejected" },
     ],
   },
   {
@@ -72,7 +72,7 @@ export const profileCompletionData: ProfileSection[] = [
     estimatedMinutesPerField: 10,
     fields: [
       { label: "PassWord", status: "complete" },
-      { label: "Bank Account", status: "complete"}
+      { label: "Bank Account", status: "complete" },
     ],
   },
 ];
