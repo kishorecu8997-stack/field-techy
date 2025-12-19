@@ -30,6 +30,7 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
+  const { setActiveKey, setISOpenSidebar, setNavigationSource } = useDrawerStore();
   const { name, phone, role, profileCompletion } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
@@ -44,7 +45,14 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
             <p className="text-xs opacity-80">{role}</p>
           </div>
         </div>
-        <button className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
+        <button
+          onClick={() => {
+            setNavigationSource("profilecompletion", "profileCompletionCard");
+            setActiveKey("profileCompletion");
+            setISOpenSidebar(true);
+          }}
+        className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+        >
           Complete Now
         </button>
       </div>
