@@ -12,6 +12,7 @@ import {
   type SortOption,
 } from "@/pages/engineer/search_result/types";
 import React, { useMemo, useState } from "react";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -169,7 +170,7 @@ const ExploreJobs: React.FC = () => {
   };
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1);
+    setCurrentPage(1);// reset page on filter change
   };
   const handleClearAllFilters = () => {
     setFilters({
@@ -218,12 +219,13 @@ const ExploreJobs: React.FC = () => {
                   <p className="text-xl text-gray-600 dark:text-gray-300">
                     No jobs match your current filters.
                   </p>
-                  <button
+                  <Button
                     onClick={handleClearAllFilters}
                     className="mt-6 text-lg font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400"
                   >
                     Clear all filters
-                  </button>
+                  </Button>
+                  
                 </div>
               )}
             </div>
