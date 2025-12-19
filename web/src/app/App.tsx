@@ -1,5 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes/AppRoute";
+import LiveChatWidget from "@/shared/components/Support/LiveChatWidget";
 
 /**
  * The main application component that sets up routing.
@@ -11,7 +12,11 @@ import { routes } from "./routes/AppRoute";
  * @returns {JSX.Element} The application with routing enabled.
  */
 const App = () => {
-  return <RouterProvider router={routes} />;
+  return (
+    <>
+      <RouterProvider router={routes} />
+      <LiveChatWidget />
+    </>
+  );
 };
-
 export default App;
