@@ -39,10 +39,8 @@ const useDrawerStore = create<DrawerState>((set) => ({
     }),
   activeKey: "myAccount",
   setActiveKey: (key) => set({ activeKey: key }),
-
   isOpenSidebar: false,
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
-
   selectedId: "",
   setSelectedId: (id) => set({ selectedId: id }),
 
