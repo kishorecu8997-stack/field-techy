@@ -1,8 +1,14 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -32,17 +38,62 @@ import type { Job } from "../../search_result/types";
  *   location="California, USA"
  * />
  */
-const FeatureJobCard: React.FC<Job> = ({
-  title,
-  company,
-  category,
-  employmentType,
-  type,
-  salary,
-  location,
-  isBookmarked = false,
-}) => {
+const FeatureJobCard: React.FC<Job> = (job) => {
+  const {
+    id,
+    title,
+    company,
+    category,
+    employmentType,
+    type,
+    salary,
+    location,
+    isBookmarked = false,
+  } = job;
+
   const [isSelected, setSelected] = useState(isBookmarked);
+
+  useEffect(() => {
+    if (id) {
+      setSelected(isJobSaved(id));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const handleBookmarkChange = () => {
+      if (id) {
+        setSelected(isJobSaved(id));
+      }
+    };
+
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+
+    return () => {
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    };
+  }, [id]);
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (!id) return;
+
+    const wasBookmarked = isSelected;
+
+    toggleSavedJob(job);
+
+    setSelected(!wasBookmarked);
+
+    if (!wasBookmarked) {
+      toast.success("Job saved successfully");
+    } else {
+      toast.error("Job removed from saved");
+    }
+
+    window.dispatchEvent(new Event(BOOKMARK_CHANGE_EVENT));
+  };
+
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
@@ -57,11 +108,7 @@ const FeatureJobCard: React.FC<Job> = ({
           </div>
         </div>
         <div
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setSelected(!isSelected);
-          }}
+          onClick={handleBookmarkClick}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
           aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
         >
@@ -128,7 +175,7 @@ const FeatureJobCard: React.FC<Job> = ({
  * />
  */
 interface FeaturedJobsProps {
-  jobs:Job[]
+  jobs: Job[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -166,7 +213,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {jobs.map((job, index) => (
           <div
-            key={index}
+            key={job.id || index}
             className={`rounded-xl p-4 shadow-sm cursor-pointer ${
               jobCardGradients[index % jobCardGradients.length]
             }`}
@@ -181,5 +228,5 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
     </div>
   );
 };
-export { FeaturedJobs, FeatureJobCard };
 
+export { FeaturedJobs, FeatureJobCard };

@@ -19,7 +19,6 @@ export const WORKING_TYPES = {
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
-
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
@@ -32,6 +31,21 @@ export const LOG_STATUSES = {
   approved: "approved",
 } as const;
 export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
+
+export const getExperienceLevel = (years?: number) => {
+  if (!years) return "";
+  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years <= 3) return "L2"; // 2-3 years: Mid-level
+  return "L3"; // 4+ years: Senior/Expert-level
+};
+
+export const SLA_LEVELS = {
+  FOUR_HOUR: "4-hour",
+  SIX_HOUR: "6-hour",
+  NEXT_DAY: "Next day",
+  THEREAFTER: "Thereafter",
+} as const;
+export type SlaLevel = (typeof SLA_LEVELS)[keyof typeof SLA_LEVELS];
 
 /**
  * Represents a job listing
@@ -60,6 +74,9 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
+  tools?: string[];
+  slaLevel?: SlaLevel;
+  matchScore?: number;
 }
 
 /**
@@ -85,7 +102,6 @@ export interface Options {
   value: string;
 }
 
-
 export const OfferedJobStatus = {
   initial: "initial",
   accepted: "accepted",
@@ -94,4 +110,5 @@ export const OfferedJobStatus = {
   checkedIn: "checked-in",
 };
 
-export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+export type OfferedJobStatusType =
+  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];

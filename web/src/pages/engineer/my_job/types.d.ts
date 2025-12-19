@@ -61,6 +61,7 @@ export interface EarningsData {
 export interface SidebarProfileProps {
   user: UserProfile;
   earnings: EarningsData;
+ 
 }
 
 /**
