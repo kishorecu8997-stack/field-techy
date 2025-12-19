@@ -167,6 +167,7 @@ export const absoluteUrls = {
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/messages`,
       saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
+      application_history: `${BASE.ENGINEER}/my-jobs/application-history`,
     },
   },
   client: {

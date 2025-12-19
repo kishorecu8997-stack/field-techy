@@ -12,7 +12,9 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  * @component
  * @example
  * <JobSearchBar /> 
+ *
  */
+
 export const JobSearchBar = () => {
   const methods = useForm({});
   const navigate = useNavigate();

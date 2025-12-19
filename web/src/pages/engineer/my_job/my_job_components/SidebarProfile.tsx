@@ -3,6 +3,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 
+
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
@@ -13,6 +14,7 @@ import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
  * <SidebarProfile user={user} earnings={earnings} />
  */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
+
   return (
     <div className="space-y-6">
       <ProfileCard user={user} />

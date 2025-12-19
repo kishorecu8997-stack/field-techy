@@ -5,6 +5,7 @@ import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -12,7 +13,7 @@ import { useState } from "react";
  */
 const MyJobsPage = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All Jobs");
-
+  const navigate = useNavigate();
   const jobFilters = [
     "All Jobs",
     "Applied",
@@ -21,6 +22,7 @@ const MyJobsPage = () => {
     "Completed",
     "Declined",
     "Cancelled",
+   
   ];
 
   return (
@@ -32,11 +34,21 @@ const MyJobsPage = () => {
           onSortChange={() => {}}
           isReport
         />
+        <div className="flex items-center justify-between mt-4">
         <FilterButton
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
           filters={jobFilters}
         />
+
+       <button
+        onClick={() => navigate("/engineer/my-jobs/application-history")}
+        className=" bg-teal-800 hover:bg-teal-800 text-white font-semibold py-2 px-4 rounded transition"
+        >
+        Application History
+        </button>
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList />
           <div className="lg:col-span-1">
