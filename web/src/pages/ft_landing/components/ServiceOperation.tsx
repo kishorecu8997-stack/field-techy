@@ -1,5 +1,5 @@
 import React from "react";
-import { serviceOperationStats } from "../type";
+import { serviceOperationStats, type ServiceOperationFormData } from "../type";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { useForm } from "react-hook-form";
@@ -10,8 +10,13 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
 import { citiesByCountry } from "@/dummy_data/adminClientData";
 
+/**
+ * ServiceOperations component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered service operations component.
+ */
 export default function ServiceOperations() {
-  const methods = useForm({
+  const methods = useForm<ServiceOperationFormData>({
     mode: "onChange",
     defaultValues: {
       fullName: "",
@@ -28,7 +33,7 @@ export default function ServiceOperations() {
     ? citiesByCountry[selectedCountry] || []
     : [];
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: ServiceOperationFormData) => {
     console.log("Form Submitted", data);
   };
 

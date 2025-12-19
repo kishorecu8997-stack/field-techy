@@ -5,6 +5,12 @@ import { FaRegBuilding } from "react-icons/fa";
 import { PiSuitcaseSimpleLight } from "react-icons/pi";
 
 type TabType = "corporate" | "engineer";
+
+/**
+ * EngineeredForSpeedSection component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered engineered for speed section component.
+ */
 export default function EngineeredForSpeedSection() {
   const [activeTab, setActiveTab] = useState<TabType>("corporate");
 

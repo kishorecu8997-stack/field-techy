@@ -1,5 +1,10 @@
 import { features } from "../type";
 
+/**
+ * Overview component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered overview component.
+ */
 export default function Overview() {
   return (
     <section className="my-12 bg-white dark:bg-gray-900">

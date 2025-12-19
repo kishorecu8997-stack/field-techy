@@ -1,6 +1,11 @@
 import React from "react";
 import { keyFeatures } from "../type";
 
+/**
+ * KeyFeatures component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered key features component.
+ */
 export default function KeyFeatures() {
   return (
     <div className="min-h-screen dark:bg-gray-900 transition-colors duration-300">

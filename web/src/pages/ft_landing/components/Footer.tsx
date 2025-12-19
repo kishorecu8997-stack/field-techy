@@ -1,6 +1,10 @@
 import { assetsConfig } from "@/assets";
-import React from "react";
 
+/**
+ * Footer component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered footer component.
+ */
 export default function Footer() {
   return (
     <section className="mt-16 bg-[#024e51] text-white">
@@ -29,7 +33,7 @@ export default function Footer() {
         </div>
 
         <div className="text-center">
-          <div className="px-6 cursor-pointer w-fit mx-auto py-2 border border-white/50 text-white rounded-full hover:bg-white hover:text-emerald-900 transition-colors text-sm font-medium">
+          <div className="px-6 cursor-pointer w-fit mx-auto py-2 border border-[#39764f] text-white rounded-full hover:bg-white hover:text-emerald-900 transition-colors text-sm font-medium">
             Book a Demo
           </div>
         </div>

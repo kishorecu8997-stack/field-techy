@@ -1,12 +1,42 @@
 import { assetsConfig } from "@/assets";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { LuMenu } from "react-icons/lu";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { Link } from "react-router-dom";
+import UserTypeDropdown from "./UserTypeSelector";
 
+/**
+ * Header component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered header component.
+ */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoginFor, setIsLoginFor] = useState(false);
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isLoginFor) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsLoginFor(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isLoginFor]);
 
   return (
     <header className="fixed w-full z-20 bg-[#024e51] text-white border-b border-[#026e71]">
@@ -35,8 +65,19 @@ export default function Header() {
             <Link to="" className="hover:text-[#95cc5c]">
               Features
             </Link>
-            <div className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit">
-              Login for <MdKeyboardArrowDown className="ml-1 text-lg" />
+
+            {/*Attach ref to trigger */}
+            <div
+              ref={triggerRef}
+              onClick={() => setIsLoginFor(!isLoginFor)}
+              className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit"
+            >
+              Login for
+              <MdKeyboardArrowDown
+                className={`${
+                  isLoginFor ? "rotate-180 text-xl" : "text-xl"
+                } "ml-1" `}
+              />
             </div>
           </nav>
 
@@ -54,52 +95,63 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu - only shown when open */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[#026e71]">
             <div className="flex flex-col space-y-4 text-sm">
-              <Link
-                to=""
-                className="hover:text-[#95cc5c]"
-                onClick={() => setIsMenuOpen(false)}
+              {["Home", "Overview", "How It Works", "Features"].map((item) => (
+                <Link
+                  key={item}
+                  to=""
+                  className="hover:text-[#95cc5c]"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              ))}
+              <div
+                className="font-medium flex gap-1 items-center"
+                ref={triggerRef}
+                onClick={() => setIsLoginFor(!isLoginFor)}
               >
-                Home
-              </Link>
-              <Link
-                to=""
-                className="hover:text-[#95cc5c]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Overview
-              </Link>
-              <Link
-                to=""
-                className="hover:text-[#95cc5c]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                How It Works
-              </Link>
-              <Link
-                to=""
-                className="hover:text-[#95cc5c]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Features
-              </Link>
-              <div className="font-medium flex gap-1 items-center">
-                Login For <MdKeyboardArrowDown className="text-lg" />
+                Login For{" "}
+                <MdKeyboardArrowDown
+                  className={`${
+                    isLoginFor ? "rotate-180 text-xl" : "text-xl"
+                  } "ml-1" `}
+                />
               </div>
-              <Link
-                to=""
-                className="bg-[#95cc5c] text-black px-4 py-2 rounded-full font-medium text-center w-fit mx-auto hover:bg-[#85b850]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Get Started
-              </Link>
             </div>
           </div>
         )}
       </div>
+
+      {isLoginFor && (
+        <UserTypeDropdown
+          ref={dropdownRef}
+          title="Select Account Type"
+          selected={selectedUserType}
+          options={[
+            {
+              id: "corporate",
+              title: "For Corporates",
+              description: "Manage multi-site projects and teams.",
+            },
+            {
+              id: "engineer",
+              title: "For Engineers",
+              description: "Find jobs and manage your earnings.",
+            },
+            {
+              id: "home-client",
+              title: "For Home Clients",
+              description: "Book verified engineers for home tasks.",
+            },
+          ]}
+          onSelect={(id: string) => setSelectedUserType(id)}
+          onClose={() => setIsLoginFor(false)}
+        />
+      )}
     </header>
   );
 }

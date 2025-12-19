@@ -1,5 +1,10 @@
 import { assetsConfig } from "@/assets";
 
+/**
+ * Banner component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered banner component.
+ */
 export default function Banner() {
   return (
     <div className="bg-[#024e51] text-white py-8">
@@ -7,7 +12,7 @@ export default function Banner() {
         <div className="md:flex items-center gap-8">
           {/* Left Content */}
           <div className="md:w-1/2 space-y-6">
-            <h1 className="text-3xl lg:text-4xl font-bold leading-tight">
+            <h1 className="mt-12  text-3xl lg:text-4xl font-bold leading-tight">
               Global field engineers on tap for <br /> every IT project.
             </h1>
 

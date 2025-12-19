@@ -1,6 +1,11 @@
 import { testimonials } from "../type";
 import { FaStar } from "react-icons/fa";
 
+/**
+ * Testimonials component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered testimonials component.
+ */
 export default function Testimonials() {
   return (
     <div className="py-16 bg-white dark:bg-gray-800">

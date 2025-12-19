@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import { experiences } from "../type";
 
+/**
+ * OptimizedExperience component for the homepage.
+ *
+ * @returns {JSX.Element} The rendered optimized experience component.
+ */
 export default function OptimizedExperience() {
   return (
     <section className="mb-12 bg-white dark:bg-gray-900">

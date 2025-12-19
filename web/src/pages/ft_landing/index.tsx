@@ -8,6 +8,11 @@ import Testimonials from "./components/Testimonials";
 import ServiceOperations from "./components/ServiceOperation";
 import Footer from "./components/Footer";
 
+/**
+ * Landing page for the homepage.
+ *
+ * @returns {JSX.Element} The rendered landing page component.
+ */
 export default function FTLanding() {
   return (
     <div className="relative">

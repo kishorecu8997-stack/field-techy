@@ -1,6 +1,11 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { FaLaptopCode, FaMapMarkerAlt, FaHandHoldingUsd, FaUser } from "react-icons/fa";
+import {
+  FaLaptopCode,
+  FaMapMarkerAlt,
+  FaHandHoldingUsd,
+  FaUser,
+} from "react-icons/fa";
 import { SlEnergy } from "react-icons/sl";
 import { LuFileSpreadsheet, LuUsersRound } from "react-icons/lu";
 import { TbNotes } from "react-icons/tb";
@@ -233,7 +238,6 @@ export const testimonials = [
   },
 ];
 
-
 export const serviceOperationStats = [
   {
     icon: RiShoppingBag4Fill,
@@ -254,3 +258,43 @@ export const serviceOperationStats = [
     subtitle: "using smart matching & location-based dispatch",
   },
 ];
+
+export const options = [
+  {
+    id: "corporate",
+    title: "For Corporates",
+    description: "Manage multi-site projects and teams.",
+  },
+  {
+    id: "engineer",
+    title: "For Engineers",
+    description: "Find jobs and manage your earnings.",
+  },
+  {
+    id: "home-client",
+    title: "For Home Clients",
+    description: "Book verified engineers for home tasks.",
+  },
+];
+
+export interface UserTypeOption {
+  id: string;
+  title: string;
+  description: string;
+}
+export interface UserTypeDropdownProps {
+  title?: string;
+  selected: string;
+  onSelect: (value: string) => void;
+  options: UserTypeOption[];
+  className?: string;
+}
+
+export type ServiceOperationFormData = {
+  fullName: string;
+  email: string;
+  company: string;
+  country: string;
+  city: string;
+  message: string;
+};
