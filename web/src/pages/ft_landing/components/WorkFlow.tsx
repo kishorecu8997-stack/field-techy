@@ -36,7 +36,7 @@ export default function EngineeredForSpeedSection() {
             className={`px-6 py-3 gap-2 flex items-center rounded-t-4xl cursor-pointer font-medium whitespace-nowrap transition ${
               activeTab === "corporate"
                 ? "bg-[#024e51] text-white border-b-4 border-[#95cc5c]"
-                : "border border-[#f0f0f0] dark:bg-gray-800 text-gray-800 dark:text-white"
+                : "border border-[#d1d5dc] dark:border-[#4a5565] dark:bg-gray-800 text-gray-800 dark:text-white"
             }`}
           >
             <FaRegBuilding />
@@ -48,7 +48,7 @@ export default function EngineeredForSpeedSection() {
             className={`px-6 gap-2 flex items-center py-3 rounded-t-4xl cursor-pointer font-medium whitespace-nowrap transition ${
               activeTab === "engineer"
                 ? "bg-[#024e51] text-white border-b-4 border-[#95cc5c]"
-                : "border border-[#f0f0f0] dark:bg-gray-800 text-gray-800 dark:text-white"
+                : "border border-[#d1d5dc] dark:border-[#4a5565] dark:bg-gray-800 text-gray-800 dark:text-white"
             }`}
           >
             <PiSuitcaseSimpleLight />
@@ -57,13 +57,13 @@ export default function EngineeredForSpeedSection() {
         </div>
         <div className="grid md:flex">
           {/* Steps */}
-          <div className="md:w-7/12 bg-[#f3f3f3] md:rounded-bl-4xl dark:bg-gray-800 p-4">
+          <div className="md:w-7/12 md:rounded-bl-4xl p-4">
             {currentSteps.map((step, index) => {
               const IconComponent = step.icon;
               return (
                 <div
                   key={index}
-                  className="mb-4 p-4 bg-white dark:bg-gray-700 rounded-4xl border border-[#f0f0f0] shadow-xs"
+                  className="mb-4 p-4 rounded-4xl border border-[#d1d5dc] dark:border-[#4a5565] shadow-xs"
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-[#95cc5c] rounded-lg p-2">

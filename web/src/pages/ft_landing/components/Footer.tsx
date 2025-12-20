@@ -33,14 +33,14 @@ export default function Footer() {
         </div>
 
         <div className="text-center">
-          <div className="px-6 cursor-pointer w-fit mx-auto py-2 border border-[#39764f] text-white rounded-full hover:bg-white hover:text-emerald-900 transition-colors text-sm font-medium">
+          <div className="px-6 cursor-pointer w-fit mx-auto py-2 border border-[#95cc5c] text-white rounded-full hover:bg-[#95cc5c] hover:text-black transition-colors text-sm font-medium">
             Book a Demo
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-12 pt-4 pb-3 bg-[#39764f] text-center text-xs text-white/70">
+      <div className="mt-12 pt-4 pb-3 bg-[#95cc5c] text-center text-xs text-black">
         ©2025 FieldTechy | Privacy Policy | Terms
       </div>
     </section>

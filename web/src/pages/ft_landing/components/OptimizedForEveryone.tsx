@@ -19,7 +19,7 @@ export default function OptimizedExperience() {
           {experiences.map((exp, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-4xl border border-[#f0f0f0] overflow-hidden transition-transform hover:scale-105"
+              className="bg-white dark:bg-gray-800 rounded-4xl border border-[#d1d5dc] dark:border-[#4a5565] overflow-hidden transition-transform hover:scale-105"
             >
               <div className="relative h-48 md:h-56 overflow-hidden">
                 <img
@@ -39,7 +39,11 @@ export default function OptimizedExperience() {
                       {exp.description}
                     </p>
                   </div>
-                  <img src={exp.icon} alt={exp.title} className="w-8 h-8" />
+                  <img
+                    src={exp.icon}
+                    alt={exp.title}
+                    className="w-8 h-8 dark:text-[#077a7e]"
+                  />
                 </div>
 
                 <div className="bg-[#95cc5c] text-sm cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit">

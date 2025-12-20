@@ -35,7 +35,7 @@ export default function KeyFeatures() {
               {!feature.alwaysVisible && (
                 <>
                   <div
-                    className="absolute space-y-2 bg-[#f4f7f7] rounded-4xl z-10 p-12 rounded-br-[38%] inset-0 
+                    className="absolute space-y-2 bg-[#f4f7f7] dark:bg-gray-700 rounded-4xl z-10 p-12 rounded-br-[38%] inset-0 
                   flex flex-col top-0 justify-start opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   >
                     <div className="bg-[#95cc5c] rounded-lg p-2 w-fit">

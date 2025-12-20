@@ -12,7 +12,7 @@ export default function Banner() {
         <div className="md:flex items-center gap-8">
           {/* Left Content */}
           <div className="md:w-1/2 space-y-6">
-            <h1 className="mt-12  text-3xl lg:text-4xl font-bold leading-tight">
+            <h1 className="mt-12 text-3xl lg:text-4xl font-bold leading-tight">
               Global field engineers on tap for <br /> every IT project.
             </h1>
 
@@ -26,7 +26,7 @@ export default function Banner() {
               <div className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2  rounded-full font-medium hover:bg-[#85b850] w-fit">
                 Get Started
               </div>
-              <div className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-white hover:text-black w-fit">
+              <div className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-[#85b850] hover:text-black w-fit">
                 Book a Demo
               </div>
             </div>

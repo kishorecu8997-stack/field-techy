@@ -32,13 +32,13 @@ export default function Testimonials() {
             { label: "Engineers", value: "5k+" },
             { label: "Jobs Completed", value: "12k+" },
             { label: "SLA Compliance", value: "98%" },
-            { label: "Countries Covered", value: "45 +" },
+            { label: "Countries Covered", value: "45+" },
           ].map((stat, idx) => (
             <div key={idx} className="space-y-1">
-              <div className="text-2xl md:text-3xl font-bold text-[#024e51]">
+              <div className="text-2xl md:text-3xl font-bold text-[#024e51] dark:text-[#077a7e]">
                 {stat.value}
               </div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -48,14 +48,14 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="p-6 border border-gray-100 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
+              className="p-6 border border-[#d1d5dc] dark:border-[#4a5565] rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex dark:text-white justify-between items-center gap-3 mb-4">
                 <div className="flex gap-2 items-center">
                   <img
                     alt="User"
                     src={testimonial.image}
-                    className="w-8 h-8 rounded-full border-2 border-white"
+                    className="w-8 h-8 rounded-full border-2 border-[#d1d5dc] dark:border-[#4a5565]"
                   />
                   <div>
                     <span className="font-medium">{testimonial.name}</span>
@@ -63,7 +63,7 @@ export default function Testimonials() {
                       • {testimonial.date}
                     </span>
                     {testimonial.verified && (
-                      <span className="ml-2 inline-block px-2 py-0.5 text-xs bg-[#95cc5c] rounded">
+                      <span className="ml-2 inline-block text-black px-2 py-0.5 text-xs bg-[#95cc5c] rounded">
                         Verified
                       </span>
                     )}

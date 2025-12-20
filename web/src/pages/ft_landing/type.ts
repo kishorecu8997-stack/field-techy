@@ -284,10 +284,11 @@ export interface UserTypeOption {
 }
 export interface UserTypeDropdownProps {
   title?: string;
-  selected: string;
+  selected: string | null;
   onSelect: (value: string) => void;
   options: UserTypeOption[];
   className?: string;
+  onClose?: () => void;
 }
 
 export type ServiceOperationFormData = {

@@ -64,7 +64,7 @@ export default function ServiceOperations() {
             ))}
           </div>
 
-          <div className="md:w-8/12 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100">
+          <div className="md:w-8/12 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-[#d1d5dc] dark:border-[#4a5565]">
             <h3 className="font-medium dark:text-white text-lg">
               Contact Sales
             </h3>
@@ -117,7 +117,9 @@ export default function ServiceOperations() {
                         <select
                           {...field}
                           className={`border rounded-md p-3 focus:outline-none focus:ring focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
-                            error ? "border-red-500" : "border-[#d1d5dc]"
+                            error
+                              ? "border-red-500"
+                              : "border-[#d1d5dc] dark:border-[#4a5565]"
                           }`}
                         >
                           <option value="" disabled hidden>
@@ -155,8 +157,10 @@ export default function ServiceOperations() {
                         </label>
                         <select
                           {...field}
-                          className={`border rounded-md border-[#d1d5dc] p-3 focus:outline-none focus:ring-1 focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
-                            error ? "border-red-500" : "border-[#d1d5dc]"
+                          className={`border rounded-md  p-3 focus:outline-none focus:ring-1 focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
+                            error
+                              ? "border-red-500"
+                              : "border-[#d1d5dc] dark:border-[#4a5565]"
                           }`}
                         >
                           <option value="" disabled hidden>
