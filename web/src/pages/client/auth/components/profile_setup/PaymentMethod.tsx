@@ -84,7 +84,7 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
         </div>
       )}
 
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 w-[30rem]">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 w-full">
         <div className="space-y-4">
           {cards?.map((card, index) => (
             <div

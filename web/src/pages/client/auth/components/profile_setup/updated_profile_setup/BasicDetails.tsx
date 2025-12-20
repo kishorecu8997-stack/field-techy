@@ -1,12 +1,14 @@
-import { absoluteUrls } from "@/config/urls";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
+import PaymentMethod from "../PaymentMethod";
+import BasicDetailsFields from "./BasicDetailsFields";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import type { basicDetails } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 import { toast } from "react-toastify";
-import ProfileSetup from "../ProfileSetup";
-import type { basicDetails } from "./types";
+import { useNavigate } from "react-router-dom";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -17,7 +19,7 @@ import type { basicDetails } from "./types";
  */
 const BasicDetails = () => {
   const navigate = useNavigate();
-  const formCtx = useForm<basicDetails>({
+  const formCtx = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -52,7 +54,7 @@ const BasicDetails = () => {
           action: (close) => {
             console.log("Confirmed");
             toast.success("Profile details submitted successfully!");
-            navigate(absoluteUrls.engineer.auth.updated_documents);
+            navigate(absoluteUrls.client.auth.documents);
             close(true);
           },
         },
@@ -72,21 +74,28 @@ const BasicDetails = () => {
     <FormContainer
       methods={formCtx}
       onSubmit={handleSubmit}
-      className="flex flex-col h-screen w-full"
+      className="flex flex-col h-screen w-full overflow-hidden"
     >
-      <div className="shrink-0 p-2 flex flex-col gap-2 items-center justify-center  bg-white sticky top-0 z-10">
+      <div className="flex-shrink-0 p-4 flex flex-col gap-2 items-center justify-center  bg-white dark:bg-gray-900">
         <h2 className="text-3xl font-bold">Profile Setup</h2>
-        <p className="text-md text-center text-gray-600 mb-4 px-3">
-          Complete your profile to unlock opportunities.
+        <p className="text-md text-center text-gray-600 dark:text-gray-400 px-3">
+          Complete your profile to unlock sss opportunities.
         </p>
       </div>
-
-      <div className="flex w-full overflow-y-auto mx-auto justify-center flex-grow">
-        <div className="flex-grow p-2 max-w-md">
-          <ProfileSetup />
+      <div className="flex-1 overflow-y-auto px-4 py-6">
+        <div className="space-y-1 max-w-2xl mx-auto">
+          <BasicDetailsFields />
+          <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
+            <div className="mt-2 dark:text-neutral-200">
+              <label className="block text-md font-medium text-gray-700 dark:text-gray-300">
+                Payment Method
+              </label>
+            </div>
+            <PaymentMethod isHeader={false} />
+          </div>
+          <SetPassword />
         </div>
       </div>
-
       <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <Button type="submit" className="w-full">

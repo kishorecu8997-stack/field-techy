@@ -293,16 +293,33 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
-
 //updated_profile_setup
 const engineerProfileSetup = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDetails")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
 );
 const engineerDocuments = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/updated_profile_setup/Documents")
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/Documents"
+    )
 );
 
+const clientProfileSetup = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
+);
 
+const clientDocuments = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDocuments"
+    )
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -344,7 +361,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: urls.engineer.auth.updated_documents,
-        element: withSuspense(engineerDocuments),   
+        element: withSuspense(engineerDocuments),
       },
       {
         path: urls.engineer.auth.forget_password,
@@ -420,10 +437,14 @@ export const routes = createBrowserRouter([
         path: urls.client.auth.signup,
         element: withSuspense(ClientSignUpPage),
       },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(ClientProfileSettingPage),
-      },
+      // {
+      //   path: urls.client.auth.profile_setup_home,
+      //   element: withSuspense(clientProfileSetup),
+      // },
+      // {
+      //   path: urls.client.auth.profile_setup_corporate,
+      //   element: withSuspense(clientProfileSetup),
+      // },
       {
         path: urls.client.auth.forget_password,
         element: withSuspense(ClientForgetPassword),
@@ -454,7 +475,11 @@ export const routes = createBrowserRouter([
       },
       {
         path: `${urls.client.auth.profile_setup}/:role`,
-        element: withSuspense(CorporateMultiStepRegistration),
+        element: withSuspense(clientProfileSetup),
+      },
+      {
+        path: urls.client.auth.documents,
+        element: withSuspense(clientDocuments),
       },
     ],
   },
