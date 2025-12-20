@@ -60,21 +60,16 @@ export const useFCM = () => {
 
     /**
      * Checks the current notification permission status.
-     * If granted, it attempts to refresh/retrieve the token.
      * Updates the store with the current permission state.
+     * Does NOT automatically request tokens - only syncs permission state.
      */
     const checkPermission = useCallback(async () => {
         if (!('Notification' in window)) return;
 
         const permission = Notification.permission;
+        // Only sync the permission state, don't auto-request token
         setNotificationPermission(permission);
-
-        if (permission === 'granted') {
-            // If granted, we can try to get the token silently or just ensure it's up to date
-            // We reuse requestNotificationPermission as it handles token retrieval
-            requestNotificationPermission();
-        }
-    }, [requestNotificationPermission, setNotificationPermission]);
+    }, [setNotificationPermission]);
 
     return { requestNotificationPermission, checkPermission, loading, error };
 };

@@ -53,23 +53,20 @@ export const useGeolocation = () => {
 
     /**
      * Checks the current geolocation permission status.
-     * If granted, it automatically fetches the location.
      * Updates the store with the current permission state.
+     * Does NOT automatically fetch location - only syncs permission state.
      */
     const checkPermission = useCallback(async () => {
         if (!navigator.permissions || !navigator.permissions.query) return;
 
         try {
             const result = await navigator.permissions.query({ name: 'geolocation' });
-            if (result.state === 'granted') {
-                requestLocation();
-            } else {
-                setLocationPermission(result.state);
-            }
+            // Only sync the permission state, don't auto-fetch location
+            setLocationPermission(result.state);
         } catch (error) {
             console.error("Error checking geolocation permission:", error);
         }
-    }, [requestLocation, setLocationPermission]);
+    }, [setLocationPermission]);
 
     return { requestLocation, checkPermission, loading, error };
 };

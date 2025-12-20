@@ -31,20 +31,36 @@ export default function AllowAccessPopup({
   onDenyLocation,
   onDenyNotification,
 }: AllowAccessPopupProps) {
-  const { locationPermission } = useDeviceStore();
-  // Step control: false = Location step, true = Notification step
-  // If location is already granted, start at Notification step
-  const [isNotificationStep, setIsNotificationStep] = useState(locationPermission === 'granted');
+  const {
+    locationPermission,
+    notificationPermission,
+    setLocationPermission,
+    setNotificationPermission
+  } = useDeviceStore();
+
+  // Determine initial step based on permission states
+  // If location is not 'prompt', skip to notification step
+  const [isNotificationStep, setIsNotificationStep] = useState(
+    locationPermission !== 'prompt'
+  );
 
   const { requestLocation, loading: locationLoading } = useGeolocation();
   const { requestNotificationPermission, loading: notificationLoading } = useFCM();
 
-  // Auto-advance if location permission becomes granted (e.g. via background check)
+  // When popup opens, check if we should show it at all
   useEffect(() => {
-    if (locationPermission === 'granted') {
-      setIsNotificationStep(true);
+    if (accessPopup) {
+      // If location is not 'prompt', skip to notification
+      if (locationPermission !== 'prompt') {
+        // If notification is also not 'default', close popup entirely
+        if (notificationPermission !== 'default') {
+          setAccessPopup(false);
+        } else {
+          setIsNotificationStep(true);
+        }
+      }
     }
-  }, [locationPermission]);
+  }, [accessPopup, locationPermission, notificationPermission, setAccessPopup]);
 
   return (
     <Popup open={accessPopup} onClose={() => setAccessPopup(false)}>
@@ -78,12 +94,12 @@ export default function AllowAccessPopup({
               const success = await requestLocation();
               if (success) {
                 onAllowLocation?.();
-                localStorage.setItem("location_permission", "allowed");
+                setLocationPermission('granted');
                 setIsNotificationStep(true); // Move to Step 2
               } else {
                 toast.error("Location access denied or failed.");
-                setIsNotificationStep(true); // Move to next step even on failure as per requirement? 
-                // User said: "else, throw a toast message saying the appropriate message and move to next"
+                setLocationPermission('denied');
+                setIsNotificationStep(true);
               }
             }}
           >
@@ -97,7 +113,7 @@ export default function AllowAccessPopup({
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyLocation?.();
-              localStorage.setItem("location_permission", "denied");
+              setLocationPermission('denied');
               setIsNotificationStep(true);
             }}
           >
@@ -128,9 +144,10 @@ export default function AllowAccessPopup({
               const success = await requestNotificationPermission();
               if (success) {
                 onAllowNotification?.();
-                localStorage.setItem("notification_permission", "allowed");
+                setNotificationPermission('granted');
               } else {
                 toast.error("Notification access denied or failed.");
+                setNotificationPermission('denied');
               }
               setAccessPopup(false);
             }}
@@ -145,7 +162,7 @@ export default function AllowAccessPopup({
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyNotification?.();
-              localStorage.setItem("notification_permission", "denied");
+              setNotificationPermission('denied');
               setAccessPopup(false);
             }}
           >

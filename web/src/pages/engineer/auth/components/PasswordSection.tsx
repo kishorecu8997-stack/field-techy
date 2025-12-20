@@ -2,7 +2,6 @@ import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
 import { validatePassword } from "@/shared/libs/utils";
 import { useFormContext } from "react-hook-form";
-import { useFormContext } from "react-hook-form";
 
 /**
  * A reusable component that groups password and confirm password input fields for creation or updates.
@@ -32,7 +31,6 @@ const PasswordSection = () => {
         name="confirmPassword"
         label="Confirm New Password"
         passwordField="password"
-        required
         required
       />
     </div>

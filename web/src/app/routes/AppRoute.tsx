@@ -1,8 +1,40 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
-import AppLandingRoute from "@/layout/AppLandingRoute";
 import { absoluteUrls, BASE, urls } from "@/config/urls";
+import React from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
+
+const Layout = React.lazy(() => import("@/layout/auth-pannel"));
+const SignInPage = React.lazy(
+  () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
+);
+const SignUpPage = React.lazy(
+  () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
+);
+const MultiStepRegistrationForm = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
+    )
+);
+const ForgetPassword = React.lazy(
+  () => import("@/pages/engineer/auth/components/ForgetPassword")
+);
+const ResetPassword = React.lazy(
+  () => import("@/pages/engineer/auth/components/ResetPassword")
+);
+const BackgroundVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/BackgroundVerification"
+    )
+);
+const SetPassword = React.lazy(
+  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
+);
+
+// Layouts
+const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
+const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
 
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
@@ -280,7 +312,296 @@ export const routes = createBrowserRouter([
   // Default route redirecting to client login
   {
     path: "/",
-    element: <AppLandingRoute />,
+    element: <Navigate to={absoluteUrls.client.auth.login} replace />,
+  },
+
+  // Engineer Auth Routes
+  {
+    path: BASE.AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { index: true, element: <Navigate to="login" replace /> },
+      { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
+      { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
+      {
+        path: urls.engineer.auth.profile_setup,
+        element: withSuspense(MultiStepRegistrationForm),
+      },
+      {
+        path: urls.engineer.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.engineer.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: urls.engineer.auth.set_password,
+        element: withSuspense(SetPassword),
+      },
+      {
+        path: urls.engineer.auth.background_verification,
+        element: withSuspense(BackgroundVerification),
+      },
+    ],
+  },
+
+  // Engineer Main Routes
+  {
+    path: BASE.ENGINEER,
+    element: withSuspense(RootLayout),
+    children: [
+      { index: true, element: withSuspense(Home) },
+      { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
+      {
+        path: urls.engineer.home.explore_jobs,
+        element: withSuspense(ExploreJobs),
+      },
+      {
+        path: urls.engineer.home.saved_jobs,
+        element: withSuspense(ExploreSavedJobs),
+      },
+      { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId`,
+        element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId`,
+        element: withSuspense(OfferPages),
+      },
+      {
+        path: urls.engineer.home.search_result,
+        element: withSuspense(SearchResult),
+      },
+      {
+        path: urls.engineer.home.privacy_policy,
+        element: withSuspense(PrivacyPolicy),
+      },
+      {
+        path: urls.engineer.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
+    ],
+  },
+
+  //client
+  {
+    path: BASE.CLIENT_AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { path: urls.client.auth.login, element: withSuspense(ClientSignInPage) },
+      {
+        path: urls.client.auth.signup,
+        element: withSuspense(ClientSignUpPage),
+      },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(ClientProfileSettingPage),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ClientForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ClientResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(ClientSetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(ClientBackgroundVerification),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.client.auth.account_type,
+        element: withSuspense(ClientAccountType),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: `${urls.client.auth.profile_setup}/:role`,
+        element: withSuspense(CorporateMultiStepRegistration),
+      },
+    ],
+  },
+
+  // Client Main Routes
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(ClientLayout), // Assuming clients share the same RootLayout
+    children: [
+      { index: true, element: withSuspense(ClientMyJobsPage) },
+      {
+        path: urls.client.home.my_jobs,
+        element: withSuspense(ClientMyJobsPage),
+      },
+      {
+        path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: urls.client.home.my_projects,
+        element: withSuspense(ClientMyProjectsPage),
+      },
+      {
+        path: `${urls.client.home.my_projects}/:projectId`,
+        element: withSuspense(ClientProjectDetailsPage),
+      },
+      {
+        path: urls.client.home.create_project,
+        element: withSuspense(ClientCreateProjectPage),
+      },
+      {
+        path: urls.client.home.dashboard,
+        element: withSuspense(ClientDashboard),
+      },
+      {
+        path: urls.client.home.client_Explore_engineers,
+        element: withSuspense(ClientExploreEngineers),
+      },
+      {
+        path: urls.client.home.post_JobPage,
+        element: withSuspense(ClientPostJobPage),
+      },
+      {
+        path: urls.client.home.manage_proposal,
+        element: withSuspense(ClientManageProposal),
+      },
+      {
+        path: `${urls.client.home.manage_proposal}/:id`,
+        element: withSuspense(ClientManageProposalDetails),
+      },
+      {
+        path: `${urls.client.home.job_details}/:id`,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: urls.client.home.search_result,
+        element: withSuspense(ClientSearchResult),
+      },
+      {
+        path: urls.engineer.home.terms_and_conditions,
+        element: withSuspense(TermsAndConditions),
+      },
+      { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
+      {
+        path: urls.client.home.post_a_job,
+        element: withSuspense(PostAJobPage),
+      },
+      {
+        path: urls.client.home.client_Explore_engineers_details,
+        element: withSuspense(ClientExploreEngDetails),
+      },
+      {
+        path: urls.client.home.Client_Job_Details,
+        element: withSuspense(ClientJobDetails),
+      },
+      {
+        path: urls.client.home.ClientSelectEngineers,
+        element: withSuspense(ClientInviteEngineers),
+      },
+      {
+        path: urls.client.home.faq,
+        element: withSuspense(ClientFAQ),
+      },
+      {
+        path: urls.client.home.terms_and_conditions,
+        element: withSuspense(ClientTermsAndConditions),
+      },
+      {
+        path: urls.client.home.privacy_policy,
+        element: withSuspense(ClientPrivacyPolicy),
+      },
+      {
+        path: urls.client.home.ClientJobInvite,
+        element: withSuspense(ClientJobInvite),
+      },
+      {
+        path: urls.client.home.SelectEngineer,
+        element: withSuspense(SelectEngineer),
+      },
+      {
+        path: urls.client.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
+    ],
+  },
+
+  {
+    path: BASE.AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { index: true, element: <Navigate to="login" replace /> },
+      { path: urls.client.auth.login, element: withSuspense(SignInPage) },
+      { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(MultiStepRegistrationForm),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(SetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(BackgroundVerification),
+      },
+    ],
+  },
+
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(RootLayout),
+    children: [
+      { index: true, element: withSuspense(MyJobsPage) },
+      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
+      {
+        path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: urls.client.home.search_result,
+        element: withSuspense(SearchResult),
+      },
+      {
+        path: urls.client.home.privacy_policy,
+        element: withSuspense(ClientPrivacyPolicy),
+      },
+      {
+        path: urls.client.home.terms_and_conditions,
+        element: withSuspense(ClientTermsAndConditions),
+      },
+      { path: urls.client.home.faq, element: withSuspense(ClientFAQ) },
+      { path: urls.client.home.chat, element: withSuspense(EngineerChatPage) },
+    ],
+  },
+
+  {
+    path: absoluteUrls.engineer.auth.privacy_policy,
+    element: withSuspense(PrivacyPolicy),
   },
 
   { path: "*", element: withSuspense(NotFound) },

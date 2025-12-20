@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
 import { useUserSessionStore, type UserSession } from "@/shared/store/useUserSessionStore";
 import { useEngineerSignInMutation, useReqEmailVerificationOtpMutation, useVerifyEmailVerificationOtpMutation } from "@/shared/apiServices/auth/engineer/engineerAuthService";
+import { validatePassword } from "@/shared/libs/utils";
 
 
 

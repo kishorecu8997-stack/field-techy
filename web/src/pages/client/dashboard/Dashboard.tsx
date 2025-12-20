@@ -7,6 +7,8 @@ import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
@@ -21,11 +23,19 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 const Dashboard: React.FC = () => {
   const [accessPopup, setAccessPopup] = React.useState<boolean>(false);
   const { locationPermission, notificationPermission } = useDeviceStore();
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
     []
   );
+
+  // Check actual browser permission states on mount and sync with store
+  useEffect(() => {
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
     // Show popup if either permission is in 'prompt' state (or not granted/denied explicitly yet)
