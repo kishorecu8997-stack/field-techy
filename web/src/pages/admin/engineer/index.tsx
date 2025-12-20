@@ -202,6 +202,7 @@ const ManageEngineer: React.FC = () => {
                 });
               }}
               options={JobStatus}
+              badge
             />
           </div>
         );

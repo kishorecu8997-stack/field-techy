@@ -28,6 +28,7 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
+  const oldPassword = methods.watch("oldPassword");
 
   const handleSubmit = async () => {
     await showPopup({
@@ -68,7 +69,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: (val) => validatePassword(val),
+                validate: (value: string) => validatePassword(value),
               }}
             />
           </div>
@@ -80,7 +81,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: (val, values) => validatePassword(val, values.oldPassword),
+                validate: (v) => validatePassword(v, oldPassword),
               }}
             />
           </div>

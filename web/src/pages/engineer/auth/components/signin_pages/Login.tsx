@@ -168,7 +168,15 @@ const Login = ({
             type="email"
             required
           />
-          <PasswordInput name="password" label="Password" required />
+          <PasswordInput
+            name="password"
+            label="Password"
+            required
+            rules={{
+              required: "Password is required",
+              validate: (v) => validatePassword(v),
+            }}
+          />
           <div className="flex items-center justify-between flex-wrap">
             <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
             <NavLink

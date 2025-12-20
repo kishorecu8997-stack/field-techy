@@ -4,6 +4,8 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 interface Option {
   value: string;
   label: string;
+  bg?: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 interface SimpleSelectProps {
@@ -12,6 +14,7 @@ interface SimpleSelectProps {
   onChange?: (value: string | null) => void;
   value?: string | null;
   className?: string;
+  badge?: boolean;
 }
 
 /**
@@ -27,6 +30,7 @@ const SelectMenu = ({
   onChange,
   value: selectedValue,
   className = "",
+  badge,
 }: SimpleSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
@@ -106,18 +110,38 @@ const SelectMenu = ({
       <div
         ref={triggerRef}
         onClick={toggleDropdown}
-        className="flex items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
-         bg-white dark:bg-gray-800 dark:text-white cursor-pointer hover:border-gray-400 min-w-[120px]"
+        className={`flex space-x-2 items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
+         ${
+           badge ? `${selectedOption?.bg ?? ""}` : "bg-white dark:bg-gray-800"
+         } cursor-pointer hover:border-gray-400 min-w-[120px]`}
       >
-        <span className="text-gray-700 truncate text-sm dark:text-[#979ba2]">
+        <span
+          className={` ${
+            badge ? `${selectedOption?.bg ?? ""}` : " text-gray-700"
+          } truncate text-sm dark:text-[#979ba2]`}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
 
-        <MdKeyboardArrowDown
-          className={`text-xl text-gray-500 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
+        {badge ? (
+          <span className="mt-0.5 w-4 h-4">
+            {selectedOption?.icon ? (
+              <selectedOption.icon className="w-4 h-4" />
+            ) : (
+              <MdKeyboardArrowDown
+                className={`text-xl text-gray-500 transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
+            )}
+          </span>
+        ) : (
+          <MdKeyboardArrowDown
+            className={`text-xl text-gray-500 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        )}
       </div>
 
       {isOpen && (
@@ -132,13 +156,21 @@ const SelectMenu = ({
           {options.map((option) => (
             <li
               key={option.value}
-              onClick={() => handleSelect(option)}
-              className={`px-3 py-2 cursor-pointer text-sm ${
-                option.value === selectedValue
+              onClick={() => {
+                handleSelect(option);
+              }}
+              className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm ${
+                badge
+                  ? `${option?.bg ?? "bg-gray-100"}`
+                  : option.value === selectedValue
                   ? "bg-emerald-100 text-gray-900 font-medium"
                   : "hover:bg-gray-100 dark:hover:bg-blue-400"
               }`}
             >
+              {badge && option.icon && (
+                <option.icon className="inline w-4 h-4 ml-2" />
+              )}
+
               {option.label}
             </li>
           ))}

@@ -254,6 +254,8 @@ const CorporateMultiStepRegistration = () => {
           </div>
         </div>
       </FormContainer>
+      {/* Allow access popup */}
+      {/* <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />     */}
     </>
   );
 };
