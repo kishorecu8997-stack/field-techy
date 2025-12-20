@@ -1,8 +1,13 @@
 import { type ClientProfilePaginationParams } from "./profiles/client/clientProfileAdapter";
+import { type ClientPaginationParams } from "./client/clientTypes";
 
 export const queryKeys = {
     client: {
-        byId: (id: string) => `client-user-${id}`,
+        all: ["clients"] as const,
+        detail: (id: string) => [...queryKeys.client.all, id] as const,
+        allClients: () => [...queryKeys.client.all, "all-clients"] as const,
+        list: (params: ClientPaginationParams) =>
+            [...queryKeys.client.all, "list", params] as const,
     },
     engineer: {
         byId: (id: string) => `engineer-user-${id}`,

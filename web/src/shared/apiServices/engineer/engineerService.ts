@@ -1,62 +1,92 @@
-import {
-    useMutation,
-    useQuery,
-    useQueryClient,
-    type UseMutationOptions,
-    type UseQueryOptions,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
-    CompleteRegistrationData,
-    LoginFormData,
-} from "@/pages/engineer/auth/components/types";
+    EngineerData,
+    EngineerPaginationParams,
+    PagedResponse,
+    FileUploadParams,
+    FileUploadResponse,
+    EngineerFile,
+} from "./engineerTypes";
+import { queryKeys } from "../queryKeys";
 
-export const ENGINEER_QUERY_KEYS = {
-    all: ["engineers"] as const,
-    detail: (id: string) => [...ENGINEER_QUERY_KEYS.all, id] as const,
-};
+// --- Mutations ---
 
-export function useEngineerSignup(
-    options?: UseMutationOptions<unknown, Error, CompleteRegistrationData>
-) {
+export function useEngineerSignup(options?: {
+    onSuccess?: (data: EngineerData) => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (data: CompleteRegistrationData) =>
-            EngineerAdapter.signup(data),
-        ...options,
+        mutationFn: (data: EngineerData) => EngineerAdapter.signup(data),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+            options?.onSuccess?.(data);
+        },
+        onError: options?.onError,
     });
 }
 
-export function useEngineerSignin(
-    options?: UseMutationOptions<unknown, Error, LoginFormData>
-) {
-    return useMutation({
-        mutationFn: (data: LoginFormData) => EngineerAdapter.signin(data),
-        ...options,
-    });
-}
-
-export function useEngineerGetById(
-    id: string,
-    options?: Partial<UseQueryOptions<unknown, Error>>
-) {
-    return useQuery({
-        queryKey: ENGINEER_QUERY_KEYS.detail(id),
-        queryFn: () => EngineerAdapter.getById(id),
-        enabled: !!id,
-        ...options,
-    });
-}
-
-export function useEngineerDelete(
-    options?: UseMutationOptions<void, Error, string>
-) {
+export function useEngineerDelete(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => EngineerAdapter.delete(id),
-        ...options,
-        onSuccess: (...args) => {
-            queryClient.invalidateQueries({ queryKey: ENGINEER_QUERY_KEYS.all });
-            options?.onSuccess?.(...args);
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+            options?.onSuccess?.();
         },
+        onError: options?.onError,
     });
 }
+
+export function useEngineerFileUpload(options?: {
+    onSuccess?: (data: FileUploadResponse) => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (params: FileUploadParams) => EngineerAdapter.uploadFile(params),
+        onSuccess: (data, variables) => {
+            // Invalidate the engineer detail query to refetch updated file references
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.engineer.detail(variables.engineerId)
+            });
+            options?.onSuccess?.(data);
+        },
+        onError: options?.onError,
+    });
+}
+
+// --- Queries ---
+
+export function useEngineerGetById(id: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: queryKeys.engineer.detail(id),
+        queryFn: () => EngineerAdapter.getById(id),
+        enabled: !!id && (options?.enabled ?? true),
+    });
+}
+
+export function useEngineerGetFiles(engineerId: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.engineer.detail(engineerId), 'files'] as const,
+        queryFn: () => EngineerAdapter.getFiles(engineerId),
+        enabled: !!engineerId && (options?.enabled ?? true),
+    });
+}
+
+export function useEngineerDownloadFile(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        mutationFn: ({ fileKey, fileName }: { fileKey: string; fileName?: string }) =>
+            EngineerAdapter.downloadFile(fileKey, fileName),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
+}
+
