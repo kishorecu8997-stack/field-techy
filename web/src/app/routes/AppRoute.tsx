@@ -49,6 +49,9 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const VideoGuidance = React.lazy(
+  () => import("@/pages/engineer/privacy_policy/VideoGuide")
+);
 const AboutApp = React.lazy(
   () => import("@/pages/engineer/privacy_policy/AboutApp")
 );
@@ -377,6 +380,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.privacy_policy,
         element: withSuspense(PrivacyPolicy),
+      },
+            {
+        path: urls.engineer.video_guidance,
+        element: withSuspense(VideoGuidance),
       },
       {
         path: urls.engineer.home.terms_and_conditions,

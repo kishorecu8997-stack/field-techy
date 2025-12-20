@@ -25,6 +25,8 @@ export const urls = {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
     terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
+    video_guidance: `${BASE.ENGINEER}/video-guidance`,
+    
 
     home: {
       dashboard: "dashboard",
@@ -167,6 +169,7 @@ export const absoluteUrls = {
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/messages`,
       saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
+      video_guidance: `${BASE.ENGINEER}/video-guidance`,
     },
   },
   client: {

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { mockChat } from "@/dummy_data/supportChat";
-import { FiMessageSquare, FiX } from "react-icons/fi"; // Icons
+import { FiMessageSquare, FiX } from "react-icons/fi";
+import Tooltip from "@/shared/components/Tooltip";
 
 const LiveChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,35 +11,38 @@ const LiveChatWidget = () => {
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    setMessages([
-      ...messages,
-      { sender: "user", message: input },
-    ]);
+    setMessages([...messages, { sender: "user", message: input }]);
     setInput("");
   };
 
   return (
     <>
-      {/* Chat Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-full shadow-xl flex items-center justify-center"
-      >
-        <FiMessageSquare className="w-5 h-5" />
-      </button>
+      {/* Live Chat Button with Tooltip */}
+      <div className="fixed bottom-6 right-6 z-50 inline-block">
+        <Tooltip text="Live Chat">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-full shadow-xl flex items-center justify-center"
+          >
+            <FiMessageSquare className="w-5 h-5" />
+          </button>
+        </Tooltip>
+      </div>
 
       {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-80 bg-white dark:bg-gray-800 border rounded-lg shadow-2xl flex flex-col">
-          {/* Header */}
+          {/* Header with Close Button Tooltip */}
           <div className="flex justify-between items-center p-3 border-b font-semibold text-gray-800 dark:text-gray-100">
             <span>Live Support</span>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
+            <Tooltip text="Close Chat">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </Tooltip>
           </div>
 
           {/* Messages */}
@@ -57,7 +61,7 @@ const LiveChatWidget = () => {
             ))}
           </div>
 
-          {/* Input */}
+          {/* Input with Send Button Tooltip */}
           <div className="flex p-3 border-t gap-2">
             <input
               value={input}
@@ -65,12 +69,14 @@ const LiveChatWidget = () => {
               placeholder="Type a message..."
               className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
-            <button
-              onClick={sendMessage}
-              className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
-            >
-              Send
-            </button>
+            <Tooltip text="Send Message">
+              <button
+                onClick={sendMessage}
+                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
+              >
+                Send
+              </button>
+            </Tooltip>
           </div>
         </div>
       )}

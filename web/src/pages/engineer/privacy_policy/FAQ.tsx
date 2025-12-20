@@ -1,61 +1,90 @@
 import { useState } from "react";
 import { FAQData } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import ContentPage from "./ContentPage";
 
-/**
- * FAQ page displaying frequently asked questions using static dummy data.
- * Renders a header and content section via reusable components.
- */
 const FAQ = () => {
-  const [search, setSearch] = useState(""); // For search input
+  const [search, setSearch] = useState("");
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  const filteredData = FAQData.map((section) => ({
-  ...section,
-  items: section.items
-    ? section.items.filter(
-        (item) =>
-          item.title.toLowerCase().includes(search.toLowerCase()) ||
-          item.description.toLowerCase().includes(search.toLowerCase())
-      )
-    : [], // If items is undefined, return empty array
-})).filter((section) => section.items && section.items.length > 0);
+  const searchText = search.toLowerCase();
+
+  const filteredData = FAQData.map((section) => {
+    const items = section.items ?? [];
+
+    const filteredItems = items.filter((item) => {
+      const titleMatch = item.title
+        ? item.title.toLowerCase().includes(searchText)
+        : false;
+
+      const descriptionMatch = item.description
+        ? item.description.toLowerCase().includes(searchText)
+        : false;
+
+      const sectionMatch = section.title
+        .toLowerCase()
+        .includes(searchText);
+
+      return titleMatch || descriptionMatch || sectionMatch;
+    });
+
+    return {
+      ...section,
+      items: filteredItems,
+    };
+  }).filter(
+    (section) =>
+      section.items.length > 0 ||
+      section.title.toLowerCase().includes(searchText)
+  );
 
   return (
-    <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader title="FAQ" onSortChange={() => {}} isShowSort={false} />
-        {/* Search Bar */}
-        <div className="flex gap-2 flex-1 md:justify-end md:flex-none mb-4">
-  <input
-    type="text"
-    placeholder="Search FAQs..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="w-full md:w-64 px-4 py-2 rounded-lg border border-gray-300 shadow-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 mt-10"
-  />
-</div>
+
+        {/* Search */}
+        <div className="flex justify-end mt-6 mb-6">
+          <input
+            type="text"
+            placeholder="Search FAQs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full md:w-72 px-4 py-2 rounded-lg border border-gray-300
+              dark:border-gray-600 dark:bg-gray-700 dark:text-white
+              focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+
         {/* FAQ List */}
         {filteredData.length > 0 ? (
           filteredData.map((section, secIndex) => (
-            <div key={secIndex} className="mb-6">
-              <h2 className="font-semibold text-lg mb-2">{section.title}</h2>
-              <div className="space-y-2">
+            <div key={secIndex} className="mb-8">
+              <h2 className="text-lg font-semibold mb-4">
+                {section.title}
+              </h2>
+
+              <div className="space-y-4">
                 {section.items.map((item, index) => {
-                  const globalIndex = secIndex * 100 + index; // Unique index for expand/collapse
+                  const globalIndex = secIndex * 100 + index;
                   const isExpanded = expandedIndex === globalIndex;
+
                   return (
                     <div
                       key={index}
-                      className="border border-gray-200 rounded-md p-3 cursor-pointer bg-white dark:bg-gray-800"
+                      className="cursor-pointer border-b border-gray-200 dark:border-gray-700 pb-4"
                       onClick={() =>
                         setExpandedIndex(isExpanded ? null : globalIndex)
                       }
                     >
-                      <div className="font-medium">{item.title || "Question"}</div>
+                      <div className="flex justify-between items-center font-medium">
+                        <span>{item.title || section.title}</span>
+                        <span className="text-gray-400 text-xl">
+                          {isExpanded ? "−" : "+"}
+                        </span>
+                      </div>
+
                       {isExpanded && (
-                        <div className="mt-2 text-gray-700 dark:text-gray-300">
+                        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                           {item.description}
                         </div>
                       )}
@@ -66,12 +95,11 @@ const FAQ = () => {
             </div>
           ))
         ) : (
-          <div className="text-gray-500">No FAQs match your search.</div>
+          <p className="text-gray-500">No FAQs match your search.</p>
         )}
       </div>
     </div>
   );
 };
-
 
 export default FAQ;
