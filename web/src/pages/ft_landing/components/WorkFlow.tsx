@@ -17,7 +17,7 @@ export default function EngineeredForSpeedSection() {
   const currentSteps = steps[activeTab];
 
   return (
-    <section className="mb-12 bg-white dark:bg-gray-900">
+    <section className="py-12">
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className="text-center mb-8">

@@ -8,7 +8,7 @@ import { experiences } from "../type";
  */
 export default function OptimizedExperience() {
   return (
-    <section className="mb-12 bg-white dark:bg-gray-900">
+    <section className="py-12">
       <div className="container mx-auto px-4">
         <h2 className="text-xl md:text-2xl font-semibold text-center text-gray-800 dark:text-white mb-8">
           Optimized Experiences For Everyone

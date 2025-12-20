@@ -2,11 +2,10 @@ import React from "react";
 import { serviceOperationStats, type ServiceOperationFormData } from "../type";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { validateCompany, validateName } from "@/utils/validate";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
 import { citiesByCountry } from "@/dummy_data/adminClientData";
 
@@ -38,7 +37,7 @@ export default function ServiceOperations() {
   };
 
   return (
-    <div className="mb-6 bg-white dark:bg-gray-900">
+    <div className="pb-6">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white">
@@ -65,81 +64,133 @@ export default function ServiceOperations() {
             ))}
           </div>
 
-          {/* Right Column: Form Placeholder */}
-          <div className="md:w-8/12 bg-white p-4 rounded-xl shadow-md border border-gray-100">
-            <div className="">
-              <h3 className="font-medium text-gray-900 text-lg">
-                Contact Sales
-              </h3>
-              <p className=" text-gray-600">
-                Tell us about your needs and we'll be in touch.
-              </p>
+          <div className="md:w-8/12 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-100">
+            <h3 className="font-medium dark:text-white text-lg">
+              Contact Sales
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Tell us about your needs and we'll be in touch.
+            </p>
 
-              {/* Placeholder to show where form will go */}
-              <div className="p-2 flex items-center justify-center text-gray-500 text-sm">
-                <FormContainer
-                  methods={methods}
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-2 w-full"
-                >
-                  <InputField
-                    name="fullName"
-                    label="Full Name"
-                    type="text"
-                    required
-                    rules={{
-                      validate: (v: string) => validateName(v),
-                    }}
-                  />
-                  <div className="grid md:flex items-center gap-4">
-                    <InputField
-                      name="email"
-                      label="Email Address"
-                      type="text"
-                      required
-                      rules={validateEmailRules}
-                    />
-                    <InputField
-                      name="company"
-                      label="Company"
-                      type="text"
-                      required
-                      rules={{ validate: (v: string) => validateCompany(v) }}
-                    />
-                  </div>
-                  <div className="grid md:flex items-center gap-4">
-                    <div className="md:w-1/2">
-                      <SelectField
-                        name="country"
-                        label="Country"
-                        placeholder="Select Country"
-                        options={countries}
-                        required
-                      />
-                    </div>
-                    <div className="md:w-1/2">
-                      <SelectField
-                        label="City"
-                        name="city"
-                        placeholder="Select city"
-                        options={cityOptions}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <TextareaInput name="message" label="Message" />
-                  <div className="flex justify-end">
-                    <Button
-                      type="submit"
-                      variant="text"
-                      className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit"
-                    >
-                      Send Message
-                    </Button>
-                  </div>
-                </FormContainer>
+            <FormContainer
+              methods={methods}
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-4 w-full"
+            >
+              <InputField
+                name="fullName"
+                label="Full Name"
+                type="text"
+                required
+                rules={{ validate: (v: string) => validateName(v) }}
+              />
+
+              <div className="grid md:flex gap-4">
+                <InputField
+                  name="email"
+                  label="Email Address"
+                  type="text"
+                  required
+                  rules={validateEmailRules}
+                />
+                <InputField
+                  name="company"
+                  label="Company"
+                  type="text"
+                  required
+                  rules={{ validate: (v: string) => validateCompany(v) }}
+                />
               </div>
-            </div>
+
+              {/* Normal HTML Selects with Controller */}
+              <div className="grid md:flex gap-4">
+                <div className="md:w-1/2">
+                  <Controller
+                    name="country"
+                    control={methods.control}
+                    rules={{ required: "Country is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="flex flex-col">
+                        <label className="mb-1 font-medium text-gray-700 dark:text-gray-200">
+                          Country
+                        </label>
+                        <select
+                          {...field}
+                          className={`border rounded-md p-3 focus:outline-none focus:ring focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
+                            error ? "border-red-500" : "border-[#d1d5dc]"
+                          }`}
+                        >
+                          <option value="" disabled hidden>
+                            Select a country
+                          </option>
+                          {countries.map((c) => (
+                            <option
+                              key={c.value}
+                              value={c.value}
+                              className="rounded-lg"
+                            >
+                              {c.label}
+                            </option>
+                          ))}
+                        </select>
+                        {error && (
+                          <span className="text-red-600 text-sm mt-1">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+
+                <div className="md:w-1/2">
+                  <Controller
+                    name="city"
+                    control={methods.control}
+                    rules={{ required: "City is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="flex flex-col">
+                        <label className="mb-1 font-medium text-gray-700 dark:text-gray-200">
+                          City
+                        </label>
+                        <select
+                          {...field}
+                          className={`border rounded-md border-[#d1d5dc] p-3 focus:outline-none focus:ring-1 focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
+                            error ? "border-red-500" : "border-[#d1d5dc]"
+                          }`}
+                        >
+                          <option value="" disabled hidden>
+                            Select a city
+                          </option>
+                          {cityOptions.map((c) => (
+                            <option key={c.value} value={c.value}>
+                              {c.label}
+                            </option>
+                          ))}
+                        </select>
+                        {error && (
+                          <span className="text-red-600 text-sm mt-1">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <TextareaInput name="message" label="Message" />
+
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  variant="text"
+                  className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit"
+                >
+                  Send Message
+                </Button>
+              </div>
+            </FormContainer>
           </div>
         </div>
       </div>

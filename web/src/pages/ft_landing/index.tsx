@@ -15,7 +15,7 @@ import Footer from "./components/Footer";
  */
 export default function FTLanding() {
   return (
-    <div className="relative">
+    <div className="bg-white dark:bg-gray-800">
       <Header />
       <Banner />
       <Overview />

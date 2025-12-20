@@ -8,10 +8,10 @@ import { FaStar } from "react-icons/fa";
  */
 export default function Testimonials() {
   return (
-    <div className="py-16 bg-white dark:bg-gray-800">
+    <div className="py-16">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-xl md:text-2xl font-semibold dark:text-white mb-4">
             Trusted By Industry Leaders
           </h2>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm text-gray-400">
@@ -48,9 +48,9 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="p-6 border border-gray-100 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
+              className="p-6 border border-gray-100 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="flex justify-between items-center gap-3 mb-4">
+              <div className="flex dark:text-white justify-between items-center gap-3 mb-4">
                 <div className="flex gap-2 items-center">
                   <img
                     alt="User"
@@ -58,9 +58,7 @@ export default function Testimonials() {
                     className="w-8 h-8 rounded-full border-2 border-white"
                   />
                   <div>
-                    <span className="font-medium text-gray-900">
-                      {testimonial.name}
-                    </span>
+                    <span className="font-medium">{testimonial.name}</span>
                     <span className="text-xs text-gray-500 ml-2">
                       • {testimonial.date}
                     </span>
@@ -86,7 +84,7 @@ export default function Testimonials() {
               </div>
 
               {/* Testimonial Text */}
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 dark:text-white leading-relaxed">
                 {testimonial.text}
                 {testimonial.readMore && (
                   <span className="text-[#024e51] font-semibold cursor-pointer ml-1">
