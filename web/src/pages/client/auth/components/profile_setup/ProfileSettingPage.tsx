@@ -29,9 +29,8 @@ import type { CompleteRegistrationData } from "./types";
 const CorporateMultiStepRegistration = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [accessPopup, setAccessPopup] = useState<boolean>(false);
   const { role } = useParams<{ role?: string }>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const methods = useForm<CompleteRegistrationData>({
     mode: "onSubmit",
@@ -132,7 +131,6 @@ const CorporateMultiStepRegistration = () => {
    * @param {CompleteRegistrationData} data - The fully collected registration data
    */
   const submitCompleteForm = async (data: CompleteRegistrationData) => {
-
     setIsSubmitting(true);
     try {
       // MOCK API CALL (replace with real fetch when backend is ready)
@@ -140,8 +138,6 @@ const CorporateMultiStepRegistration = () => {
 
       // Simulate network delay
       await new Promise((r) => setTimeout(r, 800));
-      setAccessPopup(true);
-
       // Simulate success
       navigate(absoluteUrls.client.auth.login);
     } catch (error) {
@@ -235,8 +231,6 @@ const CorporateMultiStepRegistration = () => {
           </div>
         </div>
       </FormContainer>
-      {/* Allow access popup */}
-      {/* <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />     */}
     </>
   );
 };

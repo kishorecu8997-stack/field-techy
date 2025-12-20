@@ -65,24 +65,25 @@ const BasicDetails = () => {
     console.log("Form data:", data);
     await showPopup({
       title: "Sign Up",
-      body: "Are you sure you want to sign up with the provided details?",
+      body: "Are you sure you want to submit?",
       actionButtons: [
         {
-          label: "Yes",
+          label: "Close",
+          value: false,
+          variant: "outline",
+          action: (close) => {
+            console.log("Cancelled");
+            close(false);
+          },
+        },
+        {
+          label: "Submit",
           value: true,
           action: (close) => {
             console.log("Confirmed");
             toast.success("Profile details submitted successfully!");
             navigate(absoluteUrls.client.auth.documents);
             close(true);
-          },
-        },
-        {
-          label: "No",
-          value: false,
-          action: (close) => {
-            console.log("Cancelled");
-            close(false);
           },
         },
       ],
