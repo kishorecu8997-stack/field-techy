@@ -26,30 +26,30 @@ const BasicDetails = () => {
   const formCtx = useForm<ClientBasicDetails>({
     defaultValues: {
       // Common fields
-      fullName: "",
+      fullName: "karthik",
       email: "",
       phone: "",
-      country: "",
-      state: "",
-      city: "",
-      postalCode: "",
-      address: "",
+      country: "in",
+      state: "1",
+      city: "1",
+      postalCode: "654321",
+      address: "5th avenue street",
 
       // Corporate-specific fields
-      companyName: "",
-      contactPersonName: "",
+      companyName: "karthik corp",
+      contactPersonName: "karthik",
       businessType: params.role,
-      industry: "",
-      vat: "",
-      vatRegistrationNumber: "",
+      industry: "1",
+      vat: "2",
+      vatRegistrationNumber: "54321",
 
       // Verification flags
       isMobileVerified: false,
       isEmailVerified: false,
 
       // Password fields
-      password: "",
-      confirmPassword: "",
+      password: "P@ssw0rd",
+      confirmPassword: "P@ssw0rd",
 
       // Payment fields
       paymentMethodId: "",
@@ -94,9 +94,9 @@ const BasicDetails = () => {
       postalCode: data.postalCode,
       enableNotifications: data.isEnableNotifications || true,
       isApproved: data.isApproved || true,
-    }
-    console.log('frameData :', frameData);
-    
+    };
+    console.log("frameData :", frameData);
+
     await showPopup({
       title: "Sign Up",
       body: "Are you sure you want to continue with the provided details?",

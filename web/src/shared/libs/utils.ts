@@ -49,7 +49,7 @@ export const validatePassword = (value: string, oldPassword?: string) => {
 };
 
 export const validatePortfolioLink = (value: string) => {
-  if (!value) return "Portfolio link is required";
+  if (!value) return true;
 
   const original = value.trim();
 

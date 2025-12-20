@@ -52,14 +52,6 @@ const Login = ({
     },
   });
 
-  /**
-   * handleSubmit
-   *
-   * Called by the form when the user submits credentials. Current behaviour
-   * opens the OTP popup (simulating second-factor or phone flow). Real
-   * implementations should validate credentials against an API and only
-   * open the OTP/modal on success.
-   */
   const handleSubmit = () => {
     setIsOpen(true);
   };
@@ -147,7 +139,7 @@ const Login = ({
             handleNavigate={() => {
               setIsOpen(false);
               navigate(absoluteUrls.client.home.dashboard);
-              toast.success("Logged in successfully")
+              toast.success("Logged in successfully");
             }}
           />
         </Popup>
