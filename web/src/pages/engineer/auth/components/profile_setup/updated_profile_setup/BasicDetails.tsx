@@ -1,4 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
+import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -39,6 +40,18 @@ const BasicDetails = () => {
     },
   });
 
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
+    onSuccess: () => {
+      toast.success("Completed registration successfully");
+      navigate("/engineer/auth");
+    },
+    onError: (error: any) => {
+      console.error("Submit error:", error);
+      toast.error("Registration failed. Please try again.");
+    },
+  });
+
   const { showPopup } = usePopupStore();
 
   const handleSubmit = async (data: basicDetails) => {
@@ -47,21 +60,26 @@ const BasicDetails = () => {
       body: "Are you sure you want to sign up with the provided details?",
       actionButtons: [
         {
-          label: "Yes",
-          value: true,
-          action: (close) => {
-            console.log("Confirmed");
-            toast.success("Profile details submitted successfully!");
-            navigate(absoluteUrls.engineer.auth.updated_documents);
-            close(true);
-          },
-        },
-        {
           label: "No",
           value: false,
           action: (close) => {
             console.log("Cancelled");
             close(false);
+          },
+        },
+        {
+          label: "Yes",
+          value: true,
+          action: async (close) => {
+            console.log("Confirmed");
+            const loginData = await signup(data);
+            toast.success("Profile details submitted successfully!");
+            const { id } = loginData;
+            const params = { id: id };
+            navigate(
+              `${absoluteUrls.engineer.auth.updated_documents}?${params}`
+            );
+            close(true);
           },
         },
       ],
@@ -89,7 +107,7 @@ const BasicDetails = () => {
 
       <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" loading={isSubmitting}>
             Save and Continue
           </Button>
         </div>

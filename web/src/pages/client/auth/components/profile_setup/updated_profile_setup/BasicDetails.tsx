@@ -1,6 +1,6 @@
 import { absoluteUrls } from "@/config/urls";
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
-import type { ClientBasicDetails } from "./types";
+import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -9,6 +9,8 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
+import type { ClientBasicDetails } from "./types";
+import { buildQuery } from "@/utils";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -61,11 +63,43 @@ const BasicDetails = () => {
 
   const { showPopup } = usePopupStore();
 
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { mutateAsync: signup, isPending: isSubmitting } = useClientSignup({
+    onSuccess: () => {
+      toast.success("Completed registration successfully");
+      navigate("/engineer/auth");
+    },
+    onError: (error: any) => {
+      console.error("Submit error:", error);
+      toast.error("Registration failed. Please try again.");
+    },
+  });
   const handleSubmit = async (data: ClientBasicDetails) => {
     console.log("Form data:", data);
+
+    const frameData = {
+      name: data.contactPersonName || data.fullName,
+      phoneNumber: data.phone,
+      email: signupEmail,
+      password: data.password,
+      clientType: data.businessType,
+      companyName: data.companyName,
+      contactPersonName: data.contactPersonName,
+      businessType: data.businessType,
+      industry: data.industry,
+      address: data.address,
+      country: data.country,
+      state: data.state,
+      city: data.city,
+      postalCode: data.postalCode,
+      enableNotifications: data.isEnableNotifications || true,
+      isApproved: data.isApproved || true,
+    }
+    console.log('frameData :', frameData);
+    
     await showPopup({
       title: "Sign Up",
-      body: "Are you sure you want to submit?",
+      body: "Are you sure you want to continue with the provided details?",
       actionButtons: [
         {
           label: "Close",
@@ -79,10 +113,11 @@ const BasicDetails = () => {
         {
           label: "Submit",
           value: true,
-          action: (close) => {
-            console.log("Confirmed");
+          action: async (close) => {
+            const loginData = await signup(frameData);
             toast.success("Profile details submitted successfully!");
-            navigate(absoluteUrls.client.auth.documents);
+            const param = buildQuery({ id: loginData.id });
+            navigate(`${absoluteUrls.client.auth.documents}?${param}`);
             close(true);
           },
         },
@@ -90,12 +125,8 @@ const BasicDetails = () => {
     });
   };
 
-  const {
-    signupEmail,
-    emailVerified,
-    signupPhone,
-    mobileVerified,
-  } = location.state || {};
+  const { signupEmail, emailVerified, signupPhone, mobileVerified } =
+    location.state || {};
 
   const isMobileVerified = formCtx.watch("isMobileVerified");
   const isEmailVerified = formCtx.watch("isEmailVerified");
@@ -132,7 +163,7 @@ const BasicDetails = () => {
       </div>
       <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" loading={isSubmitting}>
             Save and Continue
           </Button>
         </div>

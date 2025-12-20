@@ -17,7 +17,6 @@ const axiosInstance = axios.create({
   timeout: 10_000,
 });
 
-
 const token = localStorage.getItem("authToken");
 export async function addAuthTokenIfExists(cfg: InternalAxiosRequestConfig) {
   if (token) {

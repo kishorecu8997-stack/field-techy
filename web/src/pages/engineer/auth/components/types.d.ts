@@ -66,3 +66,43 @@ export type ProfileSetupData = {
   experience: string;
   resume: string;
 };
+
+
+// Types (without Zod)
+export type CompleteRegistrationData = {
+  // Profile Setup
+  profileImage?: File[];
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  phone: string;
+  address: string;
+  tags: string[];
+  skills: string[];
+  portfolio?: string;
+  amount: string;
+  designation: string;
+  tools: string[];
+  serviceCategory: string;
+  company: string;
+  location: string;
+  country: string;
+  postalCode: string;
+  experience: string;
+  educations?: string;
+  resume?: File[];
+  budget?: string;
+  preferredWorkType?: string;
+
+  // Background Verification
+  governmentId?: File[];
+  certificate?: File[];
+
+  // Set Password
+  password: string;
+  confirmPassword: string;
+
+  mobileOTP?: string;
+  emailOTP?: string;
+};

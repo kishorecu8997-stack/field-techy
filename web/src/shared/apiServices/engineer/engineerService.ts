@@ -1,6 +1,7 @@
+import type { basicDetails } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
+import type { LoginFormData } from "@/pages/engineer/auth/components/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EngineerAdapter } from "./engineerAdapter";
-import type { CompleteRegistrationData, LoginFormData } from "@/pages/engineer/auth/components/types";
 
 export const ENGINEER_QUERY_KEYS = {
     all: ["engineers"] as const,
@@ -12,7 +13,7 @@ export function useEngineerSignup(options?: {
     onError?: (error: any) => void;
 }) {
     return useMutation({
-        mutationFn: (data: CompleteRegistrationData) => EngineerAdapter.signup(data),
+        mutationFn: (data: basicDetails) => EngineerAdapter.signup(data),
         onSuccess: options?.onSuccess,
         onError: options?.onError,
     });

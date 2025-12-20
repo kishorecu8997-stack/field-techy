@@ -4,6 +4,7 @@ import type {
   CompleteRegistrationData,
   LoginFormData,
 } from "@/pages/engineer/auth/components/types";
+import type { basicDetails } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 
 /*
  * EngineerAdapter
@@ -17,7 +18,7 @@ import type {
  *
  */
 export class EngineerAdapter {
-  static async signup(data: CompleteRegistrationData) {
+  static async signup(data: basicDetails) {
     const engineerPayload = {
       password: data.password,
       phoneNumber: data.phone,

@@ -20,6 +20,8 @@ export interface ClientBasicDetails {
   // Verification flags
   isMobileVerified?: boolean;
   isEmailVerified?: boolean;
+  isEnableNotifications?: boolean;
+  isApproved?: boolean;
   
   // Password fields
   password: string;

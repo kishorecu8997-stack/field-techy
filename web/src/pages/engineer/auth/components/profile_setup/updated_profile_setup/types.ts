@@ -7,7 +7,18 @@ export interface basicDetails {
   address: string;
   country: string;
   postalCode: string;
+  tags: string[];
   skills: string[];
+  tools: string[];
+  serviceCategory: string;
+  budget: string;
+  rate: string;
+  experienceYears: string;
+  preferredWorkType: string;
+  enableNotifications: boolean;
+  educations: string;
+  averageRating: number;
+  status: string;
   portfolio?: string;
   amount: string;
   designation: string;
