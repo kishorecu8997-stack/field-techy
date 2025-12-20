@@ -1,10 +1,8 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import { withSuspense } from "./WithSuspense";
-import { engineerRoutes } from "./engineerRoutes";
-import { clientRoutes } from "./clientRoutes";
-import { adminRoutes } from "./adminRoutes";
 import AppLandingRoute from "@/layout/AppLandingRoute";
+import { absoluteUrls, BASE, urls } from "@/config/urls";
+import { withSuspense } from "./WithSuspense";
 
 const NotFound = React.lazy(() => import("@/shared/components/NotFound"));
 const MyJobsPage = React.lazy(() => import("@/pages/engineer/my_job"));
@@ -284,9 +282,6 @@ export const routes = createBrowserRouter([
     path: "/",
     element: <AppLandingRoute />,
   },
-  ...engineerRoutes,
-  ...clientRoutes,
-  ...adminRoutes,
 
   { path: "*", element: withSuspense(NotFound) },
 
