@@ -9,12 +9,13 @@ import { Controller, useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
+import PaymentMethod from "../PaymentMethod";
 
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const role = window.location.pathname.includes("corporate") ? "corporate" : "home";
   const { control, watch } = ctx;
-   const location = useLocation();
+  const location = useLocation();
 
   const {
     emailVerified,
@@ -133,15 +134,17 @@ const BasicDetailsFields = () => {
         }}
       />
 
+
       {/* Corporate-only fields */}
       {role === "corporate" && (
         <>
           <SelectField
             name="businessType"
             placeholder="Business Type"
+            disabled
             options={[
-              { value: "1", label: "Corporate" },
-              { value: "2", label: "Home" },
+              { value: "corporate", label: "Corporate" },
+              { value: "home", label: "Home" },
             ]}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
@@ -184,6 +187,7 @@ const BasicDetailsFields = () => {
             label="VAT Registration Number"
             rules={{ validate: (v: string) => validateVatNumber(v) }}
           />
+
         </>
       )}
     </div>

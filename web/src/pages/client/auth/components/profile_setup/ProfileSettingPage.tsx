@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
@@ -10,8 +11,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
 import type { CompleteRegistrationData } from "./types";
-import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
-import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 
 /**
  * A multi-step registration form component that guides users through

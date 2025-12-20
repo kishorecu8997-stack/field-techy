@@ -1,14 +1,14 @@
-import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
-import PaymentMethod from "../PaymentMethod";
-import BasicDetailsFields from "./BasicDetailsFields";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { useForm } from "react-hook-form";
-import type { basicDetails } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { absoluteUrls } from "@/config/urls";
+import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
+import type { ClientBasicDetails } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import BasicDetailsFields from "./BasicDetailsFields";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -19,31 +19,50 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  */
 const BasicDetails = () => {
   const navigate = useNavigate();
-  const formCtx = useForm({
+  const location = useLocation();
+  const params = useParams();
+  const formCtx = useForm<ClientBasicDetails>({
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      // Common fields
+      fullName: "",
       email: "",
-      phoneNumber: "",
       phone: "",
-      address: "",
       country: "",
+      state: "",
+      city: "",
       postalCode: "",
-      skills: [],
-      portfolio: "",
-      amount: "",
-      designation: "",
-      company: "",
-      location: "",
-      experience: "",
+      address: "",
+
+      // Corporate-specific fields
+      companyName: "",
+      contactPersonName: "",
+      businessType: params.role,
+      industry: "",
+      vat: "",
+      vatRegistrationNumber: "",
+
+      // Verification flags
+      isMobileVerified: false,
+      isEmailVerified: false,
+
+      // Password fields
       password: "",
       confirmPassword: "",
+
+      // Payment fields
+      paymentMethodId: "",
+      cardNumber: "",
+      expDate: "",
+      cvv: "",
+      PaymentCountry: "",
+      cardAddress: "",
     },
   });
 
   const { showPopup } = usePopupStore();
 
-  const handleSubmit = async (data: basicDetails) => {
+  const handleSubmit = async (data: ClientBasicDetails) => {
+    console.log("Form data:", data);
     await showPopup({
       title: "Sign Up",
       body: "Are you sure you want to sign up with the provided details?",
@@ -70,29 +89,43 @@ const BasicDetails = () => {
     });
   };
 
+  const {
+    signupEmail,
+    emailVerified,
+    signupPhone,
+    mobileVerified,
+  } = location.state || {};
+
+  const isMobileVerified = formCtx.watch("isMobileVerified");
+  const isEmailVerified = formCtx.watch("isEmailVerified");
+
+  useEffect(() => {
+    if (signupEmail) formCtx.setValue("email", signupEmail);
+    if (signupPhone) formCtx.setValue("phone", signupPhone);
+    if (emailVerified) formCtx.setValue("isEmailVerified", true);
+    if (mobileVerified) formCtx.setValue("isMobileVerified", true);
+  }, [signupEmail, signupPhone, formCtx, emailVerified, mobileVerified]);
+
+  useEffect(() => {
+    if (isMobileVerified) formCtx.trigger("phone");
+    if (isEmailVerified) formCtx.trigger("email");
+  }, [isMobileVerified, isEmailVerified, formCtx]);
+
   return (
     <FormContainer
       methods={formCtx}
       onSubmit={handleSubmit}
-      className="flex flex-col h-screen w-full overflow-hidden"
+      className="flex flex-col h-screen w-full"
     >
-      <div className="flex-shrink-0 p-4 flex flex-col gap-2 items-center justify-center  bg-white dark:bg-gray-900">
+      <div className="shrink-0 p-2 flex flex-col gap-2 items-center justify-center  bg-white sticky top-0 z-10">
         <h2 className="text-3xl font-bold">Profile Setup</h2>
-        <p className="text-md text-center text-gray-600 dark:text-gray-400 px-3">
-          Complete your profile to unlock sss opportunities.
+        <p className="text-md text-center text-gray-600 mb-4 px-3">
+          Complete your profile to unlock opportunities.
         </p>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-6">
-        <div className="space-y-1 max-w-2xl mx-auto">
-          <BasicDetailsFields />
-          <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-            <div className="mt-2 dark:text-neutral-200">
-              <label className="block text-md font-medium text-gray-700 dark:text-gray-300">
-                Payment Method
-              </label>
-            </div>
-            <PaymentMethod isHeader={false} />
-          </div>
+        <BasicDetailsFields />
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <SetPassword />
         </div>
       </div>

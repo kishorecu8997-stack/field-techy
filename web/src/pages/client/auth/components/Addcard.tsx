@@ -9,7 +9,7 @@ import {
   expiryDateValidation,
 } from "@/shared/libs/utils";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
 
 /**
@@ -25,7 +25,7 @@ export interface CardFormData {
   cardNumber: string;
   expDate: string;
   cvv: string;
-  country: string;
+  PaymentCountry: string;
   cardAddress: string;
 }
 
@@ -47,15 +47,7 @@ interface AddCardProps {
  * validated successfully, `onAddCard` is invoked with the typed values.
  */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
-  const methods = useForm<CardFormData>({
-    defaultValues: {
-      cardNumber: "",
-      expDate: "",
-      cvv: "",
-      country: "",
-      cardAddress: "",
-    },
-  });
+  const methods = useFormContext<CardFormData>();
 
   // form submission
   /**
@@ -63,7 +55,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
    * Uses react-hook-form's `trigger` to run validation for all registered fields.
    */
   const handleAddCard = async () => {
-    const isValid = await methods.trigger();
+    const isValid = await methods.trigger(["cardAddress", "cvv", "expDate", "cardNumber", "PaymentCountry"]);
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);
@@ -108,7 +100,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
         <SelectField
           label="Country"
-          name="country"
+          name="PaymentCountry"
           placeholder="Country"
           options={countries.map((c) => ({
             value: c.value,
