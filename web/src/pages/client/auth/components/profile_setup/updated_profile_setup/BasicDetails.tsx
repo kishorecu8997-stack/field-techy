@@ -26,30 +26,30 @@ const BasicDetails = () => {
   const formCtx = useForm<ClientBasicDetails>({
     defaultValues: {
       // Common fields
-      fullName: "karthik",
+      fullName: "",
       email: "",
       phone: "",
-      country: "in",
-      state: "1",
-      city: "1",
-      postalCode: "654321",
-      address: "5th avenue street",
+      country: "",
+      state: "",
+      city: "",
+      postalCode: "",
+      address: "",
 
       // Corporate-specific fields
-      companyName: "karthik corp",
-      contactPersonName: "karthik",
+      companyName: "",
+      contactPersonName: "",
       businessType: params.role,
-      industry: "1",
-      vat: "2",
-      vatRegistrationNumber: "54321",
+      industry: "",
+      vat: "",
+      vatRegistrationNumber: "",
 
       // Verification flags
       isMobileVerified: false,
       isEmailVerified: false,
 
       // Password fields
-      password: "P@ssw0rd",
-      confirmPassword: "P@ssw0rd",
+      password: "",
+      confirmPassword: "",
 
       // Payment fields
       paymentMethodId: "",

@@ -40,7 +40,6 @@ const BasicDetails = () => {
     },
   });
 
-  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
     onSuccess: () => {
       toast.success("Completed registration successfully");

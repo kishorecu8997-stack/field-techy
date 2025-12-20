@@ -10,12 +10,6 @@ const SignInPage = React.lazy(
 const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
-const MultiStepRegistrationForm = React.lazy(
-  () =>
-    import(
-      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
-    )
-);
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
 );
@@ -68,10 +62,7 @@ const ClientSignInPage = React.lazy(
 const ClientSignUpPage = React.lazy(
   () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
 );
-const ClientProfileSettingPage = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
-);
+
 const ClientForgetPassword = React.lazy(
   () => import("@/pages/client/auth/components/ForgetPassword")
 );
@@ -81,10 +72,6 @@ const ClientResetPassword = React.lazy(
 
 const ClientAccountType = React.lazy(
   () => import("@/pages/client/auth/components/AccountType")
-);
-const CorporateMultiStepRegistration = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
 );
 
 const ClientBackgroundVerification = React.lazy(
@@ -593,10 +580,6 @@ export const routes = createBrowserRouter([
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.client.auth.login, element: withSuspense(SignInPage) },
       { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
-      },
       {
         path: urls.client.auth.forget_password,
         element: withSuspense(ForgetPassword),
