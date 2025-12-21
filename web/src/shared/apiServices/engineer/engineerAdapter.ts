@@ -3,11 +3,13 @@ import { uploadAxiosInstance } from "@/axiosInstance";
 import { ENGINEER_ROUTER_PATHS } from "./engineerRouterPaths";
 import type {
   EngineerData,
-  EngineerPaginationParams,
-  PagedResponse,
+  // EngineerPaginationParams,
+  // PagedResponse,
   FileUploadParams,
   FileUploadResponse,
   EngineerFile,
+  JobAssignment,
+  AssignJobParams,
 } from "./engineerTypes";
 
 
@@ -33,8 +35,9 @@ export class EngineerAdapter {
     return response.data;
   }
 
-  static async delete(id: string): Promise<void> {
+  static async delete(id: string): Promise<boolean> {
     await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
+    return true;
   }
 
   static async getFiles(engineerId: string): Promise<EngineerFile[]> {
@@ -95,5 +98,96 @@ export class EngineerAdapter {
       }
     );
     return response.data;
+  }
+
+  static async assignJob(params: AssignJobParams): Promise<JobAssignment> {
+    const { engineerId, jobId, status } = params;
+    const response = await axiosInstance.post(
+      `${ENGINEER_ROUTER_PATHS.ASSIGN_JOB(engineerId)}?jobId=${jobId}&status=${status}`
+    );
+    return response.data;
+  }
+
+  static async getJobs(engineerId: string): Promise<JobAssignment[]> {
+    const response = await axiosInstance.get(ENGINEER_ROUTER_PATHS.GET_JOBS(engineerId));
+    return response.data;
+  }
+
+  static async updateJobStatus(jobId: string, status: string): Promise<JobAssignment> {
+    const response = await axiosInstance.put(
+      `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`
+    );
+    return response.data;
+  }
+
+  // OTP Methods (Stubbed for now)
+  static async sendEmailOTP(email: string): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(ENGINEER_ROUTER_PATHS.SEND_EMAIL_OTP, { email });
+    // return response.data;
+
+    // Stubbed response
+    console.log(`[STUB] Sending engineer email OTP to: ${email}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ message: "OTP sent successfully to email" });
+      }, 1000);
+    });
+  }
+
+  static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(ENGINEER_ROUTER_PATHS.SEND_PHONE_OTP, { phoneNumber });
+    // return response.data;
+
+    // Stubbed response
+    console.log(`[STUB] Sending engineer phone OTP to: ${phoneNumber}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ message: "OTP sent successfully to phone" });
+      }, 1000);
+    });
+  }
+
+  static async verifyEmailOTP(
+    email: string,
+    otp: string
+  ): Promise<{ message: string; verified: boolean }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(ENGINEER_ROUTER_PATHS.VERIFY_EMAIL_OTP, { email, otp });
+    // return response.data;
+
+    // Stubbed response - accepts any 4-digit OTP
+    console.log(`[STUB] Verifying engineer email OTP for: ${email}, OTP: ${otp}`);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (otp.length === 4) {
+          resolve({ message: "Email OTP verified successfully", verified: true });
+        } else {
+          reject(new Error("Invalid OTP"));
+        }
+      }, 800);
+    });
+  }
+
+  static async verifyPhoneOTP(
+    phoneNumber: string,
+    otp: string
+  ): Promise<{ message: string; verified: boolean }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(ENGINEER_ROUTER_PATHS.VERIFY_PHONE_OTP, { phoneNumber, otp });
+    // return response.data;
+
+    // Stubbed response - accepts any 4-digit OTP
+    console.log(`[STUB] Verifying engineer phone OTP for: ${phoneNumber}, OTP: ${otp}`);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (otp.length === 4) {
+          resolve({ message: "Phone OTP verified successfully", verified: true });
+        } else {
+          reject(new Error("Invalid OTP"));
+        }
+      }, 800);
+    });
   }
 }

@@ -125,3 +125,16 @@ export interface FileUploadResponse {
     fileSize: number;
     uploadedAt: string;
 }
+
+export interface JobAssignment {
+    id: string;
+    engineerId: string;
+    jobId: string;
+    status: string;
+}
+
+export interface AssignJobParams {
+    engineerId: string;
+    jobId: string;
+    status: string;
+}

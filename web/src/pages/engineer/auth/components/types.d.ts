@@ -71,7 +71,7 @@ export type ProfileSetupData = {
 // Types (without Zod)
 export type CompleteRegistrationData = {
   // Profile Setup
-  profileImage?: File[];
+  profileImage?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -91,13 +91,13 @@ export type CompleteRegistrationData = {
   postalCode: string;
   experience: string;
   educations?: string;
-  resume?: File[];
+  resume?: string;
   budget?: string;
   preferredWorkType?: string;
 
   // Background Verification
-  governmentId?: File[];
-  certificate?: File[];
+  governmentId?: string;
+  certificate?: string;
 
   // Set Password
   password: string;

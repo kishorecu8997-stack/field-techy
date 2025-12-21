@@ -9,6 +9,7 @@ import type {
   ClientFileUploadParams,
   FileUploadResponse,
 } from "./clientTypes";
+import type { LoginFormData } from "@/pages/admin/auth/types";
 
 
 /*
@@ -24,7 +25,32 @@ import type {
 export class ClientAdapter {
 
   static async signup(data: ClientData): Promise<ClientData> {
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
+    // return response.data;
+
+    // Stubbed for testing - returns fixed client ID to enable document upload flow
+    console.log('[STUB] Client signup called with data:', data);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          ...data,
+          id: "3201d141-f502-4e6e-842a-45d11af3a30b", // Fixed ID for testing
+          isApproved: true,
+        });
+      }, 1000);
+    });
+  }
+
+  static async signin(data: LoginFormData) {
+    const payload = {
+      phoneOrEmail: data.email,
+      password: data.password,
+    };
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SIGNIN,
+      payload
+    );
     return response.data;
   }
 
@@ -55,6 +81,164 @@ export class ClientAdapter {
     await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
   }
 
+  // OTP Methods (Stubbed for now)
+  static async sendEmailOTP(email: string): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP, { email });
+    // return response.data;
+
+    // Stubbed response
+    console.log(`[STUB] Sending email OTP to: ${email}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ message: "OTP sent successfully to email" });
+      }, 1000);
+    });
+  }
+
+  static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_PHONE_OTP, { phoneNumber });
+    // return response.data;
+
+    // Stubbed response
+    console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ message: "OTP sent successfully to phone" });
+      }, 1000);
+    });
+  }
+
+  static async verifyEmailOTP(
+    email: string,
+    otp: string
+  ): Promise<{ message: string; verified: boolean }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_EMAIL_OTP, { email, otp });
+    // return response.data;
+
+    // Stubbed response - accepts any 4-digit OTP
+    console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (otp.length === 4) {
+          resolve({ message: "Email OTP verified successfully", verified: true });
+        } else {
+          reject(new Error("Invalid OTP"));
+        }
+      }, 800);
+    });
+  }
+
+  static async verifyPhoneOTP(
+    phoneNumber: string,
+    otp: string
+  ): Promise<{ message: string; verified: boolean }> {
+    // TODO: Replace with actual API call when backend is ready
+    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_PHONE_OTP, { phoneNumber, otp });
+    // return response.data;
+
+    // Stubbed response - accepts any 4-digit OTP
+    console.log(`[STUB] Verifying phone OTP for: ${phoneNumber}, OTP: ${otp}`);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (otp.length === 4) {
+          resolve({ message: "Phone OTP verified successfully", verified: true });
+        } else {
+          reject(new Error("Invalid OTP"));
+        }
+      }, 800);
+    });
+  }
+
+  // ===== Dropdown Data Methods =====
+
+  /**
+   * Get list of states for a country
+   */
+  static async getStates(countryId?: string): Promise<{ value: string; label: string }[]> {
+    console.log(`[STUB] Fetching states for country: ${countryId || 'all'}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const states = [
+          { value: "1", label: "Maharashtra" },
+          { value: "2", label: "Karnataka" },
+          { value: "3", label: "Delhi" },
+          { value: "4", label: "Tamil Nadu" },
+          { value: "5", label: "Gujarat" },
+        ];
+        resolve(states);
+      }, 500);
+    });
+  }
+
+  /**
+   * Get list of cities for a state
+   */
+  static async getCities(stateId: string): Promise<{ value: string; label: string }[]> {
+    console.log(`[STUB] Fetching cities for state: ${stateId}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const cityMap: Record<string, { value: string; label: string }[]> = {
+          "1": [
+            { value: "1", label: "Mumbai" },
+            { value: "2", label: "Pune" },
+            { value: "3", label: "Nagpur" },
+          ],
+          "2": [
+            { value: "4", label: "Bangalore" },
+            { value: "5", label: "Mysore" },
+          ],
+          "3": [
+            { value: "6", label: "New Delhi" },
+            { value: "7", label: "Old Delhi" },
+          ],
+        };
+        resolve(cityMap[stateId] || []);
+      }, 500);
+    });
+  }
+
+  /**
+   * Get list of industries
+   */
+  static async getIndustries(): Promise<{ value: string; label: string }[]> {
+    console.log('[STUB] Fetching industries');
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const industries = [
+          { value: "1", label: "Information Technology" },
+          { value: "2", label: "Construction" },
+          { value: "3", label: "Manufacturing" },
+          { value: "4", label: "Healthcare" },
+          { value: "5", label: "Finance" },
+          { value: "6", label: "Retail" },
+          { value: "7", label: "Education" },
+        ];
+        resolve(industries);
+      }, 500);
+    });
+  }
+
+  /**
+   * Get list of VAT options
+   */
+  static async getVatOptions(): Promise<{ value: string; label: string }[]> {
+    console.log('[STUB] Fetching VAT options');
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const vatOptions = [
+          { value: "1", label: "IE6388047V" },
+          { value: "2", label: "ID9488043M" },
+          { value: "3", label: "GB123456789" },
+          { value: "4", label: "FR12345678901" },
+        ];
+        resolve(vatOptions);
+      }, 500);
+    });
+  }
+
   static async getFiles(clientId: string): Promise<ClientFile[]> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_FILES(clientId));
     return response.data;
@@ -65,9 +249,10 @@ export class ClientAdapter {
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('documentType', documentType);
 
     const response = await uploadAxiosInstance.post(
-      CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType),
+      CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId),
       formData,
       {
         headers: {

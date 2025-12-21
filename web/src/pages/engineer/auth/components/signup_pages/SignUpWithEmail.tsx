@@ -11,9 +11,9 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import EngineerOTPPage from "../EngineerOTPPage";
+import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import logo_light from "@/assets/logo/logo_light.svg";
 
 export interface SignUpFormData {
   email: string;
@@ -49,6 +49,22 @@ const SignUpWithEmail = ({
       terms: false,
     },
   });
+
+  // Send Email OTP mutation
+  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
+    onSuccess: (data) => {
+      console.log("OTP sent successfully:", data);
+      setIsOpen(true);
+    },
+    onError: (error) => {
+      console.error("Failed to send OTP:", error);
+      methods.setError("email", {
+        type: "manual",
+        message: "Failed to send OTP. Please try again.",
+      });
+    },
+  });
+
   // Inside handleOTPVerified in SignUp
   const handleOTPVerified = () => {
     setIsOpen(false);
@@ -63,11 +79,18 @@ const SignUpWithEmail = ({
     });
   };
 
+  const handleResendOTP = () => {
+    const email = methods.getValues("email");
+    sendEmailOTP(email);
+  };
+
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = (data: SignUpFormData) => {
+    sendEmailOTP(data.email);
   };
+
+  const logo_light = assetsConfig.logos.ftLogo;
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -120,13 +143,13 @@ const SignUpWithEmail = ({
           </div>
           <Button
             type="submit"
-            disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
+            disabled={!termsAccepted || isSendingOTP}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
               }`}
           >
-            Create Account
+            {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
         </FormContainer>
         <div
@@ -151,11 +174,14 @@ const SignUpWithEmail = ({
           </Button>
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
+          <EngineerOTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code"
+            description="We sent you an OTP code to your email"
             onClose={() => setIsOpen(false)}
-            onSubmit={handleOTPVerified}
+            handleNavigate={handleOTPVerified}
+            verificationType="email"
+            contact={methods.getValues("email")}
+            onResendOTP={handleResendOTP}
           />
         </Popup>
       </div>

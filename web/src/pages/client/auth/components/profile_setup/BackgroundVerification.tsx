@@ -27,7 +27,7 @@ const BackgroundVerification = () => {
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     navigate(absoluteUrls.client.auth.set_password);
   };
 
@@ -74,8 +74,19 @@ const BackgroundVerification = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-4"
         >
-          <FileUpload name="governmentId" label="Government ID" placeholder="Government ID" required/>
-          <FileUpload name="certificate" label="Certificate" placeholder="Certificate" required/>
+          {/* TODO: Uncomment when Resume/CV upload API is ready
+          Currently hidden until backend endpoint is available for RESUME document type
+          <FileUpload
+            name="resume"
+            label="Resume/CV"
+            placeholder="Upload Resume"
+            accept='.pdf'
+            maxPages={5}
+            validatePDF={true}
+          />
+          */}
+          <FileUpload name="governmentId" label="Government ID" placeholder="Government ID" required />
+          <FileUpload name="certificate" label="Certificate" placeholder="Certificate" required />
           <div className="pt-6">
             <Button
               type="submit"

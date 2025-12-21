@@ -6,11 +6,12 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -21,33 +22,60 @@ import { buildQuery } from "@/utils";
  */
 const BasicDetails = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const params = useParams();
+
+  // Get store values BEFORE initializing form
+  const {
+    signupEmail,
+    signupPhone,
+    emailVerified,
+    mobileVerified,
+    accountType,
+    fullName,
+    email,
+    phone,
+    country,
+    state,
+    city,
+    postalCode,
+    address,
+    companyName,
+    contactPersonName,
+    industry,
+    vat,
+    vatRegistrationNumber,
+    clearStore,
+    markStepCompleted,
+    updateProfileData,
+    setClientId,
+    markRegistrationComplete,
+  } = useClientRegistrationStore();
+
   const formCtx = useForm<ClientBasicDetails>({
     defaultValues: {
-      // Common fields
-      fullName: "",
-      email: "",
-      phone: "",
-      country: "",
-      state: "",
-      city: "",
-      postalCode: "",
-      address: "",
+      // Common fields - restored from store
+      fullName: fullName || "",
+      email: email || signupEmail || "",
+      phone: phone || signupPhone || "",
+      country: country || "",
+      state: state || "",
+      city: city || "",
+      postalCode: postalCode || "",
+      address: address || "",
 
-      // Corporate-specific fields
-      companyName: "",
-      contactPersonName: "",
+      // Corporate-specific fields - restored from store
+      companyName: companyName || "",
+      contactPersonName: contactPersonName || "",
       businessType: params.role,
-      industry: "",
-      vat: "",
-      vatRegistrationNumber: "",
+      industry: industry || "",
+      vat: vat || "",
+      vatRegistrationNumber: vatRegistrationNumber || "",
 
-      // Verification flags
-      isMobileVerified: false,
-      isEmailVerified: false,
+      // Verification flags - restored from store
+      isMobileVerified: mobileVerified,
+      isEmailVerified: emailVerified,
 
-      // Password fields
+      // Password fields - never restored (security)
       password: "",
       confirmPassword: "",
 
@@ -62,25 +90,47 @@ const BasicDetails = () => {
   });
 
   const { showPopup } = usePopupStore();
-
-  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // Signup mutation
   const { mutateAsync: signup, isPending: isSubmitting } = useClientSignup({
-    onSuccess: () => {
-      toast.success("Completed registration successfully");
-      navigate("/engineer/auth");
+    onSuccess: (data) => {
+      console.log("Signup successful:", data);
+
+      // Save client ID to store
+      if (data.id) {
+        setClientId(data.id);
+      }
+
+      // Mark registration as complete (basic profile done)
+      // Documents are optional, so registration is considered complete here
+      markRegistrationComplete();
+
+      toast.success("Profile registered successfully!");
     },
-    onError: (error: any) => {
-      console.error("Submit error:", error);
+    onError: (error) => {
+      console.error("Signup failed:", error);
       toast.error("Registration failed. Please try again.");
     },
   });
+
+  // Validation guard: Check if user reached this page properly
+  useEffect(() => {
+    const hasVerifiedContact = emailVerified || mobileVerified;
+    const hasAccountType = accountType !== null;
+
+    if (!hasVerifiedContact || !hasAccountType) {
+      toast.error("Something went wrong. Please start the registration process from the beginning.");
+      clearStore();
+      navigate(absoluteUrls.client.auth.login);
+    }
+  }, [emailVerified, mobileVerified, accountType, clearStore, navigate]);
+
   const handleSubmit = async (data: ClientBasicDetails) => {
     console.log("Form data:", data);
 
     const frameData = {
       name: data.contactPersonName || data.fullName,
       phoneNumber: data.phone,
-      email: signupEmail,
+      email: signupEmail || data.email,
       password: data.password,
       clientType: data.businessType,
       companyName: data.companyName,
@@ -116,6 +166,8 @@ const BasicDetails = () => {
           action: async (close) => {
             const loginData = await signup(frameData);
             toast.success("Profile details submitted successfully!");
+
+            markStepCompleted(4);
             const param = buildQuery({ id: loginData.id });
             navigate(`${absoluteUrls.client.auth.documents}?${param}`);
             close(true);
@@ -125,18 +177,38 @@ const BasicDetails = () => {
     });
   };
 
-  const { signupEmail, emailVerified, signupPhone, mobileVerified } =
-    location.state || {};
+  // Pre-fill form from store (for fields that might have been edited)
+  useEffect(() => {
+    // Only update if values exist in store (don't override with empty strings)
+    if (signupEmail && !formCtx.getValues("email")) formCtx.setValue("email", signupEmail);
+    if (signupPhone && !formCtx.getValues("phone")) formCtx.setValue("phone", signupPhone);
+  }, [signupEmail, signupPhone, formCtx]);
+
+  // Auto-save form changes to store (optional - for auto-save functionality)
+  useEffect(() => {
+    const subscription = formCtx.watch((data) => {
+      // Save to store on every change
+      updateProfileData({
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        country: data.country,
+        state: data.state,
+        city: data.city,
+        postalCode: data.postalCode,
+        address: data.address,
+        companyName: data.companyName,
+        contactPersonName: data.contactPersonName,
+        industry: data.industry,
+        vat: data.vat,
+        vatRegistrationNumber: data.vatRegistrationNumber,
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, [formCtx, updateProfileData]);
 
   const isMobileVerified = formCtx.watch("isMobileVerified");
   const isEmailVerified = formCtx.watch("isEmailVerified");
-
-  useEffect(() => {
-    if (signupEmail) formCtx.setValue("email", signupEmail);
-    if (signupPhone) formCtx.setValue("phone", signupPhone);
-    if (emailVerified) formCtx.setValue("isEmailVerified", true);
-    if (mobileVerified) formCtx.setValue("isMobileVerified", true);
-  }, [signupEmail, signupPhone, formCtx, emailVerified, mobileVerified]);
 
   useEffect(() => {
     if (isMobileVerified) formCtx.trigger("phone");

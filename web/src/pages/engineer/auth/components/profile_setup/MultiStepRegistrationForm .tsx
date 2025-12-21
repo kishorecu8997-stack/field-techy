@@ -7,7 +7,6 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import type { CompleteRegistrationData } from "../types";
 import BackgroundVerification from "./BackgroundVerification";
-import ProfileSettingPage from "./ProfileSettingPage";
 import SetPassword from "./SetPassword";
 import { toast } from "react-toastify";
 
@@ -28,7 +27,7 @@ const MultiStepRegistrationForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
+  const { isPending: isSubmitting } = useEngineerSignup({
     onSuccess: () => {
       toast.success("Completed registration successfully");
       navigate("/engineer/auth");
@@ -114,11 +113,11 @@ const MultiStepRegistrationForm = () => {
     }
   };
 
-  const submitCompleteForm = async (data: CompleteRegistrationData) => {
+  const submitCompleteForm = async (_: CompleteRegistrationData) => {
     try {
-      await signup(data);
+      // await signup(data);
     } catch (error) {
-      console.error("Submit error:", error);  
+      console.error("Submit error:", error);
     }
   };
 
@@ -129,14 +128,14 @@ const MultiStepRegistrationForm = () => {
   // Step renderer
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
-        return <ProfileSettingPage />;
+      // case 1:
+      //   return <ProfileSettingPage />;
       case 2:
         return <BackgroundVerification />;
       case 3:
         return <SetPassword />;
       default:
-        return <ProfileSettingPage />;
+      // return <ProfileSettingPage />;
     }
   };
 

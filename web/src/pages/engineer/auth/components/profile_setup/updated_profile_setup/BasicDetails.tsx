@@ -71,6 +71,7 @@ const BasicDetails = () => {
           value: true,
           action: async (close) => {
             console.log("Confirmed");
+            //@ts-expect-error Tools are incompitable with string, Array of object expected.
             const loginData = await signup(data);
             toast.success("Profile details submitted successfully!");
             const { id } = loginData;

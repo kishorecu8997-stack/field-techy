@@ -6,7 +6,6 @@ import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp } from "react-icons/io5";
 import { IoWalletOutline } from "react-icons/io5";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
 import {

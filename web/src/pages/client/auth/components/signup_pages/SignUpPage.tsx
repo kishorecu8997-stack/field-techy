@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import SignUpWithEmail from "./SignUpWithEmail";
 import SignUpWithNumber from "./SignUpWithNumber";
 
@@ -16,6 +17,16 @@ import SignUpWithNumber from "./SignUpWithNumber";
  */
 const ClientSignUpPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
+  const { registrationComplete, clearStore } = useClientRegistrationStore();
+
+  // Check if registration is complete on mount
+  useEffect(() => {
+    if (registrationComplete) {
+      // Registration already complete, clear old data
+      console.log('[Registration] Previous registration complete, clearing store');
+      clearStore();
+    }
+  }, [registrationComplete, clearStore]);
 
   return (
     <div className="flex w-full justify-center">

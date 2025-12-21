@@ -8,22 +8,25 @@ import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/Verifie
 import { Controller, useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
-import { useLocation } from "react-router-dom";
-import PaymentMethod from "../PaymentMethod";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { useStates, useCities, useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
 
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const role = window.location.pathname.includes("corporate") ? "corporate" : "home";
   const { control, watch } = ctx;
-  const location = useLocation();
 
-  const {
-    emailVerified,
-    mobileVerified,
-    disableEmail = false,
-    disableMobile = false,
-  } = location.state || {};
+  // Get verification state from store
+  const { emailVerified, mobileVerified } = useClientRegistrationStore();
+
   const country = watch("country");
+  const selectedState = watch("state");
+
+  // Fetch dropdown data from API
+  const { data: states = [], isLoading: statesLoading } = useStates(country?.value);
+  const { data: cities = [], isLoading: citiesLoading } = useCities(selectedState?.value || selectedState);
+  const { data: industries = [], isLoading: industriesLoading } = useIndustries();
+  const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
       {role === "corporate" ? (
@@ -71,7 +74,7 @@ const BasicDetailsFields = () => {
             required
             verified={value}
             setVerified={onChange}
-            disabled={disableMobile}
+            disabled={value}
           />
         )}
       />
@@ -86,7 +89,7 @@ const BasicDetailsFields = () => {
             required
             verified={value}
             setVerified={onChange}
-            disabled={disableEmail}
+            disabled={value}
           />
         )}
       />
@@ -101,23 +104,19 @@ const BasicDetailsFields = () => {
       />
       <SelectField
         name="state"
-        placeholder="State"
-        options={[
-          { value: "1", label: "Maharashtra" },
-          { value: "2", label: "Manchester" },
-        ]}
+        placeholder={statesLoading ? "Loading states..." : "Select State"}
+        options={states}
         required
         label="State"
+        disabled={statesLoading}
       />
       <SelectField
         name="city"
-        placeholder="City"
-        options={[
-          { value: "1", label: "Mumbai" },
-          { value: "2", label: "London" },
-        ]}
+        placeholder={citiesLoading ? "Loading cities..." : "Select City"}
+        options={cities}
         required
         label="City"
+        disabled={citiesLoading || !selectedState}
       />
       <InputField
         name="postalCode"
@@ -152,14 +151,12 @@ const BasicDetailsFields = () => {
           />
           <SelectField
             name="industry"
-            placeholder="Industry"
-            options={[
-              { value: "1", label: "Information Technology" },
-              { value: "2", label: "Construction" },
-            ]}
+            placeholder={industriesLoading ? "Loading industries..." : "Select Industry"}
+            options={industries}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
             label="Industry"
+            disabled={industriesLoading}
           />
           <InputField
             name="address"
@@ -171,13 +168,11 @@ const BasicDetailsFields = () => {
           />
           <SelectField
             name="vat"
-            placeholder="Tax Document (VAT)"
-            options={[
-              { value: "1", label: "IE6388047V" },
-              { value: "2", label: "ID9488043M" },
-            ]}
+            placeholder={vatLoading ? "Loading VAT options..." : "Select VAT Document"}
+            options={vatOptions}
             required
             label="VAT"
+            disabled={vatLoading}
           />
           <InputField
             name="vatRegistrationNumber"

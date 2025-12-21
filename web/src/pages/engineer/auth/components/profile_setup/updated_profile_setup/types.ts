@@ -12,8 +12,8 @@ export interface basicDetails {
   tools: string[];
   serviceCategory: string;
   budget: string;
-  rate: string;
-  experienceYears: string;
+  rate: number;
+  experienceYears: number;
   preferredWorkType: string;
   enableNotifications: boolean;
   educations: string;

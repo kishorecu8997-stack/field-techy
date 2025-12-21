@@ -2,7 +2,6 @@ import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
-import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useGeolocation } from "@/shared/hooks/useGeolocation";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -11,9 +10,6 @@ import { useDeviceStore } from "@/shared/store/useDeviceStore";
 
 /**
  * Props for the AllowAccessPopup component.
- *
- * @property {boolean} accessPopup - Whether the access popup is visible.
- * @property {Dispatch<SetStateAction<boolean>>} setAccessPopup - Setter to toggle popup visibility.
  */
 interface AllowAccessPopupProps {
   accessPopup: boolean;
@@ -25,17 +21,7 @@ interface AllowAccessPopupProps {
 }
 
 /**
- * AllowAccessPopup
- *
- * A small two-step permission popup shown to clients:
- * - First step: ask for location access (shows location icon and description).
- * - Second step: when the user clicks "Allow Access" on the first step, show
- *   the notifications permission step.
- *
- * The component renders nothing when `accessPopup` is false.
- *
- * @param {AllowAccessPopupProps} props - Component props
- * @returns {JSX.Element | null} The popup element when visible or null when hidden
+ * AllowAccessPopup – Two-step Permission Popup
  */
 export default function AllowAccessPopup({
   accessPopup,
@@ -85,19 +71,21 @@ export default function AllowAccessPopup({
         <AiOutlineClose />
       </div>
 
-      {step === PERMISSION_STEPS.LOCATION ? (
+      {!isNotificationStep ? (
         <div className="pb-6 px-10 text-center">
           <img
             src={assetsConfig.icons.location}
-            alt="location"
+            alt="location-icon"
             className="text-center mx-auto my-4"
           />
+
           <p className="text-2xl font-semibold">Access Your Location</p>
           <p className="text-center mt-4 text-lg text-gray-600">
-            Grant access to fetch your current location and provide better
-            services.
+            Easily grant the owner access to fetch current location and send
+            notifications—stay connected, informed, and in control.
           </p>
 
+          {/* Allow Location */}
           <Button
             type="button"
             disabled={locationLoading}
@@ -118,7 +106,8 @@ export default function AllowAccessPopup({
             {locationLoading ? 'Allowing...' : 'Allow Access'}
           </Button>
 
-          <Button
+          {/* Deny Location */}
+          <button
             type="button"
             disabled={locationLoading}
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
@@ -129,20 +118,24 @@ export default function AllowAccessPopup({
             }}
           >
             Deny Access
-          </Button>
+          </button>
         </div>
       ) : (
+        /* STEP 2 — NOTIFICATION PERMISSION */
         <div className="pb-6 px-10 text-center">
           <img
             src={assetsConfig.icons.notification}
-            alt="notification"
+            alt="notification-icon"
             className="text-center mx-auto my-4"
           />
+
           <p className="text-2xl font-semibold">Enable Notifications</p>
           <p className="text-center mt-4 text-lg text-gray-600">
-            Enable notifications to stay informed with important updates.
+            Enable notifications to stay informed with real-time alerts,
+            important updates, and timely reminders.
           </p>
 
+          {/* Allow Notification */}
           <Button
             type="button"
             disabled={notificationLoading}
@@ -162,7 +155,8 @@ export default function AllowAccessPopup({
             {notificationLoading ? 'Allowing...' : 'Allow Access'}
           </Button>
 
-          <Button
+          {/* Deny Notification */}
+          <button
             type="button"
             disabled={notificationLoading}
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
@@ -173,7 +167,7 @@ export default function AllowAccessPopup({
             }}
           >
             Deny Access
-          </Button>
+          </button>
         </div>
       )}
     </Popup>
