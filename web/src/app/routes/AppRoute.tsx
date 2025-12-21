@@ -10,12 +10,6 @@ const SignInPage = React.lazy(
 const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
-const MultiStepRegistrationForm = React.lazy(
-  () =>
-    import(
-      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
-    )
-);
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
 );
@@ -68,10 +62,7 @@ const ClientSignInPage = React.lazy(
 const ClientSignUpPage = React.lazy(
   () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
 );
-const ClientProfileSettingPage = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
-);
+
 const ClientForgetPassword = React.lazy(
   () => import("@/pages/client/auth/components/ForgetPassword")
 );
@@ -81,10 +72,6 @@ const ClientResetPassword = React.lazy(
 
 const ClientAccountType = React.lazy(
   () => import("@/pages/client/auth/components/AccountType")
-);
-const CorporateMultiStepRegistration = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
 );
 
 const ClientBackgroundVerification = React.lazy(
@@ -293,6 +280,34 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
+//updated_profile_setup
+const engineerProfileSetup = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
+);
+const engineerDocuments = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/Documents"
+    )
+);
+
+const clientProfileSetup = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
+);
+
+const clientDocuments = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDocuments"
+    )
+);
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -323,9 +338,17 @@ export const routes = createBrowserRouter([
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
       { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
+      // {
+      //   path: urls.engineer.auth.profile_setup,
+      //   element: withSuspense(MultiStepRegistrationForm),
+      // },
       {
-        path: urls.engineer.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
+        path: urls.engineer.auth.updated_basic_details,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.updated_documents,
+        element: withSuspense(engineerDocuments),
       },
       {
         path: urls.engineer.auth.forget_password,
@@ -401,10 +424,14 @@ export const routes = createBrowserRouter([
         path: urls.client.auth.signup,
         element: withSuspense(ClientSignUpPage),
       },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(ClientProfileSettingPage),
-      },
+      // {
+      //   path: urls.client.auth.profile_setup_home,
+      //   element: withSuspense(clientProfileSetup),
+      // },
+      // {
+      //   path: urls.client.auth.profile_setup_corporate,
+      //   element: withSuspense(clientProfileSetup),
+      // },
       {
         path: urls.client.auth.forget_password,
         element: withSuspense(ClientForgetPassword),
@@ -435,7 +462,11 @@ export const routes = createBrowserRouter([
       },
       {
         path: `${urls.client.auth.profile_setup}/:role`,
-        element: withSuspense(CorporateMultiStepRegistration),
+        element: withSuspense(clientProfileSetup),
+      },
+      {
+        path: urls.client.auth.documents,
+        element: withSuspense(clientDocuments),
       },
     ],
   },
@@ -549,10 +580,6 @@ export const routes = createBrowserRouter([
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.client.auth.login, element: withSuspense(SignInPage) },
       { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
-      },
       {
         path: urls.client.auth.forget_password,
         element: withSuspense(ForgetPassword),

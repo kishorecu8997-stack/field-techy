@@ -10,13 +10,14 @@ import {
 } from "@/shared/libs/utils";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
 
 export interface CardFormData {
   cardNumber: string;
   expDate: string;
   cvv: string;
-  country: string;
+  PaymentCountry: string;
   cardAddress: string;
 }
 
@@ -35,7 +36,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   const methods = useFormContext();
 
   const handleAddCard = async () => {
-    const isValid = await methods.trigger();
+    const isValid = await methods.trigger(["cardAddress", "cvv", "expDate", "cardNumber", "PaymentCountry"]);
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);
@@ -80,7 +81,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
         <SelectField
           label="Country"
-          name="country"
+          name="PaymentCountry"
           placeholder="Country"
           options={countries.map((c) => ({
             value: c.value,

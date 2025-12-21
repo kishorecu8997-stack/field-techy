@@ -305,7 +305,10 @@ export const TagSelectField = ({
                       }
                     }}
                     className={`${inputClassName} ${leftIcon ? "pl-10" : ""
-                      } pr-10 appearance-none`}
+                      } pr-10 appearance-none ${error
+                        ? "!border-red-500 focus:!ring-red-400 focus:!ring-1"
+                        : ""
+                      }`}
                   >
                     <option value="" disabled hidden>
                       {placeholder}
@@ -332,7 +335,7 @@ export const TagSelectField = ({
               )}
 
               {/* Render selected tags */}
-              <div className="flex flex-wrap gap-2 py-2">
+              <div className="flex flex-wrap gap-2 ">
                 {value &&
                   value.map((tagValue: string, index: number) => {
                     // Find the label for display

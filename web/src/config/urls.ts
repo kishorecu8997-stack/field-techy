@@ -46,6 +46,11 @@ export const urls = {
       reset_password: "reset-password",
       set_password: "set-password",
       background_verification: "background-verification",
+
+      //updated_profile_setup
+      updated_basic_details: "updated-basic-details",
+      updated_documents: "updated-documents",
+
     },
   },
   client: {
@@ -77,11 +82,13 @@ export const urls = {
       login: "login",
       signup: "signup",
       account_type: "account-type",
-      profile_setup: "profile-setup",
       forget_password: "forget-password",
       reset_password: "reset-password",
       set_password: "set-password",
       background_verification: "background-verification",
+      profile_setup: "profile-setup",
+      documents: "documents",
+
     },
   },
 
@@ -156,6 +163,8 @@ export const absoluteUrls = {
       background_verification: `${BASE.AUTH}/background-verification`,
       privacy_policy: `${BASE.AUTH}/policy`,
       about_app: `${BASE.AUTH}/about-app`,
+      updated_basic_details: `${BASE.AUTH}/updated-basic-details`,
+      updated_documents: `${BASE.AUTH}/updated-documents`,
     },
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
@@ -174,13 +183,14 @@ export const absoluteUrls = {
     auth: {
       login: `${BASE.CLIENT_AUTH}/login`,
       signup: `${BASE.CLIENT_AUTH}/signup`,
-      profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
       account_type: `${BASE.CLIENT_AUTH}/account-type`,
       forget_password: `${BASE.CLIENT_AUTH}/forget-password`,
       reset_password: `${BASE.CLIENT_AUTH}/reset-password`,
       set_password: `${BASE.CLIENT_AUTH}/set-password`,
       background_verification: `${BASE.CLIENT_AUTH}/background-verification`,
       privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
+      profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
+      documents: `${BASE.CLIENT_AUTH}/documents`,
     },
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,

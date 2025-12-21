@@ -52,7 +52,8 @@ const SignUpWithEmail = ({
   // Inside handleOTPVerified in SignUp
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.engineer.auth.profile_setup, {
+    // navigate(absoluteUrls.engineer.auth.profile_setup, {
+    navigate(absoluteUrls.engineer.auth.updated_basic_details, {
       state: {
         signupEmail: methods.getValues("email"),
         emailVerified: true, // Pre-verified
