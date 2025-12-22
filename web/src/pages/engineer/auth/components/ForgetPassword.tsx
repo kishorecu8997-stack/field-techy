@@ -40,19 +40,18 @@ const ForgetPassword = () => {
   };
 
   return (
-   <div className="flex items-center justify-center max-w-lg md:w-lg ">
-  <div className="p-10 w-full max-w-lg">
-    <div className="text-center mb-6">
-      <div className="flex justify-center mb-8">
-        <img
+    <div className="flex items-center justify-center max-w-lg md:w-lg ">
+      <div className="p-10 w-full max-w-lg">
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-8">
+            <img
               src={assetsConfig.logos.companyLogo}
               alt="logo"
               className="h-16 w-20 sm:h-20 sm:w-24"
-
             />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
-          <h2 className="dark:text-gray-300 ">
+          <h2 className="text-base font-normal text-gray-700 dark:text-gray-300 ">
             Enter your email id address to reset your password.
           </h2>
         </div>
@@ -87,11 +86,11 @@ const ForgetPassword = () => {
             onClose={() => setIsOpen(false)}
             // handleNavigate={() => navigate(absoluteUrls.engineer.auth.reset_password)}
             handleNavigate={() => {
-               if (location.pathname.includes("engineer")) {
-                 navigate(absoluteUrls.engineer.auth.reset_password);
-               } else if (location.pathname.includes("client")) {
-                 navigate(absoluteUrls.client.auth.reset_password);
-               }
+              if (location.pathname.includes("engineer")) {
+                navigate(absoluteUrls.engineer.auth.reset_password);
+              } else if (location.pathname.includes("client")) {
+                navigate(absoluteUrls.client.auth.reset_password);
+              }
             }}
           />
         </Popup>

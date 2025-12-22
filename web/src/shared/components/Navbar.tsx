@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import {  NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
@@ -115,20 +115,20 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  My Jobs
+                  <span>My Jobs</span>
                 </div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div
-                  onClick={() => {
-                    onDrawerToggle();
-                    setActiveKey("myEarning");
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  Earning
-                </div>
+              <div
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  onDrawerToggle();
+                  setActiveKey("myEarning");
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Earning
               </div>
+
               <div
                 className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
                 onClick={onDrawerToggle}

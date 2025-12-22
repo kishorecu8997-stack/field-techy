@@ -71,10 +71,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const sizeStyles: Record<string, string> = {
-    sm: "h-8 px-3 text-sm min-h-[44px] min-w-[44px]",
-    md: "h-10 px-4 text-sm min-h-[44px] min-w-[44px]",
-    lg: "h-12 px-6 text-base min-h-[44px] min-w-[44px]",
-    icon: "h-10 w-10 min-h-[44px] min-w-[44px]",
+     sm: "h-11 px-3 text-sm",
+    md: "h-11 px-4 text-sm",
+    lg: "h-12 px-6 text-base",
+    icon: "h-11 w-11",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
