@@ -60,6 +60,12 @@ const ExploreJobs = React.lazy(
 const ExploreSavedJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreSavedJobs")
 );
+const NotificationListPage = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/account_settings/notification/NotificationListPage"
+    )
+);
 
 //client
 const ClientSignInPage = React.lazy(
@@ -387,6 +393,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.chat,
         element: withSuspense(EngineerChatPage),
+      },
+      {
+        path: urls.engineer.home.notifications,
+        element: withSuspense(NotificationListPage),
       },
     ],
   },
