@@ -58,7 +58,7 @@ export default function Header() {
             <a href="#overview" className="hover:text-[#95cc5c]">
               Overview
             </a>
-            <a href="#How_it_works" className="hover:text-[#95cc5c]">
+            <a href="#how_it_works" className="hover:text-[#95cc5c]">
               How It Works
             </a>
             <a href="#key_features" className="hover:text-[#95cc5c]">
@@ -104,7 +104,7 @@ export default function Header() {
               <a href="#overview" onClick={() => setIsMenuOpen(false)}>
                 Overview
               </a>
-              <a href="#How_it_works" onClick={() => setIsMenuOpen(false)}>
+              <a href="#how_it_works" onClick={() => setIsMenuOpen(false)}>
                 How It Works
               </a>
               <a href="#key_features" onClick={() => setIsMenuOpen(false)}>
