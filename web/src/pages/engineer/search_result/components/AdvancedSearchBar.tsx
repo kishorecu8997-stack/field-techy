@@ -32,10 +32,8 @@ const AdvancedSearchBar: React.FC<{
   const locationOptions = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'];
   const primaryLanguageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese'];
   const slaLevelOptions = ['4 hours', '6 hours', 'next-day', 'thereafter'];
-
   const skillsOptions = skillsData.skills.map(skill => skill.label);
   const toolsOptions = toolsData.tools.map(tool => tool.label);
-
   // Save filters to session storage whenever they change
   useEffect(() => {
     sessionStorage.setItem('advancedSearchFilters', JSON.stringify(localFilters));
