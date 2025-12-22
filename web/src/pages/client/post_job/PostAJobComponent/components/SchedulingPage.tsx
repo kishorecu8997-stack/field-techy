@@ -7,9 +7,7 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import {
-  validateCurrentOrFutureDate,
-} from "../../../post_job/Validates";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
@@ -80,9 +78,12 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       selectedDateOnly.setHours(0, 0, 0, 0);
       if (selectedDateOnly.getTime() === today.getTime()) {
         const now = new Date();
-         const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = (now.getMinutes() + 1).toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+        const hours24 = now.getHours();
+        const minutes = (now.getMinutes() + 1).toString().padStart(2, "0");
+        const period = hours24 >= 12 ? "PM" : "AM";
+        const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+        const hours = hours12.toString().padStart(2, "0");
+        return `${hours}:${minutes} ${period}`;
       }
     }
     return undefined;
@@ -230,8 +231,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
@@ -240,12 +240,9 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
-                            minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             {...field}
                             required
-                            rules={{
-                            validate: (value) => validateCurrentOrFutureDate(value),
-                            }}
                           />
                         </>
                       )}
