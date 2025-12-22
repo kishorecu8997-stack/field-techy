@@ -20,13 +20,10 @@ const FAQ = () => {
         ? item.description.toLowerCase().includes(searchText)
         : false;
 
-      const sectionMatch = section.title
-        .toLowerCase()
-        .includes(searchText);
+      const sectionMatch = section.title.toLowerCase().includes(searchText);
 
       return titleMatch || descriptionMatch || sectionMatch;
     });
-
     return {
       ...section,
       items: filteredItems,
@@ -41,7 +38,6 @@ const FAQ = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader title="FAQ" onSortChange={() => {}} isShowSort={false} />
-
         {/* Search */}
         <div className="flex justify-end mt-6 mb-6">
           <input
@@ -59,15 +55,11 @@ const FAQ = () => {
         {filteredData.length > 0 ? (
           filteredData.map((section, secIndex) => (
             <div key={secIndex} className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">
-                {section.title}
-              </h2>
-
+              <h2 className="text-lg font-semibold mb-4">{section.title}</h2>
               <div className="space-y-4">
                 {section.items.map((item, index) => {
                   const globalIndex = secIndex * 100 + index;
                   const isExpanded = expandedIndex === globalIndex;
-
                   return (
                     <div
                       key={index}
@@ -82,8 +74,7 @@ const FAQ = () => {
                           {isExpanded ? "−" : "+"}
                         </span>
                       </div>
-
-                      {isExpanded && (
+                     {isExpanded && (
                         <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                           {item.description}
                         </div>

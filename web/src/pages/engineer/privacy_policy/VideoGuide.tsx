@@ -1,6 +1,6 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { videoGuidanceData } from "@/dummy_data/videoGuidanceData";
-import VideoCard from "@/shared/components/VideoCard"; // create this
+import VideoCard from "@/shared/components/VideoCard";
 
 const VideoGuidance = () => {
   return (
@@ -12,7 +12,7 @@ const VideoGuidance = () => {
           isShowSort={false}
         />
 
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           {videoGuidanceData.map((video, index) => (
             <VideoCard
               key={index}
