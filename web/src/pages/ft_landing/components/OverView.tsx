@@ -7,7 +7,7 @@ import { features } from "../type";
  */
 export default function Overview() {
   return (
-    <section className="bg-white dark:bg-gray-800">
+    <section id="overview" className="bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-xl py-12 md:text-2xl font-semibold text-gray-800 dark:text-white">

@@ -8,7 +8,10 @@ import { keyFeatures } from "../type";
  */
 export default function KeyFeatures() {
   return (
-    <div className="min-h-screen  transition-colors duration-300">
+    <div
+      className="min-h-screen  transition-colors duration-300"
+      id="key_features"
+    >
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="text-center mb-12">
           <h1 className="text-xl md:text-2xl font-semibold mb-2 text-gray-900 dark:text-white">

@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { LuMenu } from "react-icons/lu";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { Link } from "react-router-dom";
 import UserTypeDropdown from "./UserTypeSelector";
 
 /**
@@ -43,28 +42,28 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-14">
           <div>
-            <Link to="/landing">
+            <a href="/landing">
               <img
                 src={assetsConfig.logos.ftLogoWhite}
                 alt="FT Logo"
                 className="w-auto h-8"
               />
-            </Link>
+            </a>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8 text-sm">
-            <Link to="" className="hover:text-[#95cc5c]">
+            <a href="#home" className="hover:text-[#95cc5c]">
               Home
-            </Link>
-            <Link to="" className="hover:text-[#95cc5c]">
+            </a>
+            <a href="#overview" className="hover:text-[#95cc5c]">
               Overview
-            </Link>
-            <Link to="" className="hover:text-[#95cc5c]">
+            </a>
+            <a href="#How_it_works" className="hover:text-[#95cc5c]">
               How It Works
-            </Link>
-            <Link to="" className="hover:text-[#95cc5c]">
+            </a>
+            <a href="#key_features" className="hover:text-[#95cc5c]">
               Features
-            </Link>
+            </a>
 
             {/*Attach ref to trigger */}
             <div
@@ -99,16 +98,18 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[#026e71]">
             <div className="flex flex-col space-y-4 text-sm">
-              {["Home", "Overview", "How It Works", "Features"].map((item) => (
-                <Link
-                  key={item}
-                  to=""
-                  className="hover:text-[#95cc5c]"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item}
-                </Link>
-              ))}
+              <a href="#home" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </a>
+              <a href="#overview" onClick={() => setIsMenuOpen(false)}>
+                Overview
+              </a>
+              <a href="#How_it_works" onClick={() => setIsMenuOpen(false)}>
+                How It Works
+              </a>
+              <a href="#key_features" onClick={() => setIsMenuOpen(false)}>
+                Features
+              </a>
               <div
                 className="font-medium flex gap-1 items-center"
                 ref={triggerRef}

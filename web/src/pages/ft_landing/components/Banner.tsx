@@ -7,7 +7,7 @@ import { assetsConfig } from "@/assets";
  */
 export default function Banner() {
   return (
-    <div className="bg-[#024e51] text-white py-8">
+    <div className="bg-[#024e51] text-white py-8" id="home">
       <div className="container mx-auto px-4">
         <div className="md:flex items-center gap-8">
           {/* Left Content */}
