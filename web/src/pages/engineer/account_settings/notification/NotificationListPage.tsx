@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { usePopupStore } from "@/shared/store/popupStore";
 import type { NotificationProps } from "../types";
+import { absoluteUrls } from "@/config/urls";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
@@ -20,6 +22,7 @@ import type { NotificationProps } from "../types";
  * Selecting a notification opens a detailed modal or popup view.
  */
 const NotificationListPage = () => {
+  const navigate = useNavigate();
   const { showPopup, closePopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState("all");
@@ -57,9 +60,42 @@ const NotificationListPage = () => {
           return "Go to Wallet";
       }
     };
+    const pathname = (type: string) => {
+      switch (type) {
+        case "job_offer":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "invitation":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "revision":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "payment_released":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "proposal_received":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "application_viewed":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "view":
+          return absoluteUrls.engineer.home.my_jobs;
+        case "withdrawal":
+          return absoluteUrls.engineer.home.explore_jobs;
+      }
+    };
+
+    const handleclick = () => {
+      navigate(`${pathname(type)}`), scrollTo(0, 0), closePopup();
+    };
+
     return (
       <div className="flex flex-row mt-2 space-x-4">
-        <Button className=" bg-teal-800">{btnname(type)}</Button>
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleclick();
+          }}
+          className=" bg-teal-800"
+        >
+          {btnname(type)}
+        </Button>
         <Button variant="outline">Mark as Read</Button>
       </div>
     );
