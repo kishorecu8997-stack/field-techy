@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import type { Filters, SortOption } from '../types';
-import skillsData from '@/dummy_data/skills.json';
-import toolsData from '@/dummy_data/tools.json';
+import React, { useState, useEffect } from "react";
+import type { Filters, SortOption } from "../types";
+import skillsData from "@/dummy_data/skills.json";
+import toolsData from "@/dummy_data/tools.json";
 
 /**
  * AdvancedSearchBar component provides advanced filtering options for job listings
@@ -19,33 +19,60 @@ const AdvancedSearchBar: React.FC<{
   sortOption: SortOption;
   onSortChange: (sort: SortOption) => void;
   onSaveCurrentSearch: () => void;
-}> = ({ onFilterChange, currentFilters, sortOption, onSortChange, onSaveCurrentSearch }) => {
+}> = ({
+  onFilterChange,
+  currentFilters,
+  sortOption,
+  onSortChange,
+  onSaveCurrentSearch,
+}) => {
   const [localFilters, setLocalFilters] = useState<Filters>(() => {
     // Load filters from session storage on initial render
-    const savedFilters = sessionStorage.getItem('advancedSearchFilters');
+    const savedFilters = sessionStorage.getItem("advancedSearchFilters");
     return savedFilters ? JSON.parse(savedFilters) : currentFilters;
   });
 
-  const serviceTypeOptions = ['Dedicated', 'Dispatch', 'Scheduled'];
-  const experienceLevelOptions = ['Entry', 'Mid', 'Senior', 'Lead'];
-  const jobTypeOptions = ['Full-time', 'Part-time', 'Contract'];
-  const locationTypeOptions = ['On-site', 'Remote', 'Hybrid'];
-  const locationOptions = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'];
-  const primaryLanguageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese'];
-  const slaLevelOptions = ['4 hours', '6 hours', 'next-day', 'thereafter'];
+  const serviceTypeOptions = ["Dedicated", "Dispatch", "Scheduled"];
+  const experienceLevelOptions = ["Entry", "Mid", "Senior", "Lead"];
+  const jobTypeOptions = ["Full-time", "Part-time", "Contract"];
+  const locationTypeOptions = ["On-site", "Remote", "Hybrid"];
+  const locationOptions = [
+    "New York",
+    "Los Angeles",
+    "Chicago",
+    "Houston",
+    "Phoenix",
+    "Philadelphia",
+    "San Antonio",
+    "San Diego",
+    "Dallas",
+    "San Jose",
+  ];
+  const primaryLanguageOptions = [
+    "English",
+    "Spanish",
+    "French",
+    "German",
+    "Chinese",
+    "Japanese",
+  ];
+  const slaLevelOptions = ["4 hours", "6 hours", "next-day", "thereafter"];
 
-  const skillsOptions = skillsData.skills.map(skill => skill.label);
-  const toolsOptions = toolsData.tools.map(tool => tool.label);
+  const skillsOptions = skillsData.skills.map((skill) => skill.label);
+  const toolsOptions = toolsData.tools.map((tool) => tool.label);
 
   // Save filters to session storage whenever they change
   useEffect(() => {
-    sessionStorage.setItem('advancedSearchFilters', JSON.stringify(localFilters));
+    sessionStorage.setItem(
+      "advancedSearchFilters",
+      JSON.stringify(localFilters)
+    );
   }, [localFilters]);
 
   const handleMultiSelectChange = (field: keyof Filters, value: string) => {
     const currentValues = localFilters[field] as string[];
     const newValues = currentValues.includes(value)
-      ? currentValues.filter(v => v !== value)
+      ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
     const updatedFilters = { ...localFilters, [field]: newValues };
     setLocalFilters(updatedFilters);
@@ -80,7 +107,11 @@ const AdvancedSearchBar: React.FC<{
     if (localFilters.primaryLanguage) count++;
     if (localFilters.slaLevel) count++;
     if (localFilters.locationRadius !== 0) count++;
-    if (localFilters.budgetRange.min !== 0 || localFilters.budgetRange.max !== 10000) count++;
+    if (
+      localFilters.budgetRange.min !== 0 ||
+      localFilters.budgetRange.max !== 10000
+    )
+      count++;
     if (localFilters.tools.length > 0) count++;
     if (localFilters.skills.length > 0) count++;
     return count;
@@ -101,8 +132,8 @@ const AdvancedSearchBar: React.FC<{
       locationType: [],
       locationRadius: 0,
       budgetRange: { min: 0, max: 10000 },
-      primaryLanguage: '',
-      slaLevel: '',
+      primaryLanguage: "",
+      slaLevel: "",
     };
     setLocalFilters(defaultFilters);
     onFilterChange(defaultFilters);
@@ -125,6 +156,7 @@ const AdvancedSearchBar: React.FC<{
           </button>
           <button
             onClick={handleClearAllFilters}
+            aria-label="Clear all active filters"
             className="px-4 py-2 text-base bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 transition-colors font-medium"
           >
             Clear All Filters
@@ -142,7 +174,8 @@ const AdvancedSearchBar: React.FC<{
         </div>
         {getActiveFilterCount() > 0 && (
           <span className="px-3 py-2 text-sm bg-blue-100 text-blue-800 rounded-full dark:bg-blue-900 dark:text-blue-200 font-medium">
-            {getActiveFilterCount()} filter{getActiveFilterCount() !== 1 ? 's' : ''} applied
+            {getActiveFilterCount()} filter
+            {getActiveFilterCount() !== 1 ? "s" : ""} applied
           </span>
         )}
       </div>
@@ -151,16 +184,18 @@ const AdvancedSearchBar: React.FC<{
       <div className="grid grid-cols-6 gap-4 mb-4">
         {/* Service Type */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Service Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Service Type
+          </label>
           <div className="flex flex-wrap gap-1">
-            {serviceTypeOptions.map(option => (
+            {serviceTypeOptions.map((option) => (
               <button
                 key={option}
-                onClick={() => handleMultiSelectChange('serviceType', option)}
+                onClick={() => handleMultiSelectChange("serviceType", option)}
                 className={`px-2 py-1 text-xs rounded-full transition-colors ${
                   (localFilters.serviceType as string[]).includes(option)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
                 }`}
               >
                 {option}
@@ -171,16 +206,20 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Experience Level */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Experience Level</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Experience Level
+          </label>
           <div className="flex flex-wrap gap-1">
-            {experienceLevelOptions.map(option => (
+            {experienceLevelOptions.map((option) => (
               <button
                 key={option}
-                onClick={() => handleMultiSelectChange('experienceLevel', option)}
+                onClick={() =>
+                  handleMultiSelectChange("experienceLevel", option)
+                }
                 className={`px-2 py-1 text-xs rounded-full transition-colors ${
                   (localFilters.experienceLevel as string[]).includes(option)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
                 }`}
               >
                 {option}
@@ -191,16 +230,18 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Job Type */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Job Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Job Type
+          </label>
           <div className="flex flex-wrap gap-1">
-            {jobTypeOptions.map(option => (
+            {jobTypeOptions.map((option) => (
               <button
                 key={option}
-                onClick={() => handleMultiSelectChange('jobType', option)}
+                onClick={() => handleMultiSelectChange("jobType", option)}
                 className={`px-2 py-1 text-xs rounded-full transition-colors ${
                   (localFilters.jobType as string[]).includes(option)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
                 }`}
               >
                 {option}
@@ -211,16 +252,18 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Location Type */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Location Type
+          </label>
           <div className="flex flex-wrap gap-1">
-            {locationTypeOptions.map(option => (
+            {locationTypeOptions.map((option) => (
               <button
                 key={option}
-                onClick={() => handleMultiSelectChange('locationType', option)}
+                onClick={() => handleMultiSelectChange("locationType", option)}
                 className={`px-2 py-1 text-xs rounded-full transition-colors ${
                   (localFilters.locationType as string[]).includes(option)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
                 }`}
               >
                 {option}
@@ -231,30 +274,42 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Primary Language */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Primary Language</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Primary Language
+          </label>
           <select
             value={localFilters.primaryLanguage}
-            onChange={(e) => handleSingleSelectChange('primaryLanguage', e.target.value)}
+            onChange={(e) =>
+              handleSingleSelectChange("primaryLanguage", e.target.value)
+            }
             className="w-full text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="">Select Language</option>
-            {primaryLanguageOptions.map(lang => (
-              <option key={lang} value={lang}>{lang}</option>
+            {primaryLanguageOptions.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
             ))}
           </select>
         </div>
 
         {/* SLA Level */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SLA Level</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            SLA Level
+          </label>
           <select
             value={localFilters.slaLevel}
-            onChange={(e) => handleSingleSelectChange('slaLevel', e.target.value)}
+            onChange={(e) =>
+              handleSingleSelectChange("slaLevel", e.target.value)
+            }
             className="w-full text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="">Select SLA Level</option>
-            {slaLevelOptions.map(sla => (
-              <option key={sla} value={sla}>{sla}</option>
+            {slaLevelOptions.map((sla) => (
+              <option key={sla} value={sla}>
+                {sla}
+              </option>
             ))}
           </select>
         </div>
@@ -272,7 +327,9 @@ const AdvancedSearchBar: React.FC<{
             min="0"
             max="150"
             value={localFilters.locationRadius}
-            onChange={(e) => handleSliderChange('locationRadius', parseInt(e.target.value))}
+            onChange={(e) =>
+              handleSliderChange("locationRadius", parseInt(e.target.value))
+            }
             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
           />
         </div>
@@ -280,7 +337,8 @@ const AdvancedSearchBar: React.FC<{
         {/* Budget Range */}
         <div className="flex flex-col justify-center">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Budget Range: ${localFilters.budgetRange.min} - ${localFilters.budgetRange.max}
+            Budget Range: ${localFilters.budgetRange.min} - $
+            {localFilters.budgetRange.max}
           </label>
           <div className="flex gap-2">
             <input
@@ -288,7 +346,12 @@ const AdvancedSearchBar: React.FC<{
               min="0"
               max="10000"
               value={localFilters.budgetRange.min}
-              onChange={(e) => handleBudgetRangeChange(parseInt(e.target.value), localFilters.budgetRange.max)}
+              onChange={(e) =>
+                handleBudgetRangeChange(
+                  parseInt(e.target.value),
+                  localFilters.budgetRange.max
+                )
+              }
               className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
             <input
@@ -296,7 +359,12 @@ const AdvancedSearchBar: React.FC<{
               min="0"
               max="10000"
               value={localFilters.budgetRange.max}
-              onChange={(e) => handleBudgetRangeChange(localFilters.budgetRange.min, parseInt(e.target.value))}
+              onChange={(e) =>
+                handleBudgetRangeChange(
+                  localFilters.budgetRange.min,
+                  parseInt(e.target.value)
+                )
+              }
               className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
             />
           </div>
@@ -304,14 +372,19 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Tools */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tools</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Tools
+          </label>
           <div className="max-h-20 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-700">
-            {toolsOptions.map(tool => (
-              <label key={tool} className="flex items-center text-sm text-gray-900 dark:text-gray-100">
+            {toolsOptions.map((tool) => (
+              <label
+                key={tool}
+                className="flex items-center text-sm text-gray-900 dark:text-gray-100"
+              >
                 <input
                   type="checkbox"
                   checked={(localFilters.tools as string[]).includes(tool)}
-                  onChange={() => handleMultiSelectChange('tools', tool)}
+                  onChange={() => handleMultiSelectChange("tools", tool)}
                   className="mr-2"
                 />
                 {tool}
@@ -322,14 +395,19 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Skills */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Skills</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Skills
+          </label>
           <div className="max-h-20 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-700">
-            {skillsOptions.map(skill => (
-              <label key={skill} className="flex items-center text-sm text-gray-900 dark:text-gray-100">
+            {skillsOptions.map((skill) => (
+              <label
+                key={skill}
+                className="flex items-center text-sm text-gray-900 dark:text-gray-100"
+              >
                 <input
                   type="checkbox"
                   checked={(localFilters.skills as string[]).includes(skill)}
-                  onChange={() => handleMultiSelectChange('skills', skill)}
+                  onChange={() => handleMultiSelectChange("skills", skill)}
                   className="mr-2"
                 />
                 {skill}
@@ -340,14 +418,21 @@ const AdvancedSearchBar: React.FC<{
 
         {/* Location */}
         <div className="min-h-[80px]">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Location
+          </label>
           <div className="max-h-20 overflow-y-auto border border-gray-300 dark:border-gray-600 rounded-md p-2 bg-white dark:bg-gray-700">
-            {locationOptions.map(location => (
-              <label key={location} className="flex items-center text-sm text-gray-900 dark:text-gray-100">
+            {locationOptions.map((location) => (
+              <label
+                key={location}
+                className="flex items-center text-sm text-gray-900 dark:text-gray-100"
+              >
                 <input
                   type="checkbox"
-                  checked={(localFilters.location as string[]).includes(location)}
-                  onChange={() => handleMultiSelectChange('location', location)}
+                  checked={(localFilters.location as string[]).includes(
+                    location
+                  )}
+                  onChange={() => handleMultiSelectChange("location", location)}
                   className="mr-2"
                 />
                 {location}
