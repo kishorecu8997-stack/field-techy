@@ -72,12 +72,12 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
       </div>
       
-      { <div className="mt-3">
+      <div className="mt-3">
         <JobStatusBadge status={status} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
           <span className="font-medium">Allocation:</span> {allocationType}
         </div>
-      </div> }
+      </div> 
     </Link>
   );
 };

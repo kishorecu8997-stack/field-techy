@@ -15,9 +15,9 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const statusOptions = [
-    "All Jobs", "Applied", "In Progress", "Completed", "Notified", 
+    "All Jobs", "Notified", 
     "Unallocated", "Partially Assigned", "Assigned", "Selected", 
-    "Draft", "Escalation In Progress", "Work In Progress", "Closed", "Hold",
+    "Draft","Canceled","Escalation In Progress", "Work In Progress", "Closed", "Hold",
   ];
 
   // Close dropdown when clicking outside
@@ -41,7 +41,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
         <div className="relative w-full max-w-[20rem]" ref={dropdownRef}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`w-full  flex items-center justify-between px-4 py-2 rounded-lg text-sm font-medium border transition-all outline-none shadow-sm ${
+            className={`w-full flex items-center justify-between px-4 py-2 rounded-lg text-sm font-medium border transition-all outline-none shadow-sm ${
               isSpecificActive
                 ? "bg-teal-800 text-white border-teal-900"
                 : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50"
@@ -79,7 +79,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
         <div className="relative inline-block group">
           <CgDanger className="bg-gray-200 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors" />
           <div
-            className="absolute left-1/2 md:left-full-translate-x-1/2 mt-2
+            className="absolute left-1/2 md:left-full -translate-x-1/2 mt-2
                 hidden group-hover:block
                 whitespace-nowrap
                 bg-gray-900 text-white text-xs
@@ -87,7 +87,6 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
           >
            Job Status Guide <br/>
             ---------------------- <br/>
-            New = Indigo <br/>
             Applied = Blue <br/>
             In Progress = Yellow <br/>
             Completed = Green <br/>

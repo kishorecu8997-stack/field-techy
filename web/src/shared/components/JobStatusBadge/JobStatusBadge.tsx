@@ -1,4 +1,5 @@
 import { STATUS_COLOR_MAP } from "./StatusConfig";
+import React from "react";
 
 interface JobStatusBadgeProps {
   status?: string;

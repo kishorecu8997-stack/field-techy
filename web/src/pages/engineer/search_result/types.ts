@@ -10,17 +10,17 @@ export const JOB_STATUSES = {
   inprogress: "inprogress",
   new: "new",
   offer: "offer",
-  Notified: "Notified",
-  Unallocated: "Unallocated",
-  PartiallyAssigned: "Partially Assigned",
-  Assigned: "Assigned",
-  Selected: "Selected",
-  Hold: "Hold",
-  Draft: "Draft",
-  Canceled: "Canceled",
-  EscalationInProgress: "Escalation In Progress",
-  WorkInProgress: "Work In Progress", 
-  Closed: "Closed"
+  notified: "Notified",
+  unallocated: "Unallocated",
+  partiallyAssigned: "Partially Assigned",
+  assigned: "Assigned",
+  selected: "Selected",
+  hold: "Hold",
+  draft: "Draft",
+  canceled: "Canceled",
+  escalationInProgress: "Escalation In Progress",
+  workInProgress: "Work In Progress", 
+  closed: "Closed"
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -104,7 +104,6 @@ export const OfferedJobStatus = {
   declined: "declined",
   started: "started",
   checkedIn: "checked-in",
-  
 };
 
 export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];

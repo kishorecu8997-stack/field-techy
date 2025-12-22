@@ -60,7 +60,7 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
       case "Selected":
         return "Selected";
       case "Hold":
-        return "On Hold";
+        return "Hold";
       case "Draft":
         return "Draft";
       case "Canceled":
