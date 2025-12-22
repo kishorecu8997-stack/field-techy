@@ -7,9 +7,7 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import {
-  validateCurrentOrFutureDate,
-} from "../../../post_job/Validates";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
@@ -80,8 +78,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       selectedDateOnly.setHours(0, 0, 0, 0);
       if (selectedDateOnly.getTime() === today.getTime()) {
         const now = new Date();
-         const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = (now.getMinutes() + 1).toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = (now.getMinutes() + 1).toString().padStart(2, "0");
         return `${hours}:${minutes}`;
       }
     }
@@ -440,8 +438,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -453,11 +450,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select start date"
                             {...field}
                             required
-                            minDate={new Date(new Date().setHours(0, 0, 0, 0))} 
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             maxDate={endDate ? endDate : null}
-                            rules={{
-                            validate: (value) => validateCurrentOrFutureDate(value),
-                            }}
                           />
                         </>
                       )}
@@ -479,8 +473,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="endDate"
                       rules={{
-                        validate: (value) =>
-                          validateCurrentOrFutureDate(value),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
