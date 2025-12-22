@@ -31,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
-  const notiflength = 20;
+  const notificationCount = 20;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -165,7 +165,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         >
           <FaBell size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-            {notiflength}
+            {notificationCount}
           </span>
         </div>
         <div
