@@ -188,8 +188,8 @@ const NotificationListPage = () => {
             Stay upto date about all activities
           </p>
         </div>
-        <div className="flex flex-row justify-between">
-          <div className="flex flex-row space-x-4">
+        <div className="flex flex-col lg:flex-row justify-between">
+          <div className="flex flex-wrap space-x-4">
             {Titles.map((title) => (
               <div
                 onClick={() => {
@@ -204,8 +204,10 @@ const NotificationListPage = () => {
             ))}
           </div>
           <div className="flex items-center flex-row gap-x-5">
-            <div className="font-semibold text-teal-800">Mark all as read</div>
-            <div className="flex flex-row border border-gray-500 rounded-sm py-1 px-4">
+            <div className="hidden lg:font-semibold text-teal-800">
+              Mark all as read
+            </div>
+            <div className="flex flex-row border w-full border-gray-500 rounded-sm mt-4 lg:mt-0 py-1 px-4">
               <CiSearch className="text-2xl text-gray-500" />
               <input
                 value={search}
@@ -226,8 +228,8 @@ const NotificationListPage = () => {
                 className="bg-gray-100 rounded-md p-3 cursor-pointer"
               >
                 <div className="flex flex-row justify-between">
-                  <div className="flex flex-row gap-x-4">
-                    <div className="flex justify-center items-center text-2xl size-10 text-white bg-teal-800 rounded-full">
+                  <div className="flex flex-col md:flex-row gap-x-4">
+                    <div className="flex justify-center items-center text-2xl size-10 text-white bg-teal-800 rounded-full mb-3 md:mb-0">
                       {IconRender(`${notifications.type}`)}
                     </div>
                     <div className="flex flex-col">
