@@ -68,23 +68,33 @@ export default function Header() {
             {/*Attach ref to trigger */}
             <div
               ref={triggerRef}
+              role="button"
               onClick={() => setIsLoginFor(!isLoginFor)}
               className="bg-[#95cc5c] flex items-center cursor-pointer text-black px-6 py-2 rounded-full font-medium hover:bg-[#85b850] w-fit"
             >
               Login for
               <MdKeyboardArrowDown
-                className={`${
-                  isLoginFor ? "rotate-180 text-xl" : "text-xl"
-                } "ml-1" `}
+                className={`ml-1 text-xl transition-transform ${
+                  isLoginFor ? "rotate-180" : ""
+                }`}
               />
             </div>
           </nav>
 
           {/* Mobile Menu Button */}
           <div
+            role="button"
+            tabIndex={0}
             className="md:hidden text-white focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setIsMenuOpen(!isMenuOpen);
+              }
+            }}
           >
             {!isMenuOpen ? (
               <LuMenu className="h-6 w-6" />
@@ -119,7 +129,7 @@ export default function Header() {
                 <MdKeyboardArrowDown
                   className={`${
                     isLoginFor ? "rotate-180 text-xl" : "text-xl"
-                  } "ml-1" `}
+                  } ml-1`}
                 />
               </div>
             </div>

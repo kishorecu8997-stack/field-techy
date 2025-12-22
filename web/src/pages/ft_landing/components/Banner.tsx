@@ -1,4 +1,5 @@
 import { assetsConfig } from "@/assets";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Banner component for the homepage.
@@ -23,12 +24,12 @@ export default function Banner() {
             </p>
 
             <div className="flex text-sm sm:flex-row gap-4 pt-2">
-              <div className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2  rounded-full font-medium hover:bg-[#85b850] w-fit">
+              <Button variant="no_style" className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2  rounded-full font-medium hover:bg-[#85b850] w-fit">
                 Get Started
-              </div>
-              <div className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-[#85b850] hover:text-black w-fit">
+              </Button>
+              <Button variant="no_style" className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-[#85b850] hover:text-black w-fit">
                 Book a Demo
-              </div>
+              </Button>
             </div>
 
             <div className="items-center gap-2 pt-4">

@@ -8,9 +8,9 @@ import { features } from "../type";
 export default function Overview() {
   return (
     <section id="overview" className="bg-white dark:bg-gray-800">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-xl py-12 md:text-2xl font-semibold text-gray-800 dark:text-white">
+          <h2 className="text-xl pt-12 md:text-2xl font-semibold text-gray-800 dark:text-white">
             Modern and Intuitive Platform for Job <br /> Services and Work Flow
           </h2>
           <p className="mt-3 text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">

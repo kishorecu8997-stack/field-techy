@@ -54,12 +54,11 @@ export default function KeyFeatures() {
                       {feature.items?.map((item, idx) => (
                         <li key={idx} className="flex items-center">
                           <span className="mr-2">•</span>
-                          <ol>{item}</ol>
+                          <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-
                   <div className="absolute rounded-4xl rounded-br-[38%]"></div>
                 </>
               )}

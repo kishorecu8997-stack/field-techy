@@ -3,17 +3,10 @@ import { forwardRef } from "react";
 import type { UserTypeDropdownProps } from "../type";
 
 /**
- * A highly customizable select menu component integrated with React Hook Form.
- * It supports single and multiple selections, search, validation, and automatic
- * dropdown positioning. Built with Headless UI for accessibility.
+ * UserTypeDropdown component for the homepage.
  *
- * @param {SelectMenuProps} props The props for the component.
- * @param {string} props.title - The title of the select menu.
- * @param {string} props.selected - The selected option value.
- * @param {(value: string) => void} props.onSelect - The callback function for when an option is selected.
- * @param {Option[]} props.options - The array of options to display in the dropdown.
- * @param {string} props.className - Additional CSS classes for the root container.
- * @returns {JSX.Element} The rendered select menu component.
+ * @returns {JSX.Element} The rendered user type dropdown component.
+ * @param {UserTypeDropdownProps} props - The props for the user type dropdown component.
  */
 const UserTypeDropdown = forwardRef<HTMLDivElement, UserTypeDropdownProps>(
   (
@@ -59,6 +52,12 @@ const UserTypeDropdown = forwardRef<HTMLDivElement, UserTypeDropdownProps>(
               <div
                 key={option.id}
                 onClick={() => onSelect(option.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect(option.id);
+                  }
+                }}
                 className={`flex flex-col p-4 cursor-pointer
                 ${
                   selected === option.id

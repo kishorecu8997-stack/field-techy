@@ -1,3 +1,4 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { testimonials } from "../type";
 import { FaStar } from "react-icons/fa";
 
@@ -38,7 +39,9 @@ export default function Testimonials() {
               <div className="text-2xl md:text-3xl font-bold text-[#024e51] dark:text-[#077a7e]">
                 {stat.value}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>
@@ -87,17 +90,22 @@ export default function Testimonials() {
               <p className="text-gray-700 dark:text-white leading-relaxed">
                 {testimonial.text}
                 {testimonial.readMore && (
-                  <span className="text-[#024e51] font-semibold cursor-pointer ml-1">
+                  <Button variant="no_style" className="text-[#024e51] font-semibold cursor-pointer ml-1">
                     Read More
-                  </span>
+                  </Button>
                 )}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 cursor-pointer w-fit mx-auto px-6 py-2 bg-[#95cc5c] hover:bg-[#85b850] rounded-full transition-colors">
-          View All
+        <div className="text-center text-black">
+          <Button
+            variant="no_style"
+            className="mt-6 cursor-pointer w-fit mx-auto px-6 py-2 bg-[#95cc5c] hover:bg-[#85b850] rounded-full transition-colors"
+          >
+            View All
+          </Button>
         </div>
       </div>
     </div>

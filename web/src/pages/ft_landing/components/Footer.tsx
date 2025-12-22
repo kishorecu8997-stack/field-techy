@@ -1,4 +1,5 @@
 import { assetsConfig } from "@/assets";
+import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * Footer component for the homepage.
@@ -33,15 +34,19 @@ export default function Footer() {
         </div>
 
         <div className="text-center">
-          <div className="px-6 cursor-pointer w-fit mx-auto py-2 border border-[#95cc5c] text-white rounded-full hover:bg-[#95cc5c] hover:text-black transition-colors text-sm font-medium">
+          <Button
+            variant="no_style"
+            type="button"
+            className="px-6 cursor-pointer w-fit mx-auto py-2 border border-[#95cc5c] text-white rounded-full hover:bg-[#95cc5c] hover:text-black transition-colors text-sm font-medium"
+          >
             Book a Demo
-          </div>
+          </Button>
         </div>
       </div>
 
       {/* Footer */}
       <div className="mt-12 pt-4 pb-3 bg-[#95cc5c] text-center text-xs text-black">
-        ©2025 FieldTechy | Privacy Policy | Terms
+        ©2025 Field Techy | Privacy Policy | Terms
       </div>
     </section>
   );

@@ -135,7 +135,7 @@ export const keyFeatures = [
     icon: GoProject,
     items: [
       "Project progress & workload analytics",
-      "Dedicated / Dispatch / Scheduled job ",
+      "Dedicated / Dispatch / Scheduled jobs",
       "Technician allocation & productivity",
       "SLA across projects & services",
     ],

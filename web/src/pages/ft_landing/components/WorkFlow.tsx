@@ -7,11 +7,10 @@ import { PiSuitcaseSimpleLight } from "react-icons/pi";
 type TabType = "corporate" | "engineer";
 
 /**
- * EngineeredForSpeedSection component for the homepage.
- *
- * @returns {JSX.Element} The rendered engineered for speed section component.
+ *  Workflow component for the homepage.
+ * @returns {JSX.Element} The rendered workflow component.
  */
-export default function EngineeredForSpeedSection() {
+export default function Workflow() {
   const [activeTab, setActiveTab] = useState<TabType>("corporate");
 
   const currentSteps = steps[activeTab];
@@ -32,6 +31,7 @@ export default function EngineeredForSpeedSection() {
         {/* Content Grid */}
         <div className="flex flex-wrap gap-4">
           <div
+            role="tab"
             onClick={() => setActiveTab("corporate")}
             className={`px-6 py-3 gap-2 flex items-center rounded-t-4xl cursor-pointer font-medium whitespace-nowrap transition ${
               activeTab === "corporate"
@@ -44,6 +44,7 @@ export default function EngineeredForSpeedSection() {
           </div>
 
           <div
+            role="tab"
             onClick={() => setActiveTab("engineer")}
             className={`px-6 gap-2 flex items-center py-3 rounded-t-4xl cursor-pointer font-medium whitespace-nowrap transition ${
               activeTab === "engineer"
