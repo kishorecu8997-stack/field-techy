@@ -7,7 +7,7 @@ import Pagination from "./components/Pagination";
 import { SORT_OPTIONS, type Filters, type Job, type SortOption } from "./types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { absoluteUrls } from "@/config/urls";
-import SearchHistory from "./components/SearchHistory.tsx";
+import SearchHistory from "./components/SearchHistory";
 
 /**
  * Main application component for job search results
@@ -35,8 +35,8 @@ const SearchResult = () => {
     locationType: [],
     locationRadius: 0,
     budgetRange: { min: 0, max: 10000 },
-    primaryLanguage: '',
-    slaLevel: '',
+    primaryLanguage: "",
+    slaLevel: "",
   });
 
   const [sortOption, setSortOption] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
@@ -105,7 +105,7 @@ const SearchResult = () => {
     } else if (sortOption === SORT_OPTIONS.SALARY) {
       filtered.sort((a, b) => parseFloat(b.salary || '0') - parseFloat(a.salary || '0'));
     } else if (sortOption === SORT_OPTIONS.DISTANCE) {
-      // Assuming distance is based on location, sort by location string length as a proxy
+    // Distance-based sorting is not yet implemented; fall back to default (relevance) order.
       filtered.sort((a, b) => (a.location || '').length - (b.location || '').length);
     }
     // Relevance is default, no sorting needed

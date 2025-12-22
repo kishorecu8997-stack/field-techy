@@ -63,7 +63,7 @@ const SearchHistory: React.FC<SearchHistoryProps> = ({ history, onApplyHistory, 
               {formatFilters(item.filters)}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
-              {item.timestamp.toLocaleString()}
+              {item.timestamp.toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })}
             </div>
           </div>
         ))}

@@ -29,9 +29,10 @@ export const JobSearchBar = () => {
     "Senior Product Designer",
     "Looking for a talented graphic designer",
     "Junior Web Designer",
-    "Software Engineer",
     "Innovate Tech",
-    "Innovate Tech",
+    "Full Stack Developer",
+    "Front-End Developer",
+    "Back-End Developer",
     "Senior Product Designer"
   ];
 
