@@ -115,7 +115,7 @@ const NotificationPreferences = () => {
           <div className="flex flex-row gap-2">
             {tabsitem.map((items: tabsitemProps) => {
               return (
-                <Button onClick={() => setValue("sla", items.value)}>
+                <Button key={items.value} onClick={() => setValue("sla", items.value)}>
                   {items.label}
                 </Button>
               );
