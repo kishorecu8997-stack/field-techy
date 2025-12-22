@@ -2,6 +2,7 @@ import { absoluteUrls, BASE, urls } from "@/config/urls";
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
+import LiveChatWidget from "@/shared/components/Support/LiveChatWidget";
 
 const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
@@ -29,7 +30,7 @@ const BackgroundVerification = React.lazy(
     )
 );
 const SetPassword = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
+  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword") 
 );
 
 // Layouts
@@ -63,6 +64,7 @@ const ExploreJobs = React.lazy(
 const ExploreSavedJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreSavedJobs")
 );
+
 
 //client
 const ClientSignInPage = React.lazy(
@@ -352,7 +354,13 @@ export const routes = createBrowserRouter([
   // Engineer Main Routes
   {
     path: BASE.ENGINEER,
-    element: withSuspense(RootLayout),
+    element: (
+      <>
+      <RootLayout />
+      <LiveChatWidget /> {/* Visible for Login Engineer */}
+      </>
+    )    
+    ,
     children: [
       { index: true, element: withSuspense(Home) },
       { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
@@ -381,7 +389,7 @@ export const routes = createBrowserRouter([
         path: urls.engineer.home.privacy_policy,
         element: withSuspense(PrivacyPolicy),
       },
-            {
+       {
         path: urls.engineer.video_guidance,
         element: withSuspense(VideoGuidance),
       },

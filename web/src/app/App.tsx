@@ -1,6 +1,5 @@
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes/AppRoute";
-import LiveChatWidget from "@/shared/components/Support/LiveChatWidget";
 
 /**
  * The main application component that sets up routing.
@@ -15,7 +14,6 @@ const App = () => {
   return (
     <>
       <RouterProvider router={routes} />
-      <LiveChatWidget />
     </>
   );
 };
