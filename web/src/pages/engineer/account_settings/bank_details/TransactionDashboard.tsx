@@ -54,7 +54,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     reset();
   };
   // Determine which transactions to display: all filtered, or the 10 most recent ones.
-  const transactionsToShow = showAll ? filteredTransactions : validAndSortedTransactions.slice(0, 10);
+  const transactionsToShow = showAll ? filteredTransactions : filteredTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
   const getStatusBadge = (status?: string) => {
     switch (status) {

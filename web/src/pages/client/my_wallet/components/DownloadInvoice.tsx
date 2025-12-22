@@ -45,12 +45,14 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform transition-all bg-white dark:bg-gray-900">
           <form onSubmit={handleSubmit(onSubmit)} className="p-6 relative">
-            <Button              onClick={onClose}
+            <button
+              onClick={onClose}
               type="button"
+              aria-label="Close"
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-            </Button >
+            </button>
 
             <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-4">
               Download Account Statement

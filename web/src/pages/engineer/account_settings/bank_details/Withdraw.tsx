@@ -17,8 +17,7 @@ import { HiArrowLeft, HiClock, HiChartBar } from "react-icons/hi";
  */
 const Withdraw = () => {
   const { showPopup } = usePopupStore();
-  const { addTransaction } = useTransactionStore();
-  const { transactions } = useTransactionStore();
+  const { addTransaction , transactions } = useTransactionStore();
   const [view, setView] = useState<"form" | "history" | "chart">("form");
 
   const FormCtx = useForm<bankDetails>({
@@ -67,6 +66,8 @@ const Withdraw = () => {
               status: "Pending",
             });
             toast.success("Withdrawal initiated successfully");
+            FormCtx.reset();
+            setView("form");
             close(true);
           },
         },
@@ -185,28 +186,30 @@ const AvailableBalance = ({
       <div className="absolute top-4 right-4 flex gap-3">
         {currentView === "form" ? (
           <>
-            <Button
+            <button
               onClick={() => onViewChange("chart")}
               className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
               title="View Trend"
+              aria-label="view trend"
             >
               <HiChartBar className="w-5 h-5" />
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => onViewChange("history")}
               className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
               title="View History"
             >
             <HiClock className="w-4 h-4" /> History
-            </Button>
+            </button>
           </>
         ) : (
-          <Button
+          <button
             onClick={() => onViewChange("form")}
             className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
+             aria-label="Back to withdrawal form"
           >
             <HiArrowLeft className="w-4 h-4" /> Back
-          </Button>
+          </button>
         )}
       </div>
     </div>

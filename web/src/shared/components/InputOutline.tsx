@@ -5,7 +5,7 @@ interface InputOutlineProps
   label?: string;
   placeholder: string;
   className?: string;
-  id: string;
+  id?: string;
 }
 
 /**

@@ -6,7 +6,8 @@ export interface Transaction {
   status?: "Pending" | "Approved" | "Completed" | "Failed"; // optional status
 }
 
-export interface bankDetails {
+export interface BankDetails {
   bank: string;
   amount: string;
 }
+export type bankDetails = BankDetails;
