@@ -63,7 +63,7 @@ const ProfileCompletionCard = () => {
             <ul className="space-y-1 text-sm">
               {section.fields.map((field, i) => (
                 <li
-                  key={i}
+                 key={`${section.key}-${field.label}-${i}`}
                   className={getStatusColor(field.status)}
                 >
                   {getStatusIcon(field.status)} {field.label}

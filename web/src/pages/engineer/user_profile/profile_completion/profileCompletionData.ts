@@ -49,9 +49,9 @@ export const profileCompletionData: ProfileSection[] = [
     navigateTo: "experiences",
     estimatedMinutesPerField: 7,
     fields: [
-      { label: "Work Experience", status: "complete" },
-      { label: "Work Experience", status: "pending" },
-      { label: "Work Experience", status: "pending" },
+      { label: "Work Experience1", status: "complete" },
+      { label: "Work Experience2", status: "pending" },
+      { label: "Work Experience3", status: "pending" },
       { label: "Work Experience", status: "rejected" }
     ],
   },
@@ -71,7 +71,7 @@ export const profileCompletionData: ProfileSection[] = [
     navigateTo: "settings",
     estimatedMinutesPerField: 10,
     fields: [
-      { label: "PassWord", status: "complete" },
+      { label: "Password", status: "complete" },
       { label: "Bank Account", status: "complete"}
     ],
   },

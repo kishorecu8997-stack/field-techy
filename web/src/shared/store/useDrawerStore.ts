@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { profileCompletionData } from "@/pages/engineer/user_profile/profile_completion/profileCompletionData";
+import { profileCompletionData, type FieldStatus } from "@/pages/engineer/user_profile/profile_completion/profileCompletionData";
 export type NavigationSource = "sidebar" | "profilecompletion" | "settings";
-export type FieldStatus = "complete" | "pending" | "rejected";
+export type { FieldStatus };
 
 interface DrawerState {
   activeKey: string;
@@ -36,6 +36,7 @@ const useDrawerStore = create<DrawerState>((set) => ({
       selectedId: "",
       navigationSource: "sidebar",
       returnToKey: undefined,
+      profileData: profileCompletionData,
     }),
   activeKey: "myAccount",
   setActiveKey: (key) => set({ activeKey: key }),
