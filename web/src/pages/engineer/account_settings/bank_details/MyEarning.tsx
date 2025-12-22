@@ -46,17 +46,20 @@ const MyEarning = () => {
         <BankSection />
       </div>
       <div className="h-[75%] overflow-y-auto">
-        <TransactionDashboard
-          onViewAllClick={() => {
-            setActiveKey("engineerRecentTransactions");
-          }}
-        />
-        <div className="pt-4">
-          <BestPayingJobs />
-        </div>
         <div className="pt-4">
           <TotalEarningsSummary />
         </div>
+        <div className="pt-4">
+          <TransactionDashboard
+            onViewAllClick={() => {
+              setActiveKey("engineerRecentTransactions");
+            }}
+          />
+        </div>
+        <div className="pt-4">
+          <BestPayingJobs />
+        </div>
+
         <div className="pt-4">
           <EarningHistoryChart />
         </div>
