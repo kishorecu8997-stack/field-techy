@@ -66,8 +66,6 @@ export default function InactiveUser() {
           action: async (close) => {
             console.log("Deleting engineer:", job.id);
             toast.success("Engineer deleted successfully!");
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
             close(true);
           },
         },
@@ -166,6 +164,16 @@ export default function InactiveUser() {
     },
   ];
 
+  const onSubmit = async (
+    data: SuspendEngineerFormData | BlockEngineerFormData
+  ) => {
+    if (isSuspendengineer) {
+      await handleSuspendSubmit(data as SuspendEngineerFormData);
+    } else {
+      await handleBlockSubmit(data);
+    }
+  };
+
   const handleSuspendSubmit = async (data: SuspendEngineerFormData) => {
     await showPopup({
       title: "Suspend Engineer",
@@ -240,22 +248,20 @@ export default function InactiveUser() {
           </div>
         </div>
       </Popup>
-      {isSuspendengineer && (
-        <FormContainer methods={methods} onSubmit={handleSuspendSubmit}>
+      <FormContainer methods={methods} onSubmit={onSubmit}>
+        {isSuspendengineer && (
           <SuspendEngineer
             isSuspendengineer={isSuspendengineer}
             setIsSuspendengineer={setIsSuspendengineer}
           />
-        </FormContainer>
-      )}
-      {isBlockEngineer && (
-        <FormContainer methods={methods} onSubmit={handleBlockSubmit}>
+        )}
+        {isBlockEngineer && (
           <BlockEngineer
             isBlockEngineer={isBlockEngineer}
             setIsBlockEngineer={setIsBlockEngineer}
           />
-        </FormContainer>
-      )}
+        )}
+      </FormContainer>
     </div>
   );
 }

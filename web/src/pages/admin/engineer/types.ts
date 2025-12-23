@@ -94,3 +94,12 @@ export const SUSPEND_ENGINEER_DEFAULT_VALUES: SuspendEngineerFormData = {
   suspendEndDate: null,
   reason: "",
 };
+export interface ActionMenuProps {
+  row: ManageEngineerProps;
+  showAction: number | null;
+  setShowAction: (v: number | null) => void;
+  handleDelete: (row: ManageEngineerProps) => void;
+  setIsSuspend: (v: boolean) => void;
+  setIsBlock: (v: boolean) => void;
+}
+export type DropdownDirection = "up" | "down";

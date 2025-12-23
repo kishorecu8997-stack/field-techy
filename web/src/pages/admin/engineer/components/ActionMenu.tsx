@@ -7,16 +7,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps } from "../types";
-
-interface Props {
-  row: ManageEngineerProps;
-  showAction: number | null;
-  setShowAction: (v: number | null) => void;
-  handleDelete: (row: ManageEngineerProps) => void;
-  setIsSuspend: (v: boolean) => void;
-  setIsBlock: (v: boolean) => void;
-}
+import type { ActionMenuProps, DropdownDirection } from "../types";
 
 /**
  * ActionsMenu Component
@@ -35,12 +26,12 @@ export default function ActionsMenu({
   handleDelete,
   setIsSuspend,
   setIsBlock,
-}: Props) {
+}: ActionMenuProps) {
   const navigate = useNavigate();
   const triggerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [, setOpenDirection] = useState<"up" | "down">("down");
+  const [, setOpenDirection] = useState<DropdownDirection>("down");
   const [dropdownPosition, setDropdownPosition] = useState<{
     top: number;
     left: number;
@@ -59,7 +50,7 @@ export default function ActionsMenu({
       const spaceAbove = triggerRect.top;
 
       // Vertical direction
-      let newDirection: "up" | "down" = "down";
+      let newDirection: DropdownDirection = "down";
       let topPosition = triggerRect.bottom;
 
       if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {

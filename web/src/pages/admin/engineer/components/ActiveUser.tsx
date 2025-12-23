@@ -165,6 +165,16 @@ export default function ActiveUser() {
     },
   ];
 
+  const onSubmit = async (
+    data: SuspendEngineerFormData | BlockEngineerFormData
+  ) => {
+    if (isSuspendengineer) {
+      await handleSuspendSubmit(data as SuspendEngineerFormData);
+    } else {
+      await handleBlockSubmit(data);
+    }
+  };
+
   const handleSuspendSubmit = async (data: SuspendEngineerFormData) => {
     await showPopup({
       title: "Suspend Engineer",
@@ -239,22 +249,20 @@ export default function ActiveUser() {
           </div>
         </div>
       </Popup>
-      {isSuspendengineer && (
-        <FormContainer methods={methods} onSubmit={handleSuspendSubmit}>
+      <FormContainer methods={methods} onSubmit={onSubmit}>
+        {isSuspendengineer && (
           <SuspendEngineer
             isSuspendengineer={isSuspendengineer}
             setIsSuspendengineer={setIsSuspendengineer}
           />
-        </FormContainer>
-      )}
-      {isBlockEngineer && (
-        <FormContainer methods={methods} onSubmit={handleBlockSubmit}>
+        )}
+        {isBlockEngineer && (
           <BlockEngineer
             isBlockEngineer={isBlockEngineer}
             setIsBlockEngineer={setIsBlockEngineer}
           />
-        </FormContainer>
-      )}
+        )}
+      </FormContainer>
     </div>
   );
 }

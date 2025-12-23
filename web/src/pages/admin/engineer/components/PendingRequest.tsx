@@ -37,8 +37,6 @@ import { toast } from "react-toastify";
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  // const [employementType, setEmployementType] = useState<string | null>();
-  // const [status, setStatus] = useState<string | null>();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
@@ -70,7 +68,6 @@ export default function PendingRequest() {
                   : "rejected"
               } successfully!`
             );
-            // await handlePostAJob(data);
             close(true);
           },
         },
@@ -95,8 +92,6 @@ export default function PendingRequest() {
           action: async (close) => {
             console.log("Deleting engineer:", job.id);
             toast.success("Engineer deleted successfully!");
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
             close(true);
           },
         },
@@ -242,20 +237,6 @@ export default function PendingRequest() {
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
           <SearchInput />
-          {/* <SelectMenu
-            className="absolute z-20"
-            placeholder="Filter by"
-            value={status}
-            onChange={setStatus}
-            options={EngineerStatus}
-          />
-          <SelectMenu
-            className="absolute z-20"
-            placeholder="Employement Type"
-            options={Employement}
-            value={employementType}
-            onChange={setEmployementType}
-          /> */}
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
