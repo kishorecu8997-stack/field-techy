@@ -26,20 +26,10 @@ export const WORKING_TYPES_PROPERTY = {
 
 export const getExperienceLevel = (years?: number) => {
   if (!years) return "";
-  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
-  if (years <= 3) return "L2"; // 2-3 years: Mid-level
+  if (years < 2) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years < 4) return "L2"; // 2-3 years: Mid-level
   return "L3"; // 4+ years: Senior/Expert-level
 };
-
-// types/UserProfile.ts
-export interface UserProfile {
-  skills: string[]; // e.g., ["React", "TypeScript", "Node.js"]
-  experienceYears: number; // e.g., 5
-  preferredLocation: string[]; // e.g., ["Remote", "San Francisco", "New York"]
-  preferredJobType: "remote" | "on-site" | "both";
-  minSalary?: number; // e.g., 80000
-  categories: string[]; // e.g., ["IT", "Designing"]
-}
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -84,7 +74,7 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
-  ServiceType?: ServiceType;
+  serviceType?: ServiceType;
   languages?: string;
   tools?: string[];
   poc?: {
@@ -92,7 +82,7 @@ export interface Job {
     role?: string; // e.g., "Project Coordinator"
     avatar?: string; // optional avatar URL
   };
-  matchScore?: string[];
+  matchScore?: number; // e.g., 85 for 85%
 }
 
 /**
