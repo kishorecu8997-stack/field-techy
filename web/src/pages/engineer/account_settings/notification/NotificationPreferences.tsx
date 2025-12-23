@@ -47,7 +47,10 @@ export interface NotificationFormdata {
  * - API integration can be added inside `handlesubmit`
  */
 const NotificationPreferences = () => {
-  const handlesubmit = (data: NotificationFormdata) => {};
+  const handlesubmit = (data: NotificationFormdata) => {
+    // TODO: Implement submission logic (e.g., call an API to persist notification preferences).
+    // This placeholder keeps the handler intentionally empty while the integration is pending.
+  };
   const method = useForm<NotificationFormdata>({
     defaultValues: {
       emailEnabled: false,
@@ -115,7 +118,10 @@ const NotificationPreferences = () => {
           <div className="flex flex-row gap-2">
             {tabsitem.map((items: tabsitemProps) => {
               return (
-                <Button key={items.value} onClick={() => setValue("sla", items.value)}>
+                <Button
+                  key={items.value}
+                  onClick={() => setValue("sla", items.value)}
+                >
                   {items.label}
                 </Button>
               );
