@@ -1,4 +1,6 @@
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { getProfileCompletion } from "@/utils/profileCompletion";
+
 /**
  * ProfileCompletionCard Component
  * Renders a card showing the user's profile completion progress.
@@ -20,12 +22,8 @@ const ProfileCompletionCard = () => {
   const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
     useDrawerStore();
 
-  /* Overall Profile Completion Score Calculation according to each section fields */
-  const totalFields = profileData.flatMap((s) => s.fields).length;
-  const completedFields = profileData
-    .flatMap((s) => s.fields)
-    .filter((f) => f.status === "complete").length;
-const overallCompletion = Math.round((completedFields / totalFields) * 100);
+  /* Get Profile Completion Score Calculation according to each section fields */
+    const overallCompletion = getProfileCompletion(profileData);
 
   /* Comparison Logic for check engineer overall profile score */
   const getComparisonUI = (percentage: number) => {
@@ -61,7 +59,7 @@ return (
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
       {/* Priority Guide for Profile Completion */}
       <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
-        <h4 className="font-semibold text-gray-700">PriorityGuide</h4>
+        <h4 className="font-semibold text-gray-700">Priority Guide</h4>
         <ul className="space-y-1">
           <li>
             <span className="font-medium text-red-600">High impact:</span> Basic

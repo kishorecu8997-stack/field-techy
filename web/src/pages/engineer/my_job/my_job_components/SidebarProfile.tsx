@@ -2,6 +2,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
+import { getProfileCompletion } from "@/utils/profileCompletion";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -36,14 +37,9 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
     setISOpenSidebar, 
     setNavigationSource 
   } = useDrawerStore();
-  // Calculate the overall profile completion percentage with the each field status
-  const totalFields = profileData.flatMap((s) => s.fields).length;
-  const completedFields = profileData
-    .flatMap((s) => s.fields)
-    .filter((f) => f.status === "complete").length;
-
-  const profileCompletion = Math.round((completedFields / totalFields) * 100);
-
+  // Get the overall profile completion percentage with the each field status
+  const profileCompletion = getProfileCompletion(profileData);
+  
   const { name, phone, role } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
@@ -60,7 +56,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
         </div>
         <button
           onClick={() => {
-            setNavigationSource("profilecompletion", "profileCompletionCard");
+            setNavigationSource("profilecompletion", "profilecompletion");
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}

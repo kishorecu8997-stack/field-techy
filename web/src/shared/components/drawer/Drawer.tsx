@@ -26,7 +26,7 @@ export type MenuItems = {
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  // Modidied to get navigation to source  from the store 
+  // Modified to get navigation to source from the store 
   const { 
     activeKey, 
     setActiveKey,
@@ -72,17 +72,20 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
-// modidied onBack function to handle navigation Source  
-  const onBack = () => {
-    if (navigationSource === "profilecompletion" && returnToKey) {
-      setActiveKey(returnToKey);
-      resetNavigationSource();
-      return;
-    }
-    // Default back behavior
-    if (config.parent) {
-      setActiveKey(config.parent as string);
+// modified onBack function to handle navigation Source  
+  const onBack = (key: string) => {
+  if (navigationSource === "profilecompletion" && returnToKey) {
+    setActiveKey(returnToKey);
+    resetNavigationSource();
+    return;
   }
+  // Default back behavior
+  if (config.parent) {
+    setActiveKey(config.parent as string);
+    return;
+  }
+  // go back to passed key
+  setActiveKey('myAccount');
 };
 
   return (
