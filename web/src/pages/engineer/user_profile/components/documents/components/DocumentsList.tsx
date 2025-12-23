@@ -4,13 +4,13 @@
  * It handles the display of documents, provides an "Add" button, and delegates
  * edit/delete actions to parent components via callbacks.
  */
-//import { Button } from "@/shared/components/commonUI/Buttons";
 import DocumentCard from "@/shared/components/DocumentCard";
 import React from "react";
 
 export interface Document {
   id: number;
   title: string;
+  category?: string;
   fileName: string;
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
@@ -19,6 +19,7 @@ export interface Document {
   metadata?: Record<string, string>;
   status?: "Pending" | "Approved" | "Rejected";
   expiryDate?: string;
+  allowMultiple?: boolean;
 }
 
 interface DocumentsListProps {
@@ -59,21 +60,26 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     onDeleteDocument?.(id);
   };
 
-  // Group documents by title
-  const groupedDocuments = documents.reduce((groups, doc) => {
-    if (!groups[doc.title]) {
-      groups[doc.title] = [];
-    }
-    groups[doc.title].push(doc);
-    return groups;
-  }, {} as Record<string, Document[]>);
+  // Group documents by category or title
+  const groupedDocuments = React.useMemo(
+    () =>
+      documents.reduce((groups, doc) => {
+        const groupKey = doc.category || doc.title;
+        if (!groups[groupKey]) {
+          groups[groupKey] = [];
+        }
+        groups[groupKey].push(doc);
+        return groups;
+      }, {} as Record<string, Document[]>),
+    [documents]
+  );
 
   return (
     <div className="bg-white rounded-lg ">
       {documents.length > 0 ? (
         <div className="space-y-4">
-          {Object.entries(groupedDocuments).map(([title, docs]) => (
-            <div key={title} className="space-y-4">
+          {Object.entries(groupedDocuments).map(([groupKey, docs]) => (
+            <div key={groupKey} className="space-y-4">
               {docs.map((doc, index) => (
                 <DocumentCard
                   key={doc.id}
@@ -83,7 +89,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                   onExpiryDateChange={onExpiryDateChange}
                   onAddMore={onAddSingleCertificate}
                   id={doc.id}
-                  showAddMoreButton={title === "Certificate" && index === docs.length - 1}
+                  showAddMoreButton={groupKey.toLowerCase() === "certificate" && index === docs.length - 1}
                 />
               ))}
             </div>

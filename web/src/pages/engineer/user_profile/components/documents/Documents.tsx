@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import DocumentsList from "./components/DocumentsList";
-import type { Document } from "./components/DocumentsList";
+import DocumentsList, { type Document } from "./components/DocumentsList";
 import { toast } from "react-toastify/unstyled";
 import { initialDocuments } from "@/dummy_data/documents";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -24,8 +23,9 @@ const Documents: React.FC= () => {
    */
   const handleAddDocument = () => {
     const newCertificate: Document = {
-      id: Math.max(...documents.map(d => d.id)) + 1,
+      id: Math.max(...documents.map(d => d.id), 0) + 1,
       title: "Certificate",
+      category: "certificate",
       fileName: "New Certificate.jpg",
       fileType: "JPEG",
       uploadDate: new Date().toISOString().split('T')[0],
@@ -45,10 +45,13 @@ const Documents: React.FC= () => {
     const baseId = Math.max(...documents.map(d => d.id), 0);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const fileType = file.name.split('.').pop()?.toUpperCase() as Document['fileType'] || 'PDF';
+      const validTypes: Document['fileType'][] = ["PDF", "PNG", "JPEG", "JPG", "GIF", "DOCX", "XLSX"];
+      const extension = file.name.split('.').pop()?.toUpperCase();
+      const fileType = validTypes.includes(extension as Document['fileType']) ? extension as Document['fileType'] : 'PDF';
       newCertificates.push({
         id: baseId + i + 1,
         title: "Certificate",
+        category: "certificate",
         fileName: file.name,
         fileType,
         uploadDate: new Date().toISOString().split('T')[0],
@@ -94,6 +97,16 @@ const Documents: React.FC= () => {
         });
   };
 
+  /**
+   * Handles updating the expiry date of a document.
+   * @param {number} id - The ID of the document to update.
+   * @param {string} expiryDate - The new expiry date.
+   */
+  const handleExpiryDateChange = (id: number, expiryDate: string) => {
+    setDocuments(prev => prev.map(doc => doc.id === id ? { ...doc, expiryDate } : doc));
+    toast.success("Expiry date updated successfully");
+  };
+
   return (
     <>
       <div className="p-4 max-w-3xl mx-auto">
@@ -101,6 +114,7 @@ const Documents: React.FC= () => {
           documents={documents}
           onEditDocument={() => setActiveKey("editDocument")}
           onDeleteDocument={handleDeleteDocument}
+          onExpiryDateChange={handleExpiryDateChange}
           onAddMoreCertificates={handleAddMoreCertificates}
           onAddSingleCertificate={handleAddDocument}
         />

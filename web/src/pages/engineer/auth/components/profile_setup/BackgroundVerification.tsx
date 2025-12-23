@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
 
 /**
@@ -14,7 +14,7 @@ import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
  */
 
 const BackgroundVerification = () => {
-  const [expiryDate, setExpiryDate] = useState('');
+  const { register } = useFormContext();
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
       <div className="text-center mb-6">
@@ -44,9 +44,8 @@ const BackgroundVerification = () => {
         <label className="text-sm font-medium text-gray-700">Expiry Date of Certificate:</label>
         <input
               type="date"
-              value={expiryDate}
-              onChange={(e) => setExpiryDate(e.target.value)}
-              className="px-19 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+              {...register('certificateExpiryDate')}
+              className="px-1 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
       </div>
     </div>

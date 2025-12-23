@@ -15,6 +15,7 @@ export const initialDocuments: Document[] = [
   {
     id: 1,
     title: "Certificate",
+    category: "certificate",
     fileName: "Certificate.jpg",
     fileType: "JPEG",
     previewUrl: img8140054,
@@ -26,6 +27,7 @@ export const initialDocuments: Document[] = [
     },
     status: "Pending",
     expiryDate: "2024-11-01",
+    allowMultiple: true,
   },
   {
     id: 2,
