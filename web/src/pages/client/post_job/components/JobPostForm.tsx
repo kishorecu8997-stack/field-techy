@@ -43,7 +43,6 @@ const JobPostForm: React.FC = () => {
    */
 
   const methods = useFormContext();
-  ({});
   /**
    * @description A helper function to generate consistent CSS classes for form inputs.
    * @returns {string} A string of Tailwind CSS classes for styling input fields.
