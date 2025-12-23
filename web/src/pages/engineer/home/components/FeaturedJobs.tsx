@@ -38,7 +38,7 @@ import { calculateMatchScore } from "@/utils/matchCalculator";
  * locationType="On Site"
  * salary="$180,000/year"
  * location="California, USA"
- * experience: "5",
+ * experience: 5,
  * skills: ["Figma", "Adobe XD", "UI/UX"],
  * tools: ["VS Code", "Git", "Jira"],
  * slaLevel: "4-hour response",
@@ -184,25 +184,21 @@ const FeatureJobCard: React.FC<Job> = ({
         )}
       </div>
 
-      {skills && skills.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3 w-full py-1">
-          {skills.map((skill, idx) => (
-            <div
-              key={idx}
-              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded whitespace-nowrap"
+      {((skills?.length ?? 0) > 0 || (tools?.length ?? 0) > 0) && (
+        <div className="flex flex-wrap gap-2">
+          {skills?.map((skill) => (
+            <span
+              key={skill}
+              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
             >
               {skill}
-            </div>
+            </span>
           ))}
-        </div>
-      )}
 
-      {tools && tools.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
-          {tools.map((tool, idx) => (
+          {tools?.map((tool) => (
             <span
-              key={idx}
-              className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap"
+              key={tool}
+              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
             >
               {tool}
             </span>
@@ -243,7 +239,7 @@ const FeatureJobCard: React.FC<Job> = ({
  *       locationType: "On Site",
  *       salary: "$180,000/year",
  *       location: "California, USA",
- *       experience: "5",
+ *       experience: 5,
  *       skills: ["Figma", "Adobe XD", "UI/UX"],
  *       tools: ["VS Code", "Git", "Jira"],
  *       slaLevel: "4-hour response",

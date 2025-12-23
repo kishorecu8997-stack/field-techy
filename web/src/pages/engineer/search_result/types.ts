@@ -40,10 +40,10 @@ export const getExperienceLevel = (years?: number) => {
 };
 
 export const SLA_LEVELS = {
-  FOUR_HOUR: "4-hour",
-  SIX_HOUR: "6-hour",
-  NEXT_DAY: "Next day",
-  THEREAFTER: "Thereafter",
+  FOUR_HOUR: "4-hour response",
+  SIX_HOUR: "6-hour response",
+  NEXT_DAY: "Next day response",
+  THEREAFTER: "Thereafter response",
 } as const;
 export type SlaLevel = (typeof SLA_LEVELS)[keyof typeof SLA_LEVELS];
 
