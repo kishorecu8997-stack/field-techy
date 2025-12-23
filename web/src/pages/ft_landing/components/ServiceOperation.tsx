@@ -32,9 +32,7 @@ export default function ServiceOperations() {
   });
 
   const selectedCountry = methods.watch("country");
-  const cityOptions = selectedCountry
-    ? citiesByCountry[selectedCountry] || []
-    : [];
+  const cityOptions = citiesByCountry?.[selectedCountry] ?? [];
 
   const { showPopup } = usePopupStore();
 
