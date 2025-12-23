@@ -71,14 +71,12 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <AiFillThunderbolt
           className="size-9 p-1 cursor-pointer rounded-full bg-blue-600 hover:bg-blue-700 text-white text-3xl font-medium transition"
           onClick={() => {
-            notification.confirmationStatus = "confirmed";
             pause(id);
           }}
         />
         <IoMdCheckmark
           className="size-9 cursor-pointer p-1 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 text-3xl font-medium transition"
           onClick={() => {
-            notification.confirmationStatus = "confirmed";
             resume();
             navigate(`${absoluteUrls.engineer.home.my_jobs}/${index}`);
             setISOpenSidebar(false);
@@ -87,7 +85,6 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <IoMdClose
           className="size-9 p-1 cursor-pointer rounded-full bg-red-600 hover:bg-red-700 text-white text-3xl font-medium transition"
           onClick={() => {
-            notification.confirmationStatus = "declined";
             resume();
             setActiveKey("cancelOffer");
             setISOpenSidebar(true);
