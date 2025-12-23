@@ -25,19 +25,24 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
   const strengthPercentage = (metCriteriaCount / totalCriteriaCount) * 100;
 
   // Determine the color/strength level
-  let strengthColor = "bg-gray-300"; // Default/Too Weak
-  let strengthText = "Too Weak";
+let strengthBg = "bg-gray-300";
+let strengthTextColor = "text-gray-500";
+let strengthText = "Too Weak";
 
-  if (metCriteriaCount === totalCriteriaCount) {
-    strengthColor = "bg-green-500";
-    strengthText = "Strong";
-  } else if (metCriteriaCount >= totalCriteriaCount / 2) {
-    strengthColor = "bg-orange-500";
-    strengthText = "Medium";
-  } else if (password.length > 0) {
-    strengthColor = "bg-red-500";
-    strengthText = "Weak";
-  }
+if (metCriteriaCount === totalCriteriaCount) {
+  strengthBg = "bg-green-500";
+  strengthTextColor = "text-green-600";
+  strengthText = "Strong";
+} else if (metCriteriaCount >= totalCriteriaCount / 2) {
+  strengthBg = "bg-orange-500";
+  strengthTextColor = "text-orange-600";
+  strengthText = "Medium";
+} else if (password.length > 0) {
+  strengthBg = "bg-red-500";
+  strengthTextColor = "text-red-600";
+  strengthText = "Weak";
+}
+
 
   if (password.length === 0) {
     return null; // Hide the meter if the input is empty
@@ -48,7 +53,7 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
       <div className="flex justify-between items-center mb-1">
         <span className="text-sm font-medium text-gray-700">
           Strength:{" "}
-          <strong style={{ color: strengthColor.split("-")[1] }}>
+          <strong className={strengthTextColor}>
             {strengthText}
           </strong>
         </span>
@@ -57,7 +62,7 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
       {/* Progress Bar (using Tailwind CSS classes) */}
       <div className="w-full bg-gray-200 rounded-full h-2.5">
         <div
-          className={`h-2.5 rounded-full transition-all duration-300 ease-out ${strengthColor}`}
+          className={`h-2.5 rounded-full transition-all duration-300 ease-out ${strengthBg}`}
           style={{ width: `${strengthPercentage}%` }}
         />
       </div>

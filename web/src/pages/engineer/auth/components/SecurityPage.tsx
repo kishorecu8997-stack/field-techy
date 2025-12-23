@@ -26,7 +26,7 @@ function useLocalStorage<T>(
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.log(`Error writing to localStorage key "${key}":`, error);
+      console.error(`Error writing to localStorage key "${key}":`, error);
     }
   }, [key, value]);
   return [value, setValue];
@@ -36,15 +36,12 @@ function useLocalStorage<T>(
  * Displays verification status and a toggle for 2FA.
  */
 const SecurityPage: React.FC<DrawerMenuProps> = () => {
-  //I Currently Assume verification status as true for both email and mobile.
-  //Should be replaced with actual verification logic when available.
+  // Currently assuming verification status is true for both email and mobile.
+  // Should be replaced with actual verification logic when available.
   const emailVerified = true; // Replace with actual check
   const mobileVerified = true; // Replace with actual check
   const isVerified = emailVerified && mobileVerified;
-  const [twoFactorEnabled, setTwoFactorEnabled] = useLocalStorage(
-    "twoFactorEnabled",
-    false
-  );
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
   const menuItems: MenuItem[] = [
     {
       id: "two_factor_auth",

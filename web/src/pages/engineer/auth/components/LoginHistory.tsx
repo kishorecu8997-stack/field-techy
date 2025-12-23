@@ -18,7 +18,7 @@ interface LoginHistoryItem {
 const LoginHistory: React.FC = () => {
   const loginHistory: LoginHistoryItem[] = loginHistoryData;
 
-  // In a real app, fetch login history from an API so i am leaving it like this for now
+  // In a real app, fetch login history from an API so I am leaving it like this for now
   useEffect(() => {
     // Example: fetch('/api/login-history').then(setLoginHistory);
   }, []);

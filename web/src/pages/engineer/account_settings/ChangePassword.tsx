@@ -46,7 +46,7 @@ const ChangePassword = () => {
                 throw new Error("Network response was not ok");
               }
               toast.success("Password updated successfully!");
-              setActiveKey("profile_overview");
+              setActiveKey("settings");
               close(true);
             } catch (error) {
               toast.error("Failed to update password");
