@@ -7,6 +7,8 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} The rendered banner component.
  */
 export default function Banner() {
+  const trustedByBusiness = "2000+";
+
   return (
     <div className="bg-[#024e51] text-white py-8" id="home">
       <div className="container mx-auto px-4">
@@ -24,10 +26,16 @@ export default function Banner() {
             </p>
 
             <div className="flex text-sm sm:flex-row gap-4 pt-2">
-              <Button variant="no_style" className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2  rounded-full font-medium hover:bg-[#85b850] w-fit">
+              <Button
+                variant="no_style"
+                className="bg-[#95cc5c] cursor-pointer text-black px-6 py-2  rounded-full font-medium hover:bg-[#85b850] w-fit"
+              >
                 Get Started
               </Button>
-              <Button variant="no_style" className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-[#85b850] hover:text-black w-fit">
+              <Button
+                variant="no_style"
+                className="border cursor-pointer border-[#95cc5c] text-white px-6 py-2 rounded-full font-medium hover:bg-[#85b850] hover:text-black w-fit"
+              >
                 Book a Demo
               </Button>
             </div>
@@ -53,7 +61,7 @@ export default function Banner() {
               <div className="mt-4 text-[#cde1e2]">
                 Trusted by
                 <span className="font-semibold text-[#95cc5c] px-2">
-                  2,000+
+                  {trustedByBusiness}
                 </span>
                 businesses
                 <br /> and service teams
