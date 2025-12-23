@@ -5,8 +5,9 @@ import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils"; // ← Our existing utility
-import { icons } from "@/config/icons"; // For bookmark icon
+import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils"; 
+import { icons } from "@/config/icons"; 
+import { absoluteUrls } from "@/config/urls"; 
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -195,7 +196,7 @@ const SavedJobsCard = () => {
           Saved Jobs
         </h3>
         <div
-          onClick={() => navigate("/engineer/saved-jobs")}
+        onClick={() => navigate(absoluteUrls.engineer.home.saved_jobs)}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
         >
           View all

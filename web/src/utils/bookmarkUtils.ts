@@ -1,9 +1,6 @@
 import type { Job } from "@/pages/engineer/search_result/types";
-
 export type SavedJob = Job;
-
 const STORAGE_KEY = "saved_jobs_engineer";
-
 export const BOOKMARK_CHANGE_EVENT = "bookmarkChange";
 
 export const getSavedJobs = (): SavedJob[] => {

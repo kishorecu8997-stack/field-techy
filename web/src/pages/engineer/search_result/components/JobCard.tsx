@@ -27,18 +27,14 @@ const JobCard: React.FC<{
   onBookmarkChange?: () => void;
 }> = ({ job, showBookmark = true, navigateToJob = "#", onBookmarkChange }) => {
   const [isBookmarked, setBookmark] = useState(false);
-
   useEffect(() => {
     setBookmark(isJobSaved(job.id));
   }, [job.id]);
-
   useEffect(() => {
     const handleBookmarkChange = () => {
       setBookmark(isJobSaved(job.id));
     };
-
     window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-
     return () => {
       window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
     };
@@ -82,21 +78,16 @@ const JobCard: React.FC<{
                 e.stopPropagation();
 
                 const wasBookmarked = isBookmarked;
-
                 toggleSavedJob(job);
-
                 setBookmark(!wasBookmarked);
-
                 if (!wasBookmarked) {
                   toast.success("Job saved successfully");
                 } else {
                   toast.error("Job removed from saved");
                 }
-
                 if (onBookmarkChange) {
                   onBookmarkChange();
                 }
-
                 window.dispatchEvent(new Event(BOOKMARK_CHANGE_EVENT));
               }}
               className={`p-2 rounded-full  hover:bg-gray-100 transition-colors cursor-pointer`}

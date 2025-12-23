@@ -58,27 +58,21 @@ const FeatureJobCard: React.FC<Job> = (job) => {
       setSelected(isJobSaved(id));
     }
   }, [id]);
-
   useEffect(() => {
     const handleBookmarkChange = () => {
       if (id) {
         setSelected(isJobSaved(id));
       }
     };
-
     window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-
     return () => {
       window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
     };
   }, [id]);
-
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-
     if (!id) return;
-
     const wasBookmarked = isSelected;
 
     toggleSavedJob(job);
