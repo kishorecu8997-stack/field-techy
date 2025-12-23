@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { icons } from "@/config/icons";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../../account_settings/types";
@@ -9,28 +9,6 @@ import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
  * @param defaultValue - Default value if key is missing or invalid.
  * @returns [value, setValue] tuple.
  */
-function useLocalStorage<T>(
-  key: string,
-  defaultValue: T
-): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [value, setValue] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-      console.log(`Error reading localStorage key "${key}":`, error);
-      return defaultValue;
-    }
-  });
-  useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.error(`Error writing to localStorage key "${key}":`, error);
-    }
-  }, [key, value]);
-  return [value, setValue];
-}
 /**
  * Security page allowing users to enable 2FA if email and mobile are verified.
  * Displays verification status and a toggle for 2FA.
