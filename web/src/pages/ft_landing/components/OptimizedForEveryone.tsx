@@ -1,5 +1,5 @@
+import { experiences } from "@/dummy_data/FTLanding/FTLanding";
 import { Link } from "react-router-dom";
-import { experiences } from "../type";
 
 /**
  * OptimizedExperience component for the homepage.

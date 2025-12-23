@@ -1,5 +1,8 @@
+import {
+  testimonials,
+  TrustedByLeaders,
+} from "@/dummy_data/FTLanding/FTLanding";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { testimonials } from "../type";
 import { FaStar } from "react-icons/fa";
 
 /**
@@ -16,31 +19,22 @@ export default function Testimonials() {
             Trusted By Industry Leaders
           </h2>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm text-gray-400">
-            {[
-              "TechCorp",
-              "GlobalMSP",
-              "NetServices",
-              "HomeFix",
-              "CyberSystems",
-            ].map((company) => (
-              <span key={company}>{company}</span>
-            ))}
+            <span>TechCorp</span>
+            <span>GlobalMSP</span>
+            <span>NetServices</span>
+            <span>HomeFix</span>
+            <span>CyberSystems</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-center">
-          {[
-            { label: "Engineers", value: "5k+" },
-            { label: "Jobs Completed", value: "12k+" },
-            { label: "SLA Compliance", value: "98%" },
-            { label: "Countries Covered", value: "45+" },
-          ].map((stat, idx) => (
+          {TrustedByLeaders.map((stat, idx) => (
             <div key={idx} className="space-y-1">
               <div className="text-2xl md:text-3xl font-bold text-[#024e51] dark:text-[#077a7e]">
                 {stat.value}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                {stat.label}
+                {stat.name}
               </div>
             </div>
           ))}
@@ -90,7 +84,10 @@ export default function Testimonials() {
               <p className="text-gray-700 dark:text-white leading-relaxed">
                 {testimonial.text}
                 {testimonial.readMore && (
-                  <Button variant="no_style" className="text-[#024e51] font-semibold cursor-pointer ml-1">
+                  <Button
+                    variant="no_style"
+                    className="text-[#024e51] font-semibold cursor-pointer ml-1"
+                  >
                     Read More
                   </Button>
                 )}

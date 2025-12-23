@@ -1,5 +1,5 @@
+import { keyFeatures } from "@/dummy_data/FTLanding/FTLanding";
 import React from "react";
-import { keyFeatures } from "../type";
 
 /**
  * KeyFeatures component for the homepage.

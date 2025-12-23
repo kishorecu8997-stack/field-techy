@@ -1,13 +1,17 @@
-import React from "react";
-import { serviceOperationStats, type ServiceOperationFormData } from "../type";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
-import { useForm, Controller } from "react-hook-form";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
-import { validateCompany, validateName } from "@/utils/validate";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import countries from "@/dummy_data/countries";
 import { citiesByCountry } from "@/dummy_data/adminClientData";
+import countries from "@/dummy_data/countries";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { validateCompany, validateName } from "@/utils/validate";
+import React from "react";
+import { useForm } from "react-hook-form";
+import type { ServiceOperationFormData } from "../type";
+import { serviceOperationStats } from "@/dummy_data/FTLanding/FTLanding";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
 
 /**
  * ServiceOperations component for the homepage.
@@ -32,8 +36,31 @@ export default function ServiceOperations() {
     ? citiesByCountry[selectedCountry] || []
     : [];
 
-  const handleSubmit = (data: ServiceOperationFormData) => {
-    console.log("Form Submitted", data);
+  const { showPopup } = usePopupStore();
+
+  const handleSubmit = async (data: ServiceOperationFormData) => {
+    await showPopup({
+      title: "Send Message",
+      body: "Are you sure you want to send this message?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            console.log("Form Submitted", data);
+            toast.success("Message sent successfully");
+            methods.reset();
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -102,83 +129,24 @@ export default function ServiceOperations() {
                 />
               </div>
 
-              {/* Normal HTML Selects with Controller */}
               <div className="grid md:flex gap-4">
                 <div className="md:w-1/2">
-                  <Controller
+                  <SelectField
+                    label="Country"
                     name="country"
-                    control={methods.control}
-                    rules={{ required: "Country is required" }}
-                    render={({ field, fieldState: { error } }) => (
-                      <div className="flex flex-col">
-                        <label className="mb-1 font-medium text-gray-700 dark:text-gray-200">
-                          Country
-                        </label>
-                        <select
-                          {...field}
-                          className={`border rounded-md p-3 focus:outline-none focus:ring focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
-                            error
-                              ? "border-red-500"
-                              : "border-[#d1d5dc] dark:border-[#4a5565]"
-                          }`}
-                        >
-                          <option value="" disabled hidden>
-                            Select a country
-                          </option>
-                          {countries.map((c) => (
-                            <option
-                              key={c.value}
-                              value={c.value}
-                              className="rounded-lg"
-                            >
-                              {c.label}
-                            </option>
-                          ))}
-                        </select>
-                        {error && (
-                          <span className="text-red-600 text-sm mt-1">
-                            {error.message}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    placeholder="Select Country"
+                    options={countries}
+                    required
                   />
                 </div>
 
                 <div className="md:w-1/2">
-                  <Controller
+                  <SelectField
+                    label="City"
                     name="city"
-                    control={methods.control}
-                    rules={{ required: "City is required" }}
-                    render={({ field, fieldState: { error } }) => (
-                      <div className="flex flex-col">
-                        <label className="mb-1 font-medium text-gray-700 dark:text-gray-200">
-                          City
-                        </label>
-                        <select
-                          {...field}
-                          className={`border rounded-md  p-3 focus:outline-none focus:ring-1 focus:ring-[#d1d5dc] dark:bg-gray-800 dark:text-white ${
-                            error
-                              ? "border-red-500"
-                              : "border-[#d1d5dc] dark:border-[#4a5565]"
-                          }`}
-                        >
-                          <option value="" disabled hidden>
-                            Select a city
-                          </option>
-                          {cityOptions.map((c) => (
-                            <option key={c.value} value={c.value}>
-                              {c.label}
-                            </option>
-                          ))}
-                        </select>
-                        {error && (
-                          <span className="text-red-600 text-sm mt-1">
-                            {error.message}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    placeholder="Select city"
+                    options={cityOptions}
+                    required
                   />
                 </div>
               </div>

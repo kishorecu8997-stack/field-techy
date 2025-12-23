@@ -1,4 +1,4 @@
-import { features } from "../type";
+import { features } from "@/dummy_data/FTLanding/FTLanding";
 
 /**
  * Overview component for the homepage.

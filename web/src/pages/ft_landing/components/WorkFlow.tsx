@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { steps } from "../type";
 import { assetsConfig } from "@/assets";
 import { FaRegBuilding } from "react-icons/fa";
 import { PiSuitcaseSimpleLight } from "react-icons/pi";
+import { steps } from "@/dummy_data/FTLanding/FTLanding";
 
 type TabType = "corporate" | "engineer";
 
