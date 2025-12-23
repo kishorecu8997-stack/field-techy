@@ -3,21 +3,24 @@ import { useEffect, useState } from "react";
 import { HiChevronDown, HiOutlineLogout } from "react-icons/hi";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { SidebarProps } from "./types";
+import { toast } from "react-toastify";
+import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Sidebar
- * 
+ *
  * Admin dashboard navigation sidebar component with collapsible menu items.
  * Supports nested menu structure with expandable/collapsible sections and
  * active state highlighting.
- * 
+ *
  * Features:
  * - Collapsible sidebar with icon-only and full-width states
  * - Nested menu structure with expandable parent items
  * - Automatic expansion of parent items based on active route
  * - Active route highlighting
  * - Logout functionality
- * 
+ *
  * @param {SidebarProps} props - Component props
  * @param {boolean} props.isCollapsed - Controls the sidebar's collapsed state
  * @returns {JSX.Element} Sidebar navigation component
@@ -26,6 +29,33 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+
+  const { showPopup } = usePopupStore();
+
+  //Delete confirmation
+  const handleLogout = async () => {
+    await showPopup({
+      title: "Logout",
+      body: "Are you sure you want to logout?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: "danger",
+          action: async (close) => {
+            navigate(absoluteUrls.admin.auth.login);
+            toast.success("Logged out successfully!");
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   // Auto-expand if any child is active
   useEffect(() => {
@@ -39,7 +69,10 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   }, [location.pathname]);
 
   const toggle = (name: string) => {
-    setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
+    setOpenMenus((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
   };
 
   return (
@@ -56,9 +89,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         if (hasChildren) {
           return (
             <div key={item.name} className="w-full">
-              <button
+              <div
                 onClick={() => toggle(item.name)}
-                className={`flex items-center justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
+                className={`flex items-center cursor-pointer justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
                   isCollapsed ? "justify-center pl-0" : "px-3"
                 }`}
               >
@@ -73,7 +106,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                     }`}
                   />
                 )}
-              </button>
+              </div>
 
               {/* Submenu Items */}
               {!isCollapsed && isExpanded && (
@@ -120,16 +153,16 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
       })}
 
       <div className="absolute bottom-0 w-58 mb-2">
-        <button
-          onClick={() => navigate("/admin/auth/login")}
+        <div
+          onClick={handleLogout}
           className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors mt-auto ${
-            isCollapsed ? "justify-center px-2" : "w-58"
+            isCollapsed ? "justify-center px-2 w-fit" : "w-58"
           }`}
           aria-label="Logout"
         >
           <HiOutlineLogout className="text-lg" />
           {!isCollapsed && <span>Logout</span>}
-        </button>
+        </div>
       </div>
     </div>
   );

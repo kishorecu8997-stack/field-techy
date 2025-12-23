@@ -52,7 +52,7 @@ export default function PersonalDetails() {
           action: async (close) => {
             toast.success("Profile Updated Successfully!");
             close(true);
-            navigate(absoluteUrls.admin.home.dashbaord);
+            navigate(absoluteUrls.admin.home.dashboard);
           },
         },
       ],

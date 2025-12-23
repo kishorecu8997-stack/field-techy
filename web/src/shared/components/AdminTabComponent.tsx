@@ -63,15 +63,15 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex border-b md:border-b-2 border-gray-200  gap-4 overflow-x-auto">
+      <div className="flex border-b md:border-b border-gray-200 gap-4 overflow-x-auto">
         {visibleTabs.map((tab) => (
           <div
             key={tab.label}
             onClick={() => handleTabClick(tab.label)}
             className={`px-1 py-2 font-medium transition-colors cursor-pointer relative ${
               activeTab === tab.label
-                ? "text-[#2668e8] border-b-2 border-[#2668e8]"
-                : "text-gray-700 dark:text-white hover:text-[#2668e8]"
+                ? "dark:text-[#05c384] border-b-2 dark:border-[#05c384] border-emerald-700 text-emerald-700"
+                : "text-gray-700 dark:text-white dark:hover:text-[#05c384] hover:text-emerald-700"
             }`}
           >
             {tab.label}

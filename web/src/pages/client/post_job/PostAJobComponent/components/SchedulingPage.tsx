@@ -4,7 +4,7 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/DaySelector";
+import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
@@ -19,6 +19,7 @@ import {
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -191,12 +192,20 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
               />
               {watchRepeatedBy === RepeatByFields.week ? (
                 <>
-                  <DaySelector
-                    control={ctx.control}
+                  <CheckboxSelector
+                    disabled={isDisable}
                     name="repeatOn"
                     label="Repeat On (Days)"
                     required
-                    disabled={isDisable}
+                    options={[
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ]}
                   />
                   <div className="relative w-full">
                     <Controller

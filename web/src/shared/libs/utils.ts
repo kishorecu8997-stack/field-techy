@@ -18,7 +18,7 @@ export function cn(...classes: (string | boolean | undefined | null)[]) {
  * Validate password strength and requirements.
  * Returns true when valid or a string message describing the validation error.
  */
-export const validatePassword = (value: string) => {
+export const validatePassword = (value: string, oldPassword?: string) => {
   if (value.length < 8) {
     return "Password must be at least 8 characters long";
   }
@@ -39,6 +39,11 @@ export const validatePassword = (value: string) => {
   }
   if (/\s/.test(value)) {
     return "Password must not contain spaces";
+  }
+  if (oldPassword) {
+    if (oldPassword === value) {
+      return "Password cannot be the same as the old password";
+    }
   }
   return true;
 };

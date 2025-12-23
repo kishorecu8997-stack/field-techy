@@ -3,7 +3,7 @@ import type { Job } from "@/pages/client/my_job_client/types";
 export const jobData: Job[] = [
   {
     id: 1,
-    title: "Website Redesign for E-commerce Store",
+    title: "Network Engineer",
     date: "2025-10-15",
     location: "New York, NY",
     duration: "3 weeks",

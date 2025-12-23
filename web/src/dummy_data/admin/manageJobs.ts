@@ -1,28 +1,5 @@
-export const ALL_JOBS_STATUS = {
-  approve: "Approve",
-  reject: "Reject",
-} as const;
-export type JobsStatus = (typeof ALL_JOBS_STATUS)[keyof typeof ALL_JOBS_STATUS];
-
-export interface ManageJobProps {
-  id: number;
-  postedBy: {
-    name: string;
-    email: string;
-  };
-  jobTitle: string;
-  jobDescription: string;
-  category: string;
-  jobType: string;
-  jobPrice: string;
-  priority: string;
-  country: string;
-  state: string;
-  city: string;
-  startDate: string;
-  createdDate: string;
-  approvalStatus: string;
-}
+import { icons } from "@/config/icons";
+import type { ManageFlaggedJobProps, ManageJobProps } from "@/pages/admin/jobs/types";
 
 export const manageJobs: ManageJobProps[] = [
   {
@@ -128,8 +105,24 @@ export const manageJobs: ManageJobProps[] = [
 ];
 
 export const AllJobStatus = [
-  { value: "approve", label: "Approve" },
-  { value: "reject", label: "Reject" },
+  {
+    value: "approve",
+    label: "Approve",
+    bg: "bg-green-100 text-green-700",
+    icon: icons.check,
+  },
+  {
+    value: "pending",
+    label: "Pending",
+    bg: "bg-yellow-100 text-yellow-700",
+    icon: icons.pending,
+  },
+  {
+    value: "reject",
+    label: "Reject",
+    bg: "bg-red-100 text-red-700",
+    icon: icons.close,
+  },
 ];
 
 export const AllJobsFilterBy = [
@@ -154,20 +147,6 @@ export const AllJobType = [
   { value: "onSite", label: "On Site" },
 ];
 
-//Manage Flagged Jobs
-export interface ManageFlaggedJobProps {
-  id: number;
-  postedBy: {
-    name: string;
-    email: string;
-  };
-  jobTitle: string;
-  jobDescription: string;
-  issueCategory: string;
-  issueDescription: string;
-  priority: string;
-  createdDate: string;
-}
 
 export const manageFlaggedJobs: ManageFlaggedJobProps[] = [
   {

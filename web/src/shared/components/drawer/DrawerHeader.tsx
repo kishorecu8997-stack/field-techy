@@ -42,7 +42,7 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
     }
 
     // If actions is a function → treat as component
-    if (typeof actions === 'function') {
+    if (typeof actions === "function") {
       const ActionsComponent = actions as React.ComponentType;
       return <ActionsComponent />;
     }
@@ -65,9 +65,7 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
       <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex-1 truncate">
         {title}
       </h2>
-      <div className="ml-auto flex items-center gap-2">
-        {renderActions()}
-      </div>
+      <div className="ml-auto flex items-center gap-2">{renderActions()}</div>
     </div>
   );
 };

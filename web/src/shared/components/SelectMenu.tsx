@@ -1,46 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-/**
- * Option represents a single dropdown choice.
- * @typedef {{ value: string, label: string }} Option
- * @property {string} value - The unique string value for the option.
- * @property {string} label - The display label shown in the list.
- */
 interface Option {
   value: string;
   label: string;
+  bg?: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
-/**
- * Props for the SimpleSelect component.
- *
- * - options: available choices for the dropdown
- * - placeholder: label shown when no option is selected
- * - onChange: callback invoked with the selected option value or null
- * - value: currently selected value
- * - className: optional extra CSS classes applied to the root wrapper
- */
 interface SimpleSelectProps {
   options: Option[];
   placeholder?: string;
   onChange?: (value: string | null) => void;
   value?: string | null;
   className?: string;
+  badge?: boolean;
 }
 
 /**
- * SimpleSelect
+ * A simple and reusable select menu component that automatically adjusts
+ * its dropdown position (top or bottom) based on available space.
  *
- * A small, keyboard/mouse accessible select component that renders a custom
- * dropdown. It keeps internal open/close state and notifies the parent via
- * `onChange` with the selected option's `value` (string) or `null`.
- *
- * Note: this component intentionally restricts option values to strings to
- * keep the API simple and avoid complex identity comparisons.
- *
- * @param {SimpleSelectProps} props
- * @returns {JSX.Element}
+ * @param {SimpleSelectProps} props The props for the component.
+ * @returns {JSX.Element} The rendered select menu component.
  */
 const SelectMenu = ({
   options,
@@ -48,9 +30,12 @@ const SelectMenu = ({
   onChange,
   value: selectedValue,
   className = "",
+  badge,
 }: SimpleSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState<"bottom" | "top">("bottom");
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -65,12 +50,52 @@ const SelectMenu = ({
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  /**
-   * Handle selection of an option.
-   * Calls the onChange prop with the option value and closes the dropdown.
-   * @param {Option} option
-   * @returns {void}
-   */
+  // 👇 Detect scrollable parent and calculate space
+  useEffect(() => {
+    if (!isOpen || !triggerRef.current) return;
+
+    const triggerRect = triggerRef.current.getBoundingClientRect();
+
+    //Find nearest scrollable parent (you can adjust selector if needed)
+    let scrollContainer: HTMLElement | null = null;
+    let parent = triggerRef.current.parentElement;
+
+    while (parent && parent !== document.body) {
+      const style = window.getComputedStyle(parent);
+      if (
+        style.overflowY === "auto" ||
+        style.overflowY === "scroll" ||
+        style.maxHeight !== "none"
+      ) {
+        scrollContainer = parent;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    // If no scrollable parent found, fall back to viewport
+    const containerRect = scrollContainer
+      ? scrollContainer.getBoundingClientRect()
+      : {
+          top: 0,
+          bottom: window.innerHeight,
+          height: window.innerHeight,
+        };
+
+    // Calculate available space below and above within container
+    const spaceBelow = containerRect.bottom - triggerRect.bottom; // space below trigger inside container
+    const spaceAbove = triggerRect.top - containerRect.top; // space above trigger inside container
+
+    const menuHeight = 200; // Approximate height of menu (adjust if needed)
+
+    // Flip to top only if not enough space below AND enough space above
+    if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+      setPosition("top");
+    } else {
+      setPosition("bottom");
+    }
+  }, [isOpen]);
+
   const handleSelect = (option: Option) => {
     onChange?.(option.value);
     setIsOpen(false);
@@ -83,36 +108,69 @@ const SelectMenu = ({
   return (
     <div className={`relative inline-block ${className}`} ref={wrapperRef}>
       <div
+        ref={triggerRef}
         onClick={toggleDropdown}
-        className="flex items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
-         bg-white dark:bg-gray-800 dark:text-white cursor-pointer hover:border-gray-400 min-w-[120px]"
+        className={`flex space-x-2 items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
+         ${
+           badge ? `${selectedOption?.bg ?? ""}` : "bg-white dark:bg-gray-800"
+         } cursor-pointer hover:border-gray-400 min-w-[120px]`}
       >
-        <span className="text-gray-700 truncate text-sm dark:text-[#979ba2]">
+        <span
+          className={` ${
+            badge ? `${selectedOption?.bg ?? ""}` : " text-gray-700"
+          } truncate text-sm dark:text-[#979ba2]`}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
 
-        <MdKeyboardArrowDown
-          className={`text-xl text-gray-500 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
+        {badge ? (
+          <span className="mt-0.5 w-4 h-4">
+            {selectedOption?.icon ? (
+              <selectedOption.icon className="w-4 h-4" />
+            ) : (
+              <MdKeyboardArrowDown
+                className={`text-xl text-gray-500 transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
+            )}
+          </span>
+        ) : (
+          <MdKeyboardArrowDown
+            className={`text-xl text-gray-500 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        )}
       </div>
 
       {isOpen && (
         <ul
-          className="absolute z-10 w-full mt-1 bg-white border text-gray-800 dark:text-white dark:bg-gray-800 
-        border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+          className={`absolute z-10 w-full ${
+            position === "bottom"
+              ? "top-full mt-1" // Open downward
+              : "bottom-full mb-1" // Open upward
+          } bg-white border text-gray-800 dark:text-white dark:bg-gray-800 
+          border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto`}
         >
           {options.map((option) => (
             <li
               key={option.value}
-              onClick={() => handleSelect(option)}
-              className={`px-3 py-2 cursor-pointer text-sm ${
-                option.value === selectedValue
+              onClick={() => {
+                handleSelect(option);
+              }}
+              className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm ${
+                badge
+                  ? `${option?.bg ?? "bg-gray-100"}`
+                  : option.value === selectedValue
                   ? "bg-emerald-100 text-gray-900 font-medium"
                   : "hover:bg-gray-100 dark:hover:bg-blue-400"
               }`}
             >
+              {badge && option.icon && (
+                <option.icon className="inline w-4 h-4 ml-2" />
+              )}
+
               {option.label}
             </li>
           ))}

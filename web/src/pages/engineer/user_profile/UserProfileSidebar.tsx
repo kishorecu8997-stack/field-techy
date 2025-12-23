@@ -1,40 +1,38 @@
-import React, { useState } from "react";
-import {
-  FaBriefcase,
-  FaClipboardList,
-  FaCog,
-  FaFile,
-  FaGraduationCap,
-  FaSignOutAlt,
-  FaUser,
-  FaWrench,
-} from "react-icons/fa";
 import { assetsConfig } from "@/assets";
-import { useForm } from "react-hook-form";
-import type { MenuItem } from "./types";
-import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
-import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
-import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  FaBriefcase,
+  FaClipboardList,
+  FaFile,
+  FaGraduationCap,
+  FaUser,
+  FaWrench
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import type { MenuItem } from "./types";
 
 /**
  * UserProfileSidebar Component
- * 
+ *
  * A comprehensive sidebar navigation component for the engineer's user profile section.
  * Displays user profile information with a rating card and provides navigation menu items
  * for accessing different profile sections including personal info, education, skills,
  * experiences, work preferences, documents, and settings.
- * 
+ *
  * @component
  * @param {DrawerMenuProps} props - The drawer menu configuration props
  * @param {Function} props.onMenuItemClick - Callback function triggered when a menu item is clicked
  * @param {Function} props.onClose - Callback function triggered to close the drawer
- * 
+ *
  * @returns {React.ReactElement} A sidebar component containing profile card and navigation menu
- * 
+ *
  * @example
  * <UserProfileSidebar
  *   onMenuItemClick={(menuId) => handleMenuClick(menuId)}
@@ -89,20 +87,6 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
       id: "documents",
       onClick: () => onMenuItemClick("documents"),
     },
-    // {
-    //   label: "Settings",
-    //   icon: FaCog,
-    //   id: "settings",
-    //   onClick: () => onMenuItemClick("settings"),
-    // },
-    // {
-    //   label: "Logout",
-    //   icon: FaSignOutAlt,
-    //   id: "logout",
-    //   onClick: () => {
-    //     setIsOpen(true);
-    //   },
-    // },
   ];
 
   const navigate = useNavigate();

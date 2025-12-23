@@ -19,6 +19,8 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 export default function ChangePassword() {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
       oldPassword: "",
@@ -26,7 +28,7 @@ export default function ChangePassword() {
       confirmPassword: "",
     },
   });
-  const { showPopup } = usePopupStore();
+  const oldPassword = methods.watch("oldPassword");
 
   const handleSubmit = async () => {
     await showPopup({
@@ -45,7 +47,7 @@ export default function ChangePassword() {
           action: async (close) => {
             toast.success("Password Changed Successfully!");
             close(true);
-            navigate(absoluteUrls.admin.home.dashbaord);
+            navigate(absoluteUrls.admin.home.dashboard);
           },
         },
       ],
@@ -67,7 +69,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: validatePassword,
+                validate: (value: string) => validatePassword(value),
               }}
             />
           </div>
@@ -79,7 +81,7 @@ export default function ChangePassword() {
               required
               rules={{
                 required: "Password is required",
-                validate: validatePassword,
+                validate: (v) => validatePassword(v, oldPassword),
               }}
             />
           </div>
