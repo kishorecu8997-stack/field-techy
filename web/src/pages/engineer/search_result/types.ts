@@ -31,16 +31,6 @@ export const getExperienceLevel = (years?: number) => {
   return "L3"; // 4+ years: Senior/Expert-level
 };
 
-// types/UserProfile.ts
-export interface UserProfile {
-  skills: string[]; // e.g., ["React", "TypeScript", "Node.js"]
-  experienceYears: number; // e.g., 5
-  preferredLocation: string[]; // e.g., ["Remote", "San Francisco", "New York"]
-  preferredJobType: "remote" | "on-site" | "both";
-  minSalary?: number; // e.g., 80000
-  categories: string[]; // e.g., ["IT", "Designing"]
-}
-
 export const LOG_STATUSES = {
   checkIn: "check-in",
   inProgress: "in-progress",
@@ -84,7 +74,7 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
-  ServiceType?: ServiceType;
+  serviceType?: ServiceType;
   languages?: string;
   tools?: string[];
   poc?: {

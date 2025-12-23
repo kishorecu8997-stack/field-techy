@@ -13,6 +13,7 @@ import {
 } from "@/pages/engineer/search_result/types";
 import React, { useMemo, useState } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { loginData } from "@/dummy_data/personalInfoData";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -130,26 +131,98 @@ const ExploreJobs: React.FC = () => {
 
       case SORT_OPTIONS.DISTANCE:
         // Prioritize remote jobs, then closer locations
+
         return jobsCopy.sort((a, b) => {
-          const aIsRemote =
-            a.type === "remote" || a.location?.toLowerCase() === "remote";
-          const bIsRemote =
-            b.type === "remote" || b.location?.toLowerCase() === "remote";
-          if (aIsRemote && !bIsRemote) return -1;
-          if (!aIsRemote && bIsRemote) return 1;
-          // Simple city-based distance (expand as needed)
-          const distances: Record<string, number> = {
-            chennai: 0,
-            "tamil nadu": 50,
-            bangalore: 200,
-            hyderabad: 320,
-            mumbai: 640,
-            delhi: 1100,
+          // Robust remote detection
+          const isRemote = (job: Job) => {
+            const loc = (job.location || "").toLowerCase();
+            const type = (job.type || "").toLowerCase();
+            return (
+              type === "remote" ||
+              loc.includes("remote") ||
+              loc.includes("work from home") ||
+              loc.includes("wfh") ||
+              loc.includes("anywhere")
+            );
           };
-          const locA = (a.location || "").toLowerCase();
-          const locB = (b.location || "").toLowerCase();
-          const distA = distances[locA] ?? 9999;
-          const distB = distances[locB] ?? 9999;
+
+          const aRemote = isRemote(a);
+          const bRemote = isRemote(b);
+
+          if (aRemote && !bRemote) return -1;
+          if (!aRemote && bRemote) return 1;
+          if (aRemote && bRemote) return 0;
+
+          // User's current city — make this dynamic later!
+          const USER_CITY = loginData[0]?.addressLocation; // TODO: Get from user profile or geolocation
+
+          // City coordinates (easy to extend)
+          const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
+            chennai: { lat: 13.0827, lng: 80.2707 },
+            bangalore: { lat: 12.9716, lng: 77.5946 },
+            bengaluru: { lat: 12.9716, lng: 77.5946 },
+            hyderabad: { lat: 17.385, lng: 78.4867 },
+            mumbai: { lat: 19.076, lng: 72.8777 },
+            delhi: { lat: 28.7041, lng: 77.1025 },
+            pune: { lat: 18.5204, lng: 73.8567 },
+            kolkata: { lat: 22.5726, lng: 88.3639 },
+            gurgaon: { lat: 28.4595, lng: 77.0266 },
+            gurugram: { lat: 28.4595, lng: 77.0266 },
+            noida: { lat: 28.5355, lng: 77.391 },
+            // Add more cities easily here
+          };
+
+          // Normalize and match location
+          const getCityKey = (location: string): string | null => {
+            const loc = location.toLowerCase().trim();
+            if (CITY_COORDS[loc]) return loc;
+
+            for (const city of Object.keys(CITY_COORDS)) {
+              if (loc.includes(city)) return city;
+            }
+
+            // State fallbacks
+            if (loc.includes("tamil nadu") || loc.includes("tn"))
+              return "chennai";
+            if (loc.includes("karnataka")) return "bangalore";
+            if (loc.includes("telangana")) return "hyderabad";
+            if (loc.includes("maharashtra") && !loc.includes("pune"))
+              return "mumbai";
+
+            return null;
+          };
+
+          const cityA = getCityKey(a.location || "");
+          const cityB = getCityKey(b.location || "");
+
+          if (!cityA && !cityB) return 0;
+          if (!cityA) return 1;
+          if (!cityB) return -1;
+
+          const userCoords = CITY_COORDS[USER_CITY];
+          if (!userCoords) return 0; // fallback
+
+          // Haversine distance
+          const haversine = (
+            c1: { lat: number; lng: number },
+            c2: { lat: number; lng: number }
+          ) => {
+            const toRad = (x: number) => (x * Math.PI) / 180;
+            const R = 6371;
+            const dLat = toRad(c2.lat - c1.lat);
+            const dLng = toRad(c2.lng - c1.lng);
+            const a =
+              Math.sin(dLat / 2) ** 2 +
+              Math.cos(toRad(c1.lat)) *
+                Math.cos(toRad(c2.lat)) *
+                Math.sin(dLng / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+          };
+
+          const distA = haversine(userCoords, CITY_COORDS[cityA]);
+          const distB = haversine(userCoords, CITY_COORDS[cityB]);
+
           return distA - distB;
         });
       default:
@@ -170,7 +243,7 @@ const ExploreJobs: React.FC = () => {
   };
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
-    setCurrentPage(1);// reset page on filter change
+    setCurrentPage(1); // reset page on filter change
   };
   const handleClearAllFilters = () => {
     setFilters({
@@ -203,7 +276,7 @@ const ExploreJobs: React.FC = () => {
         />
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-4">
-          {/* Job Listings - Now shows up to 15 jobs per page */}
+          {/* Job Listings - Now shows up to 4 jobs per page */}
           <section className="lg:col-span-3">
             <div className="space-y-6">
               {paginatedJobs.length > 0 ? (
@@ -225,7 +298,6 @@ const ExploreJobs: React.FC = () => {
                   >
                     Clear all filters
                   </Button>
-                  
                 </div>
               )}
             </div>
