@@ -8,6 +8,10 @@ interface Session {
   id: string;
   startTime: string;
   device: string;
+  lastActivity?: string;
+  browser?: string;
+  location?: string;
+  isCurrent?: boolean;
 }
 
 interface ActiveSessionsProps {
@@ -27,41 +31,85 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const fetchSessions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const mockSessions: Session[] = [
+        {
+          id: "1",
+          startTime: "2025-12-16T10:00:00Z",
+          device: "Desktop - Windows",
+          isCurrent: false,
+        },
+        {
+          id: "2",
+          startTime: "2025-12-16T11:30:00Z",
+          device: "iPhone 15",
+          isCurrent: true,
+        },
+        {
+          id: "3",
+          startTime: "2025-12-16T12:00:00Z",
+          device: "iPad Pro",
+          isCurrent: false,
+        },
+        {
+          id: "4",
+          startTime: "2025-12-16T13:15:00Z",
+          device: "MacBook Air",
+          isCurrent: false,
+        },
+        {
+          id: "5",
+          startTime: "2025-12-16T14:45:00Z",
+          device: "Android TV",
+          isCurrent: false,
+        },
+        {
+          id: "6",
+          startTime: "2025-12-16T15:30:00Z",
+          device: "Linux Desktop",
+          isCurrent: false,
+        },
+        {
+          id: "7",
+          startTime: "2025-12-16T16:00:00Z",
+          device: "Chrome on Android",
+          isCurrent: false,
+        },
+      ];
+
+      await new Promise((res) => setTimeout(res, 800));
+      setSessions(mockSessions);
+    } catch (err) {
+      setError("Failed to load sessions. Please try again.");
+      console.error("Failed to load active sessions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        setLoading(true);
-        const mockSessions: Session[] = [
-          {
-            id: "1",
-            startTime: "2025-12-16T10:00:00Z",
-            device: "Desktop - Windows",
-          },
-          { id: "2", startTime: "2025-12-16T11:30:00Z", device: "iPhone 15" },
-          { id: "3", startTime: "2025-12-16T12:00:00Z", device: "iPad Pro" },
-          { id: "4", startTime: "2025-12-16T13:15:00Z", device: "MacBook Air" },
-          { id: "5", startTime: "2025-12-16T14:45:00Z", device: "Android TV" },
-          {
-            id: "6",
-            startTime: "2025-12-16T15:30:00Z",
-            device: "Linux Desktop",
-          },
-          {
-            id: "7",
-            startTime: "2025-12-16T16:00:00Z",
-            device: "Chrome on Android",
-          },
-        ];
-        await new Promise((res) => setTimeout(res, 800));
-        setSessions(mockSessions);
-      } catch {
-        setError("Failed to load sessions. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchSessions();
   }, []);
+
+  // Reset selection on session refetch or page change
+  useEffect(() => {
+    setSelectedSessions([]);
+  }, [sessions, currentPage]);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showConfirm) {
+        setShowConfirm(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showConfirm]);
 
   const totalPages = Math.ceil(sessions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -76,19 +124,33 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     );
   };
 
-  const confirmLogout = () => {
-    const updatedSessions = sessions.filter(
-      (s) => !selectedSessions.includes(s.id)
-    );
-    setSessions(updatedSessions);
-    if (onLogout) onLogout(selectedSessions);
-    setSelectedSessions([]);
-    setShowConfirm(false);
+  const confirmLogout = async () => {
+    if (selectedSessions.length === 0) {
+      setShowConfirm(false);
+      return;
+    }
 
-    const newTotalPages = Math.ceil(updatedSessions.length / itemsPerPage);
-    setCurrentPage(
-      newTotalPages === 0 ? 1 : Math.min(currentPage, newTotalPages)
-    );
+    setLoading(true);
+    setError(null);
+    try {
+      if (onLogout) {
+        await Promise.resolve(onLogout(selectedSessions));
+      }
+      const updatedSessions = sessions.filter(
+        (s) => !selectedSessions.includes(s.id)
+      );
+      setSessions(updatedSessions);
+      setSelectedSessions([]);
+      const newTotalPages = Math.ceil(updatedSessions.length / itemsPerPage);
+      setCurrentPage(
+        newTotalPages === 0 ? 1 : Math.min(currentPage, newTotalPages)
+      );
+      setShowConfirm(false);
+    } catch {
+      setError("Failed to log out selected sessions. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogoutClick = () => {
@@ -108,7 +170,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
       <div className="p-6 max-w-3xl mx-auto font-sans text-center text-red-600">
         <p>{error}</p>
         <Button
-          onClick={() => window.location.reload()}
+          onClick={fetchSessions}
           className="mt-4 bg-red-600 hover:bg-red-700 text-white"
         >
           Retry
@@ -169,7 +231,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                       })}
                     </div>
                     <div className="text-xs text-blue-600 mt-1 font-medium">
-                      {session.id === "1" ? "This Device" : "Active Now"}
+                      {session.isCurrent ? "This Device" : "Active Now"}
                     </div>
                   </div>
                 </div>
@@ -210,8 +272,15 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
 
         {/* Confirmation Modal */}
         {showConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-black opacity-50"
+              onClick={() => setShowConfirm(false)}
+            ></div>
+
+            {/* Modal content */}
+            <div className="bg-white p-6 rounded-lg shadow-lg z-10 max-w-sm w-full">
               <h2 className="text-lg font-bold mb-4">Confirm Logout</h2>
               <p className="mb-4">
                 Are you sure you want to logout {selectedSessions.length}{" "}
