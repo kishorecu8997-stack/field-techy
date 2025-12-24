@@ -6,6 +6,7 @@ import SidebarProfile from "./my_job_components/SidebarProfile";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { absoluteUrls} from "@/config/urls";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -42,8 +43,8 @@ const MyJobsPage = () => {
         />
 
        <button
-        onClick={() => navigate("/engineer/my-jobs/application-history")}
-        className=" bg-teal-800 hover:bg-teal-800 text-white font-semibold py-2 px-4 rounded transition"
+        onClick={() => navigate(absoluteUrls.engineer.home.application_history)}
+        className=" bg-teal-800 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded transition"
         >
         Application History
         </button>

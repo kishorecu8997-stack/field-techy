@@ -366,10 +366,9 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
      {
-      path: `${urls.engineer.home.my_jobs}/application-history`,
+      path: urls.engineer.home.application_history,
       element: withSuspense(ApplicationHistoryPage),
-       },
-
+      },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
         element: withSuspense(JobDetailsPage),

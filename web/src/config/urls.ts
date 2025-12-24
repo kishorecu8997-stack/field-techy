@@ -37,6 +37,7 @@ export const urls = {
       explore_jobs: "explore-jobs",
       chat: "messages",
       saved_jobs: "saved-jobs",
+      application_history: "my-jobs/application-history", 
     },
     auth: {
       login: "login",

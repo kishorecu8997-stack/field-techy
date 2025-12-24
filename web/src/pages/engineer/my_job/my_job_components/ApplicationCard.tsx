@@ -9,28 +9,44 @@ interface ApplicationCardProps {
   application: Application;
   onReapply?: (application: Application) => void; // optional click handler
 }
-
+/**
+ * ApplicationCard component displays information about a single job application.
+ *
+ * Props:
+ * @param {Object} props - Component props
+ * @param {Application} props.application - The application object
+ * @param {function(Application): void} [props.onReapply] - Optional callback when "Re-apply" is clicked
+ *
+ * This component shows:
+ * - Job title and company
+ * - Applied date
+ * - Status badge with color based on application status
+ * - Rejection reason tooltip (if status is "Rejected")
+ * - Re-apply" button for rejected applications
+ */
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   onReapply,
 }) => {
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Applied":
+    switch (status.toLowerCase()) {
+      case "applied":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
-      case "Accepted":
+      case "accepted":
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      case "Rejected":
+      case "rejected":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      case "Completed":
+      case "completed":
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
   };
 
-  const handleReapply = () => {
-    if (onReapply) onReapply(application);
+  const handleReapplyClick = () => {
+    if (onReapply) {
+      onReapply(application);
+    }
   };
 
   return (
@@ -52,14 +68,17 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
           {/* Tooltip only for Rejected status */}
           {application.status === "Rejected" && application.rejectionReason && (
-            <div
-              className="absolute left-1/2 -translate-x-1/2 mt-2
-                         hidden group-hover:block
-                         whitespace-nowrap
-                         bg-gray-900 text-white text-xs
-                         px-3 py-1 rounded shadow-lg z-50"
-            >
-              {application.rejectionReason}
+            <div className="relative">
+              <div
+                id={`tooltip-${application.id}`}
+                role="tooltip"
+                className="absolute left-1/2 -translate-x-1/2 mt-2
+                 hidden group-hover:block focus:block
+                 whitespace-nowrap bg-gray-900 text-white text-xs
+                 px-3 py-1 rounded shadow-lg z-50"
+              >
+                {application.rejectionReason}
+              </div>
             </div>
           )}
         </div>
@@ -79,7 +98,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           size="sm"
           leftIcon={<FaRedo className="h-3 w-3" />}
           className="mt-3 border bg-teal-800 text-white border-teal-900"
-          onClick={handleReapply}
+          onClick={handleReapplyClick}
         >
           Re-apply
         </Button>
