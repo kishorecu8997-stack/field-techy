@@ -308,6 +308,13 @@ const clientDocuments = React.lazy(
     )
 );
 
+const ClientContactVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/ContactVerification"
+    )
+);
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -467,6 +474,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.client.auth.documents,
         element: withSuspense(clientDocuments),
+      },
+      {
+        path: "verification",
+        element: withSuspense(ClientContactVerification),
       },
     ],
   },

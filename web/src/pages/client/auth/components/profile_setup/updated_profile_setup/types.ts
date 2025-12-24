@@ -8,7 +8,7 @@ export interface ClientBasicDetails {
   city: string;
   postalCode: string;
   address: string;
-  
+
   // Corporate-specific fields
   companyName?: string;
   contactPersonName?: string;
@@ -16,17 +16,16 @@ export interface ClientBasicDetails {
   industry?: string;
   vat?: string;
   vatRegistrationNumber?: string;
-  
+
   // Verification flags
-  isMobileVerified?: boolean;
-  isEmailVerified?: boolean;
   isEnableNotifications?: boolean;
   isApproved?: boolean;
-  
+  termsAndConditions: boolean;
+
   // Password fields
   password: string;
   confirmPassword: string;
-  
+
   // Payment fields
   paymentMethodId?: string;
   cardNumber?: string;

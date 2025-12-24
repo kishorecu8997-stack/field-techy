@@ -1,14 +1,14 @@
-import { absoluteUrls } from "@/config/urls";
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
+import { Controller } from "react-hook-form";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
@@ -28,9 +28,6 @@ const BasicDetails = () => {
   const {
     signupEmail,
     signupPhone,
-    emailVerified,
-    mobileVerified,
-    accountType,
     fullName,
     email,
     phone,
@@ -44,11 +41,9 @@ const BasicDetails = () => {
     industry,
     vat,
     vatRegistrationNumber,
-    clearStore,
     markStepCompleted,
     updateProfileData,
     setClientId,
-    markRegistrationComplete,
   } = useClientRegistrationStore();
 
   const formCtx = useForm<ClientBasicDetails>({
@@ -66,14 +61,12 @@ const BasicDetails = () => {
       // Corporate-specific fields - restored from store
       companyName: companyName || "",
       contactPersonName: contactPersonName || "",
-      businessType: params.role,
+      businessType: params.role || "home",
       industry: industry || "",
       vat: vat || "",
       vatRegistrationNumber: vatRegistrationNumber || "",
 
       // Verification flags - restored from store
-      isMobileVerified: mobileVerified,
-      isEmailVerified: emailVerified,
 
       // Password fields - never restored (security)
       password: "",
@@ -102,7 +95,6 @@ const BasicDetails = () => {
 
       // Mark registration as complete (basic profile done)
       // Documents are optional, so registration is considered complete here
-      markRegistrationComplete();
 
       toast.success("Profile registered successfully!");
     },
@@ -112,17 +104,44 @@ const BasicDetails = () => {
     },
   });
 
-  // Validation guard: Check if user reached this page properly
-  useEffect(() => {
-    const hasVerifiedContact = emailVerified || mobileVerified;
-    const hasAccountType = accountType !== null;
+  // Resume registration check
+  const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
+  const { clearStore: resetStore } = useClientRegistrationStore();
 
-    if (!hasVerifiedContact || !hasAccountType) {
-      toast.error("Something went wrong. Please start the registration process from the beginning.");
-      clearStore();
-      navigate(absoluteUrls.client.auth.login);
+  // Ask user if they want to continue with previous registration if not coming from verified flow
+  // Since we are now the first page, we need to check if there is data in store
+  useEffect(() => {
+    // Only check if we are on the main signup route (no role param, or explicitly the start)
+    // and if there is data in the store
+    if (!hasAskedToContinue && (signupEmail || signupPhone) && !params.role) {
+      setHasAskedToContinue(true);
+
+      showPopup({
+        title: "Continue Registration?",
+        body: `You previously started registration. Would you like to continue or start fresh?`,
+        actionButtons: [
+          {
+            label: "Start Fresh",
+            value: false,
+            variant: "outline",
+            action: (close) => {
+              resetStore();
+              formCtx.reset();
+              close(false);
+            },
+          },
+          {
+            label: "Continue",
+            value: true,
+            action: (close) => {
+              // Values are already in defaultValues, form will re-hydrate or we can force set
+              close(true);
+            },
+          },
+        ],
+      });
     }
-  }, [emailVerified, mobileVerified, accountType, clearStore, navigate]);
+  }, [signupEmail, signupPhone, hasAskedToContinue, resetStore, formCtx, params.role, showPopup]);
 
   const handleSubmit = async (data: ClientBasicDetails) => {
     console.log("Form data:", data);
@@ -169,7 +188,7 @@ const BasicDetails = () => {
 
             markStepCompleted(4);
             const param = buildQuery({ id: loginData.id });
-            navigate(`${absoluteUrls.client.auth.documents}?${param}`);
+            navigate(`/client/auth/verification?${param}`);
             close(true);
           },
         },
@@ -207,13 +226,6 @@ const BasicDetails = () => {
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
 
-  const isMobileVerified = formCtx.watch("isMobileVerified");
-  const isEmailVerified = formCtx.watch("isEmailVerified");
-
-  useEffect(() => {
-    if (isMobileVerified) formCtx.trigger("phone");
-    if (isEmailVerified) formCtx.trigger("email");
-  }, [isMobileVerified, isEmailVerified, formCtx]);
 
   return (
     <FormContainer
@@ -231,6 +243,38 @@ const BasicDetails = () => {
         <BasicDetailsFields />
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <SetPassword />
+          <Controller
+            control={formCtx.control}
+            name="termsAndConditions"
+            rules={{ required: "You must agree to the terms and conditions" }}
+            render={({ field, fieldState: { error } }) => (
+              <div className="flex flex-col mt-4">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                    checked={!!field.value}
+                    id="terms"
+                    className="accent-primary h-4 w-4"
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-700">
+                    I agree to the{" "}
+                    <span className="text-blue-600 underline cursor-pointer">
+                      Terms and Conditions
+                    </span>
+                  </label>
+                </div>
+                {error && (
+                  <span className="text-red-500 text-xs mt-1">
+                    {error.message}
+                  </span>
+                )}
+              </div>
+            )}
+          />
         </div>
       </div>
       <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">

@@ -3,21 +3,19 @@ import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/
 import { validateAddress, validateName, validateVatNumber, validateZipcode } from "@/pages/engineer/user_profile/Validate";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
-import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
-import { Controller, useFormContext } from "react-hook-form";
+import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import { useStates, useCities, useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
 
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
-  const role = window.location.pathname.includes("corporate") ? "corporate" : "home";
-  const { control, watch } = ctx;
-
-  // Get verification state from store
-  const { emailVerified, mobileVerified } = useClientRegistrationStore();
+  const { watch, setValue } = ctx;
+  const watchedRole = watch("businessType");
+  // Default to URL role if set, otherwise fallback to watched value or "home"
+  const urlRole = window.location.pathname.includes("corporate") ? "corporate" : undefined;
+  const role = urlRole || watchedRole || "home";
 
   const country = watch("country");
   const selectedState = watch("state");
@@ -29,6 +27,32 @@ const BasicDetailsFields = () => {
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
+      {/* Account Type Selection (if not fixed by URL) */}
+      {!urlRole && (
+        <div className="flex gap-4 justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <button
+            type="button"
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${role === "home"
+              ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white"
+              : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            onClick={() => setValue("businessType", "home")}
+          >
+            Home Owner
+          </button>
+          <button
+            type="button"
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${role === "corporate"
+              ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white"
+              : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            onClick={() => setValue("businessType", "corporate")}
+          >
+            Corporate
+          </button>
+        </div>
+      )}
+
       {role === "corporate" ? (
         <>
           <InputField
@@ -63,35 +87,25 @@ const BasicDetailsFields = () => {
         />
       )}
 
-      {/* Verified phone and email */}
-      <Controller
-        name="isMobileVerified"
-        control={ctx.control}
-        defaultValue={!!mobileVerified}
-        render={({ field: { onChange, value } }) => (
-          <VerifiedPhoneInputField
-            name="phone"
-            required
-            verified={value}
-            setVerified={onChange}
-            disabled={value}
-          />
-        )}
+      {/* Phone and email */}
+      <PhoneInputField
+        name="phone"
+        required
+        label="Phone Number"
       />
 
-      <Controller
-        name="isEmailVerified"
-        control={control}
-        defaultValue={!!emailVerified}
-        render={({ field: { onChange, value } }) => (
-          <VerifiedEmailInputField
-            name="email"
-            required
-            verified={value}
-            setVerified={onChange}
-            disabled={value}
-          />
-        )}
+      <InputField
+        name="email"
+        type="email"
+        placeholder="Email Address"
+        required
+        label="Email Address"
+        rules={{
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "Invalid email address"
+          }
+        }}
       />
 
       {/* Country, state, city, postal */}
@@ -140,14 +154,14 @@ const BasicDetailsFields = () => {
           <SelectField
             name="businessType"
             placeholder="Business Type"
-            disabled
+            label="Business Type"
+            disabled={!!urlRole} // Disable if fixed by URL
             options={[
               { value: "corporate", label: "Corporate" },
               { value: "home", label: "Home" },
             ]}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
-            label="Business Type"
           />
           <SelectField
             name="industry"
