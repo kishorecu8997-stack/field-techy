@@ -19,18 +19,14 @@ const getStatusColor = (status: string) => {
 };
 
 const ProfileCompletionCard = () => {
-  const {
-    profileData,
-    setActiveKey,
-    setISOpenSidebar,
-    setNavigationSource,
-  } = useDrawerStore();
+  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource, setImmediateParentKey } =
+    useDrawerStore();
 
   return (
     <div className="space-y-6 p-4">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
       {/* Five Sections mentioned in user story */}
-      {profileData.map((section) => { 
+      {profileData.map((section) => {
         const total = section.fields.length;
         const completed = section.fields.filter(
           (f) => f.status === "complete"
@@ -63,7 +59,7 @@ const ProfileCompletionCard = () => {
             <ul className="space-y-1 text-sm">
               {section.fields.map((field, i) => (
                 <li
-                 key={`${section.key}-${field.label}-${i}`}
+                  key={`${section.key}-${field.label}-${i}`}
                   className={getStatusColor(field.status)}
                 >
                   {getStatusIcon(field.status)} {field.label}
@@ -77,9 +73,10 @@ const ProfileCompletionCard = () => {
               <div className="flex justify-between items-center mt-4 text-sm">
                 <button
                   onClick={() => {
-                    // Navigation for specific form according to the section
+                    // Set source to profilecompletion, returnToKey to profile completion
                     setNavigationSource("profilecompletion","profileCompletion");
-                    setActiveKey(section.navigateTo);
+                    setImmediateParentKey("profileCompletion");
+                    setActiveKey(section.navigateTo); // navigate to the  relevant section form
                     setISOpenSidebar(true);
                   }}
                   className="text-teal-700 font-medium hover:underline"

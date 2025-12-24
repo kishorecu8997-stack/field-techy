@@ -32,7 +32,9 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     setActiveKey,
     navigationSource,
     returnToKey,
-    resetNavigationSource 
+    resetNavigationSource,
+    immediateParentKey,
+    setImmediateParentKey 
   } = useDrawerStore();
 
   // Escape key & scroll lock effect
@@ -73,17 +75,23 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
 // modified onBack function to handle navigation Source  
-  const onBack =
-    navigationSource === "profilecompletion" && returnToKey
-      ? () => {
-          setActiveKey(returnToKey);
-          resetNavigationSource();
-        }
-      : config.parent
-      ? () => {
-          setActiveKey(config.parent as string);
-        }
-      : undefined; 
+  const onBack = () => {
+  if (immediateParentKey) {
+    setActiveKey(immediateParentKey);
+    setImmediateParentKey(undefined); // clear after use
+    return;
+  }
+
+  if (navigationSource === "profilecompletion" && returnToKey) {
+    setActiveKey(returnToKey);
+    resetNavigationSource();
+    return;
+  }
+
+  if (config.parent) {
+    setActiveKey(config.parent as string);
+  }
+};
   return (
     <>
       {/* Backdrop */}

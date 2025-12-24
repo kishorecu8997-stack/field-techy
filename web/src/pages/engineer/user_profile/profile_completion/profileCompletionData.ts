@@ -72,7 +72,7 @@ export const profileCompletionData: ProfileSection[] = [
     estimatedMinutesPerField: 10,
     fields: [
       { label: "Password", status: "complete" },
-      { label: "Bank Account", status: "complete"}
+      { label: "Bank Account", status: "complete" }
     ],
   },
 ];

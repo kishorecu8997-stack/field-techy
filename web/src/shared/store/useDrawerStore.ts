@@ -14,7 +14,9 @@ interface DrawerState {
   // Add Navigation function for drawer to redirect to the page that is opened
   navigationSource: NavigationSource;
   returnToKey?: string;
+  immediateParentKey?: string; // For nested forms to return to section
   setNavigationSource: (source: NavigationSource, returnToKey?: string) => void;
+  setImmediateParentKey: (key?: string) => void;
   resetNavigationSource: () => void;
   //  Profile completion  UI Only state
   profileData: typeof profileCompletionData;
@@ -49,9 +51,12 @@ const useDrawerStore = create<DrawerState>((set) => ({
 
   navigationSource: "sidebar",
   returnToKey: undefined,
+  immediateParentKey: undefined,
 
   setNavigationSource: (source, returnToKey) =>
     set({ navigationSource: source, returnToKey }),
+
+  setImmediateParentKey: (key) => set({ immediateParentKey: key }),
 
   resetNavigationSource: () =>
     set({ navigationSource: "sidebar", returnToKey: undefined }),

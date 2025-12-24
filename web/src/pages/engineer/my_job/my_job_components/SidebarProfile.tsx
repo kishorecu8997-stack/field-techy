@@ -48,7 +48,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
         <button
           type="button"
           onClick={() => {
-            setNavigationSource("profilecompletion", "profilecompletion");
+            setNavigationSource("profilecompletion", "profileCompletion");
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}
