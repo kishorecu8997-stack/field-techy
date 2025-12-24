@@ -19,8 +19,7 @@ const getStatusColor = (status: string) => {
   return "text-red-600";
 };
 const ProfileCompletionCard = () => {
-  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
-    useDrawerStore();
+  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource, setImmediateParentKey } = useDrawerStore();
 
   /* Get Profile Completion Score Calculation according to each section fields */
     const overallCompletion = getProfileCompletion(profileData);
@@ -130,10 +129,8 @@ return (
                 <button
                   onClick={() => {
                     // Navigation for specific form according to the section
-                    setNavigationSource(
-                      "profilecompletion",
-                      "profileCompletion"
-                    );
+                    setNavigationSource("profilecompletion", "profileCompletion");
+                    setImmediateParentKey("profileCompletion");
                     setActiveKey(section.navigateTo);
                     setISOpenSidebar(true);
                   }}
