@@ -56,6 +56,7 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Name"
             required
+            inputMode="string" 
             rules={{ validate: (v: string) => validateName(v) }}
           />
           <PhoneInputField name="phoneNumber" label="Mobile Number" required />

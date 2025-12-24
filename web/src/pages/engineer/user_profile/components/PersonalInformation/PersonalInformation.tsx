@@ -45,7 +45,7 @@ const PersonalInformation = () => {
         {
           label: "Cancel",
           value: "no",
-          variant:"secondary",
+          variant: "secondary",
           action: async (close) => {
             console.log("No button clicked");
             close(true);
@@ -54,7 +54,7 @@ const PersonalInformation = () => {
         {
           label: "Yes, update",
           value: "yes",
-          variant:"primary",
+          variant: "primary",
           action: async (close) => {
             toast.success("Profile Updated Successfully");
             console.log("Form submitted with data:", data);
@@ -106,6 +106,7 @@ const PersonalInformation = () => {
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
           rules={{ validate: (v: string) => validateName(v) }}
+          inputMode="string"
         />
 
         <VerifiedPhoneInputField
