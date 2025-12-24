@@ -82,12 +82,6 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           >
             Earning
           </div>
-           <NavLink
-            to={absoluteUrls.engineer.home.break_request}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
-          >
-            Break Request
-          </NavLink>
         </nav>
       </div>
 

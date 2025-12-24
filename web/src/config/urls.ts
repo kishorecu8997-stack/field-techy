@@ -29,7 +29,6 @@ export const urls = {
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
-      break_request: "break-request",
       search_result: "search-result",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
@@ -38,6 +37,7 @@ export const urls = {
       explore_jobs: "explore-jobs",
       chat: "messages",
       saved_jobs: "saved-jobs",
+      break_details: "break-details",
     },
     auth: {
       login: "login",
@@ -160,7 +160,6 @@ export const absoluteUrls = {
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
-      break_request: `${BASE.ENGINEER}/break-request`,
       search_result: `${BASE.ENGINEER}/search-result`,
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
@@ -169,6 +168,7 @@ export const absoluteUrls = {
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/messages`,
       saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
+      break_details: `${BASE.ENGINEER}/break-details`,
     },
   },
   client: {

@@ -32,6 +32,10 @@ const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
 
+const BreakDetails = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails")
+);
+
 // Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
 const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
@@ -235,10 +239,6 @@ const PostAJobPage = React.lazy(
 );
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
-const BreakRequest = React.lazy(
-  () => import("@/pages/engineer/home/components/BreakRequest")
-);
-
 const ClientMyJobsPage = React.lazy(
   () => import("@/pages/client/my_job_client")
 );
@@ -371,6 +371,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(JobDetailsPage),
       },
       {
+        path: `${urls.engineer.home.my_jobs}/:jobId/break-details`,
+        element: withSuspense(BreakDetails),
+      },
+      {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
         element: withSuspense(OfferPages),
       },
@@ -391,10 +395,6 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.chat,
         element: withSuspense(EngineerChatPage),
-      },
-       {
-        path: urls.engineer.home.break_request,
-        element: withSuspense(BreakRequest),
       },
     ],
   },
