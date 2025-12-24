@@ -70,6 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             <NavLink
               to={absoluteUrls.engineer.home.my_jobs}
               className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              aria-label="View your applied and active jobs"
             >
               My Jobs
             </NavLink>
@@ -178,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             <FaBell size={20} />
           </div>
         </Tooltip>
-        <Tooltip text="View the Profile">
+        <Tooltip text="View Your Profile">
           <div
             onClick={onDrawerToggle}
             className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"

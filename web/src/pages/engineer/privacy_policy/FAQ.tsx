@@ -1,39 +1,39 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { FAQData } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 
 const FAQ = () => {
   const [search, setSearch] = useState("");
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<string | null>(null);
+  const filteredData = useMemo(() => {
+    const searchText = search.toLowerCase();
 
-  const searchText = search.toLowerCase();
+    return FAQData.map((section) => {
+      const items = section.items ?? [];
 
-  const filteredData = FAQData.map((section) => {
-    const items = section.items ?? [];
+      const filteredItems = items.filter((item) => {
+        const titleMatch = item.title
+          ? item.title.toLowerCase().includes(searchText)
+          : false;
 
-    const filteredItems = items.filter((item) => {
-      const titleMatch = item.title
-        ? item.title.toLowerCase().includes(searchText)
-        : false;
+        const descriptionMatch = item.description
+          ? item.description.toLowerCase().includes(searchText)
+          : false;
 
-      const descriptionMatch = item.description
-        ? item.description.toLowerCase().includes(searchText)
-        : false;
+        const sectionMatch = section.title.toLowerCase().includes(searchText);
 
-      const sectionMatch = section.title.toLowerCase().includes(searchText);
-
-      return titleMatch || descriptionMatch || sectionMatch;
-    });
-    return {
-      ...section,
-      items: filteredItems,
-    };
-  }).filter(
-    (section) =>
-      section.items.length > 0 ||
-      section.title.toLowerCase().includes(searchText)
-  );
-
+        return titleMatch || descriptionMatch || sectionMatch;
+      });
+      return {
+        ...section,
+        items: filteredItems,
+      };
+    }).filter(
+      (section) =>
+        section.items.length > 0 ||
+        section.title.toLowerCase().includes(searchText)
+    );
+  }, [search]);
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -58,14 +58,14 @@ const FAQ = () => {
               <h2 className="text-lg font-semibold mb-4">{section.title}</h2>
               <div className="space-y-4">
                 {section.items.map((item, index) => {
-                  const globalIndex = secIndex * 100 + index;
-                  const isExpanded = expandedIndex === globalIndex;
+                  const itemKey = `${secIndex}-${item.title}-${index}`;
+                  const isExpanded = expandedIndex === itemKey;
                   return (
                     <div
-                      key={index}
+                      key={itemKey}
                       className="cursor-pointer border-b border-gray-200 dark:border-gray-700 pb-4"
                       onClick={() =>
-                        setExpandedIndex(isExpanded ? null : globalIndex)
+                        setExpandedIndex(isExpanded ? null : itemKey)
                       }
                     >
                       <div className="flex justify-between items-center font-medium">
@@ -74,7 +74,7 @@ const FAQ = () => {
                           {isExpanded ? "−" : "+"}
                         </span>
                       </div>
-                     {isExpanded && (
+                      {isExpanded && (
                         <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                           {item.description}
                         </div>

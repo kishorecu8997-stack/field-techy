@@ -27,7 +27,6 @@ export const urls = {
     terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
     video_guidance: `${BASE.ENGINEER}/video-guidance`,
     
-
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",

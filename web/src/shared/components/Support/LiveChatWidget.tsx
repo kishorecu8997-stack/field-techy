@@ -5,16 +5,27 @@ import Tooltip from "@/shared/components/Tooltip";
 
 const LiveChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(mockChat);
+
+  const [messages, setMessages] = useState(
+    mockChat.map((msg, index) => ({
+      ...msg,
+      id: `msg-${index}`,
+    }))
+  );
+
   const [input, setInput] = useState("");
 
   const sendMessage = () => {
     if (!input.trim()) return;
 
-    setMessages([...messages, { sender: "user", message: input }]);
+    const newMsg = {
+      id: `msg-${messages.length}`,
+      sender: "user",
+      message: input,
+    };
+    setMessages([...messages, newMsg]);
     setInput("");
   };
-
   return (
     <>
       {/* Live Chat Button with Tooltip */}
@@ -46,10 +57,10 @@ const LiveChatWidget = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 p-3 overflow-y-auto space-y-2">
-            {messages.map((msg, index) => (
+          <div className="flex-1 p-3 overflow-y-auto space-y-2 max-h-96">
+            {messages.map((msg) => (
               <div
-                key={index}
+                key={msg.id}
                 className={`text-sm p-2 rounded max-w-[75%] break-words ${
                   msg.sender === "support"
                     ? "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
@@ -68,6 +79,12 @@ const LiveChatWidget = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type a message..."
               className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
             />
             <Tooltip text="Send Message">
               <button

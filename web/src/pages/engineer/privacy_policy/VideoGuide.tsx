@@ -13,9 +13,9 @@ const VideoGuidance = () => {
         />
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {videoGuidanceData.map((video, index) => (
+          {videoGuidanceData.map((video) => (
             <VideoCard
-              key={index}
+              key={video.videoUrl}
               title={video.title}
               description={video.description}
               videoUrl={video.videoUrl}

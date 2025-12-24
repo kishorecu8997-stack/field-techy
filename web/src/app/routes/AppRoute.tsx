@@ -2,7 +2,10 @@ import { absoluteUrls, BASE, urls } from "@/config/urls";
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
-import LiveChatWidget from "@/shared/components/Support/LiveChatWidget";
+
+const LiveChatWidget = React.lazy(
+  () => import("@/shared/components/Support/LiveChatWidget")
+);
 
 const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
@@ -30,7 +33,7 @@ const BackgroundVerification = React.lazy(
     )
 );
 const SetPassword = React.lazy(
-  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword") 
+  () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
 
 // Layouts
@@ -357,7 +360,7 @@ export const routes = createBrowserRouter([
     element: (
       <>
       <RootLayout />
-      <LiveChatWidget /> {/* Visible for Login Engineer */}
+      {withSuspense(LiveChatWidget)} {/* Visible for Login Engineer */}
       </>
     )    
     ,

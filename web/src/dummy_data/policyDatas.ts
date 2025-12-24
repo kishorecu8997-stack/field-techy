@@ -220,6 +220,5 @@ export const AboutAppSection: Section[] = [
         title: "",
         content:
           "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate nesciunt provident ipsum labore quaerat, porro similiqe molestias sequi sed ex harum voluptatum laudantium minima veritatis iusto fugit exercitationem in consectetur nisi veniam eum. Ipsum rerum voluptatum dicta veniam porro modi recusandae laudantium enim mollitia? Eum reiciendis porro exercitationem cum ut.",
-      },
-      
+      },   
 ];
