@@ -44,6 +44,7 @@ const AddExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Added Successfully");
+            console.log(data);
             close(true);
             setActiveKey("experiences");
           },
