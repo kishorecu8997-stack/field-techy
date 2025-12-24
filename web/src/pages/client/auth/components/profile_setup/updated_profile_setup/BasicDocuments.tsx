@@ -20,12 +20,12 @@ interface DocumentFormData {
 
 /**
  * Document upload component for client registration.
- * 
+ *
  * Allows clients to upload optional documents:
  * - Profile image
  * - Government ID
  * - Certificates
- * 
+ *
  * Users can either:
  * 1. Upload at least ONE document and save
  * 2. Skip and complete later
@@ -36,7 +36,9 @@ const BasicDocuments = () => {
   const clientId = searchParams.get("id");
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
+    {}
+  );
 
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
@@ -99,7 +101,8 @@ const BasicDocuments = () => {
     }
 
     // Check if at least one document is selected
-    const hasAtLeastOne = data.profileImage || data.governmentId || data.certificate;
+    const hasAtLeastOne =
+      data.profileImage || data.governmentId || data.certificate;
 
     if (!hasAtLeastOne) {
       toast.error("Please upload at least one document or click 'Skip'.");
@@ -118,9 +121,16 @@ const BasicDocuments = () => {
               clientId,
               file: data.profileImage![0],
               documentType: "PROFILE_PICTURE",
-              onUploadProgress: (progress: { loaded: number; total?: number; percentage?: number }) => {
+              onUploadProgress: (progress: {
+                loaded: number;
+                total?: number;
+                percentage?: number;
+              }) => {
                 if (progress.percentage) {
-                  setUploadProgress(prev => ({ ...prev, PROFILE_PICTURE: progress.percentage! }));
+                  setUploadProgress((prev) => ({
+                    ...prev,
+                    PROFILE_PICTURE: progress.percentage!,
+                  }));
                 }
               },
             },
@@ -139,9 +149,16 @@ const BasicDocuments = () => {
               clientId,
               file: data.governmentId![0],
               documentType: "GOVERNMENT_ID",
-              onUploadProgress: (progress: { loaded: number; total?: number; percentage?: number }) => {
+              onUploadProgress: (progress: {
+                loaded: number;
+                total?: number;
+                percentage?: number;
+              }) => {
                 if (progress.percentage) {
-                  setUploadProgress(prev => ({ ...prev, GOVERNMENT_ID: progress.percentage! }));
+                  setUploadProgress((prev) => ({
+                    ...prev,
+                    GOVERNMENT_ID: progress.percentage!,
+                  }));
                 }
               },
             },
@@ -160,9 +177,16 @@ const BasicDocuments = () => {
               clientId,
               file: data.certificate![0],
               documentType: "CERTIFICATE",
-              onUploadProgress: (progress: { loaded: number; total?: number; percentage?: number }) => {
+              onUploadProgress: (progress: {
+                loaded: number;
+                total?: number;
+                percentage?: number;
+              }) => {
                 if (progress.percentage) {
-                  setUploadProgress(prev => ({ ...prev, CERTIFICATE: progress.percentage! }));
+                  setUploadProgress((prev) => ({
+                    ...prev,
+                    CERTIFICATE: progress.percentage!,
+                  }));
                 }
               },
             },
@@ -206,7 +230,7 @@ const BasicDocuments = () => {
       className="flex flex-col h-screen w-full"
     >
       {/* header - sticky */}
-      <div className="shrink-0 p-4 flex flex-col gap-2 items-center justify-center bg-white ">
+      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
           Please upload at least one document for background verification{" "}
@@ -231,7 +255,7 @@ const BasicDocuments = () => {
             {isUploading && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-800">
-                  Uploading {uploadingDoc?.replace('_', ' ')}...
+                  Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
                 {uploadProgress[uploadingDoc] && (
                   <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
@@ -248,21 +272,21 @@ const BasicDocuments = () => {
       </div>
 
       {/* footer - sticky */}
-      <div className="shrink-0 p-4 bg-white flex justify-center gap-3">
+      <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
         <div className="w-full max-w-md flex gap-3">
           <Button
             type="button"
             onClick={handleSkip}
             variant="outline"
             disabled={isUploading}
-            className="flex-1"
+            className="w-1/2 flex-1"
           >
             Skip for Now
           </Button>
           <Button
             type="submit"
             disabled={isUploading}
-            className="flex-1"
+            className="w-1/2 bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             {isUploading ? "Uploading..." : "Save and Continue"}
           </Button>

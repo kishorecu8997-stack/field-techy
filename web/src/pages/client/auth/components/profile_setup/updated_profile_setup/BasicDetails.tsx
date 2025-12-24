@@ -141,7 +141,15 @@ const BasicDetails = () => {
         ],
       });
     }
-  }, [signupEmail, signupPhone, hasAskedToContinue, resetStore, formCtx, params.role, showPopup]);
+  }, [
+    signupEmail,
+    signupPhone,
+    hasAskedToContinue,
+    resetStore,
+    formCtx,
+    params.role,
+    showPopup,
+  ]);
 
   const handleSubmit = async (data: ClientBasicDetails) => {
     console.log("Form data:", data);
@@ -199,8 +207,10 @@ const BasicDetails = () => {
   // Pre-fill form from store (for fields that might have been edited)
   useEffect(() => {
     // Only update if values exist in store (don't override with empty strings)
-    if (signupEmail && !formCtx.getValues("email")) formCtx.setValue("email", signupEmail);
-    if (signupPhone && !formCtx.getValues("phone")) formCtx.setValue("phone", signupPhone);
+    if (signupEmail && !formCtx.getValues("email"))
+      formCtx.setValue("email", signupEmail);
+    if (signupPhone && !formCtx.getValues("phone"))
+      formCtx.setValue("phone", signupPhone);
   }, [signupEmail, signupPhone, formCtx]);
 
   // Auto-save form changes to store (optional - for auto-save functionality)
@@ -226,14 +236,13 @@ const BasicDetails = () => {
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
 
-
   return (
     <FormContainer
       methods={formCtx}
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      <div className="shrink-0 p-2 flex flex-col gap-2 items-center justify-center  bg-white sticky top-0 z-10">
+      <div className="shrink-0 p-2 mt-8 flex flex-col gap-2 items-center justify-center  bg-white sticky top-0 z-10">
         <h2 className="text-3xl font-bold">Profile Setup</h2>
         <p className="text-md text-center text-gray-600 mb-4 px-3">
           Complete your profile to unlock opportunities.
@@ -279,7 +288,11 @@ const BasicDetails = () => {
       </div>
       <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-          <Button type="submit" className="w-full" loading={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            loading={isSubmitting}
+          >
             Save and Continue
           </Button>
         </div>

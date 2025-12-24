@@ -1,55 +1,75 @@
 import countries from "@/dummy_data/countries";
 import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
-import { validateAddress, validateName, validateVatNumber, validateZipcode } from "@/pages/engineer/user_profile/Validate";
+import {
+  validateAddress,
+  validateName,
+  validateVatNumber,
+  validateZipcode,
+} from "@/pages/engineer/user_profile/Validate";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
-import { useStates, useCities, useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
+import {
+  useStates,
+  useCities,
+  useIndustries,
+  useVatOptions,
+} from "@/shared/apiServices/client/clientService";
 
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
   const watchedRole = watch("businessType");
   // Default to URL role if set, otherwise fallback to watched value or "home"
-  const urlRole = window.location.pathname.includes("corporate") ? "corporate" : undefined;
+  const urlRole = window.location.pathname.includes("corporate")
+    ? "corporate"
+    : undefined;
   const role = urlRole || watchedRole || "home";
 
   const country = watch("country");
   const selectedState = watch("state");
 
   // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } = useStates(country?.value);
-  const { data: cities = [], isLoading: citiesLoading } = useCities(selectedState?.value || selectedState);
-  const { data: industries = [], isLoading: industriesLoading } = useIndustries();
+  const { data: states = [], isLoading: statesLoading } = useStates(
+    country?.value
+  );
+  const { data: cities = [], isLoading: citiesLoading } = useCities(
+    selectedState?.value || selectedState
+  );
+  const { data: industries = [], isLoading: industriesLoading } =
+    useIndustries();
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
       {/* Account Type Selection (if not fixed by URL) */}
       {!urlRole && (
-        <div className="flex gap-4 justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <button
-            type="button"
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${role === "home"
-              ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white"
-              : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
+        <div className="flex gap-2 text-center justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <div
+            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200
+      ${
+        role === "home"
+          ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
+          : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
+      }`}
             onClick={() => setValue("businessType", "home")}
           >
-            Home Owner
-          </button>
-          <button
-            type="button"
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${role === "corporate"
-              ? "bg-white dark:bg-gray-700 shadow-sm text-gray-900 dark:text-white"
-              : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
+            Home Client
+          </div>
+
+          <div
+            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200
+      ${
+        role === "corporate"
+          ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
+          : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
+      }`}
             onClick={() => setValue("businessType", "corporate")}
           >
-            Corporate
-          </button>
+            Corporate Client
+          </div>
         </div>
       )}
 
@@ -88,11 +108,7 @@ const BasicDetailsFields = () => {
       )}
 
       {/* Phone and email */}
-      <PhoneInputField
-        name="phone"
-        required
-        label="Phone Number"
-      />
+      <PhoneInputField name="phone" required label="Phone Number" />
 
       <InputField
         name="email"
@@ -103,8 +119,8 @@ const BasicDetailsFields = () => {
         rules={{
           pattern: {
             value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Invalid email address"
-          }
+            message: "Invalid email address",
+          },
         }}
       />
 
@@ -147,7 +163,6 @@ const BasicDetailsFields = () => {
         }}
       />
 
-
       {/* Corporate-only fields */}
       {role === "corporate" && (
         <>
@@ -165,7 +180,9 @@ const BasicDetailsFields = () => {
           />
           <SelectField
             name="industry"
-            placeholder={industriesLoading ? "Loading industries..." : "Select Industry"}
+            placeholder={
+              industriesLoading ? "Loading industries..." : "Select Industry"
+            }
             options={industries}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
@@ -182,7 +199,9 @@ const BasicDetailsFields = () => {
           />
           <SelectField
             name="vat"
-            placeholder={vatLoading ? "Loading VAT options..." : "Select VAT Document"}
+            placeholder={
+              vatLoading ? "Loading VAT options..." : "Select VAT Document"
+            }
             options={vatOptions}
             required
             label="VAT"
@@ -196,7 +215,6 @@ const BasicDetailsFields = () => {
             label="VAT Registration Number"
             rules={{ validate: (v: string) => validateVatNumber(v) }}
           />
-
         </>
       )}
     </div>
