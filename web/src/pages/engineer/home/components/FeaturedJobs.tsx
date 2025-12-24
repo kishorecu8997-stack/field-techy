@@ -3,48 +3,10 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
-import { getExperienceLevel } from "../../search_result/types";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
 import { calculateMatchScore } from "@/utils/matchCalculator";
-
-/**
- * JobCard Component - Displays a single job listing card
- *
- * @component
- * @param {Object} props - Component props
- * @param {string} props.title - Job title
- * @param {string} props.company - Company name
- * @param {string} props.companyLogo - Company logo URL or path
- * @param {string} props.category - Job category (e.g., "IT")
- * @param {string} props.employmentType - Employment type (e.g., "Full-Time")
- * @param {string} props.locationType - Location type (e.g., "On Site")
- * @param {string} props.salary - Salary information
- * @param {string} props.location - Job location
- * @param {boolean} [props.isBookmarked=false] - Whether the job is bookmarked
- * @param {Function} [props.onBookmarkToggle] - Callback function when bookmark is toggled
- * @param {string[]} props.skills - Array of required skills (e.g., "Figma", "UI/UX")
- * @param {string[]} props.tools - Array of required tools or platforms.
- * @param {string} props.slaLevel - Service Level Agreement response time (e.g., "4-hour response").
- * @param {number} props.matchScore - Profile match percentage (0-100).
- *
- * @example
- * <JobCard
- * title="Software Engineer"
- * company="Google"
- * companyLogo="/logos/google.png"
- * category="IT"
- * employmentType="Full-Time"
- * locationType="On Site"
- * salary="$180,000/year"
- * location="California, USA"
- * experience: 5,
- * skills: ["Figma", "Adobe XD", "UI/UX"],
- * tools: ["VS Code", "Git", "Jira"],
- * slaLevel: "4-hour response",
- * matchScore: 85,
- * />
- */
+import { getExperienceLevel } from "@/utils";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -56,10 +18,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
-  /**
-   * INTERNAL HELPER: Logic to determine color classes based on score
-   * We apply this to both the ring stroke and the text for visual harmony.
-   */
   const getColorClass = (val: number) => {
     if (val >= 80) return "text-green-600 dark:text-green-400";
     if (val >= 50) return "text-amber-500 dark:text-amber-400";
@@ -106,6 +64,44 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
     </div>
   );
 };
+
+/**
+ * JobCard Component - Displays a single job listing card
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.title - Job title
+ * @param {string} props.company - Company name
+ * @param {string} props.companyLogo - Company logo URL or path
+ * @param {string} props.category - Job category (e.g., "IT")
+ * @param {string} props.employmentType - Employment type (e.g., "Full-Time")
+ * @param {string} props.locationType - Location type (e.g., "On Site")
+ * @param {string} props.salary - Salary information
+ * @param {string} props.location - Job location
+ * @param {boolean} [props.isBookmarked=false] - Whether the job is bookmarked
+ * @param {Function} [props.onBookmarkToggle] - Callback function when bookmark is toggled
+ * @param {string[]} props.skills - Array of required skills (e.g., "Figma", "UI/UX")
+ * @param {string[]} props.tools - Array of required tools or platforms.
+ * @param {string} props.slaLevel - Service Level Agreement response time (e.g., "4-hour response").
+ * @param {number} props.matchScore - Profile match percentage (0-100).
+ *
+ * @example
+ * <JobCard
+ * title="Software Engineer"
+ * company="Google"
+ * companyLogo="/logos/google.png"
+ * category="IT"
+ * employmentType="Full-Time"
+ * locationType="On Site"
+ * salary="$180,000/year"
+ * location="California, USA"
+ * experience: 5,
+ * skills: ["Figma", "Adobe XD", "UI/UX"],
+ * tools: ["VS Code", "Git", "Jira"],
+ * slaLevel: "4-hour response",
+ * matchScore: 85,
+ * />
+ */
 
 const FeatureJobCard: React.FC<Job> = ({
   title,
@@ -184,7 +180,7 @@ const FeatureJobCard: React.FC<Job> = ({
         )}
       </div>
 
-      {((skills?.length ?? 0) > 0 || (tools?.length ?? 0) > 0) && (
+      {Boolean(skills?.length || tools?.length) && (
         <div className="flex flex-wrap gap-2">
           {skills?.map((skill) => (
             <span
@@ -205,7 +201,6 @@ const FeatureJobCard: React.FC<Job> = ({
           ))}
         </div>
       )}
-
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
           {salary}
@@ -226,6 +221,7 @@ const FeatureJobCard: React.FC<Job> = ({
  * @param {Array<Object>} props.jobs - Array of job objects to display
  * @param {string} [props.title="Featured Jobs"] - Title for the section
  * @param {Function} [props.onViewAll] - Callback function when "View all" is clicked
+ *
  *
  * @example
  * <FeaturedJobs
