@@ -17,23 +17,22 @@ interface JobListProps {
  * @param activeFilter - The active status filter to apply.
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
-const JobList = ({ activeFilter = "All Jobs" }: { activeFilter?: string }) => {
+const JobList = ({ activeFilter = "All Jobs" }: JobListProps) => {
   const filteredJobs = useMemo(() => {
+    // Start with jobs that are not 'new' or 'offer'
     let jobs = sampleJobs.filter(
-      (job) =>
-        job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
+      (job) => job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
     );
+
     if (activeFilter !== "All Jobs") {
-      const normalizedActive = activeFilter.toLowerCase().replace(/\s+/g, "");
+      // Find matching status (case-insensitive)
       const targetStatus = Object.values(JOB_STATUSES).find(
-        (status) =>
-          status.toLowerCase().replace(/\s+/g, "") === normalizedActive
+        (status) => status.toLowerCase() === activeFilter.toLowerCase()
       );
-      if (targetStatus !== undefined) {
+
+      if (targetStatus) {
         jobs = jobs.filter(
-          (job) =>
-            (job.status as string).toLowerCase().replace(/\s+/g, "") ===
-            targetStatus.toLowerCase().replace(/\s+/g, "")
+          (job) => (job.status as string).toLowerCase() === targetStatus.toLowerCase()
         );
       }
     }
