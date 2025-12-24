@@ -3,6 +3,7 @@ import {
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
+import { validateName } from "@/utils/validate";
 
 interface InputFieldProps {
   name: string;
@@ -39,7 +40,7 @@ export const InputField = ({
   onChange,
   inputMode = "both", // default
 }: InputFieldProps) => {
-  const { control } = useFormContext();
+  const { control, trigger, setError, clearErrors } = useFormContext();
 
   let requiredMessage: string | false = false;
   if (typeof required === "string") {
@@ -109,14 +110,33 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const value = e.target.value;
 
                   // prevent invalid typing based on inputMode
-                  if (!allowInput(value)) return;
+                  if (!allowInput(value)) {
+                    // For string mode, show error message immediately
+                    if (inputMode === "string") {
+                      const validationResult = validateName(value);
+                      if (validationResult !== true) {
+                        setError(name, {
+                          type: "pattern",
+                          message: validationResult,
+                        });
+                      }
+                    }
+                    return;
+                  }
 
                   field.onChange(value);
                   onChange?.(value);
+
+                  // Trigger validation to clear errors when input becomes valid
+                  try {
+                    await trigger(name);
+                  } catch (err) {
+                    // ignore
+                  }
                 }}
                 onBlur={(e) => {
                   if (type === "number") {
