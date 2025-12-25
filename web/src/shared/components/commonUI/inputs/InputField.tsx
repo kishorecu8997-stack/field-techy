@@ -19,6 +19,7 @@ interface InputFieldProps {
   showValidationCheck?: boolean;
   disabled?: boolean;
   onChange?: (value: string) => void;
+  inputMode?: "number" | "string" | "both";
   allowedCharacters?:
     | "numbers"
     | "numbers-dot"
@@ -41,9 +42,10 @@ export const InputField = ({
   showValidationCheck = false,
   disabled = false,
   onChange,
+  inputMode = "both",
   allowedCharacters,
 }: InputFieldProps) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
   const [attemptedInvalid, setAttemptedInvalid] = useState(false);
 
   let requiredMessage: string | false = false;
@@ -145,8 +147,11 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
-                onChange={(e) => {
+                onChange={async (e) => {
                   let value = e.target.value;
+
+                  // Restrict input based on `inputMode`
+                  if (!allowInput(value)) return;
 
                   // Sanitization for allowedCharacters
                   if (allowedCharacters) {
@@ -168,6 +173,13 @@ export const InputField = ({
 
                   field.onChange(value);
                   onChange?.(value);
+
+                  // Trigger validation to clear errors when input becomes valid
+                  try {
+                    await trigger(name);
+                  } catch (err) {
+                    // ignore
+                  }
                 }}
                 onBlur={(e) => {
                   if (type === "number") {
