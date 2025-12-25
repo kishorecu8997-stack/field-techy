@@ -1,5 +1,5 @@
 export interface ClientData {
-    id?: string;
+    id?: string | null;
     phoneNumber?: string;
     email?: string;
     password?: string | null;
@@ -15,9 +15,9 @@ export interface ClientData {
     postalCode?: string;
     taxDocumentVat?: string;
     vatRegistrationNumber?: string;
-    profilePicture?: string;
-    governmentIdProofDocument?: string;
-    certificationQualificationsDocument?: string;
+    profilePicture?: string | null;
+    governmentIdProofDocument?: string | null;
+    certificationQualificationsDocument?: string | null;
     enableNotifications?: boolean;
     isApproved?: boolean;
     vat?: string;

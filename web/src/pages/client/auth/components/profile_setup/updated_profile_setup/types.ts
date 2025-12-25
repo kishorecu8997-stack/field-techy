@@ -3,9 +3,9 @@ export interface ClientBasicDetails {
   fullName?: string;
   email: string;
   phone: string;
-  country: string;
-  state: string;
-  city: string;
+  country: string | { value: string; label: string };
+  state: string | { value: string; label: string };
+  city: string | { value: string; label: string };
   postalCode: string;
   address: string;
 
@@ -14,7 +14,7 @@ export interface ClientBasicDetails {
   contactPersonName?: string;
   businessType?: string;
   industry?: string;
-  vat?: string;
+  vat?: string | { value: string; label: string };
   vatRegistrationNumber?: string;
 
   // Verification flags

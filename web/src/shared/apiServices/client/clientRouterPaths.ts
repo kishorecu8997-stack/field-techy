@@ -25,4 +25,4 @@ export const CLIENT_ROUTER_PATHS = {
   GET_FILES: (clientId: string) => `/clients/${clientId}/files`,
   DELETE_FILE: (fileId: string) => `/clients/files/${fileId}`,
   DOWNLOAD_FILE: (fileId: string) => `/clients/files/${fileId}/download`,
-};
+} as const;

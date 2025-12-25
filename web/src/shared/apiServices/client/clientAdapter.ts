@@ -24,22 +24,43 @@ import type { LoginFormData } from "@/pages/admin/auth/types";
  */
 export class ClientAdapter {
 
+  /**
+   * Helper to handle API errors and return standardized messages
+   */
+  private static handleApiError(error: any): never {
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 400) {
+        throw new Error("Invalid request details. Please check your inputs.");
+      }
+      if (status === 500) {
+        throw new Error("Internal server error. Please try again later.");
+      }
+    }
+    // Re-throw original error if not handled above
+    throw error;
+  }
+
   static async signup(data: ClientData): Promise<ClientData> {
-    // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
-    // return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
+      return response.data;
+    } catch (error) {
+      ClientAdapter.handleApiError(error);
+    }
 
     // Stubbed for testing - returns fixed client ID to enable document upload flow
-    console.log('[STUB] Client signup called with data:', data);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          ...data,
-          id: "3201d141-f502-4e6e-842a-45d11af3a30b", // Fixed ID for testing
-          isApproved: true,
-        });
-      }, 1000);
-    });
+    // console.log('[STUB] Client signup called with data:', data);
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({
+    //       ...data,
+    //       id: "3201d141-f502-4e6e-842a-45d11af3a30b", // Fixed ID for testing
+    //       isApproved: true,
+    //     });
+    //   }, 1000);
+    // });
   }
 
   static async signin(data: LoginFormData) {
@@ -162,11 +183,11 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const states = [
-          { value: "1", label: "Maharashtra" },
-          { value: "2", label: "Karnataka" },
-          { value: "3", label: "Delhi" },
-          { value: "4", label: "Tamil Nadu" },
-          { value: "5", label: "Gujarat" },
+          { value: "Maharashtra", label: "Maharashtra" },
+          { value: "Karnataka", label: "Karnataka" },
+          { value: "Delhi", label: "Delhi" },
+          { value: "Tamil Nadu", label: "Tamil Nadu" },
+          { value: "Gujarat", label: "Gujarat" },
         ];
         resolve(states);
       }, 500);
@@ -181,18 +202,18 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const cityMap: Record<string, { value: string; label: string }[]> = {
-          "1": [
-            { value: "1", label: "Mumbai" },
-            { value: "2", label: "Pune" },
-            { value: "3", label: "Nagpur" },
+          "Maharashtra": [
+            { value: "Mumbai", label: "Mumbai" },
+            { value: "Pune", label: "Pune" },
+            { value: "Nagpur", label: "Nagpur" },
           ],
-          "2": [
-            { value: "4", label: "Bangalore" },
-            { value: "5", label: "Mysore" },
+          "Karnataka": [
+            { value: "Bangalore", label: "Bangalore" },
+            { value: "Mysore", label: "Mysore" },
           ],
-          "3": [
-            { value: "6", label: "New Delhi" },
-            { value: "7", label: "Old Delhi" },
+          "Delhi": [
+            { value: "New Delhi", label: "New Delhi" },
+            { value: "Old Delhi", label: "Old Delhi" },
           ],
         };
         resolve(cityMap[stateId] || []);
@@ -208,13 +229,13 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const industries = [
-          { value: "1", label: "Information Technology" },
-          { value: "2", label: "Construction" },
-          { value: "3", label: "Manufacturing" },
-          { value: "4", label: "Healthcare" },
-          { value: "5", label: "Finance" },
-          { value: "6", label: "Retail" },
-          { value: "7", label: "Education" },
+          { value: "Information Technology`", label: "Information Technology" },
+          { value: "Construction", label: "Construction" },
+          { value: "Manufacturing", label: "Manufacturing" },
+          { value: "Healthcare", label: "Healthcare" },
+          { value: "Finance", label: "Finance" },
+          { value: "Retail", label: "Retail" },
+          { value: "Education", label: "Education" },
         ];
         resolve(industries);
       }, 500);
@@ -229,10 +250,10 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const vatOptions = [
-          { value: "1", label: "IE6388047V" },
-          { value: "2", label: "ID9488043M" },
-          { value: "3", label: "GB123456789" },
-          { value: "4", label: "FR12345678901" },
+          { value: "IE6388047V", label: "IE6388047V" },
+          { value: "ID9488043M", label: "ID9488043M" },
+          { value: "GB123456789", label: "GB123456789" },
+          { value: "FR12345678901", label: "FR12345678901" },
         ];
         resolve(vatOptions);
       }, 500);
