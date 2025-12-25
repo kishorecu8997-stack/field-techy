@@ -1,47 +1,32 @@
-export interface basicDetails {
-  firstName: string;
-  lastName: string;
+export interface EngineerBasicDetails {
+  fullName: string;
   email: string;
-  phoneNumber: string;
   phone: string;
   address: string;
-  country: string;
+  country: any; // Select option or string
+  state: any;
+  city: any;
   postalCode: string;
-  tags: string[];
-  skills: string[];
-  tools: string[];
-  serviceCategory: string;
-  budget: string;
-  rate: number;
-  experienceYears: number;
-  preferredWorkType: string;
-  enableNotifications: boolean;
-  educations: string;
-  averageRating: number;
-  status: string;
-  portfolio?: string;
-  amount: string;
+
+  // Professional
+  skills: any[]; // TagSelect options
+  portfolioLink: string;
+  serviceCategory: any; // Select option
+  amount: string; // Rate/Budget
   designation: string;
   company: string;
-  location: string;
-  experience: string;
-  password: string;
-  confirmPassword: string;
+  experienceYears: string;
+
+  // Meta
+  password?: string;
+  confirmPassword?: string;
+  isEnableNotifications?: boolean;
+  termsAndConditions?: boolean;
 }
 
-export interface documents {
-  resume?: File;
-  governmentId?: File;
-  certificate?: File;
-}
-
-export interface setPassword {
-  mobileOTP?: string;
-  emailOTP?: string;
-}
-
-export interface completeRegistrationData {
-  basicDetails: basicDetails;
-  documents: documents;
-  setPassword: setPassword;
+export interface EngineerDocuments {
+  resumeUrl: string;
+  governmentIdUrl: string;
+  certificateUrl: string;
+  profileImageUrl: string;
 }

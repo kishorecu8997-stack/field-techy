@@ -12,6 +12,9 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import EngineerOTPPage from "../EngineerOTPPage";
 import { useSendPhoneOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useEffect } from "react";
 
 export type LoginFormData = {
   phone: string;
@@ -41,6 +44,10 @@ const SignUpWithNumber = ({
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
+
+  const { signupPhone, mobileVerified, setSignupData, clearStore } = useEngineerRegistrationStore();
+  const { showPopup } = usePopupStore();
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
@@ -63,16 +70,54 @@ const SignUpWithNumber = ({
     },
   });
 
+  // Ask user if they want to continue with previous registration
+  useEffect(() => {
+    if (signupPhone && !hasAskedToContinue) {
+      setHasAskedToContinue(true);
+
+      showPopup({
+        title: mobileVerified ? "Resume Registration?" : "Continue Registration?",
+        body: mobileVerified
+          ? `You have a verified phone: ${signupPhone}. Would you like to continue your registration or start fresh?`
+          : `You previously started registration with: ${signupPhone}. Would you like to continue or start fresh?`,
+        actionButtons: [
+          {
+            label: "Start Fresh",
+            value: false,
+            variant: "outline",
+            action: (close) => {
+              clearStore();
+              method.reset({ phone: "", terms: false });
+              close(false);
+            },
+          },
+          {
+            label: "Continue",
+            value: true,
+            action: (close) => {
+              method.setValue("phone", signupPhone);
+              if (mobileVerified) {
+                // If already verified, redirect to profile setup
+                navigate(absoluteUrls.engineer.auth.updated_basic_details);
+              }
+              close(true);
+            },
+          },
+        ],
+      });
+    }
+  }, [signupPhone, mobileVerified, hasAskedToContinue, method, clearStore, navigate, showPopup]);
+
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.engineer.auth.updated_basic_details, {
-      state: {
-        signupPhone: method.getValues("phone"),
-        mobileVerified: true,
-        disableMobile: true, // Lock mobile in ProfileSetup
-        disableEmail: false, // Email should be editable in ProfileSetup
-      },
+
+    // Save to store instead of location.state
+    setSignupData({
+      phone: method.getValues("phone"),
+      mobileVerified: true,
     });
+
+    navigate(absoluteUrls.engineer.auth.updated_basic_details);
   };
 
   const handleResendOTP = () => {

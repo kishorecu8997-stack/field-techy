@@ -50,6 +50,7 @@ export const urls = {
       //updated_profile_setup
       updated_basic_details: "updated-basic-details",
       updated_documents: "updated-documents",
+      verification: "verification",
 
     },
   },
@@ -165,6 +166,7 @@ export const absoluteUrls = {
       about_app: `${BASE.AUTH}/about-app`,
       updated_basic_details: `${BASE.AUTH}/updated-basic-details`,
       updated_documents: `${BASE.AUTH}/updated-documents`,
+      verification: `${BASE.AUTH}/verification`,
     },
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,

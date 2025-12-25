@@ -14,6 +14,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import EngineerOTPPage from "../EngineerOTPPage";
 import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 export interface SignUpFormData {
   email: string;
@@ -43,6 +45,7 @@ const SignUpWithEmail = ({
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { setSignupData } = useEngineerRegistrationStore();
   const methods = useForm<SignUpFormData>({
     defaultValues: {
       email: "",
@@ -65,18 +68,14 @@ const SignUpWithEmail = ({
     },
   });
 
-  // Inside handleOTPVerified in SignUp
   const handleOTPVerified = () => {
     setIsOpen(false);
-    // navigate(absoluteUrls.engineer.auth.profile_setup, {
-    navigate(absoluteUrls.engineer.auth.updated_basic_details, {
-      state: {
-        signupEmail: methods.getValues("email"),
-        emailVerified: true, // Pre-verified
-        disableEmail: true, // Lock email in ProfileSetup
-        disableMobile: false, // Mobile should be editable in ProfileSetup
-      },
+    // Save to store
+    setSignupData({
+      email: methods.getValues("email"),
+      emailVerified: true,
     });
+    navigate(absoluteUrls.engineer.auth.updated_basic_details);
   };
 
   const handleResendOTP = () => {

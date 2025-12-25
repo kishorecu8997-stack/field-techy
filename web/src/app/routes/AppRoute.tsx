@@ -290,7 +290,13 @@ const engineerProfileSetup = React.lazy(
 const engineerDocuments = React.lazy(
   () =>
     import(
-      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/Documents"
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDocuments"
+    )
+);
+const engineerContactVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/ContactVerification"
     )
 );
 
@@ -344,7 +350,8 @@ export const routes = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
+      { path: urls.engineer.auth.signup, element: withSuspense(engineerProfileSetup) },
+      { path: urls.engineer.auth.verification, element: withSuspense(engineerContactVerification) },
       // {
       //   path: urls.engineer.auth.profile_setup,
       //   element: withSuspense(MultiStepRegistrationForm),
