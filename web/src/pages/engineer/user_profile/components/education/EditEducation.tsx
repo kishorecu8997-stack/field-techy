@@ -59,6 +59,7 @@ const EditEducation = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Updated Successfully");
+            console.log(data);
             close(true);
             setActiveKey("education");
           },

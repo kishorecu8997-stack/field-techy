@@ -142,6 +142,7 @@ const ManagePayment: React.FC = () => {
                   adminStatus: value as adminJobsStatus,
                 });
               }}
+              badge
               options={JobStatus}
             />
           </div>

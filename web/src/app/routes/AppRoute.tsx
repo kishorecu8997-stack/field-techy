@@ -213,6 +213,20 @@ const AddRolePage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
+const ManageGroups = React.lazy(() => import("@/pages/admin/manage_groups"));
+const ManageGroupsAdd = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/AddGroup")
+);
+const ManageGroupsEdit = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/EditGroup")
+);
+const ManageGroupsView = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/ViewGroup")
+);
+const ManageGroupsAddEngineer = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/SelectEngineers")
+);
+
 const OfferPages = React.lazy(
   () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
 );
@@ -750,7 +764,6 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.homeClientView,
             element: withSuspense(homeClientView),
           },
-
           {
             path: urls.admin.home.edit_role,
             element: withSuspense(adminEditRolePage),
@@ -766,6 +779,26 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_jobs_view,
             element: withSuspense(ManageJobView),
+          },
+          {
+            path: urls.admin.home.manage_groups,
+            element: withSuspense(ManageGroups),
+          },
+          {
+            path: urls.admin.home.manage_groups_add,
+            element: withSuspense(ManageGroupsAdd),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_edit}/:id?`,
+            element: withSuspense(ManageGroupsEdit),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_view}/:id?`,
+            element: withSuspense(ManageGroupsView),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_addEngineer}/:id?`,
+            element: withSuspense(ManageGroupsAddEngineer),
           },
         ],
       },

@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
 
-
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
  * It uses `react-hook-form` for state management and validation.
@@ -47,6 +46,7 @@ const WorkPreference = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Work Preferences Updated Successfully");
+            console.log(data);
             close(true);
             setActiveKey("profile");
           },
