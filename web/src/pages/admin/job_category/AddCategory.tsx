@@ -26,7 +26,7 @@ export default function AddCategory() {
 
   const { showPopup } = usePopupStore();
 
-  const handleSaveConfirmation = async (data: CategoryFormData) => {
+  const handleSubmit = async (data: CategoryFormData) => {
     console.log("data :", data);
     await showPopup({
       title: "Add Category",
@@ -56,9 +56,7 @@ export default function AddCategory() {
     });
   };
 
-  const handleSubmit = () => {
-    handleSaveConfirmation(methods.getValues());
-  };
+  
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center">

@@ -52,7 +52,7 @@ export const InputField = ({
   onChange,
   allowedCharacters,
 }: InputFieldProps) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
   const [attemptedInvalid, setAttemptedInvalid] = useState(false);
 
   let requiredMessage: string | false = false;
@@ -140,7 +140,7 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
-                onChange={(e) => {
+                onChange={async (e) => {
                   let value = e.target.value;
 
                   // Sanitization for allowedCharacters
@@ -163,6 +163,13 @@ export const InputField = ({
 
                   field.onChange(value);
                   onChange?.(value);
+
+                  // Trigger validation to clear errors when input becomes valid
+                  try {
+                    await trigger(name);
+                  } catch (err) {
+                    // ignore
+                  }
                 }}
                 onBlur={(e) => {
                   if (type === "number") {

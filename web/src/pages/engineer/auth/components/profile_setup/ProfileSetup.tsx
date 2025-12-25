@@ -88,7 +88,6 @@ const ProfileSetup = () => {
         type="text"
         placeholder="First Name"
         required
-
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
