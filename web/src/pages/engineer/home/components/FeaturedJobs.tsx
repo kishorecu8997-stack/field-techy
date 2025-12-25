@@ -102,7 +102,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  * matchScore: 85,
  * />
  */
-
 const FeatureJobCard: React.FC<Job> = ({
   title,
   company,
