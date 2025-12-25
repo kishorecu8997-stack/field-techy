@@ -74,20 +74,14 @@ const FeatureJobCard: React.FC<Job> = (job) => {
     e.preventDefault();
     if (!id) return;
     const wasBookmarked = isSelected;
-
     toggleSavedJob(job);
-
-    setSelected(!wasBookmarked);
 
     if (!wasBookmarked) {
       toast.success("Job saved successfully");
     } else {
       toast.error("Job removed from saved");
     }
-
-    window.dispatchEvent(new Event(BOOKMARK_CHANGE_EVENT));
   };
-
   return (
     <div>
       <div className="flex justify-between items-start mb-3">

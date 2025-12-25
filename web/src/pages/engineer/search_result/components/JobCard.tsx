@@ -79,7 +79,6 @@ const JobCard: React.FC<{
 
                 const wasBookmarked = isBookmarked;
                 toggleSavedJob(job);
-                setBookmark(!wasBookmarked);
                 if (!wasBookmarked) {
                   toast.success("Job saved successfully");
                 } else {
@@ -88,7 +87,6 @@ const JobCard: React.FC<{
                 if (onBookmarkChange) {
                   onBookmarkChange();
                 }
-                window.dispatchEvent(new Event(BOOKMARK_CHANGE_EVENT));
               }}
               className={`p-2 rounded-full  hover:bg-gray-100 transition-colors cursor-pointer`}
             >

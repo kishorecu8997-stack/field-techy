@@ -1,12 +1,20 @@
 import { useEffect } from "react";
-import { getSavedJobs } from "@/utils/bookmarkUtils";
+import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { toast } from "react-toastify";
 
+const shownReminders = new Set<string>();
 /**
  * Custom hook for job expiration/start reminders (uniform toast style)
+ *
+ * Features:
+ * - Shows each reminder only once per job
+ * - Re-checks every minute for accurate timing
+ * - Re-checks when bookmarks change
+ * - Robust date parsing
+ * - Proper punctuation
  */
 export const useJobExpirationNotification = (): void => {
-  useEffect(() => {
+  const checkReminders = () => {
     const savedJobs = getSavedJobs();
     const now = new Date();
 
@@ -14,68 +22,108 @@ export const useJobExpirationNotification = (): void => {
       if (!job.startDate) return;
 
       const cleanDateStr = job.startDate.replace(",", "").trim();
-      const startDateTime = new Date(cleanDateStr);
+      const startTimestamp = Date.parse(cleanDateStr);
 
-      if (isNaN(startDateTime.getTime())) {
+      if (isNaN(startTimestamp)) {
         console.warn("Invalid date format:", job.startDate);
         return;
       }
 
-      const diffMs = startDateTime.getTime() - now.getTime();
+      const diffMs = startTimestamp - now.getTime();
 
       if (diffMs <= 0) {
-        toast.error(
-          `Saved Job Expired: "${job.title}" has passed its start date.`,
-          {
-            toastId: `expired-${job.id}`,
-          }
-        );
+        const key = `expired-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.error(
+            `Saved Job Expired: "${job.title}" has passed its start date.`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
         return;
       }
 
       const diffHours = diffMs / (1000 * 60 * 60);
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
-      if (diffDays >= 6.9 && diffDays < 7.1) {
-        toast.success(
-          `1 Week Reminder: "${job.title}" starts in 7 days,Apply now!`,
-          {
-            toastId: `week-${job.id}`,
-          }
-        );
-      } else if (diffDays >= 4.9 && diffDays < 5.1) {
-        toast.success(`5 Days Left: "${job.title}" starts soon,Apply now!`, {
-          toastId: `5days-${job.id}`,
-        });
-      } else if (diffDays >= 2.9 && diffDays < 3.1) {
-        toast.success(
-          `3 Days to Go: "${job.title}" is approaching,Apply now!`,
-          {
-            toastId: `3days-${job.id}`,
-          }
-        );
-      } else if (diffDays >= 0.9 && diffDays < 1.1) {
-        toast.success(
-          `Starts Tomorrow: "${job.title}" begins tomorrow,Apply now!`,
-          {
-            toastId: `1day-${job.id}`,
-          }
-        );
-      } else if (diffHours >= 5.9 && diffHours < 6.1) {
-        toast.success(
-          `6 Hours Left: "${job.title}" starts in 6 hours,Apply now!`,
-          {
-            toastId: `6hours-${job.id}`,
-          }
-        );
-      } else if (diffHours >= 0.9 && diffHours < 1.1) {
-        toast.success(
-          `1 Hour to Go: "${job.title}" starts in 1 hour,Apply now!`,
-          {
-            toastId: `1hour-${job.id}`,
-          }
-        );
+      if (diffHours >= 0.5 && diffHours < 1.5) {
+        const key = `1hour-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(
+            `1 Hour to Go: "${job.title}" starts in 1 hour. Apply now!`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
+      } else if (diffHours >= 5 && diffHours < 7) {
+        const key = `6hours-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(
+            `6 Hours Left: "${job.title}" starts in 6 hours. Apply now!`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
+      } else if (diffDays >= 0.5 && diffDays < 1.5) {
+        const key = `1day-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(
+            `Starts Tomorrow: "${job.title}" begins tomorrow. Apply now!`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
+      } else if (diffDays >= 2.5 && diffDays < 3.5) {
+        const key = `3days-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(
+            `3 Days to Go: "${job.title}" is approaching. Apply now!`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
+      } else if (diffDays >= 4.5 && diffDays < 5.5) {
+        const key = `5days-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(`5 Days Left: "${job.title}" starts soon. Apply now!`, {
+            toastId: key,
+          });
+          shownReminders.add(key);
+        }
+      } else if (diffDays >= 6.5 && diffDays < 7.5) {
+        const key = `week-${job.id}`;
+        if (!shownReminders.has(key)) {
+          toast.success(
+            `1 Week Reminder: "${job.title}" starts in 7 days. Apply now!`,
+            {
+              toastId: key,
+            }
+          );
+          shownReminders.add(key);
+        }
       }
     });
+  };
+
+  useEffect(() => {
+    shownReminders.clear();
+    checkReminders();
+    const interval = setInterval(checkReminders, 60_000);
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, checkReminders);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, checkReminders);
+    };
   }, []);
 };

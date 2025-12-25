@@ -47,7 +47,7 @@ export const sampleJobs: Job[] = [
     budgetType: "hourly",
     skills: ["HTML", "CSS", "JavaScript", "UI/UX"],
     status: "new",
-    startDate: "December 19, 2025, 4:18 PM",
+    startDate: "December 25, 2025, 11:01 AM",
     duration: "8 Hours of Work",
     pay: "400",
     place: "featured",

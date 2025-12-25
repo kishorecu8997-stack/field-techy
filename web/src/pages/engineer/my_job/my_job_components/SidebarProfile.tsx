@@ -1,18 +1,17 @@
-import React from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils"; 
-import { icons } from "@/config/icons"; 
-import { absoluteUrls } from "@/config/urls"; 
+import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
+import { icons } from "@/config/icons";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
- * Composed of two main sections:
+ * Composed of three main sections:
  * - **ProfileCard**: Shows user name, contact info, role, and profile completion status.
  * - **EarningsCard**: Displays current balance and quick actions for financial management.
  * - **SavedJobsCard**: Shows the number of jobs the user has saved with a link to view all saved jobs.
@@ -135,11 +134,14 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
 };
 
 /**
- * Renders a summary card showing how many jobs the user has saved.
- * Pure component — receives count via props.
- */
-/**
- * Enhanced Saved Jobs card showing total, active, and expired counts with colors
+ * Renders a summary card showing the user's saved jobs status.
+ *
+ * Displays:
+ * - Total number of saved jobs (large central number)
+ * - Breakdown of active (green) and expired (red) jobs based on start date
+ * - "View all" link that navigates to the full Saved Jobs page
+ *
+ * Counts update in real-time when jobs are bookmarked or unbookmarked.
  */
 const SavedJobsCard = () => {
   const navigate = useNavigate();
@@ -157,7 +159,7 @@ const SavedJobsCard = () => {
 
       savedJobs.forEach((job) => {
         if (!job.startDate) {
-          activeCount++;
+          console.warn("Missing startDate for job:", job.title);
           return;
         }
 
@@ -165,11 +167,25 @@ const SavedJobsCard = () => {
         const startDate = new Date(cleanDate);
 
         if (isNaN(startDate.getTime())) {
-          activeCount++;
+          console.warn(
+            "Invalid date format for job:",
+            job.title,
+            job.startDate
+          );
           return;
         }
+        const nowUTC = Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate()
+        );
+        const startUTC = Date.UTC(
+          startDate.getUTCFullYear(),
+          startDate.getUTCMonth(),
+          startDate.getUTCDate()
+        );
 
-        if (startDate.getTime() > now.getTime()) {
+        if (startUTC >= nowUTC) {
           activeCount++;
         } else {
           expiredCount++;
@@ -196,7 +212,7 @@ const SavedJobsCard = () => {
           Saved Jobs
         </h3>
         <div
-        onClick={() => navigate(absoluteUrls.engineer.home.saved_jobs)}
+          onClick={() => navigate(absoluteUrls.engineer.home.saved_jobs)}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
         >
           View all
