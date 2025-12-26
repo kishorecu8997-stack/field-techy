@@ -26,7 +26,7 @@ const NotificationListPage = () => {
   const { showPopup, closePopup } = usePopupStore();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState("all");
-  const [filer, setFilter] = useState(4);
+  const [filter, setFilter] = useState(4);
   const [notification, setNotification] = useState<NotificationProps[]>([]);
   const Titles = [
     { id: 0, type: "all", label: "All Notifications" },
@@ -82,7 +82,9 @@ const NotificationListPage = () => {
     };
 
     const handleclick = () => {
-      navigate(`${pathname(type)}`), scrollTo(0, 0), closePopup();
+      const targetpath =
+        pathname(type) ?? absoluteUrls.engineer.home.notifications;
+      navigate(targetpath), scrollTo(0, 0), closePopup();
     };
 
     return (
@@ -119,6 +121,8 @@ const NotificationListPage = () => {
         return <BsPostcard />;
       case "withdrawal":
         return <RiBankFill />;
+      default:
+        return null;
     }
   };
 
@@ -127,7 +131,6 @@ const NotificationListPage = () => {
     data: NotificationProps[],
     name: string
   ) {
-    console.log(name.length);
     if (name.length > 0) {
       const searchfilter = data.filter((filter: NotificationProps) =>
         filter.title.toLowerCase().includes(name.toLowerCase())
@@ -143,8 +146,7 @@ const NotificationListPage = () => {
       return unread;
     }
     const filter = data.filter(
-      (filter: NotificationProps) =>
-        filter.type === type || filter.title === name
+      (filter: NotificationProps) => filter.type === type
     );
     return filter;
   }
@@ -185,7 +187,7 @@ const NotificationListPage = () => {
         <div>
           <h1 className="text-xl font-bold">Notifications</h1>
           <p className="font-semibold text-gray-600">
-            Stay upto date about all activities
+            Stay up to date about all activities
           </p>
         </div>
         <div className="flex flex-col lg:flex-row justify-between">
@@ -221,7 +223,7 @@ const NotificationListPage = () => {
         </div>
         <div className="flex flex-col gap-y-4">
           {notification
-            .slice(0, filer)
+            .slice(0, filter)
             .map((notifications: NotificationProps) => (
               <div
                 onClick={() => notifiypopup(notifications)}
@@ -253,7 +255,7 @@ const NotificationListPage = () => {
       <div
         className="flex cursor-pointer mt-2 flex-row items-center justify-center gap-x-5"
         onClick={() => {
-          filer > 4 ? setFilter(4) : setFilter(mockNotifications.length),
+          filter > 4 ? setFilter(4) : setFilter(mockNotifications.length),
             scrollTo(0, 0);
         }}
       >
