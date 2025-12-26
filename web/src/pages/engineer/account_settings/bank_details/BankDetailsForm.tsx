@@ -8,6 +8,7 @@ import {
   validateIBANForCountrywise,
   validateNameWithSpace,
   validateSWIFTBank,
+  validateName,
 } from "../validation";
 
 /**
@@ -28,8 +29,8 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           />
           <InputField
             name="bankAddress"
-            label="Bank Address"
-            placeholder="Bank address"
+            label="Branch Address"
+            placeholder="Branch address"
             required
             rules={{ validate: validateAddress }}
           />
@@ -64,14 +65,14 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             rules={{ validate: validateSWIFTBank }}
           />
         </div>
-      </div>
-      <div className="mt-auto flex justify-end">
-        <Button
-          type="submit"
-          className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
-        >
-          {formType === "add" ? "Add Account" : "Save Bank Details"}
-        </Button>
+        <div className="mt-auto flex justify-end">
+          <Button
+            type="submit"
+            className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
+          >
+            {formType === "add" ? "Add Account" : "Save Bank Details"}
+          </Button>
+        </div>
       </div>
     </div>
   );

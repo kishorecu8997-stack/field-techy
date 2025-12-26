@@ -325,7 +325,21 @@ export const validateDateRange = (
   return true;
 };
 
+export const validateEndDate = (value: Date | null) => {
+  if (!value) return "End date is required";
 
+  const selected = new Date(value);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selected.setHours(0, 0, 0, 0);
+
+  if (selected > today) {
+    return "End date can't be in the future";
+  }
+
+  return true;
+};
 
 export const validateFilterDateRange = (
   startDate: Date | null,
