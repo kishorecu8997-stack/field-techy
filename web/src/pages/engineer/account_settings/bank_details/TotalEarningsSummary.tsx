@@ -2,13 +2,21 @@ import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency } from "@/shared/libs/utils";
 import React from "react";
 import { BiTrendingUp } from "react-icons/bi";
-
+/**
+ * TotalEarningsSummary
+ *
+ * Displays a summarized overview of a user's financial activity, including:
+ * - Available balance
+ * - Total earnings (all time)
+ * - Earnings for the current month
+ * - Total completed withdrawals
+ *
+ * All values are derived from the `transactions` data source.
+ */
 const TotalEarningsSummary: React.FC = () => {
-  // Calculate total earnings (only positive/credit amounts)
   const totalEarnings = transactions
     .filter((tx) => tx.amount > 0)
     .reduce((sum, tx) => sum + tx.amount, 0);
-  // Calculate this month's earnings
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -22,11 +30,9 @@ const TotalEarningsSummary: React.FC = () => {
       );
     })
     .reduce((sum, tx) => sum + tx.amount, 0);
-  // Calculate total completed withdrawals (negative amounts with "completed" status or no failed status)
   const totalWithdrawn = transactions
     .filter((tx) => tx.amount < 0 && tx.status !== "failed")
     .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
-  // Available balance = total earnings - withdrawals
   const availableBalance = totalEarnings - totalWithdrawn;
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">

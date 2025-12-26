@@ -11,6 +11,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
+/**
+ * Represents monthly earnings data used for chart visualization.
+ *
+ * @interface MonthlyData
+ * @property {string} month - Month label (e.g., "Jan", "Feb").
+ * @property {number} earnings - Total earnings for the given month.
+ */
 
 interface MonthlyData {
   month: string;

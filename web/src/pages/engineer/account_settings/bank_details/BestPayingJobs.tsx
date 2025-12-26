@@ -3,6 +3,15 @@ import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
 
+/**
+ * Represents aggregated earning information for a job/client.
+ *
+ * @interface JobEarning
+ * @property {string} client - Name of the client or job source.
+ * @property {number} totalEarnings - Total amount earned from this client.
+ * @property {number} transactionCount - Number of transactions associated with this client.
+ */
+
 interface JobEarning {
   client: string;
   totalEarnings: number;
@@ -43,7 +52,7 @@ const BestPayingJobs: React.FC = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Clickable Header with Preview */}
-      <button
+      <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
       >
@@ -83,7 +92,7 @@ const BestPayingJobs: React.FC = () => {
             <BiChevronDown className="w-6 h-6 text-gray-500" />
           )}
         </div>
-      </button>
+      </div>
 
       {/* Expandable Full List */}
       <div

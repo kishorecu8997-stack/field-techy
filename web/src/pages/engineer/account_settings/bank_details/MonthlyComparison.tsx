@@ -1,5 +1,6 @@
 import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency } from "@/shared/libs/utils";
+import { getMonthEarnings } from "@/shared/libs/earnings";
 import React, { useState } from "react";
 import {
   BiTrendingUp,
@@ -16,18 +17,19 @@ const MonthlyComparison: React.FC = () => {
   const currentYear = now.getFullYear();
   const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  const getMonthEarnings = (month: number, year: number): number => {
-    return transactions
-      .filter((tx) => tx.amount > 0)
-      .filter((tx) => {
-        const txDate = new Date(tx.date);
-        return txDate.getMonth() === month && txDate.getFullYear() === year;
-      })
-      .reduce((sum, tx) => sum + tx.amount, 0);
-  };
 
-  const thisMonthEarnings = getMonthEarnings(currentMonth, currentYear);
-  const lastMonthEarnings = getMonthEarnings(lastMonth, lastMonthYear);
+  const thisMonthEarnings = getMonthEarnings(
+    transactions,
+    currentMonth,
+    currentYear
+  );
+
+  const lastMonthEarnings = getMonthEarnings(
+    transactions,
+    lastMonth,
+    lastMonthYear
+  );
+
   const percentageChange =
     lastMonthEarnings === 0
       ? thisMonthEarnings > 0
@@ -57,7 +59,7 @@ const MonthlyComparison: React.FC = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Clickable Compact Label */}
-      <button
+      <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
       >
@@ -89,7 +91,7 @@ const MonthlyComparison: React.FC = () => {
             <BiChevronDown className="w-6 h-6 text-gray-500" />
           )}
         </div>
-      </button>
+      </div>
 
       {/* Expandable Full Details */}
       <div
