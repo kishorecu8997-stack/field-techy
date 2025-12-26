@@ -73,45 +73,54 @@ const ExploreJobs: React.FC = () => {
       return true;
     });
   }, [newJobs, filters]);
-
-  // Step 3: Apply sorting
   const sortedJobs = useMemo<Job[]>(() => {
     const jobsCopy = [...filteredJobs];
+
+    // Parse relative time string like "2 hours ago", "5 days ago", etc.
     const parseRelativeTime = (timeStr?: string): number => {
-      if (!timeStr) return Infinity;
+      if (!timeStr) return 0; // treat missing dates as "now"
+
       const str = timeStr.toLowerCase().trim();
+
       if (str === "just now" || str.includes("second")) return 0;
+
       if (str.includes("min")) {
         const match = str.match(/(\d+)\s*min/);
-        return match ? parseInt(match[1]) : Infinity;
+        return match ? parseInt(match[1], 10) : 0;
       }
+
       if (str.includes("hour")) {
         const match = str.match(/(\d+)\s*hour/);
-        return match ? parseInt(match[1]) * 60 : Infinity;
+        return match ? parseInt(match[1], 10) * 60 : 0;
       }
+
       if (str.includes("day")) {
         const match = str.match(/(\d+)\s*day/);
-        return match ? parseInt(match[1]) * 1440 : Infinity;
+        return match ? parseInt(match[1], 10) * 1440 : 0;
       }
+
       if (str.includes("week")) {
         const match = str.match(/(\d+)\s*week/);
-        return match ? parseInt(match[1]) * 10080 : Infinity;
+        return match ? parseInt(match[1], 10) * 10080 : 0;
       }
-      return Infinity;
+
+      console.warn(`Unrecognized time format: "${timeStr}"`);
+      return 0; // fallback to "now"
     };
-    const extractSalaryNumber = (salary?: string): number => {
-      if (!salary) return 0;
-      const num = parseInt(salary.replace(/[^0-9]/g, ""), 10);
+
+    // Extract numeric value from salary string, fallback to "pay"
+    const extractSalaryNumber = (job: Job): number => {
+      const salaryStr = job.salary || job.pay; // use salary first, fallback to pay
+      if (!salaryStr) return 0;
+      const num = parseFloat(salaryStr.replace(/[^0-9.]/g, ""));
       return isNaN(num) ? 0 : num;
     };
 
     switch (sortBy) {
       case SORT_OPTIONS.RELEVANCE:
         return jobsCopy.sort((a, b) => {
-          // Primary: Higher rating
           const ratingDiff = (b.rating || 0) - (a.rating || 0);
           if (ratingDiff !== 0) return ratingDiff;
-          // Secondary: More recent
           return (
             parseRelativeTime(a.postedTime) - parseRelativeTime(b.postedTime)
           );
@@ -125,27 +134,23 @@ const ExploreJobs: React.FC = () => {
 
       case SORT_OPTIONS.SALARY:
         return jobsCopy.sort(
-          (a, b) =>
-            extractSalaryNumber(b.salary) - extractSalaryNumber(a.salary)
+          (a, b) => extractSalaryNumber(b) - extractSalaryNumber(a)
         );
 
       case SORT_OPTIONS.DISTANCE:
-        // Prioritize remote jobs, then closer locations
+        const isRemote = (job: Job) => {
+          const loc = (job.location || "").toLowerCase();
+          const type = (job.type || "").toLowerCase();
+          return (
+            type === "remote" ||
+            loc.includes("remote") ||
+            loc.includes("work from home") ||
+            loc.includes("wfh") ||
+            loc.includes("anywhere")
+          );
+        };
 
         return jobsCopy.sort((a, b) => {
-          // Robust remote detection
-          const isRemote = (job: Job) => {
-            const loc = (job.location || "").toLowerCase();
-            const type = (job.type || "").toLowerCase();
-            return (
-              type === "remote" ||
-              loc.includes("remote") ||
-              loc.includes("work from home") ||
-              loc.includes("wfh") ||
-              loc.includes("anywhere")
-            );
-          };
-
           const aRemote = isRemote(a);
           const bRemote = isRemote(b);
 
@@ -153,14 +158,11 @@ const ExploreJobs: React.FC = () => {
           if (!aRemote && bRemote) return 1;
           if (aRemote && bRemote) return 0;
 
-          // User's current city — make this dynamic later!
-          const USER_CITY = loginData[0]?.addressLocation; // TODO: Get from user profile or geolocation
+          const USER_CITY = loginData[0]?.addressLocation;
 
-          // City coordinates (easy to extend)
           const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
             chennai: { lat: 13.0827, lng: 80.2707 },
             bangalore: { lat: 12.9716, lng: 77.5946 },
-            bengaluru: { lat: 12.9716, lng: 77.5946 },
             hyderabad: { lat: 17.385, lng: 78.4867 },
             mumbai: { lat: 19.076, lng: 72.8777 },
             delhi: { lat: 28.7041, lng: 77.1025 },
@@ -169,26 +171,20 @@ const ExploreJobs: React.FC = () => {
             gurgaon: { lat: 28.4595, lng: 77.0266 },
             gurugram: { lat: 28.4595, lng: 77.0266 },
             noida: { lat: 28.5355, lng: 77.391 },
-            // Add more cities easily here
           };
 
-          // Normalize and match location
           const getCityKey = (location: string): string | null => {
             const loc = location.toLowerCase().trim();
             if (CITY_COORDS[loc]) return loc;
-
             for (const city of Object.keys(CITY_COORDS)) {
               if (loc.includes(city)) return city;
             }
-
-            // State fallbacks
             if (loc.includes("tamil nadu") || loc.includes("tn"))
               return "chennai";
             if (loc.includes("karnataka")) return "bangalore";
             if (loc.includes("telangana")) return "hyderabad";
             if (loc.includes("maharashtra") && !loc.includes("pune"))
               return "mumbai";
-
             return null;
           };
 
@@ -200,9 +196,8 @@ const ExploreJobs: React.FC = () => {
           if (!cityB) return -1;
 
           const userCoords = CITY_COORDS[USER_CITY];
-          if (!userCoords) return 0; // fallback
+          if (!userCoords) return 0;
 
-          // Haversine distance
           const haversine = (
             c1: { lat: number; lng: number },
             c2: { lat: number; lng: number }
@@ -220,15 +215,16 @@ const ExploreJobs: React.FC = () => {
             return R * c;
           };
 
-          const distA = haversine(userCoords, CITY_COORDS[cityA]);
-          const distB = haversine(userCoords, CITY_COORDS[cityB]);
-
-          return distA - distB;
+          return (
+            haversine(userCoords, CITY_COORDS[cityA]) -
+            haversine(userCoords, CITY_COORDS[cityB])
+          );
         });
+
       default:
         return jobsCopy;
     }
-  }, [filteredJobs, sortBy]);
+  }, [filteredJobs, sortBy, loginData]);
 
   // Step 4: Pagination
   const jobsPerPage = 4;

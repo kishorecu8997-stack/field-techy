@@ -25,11 +25,12 @@ export const WORKING_TYPES_PROPERTY = {
 };
 
 export const getExperienceLevel = (years?: number) => {
-  if (!years) return "";
+  if (years === undefined || years === 0) return "Not specified";
   if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
   if (years <= 3) return "L2"; // 2-3 years: Mid-level
   return "L3"; // 4+ years: Senior/Expert-level
 };
+
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -82,7 +83,7 @@ export interface Job {
     role?: string; // e.g., "Project Coordinator"
     avatar?: string; // optional avatar URL
   };
-  matchScore?: string[];
+   matchScore?: number;
 }
 
 /**
