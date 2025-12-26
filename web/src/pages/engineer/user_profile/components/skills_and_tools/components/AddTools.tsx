@@ -32,7 +32,7 @@ const AddTools = () => {
     },
   });
 
-  const onSubmit = async (data: AddToolsFormData) => {
+  const onSubmit = async (_: AddToolsFormData) => {
     await showPopup({
       title: "Add Tools",
       body: "Are you sure you want to add these tools?",

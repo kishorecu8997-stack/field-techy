@@ -11,7 +11,6 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { validateName } from "../../Validates";
 import SectionHeader from "../SectionHeader";
 /*
  *  Requirements

@@ -5,14 +5,16 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuMail } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import ClientOTPPage from "../ClientOTPPage";
+import { useSendPhoneOTP } from "@/shared/apiServices/client/clientService";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { usePopupStore } from "@/shared/store/popupStore";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import logo_light from "@/assets/logo/logo_light.svg";
 
 export type LoginFormData = {
   phone: string;
@@ -37,50 +39,98 @@ const SignUpWithNumber = ({
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
+
+  const { signupPhone, mobileVerified, setSignupData, clearStore } = useClientRegistrationStore();
+  const { showPopup } = usePopupStore();
+
   const method = useForm<LoginFormData>({
     defaultValues: {
-      phone: "",
+      phone: "",  // Start empty, will be filled based on user choice
       terms: false,
     },
   });
 
+  const { mutate: sendPhoneOTP, isPending: isSendingOTP } = useSendPhoneOTP({
+    onSuccess: (data) => {
+      console.log("OTP sent successfully:", data);
+      setIsOpen(true);
+    },
+    onError: (error) => {
+      console.error("Failed to send OTP:", error);
+      method.setError("phone", {
+        type: "manual",
+        message: "Failed to send OTP. Please try again.",
+      });
+    },
+  });
+
+  // Ask user if they want to continue with previous registration
+  useEffect(() => {
+    if (signupPhone && !hasAskedToContinue) {
+      setHasAskedToContinue(true);
+
+      showPopup({
+        title: mobileVerified ? "Resume Registration?" : "Continue Registration?",
+        body: mobileVerified
+          ? `You have a verified phone: ${signupPhone}. Would you like to continue your registration or start fresh?`
+          : `You previously started registration with: ${signupPhone}. Would you like to continue or start fresh?`,
+        actionButtons: [
+          {
+            label: "Start Fresh",
+            value: false,
+            variant: "outline",
+            action: (close) => {
+              clearStore();
+              method.reset({ phone: "", terms: false });
+              close(false);
+            },
+          },
+          {
+            label: "Continue",
+            value: true,
+            action: (close) => {
+              method.setValue("phone", signupPhone);
+              if (mobileVerified) {
+                // If already verified, redirect to account type
+                navigate(absoluteUrls.client.auth.account_type);
+              }
+              close(true);
+            },
+          },
+        ],
+      });
+    }
+  }, [signupPhone, mobileVerified, hasAskedToContinue, method, clearStore, navigate, showPopup]);
+
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.client.auth.account_type, {
-      state: {
-        signupPhone: method.getValues("phone"),
-        mobileVerified: true,
-        disableMobile: true,
-        disableEmail: false,
-      },
+
+    // Save to store instead of location.state
+    setSignupData({
+      phone: method.getValues("phone"),
+      mobileVerified: true,
     });
+
+    navigate(absoluteUrls.client.auth.account_type);
   };
 
-  /**
-   * handleOTPVerified
-   *
-   * Called when the OTP flow completes successfully. Closes the OTP modal
-   * and navigates to the account type setup route carrying the verified
-   * phone number in the navigation state.
-   */
+  const handleResendOTP = () => {
+    const phone = method.getValues("phone");
+    sendPhoneOTP(phone);
+  };
 
   const termsAccepted = method.watch("terms");
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = (data: LoginFormData) => {
+    sendPhoneOTP(data.phone);
   };
 
-  /**
-   * handleSubmit
-   *
-   * Triggered when the phone sign-up form is submitted. Opens the OTP
-   * verification modal. In a production flow this should first call the
-   * backend to request an OTP and then open the modal on success.
-   */
+  const logo_light = assetsConfig.logos.companyLogo;
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <IconWithTheme
@@ -120,14 +170,13 @@ const SignUpWithNumber = ({
           </div>
           <Button
             type="submit"
-            disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            disabled={!termsAccepted || isSendingOTP}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
-            Create Account
+            {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
         </FormContainer>
         <div
@@ -152,11 +201,14 @@ const SignUpWithNumber = ({
           </Button>
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
+          <ClientOTPPage
             header="Verify Phone Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
             handleNavigate={handleOTPVerified}
+            verificationType="phone"
+            contact={method.getValues("phone")}
+            onResendOTP={handleResendOTP}
           />
         </Popup>
       </div>

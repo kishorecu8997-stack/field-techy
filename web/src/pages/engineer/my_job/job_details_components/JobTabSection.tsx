@@ -39,12 +39,14 @@ const JobTabSection = ({
   isSendProposal,
   activeTab,
   OfferJobStatus,
+  // isJobAccepted,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   activeTab?: string;
   OfferJobStatus?: OfferedJobStatusType;
+  isJobAccepted?: boolean;
 }) => {
   const shouldHideLogs = !(
     status === JOB_STATUSES.inprogress ||

@@ -108,7 +108,7 @@ const LoginWithNumber = ({
             header="Verify Mobile Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
+            onSubmit={() => {
               goToHome();
               toast.success("Logged in successfully");
             }}

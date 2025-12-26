@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
@@ -148,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       <div className="hidden md:flex items-center space-x-4">
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
+          onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">

@@ -37,9 +37,9 @@ const JobTabSection = ({
   status,
   isWorkSubmitted,
   isSendProposal,
-  isJobAccepted,
+  // isJobAccepted,
   activeTab,
-  
+
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
@@ -52,18 +52,18 @@ const JobTabSection = ({
       label: "Engineers Logs",
       content: <LogComponent logs={logs} />,
       hide:
-        status === JOB_STATUSES.posted 
+        status === JOB_STATUSES.posted
     },
     {
       label: "Work Submissions",
       content: (
         <WorkSubmissionComponent
           workSubmissions={workSubmissions}
-          isWorkSubmitted={isWorkSubmitted}          
+          isWorkSubmitted={isWorkSubmitted}
         />
       ),
       hide:
-        status === JOB_STATUSES.posted 
+        status === JOB_STATUSES.posted
     },
     {
       label: "Job Information",

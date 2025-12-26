@@ -26,8 +26,8 @@ const WorkPreference = () => {
 
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
- 
-  const handleSubmit = async(data: WorkPreferenceFormData) => {
+
+  const handleSubmit = async (_: WorkPreferenceFormData) => {
     await showPopup({
       title: "Update Work Preferences",
       body: "Are you sure you want to update your work preferences?",
@@ -52,7 +52,7 @@ const WorkPreference = () => {
           },
         },
       ],
-    }); 
+    });
   };
 
   /**
@@ -60,7 +60,7 @@ const WorkPreference = () => {
    */
   const methods = useForm<WorkPreferenceFormData>({
     defaultValues: {
-      portfolioLink:workPreferenceData[0].portfolioLink,
+      portfolioLink: workPreferenceData[0].portfolioLink,
       preferredWorkTypes: workPreferenceData[0].preferredWorkTypeIds,
       servicesCategories: workPreferenceData[0].serviceCategoryIds,
       ratePreference: workPreferenceData[0].ratePreference,
@@ -123,7 +123,7 @@ const WorkPreference = () => {
 
       <div className="bg-white ">
         <Button
-          type="submit"          
+          type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
           Save Preferences

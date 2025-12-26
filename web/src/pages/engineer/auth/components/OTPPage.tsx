@@ -5,18 +5,38 @@ import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
+export interface OTPValues {
+  otp: string;
+}
 
-interface VerifyEmailModalProps {
+interface OTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
+  /**
+   * @deprecated Use onSubmit instead.
+   */
   handleNavigate?: () => void;
+  /**
+   * Optional handler that receives the OTP value on submission.
+   */
+  onSubmit?: (data: OTPValues) => void;
   buttonText?: string;
   isSuccess?: boolean;
-}
-
-export interface OTPValues {
-  otp: string;
+  /**
+   * Initial time in seconds for the countdown timer.
+   * @default 60
+   */
+  initialTimerSeconds?: number;
+  /**
+   * Maximum number of resend attempts allowed.
+   * @default Infinity
+   */
+  maxResendAttempts?: number;
+  /**
+   * Callback function triggered when the resend button is clicked.
+   */
+  onResend?: () => void;
 }
 
 /**
@@ -29,26 +49,35 @@ export interface OTPValues {
  * It is used for various verification flows, such as email/phone confirmation during sign-up,
  * password resets, or two-factor authentication at login.
  *
- * @param {VerifyEmailModalProps} props - The props for the component.
+ * @param {OTPPageProps} props - The props for the component.
  * @param {string} [props.header] - The main title displayed in the modal.
  * @param {string} [props.description] - A descriptive text shown below the header.
  * @param {() => void} [props.onClose] - Callback function to close the modal.
- * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed.
+ * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed (Deprecated, use onSubmit).
+ * @param {function} [props.onSubmit] - Optional handler that receives the OTP value on submission.
  * @param {string} [props.buttonText="Submit"] - The text for the submit button.
  * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
+ * @param {number} [props.initialTimerSeconds=60] - Initial time in seconds for the countdown timer.
+ * @param {number} [props.maxResendAttempts=Infinity] - Maximum number of resend attempts allowed.
+ * @param {() => void} [props.onResend] - Callback function triggered when the resend button is clicked.
  */
-const OTPPage: React.FC<VerifyEmailModalProps> = ({
+const OTPPage: React.FC<OTPPageProps> = ({
   header,
   description,
   onClose,
   handleNavigate,
+  onSubmit,
   buttonText,
   isSuccess,
+  initialTimerSeconds = 60,
+  maxResendAttempts = Infinity,
+  onResend,
 }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [timeLeft, setTimeLeft] = useState<number>(initialTimerSeconds);
+  const [resendCount, setResendCount] = useState<number>(0);
   const inputRefs = useRef<HTMLInputElement[]>([]);
 
-  const method = useForm({
+  const method = useForm<OTPValues>({
     defaultValues: {
       otp: "",
     },
@@ -60,13 +89,25 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSubmit = () => {
-    handleNavigate?.();
+  const handleSubmit = (data: OTPValues) => {
+    if (onSubmit) {
+      onSubmit(data);
+    } else {
+      handleNavigate?.();
+    }
   };
 
   const handleResend = () => {
-    setTimeLeft(60);
-    inputRefs.current[0].focus();
+    if (resendCount >= maxResendAttempts) return;
+
+    onResend?.();
+    setTimeLeft(initialTimerSeconds);
+    setResendCount((prev) => prev + 1);
+
+    // Attempt to focus if refs are available
+    if (inputRefs.current && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
   };
 
   return (
@@ -97,11 +138,11 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
                   {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                 </span>
                 <button
+                  type="button"
                   onClick={handleResend}
-                  disabled={timeLeft > 0}
-                  className={`text-green-600 dark:text-green-400 font-medium ${
-                    timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  disabled={timeLeft > 0 || resendCount >= maxResendAttempts}
+                  className={`text-green-600 dark:text-green-400 font-medium ${(timeLeft > 0 || resendCount >= maxResendAttempts) ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
                   Resend
                 </button>

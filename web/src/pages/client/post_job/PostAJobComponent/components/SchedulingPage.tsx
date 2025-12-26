@@ -4,7 +4,6 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";

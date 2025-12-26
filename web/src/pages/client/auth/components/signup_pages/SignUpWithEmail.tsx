@@ -5,14 +5,16 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import ClientOTPPage from "../ClientOTPPage";
+import { useSendEmailOTP } from "@/shared/apiServices/client/clientService";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { usePopupStore } from "@/shared/store/popupStore";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import logo_light from "@/assets/logo/logo_light.svg";
 
 export interface SignUpFormData {
   email: string;
@@ -46,37 +48,101 @@ const SignUp = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const logo_light = assetsConfig.logos.companyLogo;
+
+
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
+
+  const { signupEmail, emailVerified, setSignupData, clearStore } = useClientRegistrationStore();
+  const { showPopup } = usePopupStore();
+
   const methods = useForm<SignUpFormData>({
     defaultValues: {
-      email: "",
+      email: "",  // Start empty, will be filled based on user choice
       terms: false,
     },
   });
 
+  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
+    onSuccess: (data) => {
+      console.log("OTP sent successfully:", data);
+      setIsOpen(true);
+    },
+    onError: (error) => {
+      console.error("Failed to send OTP:", error);
+      methods.setError("email", {
+        type: "manual",
+        message: "Failed to send OTP. Please try again.",
+      });
+    },
+  });
+
+  // Ask user if they want to continue with previous registration
+  useEffect(() => {
+    if (signupEmail && !hasAskedToContinue) {
+      setHasAskedToContinue(true);
+
+      showPopup({
+        title: emailVerified ? "Resume Registration?" : "Continue Registration?",
+        body: emailVerified
+          ? `You have a verified email: ${signupEmail}. Would you like to continue your registration or start fresh?`
+          : `You previously started registration with: ${signupEmail}. Would you like to continue or start fresh?`,
+        actionButtons: [
+          {
+            label: "Start Fresh",
+            value: false,
+            variant: "outline",
+            action: (close) => {
+              clearStore();
+              methods.reset({ email: "", terms: false });
+              close(false);
+            },
+          },
+          {
+            label: "Continue",
+            value: true,
+            action: (close) => {
+              methods.setValue("email", signupEmail);
+              if (emailVerified) {
+                // If already verified, redirect to account type
+                navigate(absoluteUrls.client.auth.account_type);
+              }
+              close(true);
+            },
+          },
+        ],
+      });
+    }
+  }, [signupEmail, emailVerified, hasAskedToContinue, methods, clearStore, navigate, showPopup]);
+
   const handleOTPVerified = () => {
     setIsOpen(false);
-    // navigate(absoluteUrls.client.auth.account_type);
-    navigate(absoluteUrls.client.auth.account_type, {
-      state: {
-        signupEmail: methods.getValues("email"),
-        emailVerified: true, // Pre-verified
-        disableEmail: true, // Lock email in ProfileSetup
-        disableMobile: false, // Mobile should be editable in ProfileSetup
-      },
+
+    // Save to store instead of location.state
+    setSignupData({
+      email: methods.getValues("email"),
+      emailVerified: true,
     });
+
+    navigate(absoluteUrls.client.auth.account_type);
+  };
+
+  const handleResendOTP = () => {
+    const email = methods.getValues("email");
+    sendEmailOTP(email);
   };
 
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = (data: SignUpFormData) => {
+    sendEmailOTP(data.email);
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg">
-      <div className="p-10 w-full">
+    <div className="flex items-center justify-center w-full">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <IconWithTheme
@@ -121,14 +187,13 @@ const SignUp = ({
           </div>
           <Button
             type="submit"
-            disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            disabled={!termsAccepted || isSendingOTP}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
-            Create Account
+            {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
         </FormContainer>
         <div
@@ -153,11 +218,14 @@ const SignUp = ({
           </Button>
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
+          <ClientOTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code"
+            description="We sent you an OTP code to your email"
             onClose={() => setIsOpen(false)}
             handleNavigate={handleOTPVerified}
+            verificationType="email"
+            contact={methods.getValues("email")}
+            onResendOTP={handleResendOTP}
           />
         </Popup>
       </div>

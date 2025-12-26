@@ -9,32 +9,18 @@ import {
   expiryDateValidation,
 } from "@/shared/libs/utils";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
+
 import { AiOutlineClose } from "react-icons/ai";
 
-/**
- * Represents the Add Card form values.
- *
- * @property {string} cardNumber - Card number as entered by the user.
- * @property {string} expDate - Expiry date in MM/YY format.
- * @property {string} cvv - CVV/CVC code for the card.
- * @property {string} country - Selected country value/label.
- * @property {string} address - Billing address for the card.
- */
 export interface CardFormData {
   cardNumber: string;
   expDate: string;
   cvv: string;
-  country: string;
+  PaymentCountry: string;
   cardAddress: string;
 }
 
-/**
- * Props passed to the AddCard component.
- *
- * @property {() => void} onClose - Called when the dialog should be closed.
- * @property {(cardData: CardFormData) => void} onAddCard - Called with validated card data when user submits.
- */
 interface AddCardProps {
   onClose: () => void;
   onAddCard: (cardData: CardFormData) => void;
@@ -47,27 +33,14 @@ interface AddCardProps {
  * validated successfully, `onAddCard` is invoked with the typed values.
  */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
-  const methods = useForm<CardFormData>({
-    defaultValues: {
-      cardNumber: "",
-      expDate: "",
-      cvv: "",
-      country: "",
-      cardAddress: "",
-    },
-  });
+  const methods = useFormContext();
 
-  // form submission
-  /**
-   * Validate the form and call `onAddCard` with the collected values when valid.
-   * Uses react-hook-form's `trigger` to run validation for all registered fields.
-   */
   const handleAddCard = async () => {
-    const isValid = await methods.trigger();
+    const isValid = await methods.trigger(["cardAddress", "cvv", "expDate", "cardNumber", "PaymentCountry"]);
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);
-      onAddCard(data);
+      onAddCard(data as CardFormData);
     }
   };
 
@@ -108,7 +81,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
         <SelectField
           label="Country"
-          name="country"
+          name="PaymentCountry"
           placeholder="Country"
           options={countries.map((c) => ({
             value: c.value,

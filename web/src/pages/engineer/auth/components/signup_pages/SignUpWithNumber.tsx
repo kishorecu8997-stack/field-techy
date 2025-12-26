@@ -10,7 +10,11 @@ import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import EngineerOTPPage from "../EngineerOTPPage";
+import { useSendPhoneOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useEffect } from "react";
 
 export type LoginFormData = {
   phone: string;
@@ -40,29 +44,92 @@ const SignUpWithNumber = ({
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
+
+  const { signupPhone, mobileVerified, setSignupData, clearStore } = useEngineerRegistrationStore();
+  const { showPopup } = usePopupStore();
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
       terms: false,
     },
   });
+
+  // Send Phone OTP mutation
+  const { mutate: sendPhoneOTP, isPending: isSendingOTP } = useSendPhoneOTP({
+    onSuccess: (data) => {
+      console.log("OTP sent successfully:", data);
+      setIsOpen(true);
+    },
+    onError: (error) => {
+      console.error("Failed to send OTP:", error);
+      method.setError("phone", {
+        type: "manual",
+        message: "Failed to send OTP. Please try again.",
+      });
+    },
+  });
+
+  // Ask user if they want to continue with previous registration
+  useEffect(() => {
+    if (signupPhone && !hasAskedToContinue) {
+      setHasAskedToContinue(true);
+
+      showPopup({
+        title: mobileVerified ? "Resume Registration?" : "Continue Registration?",
+        body: mobileVerified
+          ? `You have a verified phone: ${signupPhone}. Would you like to continue your registration or start fresh?`
+          : `You previously started registration with: ${signupPhone}. Would you like to continue or start fresh?`,
+        actionButtons: [
+          {
+            label: "Start Fresh",
+            value: false,
+            variant: "outline",
+            action: (close) => {
+              clearStore();
+              method.reset({ phone: "", terms: false });
+              close(false);
+            },
+          },
+          {
+            label: "Continue",
+            value: true,
+            action: (close) => {
+              method.setValue("phone", signupPhone);
+              if (mobileVerified) {
+                // If already verified, redirect to profile setup
+                navigate(absoluteUrls.engineer.auth.updated_basic_details);
+              }
+              close(true);
+            },
+          },
+        ],
+      });
+    }
+  }, [signupPhone, mobileVerified, hasAskedToContinue, method, clearStore, navigate, showPopup]);
+
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.engineer.auth.profile_setup, {
-      state: {
-        signupPhone: method.getValues("phone"),
-        mobileVerified: true,
-        disableMobile: true, // Lock mobile in ProfileSetup
-        disableEmail: false, // Email should be editable in ProfileSetup
-      },
+
+    // Save to store instead of location.state
+    setSignupData({
+      phone: method.getValues("phone"),
+      mobileVerified: true,
     });
+
+    navigate(absoluteUrls.engineer.auth.updated_basic_details);
+  };
+
+  const handleResendOTP = () => {
+    const phone = method.getValues("phone");
+    sendPhoneOTP(phone);
   };
 
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
     console.log(data, "data from Login Form");
-    setIsOpen(true);
+    sendPhoneOTP(data.phone);
   };
 
   return (
@@ -107,14 +174,13 @@ const SignUpWithNumber = ({
           </div>
           <Button
             type="submit"
-            disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            disabled={!termsAccepted || isSendingOTP}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
-            Create Account
+            {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
         </FormContainer>
         <div
@@ -139,11 +205,14 @@ const SignUpWithNumber = ({
           </Button>
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
+          <EngineerOTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code"
+            description="We sent you an OTP code to your phone"
             onClose={() => setIsOpen(false)}
             handleNavigate={handleOTPVerified}
+            verificationType="phone"
+            contact={method.getValues("phone")}
+            onResendOTP={handleResendOTP}
           />
         </Popup>
       </div>

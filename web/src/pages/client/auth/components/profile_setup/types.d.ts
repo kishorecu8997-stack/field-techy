@@ -10,7 +10,10 @@ export type CompleteRegistrationData = {
   address: string;
   state: string;
   city: string;
+  country: string;
+  fullName: string;
   vatRegistrationNumber: string;
+  postalCode: string;
   // Background Verification
   governmentId?: File;
   certificate?: File;

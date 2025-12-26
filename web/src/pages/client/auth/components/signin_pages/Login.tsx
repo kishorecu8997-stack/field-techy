@@ -1,6 +1,5 @@
 import { assetsConfig } from "@/assets";
 import logo_light from "@/assets/logo/logo_light.svg";
-import { useClientSignin } from "@/shared/apiServices/client/clientService";
 import { absoluteUrls } from "@/config/urls";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
@@ -18,15 +17,12 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OTPPage from "../../../../engineer/auth/components/OTPPage";
-import type { LoginFormData } from "../../../../engineer/auth/components/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
+import { useUserSessionStore, type UserSession } from "@/shared/store/useUserSessionStore";
+import { useClientSignInMutation, useReqEmailVerificationOtpMutation, useVerifyEmailVerificationOtpMutation } from "@/shared/apiServices/auth/clients/clientAuthService";
 
-/**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
- */
+
 
 /**
  * Login component
@@ -46,18 +42,14 @@ const Login = ({
 }) => {
   const navigate = useNavigate();
 
-  const { mutate, isPending } = useClientSignin({
-    onSuccess: () => {
-      setIsOpen(true);
-      toast.success("OTP sent successfully");
-    },
-    onError: () => {
-      toast.error("Login failed");
-    },
-  });
+  const clientSignInMutation = useClientSignInMutation();
+  const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
+  const verifyEmailVerificationOtpMutation = useVerifyEmailVerificationOtpMutation();
+  const setUserSession = useUserSessionStore(s => s.setSession);
 
   const [isOpen, setIsOpen] = useState(false);
-  const methods = useForm<LoginFormData>({
+  const methods = useForm({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -73,13 +65,71 @@ const Login = ({
    * implementations should validate credentials against an API and only
    * open the OTP/modal on success.
    */
-  const handleSubmit = (data: LoginFormData) => {
-    mutate({
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-    });
+  const handleSubmit = async (data: LoginEmailFormData) => {
+    await clientSignInMutation.mutateAsync({
+      phoneOrEmail: data.email,
+      password: data.password
+    }, {
+      onSuccess: async (resp) => {
+        //second layer of verification 
+        setIsOpen(true);
+        toast.success("OTP Requested, kindly check your email for OTP");
+        console.log(`Login Response: `, resp)
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("Login failed");
+      },
+    })
   };
+
+
+  /**
+   * handleOtpSubmission
+   * call verifyEmailVerificationOtpMutation to verify the otp
+   * @param otp otp code
+   */
+  const handleOtpSubmission = async (otp: string) => {
+    const email = methods.getValues("email");
+    await verifyEmailVerificationOtpMutation.mutateAsync({ email, otp }, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        //TODO: integrate the otp stubbed version
+        const stubbedResponse: UserSession = {
+          accessToken: "something fake",
+          userId: "uuid-123",
+          displayName: "John Doe",
+          metadata: {}
+        }
+
+        setIsOpen(false);
+        setUserSession(stubbedResponse);
+        navigate(absoluteUrls.client.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("");
+      },
+    })
+  }
+
+  const onResendOtp = async () => {
+    const email = methods.getValues("email");
+    await reqEmailVerificationOtpMutation.mutateAsync(email, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        toast.success("OTP Requested, kindly check your email for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    })
+  }
+
+
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -130,7 +180,7 @@ const Login = ({
           </div>
           <Button
             type="submit"
-            loading={isPending}
+            loading={clientSignInMutation.isPending || reqEmailVerificationOtpMutation.isPending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -152,6 +202,7 @@ const Login = ({
           <Button
             className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             variant="outline"
+            disabled
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap text-gray-900 dark:text-white">
@@ -164,11 +215,8 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
-              setIsOpen(false);
-              navigate(absoluteUrls.client.home.dashboard);
-              toast.success("Logged in successfully");
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

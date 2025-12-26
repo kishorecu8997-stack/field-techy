@@ -17,13 +17,13 @@ const PasswordSection = () => {
   const { watch } = ctx;
   const currentPassword = watch("currentPassword");
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <PasswordInput
         name="password"
         label="New Password"
         rules={{
           required: "Password is required",
-          validate:(v)=>validatePassword(v, currentPassword),
+          validate: (v) => validatePassword(v, currentPassword),
         }}
       />
       <ConfirmPassword

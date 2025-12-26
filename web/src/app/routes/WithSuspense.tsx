@@ -10,17 +10,17 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
  * @returns JSX.Element The component wrapped in a Suspense boundary with a loader.
  */
 export const withSuspense = (
-  Component: React.LazyExoticComponent<React.ComponentType<any>>
+    Component: React.LazyExoticComponent<React.ComponentType<any>>
 ) => {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-[80vh] w-full">
-          <LoaderComponent />
-        </div>
-      }
-    >
-      <Component />
-    </Suspense>
-  );
+    return (
+        <Suspense
+            fallback={
+                <div className="flex justify-center items-center h-[80vh] w-full">
+                    <LoaderComponent />
+                </div>
+            }
+        >
+            <Component />
+        </Suspense>
+    );
 };

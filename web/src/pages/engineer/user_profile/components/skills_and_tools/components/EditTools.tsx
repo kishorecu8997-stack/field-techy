@@ -46,7 +46,7 @@ const EditTools: React.FC<EditToolsProps> = () => {
     return [];
   }, []);
 
-  const onSubmit = async (data: EditToolsFormData) => {
+  const onSubmit = async (_: EditToolsFormData) => {
     await showPopup({
       title: "Update Tools",
       body: "Are you sure you want to update these tools?",

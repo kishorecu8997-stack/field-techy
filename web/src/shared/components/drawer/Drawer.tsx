@@ -1,5 +1,6 @@
 import { sectionConfig } from "@/config/sideBarPagesconfig";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 import DrawerHeader from "./DrawerHeader";
 import useDrawerStore from "@/shared/store/useDrawerStore";
@@ -88,17 +89,25 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
         aria-label={config.title}
       >
         <div className="flex h-screen flex-col">
-          <div className="shrink-0 py-6 px-6">
-            <DrawerHeader
-              title={config.title}
-              onClose={onClose}
-              onBack={onBack}
-              actions={config.actions}
-            />
-          </div>
-          <div className="flex-1 overflow-y-auto px-6 pb-4">
-            {renderSection()}
-          </div>
+          <Suspense
+            fallback={
+              <div className="flex h-full items-center justify-center">
+                <LoaderComponent />
+              </div>
+            }
+          >
+            <div className="shrink-0 py-6 px-6">
+              <DrawerHeader
+                title={config.title}
+                onClose={onClose}
+                onBack={onBack}
+                actions={config.actions}
+              />
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 pb-4">
+              {renderSection()}
+            </div>
+          </Suspense>
         </div>
       </div>
     </>

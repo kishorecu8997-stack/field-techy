@@ -1,62 +1,56 @@
 import { assetsConfig } from "@/assets";
 import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
-import { useEngineerSignin } from "@/shared/apiServices/engineer/engineerService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
-import { validatePassword } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OTPPage from "../OTPPage";
-import type { LoginFormData } from "../types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
+import { useUserSessionStore, type UserSession } from "@/shared/store/useUserSessionStore";
+import { useEngineerSignInMutation, useReqEmailVerificationOtpMutation, useVerifyEmailVerificationOtpMutation } from "@/shared/apiServices/auth/engineer/engineerAuthService";
+import { validatePassword } from "@/shared/libs/utils";
+
+
 
 /**
- * Renders the primary login form for users to sign in with their email and password.
+ * Login component
  *
- * This component provides a standard login interface, including fields for email and password,
- * a "Remember me" checkbox, and a link to the "Forgot Password" page. It uses `react-hook-form`
- * for form state management and validation.
+ * Renders the engineer sign-in form (email/password) with options to sign in
+ * via phone number or LinkedIn. Submitting opens the OTP dialog in this
+ * implementation; after OTP success the access popup is shown.
  *
- * Upon successful form submission, it displays an OTP modal for two-factor authentication.
- * It also provides UI options to switch to a phone-based login or to use social login providers
- * like LinkedIn.
- *
- * @param {object} props - The component props.
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
- *   passed from the parent component to toggle the view to the phone number login screen.
- * @returns {JSX.Element} The rendered login form component.
+ * Props:
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - A single prop used to switch to number-based login UI.
+ * @returns {JSX.Element} Login form UI
  */
 const Login = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToHome } = useHomeNavigation();
+  const navigate = useNavigate();
 
-  const { mutate } = useEngineerSignin({
-    onSuccess: () => {
-      setIsOpen(true);
-    },
-    onError: () => {
-      toast.error("Login failed");
-    },
-  });
+  const engineerSignInMutation = useEngineerSignInMutation();
+  const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
+  const verifyEmailVerificationOtpMutation = useVerifyEmailVerificationOtpMutation();
+  const setUserSession = useUserSessionStore(s => s.setSession);
 
   const [isOpen, setIsOpen] = useState(false);
-  const methods = useForm<LoginFormData>({
+  const methods = useForm({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -64,49 +58,116 @@ const Login = ({
     },
   });
 
-  const handleSubmit = async (data: LoginFormData) => {
-    mutate({
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-    });
+  /**
+   * handleSubmit
+   *
+   * Called by the form when the user submits credentials. Current behaviour
+   * opens the OTP popup (simulating second-factor or phone flow). Real
+   * implementations should validate credentials against an API and only
+   * open the OTP/modal on success.
+   */
+  const handleSubmit = async (data: LoginEmailFormData) => {
+    await engineerSignInMutation.mutateAsync({
+      phoneOrEmail: data.email,
+      password: data.password
+    }, {
+      onSuccess: async (resp) => {
+        //second layer of verification 
+        setIsOpen(true);
+        toast.success("OTP Requested, kindly check your email for OTP");
+        console.log(`Login Response: `, resp)
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("Login failed");
+      },
+    })
   };
+
+
+  /**
+   * handleOtpSubmission
+   * call verifyEmailVerificationOtpMutation to verify the otp
+   * @param otp otp code
+   */
+  const handleOtpSubmission = async (otp: string) => {
+    const email = methods.getValues("email");
+    await verifyEmailVerificationOtpMutation.mutateAsync({ email, otp }, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        //TODO: integrate the otp stubbed version
+        const stubbedResponse: UserSession = {
+          accessToken: "something fake",
+          userId: "uuid-123",
+          displayName: "John Doe",
+          metadata: {}
+        }
+
+        setIsOpen(false);
+        setUserSession(stubbedResponse);
+        navigate(absoluteUrls.engineer.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("");
+      },
+    })
+  }
+
+  const onResendOtp = async () => {
+    const email = methods.getValues("email");
+    await reqEmailVerificationOtpMutation.mutateAsync(email, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp)
+        toast.success("OTP Requested, kindly check your email for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    })
+  }
+
+
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="p-10 w-full max-w-lg">
+      <div className="px-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <IconWithTheme
-              lightLogo={assetsConfig.logos.companyLogo}
+              lightLogo={assetsConfig.logos.ftLogo}
               darkLogo={logo_light}
               className="h-15 w-20"
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Sign In
-          </h2>
-          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
-            Don't have an account?{" "}
-            <NavLink
-              to={absoluteUrls.engineer.auth.signup}
-              className="text-teal-900 dark:text-teal-400 underline font-semibold"
-            >
-              Sign Up
-            </NavLink>
-          </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Sign In
+            </h2>
+            <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
+              Don't have an account?{" "}
+              <NavLink
+                to={absoluteUrls.engineer.auth.signup}
+                className="text-teal-900 dark:text-teal-400 underline font-semibold "
+              >
+                Sign Up
+              </NavLink>
+            </h2>
+          </div>
         </div>
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2 w-full"
+          className="flex flex-col gap-3 w-full"
         >
           <InputField
             name="email"
-            label="Email ID"
-            type="text"
+            label="Email Address"
+            type="email"
             required
-            rules={validateEmailRules}
           />
           <PasswordInput
             name="password"
@@ -118,7 +179,7 @@ const Login = ({
             }}
           />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
+            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={absoluteUrls.engineer.auth.forget_password}
@@ -128,6 +189,7 @@ const Login = ({
           </div>
           <Button
             type="submit"
+            loading={engineerSignInMutation.isPending || reqEmailVerificationOtpMutation.isPending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -149,6 +211,7 @@ const Login = ({
           <Button
             className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             variant="outline"
+            disabled
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap text-gray-900 dark:text-white">
@@ -161,10 +224,8 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
-              goToHome();
-              toast.success("Logged in successfully");
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

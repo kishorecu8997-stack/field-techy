@@ -2,6 +2,9 @@ import { absoluteUrls } from "@/config/urls";
 import { earningsData, userData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
@@ -20,6 +23,9 @@ import { scrollToTop } from "@/utils";
 const Home = () => {
   const navigate = useNavigate();
   const [accessPopup, setAccessPopup] = useState(false);
+  const { locationPermission, notificationPermission } = useDeviceStore();
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -37,7 +43,7 @@ const Home = () => {
     return job.status === "new";
   });
 
-  const recommendedJobs  = findNewJobs.filter((job) => {
+  const recommendedJobs = findNewJobs.filter((job) => {
     return job.place === "recommended";
   });
 
@@ -45,18 +51,18 @@ const Home = () => {
     return job.place === "featured";
   });
 
+  // Check actual browser permission states on mount and sync with store
+  useEffect(() => {
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
-    const locationPermission = localStorage.getItem("location_permission");
-    const notificationPermission = localStorage.getItem(
-      "notification_permission"
-    );
-
-    // SHOW popup only if ANY permission is missing
-    if (!locationPermission || !notificationPermission) {
+    // Show popup if either permission is in 'prompt' state (not asked yet)
+    if (locationPermission === 'prompt' || notificationPermission === 'default') {
       setAccessPopup(true);
     }
-  }, []);
+  }, [locationPermission, notificationPermission]);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
