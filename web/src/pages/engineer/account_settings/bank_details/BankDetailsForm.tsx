@@ -29,8 +29,8 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           />
           <InputField
             name="bankAddress"
-            label="Bank Address"
-            placeholder="Bank address"
+            label="Branch Address"
+            placeholder="Branch address"
             required
             rules={{ validate: validateAddress }}
           />
