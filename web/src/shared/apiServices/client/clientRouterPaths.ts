@@ -14,6 +14,11 @@ export const CLIENT_ROUTER_PATHS = {
   VERIFY_EMAIL_OTP: "/clients/verify-email-otp",
   VERIFY_PHONE_OTP: "/clients/verify-phone-otp",
 
+  // signin otp endpoints
+
+  CLI_SIGNIN: (otp: string) => `/api/v1/users/clt/signin/by-otp/${otp}`,
+  ADMIN_SIGNIN: (otp: string) => `/api/v1/users/adm/signin/by-otp/${otp}`,
+
   // Dropdown data endpoints
   GET_STATES: "/clients/dropdown/states",
   GET_CITIES: "/clients/dropdown/cities",

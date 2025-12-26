@@ -4,11 +4,12 @@ export const ENGINEER_ROUTER_PATHS = {
   GET_BY_ID: (id: string) => `/eng/api/v1/engineers/${id}`,
   DELETE: (id: string) => `/eng/api/v1/engineers/delete/${id}`,
 
-  // OTP endpoints
-  SEND_EMAIL_OTP: "/eng/api/v1/engineers/otp/send-email",
-  SEND_PHONE_OTP: "/eng/api/v1/engineers/otp/send-phone",
-  VERIFY_EMAIL_OTP: "/eng/api/v1/engineers/otp/verify-email",
-  VERIFY_PHONE_OTP: "/eng/api/v1/engineers/otp/verify-phone",
+  // signin otp endpoints
+  ENG_SIGNIN: (otp: string) => `/eng/api/v1/engineers/eng/signin/by-otp/${otp}`,
+  REQ_OTP: (emailorPhone: string) => `/user/api/v1/users/otp/request/${emailorPhone}`,
+
+  // verify email and phone otp endpoints
+  VERIFY_OTP:(emailorPhone: string, otp: string) => `/eng/api/v1/engineers/otp/verify/${emailorPhone}/${otp}`,
   GET_FILES: (id: string) => `/eng/api/v1/engineers/files/${id}`,
   DOWNLOAD_FILE: (fileKey: string) => `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
   UPLOAD_FILE: (engineerId: string, documentType: string) =>
