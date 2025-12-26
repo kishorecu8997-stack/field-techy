@@ -1,4 +1,5 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import TransactionDashboard from "./TransactionDashboard";
 
@@ -18,7 +19,7 @@ const MyEarning = () => {
           Current Balance
         </p>
         <h1 className="text-4xl font-bold mt-1">
-          ${currentBalance.toFixed(2)}
+          {getCurrencyFromStorage()}{currentBalance.toFixed(2)}
         </h1>
         <div className="mt-4 flex gap-3 justify-center">
           <Button

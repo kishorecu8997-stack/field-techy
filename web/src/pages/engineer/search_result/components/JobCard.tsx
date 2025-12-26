@@ -1,10 +1,10 @@
 import { icons } from "@/config/icons";
 import React, { useState } from "react";
-import { BiDollar } from "react-icons/bi";
 import { IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
 import { scrollToTop } from "@/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
 /**
  * JobCard component displays a single job listing
  *
@@ -81,9 +81,8 @@ const JobCard: React.FC<{
             </span>
           </div>
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <BiDollar className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
             <span className="text-gray-800 dark:text-gray-200">
-              {job.salary}
+              {getCurrencyFromStorage()}{job.salary}
             </span>
           </div>
         </div>

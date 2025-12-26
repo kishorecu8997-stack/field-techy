@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { setCurrencyInStorage } from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";

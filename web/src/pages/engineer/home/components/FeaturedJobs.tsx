@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
+import { getCurrencyFromStorage } from "@/utils/currency";
 
 /**
  * JobCard Component - Displays a single job listing card
@@ -28,7 +29,7 @@ import type { Job } from "../../search_result/types";
  *   category="IT"
  *   employmentType="Full-Time"
  *   locationType="On Site"
- *   salary="$180,000/year"
+ *   salary={`${getCurrencyFromStorage()}180,000/year`}
  *   location="California, USA"
  * />
  */
@@ -92,7 +93,7 @@ const FeatureJobCard: React.FC<Job> = ({
 
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
-          {salary}
+          {getCurrencyFromStorage()}{salary}
         </span>
         <span className="text-gray-500 dark:text-gray-400 text-sm">
           {location}

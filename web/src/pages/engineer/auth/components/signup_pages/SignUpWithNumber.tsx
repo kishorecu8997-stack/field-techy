@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
+import { detectAndStoreCurrency, getCurrencyFromStorage, detectCurrencyFromPhone } from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -47,10 +48,24 @@ const SignUpWithNumber = ({
     },
   });
   const handleOTPVerified = () => {
+    const phoneNumber = method.getValues("phone");
+    console.log("=== SIGNUP OTP VERIFIED ===");
+    console.log("Raw phone number from form:", phoneNumber);
+    console.log("Phone number type:", typeof phoneNumber);
+    console.log("Phone number length:", phoneNumber?.length);
+
+    // Test the detection
+    const detectedCurrency = detectCurrencyFromPhone(phoneNumber);
+    console.log("Detected currency:", detectedCurrency);
+
+    detectAndStoreCurrency(phoneNumber);
+    const storedCurrency = getCurrencyFromStorage();
+    console.log("Currency stored in localStorage:", storedCurrency);
+
     setIsOpen(false);
     navigate(absoluteUrls.engineer.auth.profile_setup, {
       state: {
-        signupPhone: method.getValues("phone"),
+        signupPhone: phoneNumber,
         mobileVerified: true,
         disableMobile: true, // Lock mobile in ProfileSetup
         disableEmail: false, // Email should be editable in ProfileSetup
