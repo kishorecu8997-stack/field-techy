@@ -97,8 +97,10 @@ const WhyRecommendedPopover: React.FC<{
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
+        role="presentation"
+        aria-hidden="true"
       />
 
       {/* Popover Card */}
@@ -318,14 +320,10 @@ const JobCard: React.FC<{
             {job.poc && (
               <div className="flex items-center gap-3 ml-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                 <div>
-                  <p className="text-[9px] font-semibold text-gray-900 dark:text-white">
-                    {" "}
-                    {/* changed from text-sm to text-xs */}
+                  <p className="text-xs font-semibold text-gray-900 dark:text-white">
                     Point of Contact
                   </p>
-                  <p className="text-[9px] text-gray-700 dark:text-gray-300">
-                    {" "}
-                    {/* changed from text-sm to text-xs */}
+                  <p className="text-xs text-gray-700 dark:text-gray-300">
                     {job.poc.name}
                     {job.poc.role && (
                       <span className="text-gray-500"> • {job.poc.role}</span>
