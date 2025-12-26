@@ -21,7 +21,12 @@ const MyJobsPage = () => {
     "Completed",
     "Declined",
     "Cancelled",
+    "Remote",
+    "On-Site",
+    "Hybrid",
   ];
+
+
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -38,7 +43,7 @@ const MyJobsPage = () => {
           filters={jobFilters}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <JobList />
+          <JobList activeFilter={activeFilter} />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarProfile user={userData} earnings={earningsData} />

@@ -206,7 +206,7 @@ export const sampleJobs: Job[] = [
     budgetType: "fixed",
     skills: ["Python", "Java", "SQL", "AWS"],
     status: "inprogress",
-    type: "on-site",
+    type: "hybrid",
     startDate: "May 28, 2025, 10:00 AM",
     duration: "10 Hours of Work",
     pay: "500",
