@@ -1,10 +1,13 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
+import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -12,10 +15,6 @@ import { LuPhone } from "react-icons/lu";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import EngineerOTPPage from "../EngineerOTPPage";
-import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
-import IconWithTheme from "@/shared/components/IconWithTheme";
-import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
-import { usePopupStore } from "@/shared/store/popupStore";
 
 export interface SignUpFormData {
   email: string;

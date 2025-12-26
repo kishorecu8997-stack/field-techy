@@ -5,12 +5,11 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
 import type { EngineerDocuments } from "./types";
-import { useState } from "react";
 
 /**
  * Component for uploading engineer profile documents.
@@ -39,7 +38,7 @@ const BasicDocuments = () => {
     });
 
     // File Upload Mutation
-    const { mutateAsync: uploadFile } = useEngineerFileUpload();
+    // const { mutateAsync: uploadFile } = useEngineerFileUpload();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Helper to handle individual file uploads if needed, 
@@ -54,7 +53,7 @@ const BasicDocuments = () => {
     // Checking `FileUpload.tsx` (not visible here but assuming standard behavior from other tasks).
     // If `FileUpload` component is controlled, `data` in handleSubmit will contain the file values.
 
-    const handleSubmit = async (data: any) => {
+    const handleSubmit = async () => {
         // Determine which files need uploading if they are File objects
         // If they are strings (URLs), they are already uploaded.
 
