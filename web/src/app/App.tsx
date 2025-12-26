@@ -18,7 +18,7 @@ const App = () => {
   return(
     <>
       <OfflineBanner />
-     <RouterProvider router={routes} />;
+     <RouterProvider router={routes} /> 
      </>
   ) 
 };

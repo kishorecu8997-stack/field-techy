@@ -3,11 +3,10 @@ import type { OfflineAction } from "./types";
 import { updateJobStatus } from "@/api/fakeApi";
 
 /**
- * Updates job status with offline awareness.
- * If offline, queues the action instead of calling the API.
+ * Fallback implementation of updateJobStatus used when the original
+ * "@/api/fakeApi" module is not available.
+ * In a real application, this should call the backend API.
  */
-
-
 export async function offlineAwareUpdateJobStatus(jobId: string, status: string) {
   const isOffline = !navigator.onLine;
 

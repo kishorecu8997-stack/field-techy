@@ -20,7 +20,7 @@ export async function syncOfflineActions() {
     try {
       await handleAction(action);
     } catch (err) {
-      console.error(" Action sync failed, will retry later", err);
+      console.error("Action sync failed, will retry later", err);
       failedActions.push(action);
     }
   }
@@ -31,7 +31,7 @@ export async function syncOfflineActions() {
     clearQueue();
   }
 
-  console.log(" Offline sync completed");
+  console.log("Offline sync completed");
 }
 
 async function handleAction(action: OfflineAction) {
@@ -42,4 +42,3 @@ async function handleAction(action: OfflineAction) {
       throw new Error(`Unknown offline action type: ${action.type}`);
   }
 }
-  

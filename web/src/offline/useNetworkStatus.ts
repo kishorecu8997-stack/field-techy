@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 /**
- * Tracks whether the browser is online or offline.
+ * Tracks network status by combining browser signals and server reachability.
+ *
+ * ⚠️ navigator.onLine alone can report false positives.
+ * This hook ALWAYS verifies connectivity by pinging the provided URL.
  */
-
-export function useNetworkStatus(pingUrl?: string) {
+export function useNetworkStatus(pingUrl: string) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   async function checkConnection() {
@@ -13,15 +15,11 @@ export function useNetworkStatus(pingUrl?: string) {
       return;
     }
 
-    if (pingUrl) {
-      try {
-        await fetch(pingUrl, { method: "HEAD", cache: "no-store" });
-        setIsOffline(false);
-      } catch {
-        setIsOffline(true);
-      }
-    } else {
+    try {
+      await fetch(pingUrl, { method: "HEAD", cache: "no-store" });
       setIsOffline(false);
+    } catch {
+      setIsOffline(true);
     }
   }
 
@@ -38,7 +36,7 @@ export function useNetworkStatus(pingUrl?: string) {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [pingUrl]);
 
   return isOffline;
 }

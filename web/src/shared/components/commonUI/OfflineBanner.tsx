@@ -5,7 +5,6 @@ import { useNetworkStatus } from "@/offline/useNetworkStatus";
  */
 
 export default function OfflineBanner() {
-  
   const isOffline = useNetworkStatus("/health"); 
 
   if (!isOffline) return null;

@@ -16,8 +16,8 @@ export default defineConfig({
       },
       includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       manifest: {
-        name: "My App",
-        short_name: "App",
+        name: "Field Techy",
+        short_name: "Field Techy",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
