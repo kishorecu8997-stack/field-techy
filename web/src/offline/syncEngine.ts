@@ -1,13 +1,15 @@
-import { getQueue, clearQueue } from "./offlineQueue";
+import { addToQueue, getQueue, clearQueue } from "./offlineQueue";
 import type { OfflineAction } from "./types";
-import { updateJobStatus } from "@/api/fakeApi"; // Replace with your real API
+// import { updateJobStatus } from "@/api/fakeApi"; // Replace with your real API
 
 /**
  * Processes queued offline actions when the app comes online.
  */
 
 export async function syncOfflineActions() {
-  if (!navigator.onLine) return;
+  if (typeof window === "undefined") return
+  if (!window.navigator.onLine) return
+
 
   const queue = getQueue();
   if (!queue.length) return;
@@ -25,11 +27,9 @@ export async function syncOfflineActions() {
     }
   }
 
-  if (failedActions.length) {
-    localStorage.setItem("offline_actions_queue", JSON.stringify(failedActions));
-  } else {
-    clearQueue();
-  }
+clearQueue()
+failedActions.forEach((a) => addToQueue(a))
+
 
   console.log("Offline sync completed");
 }
@@ -37,8 +37,14 @@ export async function syncOfflineActions() {
 async function handleAction(action: OfflineAction) {
   switch (action.type) {
     case "UPDATE_JOB_STATUS":
-      return updateJobStatus(action.payload.jobId, action.payload.status);
+      console.log("Simulating API sync:", action.payload)
+
+      // simulate network delay
+      await new Promise((res) => setTimeout(res, 500))
+
+      return true
+
     default:
-      throw new Error(`Unknown offline action type: ${action.type}`);
+      throw new Error(`Unknown offline action type: ${action.type}`)
   }
 }

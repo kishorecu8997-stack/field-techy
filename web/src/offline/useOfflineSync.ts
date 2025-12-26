@@ -7,7 +7,7 @@ import { syncOfflineActions } from "./syncEngine";
  */
 
 export function useOfflineSync() {
-  const isOffline = useNetworkStatus();
+  const isOffline = useNetworkStatus("/health");
 
   useEffect(() => {
     if (!isOffline) {
