@@ -57,6 +57,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
       : "text-rose-600 dark:text-rose-400";
     const sign = isCredit ? "+" : "-";
 
+    
     return (
       <div
         key={tx.id}
