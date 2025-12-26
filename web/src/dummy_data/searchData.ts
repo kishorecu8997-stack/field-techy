@@ -26,6 +26,8 @@ export const sampleJobs: Job[] = [
     pay: "400",
     place: "featured",
     isBookmarked: true,
+    tools: ["VS Code", "Git", "Jira"],
+    slaLevel: "4-hour response",
   },
   {
     title: "Python Engineer",
@@ -51,6 +53,8 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "featured",
+    tools: ["PyCharm", "GitHub", "Docker"],
+    slaLevel: "6-hour response",
   },
   {
     title: "Project Manager",
@@ -76,6 +80,8 @@ export const sampleJobs: Job[] = [
     pay: "500",
     place: "featured",
     isBookmarked: true,
+    tools: ["Jira", "Confluence", "MS Project"],
+    slaLevel: "Thereafter response",
   },
   {
     id: 4,
@@ -99,6 +105,8 @@ export const sampleJobs: Job[] = [
     pay: "400",
     place: "recommended",
     isBookmarked: true,
+    tools: ["Figma", "Sketch", "Adobe Illustrator"],
+    slaLevel: "Next day response",
   },
   {
     id: 5,
@@ -121,6 +129,8 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    tools: ["Adobe Photoshop", "Illustrator", "After Effects"],
+    slaLevel: "6-hour response",
   },
   {
     id: 6,
@@ -144,6 +154,8 @@ export const sampleJobs: Job[] = [
     pay: "400",
     place: "recommended",
     isBookmarked: true,
+    tools: ["VS Code", "Figma", "Chrome DevTools"],
+    slaLevel: "4-hour response",
   },
   {
     id: 7,
@@ -166,6 +178,8 @@ export const sampleJobs: Job[] = [
     duration: "10 Hours of Work",
     pay: "500",
     place: "recommended",
+    tools: ["VS Code", "Git", "Jira"],
+    slaLevel: "Thereafter response",
   },
   {
     id: 8,
@@ -187,6 +201,8 @@ export const sampleJobs: Job[] = [
     duration: "10 Hours of Work",
     pay: "500",
     place: "recommended",
+    tools: ["PyCharm", "Jupyter Notebook", "AWS Console"],
+    slaLevel: "Next day response",
   },
   {
     id: 9,
@@ -208,6 +224,8 @@ export const sampleJobs: Job[] = [
     duration: "10 Hours of Work",
     pay: "500",
     place: "recommended",
+    tools: ["PyCharm", "Jupyter Notebook", "AWS Console"],
+    slaLevel: "6-hour response",
   },
   {
     id: 10,
@@ -230,5 +248,7 @@ export const sampleJobs: Job[] = [
     duration: "8 Hours of Work",
     pay: "400",
     place: "recommended",
+    tools: ["Figma", "Sketch", "Adobe Illustrator"],
+    slaLevel: "4-hour response",
   },
 ];

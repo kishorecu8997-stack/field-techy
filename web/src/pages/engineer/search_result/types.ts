@@ -32,18 +32,11 @@ export const LOG_STATUSES = {
 } as const;
 export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
 
-export const getExperienceLevel = (years?: number) => {
-  if (!years) return "";
-  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
-  if (years <= 3) return "L2"; // 2-3 years: Mid-level
-  return "L3"; // 4+ years: Senior/Expert-level
-};
-
 export const SLA_LEVELS = {
-  FOUR_HOUR: "4-hour",
-  SIX_HOUR: "6-hour",
-  NEXT_DAY: "Next day",
-  THEREAFTER: "Thereafter",
+  FOUR_HOUR: "4-hour response",
+  SIX_HOUR: "6-hour response",
+  NEXT_DAY: "Next day response",
+  THEREAFTER: "Thereafter response",
 } as const;
 export type SlaLevel = (typeof SLA_LEVELS)[keyof typeof SLA_LEVELS];
 
