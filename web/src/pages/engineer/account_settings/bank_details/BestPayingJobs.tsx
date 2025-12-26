@@ -3,6 +3,13 @@ import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
 
+
+interface JobEarning {
+  client: string;
+  totalEarnings: number;
+  transactionCount: number;
+}
+
 /**
  * Represents aggregated earning information for a job/client.
  *
@@ -11,13 +18,6 @@ import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
  * @property {number} totalEarnings - Total amount earned from this client.
  * @property {number} transactionCount - Number of transactions associated with this client.
  */
-
-interface JobEarning {
-  client: string;
-  totalEarnings: number;
-  transactionCount: number;
-}
-
 const BestPayingJobs: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const calculateTopJobs = (): JobEarning[] => {

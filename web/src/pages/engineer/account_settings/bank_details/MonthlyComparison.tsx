@@ -10,6 +10,14 @@ import {
   BiChevronUp,
 } from "react-icons/bi";
 
+/**
+ * MonthlyComparison Component
+ * Displays a summary and detailed comparison of the user's earnings for the current month versus the previous month.
+ * @component
+ * @example
+ * <MonthlyComparison />
+ * @returns {JSX.Element} The rendered MonthlyComparison component.
+ * */
 const MonthlyComparison: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const now = new Date();
