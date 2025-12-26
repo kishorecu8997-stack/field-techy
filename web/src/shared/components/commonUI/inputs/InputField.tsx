@@ -178,7 +178,7 @@ export const InputField = ({
                   try {
                     await trigger(name);
                   } catch (err) {
-                    // ignore
+                    console.log("Error:", err);
                   }
                 }}
                 onBlur={(e) => {
