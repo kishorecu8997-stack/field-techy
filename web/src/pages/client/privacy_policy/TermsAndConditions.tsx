@@ -1,6 +1,6 @@
-import { termsAndCondition } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
+import { clientTermsAndCondition } from "@/dummy_data/clientPolicyDatas";
 
 /**
  * Terms & Conditions page displaying static policy content from dummy data.
@@ -14,7 +14,7 @@ const TermsAndConditions = () => {
           onSortChange={() => {}}
           isShowSort={false}
         />
-        <ContentPage content={termsAndCondition} />
+        <ContentPage content={clientTermsAndCondition} />
       </div>
     </div>
   );

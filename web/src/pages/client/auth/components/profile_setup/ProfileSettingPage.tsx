@@ -1,17 +1,16 @@
 import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import SetPassword from "./SetPassword";
+import { FaAngleLeft } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import PaymentMethod from "./PaymentMethod";
 import ProfileSetup from "./ProfileSetup";
-import { FaAngleLeft } from "react-icons/fa";
-import AllowAccessPopup from "../AccessPopup";
-import { useNavigate, useParams } from "react-router-dom";
-import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
 import type { CompleteRegistrationData } from "./types";
-import { absoluteUrls } from "@/config/urls";
+import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 
 /**
  * A multi-step registration form component that guides users through
@@ -195,14 +194,13 @@ const CorporateMultiStepRegistration = () => {
       >
         {currentStep > 1 && (
           <div className="flexed absolute top-6 left-6 md:left-[20rem] lg:left-[40rem] z-10">
-            <button
-              type="button"
+            <div
               onClick={goToPreviousStep}
               className="p-2 rounded-full cursor-pointer hover:bg-teal-700 text-gray-700 hover:text-white bg-white shadow-md transition-colors"
               aria-label="Go back"
             >
               <FaAngleLeft className="text-xl" />
-            </button>
+            </div>
           </div>
         )}
 
@@ -236,7 +234,9 @@ const CorporateMultiStepRegistration = () => {
             </Button>
           </div>
         </div>
-      </FormContainer>      
+      </FormContainer>  
+      {/* Allow access popup */}
+      <AllowAccessPopup accessPopup={accessPopup} setAccessPopup={setAccessPopup} />    
     </>
   );
 };

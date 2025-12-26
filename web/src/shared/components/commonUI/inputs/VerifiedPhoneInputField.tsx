@@ -35,6 +35,7 @@ import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
  * @param {boolean} [props.verified] - A boolean to control the verified state from a parent component.
  * @param {(isVerified: boolean) => void} [props.setVerified] - A function to update the verified state in the parent.
  */
+
 export const VerifiedPhoneInputField = ({
   name,
   label = "Mobile Number",
@@ -69,7 +70,6 @@ export const VerifiedPhoneInputField = ({
     }
   }, [name, getValues, setValue]);
 
-  // ✅ Full validation (used by RHF)
   const validatePhone = (fullValue: string): true | string => {
     if (!fullValue?.trim()) {
       return required ? `${label} is required` : true;
@@ -112,10 +112,8 @@ export const VerifiedPhoneInputField = ({
     return true;
   };
 
-  // ✅ Simplified check for "Verify" button by reusing the main validator.
   const canVerify = !verified && validatePhone(phoneValue) === true;
 
-  // ✅ Unified validation with verification enforcement
   const validationRules: RegisterOptions = {
     validate: (value: string) => {
       if (required && (!value || !value.trim())) {
@@ -152,7 +150,7 @@ export const VerifiedPhoneInputField = ({
     <div className="w-full">
       <div className="flex flex-col py-1">
         {isShowLabel && (
-          <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
+          <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
             {label} {required && <span className="text-red-600">*</span>}
           </label>
         )}
@@ -164,6 +162,9 @@ export const VerifiedPhoneInputField = ({
           render={({ field, fieldState: { error } }) => {
             const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (field.value || "").split(" ");
             const numberValue = rest.join(" ");
+
+            const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
+            const maxDigits = selectedCountry?.validationKey === "india" || selectedCountry?.validationKey === "uk" ? 10 : undefined;
 
             return (
               <>
@@ -191,9 +192,12 @@ export const VerifiedPhoneInputField = ({
                           disabled={isInputDisabled}
                           onChange={(e) => {
                             const inputVal = e.target.value;
+
                             if (/^\d*$/.test(inputVal)) {
-                              field.onChange(`${countryCode} ${inputVal}`);
-                              if (verified) setVerified(false);
+                              if (!maxDigits || inputVal.length <= maxDigits) {
+                                field.onChange(`${countryCode} ${inputVal}`);
+                                if (verified) setVerified(false);
+                              }
                             }
                           }}
                           onBlur={() => {
@@ -245,8 +249,7 @@ export const VerifiedPhoneInputField = ({
           onVerifySuccess={() => {
             setVerified(true);
             onVerifySuccess?.();
-            // ✅ CRITICAL: Re-validate to clear "Please verify..." error
-            setValue("mobileOTP", ""); // Clear the OTP field
+            setValue("mobileOTP", "");
             trigger(name);
             setShowOTP(false);
           }}

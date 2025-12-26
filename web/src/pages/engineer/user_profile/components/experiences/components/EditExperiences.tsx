@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange } from "../../../Validate";
-import type { ExperiencesFormData } from "./types";
+import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { validateCompany, validateDateRange } from "../../../Validate";
 import {
   designationOptions,
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-import { toast } from "react-toastify";
-import { experienceData } from "@/dummy_data";
-import {experianceEdit} from "@/dummy_data/engineer_profile/work-experience";
-
+import type { ExperiencesFormData } from "./types";
 
 /**
  * The EditExperiences component renders a form to modify an existing work experience.
@@ -25,31 +25,52 @@ import {experianceEdit} from "@/dummy_data/engineer_profile/work-experience";
  * @returns {React.ReactElement} The rendered EditExperiences form component.
  */
 const EditExperiences = () => {
-  const handleSubmit = (data: ExperiencesFormData) => {
-    toast.success("Experience Updated Successfully");
-    console.log("Form submitted with updated data:", data);
-    // TODO: integrate submission logic here (e.g., API call)
-    // Example: await api.experiences.update(experienceData.id, data);
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const handleSubmit = async (data: ExperiencesFormData) => {
+    await showPopup({
+      title: "Update Experience",
+      body: "Are you sure you want to update this experience?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Experience Updated Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("experiences");
+          },
+        },
+      ],
+    });
   };
 
   const getExperienceById = () => {
-  const id = localStorage.getItem("editExperiencesId");
-  console.log(id)
-  const experienceId = id ;
-  const found = experianceEdit.find(
-    (exp) => exp.id === experienceId
-  );
-  
+    const id = localStorage.getItem("editExperiencesId");
+    console.log(id);
+    const experienceId = id;
+    const found = experianceEdit.find((exp) => exp.id === experienceId);
 
-  if (!found) return undefined;
+    if (!found) return undefined;
 
-  // Convert string dates to Date objects (handle empty/undefined endDate)
-  return {
-    ...found,
-    startDate: found.startDate ? new Date(found.startDate) : undefined,
-    endDate: found.endDate ? new Date(found.endDate) : undefined,
+    // Convert string dates to Date objects (handle empty/undefined endDate)
+    return {
+      ...found,
+      startDate: found.startDate ? new Date(found.startDate) : undefined,
+      endDate: found.endDate ? new Date(found.endDate) : undefined,
+    };
   };
-};
 
   const methods = useForm<ExperiencesFormData>({
     defaultValues: getExperienceById(),
@@ -126,6 +147,7 @@ const EditExperiences = () => {
           isShowLabel={false}
           placeholder="End date (optional)"
           minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+          maxDate={new Date()}
           rules={{ onChange: () => methods.trigger("startDate") }}
         />
       </div>

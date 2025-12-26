@@ -10,6 +10,7 @@ import type { ProfileFormData } from "./types";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -22,7 +23,7 @@ import { absoluteUrls } from "@/config/urls";
  * @returns {JSX.Element} The rendered personal details form.
  */
 export default function PersonalDetails() {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const methods = useForm<ProfileFormData>({
     defaultValues: {
       name: "Kevin Smith",
@@ -31,9 +32,31 @@ export default function PersonalDetails() {
       profileImage: null,
     },
   });
-  const handleSubmit = () => {
-    toast.success("Profile Updated Successfully!");
-    navigate(absoluteUrls.admin.home.dashbaord)
+
+  const { showPopup } = usePopupStore();
+
+  const handleSubmit = async () => {
+    await showPopup({
+      title: "Profile Update",
+      body: "Are you sure you want to update this profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Profile Updated Successfully!");
+            close(true);
+            navigate(absoluteUrls.admin.home.dashboard);
+          },
+        },
+      ],
+    });
   };
 
   return (
@@ -41,9 +64,9 @@ export default function PersonalDetails() {
       <FormContainer
         methods={methods}
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mt-6 px-2 pb-4 w-full"
+        className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
-        <div className="mb-6 mt-2 w-fit">
+        <div className="mb-4 w-fit">
           <ImageUploaderField label="Profile Image" name="profileImage" />
         </div>
         <div className="flex gap-4 w-full">
@@ -54,6 +77,7 @@ export default function PersonalDetails() {
               type="text"
               placeholder="Enter Name"
               required
+              inputMode="string" 
               rules={{ validate: (v: string) => validateName(v) }}
             />
           </div>

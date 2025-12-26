@@ -16,6 +16,9 @@ export interface NotificationProps {
     | "invitation"
     | "revision"
     | "payment_released"
+    | "proposal_received"
+    | "application_viewed"
+    | "view"
     | "withdrawal";
   title: string;
   message: string;
@@ -25,7 +28,7 @@ export interface NotificationProps {
   payment?: string;
   duration?: string;
   timestamp: string; // e.g., "1h", "2d"
-  icon: string; // emoji or icon identifier
+  icon?: string; // emoji or icon identifier
 }
 
 export interface GroupedNotifications {

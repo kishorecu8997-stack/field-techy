@@ -5,6 +5,8 @@ import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectFie
 import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Defines the shape of the form data for editing tools.
@@ -15,11 +17,7 @@ export type EditToolsFormData = {
   tools: string[];
 };
 
-/**
- * Props for the EditTools component.
- */
 interface EditToolsProps {
-  /** An array of the user's current tool IDs to pre-populate the form. */
   currentTools?: string[];
 }
 
@@ -30,6 +28,9 @@ interface EditToolsProps {
  * @returns {React.ReactElement} The rendered EditTools form component.
  */
 const EditTools: React.FC<EditToolsProps> = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
   const initialToolIds = useMemo(() => {
     const storedIds = localStorage.getItem("editToolsId");
     if (storedIds) {
@@ -45,10 +46,33 @@ const EditTools: React.FC<EditToolsProps> = () => {
     return [];
   }, []);
 
-  const onSubmit = (data: EditToolsFormData) => {
-    console.log("Form submitted with updated data:", data);
-    toast.success("Tools Updated Successfully");
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const onSubmit = async (data: EditToolsFormData) => {
+    await showPopup({
+      title: "Update Tools",
+      body: "Are you sure you want to update these tools?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Tools Updated Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
   };
 
   const methods = useForm<EditToolsFormData>({

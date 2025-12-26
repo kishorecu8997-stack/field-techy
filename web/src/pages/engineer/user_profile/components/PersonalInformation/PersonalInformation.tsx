@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -16,6 +16,8 @@ import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/Verifie
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 import { toast } from "react-toastify";
 import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -23,9 +25,11 @@ import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const PersonalInformation: React.FC = () => {
+const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
 
   /**
    * Handles the form submission.
@@ -33,15 +37,35 @@ const PersonalInformation: React.FC = () => {
    * involve making an API call to save the user's data.
    * @param {EditProfileFormData} data - The validated form data.
    */
-  const handleSubmit = (data: EditProfileFormData) => {
-    console.log("Form submitted with data:", data);
-    toast.success("Profile Updated Successfully");
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const handleSubmit = async (data: EditProfileFormData) => {
+    await showPopup({
+      title: "Update Profile",
+      body: "Are you sure you want to update your profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Profile Updated Successfully");
+            console.log("Form submitted with data:", data);
+            close(true);
+            setActiveKey("profile");
+          },
+        },
+      ],
+    });
   };
 
-  /**
-   * Initializes `react-hook-form` with default values for the personal information form.
-   */
   const methods = useForm<PersonalInfo>({
     defaultValues: {
       fullName: loginData[0].fullName,
@@ -54,14 +78,12 @@ const PersonalInformation: React.FC = () => {
 
   const { trigger } = methods;
 
-  // When the phone number is verified, trigger validation to clear any "must be verified" error.
   useEffect(() => {
     if (isPhoneVerified) {
       trigger("phoneNumber");
     }
   }, [isPhoneVerified, trigger]);
 
-  // When the email is verified, trigger validation to clear any "must be verified" error.
   useEffect(() => {
     if (isEmailVerified) {
       trigger("emailId");
@@ -83,8 +105,9 @@ const PersonalInformation: React.FC = () => {
           placeholder="Full Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          alphabetOnly   
+          inputMode="string"
           rules={{ validate: (v: string) => validateName(v) }}
+          inputMode="string"
         />
 
         <VerifiedPhoneInputField

@@ -1,35 +1,40 @@
-import type { ChatUser } from "../types";
-import { MessageList } from "./MessageList";
+import React from "react";
+import type { ChatMode, Conversation } from "../types";
+import { ConversationList } from "./ConversationList";
 
-interface Props {
-  users: ChatUser[];
-  selectedUserId: number | null;
-  onSelectUser: (user: ChatUser) => void;
+interface SidebarProps {
+  mode: ChatMode;
+  conversations: Conversation[];
+  selectedConversationId: string | null;
+  onSelectConversation: (id: string) => void;
 }
 
-/**
- * The sidebar for the chat page.
- * @param users - The list of users to display in the sidebar.
- * @param selectedUserId - The ID of the selected user.
- * @param onSelectUser - The function to handle user selection.
- * @returns The chat sidebar.  
+/*
+ * ChatSidebar
+ *
+ * A component that displays a sidebar with a list of conversations.
+ *
+ * @param {ChatMode} mode - The current chat mode.
+ * @param {Conversation[]} conversations - The list of conversations.
+ * @param {string | null} selectedConversationId - The ID of the selected conversation.
+ * @param {(id: string) => void} onSelectConversation - A callback function to handle conversation selection.
+ * @returns {JSX.Element} The rendered chat sidebar component.
+ * @constructor
  */
-export const ChatSidebar = ({ users, selectedUserId, onSelectUser }: Props) => {
+export const ChatSidebar: React.FC<SidebarProps> = ({
+  mode,
+  conversations,
+  selectedConversationId,
+  onSelectConversation,
+}) => {
   return (
-    <aside className="w-80 border-r bg-white flex flex-col">
-      <div className="p-4 border-b">
-        <input
-          type="text"
-          placeholder="Search Jobs.."
-          className="w-full rounded-xl border px-3 py-2 text-sm"
-        />
-      </div>
-
-      <MessageList
-        users={users}
-        selectedUserId={selectedUserId}
-        onSelectUser={onSelectUser}
+    <div className="flex-1 overflow-y-auto">
+      <ConversationList
+        mode={mode}
+        conversations={conversations}
+        selectedConversationId={selectedConversationId}
+        onSelectConversation={onSelectConversation}
       />
-    </aside>
+    </div>
   );
 };

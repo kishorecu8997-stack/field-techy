@@ -1,0 +1,173 @@
+
+import user from '../assets/user.png';
+import type { Chat, Message } from "@/pages/client/type";
+
+// Mock data for personal chats
+export const personalChats: Chat[] = [
+  {
+    id: 1,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 4,
+    status: "Online",
+  },
+  {
+    id: 2,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 3,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 4,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 5,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 6,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 7,
+    name: "Jack Promp",
+    avatar: user,
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+];
+
+// Mock data for group chats
+export const groupChats: Chat[] = [
+  {
+    id: 1,
+    name: "Daily Report",
+    avatar: "DR",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 2,
+    name: "Office 450",
+    avatar: "OF",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 3,
+    name: "Employees Task",
+    avatar: "ET",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 4,
+    status: "Online",
+  },
+  {
+    id: 4,
+    name: "Daily Report",
+    avatar: "DR",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 5,
+    name: "Office 450",
+    avatar: "OF",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 6,
+    name: "Daily Report",
+    avatar: "DR",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+  {
+    id: 7,
+    name: "Office 450",
+    avatar: "OF",
+    lastMessage: "Okay, it's all noted.",
+    time: "Yesterday",
+    unreadCount: 0,
+    status: "Online",
+  },
+];
+
+// Mock messages for selected chat
+export const messages: Message[] = [
+  {
+    id: 1,
+    sender: "Jack Promp",
+    text: "Hey marcel, The job submission deadline on our platform is approaching fast.",
+    timestamp: "15:42",
+    read: true,
+    isMine: false,
+  },
+  {
+    id: 2,
+    sender: "You",
+    text: "Oh I'm sorry, may I see the bill Receipt?",
+    timestamp: "16:28",
+    read: true,
+    isMine: true,
+  },
+  {
+    id: 3,
+    sender: "Jack Promp",
+    text: "Your payment for the job listing has been processed.",
+    timestamp: "16:56",
+    read: true,
+    isMine: false,
+  },
+  {
+    id: 4,
+    sender: "You",
+    text: "Ok I'll pay for it now.",
+    timestamp: "16:28",
+    read: true,
+    isMine: true,
+  },
+];

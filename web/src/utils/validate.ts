@@ -1,9 +1,9 @@
-import xss from "xss";
-import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
 import type {
   PricingField,
   PricingRelations,
 } from "@/pages/admin/rate_card/types";
+import type { SelectOption } from "@/shared/components/commonUI/inputs/types";
+import xss from "xss";
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -472,59 +472,59 @@ const luhnCheck = (cardNumber: string) => {
     sum += n;
     alternate = !alternate; // Toggle alternate flag
   }
-  
+
   return sum % 10 === 0; // Valid if sum is a multiple of 10
 };
 
 export const expiryDateValidation = (value: string) => {
-    const raw = value?.trim() || "";
-  
-    if (!raw) {
-        return "Expiry date is required.";
-    }
+  const raw = value?.trim() || "";
 
-    if (/^\s|\s$/.test(raw)) {
-        return "Expiry date must not start or end with a space.";
-    }
+  if (!raw) {
+    return "Expiry date is required.";
+  }
 
-    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
-        return "Invalid date format. Use MM/YY.";
-    }
+  if (/^\s|\s$/.test(raw)) {
+    return "Expiry date must not start or end with a space.";
+  }
 
-    const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
-    if (!match) {
-        return "Invalid date format.";
-    }
+  if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(raw)) {
+    return "Invalid date format. Use MM/YY.";
+  }
 
-    const [, monthStr, yearStr] = match;
-    const expiryMonth = parseInt(monthStr, 10);
-    const currentYear = new Date().getFullYear();
-    const twoDigitYear = parseInt(yearStr, 10);
-  
-    // Determine full year based on the current year
-    const expiryYear = currentYear - (currentYear % 100) + twoDigitYear;
+  const match = raw.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/);
+  if (!match) {
+    return "Invalid date format.";
+  }
 
-    const now = new Date();
-    const maxExpiryYear = currentYear + 5; // Maximum expiry year set to 5 years from now
+  const [, monthStr, yearStr] = match;
+  const expiryMonth = parseInt(monthStr, 10);
+  const currentYear = new Date().getFullYear();
+  const twoDigitYear = parseInt(yearStr, 10);
 
-    // Check if the expiry year exceeds the max allowed
-    if (expiryYear > maxExpiryYear) {
-        return `Expiry date cannot be more than 5 years from the current year (${maxExpiryYear}).`;
-    }
+  // Determine full year based on the current year
+  const expiryYear = currentYear - (currentYear % 100) + twoDigitYear;
 
-    // Set to the first day of the expiry month for comparison
-    const expiryDate = new Date(expiryYear, expiryMonth - 1, 1);
+  const now = new Date();
+  const maxExpiryYear = currentYear + 5; // Maximum expiry year set to 5 years from now
 
-    // Check if the expiry date is valid
-    if (expiryDate > now || (expiryYear === currentYear && expiryMonth >= (now.getMonth() + 1))) {
-        return true; // Validation successful
-    }
+  // Check if the expiry year exceeds the max allowed
+  if (expiryYear > maxExpiryYear) {
+    return `Expiry date cannot be more than 5 years from the current year (${maxExpiryYear}).`;
+  }
 
-    return "Card has expired.";
+  // Set to the first day of the expiry month for comparison
+  const expiryDate = new Date(expiryYear, expiryMonth - 1, 1);
+
+  // Check if the expiry date is valid
+  if (
+    expiryDate > now ||
+    (expiryYear === currentYear && expiryMonth >= now.getMonth() + 1)
+  ) {
+    return true; // Validation successful
+  }
+
+  return "Card has expired.";
 };
-
-
-
 
 export const cvvValidation = (value: string) => {
   const raw = value || "";
@@ -688,9 +688,14 @@ export const validatePricingModel = (
   // RELATIONAL VALIDATION (IMPROVED TEXT)
   // -----------------------------------
   switch (field) {
-    case "hourly":
-      return "";
-
+    // case "hourly":
+    //   return "";
+    case "hourly": {
+      // if (num == null || num === 0) {
+      //   return "Hourly rate is required and must be at least 1";
+      // }
+      return true;
+    }
     case "halfDay": {
       if (hourly == null) return "Please enter hourly rate first";
       const min = hourly * 4;
@@ -881,8 +886,8 @@ export const validateAlphabeticTextArea = (
     return "Consecutive spaces are not allowed";
   }
 
-  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
-  const defaultPattern = /^[a-zA-Z0-9 /().,#-]+$/;
+  // Allowed characters: letters, spaces, numbers and special characters such as / ( ) , . ' #
+  const defaultPattern = /^[a-zA-Z0-9 /().,'#-]+$/;
   const pattern =
     options?.regex instanceof RegExp ? options.regex : defaultPattern;
 
@@ -941,6 +946,219 @@ export const validateCheckboxGroup = (
   return true;
 };
 
+export const validateProjectName = (value: string, fieldName: string) => {
+  const raw = value || "";
+
+  if (raw !== raw.trim()) {
+    return `${fieldName} must not have leading or trailing spaces`;
+  }
+
+  if (/ {2,}/.test(raw)) {
+    return `${fieldName} must not contain consecutive spaces`;
+  }
+
+  if (!/^[A-Za-z0-9#@_. -]+$/i.test(raw)) {
+    return `${fieldName} can only contain letters, numbers, and the following symbols: # @ _ - . or space`;
+  }
+
+  if (raw.length < 2) {
+    return `${fieldName} must be at least 2 characters`;
+  }
+
+  if (raw.length > 50) {
+    return `${fieldName} must not exceed 50 characters`;
+  }
+
+  return true;
+};
+
+export const validateDescription = (value: string) => {
+  //Reject if has leading or trailing spaces
+  if (value !== value.trim()) {
+    return "Description must not have leading or trailing spaces";
+  }
+
+  const v = value.trim(); // now v === value, but kept for clarity
+
+  //Reject consecutive spaces
+  if (/ {2,}/.test(v)) {
+    return "Description must not contain consecutive spaces";
+  }
+
+  //Length check
+  if (v.length < 10) {
+    return "Description must be at least 10 characters";
+  }
+  if (v.length > 500) {
+    return "Description must not exceed 500 characters";
+  }
+
+  //Character whitelist: alphanumerics, space, and / , . - # ( )
+  if (!/^[A-Za-z0-9\s/,.\-#()]+$/u.test(v)) {
+    return "Description may only contain letters, numbers, spaces, and / , . - # ( )";
+  }
+
+  return true;
+};
+
+export const validateBudget = (value: string) => {
+  const raw = value || "";
+
+  if (!raw.trim()) return "Budget is required";
+
+  // Only numbers + comma allowed
+  if (!/^[0-9,]+$/.test(raw)) {
+    return "Budget can contain only numbers and commas";
+  }
+
+  // No leading or trailing comma
+  if (raw.startsWith(",") || raw.endsWith(",")) {
+    return "Budget must not start or end with a comma";
+  }
+
+  // No consecutive commas
+  if (raw.includes(",,")) {
+    return "Budget cannot contain consecutive commas";
+  }
+
+  // Remove commas
+  const digitsOnly = raw.replace(/,/g, "");
+
+  // Must be only digits
+  if (!/^\d+$/.test(digitsOnly)) {
+    return "Invalid budget format";
+  }
+
+  // Convert to number
+  const num = Number(digitsOnly);
+
+  // Must be > 0
+  if (num <= 0) {
+    return "Budget must be greater than 0";
+  }
+
+  return true;
+};
+
+export const validatePurchaseOrderNumber = (value: string) => {
+  const raw = value || "";
+
+  if (!raw.trim()) return "Purchase Order Number is required";
+
+  // Leading/trailing spaces
+  if (raw !== raw.trim()) return "Must not have leading or trailing spaces";
+
+  // Consecutive spaces
+  if (raw.includes("  ")) return "Must not contain consecutive spaces";
+
+  // Only letters + numbers
+  if (!/^[A-Za-z0-9]+$/.test(raw))
+    return "Only letters and numbers are allowed";
+
+  // Length 2–6
+  if (raw.length < 2) return "Must be at least 2 characters";
+  if (raw.length > 6) return "Must not exceed 6 characters";
+
+  return true;
+};
+
+export const validateSiteId = (value: string) => {
+  const raw = value || "";
+
+  // Required
+  if (!raw.trim()) {
+    return "Site ID is required";
+  }
+
+  // No spaces allowed (leading, trailing, or internal)
+  if (raw !== raw.trim() || raw.includes(" ")) {
+    return "Must not contain spaces";
+  }
+
+  // Only alphanumeric characters
+  if (!/^[A-Za-z0-9]+$/.test(raw)) {
+    return "Only letters and numbers are allowed";
+  }
+
+  // Length: 2 to 6
+  if (raw.length < 2) {
+    return "Must be at least 2 characters";
+  }
+  if (raw.length > 20) {
+    return "Must not exceed 20 characters";
+  }
+
+  // Must contain at least one digit (letters are optional)
+  if (!/[0-9]/.test(raw)) {
+    return "Must contain at least one number";
+  }
+
+  return true;
+};
+
+export const validateSiteName = (value: string) => {
+  const raw = value || "";
+
+  // 1. Basic length check (on full string, but we'll validate content more strictly below)
+  if (raw.length < 2) {
+    return "Site name must be at least 2 characters long";
+  }
+  if (raw.length > 200) {
+    return "Site name must not exceed 200 characters";
+  }
+
+  // 2. No leading or trailing spaces
+  if (raw !== raw.trim()) {
+    return "Must not have leading or trailing spaces";
+  }
+
+  // 3. No consecutive spaces
+  if (raw.includes("  ")) {
+    return "Must not contain consecutive spaces";
+  }
+
+  // 4. Only allowed characters: letters, digits, space, and specific symbols
+  const allowedPattern = /^[A-Za-z0-9\s\-_,.#@&()/:;–—]+$/;
+  if (!allowedPattern.test(raw)) {
+    return "Only letters, numbers, single spaces, and these symbols are allowed: - _ , . # @ & ( ) / : ;";
+  }
+
+  // 5. Additional safety: ensure after all checks, effective content is still ≥10 chars
+  // (e.g., if someone tries "a    b" with many spaces but few real chars)
+  const effectiveLength = raw.trim().length;
+  if (effectiveLength < 2) {
+    return "Site name must contain at least 2 valid characters (excluding extra spaces)";
+  }
+
+  return true;
+};
+
+export const validateGroupName = (value: string) => {
+  const raw = value || "";
+
+  if (raw.length < 3) {
+    return "Group name must be at least 3 characters long";
+  }
+  if (raw.length > 100) {
+    return "Group name must not exceed 100 characters";
+  }
+
+  if (raw !== raw.trim()) {
+    return "Group name must not have leading or trailing spaces";
+  }
+
+  if (raw.includes("  ")) {
+    return "Group name must not contain consecutive spaces";
+  }
+
+  const allowedPattern = /^[A-Za-z0-9\s#.&_\-()/:;]+$/;
+  if (!allowedPattern.test(raw)) {
+    return "Group name can only contain letters, numbers, spaces, and these symbols: # . & _ - ( ) / : ;";
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -971,4 +1189,10 @@ export default {
   validateNotificationMessage,
   validateCategoryName,
   validateCheckboxGroup,
+  validateProjectName,
+  validateDescription,
+  validateBudget,
+  validatePurchaseOrderNumber,
+  validateSiteId,
+  validateSiteName,
 };

@@ -1,21 +1,5 @@
-export interface DetailsTypes {
-  name: string;
-  phone: string;
-  email: string;
-}
-export interface ManageEngineerProps {
-  id: number;
-  engineerID: string;
-  details: DetailsTypes;
-  documents: string;
-  location: string;
-  registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  employementStatus: string;
-  avgRating: number;
-  approvalStatus: string;
-}
+import { icons } from "@/config/icons";
+import type { ManageEngineerProps } from "@/pages/admin/engineer/types";
 
 export const manageEngineer: ManageEngineerProps[] = [
   {
@@ -461,6 +445,22 @@ export const Employement = [
 ];
 
 export const JobStatus = [
-  { value: "approve", label: "Approve" },
-  { value: "reject", label: "Reject" },
+  {
+    value: "approve",
+    label: "Approve",
+    bg: "bg-green-100 text-green-700",
+    icon: icons.check,
+  },
+  {
+    value: "pending",
+    label: "Pending",
+    bg: "bg-yellow-100 text-yellow-700",
+    icon: icons.pending,
+  },
+  {
+    value: "reject",
+    label: "Reject",
+    bg: "bg-red-100 text-red-700",
+    icon: icons.close,
+  },
 ];

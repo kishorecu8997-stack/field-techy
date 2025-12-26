@@ -1,13 +1,19 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange } from "../../../Validate";
+import { validateCompany, validateDateRange,validateEndDate } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { designationOptions, employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import {
+  designationOptions,
+  employmentTypeOptions,
+  workLocationTypeOptions,
+} from "./constants";
 import { toast } from "react-toastify";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -16,17 +22,35 @@ import { toast } from "react-toastify";
  * @returns {React.ReactElement} The rendered AddExperiences form component.
  */
 const AddExperiences = () => {
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the experience data.
-   * @param {AddExperiencesFormData} data - The validated form data.
-   */
-  const handleSubmit = (data: ExperiencesFormData) => {
-    toast.success("Experience Added Successfully");
-    console.log("Form submitted with data:", data);
-    // TODO: integrate submission logic here (e.g., API call)
-    // Example: await api.experiences.create(data);
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
+
+  const handleSubmit = async (data: ExperiencesFormData) => {
+    await showPopup({
+      title: "Add Experience",
+      body: "Are you sure you want to add this experience?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Experience Added Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("experiences");
+          },
+        },
+      ],
+    });
   };
 
   /**
@@ -39,7 +63,7 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
     },
     mode: "onSubmit",
@@ -59,7 +83,7 @@ const AddExperiences = () => {
           placeholder="Designation"
           options={designationOptions.map((e) => ({
             value: e.id,
-            label: e.title
+            label: e.title,
           }))}
           required
         />
@@ -93,7 +117,7 @@ const AddExperiences = () => {
           name="startDate"
           label="Start Date"
           isShowLabel={false}
-          placeholder="Start date"
+          placeholder="DD/MM/YYYY"
           required
           maxDate={new Date()}
           rules={{
@@ -101,14 +125,20 @@ const AddExperiences = () => {
               validateDateRange(value, methods.getValues("endDate")),
           }}
         />
+        
         <DatePickerInput
           name="endDate"
           label="End Date"
           isShowLabel={false}
-          placeholder="End date (optional)"
+          placeholder="DD/MM/YYYY"
           minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-          rules={{ onChange: () => methods.trigger("startDate") }}
-        />
+          maxDate={new Date()}
+          rules={{
+            onChange: () => methods.trigger("startDate"),
+            validate: validateEndDate,
+          }}
+/>
+
       </div>
 
       {/* Fixed bottom button */}

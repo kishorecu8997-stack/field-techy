@@ -1,8 +1,10 @@
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 /**
@@ -21,18 +23,43 @@ export type AddSkillsFormData = {
  * @returns {React.ReactElement} The rendered AddSkills form component.
  */
 const AddSkills = () => {
+  const { showPopup } = usePopupStore();
+  const { setActiveKey } = useDrawerStore();
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
     },
   });
 
-  const onSubmit = (data: AddSkillsFormData) => {
-    toast.success("Skills Saved Successfully");  
-    console.log("Form data:", data);
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const onSubmit = async (data: AddSkillsFormData) => {
+    await showPopup({
+      title: "Add Skills",
+      body: "Are you sure you want to add these skills?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, add",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Skills Added Successfully");
+            console.log(data);
+            close(true);
+            setActiveKey("skillsAndTools");
+          },
+        },
+      ],
+    });
   };
-  
+
   const skillOptions = skillsData.map((skill) => ({
     label: skill.label,
     value: skill.id.toString(),
