@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { icons } from "@/config/icons";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import { TbCopy } from "react-icons/tb";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+
 /**
  * Custom hook for managing localStorage with error handling.
  * @param key - The localStorage key.
@@ -20,6 +24,14 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
   const mobileVerified = true; // Replace with actual check
   const isVerified = emailVerified && mobileVerified;
   const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
+  const [codeBackupEnabled, setCodeBackupEnabled] = useState<boolean>(false);
+  const [totpEnabled, settotpEnabled] = useState<boolean>(false);
+  const [codes, setCodes] = useState<string[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem("backup_codes", JSON.stringify(codes));
+  }, [codes]);
+
   const menuItems: MenuItem[] = [
     {
       id: "two_factor_auth",
@@ -31,9 +43,38 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
       disabled: !isVerified,
     },
   ];
+
+  const subMenuItem: MenuItem[] = [
+    {
+      id: "2fa_enable_totp",
+      label: "Enable TOTP",
+      icon: icons.TOTP,
+      isToggle: true,
+      toggleValue: totpEnabled,
+      onToggleChange: settotpEnabled,
+    },
+    {
+      id: "2fa_code_backup",
+      label: "Code Backup",
+      icon: icons.codebackup,
+      onClick() {
+        setCodeBackupEnabled(!codeBackupEnabled);
+      },
+    },
+  ];
+
+  function generateBackupCodes() {
+    const backupCodes: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      backupCodes.push(code);
+    }
+    setCodes(backupCodes);
+  }
+
   return (
     <div>
-      {!isVerified && (
+      {!twoFactorEnabled && (
         <div className="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg">
           <p className="text-sm">
             To enable Two-Factor Authentication, please verify your email and
@@ -46,6 +87,35 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
         </div>
       )}
       <DrawerMenuSection items={menuItems} ariaLabel="Security Settings" />
+      {twoFactorEnabled && (
+        <DrawerMenuSection className="my-4" items={subMenuItem} />
+      )}
+      {codeBackupEnabled && (
+        <div className="w-full bg-neutral-primary-soft border rounded-xl border-gray-200 shadow-sm rounded-base">
+          <ul
+            role="list"
+            className={`${
+              codes.length > 0 ? "block" : "hidden"
+            } space-y-3 p-6 divide-y divide-gray-200`}
+          >
+            {codes.map((code) => (
+              <li className="flex items-center justify-between pb-3 text-gray-700">
+                <div className="flex items-center font-medium">
+                  <span>{code}</span>
+                </div>
+
+                <TbCopy
+                  onClick={() => toast.success("Copied Successfully")}
+                  className="text-xl cursor-pointer"
+                />
+              </li>
+            ))}
+          </ul>
+          <div className="flex justify-end px-2 py-2">
+            <Button onClick={generateBackupCodes}>Generate</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
