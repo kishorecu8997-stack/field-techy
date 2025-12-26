@@ -13,9 +13,14 @@ import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import logo_light from "@/assets/logo/logo_light.svg";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { useRequestVerificationOtpMutation } from "@/shared/apiServices/auth/engineer/engineerAuthService";
 
 export type LoginFormData = {
   phone: string;
+  otp: string;
+  email: string;
 };
 
 /**
@@ -40,11 +45,29 @@ const LoginWithNumber = ({
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
+      otp: "",
+      email: "",
     },
   });
+  const otpfor = method.watch("otp");
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const verifyRequestOTP = useRequestVerificationOtpMutation();
+
+  const handleSubmit = async (data: LoginFormData) => {
+    const value = data.phone || data.email;
+    // setIsOpen(true);
+
+    await verifyRequestOTP.mutateAsync(value, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.success("OTP Requested, kindly check your phone for OTP");
+        setIsOpen(true);
+      },
+      onError: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.error("OTP Request failed");
+      },
+    });
   };
   return (
     <div className="flex items-center justify-center w-full">
@@ -73,7 +96,23 @@ const LoginWithNumber = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Mobile Number" required />
+          <SelectField
+            name="otp"
+            label="Send OTP Via"
+            placeholder="Select One"
+            options={[
+              { value: "phoneNumber", label: "Phone Number" },
+              { value: "email", label: "Email" },
+            ]}
+            required
+          />
+
+          {otpfor === "phoneNumber" && (
+            <PhoneInputField name="phone" label="Phone Number" required />
+          )}
+          {otpfor === "email" && (
+            <InputField name="email" label="Email" required />
+          )}
 
           <Button
             type="submit"
@@ -89,20 +128,7 @@ const LoginWithNumber = ({
           <icons.email className="text-lg dark:text-gray-300" />
           Sign in with Email
         </div>
-        <div className="flex flex-row items-center justify-center gap-4 pt-5">
-          <hr className="flex-1 border-t border-gray-300" />
-          <span className="text-gray-500 text-sm">or</span>
-          <hr className="flex-1 border-t border-gray-300" />
-        </div>
-        <div className="flex flex-col gap-2 items-center justify-center pt-5">
-          <Button
-            className="w-full "
-            variant="outline"
-            leftIcon={<icons.linkedin className="text-lg text-blue-400" />}
-          >
-            <span className="whitespace-nowrap">LinkedIn</span>
-          </Button>
-        </div>
+
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Verify Mobile Number"

@@ -12,18 +12,25 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BiLogoLinkedin } from "react-icons/bi";
-import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OTPPage from "../OTPPage";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginEmailFormData } from "../../validations/LoginEmail";
-import { useUserSessionStore, type UserSession } from "@/shared/store/useUserSessionStore";
-import { useEngineerSignInMutation, useReqEmailVerificationOtpMutation, useVerifyEmailVerificationOtpMutation } from "@/shared/apiServices/auth/engineer/engineerAuthService";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import {
+  useEngineerSignInMutation,
+  useReqEmailVerificationOtpMutation,
+  useVerifyEmailVerificationOtpMutation,
+} from "@/shared/apiServices/auth/engineer/engineerAuthService";
 import { validatePassword } from "@/shared/libs/utils";
-
-
+import { CiMail } from "react-icons/ci";
 
 /**
  * Login component
@@ -45,8 +52,9 @@ const Login = ({
 
   const engineerSignInMutation = useEngineerSignInMutation();
   const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
-  const verifyEmailVerificationOtpMutation = useVerifyEmailVerificationOtpMutation();
-  const setUserSession = useUserSessionStore(s => s.setSession);
+  const verifyEmailVerificationOtpMutation =
+    useVerifyEmailVerificationOtpMutation();
+  const setUserSession = useUserSessionStore((s) => s.setSession);
 
   const [isOpen, setIsOpen] = useState(false);
   const methods = useForm({
@@ -67,23 +75,25 @@ const Login = ({
    * open the OTP/modal on success.
    */
   const handleSubmit = async (data: LoginEmailFormData) => {
-    await engineerSignInMutation.mutateAsync({
-      phoneOrEmail: data.email,
-      password: data.password
-    }, {
-      onSuccess: async (resp) => {
-        //second layer of verification 
-        setIsOpen(true);
-        toast.success("OTP Requested, kindly check your email for OTP");
-        console.log(`Login Response: `, resp)
+    await engineerSignInMutation.mutateAsync(
+      {
+        phoneOrEmail: data.email,
+        password: data.password,
       },
-      onError: (error) => {
-        console.error(error);
-        toast.error("Login failed");
-      },
-    })
+      {
+        onSuccess: async (resp) => {
+          //second layer of verification
+          setIsOpen(true);
+          toast.success("OTP Requested, kindly check your email for OTP");
+          console.log(`Login Response: `, resp);
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("Login failed");
+        },
+      }
+    );
   };
-
 
   /**
    * handleOtpSubmission
@@ -92,34 +102,37 @@ const Login = ({
    */
   const handleOtpSubmission = async (otp: string) => {
     const email = methods.getValues("email");
-    await verifyEmailVerificationOtpMutation.mutateAsync({ email, otp }, {
-      onSuccess: async (resp) => {
-        console.log(`OTP Response: `, resp)
-        //TODO: integrate the otp stubbed version
-        const stubbedResponse: UserSession = {
-          accessToken: "something fake",
-          userId: "uuid-123",
-          displayName: "John Doe",
-          metadata: {}
-        }
+    await verifyEmailVerificationOtpMutation.mutateAsync(
+      { email, otp },
+      {
+        onSuccess: async (resp) => {
+          console.log(`OTP Response: `, resp);
+          //TODO: integrate the otp stubbed version
+          const stubbedResponse: UserSession = {
+            accessToken: "something fake",
+            userId: "uuid-123",
+            displayName: "John Doe",
+            metadata: {},
+          };
 
-        setIsOpen(false);
-        setUserSession(stubbedResponse);
-        navigate(absoluteUrls.engineer.home.dashboard);
-        toast.success("Logged in successfully");
-      },
-      onError: (error) => {
-        console.error(error);
-        toast.error("");
-      },
-    })
-  }
+          setIsOpen(false);
+          setUserSession(stubbedResponse);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("");
+        },
+      }
+    );
+  };
 
   const onResendOtp = async () => {
     const email = methods.getValues("email");
     await reqEmailVerificationOtpMutation.mutateAsync(email, {
       onSuccess: async (resp) => {
-        console.log(`OTP Response: `, resp)
+        console.log(`OTP Response: `, resp);
         toast.success("OTP Requested, kindly check your email for OTP");
         setIsOpen(true);
       },
@@ -127,10 +140,8 @@ const Login = ({
         console.error(error);
         toast.error("OTP Request failed");
       },
-    })
-  }
-
-
+    });
+  };
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -189,7 +200,10 @@ const Login = ({
           </div>
           <Button
             type="submit"
-            loading={engineerSignInMutation.isPending || reqEmailVerificationOtpMutation.isPending}
+            loading={
+              engineerSignInMutation.isPending ||
+              reqEmailVerificationOtpMutation.isPending
+            }
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -199,10 +213,10 @@ const Login = ({
           className="text-gray-900 dark:text-gray-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
-          <LuPhone className="dark:text-gray-300" />
-          Sign in with Phone Number
+          <CiMail className="dark:text-gray-300 text-lg" />
+          Sign In with OTP
         </div>
-        <div className="flex flex-row items-center justify-center gap-4 pt-5">
+        {/* <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
           <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
@@ -218,7 +232,7 @@ const Login = ({
               LinkedIn
             </span>
           </Button>
-        </div>
+        </div> */}
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"

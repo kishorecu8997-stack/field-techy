@@ -135,7 +135,7 @@ export const OTPInput = ({
                   onChange={(e) => handleChange(e, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   onPaste={handlePaste}
-                  className="w-16 h-16 text-center text-xl rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="w-12 h-12 text-center text-xl rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                   aria-label={`OTP digit ${idx + 1} of ${length}`}
                 />
               ))}
