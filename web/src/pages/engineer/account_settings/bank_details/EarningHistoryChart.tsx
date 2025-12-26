@@ -1,5 +1,3 @@
-import { transactions } from "@/dummy_data/bankDetails";
-import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import {
   LineChart,
@@ -11,64 +9,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-/**
- * Represents monthly earnings data used for chart visualization.
- *
- * @interface MonthlyData
- * @property {string} month - Month label (e.g., "Jan", "Feb").
- * @property {number} earnings - Total earnings for the given month.
- */
-
-interface MonthlyData {
-  month: string;
-  earnings: number;
-}
+import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
+import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
+import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
 
 const EarningHistoryChart: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const getMonthlyEarnings = (): MonthlyData[] => {
-    const monthlyMap = new Map<string, number>();
-    transactions.forEach((tx) => {
-      if (tx.amount > 0) {
-        const date = new Date(tx.date);
-        const monthKey = date.toLocaleDateString("en-US", {
-          month: "short",
-          year: "numeric",
-        });
-        monthlyMap.set(monthKey, (monthlyMap.get(monthKey) || 0) + tx.amount);
-      }
-    });
 
-    return Array.from(monthlyMap.entries())
-      .map(([month, earnings]) => ({ month, earnings }))
-      .sort((a, b) => {
-        const dateA = new Date(a.month + " 1");
-        const dateB = new Date(b.month + " 1");
-        return dateA.getTime() - dateB.getTime();
-      });
-  };
+  // Get monthly earnings
+  const data: MonthlyData[] = getMonthlyEarnings();
 
-  const data = getMonthlyEarnings();
-  // Get latest month earnings for preview
-  const latestEarnings = data.length > 0 ? data[data.length - 1].earnings : 0;
-  const latestMonth = data.length > 0 ? data[data.length - 1].month : "No data";
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
-          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            {label}
-          </p>
-          <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-            {formatCurrency(payload[0].value)}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  // Get latest earnings safely
+  const latest = data.length
+    ? data[data.length - 1]
+    : { earnings: 0, month: "No data" };
 
-  if (data.length === 0) {
+  if (!data.length) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 text-center">
         <p className="text-gray-500 dark:text-gray-400">
@@ -80,8 +36,8 @@ const EarningHistoryChart: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-      {/* Clickable Label Header */}
-      <button
+      {/* Header */}
+      <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
       >
@@ -96,13 +52,12 @@ const EarningHistoryChart: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Latest:{" "}
               <span className="font-medium text-emerald-600 dark:text-emerald-400">
-                {formatCurrency(latestEarnings)}
+                {formatCurrency(latest.earnings)}
               </span>{" "}
-              in {latestMonth}
+              in {latest.month}
             </p>
           </div>
         </div>
-
         <div
           className={`transition-transform duration-300 ${
             isExpanded ? "rotate-180" : ""
@@ -114,9 +69,9 @@ const EarningHistoryChart: React.FC = () => {
             <BiChevronDown className="w-6 h-6 text-gray-500" />
           )}
         </div>
-      </button>
+      </div>
 
-      {/* Expandable Chart Content */}
+      {/* Chart */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out ${
           isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
