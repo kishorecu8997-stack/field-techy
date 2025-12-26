@@ -3,7 +3,7 @@ import Users from "./Users";
 import GeneralChart from "@/shared/components/AdminChart";
 import CustomTooltip from "@/shared/components/ChartCustomTooltip";
 import { chartData } from "@/dummy_data/chart";
-import SimpleSelect from "@/shared/components/Temp";
+import SelectMenu from "@/shared/components/SelectMenu";
 import { useState } from "react";
 import { days, client, status } from "@/dummy_data/adminDashboard";
 import JobsMetrics from "./JobMetrics";
@@ -69,14 +69,14 @@ export default function Dashboard() {
             <div className="grid md:flex justify-between p-4">
               <h3 className="text-lg font-semibold">Total Users</h3>
               <div className="grid mt-2 md:md-0 md:flex gap-4">
-                <SimpleSelect
+                <SelectMenu
                   placeholder="Filter By"
                   className="md:w-32"
                   options={days}
                   value={selectedDay}
                   onChange={setSelectedDay}
                 />
-                <SimpleSelect
+                <SelectMenu
                   placeholder="Select Filter"
                   className="w-42"
                   options={client}
@@ -113,14 +113,14 @@ export default function Dashboard() {
           <div className="grid md:flex justify-between p-4">
             <h3 className="text-lg font-semibold">Total Jobs</h3>
             <div className="grid mt-4 md:mt-0 md:flex gap-4">
-              <SimpleSelect
+              <SelectMenu
                 placeholder="Filter By"
                 className="w-32"
                 options={status}
                 value={selectedStatus}
                 onChange={setSelectedStatus}
               />
-              <SimpleSelect
+              <SelectMenu
                 placeholder="Select Filter"
                 className="w-42"
                 options={days}

@@ -1,4 +1,3 @@
-
 /**
  * Application route URLs.
  *
@@ -69,10 +68,10 @@ export const urls = {
       privacy_policy: "privacy-policy",
       client_Explore_engineers_details: "explore-engineers/details",
       ClientJobInvite: "explore-engineers/select-jobs",
-      SelectEngineer:":id/select-engineer",
-      Client_Job_Details:"jobs-details/in-progress",
+      SelectEngineer: ":id/select-engineer",
+      Client_Job_Details: "jobs-details/in-progress",
       ClientSelectEngineers: "select-engineers",
-
+      chat: "messages",
     },
     auth: {
       login: "login",
@@ -134,6 +133,11 @@ export const urls = {
       add_rate_card: "rate-card/add",
       manage_jobs_view: "jobs/view",
       jobOffer: "job-offer",
+      manage_groups: "manage-groups",
+      manage_groups_add: "manage-groups/add",
+      manage_groups_edit: "manage-groups/edit",
+      manage_groups_view: "manage-groups/view",
+      manage_groups_addEngineer: "manage-groups/add-engineer",
     },
   },
 } as const;
@@ -194,10 +198,11 @@ export const absoluteUrls = {
       client_Invite_Explore_engineers_details: `${BASE.CLIENT}/jobs-details`,
       ClientJobInvite: `${BASE.CLIENT}/explore-engineers/select-jobs`,
       job_details: `${BASE.CLIENT}/job-details`,
-      SelectEngineer:`${BASE.CLIENT}/:id/select-engineer`,
-      ClientJobDetails:`${BASE.CLIENT}/jobs-details/in-progress`,
+      SelectEngineer: `${BASE.CLIENT}/:id/select-engineer`,
+      ClientJobDetails: `${BASE.CLIENT}/jobs-details/in-progress`,
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
+      chat: `${BASE.CLIENT}/messages`,
     },
   },
 
@@ -249,6 +254,11 @@ export const absoluteUrls = {
       add_rate_card: `${BASE.ADMIN}/rate-card/add`,
       manage_jobs_view: `${BASE.ADMIN}/jobs/view`,
       jobOffer: `${BASE.ADMIN}/job-offer`,
+      manage_groups: `${BASE.ADMIN}/manage-groups`,
+      manage_groups_add: `${BASE.ADMIN}/manage-groups/add`,
+      manage_groups_edit: `${BASE.ADMIN}/manage-groups/edit`,
+      manage_groups_view: `${BASE.ADMIN}/manage-groups/view`,
+      manage_groups_addEngineer: `${BASE.ADMIN}/manage-groups/add-engineer`,
     },
   },
 } as const;

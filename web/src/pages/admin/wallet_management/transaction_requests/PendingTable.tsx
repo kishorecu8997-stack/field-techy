@@ -2,7 +2,7 @@ import { transactionRequest } from "@/dummy_data/admin";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import SelectMenu from "@/shared/components/Temp";
+import SelectMenu from "@/shared/components/SelectMenu";
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import type { TransactionRequest } from "../wallet_overview/types";
@@ -94,6 +94,8 @@ const PendingTable: React.FC = () => {
                 });
               }}
               options={JobStatus}
+              badge
+              
             />
           </div>
         );

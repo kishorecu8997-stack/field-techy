@@ -2,7 +2,6 @@ import { absoluteUrls, BASE, urls } from "@/config/urls";
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
-// import AdminProtectedRoute from "@/layout/admin/AdminProtectedRoute";
 
 const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
@@ -11,9 +10,6 @@ const SignInPage = React.lazy(
 const SignUpPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
 );
-// const ProfileSettingPage = React.lazy(
-//   () => import("@/pages/engineer/auth/components/profile_setup/ProfileSettingPage")
-// );
 const MultiStepRegistrationForm = React.lazy(
   () =>
     import(
@@ -217,8 +213,26 @@ const AddRolePage = React.lazy(
 const ManageJobView = React.lazy(
   () => import("@/pages/admin/jobs/ManageJobView")
 );
-const OfferPages = React.lazy(() => import("@/pages/engineer/my_job/job_details_components/OfferPages"));
-const PostAJobPage = React.lazy(() => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"));
+const ManageGroups = React.lazy(() => import("@/pages/admin/manage_groups"));
+const ManageGroupsAdd = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/AddGroup")
+);
+const ManageGroupsEdit = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/EditGroup")
+);
+const ManageGroupsView = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/ViewGroup")
+);
+const ManageGroupsAddEngineer = React.lazy(
+  () => import("@/pages/admin/manage_groups/components/SelectEngineers")
+);
+
+const OfferPages = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/OfferPages")
+);
+const PostAJobPage = React.lazy(
+  () => import("@/pages/client/post_job/PostAJobComponent/PostJobPage")
+);
 const EngineerChatPage = React.lazy(() => import("@/pages/engineer/chat"));
 
 const ClientMyJobsPage = React.lazy(
@@ -329,7 +343,6 @@ export const routes = createBrowserRouter([
         path: urls.engineer.auth.background_verification,
         element: withSuspense(BackgroundVerification),
       },
-
     ],
   },
 
@@ -343,7 +356,7 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.explore_jobs,
         element: withSuspense(ExploreJobs),
-      },      
+      },
       {
         path: urls.engineer.home.saved_jobs,
         element: withSuspense(ExploreSavedJobs),
@@ -371,7 +384,10 @@ export const routes = createBrowserRouter([
       },
       { path: urls.engineer.home.faq, element: withSuspense(FAQ) },
       { path: urls.engineer.home.about_app, element: withSuspense(AboutApp) },
-      {path: urls.engineer.home.chat, element: withSuspense(EngineerChatPage)},
+      {
+        path: urls.engineer.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
     ],
   },
 
@@ -435,7 +451,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientMyJobsPage),
       },
       {
-         path: `${urls.client.home.my_jobs}/:jobId`,
+        path: `${urls.client.home.my_jobs}/:jobId`,
         element: withSuspense(ClientJobDetails),
       },
       {
@@ -487,7 +503,7 @@ export const routes = createBrowserRouter([
         path: urls.client.home.post_a_job,
         element: withSuspense(PostAJobPage),
       },
-       {
+      {
         path: urls.client.home.client_Explore_engineers_details,
         element: withSuspense(ClientExploreEngDetails),
       },
@@ -519,6 +535,67 @@ export const routes = createBrowserRouter([
         path: urls.client.home.SelectEngineer,
         element: withSuspense(SelectEngineer),
       },
+      {
+        path: urls.client.home.chat,
+        element: withSuspense(EngineerChatPage),
+      },
+    ],
+  },
+
+  {
+    path: BASE.AUTH,
+    element: withSuspense(Layout),
+    children: [
+      { index: true, element: <Navigate to="login" replace /> },
+      { path: urls.client.auth.login, element: withSuspense(SignInPage) },
+      { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
+      {
+        path: urls.client.auth.profile_setup,
+        element: withSuspense(MultiStepRegistrationForm),
+      },
+      {
+        path: urls.client.auth.forget_password,
+        element: withSuspense(ForgetPassword),
+      },
+      {
+        path: urls.client.auth.reset_password,
+        element: withSuspense(ResetPassword),
+      },
+      {
+        path: urls.client.auth.set_password,
+        element: withSuspense(SetPassword),
+      },
+      {
+        path: urls.client.auth.background_verification,
+        element: withSuspense(BackgroundVerification),
+      },
+    ],
+  },
+
+  {
+    path: BASE.CLIENT,
+    element: withSuspense(RootLayout),
+    children: [
+      { index: true, element: withSuspense(MyJobsPage) },
+      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
+      {
+        path: `${urls.client.home.my_jobs}/:jobId`,
+        element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: urls.client.home.search_result,
+        element: withSuspense(SearchResult),
+      },
+      {
+        path: urls.client.home.privacy_policy,
+        element: withSuspense(ClientPrivacyPolicy),
+      },
+      {
+        path: urls.client.home.terms_and_conditions,
+        element: withSuspense(ClientTermsAndConditions),
+      },
+      { path: urls.client.home.faq, element: withSuspense(ClientFAQ) },
+      { path: urls.client.home.chat, element: withSuspense(EngineerChatPage) },
     ],
   },
 
@@ -687,7 +764,6 @@ export const routes = createBrowserRouter([
             path: urls.admin.home.homeClientView,
             element: withSuspense(homeClientView),
           },
-
           {
             path: urls.admin.home.edit_role,
             element: withSuspense(adminEditRolePage),
@@ -703,6 +779,26 @@ export const routes = createBrowserRouter([
           {
             path: urls.admin.home.manage_jobs_view,
             element: withSuspense(ManageJobView),
+          },
+          {
+            path: urls.admin.home.manage_groups,
+            element: withSuspense(ManageGroups),
+          },
+          {
+            path: urls.admin.home.manage_groups_add,
+            element: withSuspense(ManageGroupsAdd),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_edit}/:id?`,
+            element: withSuspense(ManageGroupsEdit),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_view}/:id?`,
+            element: withSuspense(ManageGroupsView),
+          },
+          {
+            path: `${urls.admin.home.manage_groups_addEngineer}/:id?`,
+            element: withSuspense(ManageGroupsAddEngineer),
           },
         ],
       },

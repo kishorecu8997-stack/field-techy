@@ -8,7 +8,7 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import type { PostedJobsProps } from "../../../types";
-import SimpleSelect from "@/shared/components/Temp";
+import SelectMenu from "@/shared/components/SelectMenu";
 import { postedJobsData } from "@/dummy_data/ClientViewData";
 import GeneralChart from "@/shared/components/AdminChart";
 import { days } from "@/dummy_data/adminDashboard";
@@ -149,7 +149,7 @@ const PostedJobs: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                 Total Jobs Completed
               </h3>
-              <SimpleSelect
+              <SelectMenu
                 placeholder="Select Filter"
                 className="w-32"
                 options={days}

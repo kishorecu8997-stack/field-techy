@@ -46,6 +46,7 @@ const AddExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Added Successfully");
+            console.log(data);
             close(true);
             setActiveKey("experiences");
           },
@@ -64,7 +65,7 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
       isCurrent: false
     },
@@ -119,7 +120,7 @@ const AddExperiences = () => {
           name="startDate"
           label="Start Date"
           isShowLabel={false}
-          placeholder="Start date"
+          placeholder="DD/MM/YYYY"
           required
           maxDate={new Date()}
           rules={{

@@ -6,7 +6,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateCompany, validateDateRange } from "../../../Validate";
@@ -51,6 +51,7 @@ const EditExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Updated Successfully");
+            console.log(data);
             close(true);
             setActiveKey("experiences");
           },

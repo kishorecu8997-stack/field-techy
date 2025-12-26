@@ -9,7 +9,6 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
-import type { FormDataPostJob } from "./types";
 import { toast } from "react-toastify";
 import ClientHeader from "./components/ClientHeader";
 import { GoChevronLeft } from "react-icons/go";
@@ -24,7 +23,7 @@ const MultiStepPostJobForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const methods = useForm<FormDataPostJob>({
+  const methods = useForm<any>({
     mode: "onSubmit",
     defaultValues: {
       jobTitle: "",
@@ -61,7 +60,7 @@ const MultiStepPostJobForm = () => {
    * It triggers validation for the current step's fields and proceeds to the next step or final submission if valid.
    * @param {FormDataPostJob} data - The current form data.
    */
-  const handleStepSubmit = async (data: FormDataPostJob) => {
+  const handleStepSubmit = async (data: any) => {
     let isValid = false;
 
     switch (currentStep) {
@@ -102,7 +101,7 @@ const MultiStepPostJobForm = () => {
     }
   };
 
-  const submitCompleteForm = async (data: FormDataPostJob) => {
+  const submitCompleteForm = async (data: any) => {
     setIsSubmitting(true);
     try {
       // MOCK API CALL (replace with real fetch when backend is ready)
