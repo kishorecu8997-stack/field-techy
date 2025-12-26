@@ -36,6 +36,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 3000000,
         runtimeCaching: [
           // JS / TS scripts
           {
@@ -62,15 +63,6 @@ export default defineConfig({
             options: {
               cacheName: "images",
               expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
-            },
-          },
-          // Entire assets folder (fonts, JSON, etc.)
-          {
-            urlPattern: ({ url }: { url: URL }) => url.pathname.startsWith("/assets/"),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "assets-cache",
-              expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 60 * 60 },
             },
           },
         ],

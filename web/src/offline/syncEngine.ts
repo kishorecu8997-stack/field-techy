@@ -7,9 +7,8 @@ import type { OfflineAction } from "./types";
  */
 
 export async function syncOfflineActions() {
-  if (typeof window === "undefined") return
-  if (!window.navigator.onLine) return
-
+  if (typeof window === "undefined") return;
+  if (!window.navigator.onLine) return;
 
   const queue = getQueue();
   if (!queue.length) return;
@@ -27,24 +26,18 @@ export async function syncOfflineActions() {
     }
   }
 
-clearQueue()
-failedActions.forEach((a) => addToQueue(a))
-
+  clearQueue();
+  failedActions.forEach((a) => addToQueue(a));
 
   console.log("Offline sync completed");
 }
 
 async function handleAction(action: OfflineAction) {
-  switch (action.type) {
-    case "UPDATE_JOB_STATUS":
-      console.log("Simulating API sync:", action.payload)
-
-      // simulate network delay
-      await new Promise((res) => setTimeout(res, 500))
-
-      return true
-
-    default:
-      throw new Error(`Unknown offline action type: ${action.type}`)
-  }
+switch (action.type) {
+case "UPDATE_JOB_STATUS":
+// return updateJobStatusService(action.payload.jobId, action.payload.status);
+default:
+console.warn(`Unknown offline action type: ${action.type}`);
+return Promise.reject(new Error(`Unknown type: ${action.type}`));
+}
 }
