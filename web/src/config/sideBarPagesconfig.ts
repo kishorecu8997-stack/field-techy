@@ -187,7 +187,7 @@ export const sectionConfig: Record<
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
   NotificationPreferences: {
     component: NotificationPreferences,
-    title: "Notification ",
+    title: "Notification",
     parent: "settings",
   },
   myEarning: { component: MyEarning, title: "My Earning" },
