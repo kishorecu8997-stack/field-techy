@@ -37,7 +37,7 @@ const NotificationListPage = () => {
 
   useEffect(() => {
     setNotification(Notificationfilter(tab, mockNotifications, search));
-  }, [tab, mockNotifications, search]);
+  }, [tab, search]);
 
   const ButtonRender = (type: string) => {
     const btnname = (type: string) => {
@@ -47,7 +47,7 @@ const NotificationListPage = () => {
         case "invitation":
           return "View Invitation";
         case "revision":
-          return "View Revison";
+          return "View Revision";
         case "payment_released":
           return "Go to Wallet";
         case "proposal_received":
@@ -58,6 +58,8 @@ const NotificationListPage = () => {
           return "View";
         case "withdrawal":
           return "Go to Wallet";
+        default:
+          return null;
       }
     };
     const pathname = (type: string) => {
@@ -78,6 +80,8 @@ const NotificationListPage = () => {
           return absoluteUrls.engineer.home.my_jobs;
         case "withdrawal":
           return absoluteUrls.engineer.home.explore_jobs;
+        default:
+          return null;
       }
     };
 
@@ -195,10 +199,11 @@ const NotificationListPage = () => {
             {Titles.map((title) => (
               <div
                 onClick={() => {
-                  setTab(title.type), setSearch("");
+                  setTab(title.type);
+                  setSearch("");
                 }}
                 className={`p-2 px-5 text-sm font-semibold cursor-pointer text-teal-800 rounded-4xl ${
-                  title.type == tab ? "bg-gray-300" : ""
+                  title.type === tab ? "bg-gray-300" : ""
                 } `}
               >
                 {title.label}
