@@ -3,12 +3,14 @@ import type { GroupedNotifications } from "../types";
 import NotificationItem from "./NotificationItem";
 import { absoluteUrls } from "@/config/urls";
 import useNotificationGate from "@/shared/store/useNotificationGate";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Displays notifications grouped by date (e.g., Today, Yesterday) using mock data.
  * Renders each notification through the NotificationItem component with proper grouping and layout.
  */
 const NotificationPanel = ({ grouped }: { grouped: GroupedNotifications }) => {
+  const { setISOpenSidebar } = useDrawerStore();
   const { isPaused, pendingId } = useNotificationGate();
   const groupedLast20 = Object.fromEntries(
     Object.entries(grouped).map(([group, notifs]) => [
@@ -19,6 +21,14 @@ const NotificationPanel = ({ grouped }: { grouped: GroupedNotifications }) => {
 
   return (
     <div className="absolute max-w-md w-full max-h-full overflow-y-auto">
+      <NavLink to={absoluteUrls.engineer.home.notifications}>
+        <div
+          onClick={() => setISOpenSidebar(false)}
+          className="fixed right-10 top-12 text-end underline text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
+        >
+          View All
+        </div>
+      </NavLink>
       <div className="space-y-6 pb-20">
         {Object.entries(groupedLast20).map(([dateGroup, notifs]) => (
           <div key={dateGroup}>
@@ -45,11 +55,6 @@ const NotificationPanel = ({ grouped }: { grouped: GroupedNotifications }) => {
             })}
           </div>
         ))}
-        <NavLink to={absoluteUrls.engineer.home.notifications}>
-          <div className="text-end underline text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer">
-            View All
-          </div>
-        </NavLink>
       </div>
     </div>
   );

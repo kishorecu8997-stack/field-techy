@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
@@ -109,13 +109,27 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           >
             <div className="py-2">
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div className="flex items-center space-x-3">
+                <div
+                  className="flex items-center space-x-3"
+                  onClick={() => {
+                    navigate(absoluteUrls.engineer.home.my_jobs);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
                   <span>My Jobs</span>
                 </div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div className="flex items-center space-x-3">Earning</div>
+              <div
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  onDrawerToggle();
+                  setActiveKey("myEarning");
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Earning
               </div>
+
               <div
                 className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
                 onClick={onDrawerToggle}
@@ -125,7 +139,16 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
-                  <span>Notifications</span>
+                  <div
+                    onClick={() => {
+                      onDrawerToggle();
+                      setActiveKey("notification");
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Notifications
+                  </div>
+
                   <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
@@ -134,7 +157,15 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
-                  <span>Messages</span>
+                  <div
+                    onClick={() => {
+                      navigate(absoluteUrls.engineer.home.chat);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Messages
+                  </div>
+
                   <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
