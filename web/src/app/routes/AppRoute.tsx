@@ -293,6 +293,9 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
+const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
+const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
@@ -800,6 +803,19 @@ export const routes = createBrowserRouter([
             path: `${urls.admin.home.manage_groups_addEngineer}/:id?`,
             element: withSuspense(ManageGroupsAddEngineer),
           },
+        ],
+      },
+    ],
+  },
+  //FTLanding
+  {
+    children: [
+      {
+        path: BASE.LANDING,
+        element: withSuspense(FTLayout),
+        children: [
+          { index: true, element: withSuspense(FTLanding) },
+          { path: urls.ft_landing.landing, element: withSuspense(FTLanding) },
         ],
       },
     ],

@@ -1,6 +1,7 @@
-
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
+import { transactions } from "@/dummy_data/bankDetails";
+
 
 /**
  * Utility function to join multiple class names into a single string,
@@ -103,7 +104,8 @@ export const validatePortfolioLink = (value: string) => {
 
     // Block dangerous or irrelevant domains
     const blockedPatterns = /\.(zip|exe|bat|msi|sh|js|vbs|scr)$/i;
-    const suspiciousKeywords = /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
+    const suspiciousKeywords =
+      /malware|phishing|adult|torrent|hack|crack|free.*coin/i;
     if (blockedPatterns.test(hostname) || suspiciousKeywords.test(hostname)) {
       return "Domain is not allowed";
     }
@@ -116,10 +118,14 @@ export const validatePortfolioLink = (value: string) => {
 
     // Define allowed profiles
     const isGitHub =
-      hostname === "github.com" && /^\/[a-zA-Z0-9._-]+$/.test(path) && !path.includes("..");
+      hostname === "github.com" &&
+      /^\/[a-zA-Z0-9._-]+$/.test(path) &&
+      !path.includes("..");
 
     // Allow /in/username with an optional trailing slash
-    const isLinkedIn = hostname === "www.linkedin.com" && /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
+    const isLinkedIn =
+      hostname === "www.linkedin.com" &&
+      /^\/in\/[a-zA-Z0-9._-]+\/?$/.test(path);
 
     const isExample = hostname === "example.com" && path === "/";
 
@@ -145,83 +151,86 @@ export interface IBANRule {
 // Define the rules object with country names
 export const IBAN_RULES = {
   AD: { len: 24, bban: /^[0-9]{8}[A-Z0-9]{12}$/ }, // Andorra
-  AE: { len: 23, bban: /^[0-9]{19}$/ },            // United Arab Emirates
+  AE: { len: 23, bban: /^[0-9]{19}$/ }, // United Arab Emirates
   AL: { len: 28, bban: /^[0-9]{8}[A-Z0-9]{16}$/ }, // Albania
-  AT: { len: 20, bban: /^[0-9]{16}$/ },            // Austria
+  AT: { len: 20, bban: /^[0-9]{16}$/ }, // Austria
   AZ: { len: 28, bban: /^[A-Z]{4}[A-Z0-9]{20}$/ }, // Azerbaijan
-  BA: { len: 20, bban: /^[0-9]{16}$/ },            // Bosnia and Herzegovina
-  BE: { len: 16, bban: /^[0-9]{12}$/ },            // Belgium
+  BA: { len: 20, bban: /^[0-9]{16}$/ }, // Bosnia and Herzegovina
+  BE: { len: 16, bban: /^[0-9]{12}$/ }, // Belgium
   BG: { len: 22, bban: /^[A-Z]{4}[0-9]{6}[A-Z0-9]{8}$/ }, // Bulgaria
   BH: { len: 22, bban: /^[A-Z]{4}[A-Z0-9]{14}$/ }, // Bahrain
   BR: { len: 29, bban: /^[0-9]{23}[A-Z0-9]{2}$/ }, // Brazil
   CH: { len: 21, bban: /^[0-9]{5}[A-Z0-9]{12}$/ }, // Switzerland
-  CR: { len: 22, bban: /^[0-9]{18}$/ },            // Costa Rica
+  CR: { len: 22, bban: /^[0-9]{18}$/ }, // Costa Rica
   CY: { len: 28, bban: /^[0-9]{8}[A-Z0-9]{16}$/ }, // Cyprus
-  CZ: { len: 24, bban: /^[0-9]{20}$/ },            // Czech Republic
-  DE: { len: 22, bban: /^[0-9]{18}$/ },            // Germany
-  DK: { len: 18, bban: /^[0-9]{14}$/ },            // Denmark
+  CZ: { len: 24, bban: /^[0-9]{20}$/ }, // Czech Republic
+  DE: { len: 22, bban: /^[0-9]{18}$/ }, // Germany
+  DK: { len: 18, bban: /^[0-9]{14}$/ }, // Denmark
   DO: { len: 28, bban: /^[A-Z0-9]{4}[0-9]{20}$/ }, // Dominican Republic
-  EE: { len: 20, bban: /^[0-9]{16}$/ },            // Estonia
-  ES: { len: 24, bban: /^[0-9]{20}$/ },            // Spain
-  FI: { len: 18, bban: /^[0-9]{14}$/ },            // Finland
-  FO: { len: 18, bban: /^[0-9]{14}$/ },            // Faroe Islands
+  EE: { len: 20, bban: /^[0-9]{16}$/ }, // Estonia
+  ES: { len: 24, bban: /^[0-9]{20}$/ }, // Spain
+  FI: { len: 18, bban: /^[0-9]{14}$/ }, // Finland
+  FO: { len: 18, bban: /^[0-9]{14}$/ }, // Faroe Islands
   FR: { len: 27, bban: /^[0-9]{10}[A-Z0-9]{11}[0-9]{2}$/ }, // France
-  GB: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ },    // United Kingdom
-  GE: { len: 22, bban: /^[A-Z]{2}[0-9]{16}$/ },    // Georgia
+  GB: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ }, // United Kingdom
+  GE: { len: 22, bban: /^[A-Z]{2}[0-9]{16}$/ }, // Georgia
   GI: { len: 23, bban: /^[A-Z]{4}[A-Z0-9]{15}$/ }, // Gibraltar
-  GL: { len: 18, bban: /^[0-9]{14}$/ },            // Greenland
+  GL: { len: 18, bban: /^[0-9]{14}$/ }, // Greenland
   GR: { len: 27, bban: /^[0-9]{7}[A-Z0-9]{16}$/ }, // Greece
-  HR: { len: 21, bban: /^[0-9]{17}$/ },            // Croatia
-  HU: { len: 28, bban: /^[0-9]{24}$/ },            // Hungary
-  IE: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ },    // Ireland
-  IL: { len: 23, bban: /^[0-9]{19}$/ },            // Israel
-  IS: { len: 26, bban: /^[0-9]{22}$/ },            // Iceland
+  HR: { len: 21, bban: /^[0-9]{17}$/ }, // Croatia
+  HU: { len: 28, bban: /^[0-9]{24}$/ }, // Hungary
+  IE: { len: 22, bban: /^[A-Z]{4}[0-9]{14}$/ }, // Ireland
+  IL: { len: 23, bban: /^[0-9]{19}$/ }, // Israel
+  IS: { len: 26, bban: /^[0-9]{22}$/ }, // Iceland
   IT: { len: 27, bban: /^[A-Z]{1}[0-9]{10}[A-Z0-9]{12}$/ }, // Italy
   JO: { len: 30, bban: /^[A-Z]{4}[0-9]{4}[A-Z0-9]{18}$/ }, // Jordan
   KW: { len: 30, bban: /^[A-Z]{4}[A-Z0-9]{22}$/ }, // Kuwait
   KZ: { len: 20, bban: /^[0-9]{3}[A-Z0-9]{13}$/ }, // Kazakhstan
   LB: { len: 28, bban: /^[0-9]{4}[A-Z0-9]{20}$/ }, // Lebanon
   LI: { len: 21, bban: /^[0-9]{5}[A-Z0-9]{12}$/ }, // Liechtenstein
-  LT: { len: 20, bban: /^[0-9]{16}$/ },            // Lithuania
+  LT: { len: 20, bban: /^[0-9]{16}$/ }, // Lithuania
   LU: { len: 20, bban: /^[0-9]{3}[A-Z0-9]{13}$/ }, // Luxembourg
   LV: { len: 21, bban: /^[A-Z]{4}[A-Z0-9]{13}$/ }, // Latvia
   MC: { len: 27, bban: /^[0-9]{10}[A-Z0-9]{11}[0-9]{2}$/ }, // Monaco
   MD: { len: 24, bban: /^[A-Z0-9]{2}[A-Z0-9]{18}$/ }, // Moldova
-  ME: { len: 22, bban: /^[0-9]{18}$/ },            // Montenegro
+  ME: { len: 22, bban: /^[0-9]{18}$/ }, // Montenegro
   MK: { len: 19, bban: /^[0-9]{3}[A-Z0-9]{10}[0-9]{2}$/ }, // North Macedonia
-  MR: { len: 27, bban: /^[0-9]{23}$/ },            // Mauritania
+  MR: { len: 27, bban: /^[0-9]{23}$/ }, // Mauritania
   MT: { len: 31, bban: /^[A-Z]{4}[0-9]{5}[A-Z0-9]{18}$/ }, // Malta
   MU: { len: 30, bban: /^[A-Z]{4}[0-9]{19}[A-Z]{3}$/ }, // Mauritius
-  NL: { len: 18, bban: /^[A-Z]{4}[0-9]{10}$/ },    // Netherlands
-  NO: { len: 15, bban: /^[0-9]{11}$/ },            // Norway
+  NL: { len: 18, bban: /^[A-Z]{4}[0-9]{10}$/ }, // Netherlands
+  NO: { len: 15, bban: /^[0-9]{11}$/ }, // Norway
   PK: { len: 24, bban: /^[A-Z]{4}[A-Z0-9]{16}$/ }, // Pakistan
-  PL: { len: 28, bban: /^[0-9]{24}$/ },            // Poland
+  PL: { len: 28, bban: /^[0-9]{24}$/ }, // Poland
   PS: { len: 29, bban: /^[A-Z0-9]{4}[A-Z0-9]{21}$/ }, // Palestine
-  PT: { len: 25, bban: /^[0-9]{21}$/ },            // Portugal
+  PT: { len: 25, bban: /^[0-9]{21}$/ }, // Portugal
   QA: { len: 29, bban: /^[A-Z]{4}[A-Z0-9]{21}$/ }, // Qatar
   RO: { len: 24, bban: /^[A-Z]{4}[A-Z0-9]{16}$/ }, // Romania
-  RS: { len: 22, bban: /^[0-9]{18}$/ },            // Serbia
-  SA: { len: 24, bban: /^[0-9]{22}$/ },            // Saudi Arabia
-  SE: { len: 24, bban: /^[0-9]{20}$/ },            // Sweden
-  SI: { len: 19, bban: /^[0-9]{15}$/ },            // Slovenia
-  SK: { len: 24, bban: /^[0-9]{20}$/ },            // Slovakia
+  RS: { len: 22, bban: /^[0-9]{18}$/ }, // Serbia
+  SA: { len: 24, bban: /^[0-9]{22}$/ }, // Saudi Arabia
+  SE: { len: 24, bban: /^[0-9]{20}$/ }, // Sweden
+  SI: { len: 19, bban: /^[0-9]{15}$/ }, // Slovenia
+  SK: { len: 24, bban: /^[0-9]{20}$/ }, // Slovakia
   SM: { len: 27, bban: /^[A-Z]{1}[0-9]{10}[A-Z0-9]{12}$/ }, // San Marino
-  TN: { len: 24, bban: /^[0-9]{20}$/ },            // Tunisia
-  TR: { len: 26, bban: /^[0-9]{5}[A-Z0-9]{17}$/ }  // Turkey
+  TN: { len: 24, bban: /^[0-9]{20}$/ }, // Tunisia
+  TR: { len: 26, bban: /^[0-9]{5}[A-Z0-9]{17}$/ }, // Turkey
 } as const;
 
-export const ACCOUNT_RULES: Record<string, { minLength: number; maxLength: number; pattern: RegExp }> = {
+export const ACCOUNT_RULES: Record<
+  string,
+  { minLength: number; maxLength: number; pattern: RegExp }
+> = {
   "state-bank-of-india": { minLength: 11, maxLength: 17, pattern: /^[0-9]+$/ },
   "hdfc-bank": { minLength: 12, maxLength: 14, pattern: /^[0-9]+$/ },
   "icici-bank": { minLength: 12, maxLength: 12, pattern: /^[0-9]+$/ },
   "axis-bank": { minLength: 15, maxLength: 15, pattern: /^[0-9]+$/ },
   "bank-of-america": { minLength: 1, maxLength: 17, pattern: /^[0-9]+$/ },
-  "citi": { minLength: 1, maxLength: 10, pattern: /^[0-9]+$/ },
-  "hsbc": { minLength: 6, maxLength: 8, pattern: /^[0-9]+$/ },
+  citi: { minLength: 1, maxLength: 10, pattern: /^[0-9]+$/ },
+  hsbc: { minLength: 6, maxLength: 8, pattern: /^[0-9]+$/ },
 };
 
 export const getBankName = (bankValue: string): string => {
-  const bank = bankList.find(b => b.value === bankValue);
+  const bank = bankList.find((b) => b.value === bankValue);
   return bank ? bank.label : bankValue; // fallback to raw value if unknown
 };
 
@@ -330,26 +339,70 @@ export const generatePageRange = (
   return Array.from(new Set(range));
 };
 
+// Format currency
+export const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+};
 
-  // Format currency
-  export const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
+// Helper to format date as "DD MMM, YYYY | HH:MM AM/PM"
+export const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
+/**
+ * Represents monthly earnings data used for chart visualization.
+ */
+export interface MonthlyData {
+  month: string;
+  earnings: number;
+}
 
-    // Helper to format date as "DD MMM, YYYY | HH:MM AM/PM"
-   export  const formatDate = (dateStr: string) => {
-      const date = new Date(dateStr);
-      return date.toLocaleString('en-US', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
+/**
+ * Computes total earnings per month from transaction data.
+ *
+ * @returns Array of monthly earnings sorted chronologically.
+ */
+export const getMonthlyEarnings = (): MonthlyData[] => {
+  const monthlyMap = new Map<string, number>();
+
+  transactions.forEach((tx) => {
+    if (tx.amount > 0) {
+      const date = new Date(tx.date);
+      const monthKey = date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
       });
-    };
-  
+      monthlyMap.set(monthKey, (monthlyMap.get(monthKey) || 0) + tx.amount);
+    }
+  });
+
+  return Array.from(monthlyMap.entries())
+    .map(([month, earnings]) => ({ month, earnings }))
+    .sort((a, b) => {
+      const dateA = new Date(a.month + " 1");
+      const dateB = new Date(b.month + " 1");
+      return dateA.getTime() - dateB.getTime();
+    });
+};
+
+
+
+export const getLatestEarnings = (data: MonthlyData[]) => {
+  if (!data || data.length === 0) {
+    return { earnings: 0, month: "No data" };
+  }
+  const latest = data[data.length - 1];
+  return { earnings: latest.earnings, month: latest.month };
+};
+

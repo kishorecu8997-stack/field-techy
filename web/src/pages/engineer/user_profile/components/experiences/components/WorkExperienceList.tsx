@@ -139,7 +139,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">End Date:</span>{" "}
-                    {formatDate(item.endDate)}
+                    {item.endDate ? formatDate(item.endDate) : "Present"}
                   </p>
                 </div>
 

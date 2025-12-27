@@ -128,6 +128,7 @@ const EditEducation = () => {
           name="year"
           placeholder="Passing Year"
           required
+          allowedCharacters="numbers"
           rules={{ validate: (v: string) => validatePassingYear(v) }}
         />
       </div>
