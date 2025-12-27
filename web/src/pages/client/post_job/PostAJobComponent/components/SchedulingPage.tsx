@@ -1,4 +1,5 @@
 import { repeatByOptions } from "@/dummy_data/client";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -19,7 +20,6 @@ import {
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
-import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -70,26 +70,27 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   }, [startDate, startTime, endDate, endTime]);
 
   const minStartTime = useMemo(() => {
-    if (!startDate) return undefined;
+  if (!applicationEndDate) return undefined;
 
-    const selectedDate = new Date(startDate);
-    const today = new Date();
+  const selectedDate = new Date(applicationEndDate);
+  const today = new Date();
 
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
 
-    if (selectedDate.getTime() === today.getTime()) {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() + 1); // safe rollover
+  if (selectedDate.getTime() === today.getTime()) {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 1); // handles rollover safely
 
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
 
-      return `${hours}:${minutes}`;
-    }
+    return `${hours}:${minutes}`;
+  }
 
-    return undefined;
-  }, [startDate]);
+  return undefined;
+}, [applicationEndDate]);
+
 
   return (
     <>
@@ -233,8 +234,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
@@ -243,6 +243,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             {...field}
                             required
                           />
@@ -258,6 +259,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         label="Start Time"
                         maxTime={endTime}
                         disabled={isDisable}
+                        minTime={minStartTime}
                       />
                     </div>
                     <div className="w-full">
