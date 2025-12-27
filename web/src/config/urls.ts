@@ -18,6 +18,7 @@ export const BASE = {
   AUTH: "/engineer/auth",
   ADMIN: "/admin",
   ADMIN_AUTH: "/admin/auth",
+  LANDING: "/landing",
 } as const;
 
 export const urls = {
@@ -140,6 +141,7 @@ export const urls = {
       manage_groups_addEngineer: "manage-groups/add-engineer",
     },
   },
+  ft_landing: { landing: "/landing" },
 } as const;
 
 // ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
@@ -261,4 +263,5 @@ export const absoluteUrls = {
       manage_groups_addEngineer: `${BASE.ADMIN}/manage-groups/add-engineer`,
     },
   },
+  ft_landing: { landing: `${BASE.LANDING}` },
 } as const;
