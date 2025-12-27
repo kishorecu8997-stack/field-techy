@@ -18,7 +18,6 @@ import {
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-import { experienceData } from "@/dummy_data";
 
 
 /**
@@ -190,7 +189,6 @@ const EditExperiences = () => {
           }}
         />
       </div>
-
 
       {/* Fixed bottom button */}
       <div className="bg-white ">
