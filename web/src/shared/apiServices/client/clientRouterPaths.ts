@@ -9,10 +9,9 @@ export const CLIENT_ROUTER_PATHS = {
   DELETE: (id: string) => `/client/api/v1/clients/delete/${id}`,
 
   // OTP endpoints
-  SEND_EMAIL_OTP: "/client/api/v1/clients/otp/send-email",
-  SEND_PHONE_OTP: "/client/api/v1/clients/otp/send-phone",
-  VERIFY_EMAIL_OTP: "/clients/verify-email-otp",
-  VERIFY_PHONE_OTP: "/clients/verify-phone-otp",
+  SEND_EMAIL_OTP: (email: string) => `/user/api/v1/users/otp/request/${email}`,
+  SEND_PHONE_OTP: (phone: string) => `/user/api/v1/users/otp/request/${phone}`,
+  VERIFY_OTP: (emailOrPhone: string, otp: string) => `/user/api/v1/users/otp/verify/${emailOrPhone}/${otp}`,
 
   // Dropdown data endpoints
   GET_STATES: "/clients/dropdown/states",
@@ -21,7 +20,7 @@ export const CLIENT_ROUTER_PATHS = {
   GET_VAT_OPTIONS: "/clients/dropdown/vat-options",
 
   // File upload endpoints
-  UPLOAD_FILE: (clientId: string) => `/clients/${clientId}/files/upload`,
+  UPLOAD_FILE: (clientId: string, documentType: string) => `/client/api/v1/clients/files/${clientId}/${documentType}/upload`,
   GET_FILES: (clientId: string) => `/clients/${clientId}/files`,
   DELETE_FILE: (fileId: string) => `/clients/files/${fileId}`,
   DOWNLOAD_FILE: (fileId: string) => `/clients/files/${fileId}/download`,

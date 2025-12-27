@@ -124,7 +124,7 @@ const VerificationCard = ({
                             </Button>
                         ) : (
                             <>
-                                <OTPInput name="otp" length={4} errorAlign="center" />
+                                <OTPInput name="otp" length={6} errorAlign="center" />
 
                                 <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5 px-1">
                                     <span>
@@ -135,8 +135,8 @@ const VerificationCard = ({
                                         onClick={handleSendOtp}
                                         disabled={timeLeft > 0 || isPending}
                                         className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
-                                                ? "opacity-50 cursor-not-allowed"
-                                                : ""
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
                                             }`}
                                     >
                                         Resend

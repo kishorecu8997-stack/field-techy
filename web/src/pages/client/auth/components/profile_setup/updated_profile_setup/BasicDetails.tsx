@@ -234,14 +234,7 @@ const BasicDetails = () => {
     });
   };
 
-  // Pre-fill form from store (for fields that might have been edited)
-  useEffect(() => {
-    // Only update if values exist in store (don't override with empty strings)
-    if (signupEmail && !formCtx.getValues("email"))
-      formCtx.setValue("email", signupEmail);
-    if (signupPhone && !formCtx.getValues("phone"))
-      formCtx.setValue("phone", signupPhone);
-  }, [signupEmail, signupPhone, formCtx]);
+
 
   // Helper to safely get value from string or Select option
   const getValue = (val: any) => {

@@ -6,8 +6,7 @@ import { useClientRegistrationStore } from "@/shared/store/useClientRegistration
 import {
   useSendEmailOTP,
   useSendPhoneOTP,
-  useVerifyEmailOTP,
-  useVerifyPhoneOTP,
+  useVerifyOtp,
 } from "@/shared/apiServices/client/clientService";
 
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -56,7 +55,7 @@ const VerificationCard = ({
   });
 
   const { isPending: isVerifyingEmail, mutate: verifyEmail } =
-    useVerifyEmailOTP({
+    useVerifyOtp({
       onSuccess: () => {
         toast.success("Email verified successfully");
         onVerifySuccess();
@@ -65,7 +64,7 @@ const VerificationCard = ({
     });
 
   const { isPending: isVerifyingPhone, mutate: verifyPhone } =
-    useVerifyPhoneOTP({
+    useVerifyOtp({
       onSuccess: () => {
         toast.success("Mobile number verified successfully");
         onVerifySuccess();
@@ -85,8 +84,11 @@ const VerificationCard = ({
   };
 
   const onSubmit = (data: { otp: string }) => {
-    if (type === "email") verifyEmail({ email: contact, otp: data.otp });
-    else verifyPhone({ phoneNumber: contact, otp: data.otp });
+    if (type === "email") verifyEmail({ emailOrPhone: contact, otp: data.otp });
+    else {
+      alert("in mobile")
+      verifyPhone({ emailOrPhone: contact, otp: data.otp });
+    }
   };
 
   const isPending =
@@ -124,7 +126,7 @@ const VerificationCard = ({
               </Button>
             ) : (
               <>
-                <OTPInput name="otp" length={4} errorAlign="center" />
+                <OTPInput name="otp" length={6} errorAlign="center" />
 
                 <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5 px-1">
                   <span>
@@ -134,11 +136,10 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${
-                      timeLeft > 0 || isPending
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                      }`}
                   >
                     Resend
                   </button>
@@ -163,30 +164,29 @@ const VerificationCard = ({
 const ContactVerification = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const clientId = searchParams.get("id");
+  const urlClientId = searchParams.get("id");
 
   const {
     email,
     phone,
+    clientId,
     setClientId,
     setSignupData,
-    emailVerified: storeEmailVerified,
-    mobileVerified: storePhoneVerified,
+    emailVerified,
+    mobileVerified,
   } = useClientRegistrationStore();
 
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-
-  // Sync with store
+  // Sync clientId from URL if needed
   useEffect(() => {
-    if (storeEmailVerified) setIsEmailVerified(true);
-    if (storePhoneVerified) setIsPhoneVerified(true);
-    if (clientId) setClientId(clientId);
-  }, [storeEmailVerified, storePhoneVerified, clientId, setClientId]);
+    if (urlClientId && urlClientId !== clientId) {
+      setClientId(urlClientId);
+    }
+  }, [urlClientId, clientId, setClientId]);
 
   const handleContinue = () => {
-    if (isEmailVerified && isPhoneVerified) {
-      const param = buildQuery({ id: clientId || "" });
+    if (emailVerified && mobileVerified) {
+      const finalId = clientId || urlClientId || "";
+      const param = buildQuery({ id: finalId });
       navigate(`${absoluteUrls.client.auth.documents}?${param}`);
     } else {
       toast.error("Please verify both email and mobile number");
@@ -209,9 +209,8 @@ const ContactVerification = () => {
           <VerificationCard
             type="email"
             contact={email}
-            isVerified={isEmailVerified}
+            isVerified={emailVerified}
             onVerifySuccess={() => {
-              setIsEmailVerified(true);
               setSignupData({ emailVerified: true });
             }}
           />
@@ -221,9 +220,8 @@ const ContactVerification = () => {
           <VerificationCard
             type="phone"
             contact={phone}
-            isVerified={isPhoneVerified}
+            isVerified={mobileVerified}
             onVerifySuccess={() => {
-              setIsPhoneVerified(true);
               setSignupData({ mobileVerified: true });
             }}
           />
@@ -235,7 +233,7 @@ const ContactVerification = () => {
           <Button
             onClick={handleContinue}
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            disabled={!isEmailVerified || !isPhoneVerified}
+            disabled={!emailVerified || !mobileVerified}
           >
             Continue
           </Button>

@@ -118,13 +118,13 @@ export function useSendPhoneOTP(options?: {
   });
 }
 
-export function useVerifyEmailOTP(options?: {
+export function useVerifyOtp(options?: {
   onSuccess?: (data: { message: string; verified: boolean }) => void;
   onError?: (error: any) => void;
 }) {
   return useMutation({
-    mutationFn: ({ email, otp }: { email: string; otp: string }) =>
-      ClientAdapter.verifyEmailOTP(email, otp),
+    mutationFn: ({ emailOrPhone, otp }: { emailOrPhone: string; otp: string }) =>
+      ClientAdapter.verifyOtp(emailOrPhone, otp),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });

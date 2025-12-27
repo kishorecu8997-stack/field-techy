@@ -29,6 +29,7 @@ export class ClientAdapter {
    */
   private static handleApiError(error: any): never {
     if (error.response) {
+      console.log("error ===>", error)
       const status = error.response.status;
       if (status === 400) {
         throw new Error("Invalid request details. Please check your inputs.");
@@ -105,51 +106,58 @@ export class ClientAdapter {
   // OTP Methods (Stubbed for now)
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP, { email });
-    // return response.data;
+    const urlEncodedEmail = encodeURIComponent(email);
+    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail));
+    return response.data;
 
-    // Stubbed response
-    console.log(`[STUB] Sending email OTP to: ${email}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: "OTP sent successfully to email" });
-      }, 1000);
-    });
+    // // Stubbed response
+    // console.log(`[STUB] Sending email OTP to: ${email}`);
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({ message: "OTP sent successfully to email" });
+    //   }, 1000);
+    // });
+  }
+
+  static async sendEmailMobileOtp(emailOrPhone: string): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone));
+    return response.data;
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_PHONE_OTP, { phoneNumber });
-    // return response.data;
+    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber));
+    return response.data;
 
     // Stubbed response
-    console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: "OTP sent successfully to phone" });
-      }, 1000);
-    });
+    // console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({ message: "OTP sent successfully to phone" });
+    //   }, 1000);
+    // });
   }
 
-  static async verifyEmailOTP(
-    email: string,
+  static async verifyOtp(
+    emailOrPhone: string,
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_EMAIL_OTP, { email, otp });
-    // return response.data;
+    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp));
+    return response.data;
 
     // Stubbed response - accepts any 4-digit OTP
-    console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (otp.length === 4) {
-          resolve({ message: "Email OTP verified successfully", verified: true });
-        } else {
-          reject(new Error("Invalid OTP"));
-        }
-      }, 800);
-    });
+    // console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     if (otp.length === 4) {
+    //       resolve({ message: "Email OTP verified successfully", verified: true });
+    //     } else {
+    //       reject(new Error("Invalid OTP"));
+    //     }
+    //   }, 800);
+    // });
   }
 
   static async verifyPhoneOTP(
@@ -270,14 +278,16 @@ export class ClientAdapter {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('documentType', documentType);
 
+    const path = CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType);
+    console.log(`Uploading file to: ${path}`)
     const response = await uploadAxiosInstance.post(
-      CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId),
+      path,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'X-USER': 'CLIENT',
+          "Content-Type": "multipart/form-data"
         },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
