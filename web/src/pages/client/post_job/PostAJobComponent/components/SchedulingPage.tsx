@@ -1,4 +1,5 @@
 import { repeatByOptions } from "@/dummy_data/client";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -7,19 +8,18 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
-import { useEffect,useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import {
   OccurrenceEndType,
   OccurrenceFields,
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
-import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -70,24 +70,27 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   }, [startDate, startTime, endDate, endTime]);
 
   const minStartTime = useMemo(() => {
-    if (startDate) {
-      const selectedDate = new Date(startDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const selectedDateOnly = new Date(selectedDate);
-      selectedDateOnly.setHours(0, 0, 0, 0);
-      if (selectedDateOnly.getTime() === today.getTime()) {
-        const now = new Date();
-        const hours24 = now.getHours();
-        const minutes = (now.getMinutes() + 1).toString().padStart(2, "0");
-        const period = hours24 >= 12 ? "PM" : "AM";
-        const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
-        const hours = hours12.toString().padStart(2, "0");
-        return `${hours}:${minutes} ${period}`;
-      }
-    }
-    return undefined;
-  }, [startDate]);
+  if (!applicationEndDate) return undefined;
+
+  const selectedDate = new Date(applicationEndDate);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate.getTime() === today.getTime()) {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 1); // handles rollover safely
+
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
+
+  return undefined;
+}, [applicationEndDate]);
+
 
   return (
     <>
