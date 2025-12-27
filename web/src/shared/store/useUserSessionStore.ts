@@ -3,9 +3,9 @@ import { persist } from 'zustand/middleware';
 
 export interface UserSession {
   userId: string;
-  displayName: string;
+  role: string;
   accessToken: string;
-  metadata: Record<string, string>;
+  // metadata: Record<string, string>;
 }
 
 interface UserSessionStore {

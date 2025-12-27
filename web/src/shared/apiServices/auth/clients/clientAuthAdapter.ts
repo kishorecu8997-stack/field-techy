@@ -26,11 +26,29 @@ export class ClientAuthAdapter {
     return response.data;
   }
 
-  static async verifyOtp(otp: string) {
+  // static async verifyOtp(otp: string) {
+  //   const response = await axiosInstance.post(
+  //     CLIENT_USER_AUTH_ROUTER_PATHS.VERIFYOTPCLIENT(otp)
+  //   );
+  //   return response.headers;
+  // }
+
+  static async verifyOtp(phoneOrEmail: string, otp: string) {
     const response = await axiosInstance.post(
-      CLIENT_USER_AUTH_ROUTER_PATHS.VERIFYOTPCLIENT(otp)
+      CLIENT_USER_AUTH_ROUTER_PATHS.VERIFYOTPCLIENT(otp),
+      { phoneOrEmail, password: "" }
     );
-    return response.data;
+    const userID = response.headers["user-id"];
+    const role = response.headers["x-user-type"];
+    const authorization = response.headers["authorization"];
+
+    const payload = {
+      userId: userID,
+      role: role,
+      accessToken: authorization,
+    };
+
+    return payload;
   }
 
   static async requestEmailVerificationOtp(email: string) {

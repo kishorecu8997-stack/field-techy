@@ -11,10 +11,7 @@ import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import { toast } from "react-toastify";
 import logo_light from "@/assets/logo/logo_light.svg";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import {
-  useUserSessionStore,
-  type UserSession,
-} from "@/shared/store/useUserSessionStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
   useReqMobileVerificationOtpMutation,
   useRequestVerificationOtpMutation,
@@ -58,6 +55,7 @@ const LoginWithNumber = ({
   const verifyOtpMutation = useVerifyOtpMutation();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [requestData, setRequestData] = useState<string | undefined>();
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
@@ -69,7 +67,8 @@ const LoginWithNumber = ({
   const otpfor = method.watch("otp");
 
   const handleSubmit = async (data: LoginFormData) => {
-    const value = data.phone || data.email;
+    const value = data.email ? data.email : data.phone;
+    setRequestData(value);
 
     await requestVerificationOtpMutation.mutateAsync(value, {
       onSuccess: async (resp) => {
@@ -85,27 +84,19 @@ const LoginWithNumber = ({
   };
 
   const handleOtpSubmission = async (otp: string) => {
-    const phone = method.getValues("phone");
     await verifyOtpMutation.mutateAsync(
-      { otp },
       {
-        onSuccess: async (resp) => {
-          console.log(`OTP Response: `, resp);
-          //TODO: integrate the otp stubbed version
-          const stubbedResponse: UserSession = {
-            accessToken: "something fake",
-            userId: "uuid-123",
-            displayName: "John Doe",
-            metadata: {},
-          };
-
+        phoneOrEmail: requestData as string,
+        otp,
+      },
+      {
+        onSuccess: (response) => {
           setIsOpen(false);
-          setUserSession(stubbedResponse);
+          setUserSession(response);
           navigate(absoluteUrls.client.home.dashboard);
           toast.success("Logged in successfully");
         },
-        onError: (error) => {
-          console.error(error);
+        onError: () => {
           toast.error("OTP Verification failed");
         },
       }

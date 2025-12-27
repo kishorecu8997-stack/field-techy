@@ -78,8 +78,11 @@ export function useVerifyOtpMutation(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: (data: { otp: string }) =>
-      EngineerAuthAdapter.verifyOtp(data.otp),
+    mutationFn: (data: {
+      phoneOrEmail: string;
+      otp: string;
+    }) =>
+      EngineerAuthAdapter.verifyOtp(data.phoneOrEmail, data.otp),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
