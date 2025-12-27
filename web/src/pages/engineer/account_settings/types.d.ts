@@ -19,6 +19,7 @@ export interface NotificationProps {
     | "proposal_received"
     | "application_viewed"
     | "view"
+    | "job_reminder"
     | "withdrawal";
   title: string;
   message: string;

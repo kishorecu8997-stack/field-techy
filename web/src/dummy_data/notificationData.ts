@@ -243,6 +243,15 @@ export const mockNotifications: NotificationProps[] = [
     icon: "📬",
     read: false,
   },
+  {
+    id: 102,
+    type: "job_reminder",
+    title: "5 Days Left",
+    message: '"Senior React Developer" starts soon, Apply now!',
+    jobTitle: "Senior React Developer",
+    timestamp: "2h ago",
+    icon: "📅",
+  },
 ];
 
 export const mockClientNotificationsData: NotificationProps[] = [
