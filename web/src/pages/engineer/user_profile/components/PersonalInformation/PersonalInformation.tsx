@@ -105,9 +105,8 @@ const PersonalInformation = () => {
           placeholder="Full Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          inputMode="string"
+          inputMode="string"  
           rules={{ validate: (v: string) => validateName(v) }}
-          inputMode="string"
         />
 
         <VerifiedPhoneInputField
