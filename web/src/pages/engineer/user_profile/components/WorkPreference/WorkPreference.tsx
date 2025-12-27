@@ -117,6 +117,7 @@ const WorkPreference = () => {
           placeholder="Hourly/Fixed Rate Preference"
           leftIcon={<CiWallet className="text-lg text-gray-500" />}
           required
+          allowedCharacters="currency"
           rules={{ validate: (v: string) => validateRate(v) }}
         />
       </div>

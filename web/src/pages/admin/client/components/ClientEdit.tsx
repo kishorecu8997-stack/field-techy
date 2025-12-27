@@ -110,7 +110,7 @@ const ClientEdit: React.FC = () => {
             name="contactPersonName"
             placeholder="Enter Contact Person Name"
             required
-            inputMode="string"
+            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
 
