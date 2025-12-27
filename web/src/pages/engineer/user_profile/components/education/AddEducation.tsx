@@ -125,6 +125,7 @@ const AddEducation = () => {
           name="passingYear"
           placeholder="Passing Year"
           required
+          allowedCharacters="numbers"
           rules={{ validate: (v: string) => validatePassingYear(v) }}
         />
       </div>

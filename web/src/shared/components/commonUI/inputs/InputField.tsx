@@ -40,9 +40,9 @@ export const InputField = ({
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
   showValidationCheck = false,
+  inputMode = "both", // default
   disabled = false,
   onChange,
-  inputMode = "both",
   allowedCharacters,
 }: InputFieldProps) => {
   const { control, trigger } = useFormContext();

@@ -67,6 +67,7 @@ const Withdraw = () => {
             label="Amount"
             inputMode="number"
             required
+            allowedCharacters="currency"
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);

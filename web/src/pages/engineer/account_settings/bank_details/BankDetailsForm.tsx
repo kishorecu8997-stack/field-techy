@@ -7,8 +7,7 @@ import {
   validateAddress,
   validateIBANForCountrywise,
   validateNameWithSpace,
-  validateSWIFTBank,
-  validateName,
+  validateSWIFTBank
 } from "../validation";
  
 /**
@@ -57,6 +56,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="IBAN"
             placeholder="IBAN"
             required
+            allowedCharacters="alphanumeric"
             rules={{ validate: validateIBANForCountrywise }}
           />
           <InputField
@@ -64,7 +64,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Swift Code"
             placeholder="SWIFT code"
             required
-           
+            allowedCharacters="alphanumeric"
             rules={{ validate: validateSWIFTBank }}
           />
         </div>

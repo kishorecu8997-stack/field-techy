@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
+import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import PaymentMethod, {
-} from "@/shared/components/commonUI/PaymentMethod";
-import { initialPaymentOptions } from "@/dummy_data/initialPaymentData";
-import { validateAmount, validatePaymentMethods } from "@/utils/validate";
 import type { SelectOption } from "@/shared/components/commonUI/inputs/type";
-import AddPaymentMethod from "@/shared/components/commonUI/AddPaymentMethod";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { toast } from "react-toastify";
+import PaymentMethod from "@/shared/components/commonUI/PaymentMethod";
 import type { PaymentCardOption } from "@/shared/components/type";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { validateAmount, validatePaymentMethods } from "@/utils/validate";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * @description Defines the shape of the form data for adding funds to the wallet.
@@ -32,7 +31,6 @@ const AddFund = () => {
    */
   const { setActiveKey } = useDrawerStore();
   const handleSubmit = (data: AddFundFormData) => {
-    console.log("data :", data);
     // TODO: Replace with actual submission logic (e.g., API call)
     toast.success(`Funds added successfully`);
     setActiveKey("clientWallet");
@@ -81,6 +79,7 @@ const AddFund = () => {
             name="amount"
             placeholder="Enter Amount e.g., $10"
             allowedCharacters="currency"
+            required
             rules={{ validate: (v: string) => validateAmount(v) }}
           />
           <div className="space-y-3">
