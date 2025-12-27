@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -22,7 +22,7 @@ interface EditSkillsProps {
  * @param {EditSkillsProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditSkills form component.
  */
-const EditSkills: React.FC<EditSkillsProps> = () => {
+const EditSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
@@ -92,6 +92,7 @@ const EditSkills: React.FC<EditSkillsProps> = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Skills Updated Successfully");
+            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

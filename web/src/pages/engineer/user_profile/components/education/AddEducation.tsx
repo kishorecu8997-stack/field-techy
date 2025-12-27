@@ -1,25 +1,20 @@
-import React from "react";
+import {
+  courses,
+  educationLevels,
+  majors,
+  universities,
+} from "@/dummy_data/engineer_profile/education-data";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validatePassingYear } from "../../Validate";
-import type { EducationFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
-import {
-  educationLevels,
-  courses,
-  universities,
-  majors,
-} from "@/dummy_data/engineer_profile/education-data";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { validatePassingYear } from "../../Validate";
+import type { EducationFormData } from "./types";
 
-interface AddEducationProps {
-  onMenuItemClick: (key: string) => void;
-  onClose: () => void;
-}
 
 /**
  * The AddEducation component renders a form for adding a new education entry.
@@ -51,6 +46,7 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Added Successfully");
+            console.log(data);
             close(true);
             setActiveKey("education");
           },

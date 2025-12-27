@@ -4,7 +4,8 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useVerifyEmailOTP, useVerifyPhoneOTP } from "@/shared/apiServices/client/clientService";
+import { } from "@/shared/apiServices/client/clientService";
+import { useVerifyEmailOTP, useVerifyPhoneOTP } from "@/shared/apiServices/engineer/engineerService";
 
 interface ClientOTPPageProps {
     header?: string;
