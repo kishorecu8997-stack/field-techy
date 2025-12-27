@@ -13,7 +13,6 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
 import type { PaymentCardOption } from "@/shared/components/type";
 
-
 /**
  * @description Defines the shape of the form data for adding funds to the wallet.
  */
@@ -26,20 +25,20 @@ export interface AddFundFormData {
  * @description A component that renders a form for adding funds to a user's wallet.
  * It includes fields for the amount and payment method selection.
  */
-const AddFund = () => {  
+const AddFund = () => {
   /**
    * @description Handles the submission of the add fund form.
    * @param {AddFundFormData} data - The data from the form.
    */
- const { setActiveKey } = useDrawerStore();
-  const handleSubmit = (data: AddFundFormData) => {    
-   console.log('data :', data);
-    // TODO: Replace with actual submission logic (e.g., API call)    
+  const { setActiveKey } = useDrawerStore();
+  const handleSubmit = (data: AddFundFormData) => {
+    console.log("data :", data);
+    // TODO: Replace with actual submission logic (e.g., API call)
     toast.success(`Funds added successfully`);
     setActiveKey("clientWallet");
   };
 
- const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const methods = useForm<AddFundFormData>({
     defaultValues: {
@@ -81,7 +80,7 @@ const AddFund = () => {
             label="Amount"
             name="amount"
             placeholder="Enter Amount e.g., $10"
-            required
+            allowedCharacters="currency"
             rules={{ validate: (v: string) => validateAmount(v) }}
           />
           <div className="space-y-3">
@@ -93,7 +92,7 @@ const AddFund = () => {
               onAddNew={handleAddNewCard}
               isOpen={isOpen}
               isShowRadio={true}
-              setIsOpen={setIsOpen}              
+              setIsOpen={setIsOpen}
               rules={{
                 validate: (v: SelectOption) => validatePaymentMethods(v),
               }}
@@ -103,17 +102,14 @@ const AddFund = () => {
 
         <div className="bg-white ">
           <Button
-            type="submit"             
+            type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Add Fund
           </Button>
         </div>
       </FormContainer>
-      <AddPaymentMethod
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
+      <AddPaymentMethod isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 };

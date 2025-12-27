@@ -1,9 +1,9 @@
+import { useState } from "react";
 import {
   Controller,
   useFormContext,
   type RegisterOptions,
 } from "react-hook-form";
-import { validateName } from "@/utils/validate";
 
 interface InputFieldProps {
   name: string;
@@ -18,10 +18,14 @@ interface InputFieldProps {
   inputClassName?: string;
   showValidationCheck?: boolean;
   disabled?: boolean;
-  onChange?: (value: any) => void;
-
-  /** NEW: controls allowed input characters */
+  onChange?: (value: string) => void;
   inputMode?: "number" | "string" | "both";
+  allowedCharacters?:
+    | "numbers"
+    | "numbers-dot"
+    | "alphanumeric"
+    | "digits-slash"
+    | "currency";
 }
 
 export const InputField = ({
@@ -38,9 +42,11 @@ export const InputField = ({
   showValidationCheck = false,
   disabled = false,
   onChange,
-  inputMode = "both", // default
+  inputMode = "both",
+  allowedCharacters,
 }: InputFieldProps) => {
-  const { control, trigger, setError, clearErrors } = useFormContext();
+  const { control, trigger } = useFormContext();
+  const [attemptedInvalid, setAttemptedInvalid] = useState(false);
 
   let requiredMessage: string | false = false;
   if (typeof required === "string") {
@@ -54,11 +60,42 @@ export const InputField = ({
     ...rules,
   };
 
+  // Email pattern
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "Please enter a valid email address",
       ...rules?.pattern,
+    };
+  }
+
+  // allowedCharacters validation
+  if (allowedCharacters) {
+    const patterns: Record<string, { regex: RegExp; message: string }> = {
+      numbers: { regex: /^[0-9]*$/, message: "Only numbers are allowed." },
+      "numbers-dot": {
+        regex: /^[0-9.]*$/,
+        message: "Only numbers and '.' are allowed.",
+      },
+      alphanumeric: {
+        regex: /^[a-zA-Z0-9]*$/,
+        message: "Only letters and numbers are allowed.",
+      },
+      "digits-slash": {
+        regex: /^[0-9/]*$/,
+        message: "Only digits and '/' are allowed.",
+      },
+      currency: {
+        regex: /^[0-9.$]*$/,
+        message: "Only numbers, '.' and '$' are allowed.",
+      },
+    };
+
+    const { regex, message } = patterns[allowedCharacters];
+
+    validationRules.validate = {
+      ...(rules?.validate ?? {}),
+      allowedCharacters: (v: string) => regex.test(v) || message,
     };
   }
 
@@ -111,21 +148,27 @@ export const InputField = ({
                 placeholder={placeholder || label}
                 disabled={disabled}
                 onChange={async (e) => {
-                  const value = e.target.value;
+                  let value = e.target.value;
 
-                  // prevent invalid typing based on inputMode
-                  if (!allowInput(value)) {
-                    // For string mode, show error message immediately
-                    if (inputMode === "string") {
-                      const validationResult = validateName(value);
-                      if (validationResult !== true) {
-                        setError(name, {
-                          type: "pattern",
-                          message: validationResult,
-                        });
-                      }
-                    }
-                    return;
+                  // Restrict input based on `inputMode`
+                  if (!allowInput(value)) return;
+
+                  // Sanitization for allowedCharacters
+                  if (allowedCharacters) {
+                    const sanitizeMap: Record<string, RegExp> = {
+                      numbers: /[^0-9]/g,
+                      "numbers-dot": /[^0-9.]/g,
+                      alphanumeric: /[^a-zA-Z0-9]/g,
+                      "digits-slash": /[^0-9/]/g,
+                      currency: /[^0-9.$]/g,
+                    };
+
+                    const cleaned = value.replace(
+                      sanitizeMap[allowedCharacters],
+                      ""
+                    );
+                    setAttemptedInvalid(cleaned !== value);
+                    value = cleaned;
                   }
 
                   field.onChange(value);
@@ -135,7 +178,7 @@ export const InputField = ({
                   try {
                     await trigger(name);
                   } catch (err) {
-                    // ignore
+                    console.log("Error:", err);
                   }
                 }}
                 onBlur={(e) => {
@@ -168,9 +211,26 @@ export const InputField = ({
               )}
             </div>
 
+            {/* RHF validation error */}
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                 {error.message}
+              </p>
+            )}
+
+            {/* Inline error for attempted invalid input */}
+            {attemptedInvalid && allowedCharacters && (
+              <p className="mt-1 text-sm text-red-600" role="alert">
+                {allowedCharacters === "numbers" &&
+                  "This field may contain numbers only."}
+                {allowedCharacters === "numbers-dot" &&
+                  "Only numbers and '.' are allowed."}
+                {allowedCharacters === "alphanumeric" &&
+                  "Only letters and numbers are allowed."}
+                {allowedCharacters === "digits-slash" &&
+                  "Only digits and '/' are allowed."}
+                {allowedCharacters === "currency" &&
+                  "Only numbers, '.' and '$' are allowed."}
               </p>
             )}
           </>
