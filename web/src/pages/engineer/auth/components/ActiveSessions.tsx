@@ -19,6 +19,14 @@ interface ActiveSessionsProps {
   onLogout?: (sessionIds: string[]) => void;
 }
 
+/**
+ * ActiveSessions Component
+ * Displays a list of active sessions for the user, with the ability to log out of selected sessions.
+ * It uses the `react-hook-form` library for form handling and state management.
+ * 
+ * @param param0
+ * @returns
+ */
 const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   itemsPerPage = 4,
   onLogout,
