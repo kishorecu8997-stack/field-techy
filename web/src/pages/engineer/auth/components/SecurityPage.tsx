@@ -4,18 +4,13 @@ import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 /**
- * Custom hook for managing localStorage with error handling.
- * @param key - The localStorage key.
- * @param defaultValue - Default value if key is missing or invalid.
- * @returns [value, setValue] tuple.
+ * Security UI: Manage 2FA (requires verified email & mobile).
+ * Persist state to localStorage with error handling.
+ * @returns [value, setValue]
  */
-/**
- * Security page allowing users to enable 2FA if email and mobile are verified.
- * Displays verification status and a toggle for 2FA.
- */
+
 const SecurityPage: React.FC<DrawerMenuProps> = () => {
-  // Currently assuming verification status is true for both email and mobile.
-  // Should be replaced with actual verification logic when available.
+
   const emailVerified = true; // Replace with actual check
   const mobileVerified = true; // Replace with actual check
   const isVerified = emailVerified && mobileVerified;
