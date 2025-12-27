@@ -8,12 +8,12 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import {
   OccurrenceEndType,
   OccurrenceFields,
@@ -445,8 +445,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -458,6 +457,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select start date"
                             {...field}
                             required
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             maxDate={endDate ? endDate : null}
                           />
                         </>
@@ -471,6 +471,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       required
                       maxTime={endTime}
                       disabled={isDisable}
+                      minTime={minStartTime}
                     />
                   </div>
                 </div>
@@ -479,8 +480,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="endDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("endDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
