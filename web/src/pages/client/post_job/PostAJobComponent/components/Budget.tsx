@@ -15,7 +15,7 @@ const Budget = ({ isDisable }: { isDisable: boolean }) => {
       <InputField
         disabled={isDisable}
         required
-        inputMode="number"
+        allowedCharacters="numbers-dot"
         name="budget"
         label="Estimated Budget"
         placeholder="e.g. $50,000"

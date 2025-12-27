@@ -30,7 +30,9 @@ interface ClientPersonalInformationProps {
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({ onMenuItemClick }) => {
+const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
+  onMenuItemClick,
+}) => {
   /**
    * Initializes `react-hook-form` with default values for the personal information form.
    */
@@ -59,7 +61,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({ o
     console.log("Form submitted with data:", data);
     toast.success("Profile Updated Successfully");
     onMenuItemClick("clientAccount");
-    
+
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 
@@ -92,7 +94,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({ o
           placeholder="Contact Person Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          inputMode="string" 
+          allowedCharacters="string"
           rules={{ validate: (v: string) => validateName(v) }}
         />
         <VerifiedPhoneInputField

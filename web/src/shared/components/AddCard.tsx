@@ -99,6 +99,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               placeholder="9999 9999 9999 9999"
               rules={{ validate: (v: string) => cardNumberValidation(v) }}
               required
+              allowedCharacters="numbers"
             />
           </div>
 
@@ -110,6 +111,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 placeholder="MM/YY"
                 rules={{ validate: (v: string) => expiryDateValidation(v) }}
                 required
+                allowedCharacters="digits-slash"
               />
             </div>
             <div>

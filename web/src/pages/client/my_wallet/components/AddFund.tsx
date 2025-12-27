@@ -30,7 +30,7 @@ const AddFund = () => {
    * @param {AddFundFormData} data - The data from the form.
    */
   const { setActiveKey } = useDrawerStore();
-  const handleSubmit = (data: AddFundFormData) => {
+  const handleSubmit = () => {
     // TODO: Replace with actual submission logic (e.g., API call)
     toast.success(`Funds added successfully`);
     setActiveKey("clientWallet");

@@ -6,10 +6,10 @@ import {
   validateAccNumber,
   validateAddress,
   validateIBANForCountrywise,
+  validateSWIFTBank,
   validateNameWithSpace,
-  validateSWIFTBank
 } from "../validation";
- 
+
 /**
  * Reusable form component for adding or editing bank details, with fields for bank name, account number,
  * SWIFT code, address, IBAN, and account holder name. Submit button text adapts based on `formType`.
@@ -38,7 +38,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Name"
             placeholder="Name"
             required
-            inputMode="string"
+            allowedCharacters="string"
             rules={{
               validate: (value) => validateNameWithSpace(value),
             }}
@@ -48,7 +48,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Account Number"
             placeholder="Account number"
             required
-         
+            allowedCharacters="numbers"
             rules={{ validate: validateAccNumber }}
           />
           <InputField
@@ -80,5 +80,5 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
     </div>
   );
 };
- 
+
 export default BankDetailsForm;

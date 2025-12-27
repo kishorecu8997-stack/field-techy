@@ -25,8 +25,18 @@ interface InputFieldProps {
     | "numbers-dot"
     | "alphanumeric"
     | "digits-slash"
-    | "currency";
+    | "currency"
+    | "string";
 }
+
+/**
+ * InputField - A reusable input component for react-hook-form.
+ *
+ * Supports text, email, number, and date types.
+ * Integrates with react-hook-form using Controller.
+ * Shows a * if required.
+ * Supports left icons and custom styling.
+ */
 
 export const InputField = ({
   name,
@@ -40,7 +50,6 @@ export const InputField = ({
   containerClassName = "flex flex-col py-1 w-full",
   inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
   showValidationCheck = false,
-  inputMode = "both", // default
   disabled = false,
   onChange,
   allowedCharacters,
@@ -99,19 +108,6 @@ export const InputField = ({
     };
   }
 
-  /** Restriction logic based on inputMode */
-  const allowInput = (value: string) => {
-    if (inputMode === "number") {
-      return /^\d*\.?\d*$/.test(value);
-    }
-
-    if (inputMode === "string") {
-      return /^[A-Za-z\s]*$/.test(value); // Only letters
-    }
-
-    return true; // both allowed
-  };
-
   return (
     <div className={containerClassName}>
       {isShowLabel && (
@@ -149,9 +145,6 @@ export const InputField = ({
                 disabled={disabled}
                 onChange={async (e) => {
                   let value = e.target.value;
-
-                  // Restrict input based on `inputMode`
-                  if (!allowInput(value)) return;
 
                   // Sanitization for allowedCharacters
                   if (allowedCharacters) {
@@ -228,9 +221,9 @@ export const InputField = ({
                 {allowedCharacters === "alphanumeric" &&
                   "Only letters and numbers are allowed."}
                 {allowedCharacters === "digits-slash" &&
-                  "Only digits and '/' are allowed."}
+                  "Please enter a valid date format."}
                 {allowedCharacters === "currency" &&
-                  "Only numbers, '.' and '$' are allowed."}
+                  "Please enter a valid currency amount."}
               </p>
             )}
           </>
