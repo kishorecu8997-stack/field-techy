@@ -24,7 +24,8 @@ interface InputFieldProps {
     | "numbers-dot"
     | "alphanumeric"
     | "digits-slash"
-    | "currency";
+    | "currency"
+    | "string";
 }
 
 /**
@@ -168,7 +169,7 @@ export const InputField = ({
                   try {
                     await trigger(name);
                   } catch (err) {
-                    // ignore
+                    console.log("err :", err);
                   }
                 }}
                 onBlur={(e) => {

@@ -8,7 +8,6 @@ import {
   validateIBANForCountrywise,
   validateName,
   validateSWIFTBank,
-  validateName,
 } from "../validation";
 
 /**
