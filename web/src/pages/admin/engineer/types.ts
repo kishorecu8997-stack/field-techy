@@ -68,8 +68,38 @@ export interface ManageEngineerProps {
   registrationDate: string;
   walletBalance: string;
   kycStatus: string;
-  employementStatus: string;
+  employmentStatus: string;
   avgRating: number;
   approvalStatus: string;
+  lastActiveOn?: string;
+  suspendFrom?: string;
+  suspendTo?: string;
+  suspendReason?: string;
+  suspendBy?: string;
+  suspendOn?: string;
+  currentStatus?: string;
+}
+export interface SuspendEngineerFormData {
+  suspendStartDate: Date | null;
+  suspendEndDate: Date | null;
+  reason: string;
 }
 
+export interface BlockEngineerFormData {
+  reason: string;
+}
+
+export const SUSPEND_ENGINEER_DEFAULT_VALUES: SuspendEngineerFormData = {
+  suspendStartDate: null,
+  suspendEndDate: null,
+  reason: "",
+};
+export interface ActionMenuProps {
+  row: ManageEngineerProps;
+  showAction: number | null;
+  setShowAction: (v: number | null) => void;
+  handleDelete: (row: ManageEngineerProps) => void;
+  setIsSuspend: (v: boolean) => void;
+  setIsBlock: (v: boolean) => void;
+}
+export type DropdownDirection = "up" | "down";
