@@ -22,7 +22,6 @@ import type { EducationFormData } from "./types";
  * @param {EditEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered EditEducation form component.
  */
-
 const EditEducation = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();

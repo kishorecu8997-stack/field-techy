@@ -1,27 +1,21 @@
-import React from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
+import {
+  validateMajorSubject,
+  validatePassingYear,
+  validateUniversity,
+} from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import {
   educationLevels,
-  courses
+  courses,
 } from "@/dummy_data/engineer_profile/education-data";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { validatePassingYear } from "../../Validate";
-import type { EducationFormData } from "./types";
-
 
 /**
  * The AddEducation component renders a form for adding a new education entry.
@@ -62,7 +56,6 @@ const AddEducation = () => {
     });
   };
 
-  
   const methods = useForm<EducationFormData>({
     defaultValues: {
       educationLevel: "",
@@ -80,7 +73,6 @@ const AddEducation = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
-      
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <SelectField
           label="Education Level"
@@ -106,16 +98,15 @@ const AddEducation = () => {
           required
         />
 
-
-         <InputField 
+        <InputField
           label="University"
           isShowLabel={true}
           name="university"
           placeholder="Enter university name (e.g., University of Example)"
           aria-required="true"
           required
-          rules={{ validate: (v: string ) => validateUniversity(v) }}
-      />
+          rules={{ validate: (v: string) => validateUniversity(v) }}
+        />
 
         <InputField
           label="Major Subject"
@@ -125,7 +116,7 @@ const AddEducation = () => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateMajorSubject(v) }}
-      />
+        />
 
         <InputField
           label="Passing Year"
