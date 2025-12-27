@@ -9,7 +9,7 @@ export const ENGINEER_ROUTER_PATHS = {
   REQ_OTP: (emailorPhone: string) => `/user/api/v1/users/otp/request/${emailorPhone}`,
 
   // verify email and phone otp endpoints
-  VERIFY_OTP:(emailorPhone: string, otp: string) => `/eng/api/v1/engineers/otp/verify/${emailorPhone}/${otp}`,
+  VERIFY_OTP:(emailorPhone: string, otp: string) => `/user/api/v1/users/otp/verify/${emailorPhone}/${otp}`,
   GET_FILES: (id: string) => `/eng/api/v1/engineers/files/${id}`,
   DOWNLOAD_FILE: (fileKey: string) => `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
   UPLOAD_FILE: (engineerId: string, documentType: string) =>

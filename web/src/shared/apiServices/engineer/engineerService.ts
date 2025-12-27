@@ -48,17 +48,11 @@ export function useEngineerDelete(options?: {
 export function useEngineerFileUpload(options?: {
     onSuccess?: (data: FileUploadResponse) => void;
     onError?: (error: unknown) => void;
+    onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
 }) {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (params: FileUploadParams) => EngineerAdapter.uploadFile(params),
-        onSuccess: (data, variables) => {
-            // Invalidate the engineer detail query to refetch updated file references
-            queryClient.invalidateQueries({
-                queryKey: queryKeys.engineer.detail(variables.engineerId)
-            });
-            options?.onSuccess?.(data);
-        },
+        onSuccess: options?.onSuccess,
         onError: options?.onError,
     });
 }
