@@ -73,6 +73,7 @@ export default function Commission() {
             name="commission"
             label="Set Commission(%)"
             required
+            allowedCharacters="currency"
             rules={{ validate: (v: string) => CommissionValidation(v) }}
           />
         </div>

@@ -1,5 +1,4 @@
-import React from "react";
-import { InputField } from "./commonUI/inputs";
+import countries from "@/dummy_data/countriesCard";
 import {
   cardNumberValidation,
   countryValidation,
@@ -7,14 +6,15 @@ import {
   expiryDateValidation,
   validateAddress,
 } from "@/utils/validate";
-import SelectField from "./commonUI/inputs/SelectField";
-import { Button } from "./commonUI/Buttons";
-import { HiOutlinePlusSmall } from "react-icons/hi2";
-import countries from "@/dummy_data/countriesCard";
-import { AiOutlineClose } from "react-icons/ai";
-import { FormContainer } from "./commonUI/inputs/FormContainer";
+import React from "react";
 import { useForm } from "react-hook-form";
+import { AiOutlineClose } from "react-icons/ai";
+import { HiOutlinePlusSmall } from "react-icons/hi2";
 import { toast } from "react-toastify";
+import { Button } from "./commonUI/Buttons";
+import { InputField } from "./commonUI/inputs";
+import { FormContainer } from "./commonUI/inputs/FormContainer";
+import SelectField from "./commonUI/inputs/SelectField";
 
 /**
  * Interface for the card form data.
@@ -119,6 +119,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
                 required
+                allowedCharacters="numbers"
               />
             </div>
           </div>
