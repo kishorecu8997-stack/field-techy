@@ -21,6 +21,7 @@ import { AiOutlineClose } from "react-icons/ai";
  * @property {string} country - Selected country value/label.
  * @property {string} address - Billing address for the card.
  */
+
 export interface CardFormData {
   cardNumber: string;
   expDate: string;
@@ -35,17 +36,12 @@ export interface CardFormData {
  * @property {() => void} onClose - Called when the dialog should be closed.
  * @property {(cardData: CardFormData) => void} onAddCard - Called with validated card data when user submits.
  */
+
 interface AddCardProps {
   onClose: () => void;
   onAddCard: (cardData: CardFormData) => void;
 }
 
-/**
- * AddCard component
- *
- * Renders a small form for adding a payment card. When the form is
- * validated successfully, `onAddCard` is invoked with the typed values.
- */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   const methods = useForm<CardFormData>({
     defaultValues: {
@@ -55,13 +51,15 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
       country: "",
       cardAddress: "",
     },
+    
   });
 
-  // form submission
+   // form submission
   /**
    * Validate the form and call `onAddCard` with the collected values when valid.
    * Uses react-hook-form's `trigger` to run validation for all registered fields.
    */
+
   const handleAddCard = async () => {
     const isValid = await methods.trigger();
     if (isValid) {
@@ -87,6 +85,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
           placeholder="9999 9999 9999 9999"
           rules={{ validate: (v: string) => cardNumberValidation(v) }}
           required
+          allowedCharacters="numbers"
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -96,13 +95,16 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="MM/YY"
             rules={{ validate: (v: string) => expiryDateValidation(v) }}
             required
+            allowedCharacters="digits-slash"
           />
+
           <InputField
             label="CVV"
             name="cvv"
             placeholder="Enter CVV"
             rules={{ validate: (v: string) => cvvValidation(v) }}
             required
+            allowedCharacters="numbers"
           />
         </div>
 

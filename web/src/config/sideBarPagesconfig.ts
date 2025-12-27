@@ -51,6 +51,7 @@ import EditProjectMember from "@/pages/client/my_projects/createProject/componen
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
 import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
+import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -185,8 +186,13 @@ export const sectionConfig: Record<
     parent: "manageBankAccounts",
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
-  myEarning: { component: MyEarning, title: "My Earning",  },
-  withdraw: { component: Withdraw, title: "Withdraw", parent :"myEarning"  },
+  NotificationPreferences: {
+    component: NotificationPreferences,
+    title: "Notification",
+    parent: "settings",
+  },
+  myEarning: { component: MyEarning, title: "My Earning" },
+  withdraw: { component: Withdraw, title: "Withdraw", parent: "myEarning" },
   notification: {
     component: NotificationPage,
     title: "Notification",
