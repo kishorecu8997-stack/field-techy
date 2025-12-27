@@ -24,11 +24,14 @@ export interface NotificationProps {
   message: string;
   jobTitle?: string;
   location?: string;
+  requiresConfirmation?: boolean;
+  confirmationStatus?: "pending" | "confirmed" | "declined";
   client?: string;
   payment?: string;
   duration?: string;
   timestamp: string; // e.g., "1h", "2d"
   icon?: string; // emoji or icon identifier
+  read: boolean;
 }
 
 export interface GroupedNotifications {
