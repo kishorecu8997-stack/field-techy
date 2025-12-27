@@ -26,7 +26,7 @@ const Popup = ({
   open,
   onClose,
   children,
-  inputClassName = "sm:max-w-md sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto",
+  inputClassName = "w-full max-w-sm sm:max-w-md rounded-lg shadow-xl bg-white dark:bg-gray-800 flex flex-col max-h-screen h-auto",
 }: PopupProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 

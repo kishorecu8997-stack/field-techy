@@ -75,6 +75,7 @@ const ChangePassword = () => {
       </div>
     </FormContainer>
   );
+
 };
 
 export default ChangePassword;

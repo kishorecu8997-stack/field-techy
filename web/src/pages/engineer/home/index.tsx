@@ -20,31 +20,24 @@ import { scrollToTop } from "@/utils";
 const Home = () => {
   const navigate = useNavigate();
   const [accessPopup, setAccessPopup] = useState(false);
-
   const handleExploreJobs = () => {
     scrollToTop();
     navigate(absoluteUrls.engineer.home.explore_jobs);
   };
-
   const currentPage = 1;
   const totalPages = 1;
-
   const handlePageChange = (page: number) => {
     console.log("Page changed to: ", page);
   };
-
   const findNewJobs = sampleJobs.filter((job) => {
     return job.status === "new";
   });
-
-  const recommendedJobs  = findNewJobs.filter((job) => {
+  const recommendedJobs = findNewJobs.filter((job) => {
     return job.place === "recommended";
   });
-
   const featuredJobs = findNewJobs.filter((job) => {
     return job.place === "featured";
   });
-
 
   useEffect(() => {
     const locationPermission = localStorage.getItem("location_permission");

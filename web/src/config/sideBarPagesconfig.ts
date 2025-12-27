@@ -52,6 +52,8 @@ import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
 import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
 import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
+import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
+import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -186,6 +188,11 @@ export const sectionConfig: Record<
     parent: "manageBankAccounts",
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
+  NotificationPreferences: {
+    component: NotificationPreferences,
+    title: "Notification",
+    parent: "settings",
+  },
   myEarning: { component: MyEarning, title: "My Earning" },
   withdraw: { component: Withdraw, title: "Withdraw", parent: "myEarning" },
   notification: {
@@ -205,6 +212,11 @@ export const sectionConfig: Record<
   clientNotification: {
     component: ClientNotification,
     title: "Notification",
+  },
+  activeSessions: {
+    component: ActiveSessions,
+    title: "Active Sessions",
+    parent: "settings",
   },
 
   //client
