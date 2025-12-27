@@ -59,6 +59,7 @@ const EditEducation = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Updated Successfully");
+            console.log(data);
             close(true);
             setActiveKey("education");
           },
@@ -132,6 +133,7 @@ const EditEducation = () => {
           name="year"
           placeholder="Passing Year"
           required
+          allowedCharacters="numbers"
           rules={{ validate: (v: string) => validatePassingYear(v) }}
         />
       </div>

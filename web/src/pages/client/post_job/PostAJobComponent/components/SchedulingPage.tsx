@@ -1,4 +1,5 @@
 import { repeatByOptions } from "@/dummy_data/client";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -7,7 +8,8 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { getDurationString } from "@/utils";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
+import { getDurationString, getMinTentativeEndDate } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { useEffect, useMemo } from "react";
@@ -18,7 +20,6 @@ import {
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
-import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -102,6 +103,29 @@ useEffect(() => {
   }
   return { min: undefined, max: undefined };
 }, [tentativeStartDate, currentLocation]);
+  
+  const minStartTime = useMemo(() => {
+  if (!applicationEndDate) return undefined;
+
+  const selectedDate = new Date(applicationEndDate);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate.getTime() === today.getTime()) {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 1); // handles rollover safely
+
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
+
+  return undefined;
+}, [applicationEndDate]);
+
 
   return (
     <>
@@ -246,8 +270,7 @@ useEffect(() => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
@@ -256,6 +279,7 @@ useEffect(() => {
                             disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             {...field}
                             required
                           />
@@ -271,6 +295,7 @@ useEffect(() => {
                         label="Start Time"
                         maxTime={endTime}
                         disabled={isDisable}
+                        minTime={minStartTime}
                       />
                     </div>
                     <div className="w-full">
@@ -456,8 +481,7 @@ useEffect(() => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -469,6 +493,7 @@ useEffect(() => {
                             placeholder="Select start date"
                             {...field}
                             required
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             maxDate={endDate ? endDate : null}
                           />
                         </>
@@ -482,6 +507,7 @@ useEffect(() => {
                       required
                       maxTime={endTime}
                       disabled={isDisable}
+                      minTime={minStartTime}
                     />
                   </div>
                 </div>
@@ -490,8 +516,7 @@ useEffect(() => {
                     <Controller
                       name="endDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("endDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (

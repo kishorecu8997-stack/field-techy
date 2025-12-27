@@ -7,13 +7,14 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { bankDetails } from "../types";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
  */
 const Withdraw = () => {
   const { showPopup } = usePopupStore();
-
+  const { setISOpenSidebar } = useDrawerStore();
   const FormCtx = useForm<bankDetails>({
     mode: "onSubmit",
   });
@@ -37,6 +38,7 @@ const Withdraw = () => {
             console.log("Submitted data:", data);
             toast.success("Withdrawal initiated successfully");
             close(true);
+            setISOpenSidebar(false);
           },
         },
       ],
@@ -65,6 +67,7 @@ const Withdraw = () => {
             label="Amount"
             inputMode="number"
             required
+            allowedCharacters="currency"
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);
