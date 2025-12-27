@@ -107,7 +107,6 @@ const PersonalInformation = () => {
           required
           inputMode="string"  
           rules={{ validate: (v: string) => validateName(v) }}
-          inputMode="string"
         />
 
         <VerifiedPhoneInputField
