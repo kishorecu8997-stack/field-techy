@@ -3,7 +3,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange,validateEndDate } from "../../../Validate";
+import { validateCompany, validateDateRange, validateEndDate } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -44,7 +44,6 @@ const AddExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("experiences");
           },
@@ -125,7 +124,7 @@ const AddExperiences = () => {
               validateDateRange(value, methods.getValues("endDate")),
           }}
         />
-        
+
         <DatePickerInput
           name="endDate"
           label="End Date"
@@ -137,7 +136,7 @@ const AddExperiences = () => {
             onChange: () => methods.trigger("startDate"),
             validate: validateEndDate,
           }}
-/>
+        />
 
       </div>
 

@@ -66,7 +66,6 @@ const EditTools: React.FC<EditToolsProps> = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Tools Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

@@ -51,7 +51,6 @@ const AddTools = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Tools Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

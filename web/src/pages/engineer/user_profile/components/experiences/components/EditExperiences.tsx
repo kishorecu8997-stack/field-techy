@@ -47,7 +47,6 @@ const EditExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("experiences");
           },

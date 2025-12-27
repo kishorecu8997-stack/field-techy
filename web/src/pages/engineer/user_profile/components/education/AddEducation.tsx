@@ -22,7 +22,7 @@ import type { EducationFormData } from "./types";
  * @param {AddEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC<AddEducationProps> = ({ }) => {
+const AddEducation: React.FC = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
@@ -46,7 +46,6 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("education");
           },
