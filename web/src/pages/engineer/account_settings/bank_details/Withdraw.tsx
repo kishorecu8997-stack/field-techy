@@ -65,7 +65,7 @@ const Withdraw = () => {
           <InputField
             name="amount"
             label="Amount"
-            inputMode="number"
+            allowedCharacters="numbers"
             required
             allowedCharacters="currency"
             rules={{
