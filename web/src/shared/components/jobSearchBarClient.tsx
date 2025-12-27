@@ -20,7 +20,7 @@ export const JobSearchBarClient = () => {
 
   return (
     <FormContainer
-      onSubmit={() => {}}
+      onSubmit={() => { }}
       methods={methods}
       className="flex items-center w-full max-w-xl mx-auto bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden shadow-sm z-0"
     >
@@ -32,7 +32,10 @@ export const JobSearchBarClient = () => {
           containerClassName="flex-1 py-0"
           onChange={() => navigate(absoluteUrls.client.home.search_result)}
           inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
+          onChange={() => navigate(absoluteUrls.client.home.search_result)}
         />
+
+
         <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
         <InputField
           name="location"

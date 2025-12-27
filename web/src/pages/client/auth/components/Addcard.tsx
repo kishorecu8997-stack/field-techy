@@ -104,7 +104,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="Enter CVV"
             rules={{ validate: (v: string) => cvvValidation(v) }}
             required
-            allowedCharacters="numbers" 
+            allowedCharacters="numbers"
           />
         </div>
 

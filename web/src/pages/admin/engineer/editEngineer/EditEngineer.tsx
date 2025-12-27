@@ -146,7 +146,7 @@ export default function EditEngineer() {
         <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
         <Button
           variant="solid"
-          onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
+          onClick={() => navigate(-1)}
         >
           Back
         </Button>

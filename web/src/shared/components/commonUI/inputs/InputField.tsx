@@ -19,6 +19,7 @@ interface InputFieldProps {
   showValidationCheck?: boolean;
   disabled?: boolean;
   onChange?: (value: string) => void;
+  inputMode?: "number" | "string" | "both";
   allowedCharacters?:
     | "numbers"
     | "numbers-dot"
@@ -68,6 +69,7 @@ export const InputField = ({
     ...rules,
   };
 
+  // Email pattern
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -169,7 +171,7 @@ export const InputField = ({
                   try {
                     await trigger(name);
                   } catch (err) {
-                    console.log("err :", err);
+                    console.log("Error:", err);
                   }
                 }}
                 onBlur={(e) => {

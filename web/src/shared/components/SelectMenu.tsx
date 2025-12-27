@@ -110,7 +110,7 @@ const SelectMenu = ({
       <div
         ref={triggerRef}
         onClick={toggleDropdown}
-        className={`flex space-x-2 items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
+        className={`flex space-x-2 items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-800 rounded-md
          ${
            badge ? `${selectedOption?.bg ?? ""}` : "bg-white dark:bg-gray-800"
          } cursor-pointer hover:border-gray-400 min-w-[120px]`}
