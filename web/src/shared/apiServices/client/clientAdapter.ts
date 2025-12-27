@@ -11,7 +11,6 @@ import type {
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
 
-
 /*
  * ClientAdapter
  *
@@ -95,7 +94,10 @@ export class ClientAdapter {
   }
 
   static async update(id: string, data: ClientData): Promise<ClientData> {
-    const response = await axiosInstance.put(CLIENT_ROUTER_PATHS.UPDATE(id), data);
+    const response = await axiosInstance.put(
+      CLIENT_ROUTER_PATHS.UPDATE(id),
+      data
+    );
     return response.data;
   }
 

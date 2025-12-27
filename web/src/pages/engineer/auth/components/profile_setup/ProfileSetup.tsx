@@ -173,7 +173,6 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Portfolio Link"
         leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
-        //rules={{ validate: (v: string) => validatePortfolio(v, country) }}
         rules={{ validate: (v: string) => validatePortfolioLink(v) }}
       />
       <SelectField

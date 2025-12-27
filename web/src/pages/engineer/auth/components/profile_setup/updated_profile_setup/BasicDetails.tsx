@@ -4,14 +4,14 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import BasicDetailsFields from "./BasicDetailsFields";
 import SetPassword from "../SetPassword"; // Resuing existing
+import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
-import { buildQuery } from "@/utils";
 
 /**
  * A component that represents the main profile setup step for engineers.
@@ -41,7 +41,6 @@ const BasicDetails = () => {
     updateProfileData,
     setEngineerId,
     markStepCompleted,
-    clearStore: resetStore,
   } = useEngineerRegistrationStore();
 
   const formCtx = useForm<EngineerBasicDetails>({

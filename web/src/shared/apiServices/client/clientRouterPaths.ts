@@ -13,6 +13,11 @@ export const CLIENT_ROUTER_PATHS = {
   SEND_PHONE_OTP: (phone: string) => `/user/api/v1/users/otp/request/${phone}`,
   VERIFY_OTP: (emailOrPhone: string, otp: string) => `/user/api/v1/users/otp/verify/${emailOrPhone}/${otp}`,
 
+  // signin otp endpoints
+
+  CLI_SIGNIN: (otp: string) => `/api/v1/users/clt/signin/by-otp/${otp}`,
+  ADMIN_SIGNIN: (otp: string) => `/api/v1/users/adm/signin/by-otp/${otp}`,
+
   // Dropdown data endpoints
   GET_STATES: "/clients/dropdown/states",
   GET_CITIES: "/clients/dropdown/cities",
