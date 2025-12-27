@@ -39,8 +39,9 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Name"
             placeholder="Name"
             required
+            inputMode="string"
             rules={{
-              validate: (value) => validateNameWithSpace(value, "Name"),
+              validate: (value) => validateNameWithSpace(value),
             }}
           />
           <InputField
