@@ -8,12 +8,12 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
-import { getDurationString, getMinTentativeEndDate } from "@/utils";
+import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import {
   OccurrenceEndType,
   OccurrenceFields,
