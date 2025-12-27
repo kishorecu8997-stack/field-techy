@@ -71,6 +71,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="MM/YY"
             rules={{ validate: (v: string) => expiryDateValidation(v) }}
             required
+            allowedCharacters="digits-slash"
           />
 
           <InputField

@@ -18,8 +18,8 @@ interface InputFieldProps {
   inputClassName?: string;
   showValidationCheck?: boolean;
   disabled?: boolean;
-  inputMode?: "number" | "string" | "both";
   onChange?: (value: string) => void;
+  inputMode?: "number" | "string" | "both";
   allowedCharacters?:
     | "numbers"
     | "numbers-dot"
@@ -60,6 +60,7 @@ export const InputField = ({
     ...rules,
   };
 
+  // Email pattern
   if (type === "email") {
     validationRules.pattern = {
       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -68,6 +69,7 @@ export const InputField = ({
     };
   }
 
+  // allowedCharacters validation
   if (allowedCharacters) {
     const patterns: Record<string, { regex: RegExp; message: string }> = {
       numbers: { regex: /^[0-9]*$/, message: "Only numbers are allowed." },
@@ -148,8 +150,10 @@ export const InputField = ({
                 onChange={async (e) => {
                   let value = e.target.value;
 
+                  // Restrict input based on `inputMode`
                   if (!allowInput(value)) return;
 
+                  // Sanitization for allowedCharacters
                   if (allowedCharacters) {
                     const sanitizeMap: Record<string, RegExp> = {
                       numbers: /[^0-9]/g,
@@ -167,16 +171,16 @@ export const InputField = ({
                     value = cleaned;
                   }
 
-                    field.onChange(value);
-                    onChange?.(value);
+                  field.onChange(value);
+                  onChange?.(value);
 
-                    // Trigger validation to clear errors when input becomes valid
-                    try {
-                      await trigger(name);
-                    } catch (err) {
-                      // ignore
-                    }
-                  }}
+                  // Trigger validation to clear errors when input becomes valid
+                  try {
+                    await trigger(name);
+                  } catch (err) {
+                    console.log("Error:", err);
+                  }
+                }}
                 onBlur={(e) => {
                   if (type === "number") {
                     const trimmed = e.target.value.trim();
@@ -207,12 +211,14 @@ export const InputField = ({
               )}
             </div>
 
+            {/* RHF validation error */}
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                 {error.message}
               </p>
             )}
 
+            {/* Inline error for attempted invalid input */}
             {attemptedInvalid && allowedCharacters && (
               <p className="mt-1 text-sm text-red-600" role="alert">
                 {allowedCharacters === "numbers" &&
