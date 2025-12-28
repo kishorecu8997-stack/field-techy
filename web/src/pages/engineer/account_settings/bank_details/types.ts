@@ -1,9 +1,12 @@
+type TransactionDate = string | Date;
+type TransactionStatus = "Pending" | "Approved" | "Completed" | "Failed";
+
 export interface Transaction {
   id: number | string;
   description: string;
   amount: number; // positive = credit, negative = debit
-  date: string | Date; // ISO date string or formatted date
-  status?: "Pending" | "Approved" | "Completed" | "Failed"; // optional status
+  date: TransactionDate;
+  status?: TransactionStatus;
 }
 
 export interface BankDetails {

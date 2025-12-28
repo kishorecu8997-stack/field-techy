@@ -5,6 +5,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { HiFilter, HiSearch } from "react-icons/hi";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getStatusBadge } from "@/utils/statusUtils";
 
 interface TransactionDashboardProps {
   showAll?: boolean;
@@ -56,20 +57,6 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   // Determine which transactions to display: all filtered, or the 10 most recent ones.
   const transactionsToShow = showAll ? filteredTransactions : filteredTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
-  const getStatusBadge = (status?: string) => {
-    switch (status) {
-      case "Completed":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "Pending":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
-      case "Approved":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
-      case "Failed":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    }
-  };
 
   return (
     <FormProvider {...methods}>
