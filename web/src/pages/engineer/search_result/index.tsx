@@ -40,13 +40,24 @@ const SearchResult = () => {
     slaLevel: "",
   });
 
-  const [sortOption, setSortOption] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
+  const [sortOption, setSortOption] = useState<SortOption>(
+    SORT_OPTIONS.RELEVANCE
+  );
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
   // Search history state
-  const [searchHistory, setSearchHistory] = useState<Array<{id: string, filters: Filters, timestamp: Date}>>(() => {
-    const saved = localStorage.getItem('searchHistory');
-    return saved ? JSON.parse(saved).map((item: {id: string, filters: Filters, timestamp: string}) => ({ ...item, timestamp: new Date(item.timestamp) })) : [];
+  const [searchHistory, setSearchHistory] = useState<
+    Array<{ id: string; filters: Filters; timestamp: Date }>
+  >(() => {
+    const saved = localStorage.getItem("searchHistory");
+    return saved
+      ? JSON.parse(saved).map(
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          })
+        )
+      : [];
   });
 
   // Calculate total pages based on filtered jobs
@@ -102,12 +113,20 @@ const SearchResult = () => {
 
     // Apply sorting
     if (sortOption === SORT_OPTIONS.DATE) {
-      filtered.sort((a, b) => new Date(b.postedTime || '').getTime() - new Date(a.postedTime || '').getTime());
+      filtered.sort(
+        (a, b) =>
+          new Date(b.postedTime || "").getTime() -
+          new Date(a.postedTime || "").getTime()
+      );
     } else if (sortOption === SORT_OPTIONS.SALARY) {
-      filtered.sort((a, b) => parseFloat(b.salary || '0') - parseFloat(a.salary || '0'));
+      filtered.sort(
+        (a, b) => parseFloat(b.salary || "0") - parseFloat(a.salary || "0")
+      );
     } else if (sortOption === SORT_OPTIONS.DISTANCE) {
-    // Distance-based sorting is not yet implemented; fall back to default (relevance) order.
-      filtered.sort((a, b) => (a.location || '').length - (b.location || '').length);
+      // Distance-based sorting is not yet implemented; fall back to default (relevance) order.
+      filtered.sort(
+        (a, b) => (a.location || "").length - (b.location || "").length
+      );
     }
     // Relevance is default, no sorting needed
 
@@ -141,8 +160,8 @@ const SearchResult = () => {
       locationType: [],
       locationRadius: 0,
       budgetRange: { min: 0, max: 10000 },
-      primaryLanguage: '',
-      slaLevel: '',
+      primaryLanguage: "",
+      slaLevel: "",
     });
   };
 
@@ -175,7 +194,7 @@ const SearchResult = () => {
    */
   const handleClearHistory = () => {
     setSearchHistory([]);
-    localStorage.removeItem('searchHistory');
+    localStorage.removeItem("searchHistory");
   };
 
   /**
@@ -187,9 +206,14 @@ const SearchResult = () => {
       filters: filters,
       timestamp: new Date(),
     };
-    setSearchHistory(prev => {
-      const updated = [newHistoryItem, ...prev.filter(item => JSON.stringify(item.filters) !== JSON.stringify(filters))].slice(0, 10);
-      localStorage.setItem('searchHistory', JSON.stringify(updated));
+    setSearchHistory((prev) => {
+      const updated = [
+        newHistoryItem,
+        ...prev.filter(
+          (item) => JSON.stringify(item.filters) !== JSON.stringify(filters)
+        ),
+      ].slice(0, 10);
+      localStorage.setItem("searchHistory", JSON.stringify(updated));
       return updated;
     });
   };
@@ -215,15 +239,29 @@ const SearchResult = () => {
         />
 
         <div className="mb-4">
-          <button
+          <Button
+            leftIcon={
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            }
             onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
           >
-            <svg className={`w-4 h-4 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
             Advanced Search
-          </button>
+          </Button>
         </div>
 
         {showAdvancedSearch && (
@@ -239,7 +277,11 @@ const SearchResult = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
           <div className="lg:col-span-3">
             {currentJobs.map((job) => (
-              <JobCard key={job.id} job={job} navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}/>
+              <JobCard
+                key={job.id}
+                job={job}
+                navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+              />
             ))}
 
             <Pagination
