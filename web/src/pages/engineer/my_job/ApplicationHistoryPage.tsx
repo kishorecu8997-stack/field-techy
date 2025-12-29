@@ -12,6 +12,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { useMemo } from "react";
 
 const TAB_LABELS = ["All", "Applied", "Accepted", "Rejected", "Completed"];
+
+const handleReapply = (application: Application) => {
+  console.log("Re-applying for:", application);
+};
 /**
  * Page component that displays the engineer's job application history.
  *
@@ -23,9 +27,6 @@ const TAB_LABELS = ["All", "Applied", "Accepted", "Rejected", "Completed"];
  * The component combines these controls to derive a filtered and sorted list of applications,
  * which is then rendered as a grid of {@link ApplicationCard} items.
  */
-const handleReapply = (application: Application) => {
-  console.log("Re-applying for:", application);
-};
 const ApplicationHistoryPage = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [search, setSearch] = useState("");

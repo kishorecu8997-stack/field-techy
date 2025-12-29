@@ -2,6 +2,8 @@ import React from "react";
 import { FaRedo } from "react-icons/fa";
 import { ApplicationsData } from "@/dummy_data/engineer_profile/applicationData";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getStatusColor } from "@/utils/applicationStatus";
+
 
 export type Application = (typeof ApplicationsData)[number];
 
@@ -28,21 +30,6 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   application,
   onReapply,
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "applied":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
-      case "accepted":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      case "rejected":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      case "completed":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    }
-  };
-
   const handleReapplyClick = () => {
     if (onReapply) {
       onReapply(application);
@@ -56,8 +43,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           {application.title}
         </h3>
 
-        {/* Status Badge with tooltip */}
-        <div className="relative group">
+         <div className="relative group">
           <span
             className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(
               application.status

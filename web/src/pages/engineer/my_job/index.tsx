@@ -4,9 +4,10 @@ import { SORT_OPTIONS } from "../search_result/types";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { absoluteUrls} from "@/config/urls";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -23,7 +24,6 @@ const MyJobsPage = () => {
     "Completed",
     "Declined",
     "Cancelled",
-   
   ];
 
   return (
@@ -36,20 +36,25 @@ const MyJobsPage = () => {
           isReport
         />
         <div className="flex items-center justify-between mt-4">
-        <FilterButton
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          filters={jobFilters}
-        />
+          <FilterButton
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+            filters={jobFilters}
+          />
 
-       <button
-        onClick={() => navigate(absoluteUrls.engineer.home.application_history)}
-        className=" bg-teal-800 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded transition"
-        >
-        Application History
-        </button>
+          <Button
+            onClick={() =>
+              navigate(absoluteUrls.engineer.home.application_history)
+            }
+            variant="primary"
+            size="md"
+            className="bg-teal-800 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded transition focus:ring-teal-600"
+            aria-label="Go to Application History"
+          >
+            Application History
+          </Button>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList />
           <div className="lg:col-span-1">
