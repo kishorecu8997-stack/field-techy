@@ -4,18 +4,26 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
-import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import logo_light from "@/assets/logo/logo_light.svg";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import {
+  useRequestVerificationOtpMutation,
+  useVerifyOtpMutation,
+} from "@/shared/apiServices/auth/engineer/engineerAuthService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { IoChevronBack } from "react-icons/io5";
 
 export type LoginFormData = {
   phone: string;
+  otp: string;
+  email: string;
 };
 
 /**
@@ -35,16 +43,61 @@ const LoginWithNumber = ({
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToHome } = useHomeNavigation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
+      otp: "",
+      email: "",
     },
   });
+  const otpfor = method.watch("otp");
+  const setUserSession = useUserSessionStore((s) => s.setSession);
+  const [requestData, setRequestData] = useState<string | undefined>();
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const verifyRequestOTP = useRequestVerificationOtpMutation();
+  const verifyOtpMutation = useVerifyOtpMutation();
+
+  const handleSubmit = async (data: LoginFormData) => {
+    const value = data.email ? data.email : data.phone;
+    console.log("value :", value);
+    setRequestData(value);
+
+    await verifyRequestOTP.mutateAsync(value, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.success("OTP Requested, kindly check your phone for OTP");
+        setIsOpen(true);
+      },
+      onError: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.error("OTP Request failed");
+      },
+    });
+  };
+
+  //OTP Verification
+  const handleOtpSubmission = async (otp: string) => {
+    await verifyOtpMutation.mutateAsync(
+      {
+        phoneOrEmail: requestData as string,
+        otp,
+      },
+      {
+        onSuccess: (response) => {
+          setIsOpen(false);
+          setUserSession(response);
+
+          console.log("Respone Engineer: ", response);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: () => {
+          toast.error("OTP Verification failed");
+        },
+      }
+    );
   };
   return (
     <div className="flex items-center justify-center w-full">
@@ -73,7 +126,23 @@ const LoginWithNumber = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 p-2"
         >
-          <PhoneInputField name="phone" label="Mobile Number" required />
+          <SelectField
+            name="otp"
+            label="Send OTP Via"
+            placeholder="Select One"
+            options={[
+              { value: "phoneNumber", label: "Phone Number" },
+              { value: "email", label: "Email" },
+            ]}
+            required
+          />
+
+          {otpfor === "phoneNumber" && (
+            <PhoneInputField name="phone" label="Phone Number" required />
+          )}
+          {otpfor === "email" && (
+            <InputField name="email" label="Email" required />
+          )}
 
           <Button
             type="submit"
@@ -86,32 +155,16 @@ const LoginWithNumber = ({
           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer dark:text-neutral-300"
           onClick={() => setIsNumberLogin(false)}
         >
-          <icons.email className="text-lg dark:text-gray-300" />
-          Sign in with Email
+          <IoChevronBack className="dark:text-gray-300" />
+          Back
         </div>
-        <div className="flex flex-row items-center justify-center gap-4 pt-5">
-          <hr className="flex-1 border-t border-gray-300" />
-          <span className="text-gray-500 text-sm">or</span>
-          <hr className="flex-1 border-t border-gray-300" />
-        </div>
-        <div className="flex flex-col gap-2 items-center justify-center pt-5">
-          <Button
-            className="w-full "
-            variant="outline"
-            leftIcon={<icons.linkedin className="text-lg text-blue-400" />}
-          >
-            <span className="whitespace-nowrap">LinkedIn</span>
-          </Button>
-        </div>
+
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Verify Mobile Number"
             description="A verification OTP has been sent to your phone. Please check your phone."
             onClose={() => setIsOpen(false)}
-            onSubmit={() => {
-              goToHome();
-              toast.success("Logged in successfully");
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
           />
         </Popup>
       </div>
