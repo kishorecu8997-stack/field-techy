@@ -1,5 +1,8 @@
 import { InputField } from "@/shared/components/commonUI/inputs";
 import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
+import { useFormContext } from "react-hook-form";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+
 import {
   validateCompany,
   validateDesignation,
@@ -40,6 +43,8 @@ import {
  * @returns {JSX.Element} A form section component with professional experience fields
  */
 export default function ExperienceDetails() {
+  const methods = useFormContext();
+
   return (
     <div>
       <div className="w-60">
@@ -79,6 +84,7 @@ export default function ExperienceDetails() {
             required
             rules={{ validate: (v: string) => validateCompany(v) }}
           />
+
           <InputField
             name="experience"
             label="Total Experience (In years)"
@@ -87,6 +93,21 @@ export default function ExperienceDetails() {
             rules={{ validate: (v: string) => validateExperience(v) }}
           />
         </div>
+      </div>
+
+      <div className="w-full flex items-center gap-2 mt-2 justify-start">
+        <CheckboxInput
+          name="isCurrent"
+          label="I currently work here"
+          isShowLabel={true}
+          rules={{
+            onChange: () => {
+              if (methods.getValues("isCurrent")) {
+                methods.setValue("endDate", null);
+              }
+            }
+          }}
+        />
       </div>
     </div>
   );

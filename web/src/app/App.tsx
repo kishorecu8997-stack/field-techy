@@ -1,5 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes/AppRoute";
+import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotifications";
 
 /**
  * The main application component that sets up routing.
@@ -11,10 +12,7 @@ import { routes } from "./routes/AppRoute";
  * @returns {JSX.Element} The application with routing enabled.
  */
 const App = () => {
-  return (
-    <>
-      <RouterProvider router={routes} />
-    </>
-  );
+  useJobExpirationNotification();
+  return <RouterProvider router={routes} />;
 };
 export default App;

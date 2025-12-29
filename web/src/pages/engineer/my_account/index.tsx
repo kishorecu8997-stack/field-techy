@@ -52,9 +52,10 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       label: "My Jobs",
       icon: FaBriefcase,
       id: "jobs",
-      onClick: () =>{
+      onClick: () => {
         onClose();
-        navigate(absoluteUrls.engineer.home.my_jobs)},
+        navigate(absoluteUrls.engineer.home.my_jobs);
+      },
     },
     {
       label: "My Earning",
@@ -66,9 +67,10 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       label: "Saved Jobs",
       icon: FaBookmark,
       id: "saved",
-      onClick: () =>{
+      onClick: () => {
         onClose();
-        navigate(absoluteUrls.engineer.home.saved_jobs)},
+        navigate(absoluteUrls.engineer.home.saved_jobs);
+      },
     },
     {
       label: "Settings",
