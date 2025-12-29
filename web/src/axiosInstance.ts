@@ -10,7 +10,7 @@ import { config } from "@/shared/config/configService";
  */
 const axiosInstance = axios.create({
 	baseURL: config.apiUrl,
-	timeout: 10_000,
+	timeout: 60_000,
 });
 
 

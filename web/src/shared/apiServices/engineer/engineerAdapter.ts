@@ -89,8 +89,9 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
       formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
+       headers: {
+          'X-USER': 'ENGINEER',
+          "Content-Type": "multipart/form-data"
         },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
@@ -139,6 +140,7 @@ export class EngineerAdapter {
   // OTP Methods (Stubbed for now)
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
+    console.log('email :', email);
     const urlEncodedEmail = encodeURIComponent(email);
     const response = await axiosInstance.post(
       ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
@@ -207,22 +209,5 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp)
     );
     return response.data;
-
-    // Stubbed response - accepts any 4-digit OTP
-    // console.log(
-    //   `[STUB] Verifying engineer phone OTP for: ${phoneNumber}, OTP: ${otp}`
-    // );
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     if (otp.length === 4) {
-    //       resolve({
-    //         message: "Phone OTP verified successfully",
-    //         verified: true,
-    //       });
-    //     } else {
-    //       reject(new Error("Invalid OTP"));
-    //     }
-    //   }, 800);
-    // });
   }
 }
