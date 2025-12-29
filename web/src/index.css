@@ -3,9 +3,20 @@
 /* Add this to your src/index.css or globals.css */
 .diagonal-gradient-bg {
   background: linear-gradient(135deg, #e0fdf4, #d0f9eb, #c0f5e2);
-  background-image:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%),
-    linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
+  background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(255, 255, 255, 0.1) 75%
+    ),
+    linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(255, 255, 255, 0.1) 75%
+    );
   background-size: 50px 50px;
   background-position: 0 0, 25px 25px;
 }
@@ -34,4 +45,11 @@ input[type="time"] {
 /* Ensure consistent height and alignment */
 input[type="time"]::-webkit-calendar-picker-indicator {
   margin-right: -8px; /* Pull icon slightly left if needed */
+}
+
+/*dark theme quil editor toolbar*/
+@media (prefers-color-scheme: dark) {
+  .ql-toolbar.ql-snow {
+    background-color: rgb(247, 247, 247);
+  }
 }

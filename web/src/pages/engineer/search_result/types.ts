@@ -19,7 +19,6 @@ export const WORKING_TYPES = {
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
-
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
@@ -32,6 +31,14 @@ export const LOG_STATUSES = {
   approved: "approved",
 } as const;
 export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
+
+export const SLA_LEVELS = {
+  FOUR_HOUR: "4-hour response",
+  SIX_HOUR: "6-hour response",
+  NEXT_DAY: "Next day response",
+  THEREAFTER: "Thereafter response",
+} as const;
+export type SlaLevel = (typeof SLA_LEVELS)[keyof typeof SLA_LEVELS];
 
 /**
  * Represents a job listing
@@ -60,6 +67,9 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
+  tools?: string[];
+  slaLevel?: SlaLevel;
+  matchScore?: number;
 }
 
 /**
@@ -88,6 +98,7 @@ export const SORT_OPTIONS = {
   DATE: "date",
   SALARY: "salary",
   DISTANCE: "distance",
+  NEWEST: "newest",
 } as const;
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 
@@ -95,7 +106,6 @@ export interface Options {
   label: string;
   value: string;
 }
-
 
 export const OfferedJobStatus = {
   initial: "initial",
@@ -105,4 +115,5 @@ export const OfferedJobStatus = {
   checkedIn: "checked-in",
 };
 
-export type OfferedJobStatusType = (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+export type OfferedJobStatusType =
+  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];

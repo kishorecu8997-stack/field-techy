@@ -6,15 +6,13 @@ interface SortDropdownProps {
   onSortChange?: (sort: SortOption) => void;
 }
 
-
-
 /**
  * SortDropdown Component
  * Renders a dropdown menu to sort jobs by criteria (e.g., Newest, Oldest).
- *
+ * Renders a dropdown menu to sort jobs by criteria (e.g., Relevance, Date, Salary, Distance).
  * @param {Object} props - Component props
- * @param {string} props.currentSort - Current sort value
- * @param {(sort: string) => void} props.onSortChange - Callback when sort option is selected
+ * @param {SortOption} props.currentSort - Current sort value
+ * @param {(sort: SortOption) => void} props.onSortChange - Callback when sort option is selected
  * @returns {JSX.Element} Rendered dropdown
  */
 const SortDropdown: React.FC<SortDropdownProps> = ({
