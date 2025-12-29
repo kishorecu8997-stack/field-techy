@@ -4,7 +4,6 @@ import App from "./app/App.tsx";
 import "./index.css";
 import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import React from "react"; 
-
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <GlobalPopup />
@@ -12,3 +11,4 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>
 );
+ 

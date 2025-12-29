@@ -5,9 +5,10 @@ import { FaBookmark, FaChevronRight, FaFileAlt, FaPhoneAlt, FaRegBookmark, FaReg
 import { FaFileLines, FaLocationDot } from "react-icons/fa6";
 import { IoMdAdd, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoClose, IoCloseSharp, IoHeadsetSharp, IoNotificationsSharp, IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
-import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline } from "react-icons/md";
+import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline, MdOutlineMobileFriendly } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
 import { FaHourglass } from "react-icons/fa";
+import { FiZap } from "react-icons/fi";
  
 
 
@@ -44,5 +45,7 @@ export const icons = {
   message: BiSolidMessageRounded,
   noImage: MdOutlineImageNotSupported,
   add: IoMdAdd,
-  pending: FaHourglass
+  pending: FaHourglass,
+  active: FiZap,
+  sessions: MdOutlineMobileFriendly
 };

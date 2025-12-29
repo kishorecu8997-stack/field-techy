@@ -2,6 +2,8 @@ import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes/AppRoute";
 import OfflineBanner from "@/shared/components/commonUI/OfflineBanner";
 import { useOfflineSync } from "@/offline/useOfflineSync";
+import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotifications";
+
 
 /**
  * The main application component that sets up routing.
@@ -15,6 +17,7 @@ import { useOfflineSync } from "@/offline/useOfflineSync";
 
 const App = () => {
   useOfflineSync();
+  useJobExpirationNotification();
   return(
     <>
       <OfflineBanner />

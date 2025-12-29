@@ -163,7 +163,7 @@ export default function AddEngineer() {
         <Button
           variant="solid"
           className=""
-          onClick={() => navigate(absoluteUrls.admin.home.manage_engineer)}
+          onClick={() => navigate(-1)}
         >
           Back
         </Button>

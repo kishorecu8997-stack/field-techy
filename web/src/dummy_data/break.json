@@ -1,0 +1,66 @@
+[
+  {
+    "id": "1",
+    "startTime": "",
+    "endTime": "",
+    "startDate": "2025-12-18",
+    "endDate": "2025-12-22",
+    "duration": "5 days",
+    "type": "Long",
+    "status": "Pending",
+    "purpose":"hospital",
+    "Applied on":"2025-12-18"
+  },
+  {
+    "id": "2",
+    "startDate": "2026-01-10",
+    "endDate": "2026-01-18",
+    "startTime": "",
+    "endTime": "",
+    "duration": "8 days",
+    "type": "Long",
+    "status": "Approved",
+    "purpose":"hospital",
+    "Applied on":"2025-12-18",
+     "reason":"Complete you work and you may take leave"
+  },
+  {
+    "id": "3",
+    "startTime": "09:00 AM",
+    "endTime": "12:00 PM",
+    "startDate": "2025-12-23",
+    "endDate": "2025-12-23",
+    "duration": "3 hours",
+    "type": "Short",
+    "status": "Active",
+    "purpose":"lunch",
+    "Applied on":"2025-12-18"
+  },
+  {
+    "id": "4",
+    "startDate": "2026-01-04",
+    "endDate": "2026-01-05",
+    "startTime": "",
+    "endTime": "",
+    "duration": "1 days",
+    "type": "Long",
+    "status": "Rejected",
+    "purpose":"hospital",
+    "Applied on":"2026-12-18",
+    "reason":"Important client submission is scheduled so we need to complete the work"
+  },
+  {
+    "id": "5",
+    "startDate": "2025-12-23",
+    "endDate": "2025-12-23",
+    "startTime": "02:00 PM",
+    "endTime": "03:00 PM",
+    "duration": "1 days",
+    "type": "Short",
+    "status": "Pending",
+    "purpose":"hospital",
+    "Applied on":"2025-12-23"
+  }
+  
+  
+]
