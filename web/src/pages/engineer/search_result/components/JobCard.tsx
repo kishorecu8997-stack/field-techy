@@ -333,6 +333,12 @@ const JobCard: React.FC<{
               </div>
             )}
           </div>
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            <BiSolidCalendar className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+            <span className="text-gray-800 dark:text-gray-200">
+              {job.startDate}
+            </span>
+          </div>
         </div>
       </Link>
 

@@ -33,8 +33,12 @@ import { useFormContext } from "react-hook-form";
 const ClientAdd: React.FC = () => {
   const { watch } = useFormContext();
   const selectedCountry = watch("country");
-  const cityOptions = selectedCountry ? citiesByCountry[selectedCountry] || [] : [];
-  const stateOptions = selectedCountry ? statesByCountry[selectedCountry] || [] : [];
+  const cityOptions = selectedCountry
+    ? citiesByCountry[selectedCountry] || []
+    : [];
+  const stateOptions = selectedCountry
+    ? statesByCountry[selectedCountry] || []
+    : [];
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
@@ -103,6 +107,7 @@ const ClientAdd: React.FC = () => {
             name="contactPersonName"
             placeholder="Enter Contact Person Name"
             required
+            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
 
@@ -134,7 +139,8 @@ const ClientAdd: React.FC = () => {
             placeholder="Enter Postal Code"
             required
             rules={{
-              validate: (value: string) => validateZipcode(value, selectedCountry),
+              validate: (value: string) =>
+                validateZipcode(value, selectedCountry),
             }}
           />
           <InputField
