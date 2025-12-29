@@ -20,9 +20,10 @@ import toolsData from "@/dummy_data/tools.json";
 import { useMemo } from "react";
 
 // Reusable Badge
+type BadgeVariant = "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
 const Badge: React.FC<{
   children: React.ReactNode;
-  variant?: "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
+  variant?: BadgeVariant;
 }> = ({ children, variant = "gray" }) => {
   const styles = {
     green:
@@ -120,9 +121,9 @@ const WhyRecommendedPopover: React.FC<{
         aria-labelledby="why-recommended-title"
       >
         {/* Close Button */}
-        <button
+        <div
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
+          className="absolute top-4 right-4 p-2 rounded-full  hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
              focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2
              dark:focus-visible:ring-offset-gray-800"
           aria-label="Close"
@@ -140,7 +141,7 @@ const WhyRecommendedPopover: React.FC<{
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
+        </div>
 
         {/* Content */}
         <div className="text-center">
@@ -164,12 +165,12 @@ const WhyRecommendedPopover: React.FC<{
             this job aligns with your experience and expertise.
           </p>
 
-          <button
+          <div
             onClick={onClose}
             className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors"
           >
             Got it
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -209,16 +210,17 @@ const JobCard: React.FC<{
     );
   }, [job.skills, job.tools, userSkills, userTools]);
 
-  const STATUS_VARIANT_MAP: Record<
-    string,
-    "green" | "blue" | "purple" | "yellow" | "teal" | "gray"
-  > = {
-    new: "green",
-    offer: "blue",
-    applied: "yellow",
-    inprogress: "teal",
-    completed: "gray",
-  };
+const STATUS_VARIANT_MAP = {
+  new: "green",
+  offer: "blue",
+  applied: "yellow",
+  inprogress: "teal",
+  completed: "gray",
+} as const satisfies Record<
+  "new" | "offer" | "applied" | "inprogress" | "completed",
+  "green" | "blue" | "purple" | "yellow" | "teal" | "gray"
+>;
+
 
   return (
     <>
@@ -284,7 +286,7 @@ const JobCard: React.FC<{
 
           {showBookmark && (
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <button
+              <div
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -298,7 +300,7 @@ const JobCard: React.FC<{
                 ) : (
                   <icons.bookmark className="w-4 h-4" />
                 )}
-              </button>
+              </div>
               <span>{job.postedTime || "Just now"}</span>
             </div>
           )}
