@@ -25,12 +25,19 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
   const isVerified = emailVerified && mobileVerified;
   const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
   const [codeBackupEnabled, setCodeBackupEnabled] = useState<boolean>(false);
-  const [totpEnabled, settotpEnabled] = useState<boolean>(false);
-  const [codes, setCodes] = useState<string[]>([]);
+  const [codes, setCodes] = useState<number[]>([]);
 
   useEffect(() => {
     localStorage.setItem("backup_codes", JSON.stringify(codes));
-  }, [codes]);
+    if (twoFactorEnabled) {
+      localStorage.setItem("2FA_Auth", `${twoFactorEnabled}`);
+    } else {
+      localStorage.removeItem("2FA_Auth");
+      localStorage.removeItem("totp_secret");
+      localStorage.removeItem("otpauth_url");
+      localStorage.removeItem("backup_codes");
+    }
+  }, [codes, twoFactorEnabled]);
 
   const menuItems: MenuItem[] = [
     {
@@ -46,14 +53,6 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
 
   const subMenuItem: MenuItem[] = [
     {
-      id: "2fa_enable_totp",
-      label: "Enable TOTP",
-      icon: icons.TOTP,
-      isToggle: true,
-      toggleValue: totpEnabled,
-      onToggleChange: settotpEnabled,
-    },
-    {
       id: "2fa_code_backup",
       label: "Code Backup",
       icon: icons.codebackup,
@@ -64,9 +63,9 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
   ];
 
   function generateBackupCodes() {
-    const backupCodes: string[] = [];
+    const backupCodes: number[] = [];
     for (let i = 0; i < 4; i++) {
-      const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      const code = Math.floor(100000 + Math.random() * 900000);
       backupCodes.push(code);
     }
     setCodes(backupCodes);
@@ -105,7 +104,10 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
                 </div>
 
                 <TbCopy
-                  onClick={() => toast.success("Copied Successfully")}
+                  onClick={() => {
+                    toast.success("Copied Successfully");
+                    navigator.clipboard.writeText(`${code}`);
+                  }}
                   className="text-xl cursor-pointer"
                 />
               </li>
