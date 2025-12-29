@@ -56,6 +56,7 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Name"
             required
+            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
           <PhoneInputField name="phoneNumber" label="Mobile Number" required />
@@ -105,6 +106,7 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Price per/hour"
             required
+            allowedCharacters="currency"
             rules={{ validate: (v: string) => validatePricePerHour(v) }}
           />
         </div>
