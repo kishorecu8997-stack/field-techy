@@ -49,18 +49,12 @@ const SignUpWithNumber = ({
   });
   const handleOTPVerified = () => {
     const phoneNumber = method.getValues("phone");
-    console.log("=== SIGNUP OTP VERIFIED ===");
-    console.log("Raw phone number from form:", phoneNumber);
-    console.log("Phone number type:", typeof phoneNumber);
-    console.log("Phone number length:", phoneNumber?.length);
 
     // Test the detection
     const detectedCurrency = detectCurrencyFromPhone(phoneNumber);
-    console.log("Detected currency:", detectedCurrency);
 
     detectAndStoreCurrency(phoneNumber);
     const storedCurrency = getCurrencyFromStorage();
-    console.log("Currency stored in localStorage:", storedCurrency);
 
     setIsOpen(false);
     navigate(absoluteUrls.engineer.auth.profile_setup, {
@@ -76,7 +70,6 @@ const SignUpWithNumber = ({
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
-    console.log(data, "data from Login Form");
     setIsOpen(true);
   };
 

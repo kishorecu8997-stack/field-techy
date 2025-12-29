@@ -3,7 +3,10 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
-import { detectAndStoreCurrency, getCurrencyFromStorage } from "@/utils/currency";
+import {
+  detectAndStoreCurrency,
+  getCurrencyFromStorage,
+} from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
 import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import { useState } from "react";
@@ -109,9 +112,8 @@ const LoginWithNumber = ({
             onClose={() => setIsOpen(false)}
             handleNavigate={() => {
               const phoneNumber = method.getValues("phone");
-              console.log("Phone number for currency detection:", phoneNumber);
               detectAndStoreCurrency(phoneNumber);
-              console.log("Currency stored:", getCurrencyFromStorage());
+              getCurrencyFromStorage();
               goToHome();
               toast.success("Logged in successfully");
             }}

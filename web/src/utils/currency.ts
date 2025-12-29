@@ -13,11 +13,9 @@ const DEFAULT_CURRENCY: CurrencySymbol = '$';
  * @returns The currency symbol for the detected country or default "$"
  */
 export function detectCurrencyFromPhone(phoneNumber: string | null | undefined): CurrencySymbol {
-  console.log("detectCurrencyFromPhone called with:", phoneNumber);
 
   // Explicit input validation
   if (phoneNumber === null || phoneNumber === undefined || phoneNumber.trim() === '') {
-    console.log("Invalid or empty phone number, returning default:", DEFAULT_CURRENCY);
     return DEFAULT_CURRENCY;
   }
 
@@ -26,7 +24,6 @@ export function detectCurrencyFromPhone(phoneNumber: string | null | undefined):
   if (countryCodeMatch) {
     const countryCode = countryCodeMatch[1];
     const currency = CURRENCY_MAP[countryCode] || DEFAULT_CURRENCY;
-    console.log("Space-separated format detected. Country code:", countryCode, "Currency:", currency);
     return currency;
   }
 
@@ -35,11 +32,9 @@ export function detectCurrencyFromPhone(phoneNumber: string | null | undefined):
   if (directMatch) {
     const countryCode = `+${directMatch[1]}`;
     const currency = CURRENCY_MAP[countryCode] || DEFAULT_CURRENCY;
-    console.log("Direct format detected. Country code:", countryCode, "Currency:", currency);
     return currency;
   }
 
-  console.log("No country code match found, returning default:", DEFAULT_CURRENCY);
   return DEFAULT_CURRENCY;
 }
 
@@ -82,7 +77,5 @@ export type CurrencySymbol = '$' | '₹' | '£';
 
 // Debug function to test currency detection
 export function testCurrencyDetection(phoneNumber: string | null | undefined): void {
-  console.log("Testing currency detection for:", phoneNumber);
   const result = detectCurrencyFromPhone(phoneNumber);
-  console.log("Result:", result);
 }
