@@ -54,11 +54,18 @@ const JobCard: React.FC<Job> = ({
         <span
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
-          {type === WORKING_TYPES.onsite
-            ? WORKING_TYPES_PROPERTY.onsite
-            : type === WORKING_TYPES.remote
-            ? WORKING_TYPES_PROPERTY.remote
-            : WORKING_TYPES_PROPERTY.hybrid}
+          {(() => {
+            switch (type) {
+              case WORKING_TYPES.onsite:
+                return WORKING_TYPES_PROPERTY.onsite;
+              case WORKING_TYPES.remote:
+                return WORKING_TYPES_PROPERTY.remote;
+              case WORKING_TYPES.hybrid:
+                return WORKING_TYPES_PROPERTY.hybrid;
+              default:
+                return "Unknown"; // Fallback for unexpected types
+            }
+          })()}
         </span>
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
