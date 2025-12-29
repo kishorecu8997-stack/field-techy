@@ -1,14 +1,13 @@
-/**
- * ProfileFieldStatus represents the completion state of each field: complete, pending, or rejected.
- * ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field.
- * `profileCompletionData` provides sample data for all profile sections including their fields and statuses.
- */
+/* ProfileFieldStatus represents the completion state of each field: complete, pending, or rejected */
 export type ProfileFieldStatus = "complete" | "pending" | "rejected";
+
+/** profileCompletionData provides sample data for all profile sections including their fields and statuses */
 export interface ProfileField {
   label: string;
   status: ProfileFieldStatus;
 }
 
+/** ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field */
 export interface ProfileSection {
   key: string;
   title: string;
@@ -17,6 +16,7 @@ export interface ProfileSection {
   fields: ProfileField[];
 }
 
+/** Sample data for profile sections and their field statuses */
 export const profileCompletionData: ProfileSection[] = [
   {
     key: "personalInfo",

@@ -1,81 +1,47 @@
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { getProfileCompletion } from "@/utils/profileCompletion";
+import {
+  getStatusIcon,
+  getStatusColor,
+  getComparisonUI,
+  profilePriorityGuide,
+} from "@/utils/profileStatus";
 
 /**
  * ProfileCompletionCard Component
- * Renders a card showing the user's profile completion progress.
- * Displays sections with their fields, completion percentage, and status icons.
- * Provides a button to navigate to incomplete sections and shows estimated time remaining.
- * Utilizes `useDrawerStore` for state management and navigation control.
+ * Displays user's profile completion progress with sections, fields, completion percentage, and status icons.
+ * Provides navigation buttons to incomplete sections and shows estimated time remaining.
  */
-const getStatusIcon = (status: string) => {
-  if (status === "complete") return "✓";
-  if (status === "pending") return "⏳";
-  return "❌";
-};
-const getStatusColor = (status: string) => {
-  if (status === "complete") return "text-green-600";
-  if (status === "pending") return "text-orange-500";
-  return "text-red-600";
-};
 const ProfileCompletionCard = () => {
-  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource, setImmediateParentKey } = useDrawerStore();
+  const {
+    profileData,
+    setActiveKey,
+    setISOpenSidebar,
+    setNavigationSource,
+    setImmediateParentKey,
+  } = useDrawerStore();
 
-  /* Get Profile Completion Score Calculation according to each section fields */
-    const overallCompletion = getProfileCompletion(profileData);
+  const overallCompletion = getProfileCompletion(profileData);
+  const comparisonUI = getComparisonUI(overallCompletion);
 
-  /* Comparison Logic for check engineer overall profile score */
-  const getComparisonUI = (percentage: number) => {
-    if (percentage < 40) {
-      return {
-        title: "Profile needs improvement",
-        description:
-          "Your profile completion is low. Completing key sections will improve visibility.",
-        comparisonText: "Better than 25% of engineers",
-        containerClass: "bg-red-50 border-red-200 text-red-700",
-      };
-    }
-    if (percentage < 70) {
-      return {
-        title: "Good progress",
-        description:
-          "You're on the right track. Completing a few more sections will strengthen your profile.",
-        comparisonText: "Better than 50% of engineers",
-        containerClass: "bg-orange-50 border-orange-200 text-orange-700",
-      };
-    }
-    return {
-      title: " You’re doing great!",
-      description:
-        "Your profile is strong and stands out among other engineers.",
-      comparisonText: "Better than 65% of engineers",
-      containerClass: "bg-teal-50 border-teal-200 text-teal-700",
-    };
-  };
- const comparisonUI = getComparisonUI(overallCompletion);
-return (
+  return (
     <div className="space-y-6 p-4">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
-      {/* Priority Guide for Profile Completion */}
+
+      {/* Priority Guide */}
       <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
         <h4 className="font-semibold text-gray-700">Priority Guide</h4>
         <ul className="space-y-1">
-          <li>
-            <span className="font-medium text-red-600">High impact:</span> Basic
-            details & identity
-          </li>
-          <li>
-            <span className="font-medium text-orange-500">Medium impact:</span>{" "}
-            Skills & experience
-          </li>
-          <li>
-            <span className="font-medium text-green-600">Low impact:</span>{" "}
-            Optional information
-          </li>
+          {profilePriorityGuide.map((item) => (
+            <li key={item.label}>
+              <span className={`font-medium ${item.color}`}>{item.label}:</span>{" "}
+              {item.description}
+            </li>
+          ))}
         </ul>
       </div>
 
-      {/* Comparison Information box */}
+      {/* Comparison Info */}
       <div
         className={`rounded-xl border p-4 text-sm ${comparisonUI.containerClass}`}
       >
@@ -84,12 +50,11 @@ return (
         <p className="mt-1 font-medium">{comparisonUI.comparisonText}</p>
       </div>
 
-      {/* Five Sections mentioned in user story */}
+      {/* Profile Sections */}
       {profileData.map((section) => {
         const total = section.fields.length;
-        const completed = section.fields.filter(
-          (f) => f.status === "complete"
-        ).length;
+        const completed = section.fields.filter((f) => f.status === "complete")
+          .length;
         const percentage = Math.round((completed / total) * 100);
         const remaining = total - completed;
         const estimatedTime = remaining * section.estimatedMinutesPerField;
@@ -99,13 +64,13 @@ return (
             key={section.key}
             className="border rounded-xl p-4 bg-white shadow-sm"
           >
-            {/* Header for the section */}
+            {/* Section Header */}
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold">{section.title}</h3>
               <span className="text-sm font-medium">{percentage}%</span>
             </div>
 
-            {/* Progress Bar Showing Status With Percentage */}
+            {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div
                 className="bg-teal-600 h-2 rounded-full"
@@ -113,7 +78,7 @@ return (
               />
             </div>
 
-            {/* Fields Those are under the specific section with their status*/}
+            {/* Fields */}
             <ul className="space-y-1 text-sm">
               {section.fields.map((field, i) => (
                 <li key={i} className={getStatusColor(field.status)}>
@@ -123,12 +88,11 @@ return (
               ))}
             </ul>
 
-            {/* Complete this Section for easily access the form */}
+            {/* Complete Section Button */}
             {percentage < 100 && (
               <div className="flex justify-between items-center mt-4 text-sm">
                 <button
                   onClick={() => {
-                    // Navigation for specific form according to the section
                     setNavigationSource("profilecompletion", "profileCompletion");
                     setImmediateParentKey("profileCompletion");
                     setActiveKey(section.navigateTo);
@@ -138,9 +102,7 @@ return (
                 >
                   Complete This Section
                 </button>
-                <span className="text-gray-500">
-                  {estimatedTime} minutes remaining
-                </span>
+                <span className="text-gray-500">{estimatedTime} minutes remaining</span>
               </div>
             )}
           </div>
