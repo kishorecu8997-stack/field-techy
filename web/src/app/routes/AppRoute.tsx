@@ -308,6 +308,7 @@ const NotificationListPage = React.lazy(
       "@/pages/engineer/account_settings/notification/NotificationListPage"
     )
 );
+
 /**
  * Configures the application's routing structure using React Router.
  * Defines all public and authenticated routes, including lazy-loaded page components
