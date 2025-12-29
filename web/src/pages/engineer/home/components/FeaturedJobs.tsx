@@ -96,14 +96,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  *   locationType="On Site"
  *   salary={`${getCurrencyFromStorage()}180,000/year`}
  *   location="California, USA"
- * title="Software Engineer"
- * company="Google"
- * companyLogo="/logos/google.png"
- * category="IT"
- * employmentType="Full-Time"
- * locationType="On Site"
- * salary="$180,000/year"
- * location="California, USA"
  * experience: 5,
  * skills: ["Figma", "Adobe XD", "UI/UX"],
  * tools: ["VS Code", "Git", "Jira"],
