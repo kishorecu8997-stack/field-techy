@@ -1,6 +1,6 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Job } from "../../search_result/types";
 import { getCurrencyFromStorage } from "@/utils/currency";
@@ -8,6 +8,12 @@ import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
 import { calculateMatchScore } from "@/utils/matchCalculator";
 import { getExperienceLevel } from "@/utils";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -103,22 +109,59 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  * matchScore: 85,
  * />
  */
-const FeatureJobCard: React.FC<Job> = ({
-  title,
-  company,
-  category,
-  employmentType,
-  type,
-  salary,
-  location,
-  isBookmarked = false,
-  experience,
-  skills,
-  tools,
-  slaLevel,
-  matchScore,
-}) => {
+const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
+  const {
+    id,
+    title,
+    company,
+    category,
+    employmentType,
+    type,
+    salary,
+    location,
+    isBookmarked = false,
+    experience,
+    skills,
+    tools,
+    slaLevel,
+    matchScore,
+  } = props;
+
+  const job = props as Job;
   const [isSelected, setSelected] = useState(isBookmarked);
+
+  useEffect(() => {
+    if (id) {
+      setSelected(isJobSaved(id));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const handleBookmarkChange = () => {
+      if (id) {
+        setSelected(isJobSaved(id));
+      }
+    };
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    return () => {
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    };
+  }, [id]);
+
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!id) return;
+    const wasBookmarked = isSelected;
+    toggleSavedJob(job);
+
+    if (!wasBookmarked) {
+      toast.success("Job saved successfully");
+    } else {
+      toast.error("Job removed from saved");
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
@@ -136,11 +179,7 @@ const FeatureJobCard: React.FC<Job> = ({
         <div className="flex items-center space-x-2">
           {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
           <div
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setSelected(!isSelected);
-            }}
+            onClick={handleBookmarkClick}
             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
             aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
           >

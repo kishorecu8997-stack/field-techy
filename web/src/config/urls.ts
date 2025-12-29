@@ -38,6 +38,9 @@ export const urls = {
       explore_jobs: "explore-jobs",
       chat: "messages",
       saved_jobs: "saved-jobs",
+      break_details: "break-details",
+      notifications: "notifications",
+      application_history: "my-jobs/application-history", 
     },
     auth: {
       login: "login",
@@ -169,6 +172,9 @@ export const absoluteUrls = {
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/messages`,
       saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
+      break_details: `${BASE.ENGINEER}/break-details`,
+      notifications: `${BASE.ENGINEER}/notifications`,
+      application_history: `${BASE.ENGINEER}/my-jobs/application-history`,
     },
   },
   client: {

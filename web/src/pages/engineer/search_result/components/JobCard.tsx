@@ -1,10 +1,18 @@
 import { icons } from "@/config/icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { BiDollar, BiSolidCalendar } from "react-icons/bi";
 import { IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
 import { scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
+
 /**
  * JobCard component displays a single job listing
  *
@@ -17,8 +25,21 @@ const JobCard: React.FC<{
   job: Job;
   showBookmark?: boolean;
   navigateToJob?: string;
-}> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
-  const [isBookmarked, setBookmark] = useState(job.isBookmarked);
+  onBookmarkChange?: () => void;
+}> = ({ job, showBookmark = true, navigateToJob = "#", onBookmarkChange }) => {
+  const [isBookmarked, setBookmark] = useState(false);
+  useEffect(() => {
+    setBookmark(isJobSaved(job.id));
+  }, [job.id]);
+  useEffect(() => {
+    const handleBookmarkChange = () => {
+      setBookmark(isJobSaved(job.id));
+    };
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    return () => {
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    };
+  }, [job.id]);
 
   return (
     <Link
@@ -56,7 +77,17 @@ const JobCard: React.FC<{
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setBookmark(!isBookmarked);
+
+                const wasBookmarked = isBookmarked;
+                toggleSavedJob(job);
+                if (!wasBookmarked) {
+                  toast.success("Job saved successfully");
+                } else {
+                  toast.error("Job removed from saved");
+                }
+                if (onBookmarkChange) {
+                  onBookmarkChange();
+                }
               }}
               className={`p-2 rounded-full  hover:bg-gray-100 transition-colors cursor-pointer`}
             >
@@ -83,6 +114,12 @@ const JobCard: React.FC<{
           <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
             <span className="text-gray-800 dark:text-gray-200">
               {getCurrencyFromStorage()}{job.salary}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            <BiSolidCalendar className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+            <span className="text-gray-800 dark:text-gray-200">
+              {job.startDate}
             </span>
           </div>
         </div>
