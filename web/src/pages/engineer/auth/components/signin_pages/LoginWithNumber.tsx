@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
-import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import logo_light from "@/assets/logo/logo_light.svg";
@@ -19,6 +18,7 @@ import {
   useVerifyOtpMutation,
 } from "@/shared/apiServices/auth/engineer/engineerAuthService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { IoChevronBack } from "react-icons/io5";
 
 export type LoginFormData = {
   phone: string;
@@ -61,6 +61,7 @@ const LoginWithNumber = ({
 
   const handleSubmit = async (data: LoginFormData) => {
     const value = data.email ? data.email : data.phone;
+    console.log("value :", value);
     setRequestData(value);
 
     await verifyRequestOTP.mutateAsync(value, {
@@ -87,6 +88,8 @@ const LoginWithNumber = ({
         onSuccess: (response) => {
           setIsOpen(false);
           setUserSession(response);
+
+          console.log("Respone Engineer: ", response);
           navigate(absoluteUrls.engineer.home.dashboard);
           toast.success("Logged in successfully");
         },
@@ -152,8 +155,8 @@ const LoginWithNumber = ({
           className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer dark:text-neutral-300"
           onClick={() => setIsNumberLogin(false)}
         >
-          <icons.email className="text-lg dark:text-gray-300" />
-          Sign in with Email
+          <IoChevronBack className="dark:text-gray-300" />
+          Back
         </div>
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
