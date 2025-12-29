@@ -41,6 +41,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                     customLabels={{
                       "my-jobs": "My Jobs",
                       "in-progress": "In Progress",
+                      "application-history": "Application History",
                       home: "Home",
                     }}
                   />

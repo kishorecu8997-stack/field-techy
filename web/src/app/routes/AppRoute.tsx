@@ -32,6 +32,10 @@ const SetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword")
 );
 
+const BreakDetails = React.lazy(
+  () => import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails")
+);
+
 // Layouts
 const RootLayout = React.lazy(() => import("@/layout/RootLayout"));
 const ClientLayout = React.lazy(() => import("@/layout/ClientLayout"));
@@ -60,11 +64,8 @@ const ExploreJobs = React.lazy(
 const ExploreSavedJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreSavedJobs")
 );
-const NotificationListPage = React.lazy(
-  () =>
-    import(
-      "@/pages/engineer/account_settings/notification/NotificationListPage"
-    )
+const ApplicationHistoryPage = React.lazy(
+  () => import("@/pages/engineer/my_job/ApplicationHistoryPage")
 );
 
 //client
@@ -301,6 +302,12 @@ const ClientPrivacyPolicy = React.lazy(
 
 const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
 const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
+const NotificationListPage = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/account_settings/notification/NotificationListPage"
+    )
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -371,9 +378,17 @@ export const routes = createBrowserRouter([
         element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
+     {
+      path: urls.engineer.home.application_history,
+      element: withSuspense(ApplicationHistoryPage),
+      },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
         element: withSuspense(JobDetailsPage),
+      },
+      {
+        path: `${urls.engineer.home.my_jobs}/:jobId/break-details`,
+        element: withSuspense(BreakDetails),
       },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
