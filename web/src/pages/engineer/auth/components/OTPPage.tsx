@@ -2,17 +2,18 @@ import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
-import React, { useState, useEffect, useRef } from "react";
+import { QRCodeCanvas } from "qrcode.react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-
 
 interface VerifyEmailModalProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: () => void;
+  handleNavigate?: (data: string) => void;
   buttonText?: string;
   isSuccess?: boolean;
+  otpauthUrl?: string;
 }
 
 export interface OTPValues {
@@ -42,11 +43,23 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
   description,
   onClose,
   handleNavigate,
+  otpauthUrl,
   buttonText,
   isSuccess,
 }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(60);
+  const TOTP_PERIOD = 30;
+  const getTimeLeft = () =>
+    TOTP_PERIOD - (Math.floor(Date.now() / 1000) % TOTP_PERIOD);
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
   const inputRefs = useRef<HTMLInputElement[]>([]);
+  const enrolled = localStorage.getItem("2fa_enrolled") === "true";
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(getTimeLeft());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const method = useForm({
     defaultValues: {
@@ -54,18 +67,13 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
     },
   });
 
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [timeLeft]);
-
+  const data = method.getValues("otp");
   const handleSubmit = () => {
-    handleNavigate?.();
+    handleNavigate?.(data);
   };
 
   const handleResend = () => {
-    setTimeLeft(60);
+    setTimeLeft(30);
     inputRefs.current[0].focus();
   };
 
@@ -82,25 +90,29 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
             onClick={onClose}
           />
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{header}</h2>
-            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {header}
+            </h2>
+            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">
+              {description}
+            </p>
           </div>
+          {!enrolled && (
+            <div className="flex justify-center">
+              <QRCodeCanvas value={otpauthUrl ?? ""} />
+            </div>
+          )}
+
           {!isSuccess && (
             <div className="p-2">
-              <OTPInput
-                name="otp"
-                length={4}
-                errorAlign="center"
-              />
+              <OTPInput name="otp" length={6} errorAlign="center" />
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
-                <span>
-                  {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
-                </span>
+                <span>{`00:${timeLeft.toString().padStart(2, "0")}`}</span>
                 <button
                   onClick={handleResend}
-                  disabled={timeLeft > 0}
-                  className={`text-green-600 dark:text-green-400 font-medium ${
-                    timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  disabled={timeLeft !== 30}
+                  className={`text-green-600 font-medium ${
+                    timeLeft !== 30 ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   Resend
