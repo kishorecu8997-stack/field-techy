@@ -28,7 +28,18 @@ const ExploreJobs: React.FC = () => {
     experience: 0,
     budgetType: null,
     skills: [],
+
+    serviceType: [],
+    tools: [],
+    experienceLevel: [],
+    jobType: [],
+    locationType: [],
+    locationRadius: 0,
+    budgetRange: { min: 0, max: 0 },
+    primaryLanguage: "",
+    slaLevel: "",
   });
+
   // Step 1: Base - Only show jobs with status "new"
   const newJobs = useMemo<Job[]>(() => {
     return sampleJobs.filter((job) => job.status === JOB_STATUSES.new);
@@ -249,9 +260,20 @@ const ExploreJobs: React.FC = () => {
       experience: 0,
       budgetType: null,
       skills: [],
+
+      serviceType: [],
+      tools: [],
+      experienceLevel: [],
+      jobType: [],
+      locationType: [],
+      locationRadius: 0,
+      budgetRange: { min: 0, max: 0 },
+      primaryLanguage: "",
+      slaLevel: "",
     });
     setCurrentPage(1);
   };
+
   const handleSortChange = (newSort: SortOption) => {
     setSortBy(newSort);
     setCurrentPage(1);
