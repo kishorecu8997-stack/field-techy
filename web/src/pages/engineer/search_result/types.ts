@@ -98,6 +98,7 @@ export const SORT_OPTIONS = {
   DATE: "date",
   SALARY: "salary",
   DISTANCE: "distance",
+  NEWEST: "newest",
 } as const;
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 

@@ -8,6 +8,7 @@ import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 
+
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
@@ -19,6 +20,7 @@ import { absoluteUrls } from "@/config/urls";
  * <SidebarProfile user={user} earnings={earnings} />
  */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
+
   return (
     <div className="space-y-6">
       <ProfileCard user={user} />
