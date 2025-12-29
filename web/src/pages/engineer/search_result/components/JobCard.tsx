@@ -5,6 +5,13 @@ import { IoLocationSharp, IoHelpCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
 import { scrollToTop } from "@/utils";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
+
 /**
  * JobCard component displays a single job listing
  *

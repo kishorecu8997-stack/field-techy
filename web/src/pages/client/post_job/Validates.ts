@@ -1,5 +1,70 @@
-
 import xss from "xss";
+
+
+export const validateTime = (selectedDate: any, selectedTime: string) => {
+  if (!selectedDate || !selectedTime) return true;
+
+  const now = new Date();
+  const date = new Date(selectedDate);
+
+  // Future dates → no restriction
+  if (date.toDateString() !== now.toDateString()) return true;
+
+  // Selected datetime
+  const [h, m] = selectedTime.split(":").map(Number);
+  const selected = new Date(date);
+  selected.setHours(h, m, 0, 0);
+
+  if (selected <= now) {
+    return "You cannot select a past time for today";
+  }
+
+  return true;
+};
+
+
+export  const normalize = (d: any) => {
+  if (!d) return null;
+  const date = d instanceof Date ? d : new Date(d);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+};
+
+export const validateStartDate = (
+  startRaw: Date | null,
+  endRaw: Date | null,
+  normalize: (d: any) => Date | null
+) => {
+  const start = normalize(startRaw);
+  const end = normalize(endRaw);
+  const today = new Date(new Date().setHours(0, 0, 0, 0));
+
+  if (!start) return "Start date is required.....";
+
+  if (start < today)
+    return "Past dates are not allowed—please choose today or a future date";
+
+  if (end && start > end)
+    return "Start date must be before project deadline";
+
+  return true;
+};
+
+export const validateProjectDeadline = (
+  endDateRaw: Date | null,
+  startDateRaw: Date | null,
+  normalize: (d: any) => Date | null
+) => {
+  const start = normalize(startDateRaw);
+  const end = normalize(endDateRaw);
+
+  if (!end) return "Project Deadline is required";
+
+  if (!start) return "Select start date first";
+
+  if (end < start) return "Project Deadline must be after start date";
+
+  return true;
+};
 
 export const validateName = (value: string) => {
   const raw = value || "";
@@ -42,6 +107,26 @@ export const validateCurrentOrFutureDate = (date: Date | null): true | string =>
   return true;
 };
 
+export const validateEndDate = (endDate: Date | null, startDate: Date | null): true | string => {
+   if (!endDate) {
+     return "Project deadline must be selected.";
+   }
+
+   const today = new Date();
+   today.setHours(0, 0, 0, 0);
+
+   if (endDate < today) {
+     return "Project deadline cannot be in the past.";
+   }
+
+   if (startDate && endDate < startDate) {
+     return "Project deadline cannot be earlier than the start date.";
+   }
+   return true;
+ };
+
+
+
 /**
  * Validate a date range.
  * - Start date must not be in the future.
@@ -66,19 +151,6 @@ export const validateDateRange = (
   }
 
   return true;
-};
-
-export const validateProjectDeadline = (
-  startDate: Date | null,  
-) => {
- if (!startDate) {
-    return "Start date is required";
-  }
-
-  if (startDate < new Date(new Date().setHours(0, 0, 0, 0))) {
-    return "Start date cannot be in the past";
-  }  
-  return true;  
 };
 
 
