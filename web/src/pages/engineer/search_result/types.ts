@@ -95,6 +95,15 @@ export interface Filters {
   experience: number;
   budgetType: BudgetType | null;
   skills: string[];
+  serviceType: string[];
+  tools: string[];
+  experienceLevel: string[];
+  jobType: string[];
+  locationType: string[];
+  locationRadius: number;
+  budgetRange: { min: number; max: number };
+  primaryLanguage: string;
+  slaLevel: string;
 }
 
 /**
@@ -102,10 +111,10 @@ export interface Filters {
  * Now includes all criteria you need for sorting jobs
  */
 export const SORT_OPTIONS = {
-  RELEVANCE: "relevance", // best match
-  DATE: "date", // posted date
-  SALARY: "salary", // highest pay
-  DISTANCE: "distance", // nearest first
+  RELEVANCE: "relevance",
+  DATE: "date",
+  SALARY: "salary",
+  DISTANCE: "distance",
 } as const;
 
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
