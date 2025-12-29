@@ -91,11 +91,23 @@ export interface Filters {
   experience: number;
   budgetType: BudgetType | null;
   skills: string[];
+  serviceType: string[];
+  tools: string[];
+  experienceLevel: string[];
+  jobType: string[];
+  locationType: string[];
+  locationRadius: number;
+  budgetRange: { min: number; max: number };
+  primaryLanguage: string;
+  slaLevel: string;
 }
 
 export const SORT_OPTIONS = {
+  RELEVANCE: "relevance",
+  DATE: "date",
+  SALARY: "salary",
+  DISTANCE: "distance",
   NEWEST: "newest",
-  OLDEST: "oldest",
 } as const;
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 

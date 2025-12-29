@@ -60,11 +60,8 @@ const ExploreJobs = React.lazy(
 const ExploreSavedJobs = React.lazy(
   () => import("@/pages/engineer/home/components/ExploreSavedJobs")
 );
-const NotificationListPage = React.lazy(
-  () =>
-    import(
-      "@/pages/engineer/account_settings/notification/NotificationListPage"
-    )
+const ApplicationHistoryPage = React.lazy(
+  () => import("@/pages/engineer/my_job/ApplicationHistoryPage")
 );
 
 //client
@@ -371,6 +368,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
+     {
+      path: urls.engineer.home.application_history,
+      element: withSuspense(ApplicationHistoryPage),
+      },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
         element: withSuspense(JobDetailsPage),
