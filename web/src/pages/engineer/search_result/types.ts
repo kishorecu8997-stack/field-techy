@@ -20,7 +20,6 @@ export const WORKING_TYPES = {
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
-
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
@@ -86,7 +85,6 @@ export interface Options {
   label: string;
   value: string;
 }
-
 
 export const OfferedJobStatus = {
   initial: "initial",
