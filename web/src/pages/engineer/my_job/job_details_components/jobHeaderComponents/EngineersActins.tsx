@@ -6,6 +6,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import type { JobStatus } from "../../types";
+import BreakRequest from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequest";
 
 /**
  * EngineersActions Component
@@ -38,7 +39,7 @@ const EngineersActions = ({
     | "checked-in"
     | undefined;
 }) => {
-  const { showPopup } = usePopupStore();
+  const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   const handleConfirmAcceptJob = async () => {
@@ -135,11 +136,25 @@ const EngineersActions = ({
       ],
     });
   };
+  const handlebreakRequest = async () => {
+    await showPopup({
+      title: "",
+      body: <BreakRequest onClose={closePopup} />,
+      actionButtons: [],
+    });
+  };
+
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
         {status === JOB_STATUSES.inprogress ? (
           <div className="flex flex-wrap gap-2 w-fit">
+            <Button
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              onClick={handlebreakRequest}
+            >
+              Break Request
+            </Button>
             <Button
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
               onClick={() => setOpen?.(true)}

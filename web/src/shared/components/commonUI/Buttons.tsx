@@ -14,7 +14,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "outline"
     | "link"
     | "text"
-    | "solid";
+    | "solid"
+    | "no_style";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -34,7 +35,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * - Supports left and right icons.
  * - Supports custom class names.
  * - Supports full width.
- * - Supports scroll to top on click.      
+ * - Supports scroll to top on click.
  */
 
 export const Button: React.FC<ButtonProps> = ({
@@ -68,13 +69,14 @@ export const Button: React.FC<ButtonProps> = ({
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
-  };
+    no_style: "",
+    };
 
   const sizeStyles: Record<string, string> = {
-    sm: "h-8 px-3 text-sm",
-    md: "h-10 px-4 text-sm",
+     sm: "h-11 px-3 text-sm",
+    md: "h-11 px-4 text-sm",
     lg: "h-12 px-6 text-base",
-    icon: "h-10 w-10",
+    icon: "h-11 w-11",
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
