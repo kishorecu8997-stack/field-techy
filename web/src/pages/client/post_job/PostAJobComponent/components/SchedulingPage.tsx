@@ -1,25 +1,25 @@
 import { repeatByOptions } from "@/dummy_data/client";
+import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import DaySelector from "@/shared/components/CheckboxSelector";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { getDurationString, getMinTentativeEndDate } from "@/utils";
+import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import {
   OccurrenceEndType,
   OccurrenceFields,
   RepeatByFields,
 } from "../../types";
 import SectionHeader from "../SectionHeader";
-import CheckboxSelector from "@/shared/components/CheckboxSelector";
 
 /*
  *  Scheduling
@@ -42,10 +42,12 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const startDate = ctx.watch("startDate");
   const endDate = ctx.watch("endDate");
 
-  const minTentativeEndDate = getMinTentativeEndDate(
-    applicationEndDate,
-    tentativeStartDate
-  );
+  
+useEffect(() => {
+  if (!tentativeStartDate) {
+    ctx.setValue("tentativeEndDate", null);
+  }
+}, [tentativeStartDate, ctx]);
 
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
@@ -68,6 +70,62 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
       ctx.setValue("estimatedDuration", duration);
     }
   }, [startDate, startTime, endDate, endTime]);
+
+
+  const addMonthsPreserveEndOfMonth = (date: Date, monthsToAdd: number): Date => {
+    const originalDay = date.getDate();
+    const startYear = date.getFullYear();
+    const startMonth = date.getMonth();
+    const targetMonthIndex = startMonth + monthsToAdd;
+    const temp = new Date(date);
+    temp.setFullYear(startYear, targetMonthIndex, 1);
+    const lastDayOfTargetMonth = new Date(
+      temp.getFullYear(),
+      temp.getMonth() + 1,
+      0
+    ).getDate();
+    temp.setDate(Math.min(originalDay, lastDayOfTargetMonth));
+    return temp;
+  };
+
+  const getDedicatedEndDateRange = (startDate: string | Date) => {
+    if (!startDate) {
+      return { min: undefined, max: undefined };
+    }
+    const start = new Date(startDate);
+    const min = addMonthsPreserveEndOfMonth(start, 6);
+    const max = addMonthsPreserveEndOfMonth(start, 24);
+    return { min, max };
+  };
+ const { min: minEndDate, max: maxEndDate } = useMemo(() => {
+  if (currentLocation === CurrentLocation.dedicated && tentativeStartDate) {
+    return getDedicatedEndDateRange(tentativeStartDate);
+  }
+  return { min: undefined, max: undefined };
+}, [tentativeStartDate, currentLocation]);
+  
+  const minStartTime = useMemo(() => {
+  if (!applicationEndDate) return undefined;
+
+  const selectedDate = new Date(applicationEndDate);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate.getTime() === today.getTime()) {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 1); // handles rollover safely
+
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  }
+
+  return undefined;
+}, [applicationEndDate]);
+
 
   return (
     <>
@@ -151,7 +209,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
-                      minDate={minTentativeEndDate}
+                      minDate={minEndDate}
+                      maxDate={maxEndDate}
                       required
                     />
                   </>
@@ -211,8 +270,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
@@ -221,6 +279,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             disabled={isDisable}
                             label="Start Date"
                             placeholder="Select start date"
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             {...field}
                             required
                           />
@@ -236,6 +295,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         label="Start Time"
                         maxTime={endTime}
                         disabled={isDisable}
+                        minTime={minStartTime}
                       />
                     </div>
                     <div className="w-full">
@@ -421,8 +481,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -434,6 +493,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select start date"
                             {...field}
                             required
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                             maxDate={endDate ? endDate : null}
                           />
                         </>
@@ -447,6 +507,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       required
                       maxTime={endTime}
                       disabled={isDisable}
+                      minTime={minStartTime}
                     />
                   </div>
                 </div>
@@ -455,8 +516,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="endDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("endDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
