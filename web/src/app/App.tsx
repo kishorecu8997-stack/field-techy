@@ -15,5 +15,4 @@ const App = () => {
   useJobExpirationNotification();
   return <RouterProvider router={routes} />;
 };
-
 export default App;
