@@ -1,21 +1,3 @@
-/**
- * BreakRequest
- *
- * Form component used to create and submit a break request.
- * Allows users to select break type, date, time, and provide a reason.
- * Also displays existing break status information in table and calendar views.
- *
- * Features:
- * - Uses react-hook-form for form state and validation
- * - Supports date and time selection
- * - Displays toast notifications on submit
- * - Integrates popup state handling
- *
- * @component
- *
- * @returns {JSX.Element} Rendered break request form with status table and calendar
- */
-
 import { useForm, Controller } from "react-hook-form";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
@@ -34,8 +16,9 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { useEffect } from "react";
 import { sampleJobs } from "@/dummy_data/searchData";
 
+type BreakType = "Long Term Break" | "Short Term Break" | "";
 interface BreakRequestFormData {
-  breakType: "Long Term Break" | "Short Term Break" | "";
+  breakType: BreakType;
   startDate: Date | null;
   endDate: Date | null;
   checkboxLong?: boolean;
@@ -45,7 +28,23 @@ interface BreakRequestFormData {
   duration: string;
   purpose: string;
 }
-
+/**
+ * BreakRequest
+ *
+ * Form component used to create and submit a break request.
+ * Allows users to select break type, date, time, and provide a reason.
+ * Also displays existing break status information in table and calendar views.
+ *
+ * Features:
+ * - Uses react-hook-form for form state and validation
+ * - Supports date and time selection
+ * - Displays toast notifications on submit
+ * - Integrates popup state handling
+ *
+ * @component
+ *
+ * @returns {JSX.Element} Rendered break request form with status table and calendar
+ */
 const BreakRequest = ({ onClose }: { onClose: () => void }) => {
   const methods = useForm<BreakRequestFormData>({
     defaultValues: {
@@ -60,10 +59,8 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
       purpose: "",
     },
   });
-
   const { showPopup } = usePopupStore();
   const { control, setValue, getValues } = methods;
-  console.log("df", getValues);
 
   const breakType = useWatch({
     control,
@@ -71,7 +68,6 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
   });
   const checkboxLong = useWatch({ control, name: "checkboxLong" });
   const checkboxShort = useWatch({ control, name: "checkboxShort" });
-
   useEffect(() => {
     if (breakType === "Short Term Break") {
       const today = new Date();
@@ -186,18 +182,19 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div className="flex flex-col p-6 ">
-      <div className="flex justify-end">
+    <div className="flex flex-col p-6">
+      <div className="relative mb-4">
+        <h2 className="text-xl text-gray-900 dark:text-white font-bold text-center">
+          Break Request
+        </h2>
         <div
-          className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+          className="absolute right-0 top-0 cursor-pointer text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
           onClick={onClose}
         >
           <icons.close className="w-6 h-6" />
         </div>
       </div>
-      <div className="text-xl text-gray-900 dark:text-white font-bold text-center">
-        Break Request
-      </div>
+
       <FormContainer methods={methods} onSubmit={handleSubmit}>
         <SelectField
           label="Break Type"
@@ -231,7 +228,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
               render={({ field }) => (
                 <CheckboxInput
                   {...field}
-                  secondaryLabel="Use full day (hide time selection)"
+                  secondaryLabel="hide time selection"
                 />
               )}
             />
@@ -265,7 +262,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
               render={({ field }) => (
                 <CheckboxInput
                   {...field}
-                  secondaryLabel="Use full day (hide time selection)"
+                  secondaryLabel="hide date selection"
                 />
               )}
             />
@@ -293,10 +290,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
           placeholder="Enter reason for break"
           required
         />
-        <Button
-          type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
-        >
+        <Button variant="primary" type="submit" className="w-full">
           Submit
         </Button>
       </FormContainer>

@@ -1,18 +1,3 @@
-/**
- * BreakStatusTable
- *
- * Table component that displays a list of breaks with their status.
- * Uses CustomTable for rendering and applies status-based styling with icons.
- *
- * Features:
- * - Status badges with colors and icons
- * - Paginated table with initial page size
- * - Columns: Break Type, Start, End, Status
- *
- * @component
- * @returns {JSX.Element} Rendered table of breaks with styled status badges
- */
-
 import React from "react";
 import {
   CustomTable,
@@ -73,6 +58,20 @@ const processedData: DisplayBreak[] = (breakData as RawBreak[]).map((item) => {
     reason: item.reason,
   };
 });
+/**
+ * BreakStatusTable
+ *
+ * Table component that displays a list of breaks with their status.
+ * Uses CustomTable for rendering and applies status-based styling with icons.
+ *
+ * Features:
+ * - Status badges with colors and icons
+ * - Paginated table with initial page size
+ * - Columns: Break Type, Start, End, Status
+ *
+ * @component
+ * @returns {JSX.Element} Rendered table of breaks with styled status badges
+ */
 const BreakStatusTable: React.FC = () => {
   const columns: Column<DisplayBreak>[] = [
     { key: "type", label: "Break Type" },

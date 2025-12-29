@@ -1,3 +1,16 @@
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
+import { useForm } from "react-hook-form";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { icons } from "@/config/icons";
+
+interface ActionReasonPopupProps {
+  title: string;
+  label: string;
+  submitLabel: string;
+  onSubmit: (data: { reason: string }) => Promise<void>;
+  onClose: () => void; 
+}
 /**
  * ActionReasonPopup
  *
@@ -19,20 +32,6 @@
  * @param {() => void} props.onClose - Callback to close the popup
  * @returns {JSX.Element} Rendered popup form
  */
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
-import { useForm } from "react-hook-form";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { icons } from "@/config/icons";
-
-interface ActionReasonPopupProps {
-  title: string;
-  label: string;
-  submitLabel: string;
-  onSubmit: (data: { reason: string }) => Promise<void>;
-  onClose: () => void; 
-}
-
 export const ActionReasonPopup = ({
   title,
   label,
@@ -54,13 +53,12 @@ export const ActionReasonPopup = ({
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
           {title}
         </h2>
-        <button
-          type="button"
+        <div
           className="cursor-pointer text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
           onClick={onClose}
         >
           <icons.close className="w-5 h-5" />
-        </button>
+        </div>
       </div>
       <TextareaInput
         name="reason"

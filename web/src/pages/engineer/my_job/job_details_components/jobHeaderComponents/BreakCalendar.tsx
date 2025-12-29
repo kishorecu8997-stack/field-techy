@@ -1,3 +1,49 @@
+import React from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import { icons } from "@/config/icons";
+import breakData from "@/dummy_data/break.json";
+type RawBreak = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  startTime?: string;
+  endTime?: string;
+  duration: string;
+  type: "Short" | "Long";
+  status: "Pending" | "Approved" | "Active" | "Rejected";
+};
+/**
+ * StatusLegendItem
+ *
+ * Small component to display a single status in the legend with icon and label.
+ *
+ * @component
+ * @param {React.ComponentType<any>} Icon - Icon component to display
+ * @param {string} label - Status label text
+ * @param {string} iconColor - Tailwind CSS color class for the icon
+ * @param {string} textColor - Tailwind CSS color class for the text
+ * @returns {JSX.Element} Rendered status legend item
+ */
+interface StatusLegendItemProps {
+  Icon: React.ComponentType<any>;
+  label: string;
+  textColor: string;
+  iconColor: string;
+}
+
+const StatusLegendItem: React.FC<StatusLegendItemProps> = ({
+  Icon,
+  label,
+  textColor,
+  iconColor,
+}) => (
+  <div className="flex items-center gap-3">
+    <Icon className={`text-2xl ${iconColor}`} />
+    <span className={`font-bold ${textColor}`}>{label}</span>
+  </div>
+);
+
 /**
  * BreakCalendar
  *
@@ -11,27 +57,9 @@
  * - Event tooltip shows status and duration/time
  * - Status legend with icons below the calendar
  *
- *
  * @component
  * @returns {JSX.Element} Rendered break calendar
  */
-import React from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import { icons } from "@/config/icons";
-import breakData from "@/dummy_data/break.json";
-
-type RawBreak = {
-  id: string;
-  startDate: string;
-  endDate: string;
-  startTime?: string;
-  endTime?: string;
-  duration: string;
-  type: "Short" | "Long";
-  status: "Pending" | "Approved" | "Active" | "Rejected";
-};
-
 const BreakCalendar: React.FC = () => {
   const statusConfig = {
     Pending: {
@@ -40,6 +68,8 @@ const BreakCalendar: React.FC = () => {
       border: "#f59e0b",
       text: "#92400e",
       label: "Pending",
+      iconColor: "text-amber-600",
+      textColor: "text-amber-800",
     },
     Approved: {
       Icon: icons.check,
@@ -47,6 +77,8 @@ const BreakCalendar: React.FC = () => {
       border: "#10b981",
       text: "#065f46",
       label: "Approved",
+      iconColor: "text-green-600",
+      textColor: "text-green-800",
     },
     Active: {
       Icon: icons.active,
@@ -54,6 +86,8 @@ const BreakCalendar: React.FC = () => {
       border: "#3b82f6",
       text: "#1e40af",
       label: "Active",
+      iconColor: "text-blue-600",
+      textColor: "text-blue-800",
     },
     Rejected: {
       Icon: icons.close,
@@ -61,6 +95,8 @@ const BreakCalendar: React.FC = () => {
       border: "#f87171",
       text: "#b91c1c",
       label: "Rejected",
+      iconColor: "text-red-600",
+      textColor: "text-red-800",
     },
   };
 
@@ -69,7 +105,7 @@ const BreakCalendar: React.FC = () => {
 
     if (brk.type === "Long") {
       const endDate = new Date(brk.endDate);
-      endDate.setDate(endDate.getDate() + 1);
+      endDate.setDate(endDate.getDate() + 1); 
       return {
         id: brk.id,
         title: `${config.label} - ${brk.duration}`,
@@ -96,6 +132,8 @@ const BreakCalendar: React.FC = () => {
     };
   });
 
+  const statusArray = Object.values(statusConfig);
+
   return (
     <div className="py-5 px-4">
       <div className="rounded-2xl overflow-hidden shadow-lg bg-white">
@@ -106,7 +144,7 @@ const BreakCalendar: React.FC = () => {
             headerToolbar={{
               left: "prev,next today",
               center: "title",
-              right: "", // Only month view
+              right: "",
             }}
             height="600px"
             events={events}
@@ -132,22 +170,15 @@ const BreakCalendar: React.FC = () => {
         </div>
         <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div className="flex flex-wrap justify-center gap-8 text-sm">
-            <div className="flex items-center gap-3">
-              <icons.active className="text-2xl text-blue-600" />
-              <span className="font-bold text-blue-800">Active</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <icons.check className="text-2xl text-green-600" />
-              <span className="font-bold text-green-800">Approved</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <icons.pending className="text-2xl text-amber-600" />
-              <span className="font-bold text-amber-800">Pending</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <icons.close className="text-2xl text-red-600" />
-              <span className="font-bold text-red-800">Rejected</span>
-            </div>
+            {statusArray.map((status) => (
+              <StatusLegendItem
+                key={status.label}
+                Icon={status.Icon}
+                label={status.label}
+                iconColor={status.iconColor}
+                textColor={status.textColor}
+              />
+            ))}
           </div>
         </div>
       </div>

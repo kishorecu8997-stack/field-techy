@@ -1,3 +1,22 @@
+import { icons } from "@/config/icons";
+import breakData from "@/dummy_data/break.json";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { ActionReasonPopup } from "./ActionReasonPopup";
+import { toast } from "react-toastify";
+import { formatDate } from "@/utils/formatDate";
+interface Break {
+  id: string;
+  startDate: string;
+  endDate: string;
+  startTime?: string;
+  endTime?: string;
+  duration: string;
+  type: "Short" | "Long";
+  status: "Pending" | "Approved" | "Active";
+  purpose: string;
+  ["Applied on"]?: string;
+}
 /**
  * BreakRequestDetails
  *
@@ -14,33 +33,6 @@
  * - Opens ActionReasonPopup on Approve/Reject
  * - Displays success toast on submission
  */
-import { icons } from "@/config/icons";
-import breakData from "@/dummy_data/break.json";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { ActionReasonPopup } from "./ActionReasonPopup";
-import { toast } from "react-toastify";
-
-interface Break {
-  id: string;
-  startDate: string;
-  endDate: string;
-  startTime?: string;
-  endTime?: string;
-  duration: string;
-  type: "Short" | "Long";
-  status: "Pending" | "Approved" | "Active";
-  purpose: string;
-  ["Applied on"]?: string;
-}
-
-const formatDate = (dateStr: string) => {
-  const d = new Date(dateStr);
-  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${d.getFullYear().toString().slice(-2)}`;
-};
-
 const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
   const { showPopup } = usePopupStore();
   const pendingBreaks = (breakData as Break[]).filter(
@@ -48,46 +40,43 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
   );
 
   const handleReject = async (brk: Break) => {
-  await showPopup({
-    title: "",
-    body: (
-      <ActionReasonPopup
-       title="Leave Rejection"
-        label="Reason for Reject"
-        submitLabel="Submit"
-        onSubmit={async ({ reason }) => {
-          console.log(`Break ID ${brk.id} rejected with reason:`, reason);
-          toast.success("Break rejected!");
-          onClose(); 
-        }}
-        onClose={onClose} 
-      />
-    ),
-    actionButtons: [], 
-  });
-};
-
-
-  const handleApprovel = async (brk: Break) => {
-  await showPopup({
-   title: "",
-    body: (
-      <ActionReasonPopup
-      title="Leave Approval"
-      label="Reason for Approve"
-        submitLabel="Submit"
-        onSubmit={async ({ reason }) => {
-          console.log(`Break ID ${brk.id} approved with reason:`, reason);
-          toast.success("Break approved!");
-          onClose(); 
-        }}
-        onClose={onClose} 
-      />
-    ),
-    actionButtons: [], 
-  });
+    await showPopup({
+      title: "",
+      body: (
+        <ActionReasonPopup
+          title="Leave Rejection"
+          label="Reason for Reject"
+          submitLabel="Submit"
+          onSubmit={async ({ reason }) => {
+            console.log(`Break ID ${brk.id} rejected with reason:`, reason);
+            toast.success("Break rejected!");
+            onClose();
+          }}
+          onClose={onClose}
+        />
+      ),
+      actionButtons: [],
+    });
   };
-
+  const handleApprovel = async (brk: Break) => {
+    await showPopup({
+      title: "",
+      body: (
+        <ActionReasonPopup
+          title="Leave Approval"
+          label="Reason for Approve"
+          submitLabel="Submit"
+          onSubmit={async ({ reason }) => {
+            console.log(`Break ID ${brk.id} approved with reason:`, reason);
+            toast.success("Break approved!");
+            onClose();
+          }}
+          onClose={onClose}
+        />
+      ),
+      actionButtons: [],
+    });
+  };
   return (
     <div className="flex flex-col p-4 space-y-3">
       <div className="flex justify-between items-center mb-2">
@@ -139,10 +128,18 @@ const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
 
             <div className="w-full">
               <div className="flex justify-end space-x-2 mt-1">
-                <Button onClick={() => handleReject(brk)} variant="outline" size="sm">
+                <Button
+                  onClick={() => handleReject(brk)}
+                  variant="outline"
+                  size="sm"
+                >
                   Reject
                 </Button>
-                <Button onClick={() => handleApprovel(brk)} variant="primary" size="sm">
+                <Button
+                  onClick={() => handleApprovel(brk)}
+                  variant="primary"
+                  size="sm"
+                >
                   Approve
                 </Button>
               </div>
