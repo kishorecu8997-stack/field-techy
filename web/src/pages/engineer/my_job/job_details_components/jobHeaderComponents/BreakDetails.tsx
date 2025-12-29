@@ -1,3 +1,7 @@
+import React from "react";
+import BreakStatusTable from "./BreakStatusTable";
+import BreakCalendar from "./BreakCalendar";
+
 /**
  * BreakDetails
  *
@@ -9,10 +13,6 @@
  * - Two-column responsive grid on large screens
  * - Single-column layout on smaller screens
  */
-import React from "react";
-import BreakStatusTable from "./BreakStatusTable";
-import BreakCalendar from "./BreakCalendar";
-
 const BreakDetails: React.FC = () => {
   return (
     <div className="py-6 px-4 max-w-full bg-white">

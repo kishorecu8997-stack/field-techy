@@ -3,6 +3,18 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { icons } from "@/config/icons";
 import breakData from "@/dummy_data/break.json";
+
+export const DURATION_TYPES = ["Short", "Long"] as const;
+export const STATUS_TYPES = [
+  "Pending",
+  "Approved",
+  "Active",
+  "Rejected",
+] as const;
+
+type DurationType = (typeof DURATION_TYPES)[number];
+type StatusType = (typeof STATUS_TYPES)[number];
+
 type RawBreak = {
   id: string;
   startDate: string;
@@ -10,8 +22,8 @@ type RawBreak = {
   startTime?: string;
   endTime?: string;
   duration: string;
-  type: "Short" | "Long";
-  status: "Pending" | "Approved" | "Active" | "Rejected";
+  type: DurationType;
+  status: StatusType;
 };
 /**
  * StatusLegendItem
@@ -105,7 +117,7 @@ const BreakCalendar: React.FC = () => {
 
     if (brk.type === "Long") {
       const endDate = new Date(brk.endDate);
-      endDate.setDate(endDate.getDate() + 1); 
+      endDate.setDate(endDate.getDate() + 1);
       return {
         id: brk.id,
         title: `${config.label} - ${brk.duration}`,
