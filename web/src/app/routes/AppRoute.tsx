@@ -302,6 +302,12 @@ const ClientPrivacyPolicy = React.lazy(
 
 const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
 const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
+const NotificationListPage = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/account_settings/notification/NotificationListPage"
+    )
+);
 
 /**
  * Configures the application's routing structure using React Router.
