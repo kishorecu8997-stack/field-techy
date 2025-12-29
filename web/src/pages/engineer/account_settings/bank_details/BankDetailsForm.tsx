@@ -6,8 +6,8 @@ import {
   validateAccNumber,
   validateAddress,
   validateIBANForCountrywise,
-  validateNameWithSpace,
   validateSWIFTBank,
+  validateNameWithSpace,
 } from "../validation";
 
 /**
@@ -28,8 +28,8 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
           />
           <InputField
             name="bankAddress"
-            label="Bank Address"
-            placeholder="Bank address"
+            label="Branch Address"
+            placeholder="Branch address"
             required
             rules={{ validate: validateAddress }}
           />
@@ -38,8 +38,9 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Name"
             placeholder="Name"
             required
+            allowedCharacters="string"
             rules={{
-              validate: (value) => validateNameWithSpace(value, "Name"),
+              validate: (value) => validateNameWithSpace(value),
             }}
           />
           <InputField
@@ -47,6 +48,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Account Number"
             placeholder="Account number"
             required
+            allowedCharacters="numbers"
             rules={{ validate: validateAccNumber }}
           />
           <InputField
@@ -54,6 +56,7 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="IBAN"
             placeholder="IBAN"
             required
+            allowedCharacters="alphanumeric"
             rules={{ validate: validateIBANForCountrywise }}
           />
           <InputField
@@ -61,17 +64,18 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Swift Code"
             placeholder="SWIFT code"
             required
+            allowedCharacters="alphanumeric"
             rules={{ validate: validateSWIFTBank }}
           />
         </div>
-      </div>
-      <div className="mt-auto flex justify-end">
-        <Button
-          type="submit"
-          className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
-        >
-          {formType === "add" ? "Add Account" : "Save Bank Details"}
-        </Button>
+        <div className="mt-auto flex justify-end">
+          <Button
+            type="submit"
+            className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded"
+          >
+            {formType === "add" ? "Add Account" : "Save Bank Details"}
+          </Button>
+        </div>
       </div>
     </div>
   );
