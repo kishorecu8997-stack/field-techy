@@ -37,7 +37,10 @@ const SetPassword = React.lazy(
 );
 
 const BreakDetails = React.lazy(
-  () => import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails")
+  () =>
+    import(
+      "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails"
+    )
 );
 
 // Layouts
@@ -74,7 +77,6 @@ const ExploreSavedJobs = React.lazy(
 const ApplicationHistoryPage = React.lazy(
   () => import("@/pages/engineer/my_job/ApplicationHistoryPage")
 );
-
 
 //client
 const ClientSignInPage = React.lazy(
@@ -310,6 +312,12 @@ const ClientPrivacyPolicy = React.lazy(
 
 const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
 const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
+const NotificationListPage = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/account_settings/notification/NotificationListPage"
+    )
+);
 
 /**
  * Configures the application's routing structure using React Router.
@@ -369,11 +377,10 @@ export const routes = createBrowserRouter([
     path: BASE.ENGINEER,
     element: (
       <>
-      <RootLayout />
-      {withSuspense(LiveChatWidget)} {/* Visible for Login Engineer */}
+        <RootLayout />
+        {withSuspense(LiveChatWidget)} {/* Visible for Login Engineer */}
       </>
-    )    
-    ,
+    ),
     children: [
       { index: true, element: withSuspense(Home) },
       { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
@@ -386,9 +393,9 @@ export const routes = createBrowserRouter([
         element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
-     {
-      path: urls.engineer.home.application_history,
-      element: withSuspense(ApplicationHistoryPage),
+      {
+        path: urls.engineer.home.application_history,
+        element: withSuspense(ApplicationHistoryPage),
       },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
@@ -410,7 +417,7 @@ export const routes = createBrowserRouter([
         path: urls.engineer.home.privacy_policy,
         element: withSuspense(PrivacyPolicy),
       },
-       {
+      {
         path: urls.engineer.video_guidance,
         element: withSuspense(VideoGuidance),
       },
