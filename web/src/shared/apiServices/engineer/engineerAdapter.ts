@@ -89,8 +89,9 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
       formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
+       headers: {
+          'X-USER': 'ENGINEER',
+          "Content-Type": "multipart/form-data"
         },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {

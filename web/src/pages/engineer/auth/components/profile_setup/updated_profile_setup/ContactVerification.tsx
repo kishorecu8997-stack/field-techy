@@ -205,8 +205,8 @@ const ContactVerification = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-gray-50 dark:bg-gray-900">
-      <div className="shrink-0 p-4 flex flex-col gap-2 items-center justify-center bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
+    <div className="flex flex-col h-screen w-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
+      <div className="shrink-0 p-4 flex flex-col gap-2 items-center justify-center bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-20">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           Verification
         </h2>
@@ -215,7 +215,7 @@ const ContactVerification = () => {
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-8 max-w-4xl mx-auto w-full flex flex-col items-center gap-6  justify-center">
+      <div className="flex-1 overflow-auto mx-auto w-full flex flex-col items-center gap-6 py-6 px-4">
         <div className="w-full md:w-1/2">
           <VerificationCard
             type="email"
@@ -241,7 +241,7 @@ const ContactVerification = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div className="shrink-0 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 z-20">
         <div className="w-full max-w-md mx-auto">
           <Button
             onClick={handleContinue}
