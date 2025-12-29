@@ -16,7 +16,6 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
-  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
   // Handle drawer navigation
@@ -44,9 +43,13 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       id: "notifications",
       label: "Notifications",
       icon: icons.notifications,
-      isToggle: true,
-      toggleValue: notificationsEnabled,
-      onToggleChange: setNotificationsEnabled,
+      onClick: () => onMenuItemClick("NotificationPreferences"),
+    },
+    {
+      id: "activeSessions",
+      label: "Active Sessions",
+      icon: icons.sessions,
+      onClick: () => onMenuItemClick("activeSessions")
     },
     {
       label: "Contact Us",

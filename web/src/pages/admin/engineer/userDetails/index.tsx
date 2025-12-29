@@ -1,4 +1,3 @@
-import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useNavigate } from "react-router-dom";
@@ -78,13 +77,7 @@ export default function UserDetails() {
       <div className="flex justify-between mt-4">
         <h1 className="font-semibold ">User Details</h1>
         <div className="flex gap-4">
-          <Button
-            variant="solid"
-            className=""
-            onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer}`)
-            }
-          >
+          <Button variant="solid" className="" onClick={() => navigate(-1)}>
             Back
           </Button>
         </div>
