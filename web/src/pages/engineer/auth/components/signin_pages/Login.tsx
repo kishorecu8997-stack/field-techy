@@ -10,7 +10,7 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
 import { validatePassword } from "@/shared/libs/utils";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
@@ -18,7 +18,7 @@ import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
+import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -42,8 +42,6 @@ const Login = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { goToHome } = useHomeNavigation();
-
-  const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
     defaultValues: {
       email: "",
@@ -51,10 +49,9 @@ const Login = ({
       rememberMe: false,
     },
   });
-
-  const handleSubmit = () => {
-    setIsOpen(true);
-  };
+  const data = methods.watch();
+  const { isOpen, handleSubmit, setIsOpen, verify, otpauthUrl } =
+    useTwoFactorAuth(data.email, goToHome);
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -143,12 +140,10 @@ const Login = ({
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code"
+            description="We sent you an OTP code please scan using autendicator/backupcodes"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
-              goToHome();
-              toast.success("Logged in successfully");
-            }}
+            handleNavigate={(data) => verify(data)}
+            otpauthUrl={otpauthUrl ?? ""}
           />
         </Popup>
       </div>
