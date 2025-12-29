@@ -2,6 +2,10 @@ import { useState, useMemo } from "react";
 import { FAQData } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 
+/**
+ * FAQ page displaying frequently asked questions using static dummy data.
+ * Renders a header and content section via reusable components.
+ */
 const FAQ = () => {
   const [search, setSearch] = useState("");
   const [expandedIndex, setExpandedIndex] = useState<string | null>(null);

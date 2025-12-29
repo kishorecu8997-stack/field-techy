@@ -21,6 +21,12 @@ function isTrustedVideoUrl(url: string): boolean {
     return false;
   }
 }
+
+/**
+ * VideoCard component displays a video with a title, description, and URL.
+ * It renders an iframe for YouTube, Vimeo, and YouTube Shorts videos.
+ * If the URL is not from a trusted host, it displays a message.
+ */
 const VideoCard: React.FC<VideoCardProps> = ({ title, description, videoUrl }) => {
   const isTrusted = isTrustedVideoUrl(videoUrl);
   const safeVideoUrl = isTrusted ? videoUrl : undefined;

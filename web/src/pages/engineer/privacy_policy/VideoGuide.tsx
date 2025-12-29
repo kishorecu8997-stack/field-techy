@@ -2,6 +2,10 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { videoGuidanceData } from "@/dummy_data/videoGuidanceData";
 import VideoCard from "@/shared/components/VideoCard";
 
+/**
+ * VideoGuidance page displaying a list of videos with titles, descriptions, and links.
+ * Renders a header and content section via reusable components.
+ */
 const VideoGuidance = () => {
   return (
     <div className="min-h-[60rem] w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

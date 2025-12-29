@@ -3,6 +3,13 @@ import { mockChat } from "@/dummy_data/supportChat";
 import { FiMessageSquare, FiX } from "react-icons/fi";
 import Tooltip from "@/shared/components/Tooltip";
 
+/**
+ * LiveChatWidget component displays a live chat widget with a button to open it.
+ * It includes a header with a close button, a list of messages, and an input field for sending messages.
+ * The widget is initially closed and can be opened by clicking the button.
+ * The messages are displayed in a scrollable container with a maximum height of 96 pixels.
+ * The input field allows users to type messages and send them by pressing the Enter key.
+ */
 const LiveChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
 

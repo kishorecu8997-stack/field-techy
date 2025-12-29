@@ -1,6 +1,9 @@
-import React from "react";
 import Tooltip from "@/shared/components/Tooltip";
 
+/**
+ * Navigation component for the main navigation bar.
+ * Displays links to My Jobs, Explore Jobs, and Help & Support.
+ */
 const Navigation = () => {
   return (
     <nav className="flex gap-6 bg-white p-4 shadow">

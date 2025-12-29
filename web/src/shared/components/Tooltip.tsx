@@ -5,6 +5,11 @@ interface TooltipProps {
   children: React.ReactNode;
 }
 
+/**
+ * Tooltip component that displays a tooltip on hover or focus.
+ * Accepts a text prop and a child element.
+ * Renders a tooltip div with the text and child element.
+ */
 const Tooltip: React.FC<TooltipProps> = ({ text, children }) => {
   const [isVisible, setIsVisible] = useState(false);
   const tooltipId = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
