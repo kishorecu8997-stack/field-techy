@@ -3,6 +3,10 @@ import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { withSuspense } from "./WithSuspense";
 
+const LiveChatWidget = React.lazy(
+  () => import("@/shared/components/Support/LiveChatWidget")
+);
+
 const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
@@ -33,7 +37,10 @@ const SetPassword = React.lazy(
 );
 
 const BreakDetails = React.lazy(
-  () => import("@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails")
+  () =>
+    import(
+      "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakDetails"
+    )
 );
 
 // Layouts
@@ -53,6 +60,9 @@ const TermsAndConditions = React.lazy(
   () => import("@/pages/engineer/privacy_policy/TermsAndConditions")
 );
 const FAQ = React.lazy(() => import("@/pages/engineer/privacy_policy/FAQ"));
+const VideoGuidance = React.lazy(
+  () => import("@/pages/engineer/privacy_policy/VideoGuide")
+);
 const AboutApp = React.lazy(
   () => import("@/pages/engineer/privacy_policy/AboutApp")
 );
@@ -365,7 +375,12 @@ export const routes = createBrowserRouter([
   // Engineer Main Routes
   {
     path: BASE.ENGINEER,
-    element: withSuspense(RootLayout),
+    element: (
+      <>
+        <RootLayout />
+        {withSuspense(LiveChatWidget)} {/* Visible for Login Engineer */}
+      </>
+    ),
     children: [
       { index: true, element: withSuspense(Home) },
       { path: urls.engineer.home.dashboard, element: withSuspense(Home) },
@@ -378,9 +393,9 @@ export const routes = createBrowserRouter([
         element: withSuspense(ExploreSavedJobs),
       },
       { path: urls.engineer.home.my_jobs, element: withSuspense(MyJobsPage) },
-     {
-      path: urls.engineer.home.application_history,
-      element: withSuspense(ApplicationHistoryPage),
+      {
+        path: urls.engineer.home.application_history,
+        element: withSuspense(ApplicationHistoryPage),
       },
       {
         path: `${urls.engineer.home.my_jobs}/:jobId`,
@@ -401,6 +416,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.privacy_policy,
         element: withSuspense(PrivacyPolicy),
+      },
+      {
+        path: urls.engineer.video_guidance,
+        element: withSuspense(VideoGuidance),
       },
       {
         path: urls.engineer.home.terms_and_conditions,
