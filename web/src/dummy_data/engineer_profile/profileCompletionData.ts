@@ -1,17 +1,12 @@
-/**
- * Profile Completion Types and Data
- * Defines the types and interfaces for profile fields and sections.
- * FieldStatus represents the completion state of each field: complete, pending, or rejected.
- * ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field.
- * `profileCompletionData` provides sample data for all profile sections including their fields and statuses.
- */
+/** FieldStatus represents the completion state of each field: complete, pending, or rejected. */
 export type FieldStatus = "complete" | "pending" | "rejected";
  
+/** Defines the types and interfaces for profile fields and sections. */
 export interface ProfileField {
   label: string;
   status: FieldStatus;
 }
- 
+ /** ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field. */
 export interface ProfileSection {
   key: string;
   title: string;
@@ -19,7 +14,8 @@ export interface ProfileSection {
   estimatedMinutesPerField: number;
   fields: ProfileField[];
 }
- 
+
+/** profileCompletionData provides sample data for all profile sections including their fields and statuses. */
 export const profileCompletionData: ProfileSection[] = [
   {
     key: "personalInfo",
