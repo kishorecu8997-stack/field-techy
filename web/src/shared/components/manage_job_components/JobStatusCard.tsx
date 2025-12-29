@@ -1,10 +1,10 @@
 import React from "react";
+import type { JobStatus } from "@/constants/jobStatus";
 
 interface JobStatusCardProps {
   jobId: string;
   date?: Date | undefined;
-  status: "completed" | "pending" | "in-progress" | "Notified" | "Unallocated" | "Partially Assigned" |
-  "Assigned" | "Selected" | "Hold" | "Draft" | "Canceled" | "Escalation In Progress" | "Work In Progress" | "Closed";
+  status: JobStatus;
   onStatusChange?: () => void;
 }
 

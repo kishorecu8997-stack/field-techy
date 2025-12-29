@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { CgDanger } from "react-icons/cg";
-import { ChevronDown } from "lucide-react"; 
+import { ChevronDown } from "lucide-react";
+import { JOB_STATUS_INFO } from "@/utils/jobStatusUtils";
 
 interface StatusFilterProps {
   activeFilter: string;
@@ -15,15 +16,27 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const statusOptions = [
-    "All Jobs", "Notified", 
-    "Unallocated", "Partially Assigned", "Assigned", "Selected", 
-    "Draft","Canceled","Escalation In Progress", "Work In Progress", "Closed", "Hold",
+    "All Jobs",
+    "Notified",
+    "Unallocated",
+    "Partially Assigned",
+    "Assigned",
+    "Selected",
+    "Draft",
+    "Canceled",
+    "Escalation In Progress",
+    "Work In Progress",
+    "Closed",
+    "Hold",
   ];
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -64,7 +77,8 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
                     setIsOpen(false);
                   }}
                   className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                    (activeFilter === option || (!activeFilter && option === "All Jobs"))
+                    activeFilter === option ||
+                    (!activeFilter && option === "All Jobs")
                       ? "bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100"
                       : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
@@ -78,29 +92,14 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
 
         <div className="relative inline-block group">
           <CgDanger className="bg-gray-200 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors" />
-          <div
-            className="absolute left-1/2 md:left-full -translate-x-1/2 mt-2
-                hidden group-hover:block
-                whitespace-nowrap
-                bg-gray-900 text-white text-xs
-                px-3 py-1 rounded shadow-lg z-50"
-          >
-           Job Status Guide <br/>
-            ---------------------- <br/>
-            Applied = Blue <br/>
-            In Progress = Yellow <br/>
-            Completed = Green <br/>
-            Notified = Blue <br/>
-            Unallocated = Gray<br/>
-            Partially Assigned = Yellow<br/>
-            Assigned = Green <br/>
-            Selected = Purple<br/>
-            Hold = Orange<br/>
-            Draft = Light Gray<br/>
-            Canceled = Red<br/>
-            Escalation In Progress = Red/Warning<br/>
-            Work In Progress = Blue (active)<br/>
-            Closed = Gray (inactive)<br/><br/>
+          <div className="absolute left-1/2 md:left-full -translate-x-1/2 mt-2 hidden group-hover:block whitespace-nowrap bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50">
+            <ul className="list-disc pl-4">
+              {Object.values(JOB_STATUS_INFO).map((status) => (
+                <li key={status.label}>
+                  <strong>{status.label}</strong> = {status.color}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
