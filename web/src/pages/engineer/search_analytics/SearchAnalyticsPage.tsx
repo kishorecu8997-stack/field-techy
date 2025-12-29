@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  searchEvents,
-  clickEvents,
-} from "@/dummy_data/engineer_search/searchAnalytics";
+import { searchEvents, clickEvents } from "@/dummy_data/engineer_search/searchAnalytics";
 import {
   getTotalSearches,
   getKeywordFrequency,
@@ -10,19 +7,28 @@ import {
   getCTR,
   getSearchHistory,
 } from "@/utils/searchAnalytics";
-
-//  Search Analytics Components
 import AnalyticsCard from "@/shared/components/search-analytics/AnalyticsCard";
 import Section from "@/shared/components/search-analytics/Section";
 import KeywordRow from "@/shared/components/search-analytics/KeywordRow";
 import TrendRow from "@/shared/components/search-analytics/TrendRow";
 
-// Styles for the page 
-import {
-  containerStyle,
-  headingStyle,
-  tableStyle,
-} from "@/shared/styles/searchAnalytics.styles";
+/**
+ * SearchAnalyticsPage Component
+ * 
+ * Main page component for displaying search analytics for engineers.
+ * Shows analytics cards, most searched keywords, search trends, and search history.
+ *
+ * Fetches data from dummy data and utility functions to calculate:
+ * - Total searches
+ * - Click-through rate
+ * - Unique keywords
+ * - Keyword frequency
+ * - Search trends
+ * - Search history
+ * 
+ * @example
+ * <SearchAnalyticsPage />
+ */
 
 const SearchAnalyticsPage: React.FC = () => {
   const totalSearches = getTotalSearches(searchEvents);
@@ -31,28 +37,21 @@ const SearchAnalyticsPage: React.FC = () => {
   const ctr = getCTR(searchEvents, clickEvents);
   const searchHistory = getSearchHistory(searchEvents, clickEvents);
 
-  const sortedKeywords = Object.entries(keywordFrequency).sort(
-    (a, b) => b[1] - a[1]
-  );
-
+  const sortedKeywords = Object.entries(keywordFrequency).sort((a, b) => b[1] - a[1]);
   const sortedTrends = Object.entries(searchTrends).sort(
     ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
   );
 
   return (
-    <div style={containerStyle}>
-      <h2 style={headingStyle}>Search Analytics</h2>
-      
+    <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
+      {/* Heading */}
+      <h2 className="text-3xl font-bold mb-2">Search Analysis</h2>
+      <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
+        Analyse user search behaviour and results performance.
+      </p>
+
       {/* Analytics Cards */}
-      <div
-        style={{
-          display: "flex",
-          gap: "16px",
-          marginBottom: "32px",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="flex flex-wrap gap-5 mb-10">
         <AnalyticsCard title="Total Searches" value={totalSearches.toString()} />
         <AnalyticsCard title="Click Through Rate" value={`${ctr}%`} />
         <AnalyticsCard title="Unique Keywords" value={Object.keys(keywordFrequency).length.toString()} />
@@ -61,12 +60,7 @@ const SearchAnalyticsPage: React.FC = () => {
       {/* Most Searched Keywords */}
       <Section title="Most Searched Keywords">
         {sortedKeywords.map(([keyword, count]) => (
-          <KeywordRow
-            key={keyword}
-            keyword={keyword}
-            count={count}
-            total={totalSearches}
-          />
+          <KeywordRow key={keyword} keyword={keyword} count={count} total={totalSearches} />
         ))}
       </Section>
 
@@ -77,22 +71,22 @@ const SearchAnalyticsPage: React.FC = () => {
         ))}
       </Section>
 
-      {/* Search History */}
+      {/* Search History Analytics */}
       <Section title="Search History Analytics">
-        <table style={tableStyle}>
+        <table className="w-full border-collapse mt-4 text-sm">
           <thead>
-            <tr>
-              <th>Keyword</th>
-              <th>Date</th>
-              <th>Clicked</th>
+            <tr className="bg-gray-100 dark:bg-gray-700 text-left">
+              <th className="p-3 border-b border-gray-200 dark:border-gray-600">Keyword</th>
+              <th className="p-3 border-b border-gray-200 dark:border-gray-600">Date</th>
+              <th className="p-3 border-b border-gray-200 dark:border-gray-600">Clicked</th>
             </tr>
           </thead>
           <tbody>
-            {searchHistory.map((item) => (
-              <tr key={item.id}>
-                <td>{item.keyword}</td>
-                <td>{item.date}</td>
-                <td>{item.clicked ? "Yes" : "No"}</td>
+            {searchHistory.map((item, index) => (
+              <tr key={item.id} className={index % 2 === 0 ? "bg-white dark:bg-gray-800" : "bg-gray-50 dark:bg-gray-700"}>
+                <td className="p-3">{item.keyword}</td>
+                <td className="p-3">{item.date}</td>
+                <td className="p-3">{item.clicked ? "Yes" : "No"}</td>
               </tr>
             ))}
           </tbody>

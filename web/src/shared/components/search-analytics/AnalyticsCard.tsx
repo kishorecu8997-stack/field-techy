@@ -1,34 +1,29 @@
 import React from "react";
 
+/**
+ * AnalyticsCard Component
+ * 
+ * Displays a summary card with a title and a value.
+ * Used for showing metrics such as total searches, CTR, or unique keywords.
+ *
+ * @param {string} title - The title of the metric.
+ * @param {string} value - The value of the metric.
+ * 
+ * @example
+ * <AnalyticsCard title="Total Searches" value="1200" />
+ */
+
 interface Props {
   title: string;
   value: string;
+  className?: string;
 }
 
-const AnalyticsCard: React.FC<Props> = ({ title, value }) => (
-  <div style={cardStyle}>
-    <p style={cardTitle}>{title}</p>
-    <h3 style={cardValue}>{value}</h3>
+const AnalyticsCard: React.FC<Props> = ({ title, value, className }) => (
+  <div className={`flex-1 min-w-[200px] p-5 bg-white dark:bg-gray-800 shadow rounded-lg text-center ${className}`}>
+    <p className="text-gray-500 dark:text-gray-300 mb-2">{title}</p>
+    <h3 className="text-2xl font-semibold">{value}</h3>
   </div>
 );
 
 export default AnalyticsCard;
-
-const cardStyle: React.CSSProperties = {
-  flex: 1,
-  background: "#fff",
-  padding: 20,
-  borderRadius: 12,
-  border: "1px solid #ddd",
-  textAlign: "center",
-};
-
-const cardTitle: React.CSSProperties = {
-  color: "#777",
-  marginBottom: 8,
-};
-
-const cardValue: React.CSSProperties = {
-  fontSize: "1.6rem",
-  fontWeight: 600,
-};

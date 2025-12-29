@@ -1,17 +1,29 @@
 import React from "react";
 
-const TrendRow: React.FC<{ date: string; count: number }> = ({ date, count }) => (
-  <div style={rowStyle}>
+/**
+ * TrendRow Component
+ * 
+ * Displays a single search trend row with date and count of searches.
+ * Used in the "Search Trends" section.
+ *
+ * @param {string} date - The date of the searches.
+ * @param {number} count - Number of searches on that date.
+ * 
+ * @example
+ * <TrendRow date="2025-12-29" count={50} />
+ */
+
+interface Props {
+  date: string;
+  count: number;
+  className?: string;
+}
+
+const TrendRow: React.FC<Props> = ({ date, count, className }) => (
+  <div className={`flex justify-between py-2 border-b border-gray-200 dark:border-gray-700 ${className}`}>
     <span>{date}</span>
     <span>{count} searches</span>
   </div>
 );
 
 export default TrendRow;
-
-const rowStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "6px 0",
-  borderBottom: "1px solid #e0e0e0",
-};

@@ -1,29 +1,34 @@
 import React from "react";
 
+/**
+ * KeywordRow Component
+ * 
+ * Displays a single keyword with its count and percentage of total searches.
+ * Used in the "Most Searched Keywords" section.
+ *
+ * @param {string} keyword - The keyword string.
+ * @param {number} count - Number of times the keyword was searched.
+ * @param {number} total - Total number of searches (used to calculate percentage).
+ * 
+ * @example
+ * <KeywordRow keyword="React" count={120} total={1000} />
+ */
+
 interface Props {
   keyword: string;
   count: number;
   total: number;
+  className?: string;
 }
 
-const KeywordRow: React.FC<Props> = ({ keyword, count, total }) => {
+const KeywordRow: React.FC<Props> = ({ keyword, count, total, className }) => {
   const percentage = Math.round((count / total) * 100);
-
   return (
-    <div style={rowStyle}>
+    <div className={`flex justify-between py-2 border-b border-gray-200 dark:border-gray-700 ${className}`}>
       <span>{keyword}</span>
-      <span>
-        {count} ({percentage}%)
-      </span>
+      <span>{count} ({percentage}%)</span>
     </div>
   );
 };
 
 export default KeywordRow;
-
-const rowStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "6px 0",
-  borderBottom: "1px solid #e0e0e0",
-};
