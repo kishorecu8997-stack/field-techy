@@ -1,11 +1,6 @@
 import useDrawerStore from "@/shared/store/useDrawerStore";
-/**
- * ProfileCompletionCard Component
- * Renders a card showing the user's profile completion progress.
- * Displays sections with their fields, completion percentage, and status icons.
- * Provides a button to navigate to incomplete sections and shows estimated time remaining.
- * Utilizes `useDrawerStore` for state management and navigation control.
- */
+import { Button } from "@headlessui/react";
+
 const getStatusIcon = (status: string) => {
   if (status === "complete") return "✓";
   if (status === "pending") return "⏳";
@@ -18,6 +13,11 @@ const getStatusColor = (status: string) => {
   return "text-red-600";
 };
 
+/**
+ * ProfileCompletionCard Component
+ * Renders a card showing the user's profile completion progress.
+ * Displays sections with their fields, completion percentage, and status icons.
+ */
 const ProfileCompletionCard = () => {
   const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource, setImmediateParentKey } =
     useDrawerStore();
@@ -71,7 +71,7 @@ const ProfileCompletionCard = () => {
             {/* Complete this Section for easily access the form */}
             {percentage < 100 && (
               <div className="flex justify-between items-center mt-4 text-sm">
-                <button
+                <Button
                   onClick={() => {
                     // Set source to profilecompletion, returnToKey to profile completion
                     setNavigationSource("profilecompletion","profileCompletion");
@@ -82,7 +82,7 @@ const ProfileCompletionCard = () => {
                   className="text-teal-700 font-medium hover:underline"
                 >
                   Complete This Section
-                </button>
+                </Button>
 
                 <span className="text-gray-500">
                   {estimatedTime} minutes remaining

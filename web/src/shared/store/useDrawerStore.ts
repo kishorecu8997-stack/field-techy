@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { profileCompletionData, type FieldStatus } from "@/pages/engineer/user_profile/profile_completion/profileCompletionData";
+import { profileCompletionData, type FieldStatus } from "@/dummy_data/engineer_profile/profileCompletionData";
 export type NavigationSource = "sidebar" | "profilecompletion" | "settings";
 export type { FieldStatus };
 
