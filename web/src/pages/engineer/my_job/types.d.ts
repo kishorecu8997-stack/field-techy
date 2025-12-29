@@ -61,7 +61,7 @@ export interface EarningsData {
 export interface SidebarProfileProps {
   user: UserProfile;
   earnings: EarningsData;
-}
+ }
 
 /**
  * Props for the card displaying client information.
