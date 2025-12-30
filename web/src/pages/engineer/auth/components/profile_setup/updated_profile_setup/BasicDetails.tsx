@@ -97,8 +97,10 @@ const BasicDetails = () => {
 
   // Sync store with form
   useEffect(() => {
-    if (signupEmail && !formCtx.getValues("email")) formCtx.setValue("email", signupEmail);
-    if (signupPhone && !formCtx.getValues("phone")) formCtx.setValue("phone", signupPhone);
+    if (signupEmail && !formCtx.getValues("email"))
+      formCtx.setValue("email", signupEmail);
+    if (signupPhone && !formCtx.getValues("phone"))
+      formCtx.setValue("phone", signupPhone);
   }, [signupEmail, signupPhone, formCtx]);
 
   // Auto-save to store
@@ -141,13 +143,19 @@ const BasicDetails = () => {
       portfolioLink: data.portfolioLink,
       serviceCategory: getValue(data.serviceCategory),
       budget: data.amount,
-      rate: parseFloat(data.amount.replace(/[^0-9.]/g, '')) || 0,
+      rate: parseFloat(data.amount.replace(/[^0-9.]/g, "")) || 0,
       experienceYears: parseFloat(data.experienceYears) || 0,
 
       // Hardcoded values matching the provided CURL/API requirements
       preferredWorkType: "REMOTE HYBRID",
       enableNotifications: data.isEnableNotifications,
-      location: [getValue(data.city), getValue(data.state), getValue(data.country)].filter(Boolean).join(", "),
+      location: [
+        getValue(data.city),
+        getValue(data.state),
+        getValue(data.country),
+      ]
+        .filter(Boolean)
+        .join(", "),
       averageRating: 4.7,
       status: "PENDING",
 
@@ -160,7 +168,7 @@ const BasicDetails = () => {
       experiences: [],
       educations: [],
 
-      files: null
+      files: null,
     };
 
     await showPopup({
@@ -197,7 +205,7 @@ const BasicDetails = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      <div className="shrink-0 p-2 mt-8 flex flex-col gap-2 items-center justify-center bg-white sticky top-0 z-10">
+      <div className="shrink-0 p-2 mt-8 flex flex-col gap-2 items-center justify-center sticky top-0 z-10">
         <h2 className="text-3xl font-bold">Profile Setup</h2>
         <p className="text-md text-center text-gray-600 mb-4 px-3">
           Complete your profile to unlock opportunities.
@@ -244,7 +252,7 @@ const BasicDetails = () => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
+      <div className="flex-shrink-0 p-4">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <Button
             type="submit"

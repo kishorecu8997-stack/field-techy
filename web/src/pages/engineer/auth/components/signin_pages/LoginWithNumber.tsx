@@ -161,8 +161,14 @@ const LoginWithNumber = ({
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header="Verify Mobile Number"
-            description="A verification OTP has been sent to your phone. Please check your phone."
+            header={`Verify ${
+              otpfor === "phoneNumber" ? "Phone Number" : "Email"
+            }`}
+            description={`A verification OTP has been sent to your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }. Please check your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }.`}
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
           />
