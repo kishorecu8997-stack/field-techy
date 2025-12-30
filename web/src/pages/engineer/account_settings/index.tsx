@@ -25,7 +25,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       label: "Change Password",
       icon: icons.lock,
       id: "changePassword",
-      onClick: () =>  {
+      onClick: () => {
         setNavigationSource("settings", "settings");
         onMenuItemClick("changePassword");
       },
@@ -37,7 +37,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       onClick: () => {
         setNavigationSource("settings", "settings");
         onMenuItemClick("manageBankAccounts");
-    },
+     },
     },
     {
       id: "notifications",

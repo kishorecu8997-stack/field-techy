@@ -26,7 +26,7 @@ export type MenuItems = {
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  // Modified to get navigation to source  from the store 
+  // Modified to get navigation to source from the store 
   const { 
     activeKey, 
     setActiveKey,
@@ -92,6 +92,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     setActiveKey(config.parent as string);
   }
 };
+
   return (
     <>
       {/* Backdrop */}

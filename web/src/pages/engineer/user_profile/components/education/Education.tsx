@@ -60,10 +60,10 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <DrawerCard
         title="Education"
         items={educationList}
-        onAddAction={() => { 
+        onAddAction={() => {
           setImmediateParentKey("education");
-          onMenuItemClick(`addEducation`)}
-        }
+          onMenuItemClick(`addEducation`);
+        }}
         onEditAction={(id) => {
           localStorage.setItem("editEducationId", id.toString());
           setImmediateParentKey("education");

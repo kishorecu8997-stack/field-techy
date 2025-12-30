@@ -4,7 +4,6 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
 import { toast } from "react-toastify";
 import { WorkExperienceList } from "./components/WorkExperienceList";
-
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
 }
@@ -55,7 +54,7 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <WorkExperienceList
         title="Experiences"
         items={workExperienceList}
-        onAddAction={() => { 
+        onAddAction={() => {
           setImmediateParentKey("experiences");
           onMenuItemClick(`addExperiences`);
         }}

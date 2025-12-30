@@ -3,6 +3,7 @@ import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
+import { getProfileCompletion } from "@/utils/profileCompletion";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
@@ -40,8 +41,16 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
-  const { setActiveKey, setISOpenSidebar, setNavigationSource } = useDrawerStore();
-  const { name, phone, role, profileCompletion } = user;
+  const { 
+    profileData, 
+    setActiveKey, 
+    setISOpenSidebar, 
+    setNavigationSource 
+  } = useDrawerStore();
+  // Get the overall profile completion percentage with the each field status
+  const profileCompletion = getProfileCompletion(profileData);
+  
+  const { name, phone, role } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
       <div className="flex flex-row justify-between">

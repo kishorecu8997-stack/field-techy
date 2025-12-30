@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { profileCompletionData, type FieldStatus } from "@/dummy_data/engineer_profile/profileCompletionData";
+import { profileCompletionData } from "@/pages/engineer/user_profile/profile_completion/profileCompletionData";
 export type NavigationSource = "sidebar" | "profilecompletion" | "settings";
-export type { FieldStatus };
+export type FieldStatus = "complete" | "pending" | "rejected";
 
 interface DrawerState {
   activeKey: string;
@@ -31,33 +31,17 @@ interface DrawerState {
  * Zustand store for managing global drawer/sidebar state, including the active menu key and sidebar open/closed status.
  */
 const useDrawerStore = create<DrawerState>((set) => ({
-  reset: () =>
-    set({
-      activeKey: "myAccount",
-      isOpenSidebar: false,
-      selectedId: "",
-      navigationSource: "sidebar",
-      returnToKey: undefined,
-      profileData: profileCompletionData,
-    }),
   activeKey: "myAccount",
   setActiveKey: (key) => set({ activeKey: key }),
-
   isOpenSidebar: false,
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
-
   selectedId: "",
   setSelectedId: (id) => set({ selectedId: id }),
-
   navigationSource: "sidebar",
   returnToKey: undefined,
-  immediateParentKey: undefined,
-
   setNavigationSource: (source, returnToKey) =>
     set({ navigationSource: source, returnToKey }),
-
   setImmediateParentKey: (key) => set({ immediateParentKey: key }),
-
   resetNavigationSource: () =>
     set({ navigationSource: "sidebar", returnToKey: undefined }),
 
@@ -76,6 +60,14 @@ const useDrawerStore = create<DrawerState>((set) => ({
           : section
       ),
     })),
+    reset: () =>
+    set({
+      activeKey: "myAccount",
+      isOpenSidebar: false,
+      selectedId: "",
+      navigationSource: "sidebar",
+      returnToKey: undefined,
+    }),
 }));
 
 export default useDrawerStore;
