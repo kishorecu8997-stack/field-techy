@@ -70,6 +70,24 @@ export function useClientProfileGetById(id: string, options?: { enabled?: boolea
     });
 }
 
+/**
+ * Hook to get client profile by ID
+ * 
+ * Endpoint: GET /api/v1/clients/<clientId>
+ * The <clientId> is the slug parameter in the URL path.
+ * 
+ * @param clientId - The client ID (slug) to fetch profile for
+ * @param options - Query options including enabled flag
+ * @returns Query result with client profile data
+ */
+export function useClientProfileGetProfileById(clientId: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.clientProfile.all, "profile", clientId],
+        queryFn: () => ClientProfileAdapter.getProfileById(clientId),
+        enabled: !!clientId && (options?.enabled ?? true),
+    });
+}
+
 export function useClientProfileGetAll(
     params: ClientProfilePaginationParams = {},
     options?: { enabled?: boolean }

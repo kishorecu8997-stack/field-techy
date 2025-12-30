@@ -10,6 +10,7 @@ import type {
   FileUploadResponse,
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
+import type { Country } from "@/shared/components/commonUI/inputs/type";
 
 /*
  * ClientAdapter
@@ -22,13 +23,12 @@ import type { LoginFormData } from "@/pages/admin/auth/types";
  * parameters into the expected format for the API.
  */
 export class ClientAdapter {
-
   /**
    * Helper to handle API errors and return standardized messages
    */
   private static handleApiError(error: any): never {
     if (error.response) {
-      console.log("error ===>", error)
+      console.log("error ===>", error);
       const status = error.response.status;
       if (status === 400) {
         throw new Error("Invalid request details. Please check your inputs.");
@@ -44,7 +44,10 @@ export class ClientAdapter {
   static async signup(data: ClientData): Promise<ClientData> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SIGNUP,
+        data
+      );
       return response.data;
     } catch (error) {
       ClientAdapter.handleApiError(error);
@@ -85,8 +88,15 @@ export class ClientAdapter {
     return response.data;
   }
 
-  static async getAll(params: ClientPaginationParams = {}): Promise<PagedResponse<ClientData>> {
-    const { page = 0, size = 10, sortBy = "createdAt", direction = "DESC" } = params;
+  static async getAll(
+    params: ClientPaginationParams = {}
+  ): Promise<PagedResponse<ClientData>> {
+    const {
+      page = 0,
+      size = 10,
+      sortBy = "createdAt",
+      direction = "DESC",
+    } = params;
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
       params: { page, size, sortBy, direction },
     });
@@ -109,7 +119,9 @@ export class ClientAdapter {
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
     const urlEncodedEmail = encodeURIComponent(email);
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail));
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail)
+    );
     return response.data;
 
     // // Stubbed response
@@ -121,15 +133,21 @@ export class ClientAdapter {
     // });
   }
 
-  static async sendEmailMobileOtp(emailOrPhone: string): Promise<{ message: string }> {
+  static async sendEmailMobileOtp(
+    emailOrPhone: string
+  ): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone));
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone)
+    );
     return response.data;
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber));
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber)
+    );
     return response.data;
 
     // Stubbed response
@@ -146,7 +164,9 @@ export class ClientAdapter {
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
     // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp));
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp)
+    );
     return response.data;
 
     // Stubbed response - accepts any 4-digit OTP
@@ -175,7 +195,10 @@ export class ClientAdapter {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (otp.length === 4) {
-          resolve({ message: "Phone OTP verified successfully", verified: true });
+          resolve({
+            message: "Phone OTP verified successfully",
+            verified: true,
+          });
         } else {
           reject(new Error("Invalid OTP"));
         }
@@ -188,8 +211,10 @@ export class ClientAdapter {
   /**
    * Get list of states for a country
    */
-  static async getStates(countryId?: string): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || 'all'}`);
+  static async getStates(
+    countryId?: string
+  ): Promise<{ value: string; label: string }[]> {
+    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
     return new Promise((resolve) => {
       setTimeout(() => {
         const states = [
@@ -207,21 +232,23 @@ export class ClientAdapter {
   /**
    * Get list of cities for a state
    */
-  static async getCities(stateId: string): Promise<{ value: string; label: string }[]> {
+  static async getCities(
+    stateId: string
+  ): Promise<{ value: string; label: string }[]> {
     console.log(`[STUB] Fetching cities for state: ${stateId}`);
     return new Promise((resolve) => {
       setTimeout(() => {
         const cityMap: Record<string, { value: string; label: string }[]> = {
-          "Maharashtra": [
+          Maharashtra: [
             { value: "Mumbai", label: "Mumbai" },
             { value: "Pune", label: "Pune" },
             { value: "Nagpur", label: "Nagpur" },
           ],
-          "Karnataka": [
+          Karnataka: [
             { value: "Bangalore", label: "Bangalore" },
             { value: "Mysore", label: "Mysore" },
           ],
-          "Delhi": [
+          Delhi: [
             { value: "New Delhi", label: "New Delhi" },
             { value: "Old Delhi", label: "Old Delhi" },
           ],
@@ -235,7 +262,7 @@ export class ClientAdapter {
    * Get list of industries
    */
   static async getIndustries(): Promise<{ value: string; label: string }[]> {
-    console.log('[STUB] Fetching industries');
+    console.log("[STUB] Fetching industries");
     return new Promise((resolve) => {
       setTimeout(() => {
         const industries = [
@@ -256,7 +283,7 @@ export class ClientAdapter {
    * Get list of VAT options
    */
   static async getVatOptions(): Promise<{ value: string; label: string }[]> {
-    console.log('[STUB] Fetching VAT options');
+    console.log("[STUB] Fetching VAT options");
     return new Promise((resolve) => {
       setTimeout(() => {
         const vatOptions = [
@@ -270,39 +297,78 @@ export class ClientAdapter {
     });
   }
 
+  /**
+   * Get list of phone countries
+   * TODO: Replace with actual API call when backend is ready
+   */
+  static async getPhoneCountries(): Promise<Country[]> {
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      // const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PHONE_COUNTRIES);
+      // return response.data;
+
+      // Stubbed response for now
+      console.log("[STUB] Fetching phone countries");
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const phoneCountries: Country[] = [
+            {
+              code: "+91",
+              name: "India",
+              flag: "https://flagcdn.com/w40/in.png",
+              validationKey: "india",
+            },
+            {
+              code: "+44",
+              name: "UK",
+              flag: "https://flagcdn.com/w40/gb.png",
+              validationKey: "uk",
+            },
+          ];
+          resolve(phoneCountries);
+        }, 500);
+      });
+    } catch (error) {
+      ClientAdapter.handleApiError(error);
+      throw error; // This will never be reached due to handleApiError, but satisfies TypeScript
+    }
+  }
+
   static async getFiles(clientId: string): Promise<ClientFile[]> {
-    const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_FILES(clientId));
+    const response = await axiosInstance.get(
+      CLIENT_ROUTER_PATHS.GET_FILES(clientId)
+    );
     return response.data;
   }
 
-  static async uploadFile(params: ClientFileUploadParams): Promise<FileUploadResponse> {
+  static async uploadFile(
+    params: ClientFileUploadParams
+  ): Promise<FileUploadResponse> {
     const { clientId, file, documentType, onUploadProgress } = params;
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     const path = CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType);
-    console.log(`Uploading file to: ${path}`)
-    const response = await uploadAxiosInstance.post(
-      path,
-      formData,
-      {
-        headers: {
-          'X-USER': 'CLIENT',
-          "Content-Type": "multipart/form-data"
-        },
-        onUploadProgress: (progressEvent) => {
-          if (onUploadProgress && progressEvent.total) {
-            const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            onUploadProgress({
-              loaded: progressEvent.loaded,
-              total: progressEvent.total,
-              percentage,
-            });
-          }
-        },
-      }
-    );
+    console.log(`Uploading file to: ${path}`);
+    const response = await uploadAxiosInstance.post(path, formData, {
+      headers: {
+        "X-USER": "CLIENT",
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onUploadProgress && progressEvent.total) {
+          const percentage = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onUploadProgress({
+            loaded: progressEvent.loaded,
+            total: progressEvent.total,
+            percentage,
+          });
+        }
+      },
+    });
     return response.data;
   }
 
@@ -314,9 +380,9 @@ export class ClientAdapter {
     const response = await axiosInstance.get(
       CLIENT_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
       {
-        responseType: 'blob',
+        responseType: "blob",
         headers: {
-          'Content-Type': 'application/octet-stream',
+          "Content-Type": "application/octet-stream",
         },
       }
     );
@@ -326,9 +392,9 @@ export class ClientAdapter {
     const url = window.URL.createObjectURL(blob);
 
     // Create temporary anchor element and trigger download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = fileName || 'download';
+    link.download = fileName || "download";
     document.body.appendChild(link);
     link.click();
 

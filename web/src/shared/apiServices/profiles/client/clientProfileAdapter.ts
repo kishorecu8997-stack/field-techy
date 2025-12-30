@@ -1,28 +1,35 @@
 import axiosInstance from "@/axiosInstance";
 import { CLIENT_PROFILE_ROUTER_PATHS } from "./clientProfileRouterPaths";
 
+/**
+ * Client Profile Data Response
+ * 
+ * Response type for GET /api/v1/clients/<clientId>
+ * The <clientId> is the slug parameter in the URL path.
+ */
 export interface ClientProfileData {
-    id?: string;
-    phoneNumber?: string;
-    email?: string;
-    password?: string | null;
-    clientType?: string;
-    companyName?: string;
-    contactPersonName?: string;
-    businessType?: string;
-    industry?: string;
-    address?: string;
-    country?: string;
-    state?: string;
-    city?: string;
-    postalCode?: string;
-    taxDocumentVat?: string;
-    vatRegistrationNumber?: string;
-    profilePicture?: string;
-    governmentIdProofDocument?: string;
-    certificationQualificationsDocument?: string;
-    enableNotifications?: boolean;
-    isApproved?: boolean;
+    id: string;
+    phoneNumber: string;
+    email: string;
+    password: string | null;
+    clientType: "HOME" | "CORPORATE";
+    companyName: string;
+    contactPersonName: string;
+    businessType: string;
+    industry: string;
+    address: string;
+    country: string;
+    state: string;
+    city: string;
+    postalCode: string;
+    taxDocumentVat: string;
+    vatRegistrationNumber: string;
+    profilePicture: string;
+    governmentIdProofDocument: string;
+    certificationQualificationsDocument: string;
+    enableNotifications: boolean;
+    isApproved: boolean;
+    // Optional fields that may be used in forms but not in API response
     vat?: string;
     fullName?: string;
     confirmPassword?: string;
@@ -49,6 +56,20 @@ export class ClientProfileAdapter {
 
     static async getById(id: string): Promise<ClientProfileData> {
         const response = await axiosInstance.get(CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id));
+        return response.data;
+    }
+
+    /**
+     * Get client profile by ID
+     * 
+     * Endpoint: GET /api/v1/clients/<clientId>
+     * The <clientId> is the slug parameter in the URL path.
+     * 
+     * @param clientId - The client ID (slug) to fetch profile for
+     * @returns Client profile data
+     */
+    static async getProfileById(clientId: string): Promise<ClientProfileData> {
+        const response = await axiosInstance.get(CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(clientId));
         return response.data;
     }
 

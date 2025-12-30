@@ -3,17 +3,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import {
-  useSendEmailOTP,
-  useSendPhoneOTP,
-  useVerifyOtp,
-} from "@/shared/apiServices/client/clientService";
+
 
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import { absoluteUrls } from "@/config/urls";
 import { buildQuery } from "@/utils";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useSendEmailOTP, useSendPhoneOTP, useVerifyOtp } from "@/shared/apiServices/client/clientService";
 
 interface VerificationCardProps {
   type: "email" | "phone";

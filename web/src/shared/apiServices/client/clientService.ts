@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ClientAdapter,
-
-} from "./clientAdapter";
+import { ClientAdapter } from "./clientAdapter";
 import type { LoginFormData } from "@/pages/engineer/auth/components/types";
-import type { ClientData, ClientFileUploadParams, ClientPaginationParams, FileUploadResponse } from "./clientTypes";
+import type {
+  ClientData,
+  ClientFileUploadParams,
+  ClientPaginationParams,
+  FileUploadResponse,
+} from "./clientTypes";
 
 export const CLIENT_QUERY_KEYS = {
   all: ["clients"] as const,
@@ -112,7 +114,8 @@ export function useSendPhoneOTP(options?: {
   onError?: (error: any) => void;
 }) {
   return useMutation({
-    mutationFn: (phoneNumber: string) => ClientAdapter.sendPhoneOTP(phoneNumber),
+    mutationFn: (phoneNumber: string) =>
+      ClientAdapter.sendPhoneOTP(phoneNumber),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -123,8 +126,13 @@ export function useVerifyOtp(options?: {
   onError?: (error: any) => void;
 }) {
   return useMutation({
-    mutationFn: ({ emailOrPhone, otp }: { emailOrPhone: string; otp: string }) =>
-      ClientAdapter.verifyOtp(emailOrPhone, otp),
+    mutationFn: ({
+      emailOrPhone,
+      otp,
+    }: {
+      emailOrPhone: string;
+      otp: string;
+    }) => ClientAdapter.verifyOtp(emailOrPhone, otp),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -149,7 +157,7 @@ export function useVerifyPhoneOTP(options?: {
  */
 export function useStates(countryId?: string) {
   return useQuery({
-    queryKey: ['states', countryId],
+    queryKey: ["states", countryId],
     queryFn: () => ClientAdapter.getStates(countryId),
     staleTime: 5 * 60 * 1000,
   });
@@ -160,7 +168,7 @@ export function useStates(countryId?: string) {
  */
 export function useCities(stateId?: string) {
   return useQuery({
-    queryKey: ['cities', stateId],
+    queryKey: ["cities", stateId],
     queryFn: () => ClientAdapter.getCities(stateId!),
     enabled: !!stateId,
     staleTime: 5 * 60 * 1000,
@@ -172,7 +180,7 @@ export function useCities(stateId?: string) {
  */
 export function useIndustries() {
   return useQuery({
-    queryKey: ['industries'],
+    queryKey: ["industries"],
     queryFn: () => ClientAdapter.getIndustries(),
     staleTime: 10 * 60 * 1000,
   });
@@ -183,9 +191,20 @@ export function useIndustries() {
  */
 export function useVatOptions() {
   return useQuery({
-    queryKey: ['vat-options'],
+    queryKey: ["vat-options"],
     queryFn: () => ClientAdapter.getVatOptions(),
     staleTime: 10 * 60 * 1000,
+  });
+}
+
+/**
+ * Hook to fetch phone countries list
+ */
+export function usePhoneCountries() {
+  return useQuery({
+    queryKey: ["phone-countries"],
+    queryFn: () => ClientAdapter.getPhoneCountries(),
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 }
 
@@ -197,10 +216,15 @@ export function useVatOptions() {
 export function useUploadClientFile(options?: {
   onSuccess?: (data: FileUploadResponse) => void;
   onError?: (error: unknown) => void;
-  onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
+  onProgress?: (progress: {
+    loaded: number;
+    total?: number;
+    percentage?: number;
+  }) => void;
 }) {
   return useMutation({
-    mutationFn: (params: ClientFileUploadParams) => ClientAdapter.uploadFile(params),
+    mutationFn: (params: ClientFileUploadParams) =>
+      ClientAdapter.uploadFile(params),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -211,7 +235,7 @@ export function useUploadClientFile(options?: {
  */
 export function useClientFiles(clientId?: string) {
   return useQuery({
-    queryKey: ['client-files', clientId],
+    queryKey: ["client-files", clientId],
     queryFn: () => ClientAdapter.getFiles(clientId!),
     enabled: !!clientId,
   });

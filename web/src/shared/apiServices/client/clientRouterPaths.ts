@@ -11,7 +11,8 @@ export const CLIENT_ROUTER_PATHS = {
   // OTP endpoints
   SEND_EMAIL_OTP: (email: string) => `/user/api/v1/users/otp/request/${email}`,
   SEND_PHONE_OTP: (phone: string) => `/user/api/v1/users/otp/request/${phone}`,
-  VERIFY_OTP: (emailOrPhone: string, otp: string) => `/user/api/v1/users/otp/verify/${emailOrPhone}/${otp}`,
+  VERIFY_OTP: (emailOrPhone: string, otp: string) =>
+    `/user/api/v1/users/otp/verify/${emailOrPhone}/${otp}`,
 
   // signin otp endpoints
 
@@ -23,9 +24,11 @@ export const CLIENT_ROUTER_PATHS = {
   GET_CITIES: "/clients/dropdown/cities",
   GET_INDUSTRIES: "/clients/dropdown/industries",
   GET_VAT_OPTIONS: "/clients/dropdown/vat-options",
+  GET_PHONE_COUNTRIES: "/clients/dropdown/phone-countries",
 
   // File upload endpoints
-  UPLOAD_FILE: (clientId: string, documentType: string) => `/client/api/v1/clients/files/${clientId}/${documentType}/upload`,
+  UPLOAD_FILE: (clientId: string, documentType: string) =>
+    `/client/api/v1/clients/files/${clientId}/${documentType}/upload`,
   GET_FILES: (clientId: string) => `/clients/${clientId}/files`,
   DELETE_FILE: (fileId: string) => `/clients/files/${fileId}`,
   DOWNLOAD_FILE: (fileId: string) => `/clients/files/${fileId}/download`,
