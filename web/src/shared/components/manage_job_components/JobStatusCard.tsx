@@ -1,5 +1,8 @@
 import React from "react";
+import { JOB_STATUSES } from "@/constants/jobStatus";
 import type { JobStatus } from "@/constants/jobStatus";
+import { STATUS_COLOR_MAP } from "../JobStatusBadge/StatusConfig";
+import { STATUS_LABEL_MAP } from "../JobStatusBadge/StatusLabelMap";
 
 interface JobStatusCardProps {
   jobId: string;
@@ -41,75 +44,13 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
     hour12: true,
   }).format(date);
 
-  const getStatusLabel = () => {
-    switch (status) {
-      case "completed":
-        return "Job Completed";
-      case "pending":
-        return "Pending";
-      case "in-progress":
-        return "In Progress";
-      case "Notified":
-        return "Notified";
-      case "Unallocated":
-        return "Unallocated";
-      case "Partially Assigned":
-        return "Partially Assigned";
-      case "Assigned":
-        return "Assigned";
-      case "Selected":
-        return "Selected";
-      case "Hold":
-        return "Hold";
-      case "Draft":
-        return "Draft";
-      case "Canceled":
-        return "Canceled";
-      case "Escalation In Progress":
-        return "Escalation In Progress";
-      case "Work In Progress":
-        return "Work In Progress";
-      case "Closed":
-        return "Closed";
-      default:
-        return "Unknown";
-    }
-  };
-
-  const getStatusBgColor = () => {
-    switch (status) {
-      case "completed":
-        return "bg-emerald-800 hover:bg-emerald-700";
-      case "pending":
-        return "bg-yellow-600 hover:bg-yellow-500";
-      case "in-progress":
-        return "bg-blue-600 hover:bg-blue-500";
-      case "Notified":
-        return "bg-blue-600 hover:bg-blue-500";
-      case "Unallocated":
-        return "bg-gray-500 hover:bg-gray-600";
-      case "Partially Assigned":
-        return "bg-yellow-500 hover:bg-yellow-400";
-      case "Assigned":
-        return "bg-green-600 hover:bg-green-500";
-      case "Selected":
-        return "bg-purple-600 hover:bg-purple-500";
-      case "Hold":
-        return "bg-orange-600 hover:bg-orange-500";
-      case "Draft":
-        return "bg-gray-300 text-gray-800 hover:bg-gray-400";
-      case "Canceled":
-        return "bg-red-600 hover:bg-red-500";
-      case "Escalation In Progress":
-        return "bg-red-500 hover:bg-red-400";
-      case "Work In Progress":
-        return "bg-blue-700 hover:bg-blue-600";
-      case "Closed":
-        return "bg-gray-500 hover:bg-gray-600";
-      default:
-        return "bg-gray-600";
-    }
-  };
+  const label = STATUS_LABEL_MAP[status] || "Unknown";
+  const colorClass =
+    STATUS_COLOR_MAP[
+      Object.keys(JOB_STATUSES).find(
+        (key) => JOB_STATUSES[key as keyof typeof JOB_STATUSES] === status
+      ) || ""
+    ] || "bg-gray-600";
 
   return (
     <div className="flex items-center justify-between p-8 bg-gray-200 rounded-lg shadow-sm w-full">
@@ -125,10 +66,10 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
       </div>
       <button
         onClick={onStatusChange}
-        className={`px-4 py-2 rounded-md font-medium text-white transition-colors ${getStatusBgColor()}`}
-        disabled={status === "completed"}
+        className={`px-4 py-2 rounded-md font-medium text-white transition-colors ${colorClass}`}
+        disabled={status === JOB_STATUSES.COMPLETED}
       >
-        {getStatusLabel()}
+        {label}
       </button>
     </div>
   );
