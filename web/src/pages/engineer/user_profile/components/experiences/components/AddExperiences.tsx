@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { validateCompany, validateDateRange } from "../../../Validate";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -12,8 +14,8 @@ import {
   workLocationTypeOptions,
 } from "./constants";
 import { toast } from "react-toastify";
-import { usePopupStore } from "@/shared/store/popupStore";
-import useDrawerStore from "@/shared/store/useDrawerStore";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -62,8 +64,9 @@ const AddExperiences = () => {
       employer: "",
       workLocationType: "",
       employmentType: "",
-      startDate: new Date(),
+      startDate: null,
       endDate: null,
+      isCurrent: false
     },
     mode: "onSubmit",
   });
@@ -116,7 +119,7 @@ const AddExperiences = () => {
           name="startDate"
           label="Start Date"
           isShowLabel={false}
-          placeholder="Start date"
+          placeholder="DD/MM/YYYY"
           required
           maxDate={new Date()}
           rules={{
@@ -124,13 +127,43 @@ const AddExperiences = () => {
               validateDateRange(value, methods.getValues("endDate")),
           }}
         />
-        <DatePickerInput
-          name="endDate"
-          label="End Date"
-          isShowLabel={false}
-          placeholder="End date (optional)"
-          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-          rules={{ onChange: () => methods.trigger("startDate") }}
+
+        <div id="endDateSection">
+          {!methods.watch("isCurrent") && (
+            <DatePickerInput
+              name="endDate"
+              label="End Date"
+              isShowLabel={false}
+              placeholder="End date (required if not current)"
+              minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+              required={!methods.watch("isCurrent")}
+              rules={{
+                validate: (value) => {
+                  if (!methods.watch("isCurrent") && !value) {
+                    return "End date is required when not currently working";
+                  }
+                  return true;
+                },
+                onChange: () => methods.trigger("startDate")
+              }}
+            />
+          )}
+        </div>
+
+        {/* Checkbox label */}
+        <CheckboxInput
+          name="isCurrent"
+          label="I currently work here"
+          isShowLabel={true}
+          rules={{
+            onChange: (e) => {
+              const checked = e.target.checked;
+              methods.setValue("isCurrent", checked)
+              if (checked) {
+                methods.setValue("endDate", null); // Remove end date
+              }
+            }
+          }}
         />
       </div>
 

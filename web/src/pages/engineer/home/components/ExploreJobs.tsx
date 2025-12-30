@@ -26,13 +26,22 @@ const ExploreJobs = () => {
     experience: 0,
     budgetType: null,
     skills: [],
+    budgetRange: { min: 0, max: 0 },
+    serviceType: [],
+    tools: [],
+    experienceLevel: [],
+    jobType: [],
+    locationType: [],
+    locationRadius: 0,
+    primaryLanguage: "",
+    slaLevel: "",
   });
 
   // Keep only jobs that are NOT new or offer
   const allNewJobs = useMemo(() => {
     return sampleJobs.filter(
       (job) =>
-        job.status === JOB_STATUSES.new 
+        job.status === JOB_STATUSES.new
     );
   }, []);
 
@@ -65,6 +74,15 @@ const ExploreJobs = () => {
       experience: 0,
       budgetType: null,
       skills: [],
+      budgetRange: { min: 0, max: 0 },
+      serviceType: [],
+      tools: [],
+      experienceLevel: [],
+      jobType: [],
+      locationType: [],
+      locationRadius: 0,
+      primaryLanguage: "",
+      slaLevel: "",
     });
     setCurrentPage(1);
   };

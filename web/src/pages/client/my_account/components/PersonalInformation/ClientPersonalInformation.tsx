@@ -20,13 +20,18 @@ import countries, {
 } from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
 
+interface ClientPersonalInformationProps {
+  onMenuItemClick: (key: string) => void;
+}
 /**
  * The PersonalInformation component renders a form for editing user profile details.
  * It uses `react-hook-form` for state management and validation.
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const ClientPersonalInformation: React.FC = () => {
+const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
+  onMenuItemClick,
+}) => {
   /**
    * Initializes `react-hook-form` with default values for the personal information form.
    */
@@ -54,6 +59,8 @@ const ClientPersonalInformation: React.FC = () => {
   const handleSubmit = (data: PersonalInfo) => {
     console.log("Form submitted with data:", data);
     toast.success("Profile Updated Successfully");
+    onMenuItemClick("clientAccount");
+
     // TODO: Replace with actual submission logic (e.g., API call)
   };
 
@@ -86,6 +93,7 @@ const ClientPersonalInformation: React.FC = () => {
           placeholder="Contact Person Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
+          allowedCharacters="string"
           rules={{ validate: (v: string) => validateName(v) }}
         />
         <VerifiedPhoneInputField
@@ -168,6 +176,7 @@ const ClientPersonalInformation: React.FC = () => {
           type="text"
           placeholder="Postal Code"
           required
+          allowedCharacters="alphanumeric"
           rules={{
             validate: (value: string) =>
               validateZipcode(
@@ -191,6 +200,7 @@ const ClientPersonalInformation: React.FC = () => {
           type="text"
           placeholder="VAT Registration Number"
           required
+          allowedCharacters="alphanumeric"
           label="VAT Registration Number"
           rules={{ validate: (v: string) => validateVatNumber(v) }}
         />

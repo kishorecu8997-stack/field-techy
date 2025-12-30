@@ -15,7 +15,6 @@ import { toast } from "react-toastify";
 import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
 
-
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
  * It uses `react-hook-form` for state management and validation.
@@ -117,6 +116,7 @@ const WorkPreference = () => {
           placeholder="Hourly/Fixed Rate Preference"
           leftIcon={<CiWallet className="text-lg text-gray-500" />}
           required
+          allowedCharacters="currency"
           rules={{ validate: (v: string) => validateRate(v) }}
         />
       </div>

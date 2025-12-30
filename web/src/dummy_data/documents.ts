@@ -15,6 +15,7 @@ export const initialDocuments: Document[] = [
   {
     id: 1,
     title: "Certificate",
+    category: "certificate",
     fileName: "Certificate.jpg",
     fileType: "JPEG",
     previewUrl: img8140054,
@@ -24,6 +25,9 @@ export const initialDocuments: Document[] = [
       Source: "Local assets/document",
       Note: "Image for preview/testing",
     },
+    status: "Pending",
+    expiryDate: "2024-11-01",
+    allowMultiple: true,
   },
   {
     id: 2,
@@ -36,6 +40,8 @@ export const initialDocuments: Document[] = [
     metadata: {
       Source: "Local assets/document",
     },
+    status: "Approved",
+    expiryDate: "2026-01-01",
   },
   {
     id: 3,
@@ -48,6 +54,8 @@ export const initialDocuments: Document[] = [
     metadata: {
       Size: "~100KB",
     },
+    status: "Rejected",
+    expiryDate: "2026-06-15",
   },
   {
     id: 4,
@@ -60,5 +68,6 @@ export const initialDocuments: Document[] = [
     metadata: {
       Pages: "2",
     },
-  },  
+    status: "Approved",
+  },
 ];

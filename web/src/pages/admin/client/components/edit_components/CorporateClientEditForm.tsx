@@ -101,6 +101,10 @@ const CorporateClientEditForm: React.FC = () => {
       setIsSubmitting(true);
       try {
         const formData = methods.getValues();
+        console.log("Form submitted:", formData);
+        toast.success("Client information saved successfully!");
+        navigate(absoluteUrls.admin.home.manage_client);
+        methods.reset();
         setActiveTab("Basic Information");
         handleSaveConfirmation(formData);
       } catch (error) {

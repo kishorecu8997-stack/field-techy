@@ -88,6 +88,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="First Name"
         required
+        allowedCharacters="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
@@ -97,6 +98,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Last Name"
         required
+        allowedCharacters="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
@@ -200,6 +202,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Current Designation"
         required
+        allowedCharacters="string"
         rules={{ validate: (v: string) => validateDesignation(v) }}
       />
       <InputField
@@ -208,6 +211,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Company/Employer"
         required
+        allowedCharacters="string"
         rules={{ validate: (v: string) => validateCompany(v) }}
       />
       <InputField

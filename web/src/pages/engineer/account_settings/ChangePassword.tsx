@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
 
-  const handleSubmit = async (data: bankDetails) => {
+  const handleSubmit = async (_: bankDetails) => {
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",
@@ -33,10 +33,15 @@ const ChangePassword = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            console.log("Submitted data:", data);
-            toast.success("Password changed successfully");
-            close(true);
-            setActiveKey("settings");
+            try {
+              // TODO: Integrate with secure backend API for password update.
+              toast.success("Password updated successfully!");
+              setActiveKey("settings");
+              close(true);
+            } catch (error) {
+              toast.error("Failed to update password");
+              console.error("Error updating password:", error);
+            }
           },
         },
       ],
@@ -70,6 +75,7 @@ const ChangePassword = () => {
       </div>
     </FormContainer>
   );
+
 };
 
 export default ChangePassword;

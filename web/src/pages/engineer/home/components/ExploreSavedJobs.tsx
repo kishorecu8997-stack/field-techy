@@ -1,14 +1,15 @@
 import { absoluteUrls } from "@/config/urls";
-import { sampleJobs } from "@/dummy_data/searchData";
 import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
   SORT_OPTIONS,
   type Filters,
+  type Job,
 } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { getSavedJobs } from "@/utils/bookmarkUtils";
 
 /**
  * explore jobs page component
@@ -17,7 +18,6 @@ import { useMemo, useState } from "react";
  */
 const ExploreSavedJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
-
   const [filters, setFilters] = useState<Filters>({
     location: [],
     category: [],
@@ -25,33 +25,43 @@ const ExploreSavedJobs = () => {
     experience: 0,
     budgetType: null,
     skills: [],
+    budgetRange: { min: 0, max: 0 },
+    serviceType: [],
+    tools: [],
+    experienceLevel: [],
+    jobType: [],
+    locationType: [],
+    locationRadius: 0,
+    primaryLanguage: "",
+    slaLevel: "",
   });
+  const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
-  const allSavedJobs = useMemo(() => {
-    return sampleJobs.filter((job) => job.isBookmarked === true);
+  useEffect(() => {
+    setSavedJobs(getSavedJobs());
   }, []);
+  const refreshSavedJobs = () => {
+    setSavedJobs(getSavedJobs());
+    setCurrentPage(1);
+  };
+  const allSavedJobs = savedJobs;
 
   // Pagination settings
   const jobsPerPage = 4;
-
   const totalPages = useMemo(() => {
     return Math.ceil(allSavedJobs.length / jobsPerPage);
-  }, [allSavedJobs]);
-
+  }, [allSavedJobs.length]);
   const paginatedJobs = useMemo(() => {
     const startIndex = (currentPage - 1) * jobsPerPage;
     return allSavedJobs.slice(startIndex, startIndex + jobsPerPage);
   }, [currentPage, allSavedJobs]);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
     setCurrentPage(1); // reset page on filter change
   };
-
   const handleClearAllFilters = () => {
     setFilters({
       location: [],
@@ -60,6 +70,15 @@ const ExploreSavedJobs = () => {
       experience: 0,
       budgetType: null,
       skills: [],
+      budgetRange: { min: 0, max: 0 },
+      serviceType: [],
+      tools: [],
+      experienceLevel: [],
+      jobType: [],
+      locationType: [],
+      locationRadius: 0,
+      primaryLanguage: "",
+      slaLevel: "",
     });
     setCurrentPage(1);
   };
@@ -71,7 +90,8 @@ const ExploreSavedJobs = () => {
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${allSavedJobs.length}+ jobs found`}
+          description={`${allSavedJobs.length} saved job${allSavedJobs.length !== 1 ? "s" : ""
+            }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
@@ -84,18 +104,28 @@ const ExploreSavedJobs = () => {
                   job={job}
                   showBookmark={true}
                   navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+                  onBookmarkChange={refreshSavedJobs}
                 />
               ))
             ) : (
-              <p>No jobs found.</p>
+              <div className="text-center py-12">
+                <p className="text-xl text-gray-600 dark:text-gray-400">
+                  No jobs found.
+                </p>
+                <p className="mt-4 text-gray-500 dark:text-gray-300">
+                  Browse jobs and click the bookmark icon to save them here!
+                </p>
+              </div>
             )}
 
             {/* Pagination Component */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
 
           {/* RIGHT SIDE (Filters) */}
