@@ -174,6 +174,22 @@ const Footer = () => {
                   Privacy Policy
                 </NavLink>
               </li>
+              <li>
+                <NavLink
+                  className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
+                  to={
+                    isClient
+                      ? absoluteUrls.client.home.privacy_policy
+                      : absoluteUrls.engineer.home.video_guidance
+                  }
+                    onClick={() => {
+                    scrollToTop()
+                    setActiveKey("videoGuidance");
+                  }}
+                >
+                  Video Tutorials
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>

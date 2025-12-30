@@ -25,7 +25,7 @@ interface DrawerMenuProps {
  */
 const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
+  const { setActiveKey, setImmediateParentKey } = useDrawerStore();
 
   const handleDeleteEducation = async (id: number) => {
     await showPopup({
@@ -60,9 +60,13 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <DrawerCard
         title="Education"
         items={educationList}
-        onAddAction={() => onMenuItemClick(`addEducation`)}
+        onAddAction={() => { 
+          setImmediateParentKey("education");
+          onMenuItemClick(`addEducation`)}
+        }
         onEditAction={(id) => {
           localStorage.setItem("editEducationId", id.toString());
+          setImmediateParentKey("education");
           onMenuItemClick("editEducation");
         }}
         // TODO: Implement a proper confirmation modal for deletion.

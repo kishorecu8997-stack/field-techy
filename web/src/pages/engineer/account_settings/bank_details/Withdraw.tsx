@@ -15,6 +15,8 @@ import { getStatusBadge } from "@/utils/helpers";
 
 type ViewType = "form" | "history" | "chart";
 
+import type { bankDetails } from "../types";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
  * Includes validation for numeric input and a submit button for initiating withdrawal.
@@ -24,6 +26,7 @@ const Withdraw = () => {
   const { addTransaction , transactions }: TransactionStore = useTransactionStore();
   const [view, setView] = useState<"form" | "history" | "chart">("form");
 
+  const { setISOpenSidebar } = useDrawerStore();
   const FormCtx = useForm<bankDetails>({
     mode: "onSubmit",
   });
@@ -73,6 +76,7 @@ const Withdraw = () => {
             FormCtx.reset();
             setView("form");
             close(true);
+            setISOpenSidebar(false);
           },
         },
       ],
@@ -127,6 +131,41 @@ const Withdraw = () => {
                 )}
               </tbody>
             </table>
+        <FormContainer
+          methods={FormCtx}
+          onSubmit={handleSubmit}
+          className="flex flex-col flex-grow"
+        >
+          <SelectField
+            name="bank"
+            label="Bank"
+            required
+            options={bankListData}
+          />
+          <InputField
+            name="amount"
+            label="Amount"
+            allowedCharacters="numbers"
+            required
+            rules={{
+              validate: (value: string) => {
+                const numeric = parseFloat(value);
+                if (isNaN(numeric)) return "Please enter a valid amount";
+                if (numeric > availableBalance)
+                  return `Amount cannot exceed available balance $${availableBalance}`;
+                return true;
+              },
+            }}
+          />
+
+          {/* ✅ Move the button inside the form */}
+          <div className="mt-auto w-full">
+            <Button
+              className="w-full bg-teal-700 hover:bg-teal-800"
+              type="submit"
+            >
+              Withdraw
+            </Button>
           </div>
         ) : view === "chart" ? (
           <BalanceChart data={chartData} />

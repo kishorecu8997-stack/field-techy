@@ -18,6 +18,7 @@ export const BASE = {
   AUTH: "/engineer/auth",
   ADMIN: "/admin",
   ADMIN_AUTH: "/admin/auth",
+  LANDING: "/landing",
 } as const;
 
 export const urls = {
@@ -25,7 +26,8 @@ export const urls = {
     base: BASE.ENGINEER,
     privacy_policy: `${BASE.ENGINEER}/policy`,
     terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
-
+    video_guidance: `${BASE.ENGINEER}/video-guidance`,
+    
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
@@ -37,6 +39,9 @@ export const urls = {
       explore_jobs: "explore-jobs",
       chat: "messages",
       saved_jobs: "saved-jobs",
+      break_details: "break-details",
+      notifications: "notifications",
+      application_history: "my-jobs/application-history", 
     },
     auth: {
       login: "login",
@@ -140,6 +145,7 @@ export const urls = {
       manage_groups_addEngineer: "manage-groups/add-engineer",
     },
   },
+  ft_landing: { landing: "/landing" },
 } as const;
 
 // ✅ Helper for absolute paths (for navigation/linking) it should be use to button links, anchor hrefs, router navigation, etc.
@@ -167,6 +173,10 @@ export const absoluteUrls = {
       explore_jobs: `${BASE.ENGINEER}/explore-jobs`,
       chat: `${BASE.ENGINEER}/messages`,
       saved_jobs: `${BASE.ENGINEER}/saved-jobs`,
+      video_guidance: `${BASE.ENGINEER}/video-guidance`,
+      break_details: `${BASE.ENGINEER}/break-details`,
+      notifications: `${BASE.ENGINEER}/notifications`,
+      application_history: `${BASE.ENGINEER}/my-jobs/application-history`,
     },
   },
   client: {
@@ -261,4 +271,5 @@ export const absoluteUrls = {
       manage_groups_addEngineer: `${BASE.ADMIN}/manage-groups/add-engineer`,
     },
   },
+  ft_landing: { landing: `${BASE.LANDING}` },
 } as const;

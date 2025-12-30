@@ -6,6 +6,7 @@ interface InputOutlineProps
   placeholder: string;
   className?: string;
   id?: string;
+  error?: string;
 }
 
 /**
