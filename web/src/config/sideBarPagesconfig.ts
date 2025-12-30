@@ -37,7 +37,6 @@ import EditTools from "@/pages/engineer/user_profile/components/skills_and_tools
 import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools";
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
-
 import AccountSettingsDrawerMenu from "@/pages/client/account_settings";
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
@@ -50,6 +49,7 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
+import ProfileCompletionCard from "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard";
 import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
 import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
@@ -213,6 +213,10 @@ export const sectionConfig: Record<
     component: ClientNotification,
     title: "Notification",
   },
+  profileCompletion: {
+    component: ProfileCompletionCard,
+    title: "Profile Completion",
+    parent: "profile",
   activeSessions: {
     component: ActiveSessions,
     title: "Active Sessions",
