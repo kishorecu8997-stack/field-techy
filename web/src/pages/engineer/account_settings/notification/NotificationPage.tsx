@@ -25,7 +25,7 @@ const groupNotificationsByDate = (
  * Page component that centers the notification panel in the viewport for displaying grouped notifications.
  */
 function NotificationPage() {
-const grouped = groupNotificationsByDate(mockNotifications);
+  const grouped = groupNotificationsByDate(mockNotifications);
 
   return (
     <div className=" flex justify-center items-start">
