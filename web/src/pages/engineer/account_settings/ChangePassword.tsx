@@ -33,10 +33,15 @@ const ChangePassword = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            console.log("Submitted data:", data);
-            toast.success("Password changed successfully");
-            close(true);
-            setActiveKey("settings");
+            try {
+              // TODO: Integrate with secure backend API for password update.
+              toast.success("Password updated successfully!");
+              setActiveKey("settings");
+              close(true);
+            } catch (error) {
+              toast.error("Failed to update password");
+              console.error("Error updating password:", error);
+            }
           },
         },
       ],

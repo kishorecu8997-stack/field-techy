@@ -1,13 +1,16 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateStatus from "./UpdateStatus";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import { FaBell } from "react-icons/fa";
+import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -33,7 +36,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
-
+  const navigate = useNavigate();
+  const params = useParams();
+  const { closePopup, showPopup } = usePopupStore();
   const handleMenuAction = (action: string) => {
     if (action === "Hold the job") {
       setIsConfirmOpen(true);
@@ -44,6 +49,17 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const handleConfirmAction = (action: string) => {
     console.log("Confirmed action:", action);
     setIsConfirmOpen(false);
+  };
+  const handleBreakDetails = async () => {
+    if (isClient) {
+      await showPopup({
+        title: "",
+        body: <BreakRequestDetails onClose={closePopup} />,
+        actionButtons: [],
+      });
+    } else {
+      navigate(`/engineer/my-jobs/${params.jobId}/break-details`);
+    }
   };
 
   return (
@@ -58,6 +74,16 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
           <div className="flex gap-2 items-center">
+            <div
+              className="flex flex-row-reverse gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
+              onClick={handleBreakDetails}
+            >
+              <span>Break Details</span>
+              <div className="relative">
+                <FaBell size={20} />
+                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+              </div>
+            </div>
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">
               {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
             </span>

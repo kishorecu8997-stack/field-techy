@@ -7,6 +7,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { bankDetails } from "../types";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
@@ -67,13 +68,12 @@ const Withdraw = () => {
             label="Amount"
             allowedCharacters="numbers"
             required
-            allowedCharacters="currency"
             rules={{
               validate: (value: string) => {
                 const numeric = parseFloat(value);
                 if (isNaN(numeric)) return "Please enter a valid amount";
                 if (numeric > availableBalance)
-                  return `Amount cannot exceed available balance $${availableBalance}`;
+                  return `Amount cannot exceed available balance ${getCurrencyFromStorage()}${availableBalance}`;
                 return true;
               },
             }}
@@ -100,7 +100,7 @@ const AvailableBalance = () => {
   return (
     <div className="bg-teal-700 p-4 flex flex-col justify-start rounded-md">
       <div className="text-gray-300">Available Withdrawal Balance</div>
-      <div className="text-3xl font-bold text-gray-50">$1000</div>
+      <div className="text-3xl font-bold text-gray-50">{getCurrencyFromStorage()}1000</div>
     </div>
   );
 };

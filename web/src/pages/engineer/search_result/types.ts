@@ -35,6 +35,14 @@ export const WORKING_TYPES_PROPERTY = {
   remote: "Remote",
 };
 
+export const getExperienceLevel = (years?: number) => {
+  if (years === undefined || years === 0) return "Not specified";
+  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years <= 3) return "L2"; // 2-3 years: Mid-level
+  return "L3"; // 4+ years: Senior/Expert-level
+};
+
+
 export const LOG_STATUSES = {
   checkIn: "check-in",
   inProgress: "in-progress",
@@ -43,13 +51,13 @@ export const LOG_STATUSES = {
 } as const;
 export type LogStatus = (typeof LOG_STATUSES)[keyof typeof LOG_STATUSES];
 
-export const SLA_LEVELS = {
-  FOUR_HOUR: "4-hour response",
-  SIX_HOUR: "6-hour response",
-  NEXT_DAY: "Next day response",
-  THEREAFTER: "Thereafter response",
+export const SERVICE_TYPES = {
+  dedicated: "Dedicated",
+  dispatch: "Dispatch",
+  scheduled: "Scheduled",
 } as const;
-export type SlaLevel = (typeof SLA_LEVELS)[keyof typeof SLA_LEVELS];
+
+export type ServiceType = (typeof SERVICE_TYPES)[keyof typeof SERVICE_TYPES];
 
 /**
  * Represents a job listing
@@ -79,6 +87,15 @@ export interface Job {
   place: string;
   isBookmarked?: boolean;
   allocationType?: 'Automatic' | 'Manual';
+  serviceType?: ServiceType;
+  languages?: string;
+  tools?: string[];
+  poc?: {
+    name: string; // e.g., "Raj Patel"
+    role?: string; // e.g., "Project Coordinator"
+    avatar?: string; // optional avatar URL
+  };
+   matchScore?: number;
 }
 
 /**
@@ -102,6 +119,9 @@ export interface Filters {
   slaLevel: string;
 }
 
+/**
+ * Sort options
+ */
 export const SORT_OPTIONS = {
   RELEVANCE: "relevance",
   DATE: "date",
@@ -109,20 +129,28 @@ export const SORT_OPTIONS = {
   DISTANCE: "distance",
   NEWEST: "newest",
 } as const;
-export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
 
+export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
+// → "relevance" | "date" | "salary" | "distance"
+
+/**
+ * Generic option shape (label/value)
+ */
 export interface Options {
   label: string;
   value: string;
 }
 
+/**
+ * Offered job status flow
+ */
 export const OfferedJobStatus = {
   initial: "initial",
   accepted: "accepted",
   declined: "declined",
   started: "started",
   checkedIn: "checked-in",
-};
+} as const;
 
 export type OfferedJobStatusType =
   (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
