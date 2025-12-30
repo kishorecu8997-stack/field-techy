@@ -11,8 +11,10 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  *
  * @component
  * @example
- * <JobSearchBar />
+ * <JobSearchBar /> 
+ *
  */
+
 export const JobSearchBar = () => {
   const methods = useForm({});
   const navigate = useNavigate();
@@ -29,10 +31,13 @@ export const JobSearchBar = () => {
     "Senior Product Designer",
     "Looking for a talented graphic designer",
     "Junior Web Designer",
-    "Innovate Tech",
     "Full Stack Developer",
     "Front-End Developer",
     "Back-End Developer",
+    "Innovate Tech",
+    "Creative Solutions",
+    "DesignPro Studios",
+    "Tech Innovators",
     "Senior Product Designer"
   ];
 
