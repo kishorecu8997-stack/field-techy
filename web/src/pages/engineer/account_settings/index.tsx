@@ -37,7 +37,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       onClick: () => {
         setNavigationSource("settings", "settings");
         onMenuItemClick("manageBankAccounts");
-      },
+     },
     },
     {
       id: "notifications",

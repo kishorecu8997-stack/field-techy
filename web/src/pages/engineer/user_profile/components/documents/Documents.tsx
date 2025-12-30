@@ -112,9 +112,9 @@ const Documents: React.FC= () => {
       <div className="p-4 max-w-3xl mx-auto">
         <DocumentsList
           documents={documents}          
-          onEditDocument={() => { 
-            setActiveKey("editDocument")
+          onEditDocument={() => {
             setImmediateParentKey("documents");
+            setActiveKey("editDocument");
           }}
           onDeleteDocument={handleDeleteDocument}
           onExpiryDateChange={handleExpiryDateChange}

@@ -64,12 +64,13 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
           </div>
         </div>
         <button
+          type="button"
           onClick={() => {
             setNavigationSource("profilecompletion", "profileCompletion");
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}
-          className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+        className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
         >
           Complete Now
         </button>

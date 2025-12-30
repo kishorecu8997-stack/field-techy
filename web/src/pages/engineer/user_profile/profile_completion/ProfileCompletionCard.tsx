@@ -70,7 +70,7 @@ const ProfileCompletionCard = () => {
               <span className="text-sm font-medium">{percentage}%</span>
             </div>
 
-            {/* Progress Bar */}
+            {/* Progress Bar Showing Status With Percentage */}
             <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
               <div
                 className="bg-teal-600 h-2 rounded-full"
@@ -78,10 +78,13 @@ const ProfileCompletionCard = () => {
               />
             </div>
 
-            {/* Fields */}
+            {/* Fields Those are under the specific section with their status*/}
             <ul className="space-y-1 text-sm">
               {section.fields.map((field, i) => (
-                <li key={i} className={getStatusColor(field.status)}>
+                <li
+                  key={`${section.key}-${field.label}-${i}`}
+                  className={getStatusColor(field.status)}
+                >
                   {getStatusIcon(field.status)} {field.label}
                   {field.status === "pending" && " (Awaiting Approval)"}
                 </li>
