@@ -50,6 +50,8 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
+import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
+import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
 import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
@@ -196,6 +198,16 @@ export const sectionConfig: Record<
   notification: {
     component: NotificationPage,
     title: "Notification",
+  },
+  security: {
+    component: SecurityPage,
+    title: "Security",
+    parent: "settings",
+  },
+  loginHistory: {
+    component: LoginHistory,
+    title: "Login History",
+    parent: "settings",
   },
   clientNotification: {
     component: ClientNotification,
