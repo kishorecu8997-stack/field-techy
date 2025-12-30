@@ -32,35 +32,15 @@ const AdvancedSearchBar: React.FC<{
     return savedFilters ? JSON.parse(savedFilters) : currentFilters;
   });
 
-  const serviceTypeOptions = ["Dedicated", "Dispatch", "Scheduled"];
-  const experienceLevelOptions = ["Entry", "Mid", "Senior", "Lead"];
-  const jobTypeOptions = ["Full-time", "Part-time", "Contract"];
-  const locationTypeOptions = ["On-site", "Remote", "Hybrid"];
-  const locationOptions = [
-    "New York",
-    "Los Angeles",
-    "Chicago",
-    "Houston",
-    "Phoenix",
-    "Philadelphia",
-    "San Antonio",
-    "San Diego",
-    "Dallas",
-    "San Jose",
-  ];
-  const primaryLanguageOptions = [
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Chinese",
-    "Japanese",
-  ];
-  const slaLevelOptions = ["4 hours", "6 hours", "next-day", "thereafter"];
-
-  const skillsOptions = skillsData.skills.map((skill) => skill.label);
-  const toolsOptions = toolsData.tools.map((tool) => tool.label);
-
+  const serviceTypeOptions = ['Dedicated', 'Dispatch', 'Scheduled'];
+  const experienceLevelOptions = ['Entry', 'Mid', 'Senior', 'Lead'];
+  const jobTypeOptions = ['Full-time', 'Part-time', 'Contract'];
+  const locationTypeOptions = ['On-site', 'Remote', 'Hybrid'];
+  const locationOptions = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'];
+  const primaryLanguageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese'];
+  const slaLevelOptions = ['4 hours', '6 hours', 'next-day', 'thereafter'];
+  const skillsOptions = skillsData.skills.map(skill => skill.label);
+  const toolsOptions = toolsData.tools.map(tool => tool.label);
   // Save filters to session storage whenever they change
   useEffect(() => {
     sessionStorage.setItem(
