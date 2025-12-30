@@ -260,6 +260,7 @@ const JobCard: React.FC<{
                   {JOB_STATUSES[job.status] ?? job.status}
                 </Badge>
               )}
+              {job.time && <span>| {job.time}</span>}
             </div>
           </div>
 
