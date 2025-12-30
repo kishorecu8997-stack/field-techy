@@ -9,9 +9,19 @@ import {
   expiryDateValidation,
 } from "@/shared/libs/utils";
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import { AiOutlineClose } from "react-icons/ai";
+
+/**
+ * Represents the Add Card form values.
+ *
+ * @property {string} cardNumber - Card number as entered by the user.
+ * @property {string} expDate - Expiry date in MM/YY format.
+ * @property {string} cvv - CVV/CVC code for the card.
+ * @property {string} country - Selected country value/label.
+ * @property {string} address - Billing address for the card.
+ */
 
 export interface CardFormData {
   cardNumber: string;
@@ -21,19 +31,35 @@ export interface CardFormData {
   cardAddress: string;
 }
 
+/**
+ * Props passed to the AddCard component.
+ *
+ * @property {() => void} onClose - Called when the dialog should be closed.
+ * @property {(cardData: CardFormData) => void} onAddCard - Called with validated card data when user submits.
+ */
+
 interface AddCardProps {
   onClose: () => void;
   onAddCard: (cardData: CardFormData) => void;
 }
 
-/**
- * AddCard component
- *
- * Renders a small form for adding a payment card. When the form is
- * validated successfully, `onAddCard` is invoked with the typed values.
- */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
-  const methods = useFormContext();
+  const methods = useForm<CardFormData>({
+    defaultValues: {
+      cardNumber: "",
+      expDate: "",
+      cvv: "",
+      PaymentCountry: "",
+      cardAddress: "",
+    },
+
+  });
+
+  // form submission
+  /**
+   * Validate the form and call `onAddCard` with the collected values when valid.
+   * Uses react-hook-form's `trigger` to run validation for all registered fields.
+   */
 
   const handleAddCard = async () => {
     const isValid = await methods.trigger(["cardAddress", "cvv", "expDate", "cardNumber", "PaymentCountry"]);
@@ -60,6 +86,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
           placeholder="9999 9999 9999 9999"
           rules={{ validate: (v: string) => cardNumberValidation(v) }}
           required
+          allowedCharacters="numbers"
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -69,13 +96,16 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="MM/YY"
             rules={{ validate: (v: string) => expiryDateValidation(v) }}
             required
+            allowedCharacters="digits-slash"
           />
+
           <InputField
             label="CVV"
             name="cvv"
             placeholder="Enter CVV"
             rules={{ validate: (v: string) => cvvValidation(v) }}
             required
+            allowedCharacters="numbers"
           />
         </div>
 

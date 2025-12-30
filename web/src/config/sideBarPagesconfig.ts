@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
+import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
+import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
+import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
 import React from "react";
 
 const ClientAccountDrawerMenu = React.lazy(() => import("@/pages/client/my_account/ClientAccountDrawerMenu"));
@@ -191,15 +195,35 @@ export const sectionConfig: Record<
     parent: "manageBankAccounts",
   },
   contactUs: { component: ContactUs, title: "Contact Us", parent: "settings" },
-  myEarning: { component: MyEarning, title: "My Earning", },
+  NotificationPreferences: {
+    component: NotificationPreferences,
+    title: "Notification",
+    parent: "settings",
+  },
+  myEarning: { component: MyEarning, title: "My Earning" },
   withdraw: { component: Withdraw, title: "Withdraw", parent: "myEarning" },
   notification: {
     component: NotificationPage,
     title: "Notification",
   },
+  security: {
+    component: SecurityPage,
+    title: "Security",
+    parent: "settings",
+  },
+  loginHistory: {
+    component: LoginHistory,
+    title: "Login History",
+    parent: "settings",
+  },
   clientNotification: {
     component: ClientNotification,
     title: "Notification",
+  },
+  activeSessions: {
+    component: ActiveSessions,
+    title: "Active Sessions",
+    parent: "settings",
   },
 
   //client

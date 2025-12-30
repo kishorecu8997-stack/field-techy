@@ -10,12 +10,15 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateCompany, validateDateRange } from "../../../Validate";
+import type { ExperiencesFormData } from "./types";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+
 import {
   designationOptions,
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-import type { ExperiencesFormData } from "./types";
+
 
 /**
  * The EditExperiences component renders a form to modify an existing work experience.
@@ -57,9 +60,12 @@ const EditExperiences = () => {
 
   const getExperienceById = () => {
     const id = localStorage.getItem("editExperiencesId");
-    console.log(id);
+    console.log(id)
     const experienceId = id;
-    const found = experianceEdit.find((exp) => exp.id === experienceId);
+    const found = experianceEdit.find(
+      (exp) => exp.id === experienceId
+    );
+
 
     if (!found) return undefined;
 
@@ -83,6 +89,14 @@ const EditExperiences = () => {
       localStorage.removeItem("editExperiencesId");
     };
   }, []);
+
+  useEffect(() => {
+    const endDate = methods.getValues("endDate");
+    if (!endDate) {
+      methods.setValue("isCurrent", true);
+    }
+  }, []);
+
 
   return (
     <FormContainer
@@ -110,7 +124,6 @@ const EditExperiences = () => {
           required
           rules={{ validate: (v: string) => validateCompany(v) }}
         />
-
         <SelectField
           label="Work Location Type"
           isShowLabel={false}
@@ -119,7 +132,6 @@ const EditExperiences = () => {
           options={workLocationTypeOptions}
           required
         />
-
         <SelectField
           label="Employment Type"
           isShowLabel={false}
@@ -140,14 +152,40 @@ const EditExperiences = () => {
               validateDateRange(value, methods.getValues("endDate") || null),
           }}
         />
-        <DatePickerInput
-          name="endDate"
-          label="End Date"
-          isShowLabel={false}
-          placeholder="End date (optional)"
-          minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
-          maxDate={new Date()}
-          rules={{ onChange: () => methods.trigger("startDate") }}
+
+        {!methods.watch("isCurrent") && (
+          <DatePickerInput
+            name="endDate"
+            label="End Date"
+            isShowLabel={false}
+            placeholder="End date (required if not current)"
+            minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+            required={!methods.watch("isCurrent")}
+            rules={{
+              validate: (value) => {
+                if (!methods.watch("isCurrent") && !value) {
+                  return "End date is required when not currently working";
+                }
+                return true;
+              },
+              onChange: () => methods.trigger("startDate")
+            }}
+          />
+        )}
+
+        {/* Checkbox label */}
+        <CheckboxInput
+          name="isCurrent"
+          label="I currently work here"
+          isShowLabel={true}
+          rules={{
+            onChange: (e) => {
+              const checked = e.target.checked;
+              if (checked) {
+                methods.setValue("endDate", null);
+              }
+            }
+          }}
         />
       </div>
 

@@ -19,16 +19,20 @@ export interface NotificationProps {
     | "proposal_received"
     | "application_viewed"
     | "view"
+    | "job_reminder"
     | "withdrawal";
   title: string;
   message: string;
   jobTitle?: string;
   location?: string;
+  requiresConfirmation?: boolean;
+  confirmationStatus?: "pending" | "confirmed" | "declined";
   client?: string;
   payment?: string;
   duration?: string;
   timestamp: string; // e.g., "1h", "2d"
   icon?: string; // emoji or icon identifier
+  read: boolean;
 }
 
 export interface GroupedNotifications {

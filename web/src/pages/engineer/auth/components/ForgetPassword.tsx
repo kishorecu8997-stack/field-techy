@@ -40,18 +40,18 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-lg">
-      <div className=" p-10 w-full ">
+    <div className="flex items-center justify-center max-w-lg md:w-lg ">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <img
               src={assetsConfig.logos.companyLogo}
               alt="logo"
-              className="h-20 w-24"
+              className="h-16 w-20 sm:h-20 sm:w-24"
             />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
-          <h2 className="text-md font-extralight ">
+          <h2 className="text-base font-normal text-gray-700 dark:text-gray-300 ">
             Enter your email id address to reset your password.
           </h2>
         </div>

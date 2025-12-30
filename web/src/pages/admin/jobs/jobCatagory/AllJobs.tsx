@@ -39,14 +39,23 @@ const AllJob: React.FC = () => {
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
 
+  const [budget, setBudget] = useState("");
+  // const [budgetError, setBudgetError] = useState<string | null>(null);
+
+  const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setBudget(value);
+
+    // const result = validateBudget(value);
+  };
+
   const handleStatusChange = async (data: ManageJobProps) => {
     if (!data.status) return;
     const status = data.status;
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
-      body: `Are you sure you want to ${
-        status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this job?`,
+      body: `Are you sure you want to ${status?.charAt(0).toUpperCase() + status?.slice(1)
+        } this job?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -56,10 +65,8 @@ const AllJob: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: `${
-            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
-          }`,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          variant: `${status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+            }`,
           action: async (close: any) => {
             console.log("close :", close);
             // await handlePostAJob(data);
@@ -69,7 +76,8 @@ const AllJob: React.FC = () => {
       ],
     });
   };
-  //Delete confirmation
+
+  // Delete confirmation
   const handleDeleteJob = async (job: ManageJobProps) => {
     await showPopup({
       title: "Delete Job",
@@ -84,7 +92,6 @@ const AllJob: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
             console.log("Deleting job:", job.id);
             // TODO: call your delete API here
@@ -228,14 +235,23 @@ const AllJob: React.FC = () => {
           onChange={setFilterRegion}
           options={Region}
         />
-        <InputOutline placeholder="Budget" name="budget" className="w-40" />
-        <SelectMenu
-          className="absolute z-20"
-          placeholder="Job Type"
-          value={filterType}
-          onChange={setFilterType}
-          options={AllJobType}
-        />
+        <div className="flex items-center gap-2">
+          <InputOutline
+            placeholder="Budget"
+            name="budget"
+            className="w-40"
+            value={budget}
+            onChange={handleBudgetChange}
+          />
+
+          <SelectMenu
+            className="absolute z-20"
+            placeholder="Job Type"
+            value={filterType}
+            onChange={setFilterType}
+            options={AllJobType}
+          />
+        </div>
       </div>
       <div className="h-full flex-1 overflow-y-auto my-4">
         <CustomTable<ManageJobProps>
