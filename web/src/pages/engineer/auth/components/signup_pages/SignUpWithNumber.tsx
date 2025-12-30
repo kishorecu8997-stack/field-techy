@@ -4,8 +4,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
-import { detectAndStoreCurrency, getCurrencyFromStorage, detectCurrencyFromPhone } from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
+import {
+  detectAndStoreCurrency
+} from "@/utils/currency";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -50,11 +52,7 @@ const SignUpWithNumber = ({
   const handleOTPVerified = () => {
     const phoneNumber = method.getValues("phone");
 
-    // Test the detection
-    const detectedCurrency = detectCurrencyFromPhone(phoneNumber);
-
     detectAndStoreCurrency(phoneNumber);
-    const storedCurrency = getCurrencyFromStorage();
 
     setIsOpen(false);
     navigate(absoluteUrls.engineer.auth.profile_setup, {
