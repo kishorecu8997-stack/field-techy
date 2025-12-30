@@ -9,6 +9,7 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
+import Tooltip from "@/shared/components/Tooltip";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -66,23 +67,29 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           }}
         />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
-          <NavLink
-            to={absoluteUrls.engineer.home.my_jobs}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
-          >
-            My Jobs
-          </NavLink>
-          <div
-            // to={absoluteUrls.engineer.home.my_jobs}
+          <Tooltip text="View your applied and active jobs">
+            <NavLink
+              to={absoluteUrls.engineer.home.my_jobs}
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              aria-label="View your applied and active jobs"
+            >
+              My Jobs
+            </NavLink>
+          </Tooltip>
 
-            onClick={() => {
-              onDrawerToggle();
-              setActiveKey("myEarning");
-            }}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
-          >
-            Earning
-          </div>
+          <Tooltip text="Check your earnings summary">
+            <div
+              // to={absoluteUrls.engineer.home.my_jobs}
+
+              onClick={() => {
+                onDrawerToggle();
+                setActiveKey("myEarning");
+              }}
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
+            >
+              Earning
+            </div>
+          </Tooltip>
         </nav>
       </div>
 
@@ -154,6 +161,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                   </span>
                 </div>
               </div>
+
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
