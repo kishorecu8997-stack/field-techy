@@ -1,9 +1,13 @@
 import React from "react";
+import { JOB_STATUSES } from "@/constants/jobStatus";
+import type { JobStatus } from "@/constants/jobStatus";
+import { STATUS_COLOR_MAP } from "../JobStatusBadge/StatusConfig";
+import { STATUS_LABEL_MAP } from "../JobStatusBadge/StatusLabelMap";
 
 interface JobStatusCardProps {
   jobId: string;
   date?: Date | undefined;
-  status: "completed" | "pending" | "in-progress";
+  status: JobStatus;
   onStatusChange?: () => void;
 }
 
@@ -40,31 +44,13 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
     hour12: true,
   }).format(date);
 
-  const getStatusLabel = () => {
-    switch (status) {
-      case "completed":
-        return "Job Completed";
-      case "pending":
-        return "Pending";
-      case "in-progress":
-        return "In Progress";
-      default:
-        return "Unknown";
-    }
-  };
-
-  const getStatusBgColor = () => {
-    switch (status) {
-      case "completed":
-        return "bg-emerald-800 hover:bg-emerald-700";
-      case "pending":
-        return "bg-yellow-600 hover:bg-yellow-500";
-      case "in-progress":
-        return "bg-blue-600 hover:bg-blue-500";
-      default:
-        return "bg-gray-600";
-    }
-  };
+  const label = STATUS_LABEL_MAP[status] || "Unknown";
+  const colorClass =
+    STATUS_COLOR_MAP[
+      Object.keys(JOB_STATUSES).find(
+        (key) => JOB_STATUSES[key as keyof typeof JOB_STATUSES] === status
+      ) || ""
+    ] || "bg-gray-600";
 
   return (
     <div className="flex items-center justify-between p-8 bg-gray-200 rounded-lg shadow-sm w-full">
@@ -80,10 +66,10 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
       </div>
       <button
         onClick={onStatusChange}
-        className={`px-4 py-2 rounded-md font-medium text-white transition-colors ${getStatusBgColor()}`}
-        disabled={status === "completed"}
+        className={`px-4 py-2 rounded-md font-medium text-white transition-colors ${colorClass}`}
+        disabled={status === JOB_STATUSES.COMPLETED}
       >
-        {getStatusLabel()}
+        {label}
       </button>
     </div>
   );
