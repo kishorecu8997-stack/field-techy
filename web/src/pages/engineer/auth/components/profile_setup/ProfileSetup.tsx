@@ -9,6 +9,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import {
   validateZipcode,
   validateName,
@@ -190,7 +191,7 @@ const ProfileSetup = () => {
         name="amount"
         label="Amount"
         type="text"
-        placeholder="$50/hr"
+        placeholder={`${getCurrencyFromStorage()}50/hr`}
         required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}

@@ -1,5 +1,6 @@
 import { transactions } from "@/dummy_data/bankDetails";
-import { formatCurrency, formatDate } from "@/shared/libs/utils";
+import { formatDate } from "@/shared/libs/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import React from "react";
 
 // Define TypeScript interfaces
@@ -55,8 +56,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     const amountColor = isCredit
       ? "text-emerald-600 dark:text-emerald-400"
       : "text-rose-600 dark:text-rose-400";
-    const sign = isCredit ? "+" : "-";
-
+    const sign = isCredit ? "+" : "-"; 
     return (
       <div
         key={tx.id}
@@ -77,7 +77,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         </div>
         <div className={`font-semibold ${amountColor}`}>
           {sign}
-          {formatCurrency(Math.abs(tx.amount))}
+          {getCurrencyFromStorage()}{Math.abs(tx.amount).toFixed(2)}
         </div>
       </div>
     );

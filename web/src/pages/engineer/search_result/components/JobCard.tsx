@@ -5,6 +5,14 @@ import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
+import { scrollToTop } from "@/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
 import { calculateMatchScore } from "@/utils/matchCalculator";
@@ -264,6 +272,19 @@ const JobCard: React.FC<{
             </div>
           </div>
 
+      <p className="dark:text-gray-300 text-gray-700 mb-4">{job.description}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
+        <div className="flex flex-wrap items-center gap-5">
+          <div className="flex items-center gap-1.5">
+            <IoLocationSharp className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+            <span className="text-gray-800 dark:text-gray-200">
+              {job.location}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            <span className="text-gray-800 dark:text-gray-200">
+              {getCurrencyFromStorage()}{job.salary}
+            </span>
           {showBookmark && (
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <div
