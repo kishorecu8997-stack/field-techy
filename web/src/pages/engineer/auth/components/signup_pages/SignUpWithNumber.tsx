@@ -5,6 +5,9 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
+import {
+  detectAndStoreCurrency
+} from "@/utils/currency";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -47,10 +50,14 @@ const SignUpWithNumber = ({
     },
   });
   const handleOTPVerified = () => {
+    const phoneNumber = method.getValues("phone");
+
+    detectAndStoreCurrency(phoneNumber);
+
     setIsOpen(false);
     navigate(absoluteUrls.engineer.auth.profile_setup, {
       state: {
-        signupPhone: method.getValues("phone"),
+        signupPhone: phoneNumber,
         mobileVerified: true,
         disableMobile: true, // Lock mobile in ProfileSetup
         disableEmail: false, // Email should be editable in ProfileSetup
@@ -61,7 +68,6 @@ const SignUpWithNumber = ({
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
-    console.log(data, "data from Login Form");
     setIsOpen(true);
   };
 

@@ -7,7 +7,7 @@ import {
   type JobStatus,
 } from "@/pages/engineer/search_result/types";
 import { scrollToTop } from "@/utils";
-import { FaDollarSign } from "react-icons/fa6";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
 
@@ -75,8 +75,7 @@ const JobCard: React.FC<Job> = ({
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <FaDollarSign className="h-3 w-3 flex-shrink-0" />
-          <span>{pay}</span>
+          <span>{getCurrencyFromStorage()}{pay}</span>
         </div>
       </div>
 

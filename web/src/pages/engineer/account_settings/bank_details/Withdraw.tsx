@@ -16,6 +16,7 @@ import { getStatusBadge } from "@/utils/helpers";
 type ViewType = "form" | "history" | "chart";
 
 import type { bankDetails } from "../types";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * Withdrawal form page displaying available balance and allowing users to select a bank and enter an amount.
@@ -152,7 +153,7 @@ const Withdraw = () => {
                 const numeric = parseFloat(value);
                 if (isNaN(numeric)) return "Please enter a valid amount";
                 if (numeric > availableBalance)
-                  return `Amount cannot exceed available balance $${availableBalance}`;
+                  return `Amount cannot exceed available balance ${getCurrencyFromStorage()}${availableBalance}`;
                 return true;
               },
             }}

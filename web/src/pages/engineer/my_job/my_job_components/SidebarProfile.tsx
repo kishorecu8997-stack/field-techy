@@ -1,4 +1,5 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
@@ -113,7 +114,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
           Current Balance
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
-          $
+          {getCurrencyFromStorage()}
           {balance.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,

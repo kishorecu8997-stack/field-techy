@@ -6,6 +6,19 @@ import { HiFilter, HiSearch } from "react-icons/hi";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { getStatusBadge } from "@/utils/statusUtils";
+import { transactions } from "@/dummy_data/bankDetails";
+import { formatDate } from "@/shared/libs/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
+import React from "react";
+
+// Define TypeScript interfaces
+export interface Transaction {
+  id: number;
+  description: string;
+  amount: number; // positive = credit, negative = debit
+  date: string; // ISO date string or formatted date
+  status?: "processing" | "completed" | "failed"; // optional status
+}
 
 interface TransactionDashboardProps {
   showAll?: boolean;
@@ -75,6 +88,41 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             </div>
           )}
         </div>
+  const { todayTxs, yesterdayTxs, olderTxs } =
+    groupTransactionsByDay(transactions);
+
+  // Render transaction item
+  const renderTransaction = (tx: Transaction) => {
+    const isCredit = tx.amount > 0;
+    const amountColor = isCredit
+      ? "text-emerald-600 dark:text-emerald-400"
+      : "text-rose-600 dark:text-rose-400";
+    const sign = isCredit ? "+" : "-"; 
+    return (
+      <div
+        key={tx.id}
+        className="flex justify-between py-3 border-b border-gray-200 dark:border-gray-700"
+      >
+        <div>
+          <div className="font-medium text-gray-900 dark:text-gray-100">
+            {tx.description}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {formatDate(tx.date)}
+          </div>
+          {tx.status === "processing" && (
+            <span className="inline-block mt-1 px-2 py-0.5 bg-amber-500 text-white text-xs rounded-full font-medium">
+              Processing
+            </span>
+          )}
+        </div>
+        <div className={`font-semibold ${amountColor}`}>
+          {sign}
+          {getCurrencyFromStorage()}{Math.abs(tx.amount).toFixed(2)}
+        </div>
+      </div>
+    );
+  };
 
         {showAll && (
           <div className="mb-6 space-y-4">
