@@ -1,30 +1,15 @@
 import { icons } from "@/config/icons";
+import { scrollToTop } from "@/utils";
 import React, { useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
-import { IoLocationSharp, IoHelpCircleOutline } from "react-icons/io5";
+import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
-import { scrollToTop } from "@/utils";
-import {
-  toggleSavedJob,
-  isJobSaved,
-  BOOKMARK_CHANGE_EVENT,
-} from "@/utils/bookmarkUtils";
-import { toast } from "react-toastify";
-
-/**
- * JobCard component displays a single job listing
- *
- * @param {Object} props - Component props
- * @param {Job} props.job - Job data to display
- * @param {boolean} [props.showBookmark=true] - Whether to show bookmark icon
- * @returns {JSX.Element} Rendered job card component
- */
-import { getExperienceLevel, JOB_STATUSES } from "../types";
-import { calculateMatchScore } from "@/utils/matchCalculator";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
+import { calculateMatchScore } from "@/utils/matchCalculator";
 import { useMemo } from "react";
+import { getExperienceLevel, JOB_STATUSES } from "../types";
 
 // Reusable Badge
 type BadgeVariant = "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
@@ -171,6 +156,10 @@ const WhyRecommendedPopover: React.FC<{
     </div>
   );
 };
+// Extract once at module level
+const USER_SKILLS = jobSkillsData.jobSkills.map((s) => s.label);
+const USER_TOOLS = toolsData.tools.map((t) => t.label);
+
 /**
  * JobCard
  *
@@ -183,10 +172,6 @@ const WhyRecommendedPopover: React.FC<{
  * @param navigateToJob - The URL or route used to navigate to the job detail page
  * (default: "#").
  */
-// Extract once at module level
-const USER_SKILLS = jobSkillsData.jobSkills.map((s) => s.label);
-const USER_TOOLS = toolsData.tools.map((t) => t.label);
-
 const JobCard: React.FC<{
   job: Job;
   showBookmark?: boolean;
