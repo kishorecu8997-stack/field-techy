@@ -1,19 +1,21 @@
 import { icons } from "@/config/icons";
+import { scrollToTop } from "@/utils";
 import React, { useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
-import { IoLocationSharp, IoHelpCircleOutline } from "react-icons/io5";
+import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
-import { scrollToTop } from "@/utils";
-import { JOB_STATUSES, getExperienceLevel } from "../types";
-import { calculateMatchScore } from "@/utils/matchCalculator";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
+import { calculateMatchScore } from "@/utils/matchCalculator";
+import { useMemo } from "react";
+import { getExperienceLevel, JOB_STATUSES } from "../types";
 
 // Reusable Badge
+type BadgeVariant = "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
 const Badge: React.FC<{
   children: React.ReactNode;
-  variant?: "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
+  variant?: BadgeVariant;
 }> = ({ children, variant = "gray" }) => {
   const styles = {
     green:
@@ -56,6 +58,8 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
       <svg
         className="w-full h-full transform -rotate-90"
         viewBox={`0 0 ${size} ${size}`}
+        role="img"
+        aria-label={`${score}% match score`}
       >
         <circle
           className="text-gray-200 dark:text-gray-700"
@@ -97,34 +101,27 @@ const WhyRecommendedPopover: React.FC<{
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
-        role="presentation"
-        aria-hidden="true"
       />
 
       {/* Popover Card */}
-      <div className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300">
+      <div
+        className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300 "
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="why-recommended-title"
+      >
         {/* Close Button */}
-        <button
+        <div
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full  hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
+             focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2
+             dark:focus-visible:ring-offset-gray-800"
           aria-label="Close"
         >
-          <svg
-            className="w-5 h-5 text-gray-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+          <icons.close className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+        </div>
 
         {/* Content */}
         <div className="text-center">
@@ -132,7 +129,10 @@ const WhyRecommendedPopover: React.FC<{
             <IoHelpCircleOutline className="w-10 h-10 text-teal-600 dark:text-teal-400" />
           </div>
 
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          <h3
+            className="text-xl font-bold text-gray-900 dark:text-white mb-3"
+            id="why-recommended-title"
+          >
             Why is this job recommended?
           </h3>
 
@@ -145,18 +145,33 @@ const WhyRecommendedPopover: React.FC<{
             this job aligns with your experience and expertise.
           </p>
 
-          <button
+          <div
             onClick={onClose}
             className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors"
           >
             Got it
-          </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
+// Extract once at module level
+const USER_SKILLS = jobSkillsData.jobSkills.map((s) => s.label);
+const USER_TOOLS = toolsData.tools.map((t) => t.label);
 
+/**
+ * JobCard
+ *
+ * Displays a summary view of a job posting, including key job details
+ * and optional actions such as bookmarking and navigation.
+ *
+ * @param job - The job data object containing details like title, company,
+ * location, and match score.
+ * @param showBookmark - Whether to display the bookmark action (default: true).
+ * @param navigateToJob - The URL or route used to navigate to the job detail page
+ * (default: "#").
+ */
 const JobCard: React.FC<{
   job: Job;
   showBookmark?: boolean;
@@ -164,12 +179,27 @@ const JobCard: React.FC<{
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
   const [isBookmarked, setIsBookmarked] = useState(job.isBookmarked || false);
   const [showWhyPopover, setShowWhyPopover] = useState(false);
-  const userSkills = jobSkillsData.jobSkills.map((s) => s.label);
-  const userTools = toolsData.tools.map((t) => t.label);
-  const matchScore = calculateMatchScore(
-    [...(job.skills || []), ...(job.tools || [])],
-    [...userSkills, ...userTools]
-  );
+
+  const userSkills = USER_SKILLS;
+  const userTools = USER_TOOLS;
+
+  const matchScore = useMemo(() => {
+    return calculateMatchScore(
+      [...(job.skills || []), ...(job.tools || [])],
+      [...userSkills, ...userTools]
+    );
+  }, [job.skills, job.tools, userSkills, userTools]);
+
+  const STATUS_VARIANT_MAP = {
+    new: "green",
+    offer: "blue",
+    applied: "yellow",
+    inprogress: "teal",
+    completed: "gray",
+  } as const satisfies Record<
+    "new" | "offer" | "applied" | "inprogress" | "completed",
+    "green" | "blue" | "purple" | "yellow" | "teal" | "gray"
+  >;
 
   return (
     <>
@@ -181,45 +211,32 @@ const JobCard: React.FC<{
         {/* HEADER */}
         <div className="flex justify-between items-start gap-3 mb-3">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-3">
+            {/* Job title */}
+            <div className="flex items-center justify-between gap-3">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
                 {job.title}
               </h3>
-              {job.status && (
-                <Badge
-                  variant={
-                    job.status === "new"
-                      ? "green"
-                      : job.status === "offer"
-                      ? "blue"
-                      : job.status === "applied"
-                      ? "yellow"
-                      : job.status === "inprogress"
-                      ? "teal"
-                      : job.status === "completed"
-                      ? "gray"
-                      : "gray"
-                  }
-                >
-                  {JOB_STATUSES[job.status] || job.status}
-                </Badge>
-              )}
-              {matchScore > 0 && <MatchScoreRing score={matchScore} />}
 
-              {matchScore > 0 && (
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowWhyPopover(true);
-                  }}
-                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
-                </button>
-              )}
+              {/* Right-aligned: Match score & help button */}
+              <div className="flex items-center gap-2">
+                {matchScore > 0 && <MatchScoreRing score={matchScore} />}
+                {matchScore > 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowWhyPopover(true);
+                    }}
+                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                    aria-label="Why is this job recommended?"
+                  >
+                    <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                  </button>
+                )}
+              </div>
             </div>
 
+            {/* Job metadata */}
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
               {job.client && (
                 <span>
@@ -230,25 +247,40 @@ const JobCard: React.FC<{
                 </span>
               )}
               {job.time && <span>| {job.time}</span>}
+              {job.status && (
+                <Badge
+                  variant={
+                    STATUS_VARIANT_MAP[job.status] ??
+                    (() => {
+                      console.warn(`Unknown job status: ${job.status}`);
+                      return "gray"; // fallback to a valid variant
+                    })()
+                  }
+                >
+                  {JOB_STATUSES[job.status] ?? job.status}
+                </Badge>
+              )}
+              {job.time && <span>| {job.time}</span>}
             </div>
           </div>
 
           {showBookmark && (
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <button
+              <div
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsBookmarked(!isBookmarked);
                 }}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
               >
                 {isBookmarked ? (
                   <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
                 ) : (
                   <icons.bookmark className="w-4 h-4" />
                 )}
-              </button>
+              </div>
               <span>{job.postedTime || "Just now"}</span>
             </div>
           )}
@@ -316,29 +348,23 @@ const JobCard: React.FC<{
                 {getExperienceLevel(job.experience)}
               </span>
             </div>
-            {/* POC Section */}
-            {job.poc && (
-              <div className="flex items-center gap-3 ml-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <div>
-                  <p className="text-xs font-semibold text-gray-900 dark:text-white">
-                    Point of Contact
-                  </p>
-                  <p className="text-xs text-gray-700 dark:text-gray-300">
-                    {job.poc.name}
-                    {job.poc.role && (
-                      <span className="text-gray-500"> • {job.poc.role}</span>
-                    )}
-                  </p>
-                </div>
+          </div>
+          {/* POC Section */}
+          {job.poc && (
+            <div className=" pt-2 border-t border-gray-100 dark:border-gray-700">
+              <div>
+                <p className="text-xs font-semibold text-gray-900 dark:text-white">
+                  Point of Contact
+                </p>
+                <p className="text-xs text-gray-700 dark:text-gray-300">
+                  {job.poc.name}
+                  {job.poc.role && (
+                    <span className="text-gray-500"> • {job.poc.role}</span>
+                  )}
+                </p>
               </div>
-            )}
-          </div>
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <BiSolidCalendar className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-            <span className="text-gray-800 dark:text-gray-200">
-              {job.startDate}
-            </span>
-          </div>
+            </div>
+          )}
         </div>
       </Link>
 

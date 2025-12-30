@@ -64,53 +64,45 @@ const SearchResult = () => {
   useEffect(() => {
     setTotalPages(Math.ceil(filteredJobs.length / 4));
   }, [filteredJobs]);
-
   // Apply filters and sorting
   useEffect(() => {
     let filtered = [...jobs];
-
     // Apply location filter
     if (filters.location.length > 0) {
       filtered = filtered.filter((job) =>
         filters.location.some((loc) => job.location?.includes(loc))
       );
     }
-
     // Apply category filter
     if (filters.category.length > 0) {
       filtered = filtered.filter((job) =>
         filters.category.some((cat) => job.category?.includes(cat))
       );
     }
-
     // Apply rating filter
     if (filters.rating.length > 0) {
       filtered = filtered.filter(
         (job) => job.rating && filters.rating.includes(job.rating)
       );
     }
-
     // Apply experience filter
     if (filters.experience > 0) {
       filtered = filtered.filter(
         (job) => job.experience && job.experience >= filters.experience
       );
     }
-
     // Apply budget type filter
     if (filters.budgetType) {
       filtered = filtered.filter(
         (job) => job.budgetType === filters.budgetType
       );
     }
-
     // Apply skills filter
     if (filters.skills.length > 0) {
       filtered = filtered.filter((job) =>
         filters.skills.some((skill) => job.skills?.includes(skill))
       );
     }
-
     // Apply sorting
     if (sortOption === SORT_OPTIONS.DATE) {
       filtered.sort(
@@ -129,11 +121,9 @@ const SearchResult = () => {
       );
     }
     // Relevance is default, no sorting needed
-
     setFilteredJobs(filtered);
     setCurrentPage(1);
   }, [jobs, filters, sortOption]);
-
   /**
    * Handle filter changes
    * @param {Filters} newFilters - New filter state
@@ -141,7 +131,6 @@ const SearchResult = () => {
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
   };
-
   /**
    * Clear all filters
    */
@@ -164,7 +153,6 @@ const SearchResult = () => {
       slaLevel: "",
     });
   };
-
   /**
    * Handle page change
    * @param {number} page - New page number
@@ -172,7 +160,6 @@ const SearchResult = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
   /**
    * Handle sort change
    * @param {string} sort - New sort option
@@ -231,6 +218,12 @@ const SearchResult = () => {
           description={`${filteredJobs.length} jobs found`}
           isShowSort={false}
         />
+        <AdvancedSearchBar
+          onFilterChange={handleFilterChange}
+          currentFilters={filters}
+          sortOption={sortOption}
+          onSortChange={handleSortChange}
+        />
 
         <SearchHistory
           history={searchHistory}
@@ -283,14 +276,12 @@ const SearchResult = () => {
                 navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
               />
             ))}
-
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
           </div>
-
           <div className="lg:col-span-1">
             <FilterPanel
               onFilterChange={handleFilterChange}

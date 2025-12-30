@@ -3,11 +3,12 @@ import { CgNotes } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { FaBookmark, FaChevronRight, FaFileAlt, FaPhoneAlt, FaRegBookmark, FaRegCheckCircle, FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import { FaFileLines, FaLocationDot } from "react-icons/fa6";
-import { IoMdAdd, IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { IoMdAdd, IoMdCheckmarkCircleOutline, IoMdCheckmark } from "react-icons/io";
 import { IoClose, IoCloseSharp, IoHeadsetSharp, IoNotificationsSharp, IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
-import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline, MdOutlineMobileFriendly } from "react-icons/md";
+import { MdContactSupport, MdEmail, MdLock, MdOutlineImageNotSupported, MdOutlineMailOutline,MdOutlineMobileFriendly, MdOutlineSecurity, MdHistory } from "react-icons/md";
 import { PiWarningOctagonFill } from "react-icons/pi";
 import { FaHourglass } from "react-icons/fa";
+import { FiZap } from "react-icons/fi";
  
 
 
@@ -45,5 +46,9 @@ export const icons = {
   noImage: MdOutlineImageNotSupported,
   add: IoMdAdd,
   pending: FaHourglass,
+  security: MdOutlineSecurity,
+  history: MdHistory,
+  checkmark: IoMdCheckmark,
+  active: FiZap,
   sessions: MdOutlineMobileFriendly
 };
