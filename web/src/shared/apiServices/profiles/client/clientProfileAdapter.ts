@@ -91,7 +91,7 @@ export class ClientProfileAdapter {
   static async getCurrentClient(): Promise<ClientProfileData> {
     // TODO: Extract client ID from authentication token in production
     // Hardcoded client ID for testing: 9f034ed8-2ea5-44b6-a410-973e559e2c47
-    const CLIENT_ID = "9f034ed8-2ea5-44b6-a410-973e559e2c47";
+    const CLIENT_ID = "ce1dece0-78e4-4076-b73c-4060b718c8a9";
     const response = await axiosInstance.get(
       CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(CLIENT_ID)
     );

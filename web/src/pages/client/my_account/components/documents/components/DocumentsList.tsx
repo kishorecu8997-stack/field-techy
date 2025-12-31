@@ -10,7 +10,7 @@ import type { ClientFile } from "@/shared/apiServices/client/clientTypes";
 import { ClientAdapter } from "@/shared/apiServices/client/clientAdapter";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
-import { useClientFilesContext } from "../../../context/ClientFilesContext";
+import { useClientFilesContext } from "../../../context/useClientFilesContext";
 
 /**
  * Document interface matching DocumentCard expectations

@@ -73,25 +73,55 @@ export const ImageUploaderField = ({
   initialImageUrl,
   isLoading = false,
 }: ImageUploadFieldProps) => {
-  const { control, setValue, watch } = useFormContext();
+  const { control, setValue, getValues, watch } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
+  const initialSetRef = useRef(false);
   
-  // Watch the form value
+  // Watch the form value to manage object URLs
   const formValue = watch(name);
   
-  // Set initial image URL if provided and form value doesn't match
+  // Set initial image URL if provided (only once)
   useEffect(() => {
-    if (initialImageUrl) {
+    if (initialImageUrl && !initialSetRef.current) {
+      const currentValue = getValues(name);
       // Only update if form value is empty or is a different URL
-      if (!formValue || (typeof formValue === "string" && formValue !== initialImageUrl)) {
+      if (!currentValue || (typeof currentValue === "string" && currentValue !== initialImageUrl)) {
         setValue(name, initialImageUrl, { shouldValidate: false });
+        initialSetRef.current = true;
       }
     }
-  }, [initialImageUrl, formValue, name, setValue]);
+  }, [initialImageUrl, name, setValue, getValues]);
 
+  // Manage object URL based on form value (moved out of render)
+  useEffect(() => {
+    if (typeof formValue === "string") {
+      // If value is a string (URL), clean up any object URL
+      setObjectUrl((prevUrl) => {
+        if (prevUrl) {
+          URL.revokeObjectURL(prevUrl);
+        }
+        prevFileRef.current = null;
+        return null;
+      });
+    } else if (formValue instanceof File) {
+      // If value is a File, create object URL if it's a new file
+      if (formValue !== prevFileRef.current) {
+        setObjectUrl((prevUrl) => {
+          if (prevUrl) {
+            URL.revokeObjectURL(prevUrl);
+          }
+          const url = URL.createObjectURL(formValue);
+          prevFileRef.current = formValue;
+          return url;
+        });
+      }
+    }
+  }, [formValue]);
+
+  // Cleanup object URL on unmount
   useEffect(() => {
     return () => {
       if (objectUrl) {
@@ -168,20 +198,7 @@ export const ImageUploaderField = ({
 
           if (typeof value === "string") {
             displaySrc = value;
-            if (objectUrl) {
-              URL.revokeObjectURL(objectUrl);
-              setObjectUrl(null);
-              prevFileRef.current = null;
-            }
           } else if (value instanceof File) {
-            if (value !== prevFileRef.current) {
-              if (objectUrl) {
-                URL.revokeObjectURL(objectUrl);
-              }
-              const url = URL.createObjectURL(value);
-              setObjectUrl(url);
-              prevFileRef.current = value;
-            }
             displaySrc = objectUrl;
           }
 

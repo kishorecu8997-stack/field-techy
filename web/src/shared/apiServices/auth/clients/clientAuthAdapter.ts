@@ -38,8 +38,11 @@ export class ClientAuthAdapter {
       CLIENT_USER_AUTH_ROUTER_PATHS.VERIFYOTPCLIENT(otp),
       { phoneOrEmail, password: "" }
     );
-    const userID = response.headers["user-id"];
-    const role = response.headers["x-user-type"];
+
+    //FIXME: Need to update api response header once the api is updated
+    // const userID = response.headers["user-id"];
+    // const role = response.headers["x-user-type"];
+
     const authorization = response.headers["authorization"];
 
     // TODO: Need to update api response header once the api is updated

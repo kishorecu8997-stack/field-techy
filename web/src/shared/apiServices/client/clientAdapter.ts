@@ -12,6 +12,7 @@ import type {
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
 import type { Country } from "@/shared/components/commonUI/inputs/type";
+import { AxiosError } from "axios";
 
 /*
  * ClientAdapter
@@ -27,19 +28,35 @@ export class ClientAdapter {
   /**
    * Helper to handle API errors and return standardized messages
    */
-  private static handleApiError(error: any): never {
-    if (error.response) {
-      console.log("error ===>", error);
-      const status = error.response.status;
+  private static handleApiError(error: unknown): never {
+    if (error instanceof AxiosError) {
+      const status = error.response?.status;
+
+      if (status === 401) {
+        throw new Error("Unauthorized. Please check your credentials.");
+      }
+
+      if (status === 403) {
+        throw new Error(
+          "Forbidden. You are not authorized to access this resource."
+        );
+      }
+
       if (status === 400) {
         throw new Error("Invalid request details. Please check your inputs.");
       }
       if (status === 500) {
         throw new Error("Internal server error. Please try again later.");
       }
+
+      if (status === 409) {
+        throw new Error(
+          "Resource already exists. Please try again with a different value."
+        );
+      }
     }
     // Re-throw original error if not handled above
-    throw error;
+    throw new Error("An unknown error occurred. Please try again later.");
   }
 
   static async signup(data: ClientData): Promise<ClientData> {
@@ -408,7 +425,9 @@ export class ClientAdapter {
    * Download file stream with metadata
    * Returns blob with associated metadata (fileName, mimeType, size, etc.)
    */
-  static async downloadFileStream(fileKey: string): Promise<FileDownloadResponse> {
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<FileDownloadResponse> {
     const response = await axiosInstance.get(
       CLIENT_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
       {
@@ -424,19 +443,26 @@ export class ClientAdapter {
     const contentLength = response.headers["content-length"]
       ? parseInt(response.headers["content-length"], 10)
       : undefined;
-    const contentType = response.headers["content-type"] || "application/octet-stream";
+    const contentType =
+      response.headers["content-type"] || "application/octet-stream";
 
     // Extract filename from Content-Disposition header if available
     let fileName = "download";
     if (contentDisposition) {
-      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      const fileNameMatch = contentDisposition.match(
+        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+      );
       if (fileNameMatch && fileNameMatch[1]) {
         fileName = fileNameMatch[1].replace(/['"]/g, "");
         // Handle URL-encoded filenames
         try {
           fileName = decodeURIComponent(fileName);
         } catch (e) {
+          console.error("Failed to decode file name:", e);
           // If decoding fails, use the original filename
+          throw new Error(
+            "Failed to decode file name. Please try again later."
+          );
         }
       }
     }

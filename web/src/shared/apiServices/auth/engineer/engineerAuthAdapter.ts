@@ -34,8 +34,9 @@ export class EngineerAuthAdapter {
 
     const headers = response.headers;
 
-    const userID = headers["X-User"];
-    const role = headers["X-User-Type"];
+    //FIXME: Need to update api response header once the api is updated
+    // const userID = headers["X-User"];
+    // const role = headers["X-User-Type"];
     const authorization = headers["Authorization"];
 
     // TODO: Need to update api response header once the api is updated

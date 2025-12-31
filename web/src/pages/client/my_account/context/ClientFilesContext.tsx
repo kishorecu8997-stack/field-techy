@@ -1,21 +1,8 @@
-import React, { createContext, useContext, ReactNode } from "react";
-import type { ClientFile } from "@/shared/apiServices/client/clientTypes";
-
-interface ClientFilesContextValue {
-  files: ClientFile[];
-  profilePictureFile: ClientFile | null;
-  isLoading: boolean;
-  refetch: () => void;
-}
-
-const ClientFilesContext = createContext<ClientFilesContextValue | undefined>(
-  undefined
-);
-
-export const useClientFilesContext = () => {
-  const context = useContext(ClientFilesContext);
-  return context; // Returns undefined if not in provider
-};
+import React, { type ReactNode } from "react";
+import {
+  ClientFilesContext,
+  type ClientFilesContextValue,
+} from "./clientFilesContext";
 
 interface ClientFilesProviderProps {
   children: ReactNode;
@@ -32,4 +19,3 @@ export const ClientFilesProvider: React.FC<ClientFilesProviderProps> = ({
     </ClientFilesContext.Provider>
   );
 };
-
