@@ -1,10 +1,10 @@
- interface stepsProps {
+ interface StepsProps {
   selector: string;
   content: string;
   title: string;
 }
 
-export const steps: stepsProps[] = [
+export const steps: StepsProps[] = [
   {
     selector: "#welcome",
     title: "Welcome ",

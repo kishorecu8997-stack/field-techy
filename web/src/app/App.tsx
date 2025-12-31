@@ -3,7 +3,7 @@ import { routes } from "./routes/AppRoute";
 import OfflineBanner from "@/shared/components/commonUI/OfflineBanner";
 import { useOfflineSync } from "@/offline/useOfflineSync";
 import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotifications";
-import { steps } from "@/dummy_data/onBoardingDate";
+import { steps } from "@/dummy_data/onBoardingData";
 import { TourProvider } from "@reactour/tour";
 import OnboardingFlowGuide, {
   tourStyles,

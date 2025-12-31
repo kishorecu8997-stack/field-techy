@@ -224,8 +224,6 @@ const JobCard: React.FC<{
     closed: "gray",
   } as const;
 
-  console.log(job.status);
-
   return (
     <>
       <Link
