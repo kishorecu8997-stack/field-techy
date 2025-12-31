@@ -73,6 +73,9 @@ export default defineConfig({
       "@": "/src", // Direct alias path for the src directory
     },
   },
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
   build: {
     rollupOptions: {
       output: {

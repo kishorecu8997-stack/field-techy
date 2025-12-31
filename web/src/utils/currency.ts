@@ -88,6 +88,5 @@ export type CurrencySymbol = "$" | "₹" | "£";
 export function testCurrencyDetection(
   phoneNumber: string | null | undefined
 ): void {
-  const result = detectCurrencyFromPhone(phoneNumber);
-  console.log("result :", result);
+  detectCurrencyFromPhone(phoneNumber);
 }
