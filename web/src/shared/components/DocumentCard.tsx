@@ -78,7 +78,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
             </div>
           }
         >
-          <PDFPreview url={doc.previewUrl} />
+          <PDFPreview key={doc.previewUrl} url={doc.previewUrl} />
         </Suspense>
       );
     }

@@ -29,7 +29,11 @@ export const CLIENT_ROUTER_PATHS = {
   // File upload endpoints
   UPLOAD_FILE: (clientId: string, documentType: string) =>
     `/client/api/v1/clients/files/${clientId}/${documentType}/upload`,
-  GET_FILES: (clientId: string) => `/clients/${clientId}/files`,
+  GET_FILES: (clientId: string) => `/client/api/v1/clients/files/${clientId}`,
+  GET_CLIENT_FILES: (clientId: string) =>
+    `/client/api/v1/clients/files/${clientId}`,
   DELETE_FILE: (fileId: string) => `/clients/files/${fileId}`,
   DOWNLOAD_FILE: (fileId: string) => `/clients/files/${fileId}/download`,
+  DOWNLOAD_FILE_STREAM: (fileKey: string) =>
+    `/client/api/v1/clients/files/download/stream/${fileKey}`,
 } as const;

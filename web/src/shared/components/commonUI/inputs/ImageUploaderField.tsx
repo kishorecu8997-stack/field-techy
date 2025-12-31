@@ -7,6 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { AVATARS } from "@/dummy_data/avatars";
 import type { ImageUploadFieldProps } from "./type";
+import LoaderComponent from "../LoaderComponent";
 
 // Helper: Validate if image is truly decodable (not corrupted)
 const validateImageDecodable = (file: File): Promise<boolean> => {
@@ -69,12 +70,27 @@ export const ImageUploaderField = ({
   maxSize = 350 * 1024, // 350 KB
   accept = ".jpeg,.jpg,.png",
   allowUpload = true,
+  initialImageUrl,
+  isLoading = false,
 }: ImageUploadFieldProps) => {
-  const { control } = useFormContext();
+  const { control, setValue, watch } = useFormContext();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
+  
+  // Watch the form value
+  const formValue = watch(name);
+  
+  // Set initial image URL if provided and form value doesn't match
+  useEffect(() => {
+    if (initialImageUrl) {
+      // Only update if form value is empty or is a different URL
+      if (!formValue || (typeof formValue === "string" && formValue !== initialImageUrl)) {
+        setValue(name, initialImageUrl, { shouldValidate: false });
+      }
+    }
+  }, [initialImageUrl, formValue, name, setValue]);
 
   useEffect(() => {
     return () => {
@@ -226,7 +242,11 @@ export const ImageUploaderField = ({
                   }`}
                   onClick={handleImageClick}
                 >
-                  {displaySrc ? (
+                  {isLoading ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <LoaderComponent />
+                    </div>
+                  ) : displaySrc ? (
                     <img
                       src={displaySrc}
                       alt="Profile"

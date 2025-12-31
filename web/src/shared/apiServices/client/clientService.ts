@@ -6,6 +6,7 @@ import type {
   ClientFileUploadParams,
   ClientPaginationParams,
   FileUploadResponse,
+  FileDownloadResponse,
 } from "./clientTypes";
 
 export const CLIENT_QUERY_KEYS = {
@@ -238,5 +239,38 @@ export function useClientFiles(clientId?: string) {
     queryKey: ["client-files", clientId],
     queryFn: () => ClientAdapter.getFiles(clientId!),
     enabled: !!clientId,
+  });
+}
+
+/**
+ * Hook to download a file stream with metadata
+ * Returns a mutation that can be called with a fileKey
+ */
+export function useDownloadClientFileStream(options?: {
+  onSuccess?: (data: FileDownloadResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (fileKey: string) => ClientAdapter.downloadFileStream(fileKey),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Hook to delete a client file
+ */
+export function useDeleteClientFile(options?: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (fileId: string) => ClientAdapter.deleteFile(fileId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["client-files"] });
+      options?.onSuccess?.();
+    },
+    onError: options?.onError,
   });
 }

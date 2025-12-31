@@ -21,12 +21,12 @@ interface InputFieldProps {
   onChange?: (value: string) => void;
   inputMode?: "number" | "string" | "both";
   allowedCharacters?:
-  | "numbers"
-  | "numbers-dot"
-  | "alphanumeric"
-  | "digits-slash"
-  | "currency"
-  | "string";
+    | "numbers"
+    | "numbers-dot"
+    | "alphanumeric"
+    | "digits-slash"
+    | "currency"
+    | "string";
 }
 
 /**
@@ -100,11 +100,11 @@ export const InputField = ({
       },
     };
 
-    const { regex, message } = patterns[allowedCharacters];
+    const { regex, message } = patterns[allowedCharacters] ?? {};
 
     validationRules.validate = {
       ...(rules?.validate ?? {}),
-      allowedCharacters: (v: string) => regex.test(v) || message,
+      allowedCharacters: (v: string) => (regex?.test(v) || message) ?? true,
     };
   }
 
@@ -113,9 +113,10 @@ export const InputField = ({
       {isShowLabel && (
         <label
           className={` block  text-md font-semibold 
-            ${disabled
-              ? "text-gray-400 dark:text-gray-400"
-              : "text-gray-700 dark:text-gray-300"
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
             }`}
         >
           {label}{" "}
@@ -183,14 +184,16 @@ export const InputField = ({
                 w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition
                        ${leftIcon ? "pl-10" : ""} 
                   ${showValidationCheck && isDirty && !invalid ? "pr-10" : ""} 
-                  ${disabled
-                    ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
-                    : "cursor-text bg-white dark:bg-gray-800"
+                  ${
+                    disabled
+                      ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
+                      : "cursor-text bg-white dark:bg-gray-800"
                   }
-               ${error && !disabled
-                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                    : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-                  }
+               ${
+                 error && !disabled
+                   ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+               }
               `}
               />
 

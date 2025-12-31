@@ -8,6 +8,7 @@ import type {
   ClientFile,
   ClientFileUploadParams,
   FileUploadResponse,
+  FileDownloadResponse,
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
 import type { Country } from "@/shared/components/commonUI/inputs/type";
@@ -336,7 +337,7 @@ export class ClientAdapter {
 
   static async getFiles(clientId: string): Promise<ClientFile[]> {
     const response = await axiosInstance.get(
-      CLIENT_ROUTER_PATHS.GET_FILES(clientId)
+      CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
     );
     return response.data;
   }
@@ -401,5 +402,54 @@ export class ClientAdapter {
     // Cleanup
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Download file stream with metadata
+   * Returns blob with associated metadata (fileName, mimeType, size, etc.)
+   */
+  static async downloadFileStream(fileKey: string): Promise<FileDownloadResponse> {
+    const response = await axiosInstance.get(
+      CLIENT_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+      {
+        responseType: "blob",
+        headers: {
+          accept: "*/*",
+        },
+      }
+    );
+
+    // Extract metadata from response headers
+    const contentDisposition = response.headers["content-disposition"];
+    const contentLength = response.headers["content-length"]
+      ? parseInt(response.headers["content-length"], 10)
+      : undefined;
+    const contentType = response.headers["content-type"] || "application/octet-stream";
+
+    // Extract filename from Content-Disposition header if available
+    let fileName = "download";
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      if (fileNameMatch && fileNameMatch[1]) {
+        fileName = fileNameMatch[1].replace(/['"]/g, "");
+        // Handle URL-encoded filenames
+        try {
+          fileName = decodeURIComponent(fileName);
+        } catch (e) {
+          // If decoding fails, use the original filename
+        }
+      }
+    }
+
+    const blob = new Blob([response.data], { type: contentType });
+
+    return {
+      blob,
+      fileName,
+      mimeType: contentType,
+      size: blob.size,
+      contentDisposition,
+      contentLength,
+    };
   }
 }
