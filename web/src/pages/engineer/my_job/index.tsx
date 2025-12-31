@@ -6,6 +6,10 @@ import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
 import { useState } from "react";
 import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
+import FilterButton from "@/shared/components/commonUI/FilterButton";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { absoluteUrls } from "@/config/urls";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -58,7 +62,7 @@ const MyJobsPage = () => {
 
         <StatusFilter
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
+          onFilterChange={setActiveFilter as (filter: string) => void}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList activeFilter={activeFilter} />

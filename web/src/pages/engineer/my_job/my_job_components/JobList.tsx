@@ -8,10 +8,6 @@ interface JobListProps {
   activeFilter: JobFilter;
 }
 
-interface JobListProps {
-  activeFilter: string;
-}
-
 /**
  * Renders a responsive grid of job cards using dummy job data.
  * Displays a list of available jobs in a responsive grid layout (1 column on mobile,
