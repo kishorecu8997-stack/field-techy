@@ -10,6 +10,9 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { validatePassword } from "@/shared/libs/utils";
+import { setCurrencyInStorage } from "@/utils/currency";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -224,8 +227,12 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            onSubmit={(data) => handleOtpSubmission(data.otp)}
-            onResend={onResendOtp}
+            handleNavigate={() => {
+              // Set default currency for email login users
+              setCurrencyInStorage('$');
+              goToHome();
+              toast.success("Logged in successfully");
+            }}
           />
         </Popup>
       </div>

@@ -60,7 +60,8 @@ const RecentTransactionsModule = import("@/pages/client/my_wallet/components/Rec
 const ActionButtonsForRecentTransactions = React.lazy(() =>
   RecentTransactionsModule.then(module => ({ default: module.ActionButtonsForRecentTransactions }))
 );
-
+const ProfileCompletionCard = React.lazy(() => import("@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard"));
+const AllTransactionsPage = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage"));
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -220,6 +221,11 @@ export const sectionConfig: Record<
     component: ClientNotification,
     title: "Notification",
   },
+  profileCompletion: {
+    component: ProfileCompletionCard,
+    title: "Profile Completion",
+    parent: "profile",
+  },
   activeSessions: {
     component: ActiveSessions,
     title: "Active Sessions",
@@ -297,7 +303,7 @@ export const sectionConfig: Record<
     title: "Edit Project Member Details",
   },
   engineerRecentTransactions: {
-    component: TransactionDashboard,
+    component: AllTransactionsPage,
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "myEarning",
