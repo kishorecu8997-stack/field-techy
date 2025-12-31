@@ -10,7 +10,6 @@ import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import { scrollToTop } from "@/utils";
-import OnboardingFlowGuide from "./components/OnboardingFlowGuide";
 
 /**
  * Home page component.
@@ -21,8 +20,6 @@ import OnboardingFlowGuide from "./components/OnboardingFlowGuide";
 const Home = () => {
   const navigate = useNavigate();
   const [accessPopup, setAccessPopup] = useState(false);
-  const [onboarding, setOnboarding] = useState(false);
-
   const handleExploreJobs = () => {
     scrollToTop();
     navigate(absoluteUrls.engineer.home.explore_jobs);
@@ -49,10 +46,9 @@ const Home = () => {
     );
     const onboardingsteps = localStorage.getItem("onboarding_guide") === "true";
 
+    // SHOW popup only if ANY permission is missing
     if (!locationPermission || !notificationPermission) {
-      if (!onboardingsteps) {
-        setOnboarding(true);
-      } else {
+      if (onboardingsteps) {
         setAccessPopup(true);
       }
     }
@@ -91,12 +87,6 @@ const Home = () => {
           {/* Allow access popup */}
           <AllowAccessPopup
             accessPopup={accessPopup}
-            setAccessPopup={setAccessPopup}
-          />
-
-          <OnboardingFlowGuide
-            onBoardOpen={onboarding}
-            setOnBoard={setOnboarding}
             setAccessPopup={setAccessPopup}
           />
         </div>
