@@ -23,7 +23,6 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   const filteredJobs = jobs.filter((job) => {
     return job.place === "recommended";
   });
-
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center  p-2">

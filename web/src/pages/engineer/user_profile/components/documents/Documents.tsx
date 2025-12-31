@@ -16,7 +16,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 const Documents: React.FC= () => {
   const [documents, setDocuments] = useState(initialDocuments);
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
+  const { setActiveKey, setImmediateParentKey } = useDrawerStore();
 
   /**
    * Handles adding a new certificate document.
@@ -111,8 +111,11 @@ const Documents: React.FC= () => {
     <>
       <div className="p-4 max-w-3xl mx-auto">
         <DocumentsList
-          documents={documents}
-          onEditDocument={() => setActiveKey("editDocument")}
+          documents={documents}          
+          onEditDocument={() => {
+            setImmediateParentKey("documents");
+            setActiveKey("editDocument");
+          }}
           onDeleteDocument={handleDeleteDocument}
           onExpiryDateChange={handleExpiryDateChange}
           onAddMoreCertificates={handleAddMoreCertificates}
