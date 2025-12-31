@@ -1,12 +1,11 @@
 import { icons } from "@/config/icons";
 import { scrollToTop } from "@/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import React, { useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
-import { scrollToTop } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
 import {
   toggleSavedJob,
   isJobSaved,
@@ -271,40 +270,6 @@ const JobCard: React.FC<{
               {job.time && <span>| {job.time}</span>}
             </div>
           </div>
-
-      <p className="dark:text-gray-300 text-gray-700 mb-4">{job.description}</p>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
-        <div className="flex flex-wrap items-center gap-5">
-          <div className="flex items-center gap-1.5">
-            <IoLocationSharp className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-            <span className="text-gray-800 dark:text-gray-200">
-              {job.location}
-            </span>
-          </div>
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            <span className="text-gray-800 dark:text-gray-200">
-              {getCurrencyFromStorage()}{job.salary}
-            </span>
-          {showBookmark && (
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsBookmarked(!isBookmarked);
-                }}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-              >
-                {isBookmarked ? (
-                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
-                ) : (
-                  <icons.bookmark className="w-4 h-4" />
-                )}
-              </div>
-              <span>{job.postedTime || "Just now"}</span>
-            </div>
-          )}
         </div>
 
         {/* DESCRIPTION */}
@@ -370,9 +335,32 @@ const JobCard: React.FC<{
               </span>
             </div>
           </div>
+
+          {/* BOOKMARK */}
+          {showBookmark && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsBookmarked(!isBookmarked);
+                }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+              >
+                {isBookmarked ? (
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
+                ) : (
+                  <icons.bookmark className="w-4 h-4" />
+                )}
+              </div>
+              <span>{job.postedTime || "Just now"}</span>
+            </div>
+          )}
+
           {/* POC Section */}
           {job.poc && (
-            <div className=" pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
               <div>
                 <p className="text-xs font-semibold text-gray-900 dark:text-white">
                   Point of Contact
