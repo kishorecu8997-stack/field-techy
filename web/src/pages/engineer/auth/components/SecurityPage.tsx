@@ -8,9 +8,37 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 
 /**
- * Security UI: Manage 2FA (requires verified email & mobile).
- * Persist state to localStorage with error handling.
- * @returns [value, setValue]
+ * SecurityPage Component
+ *
+ * A React functional component that renders the user's security settings within a drawer layout.
+ * It allows the user to enable or disable Two-Factor Authentication (2FA) and manage backup codes.
+ * The component also displays verification status for email and mobile number, which are prerequisites
+ * for enabling 2FA. Backup codes can be generated, viewed, and copied to the clipboard.
+ *
+ * @component
+ * @example
+ * <SecurityPage />
+ *
+ * @remarks
+ * - Two-Factor Authentication can only be enabled if both email and mobile are verified.
+ * - Backup codes are stored in `localStorage` and cleared when 2FA is disabled.
+ * - Clicking the copy icon next to a backup code copies it to the clipboard and shows a success toast.
+ *
+ * @dependencies
+ * - `react`, `react-icons/tb`, `react-toastify`
+ * - Local configuration: `icons`, `DrawerMenuSection`, `Button`, `MenuItem`, `DrawerMenuProps`
+ *
+ * @state
+ * - `twoFactorEnabled` (boolean): Controls whether 2FA is active.
+ * - `codeBackupEnabled` (boolean): Controls visibility of the backup codes UI.
+ * - `codes` (number[]): Array of generated 6-digit backup codes.
+ *
+ * @localStorage
+ * - `"2FA_Auth"`: Set to `"true"` when 2FA is enabled.
+ * - `"backup_codes"`: Stores the JSON-serialized array of backup codes.
+ * - `"totp_secret"`, `"otpauth_url"`: Removed when 2FA is disabled (assumed used elsewhere).
+ *
+ * @returns {JSX.Element} The rendered security settings UI.
  */
 const SecurityPage: React.FC<DrawerMenuProps> = () => {
   const emailVerified = true; // Replace with actual check
