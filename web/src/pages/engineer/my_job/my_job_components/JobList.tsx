@@ -1,10 +1,11 @@
 import { sampleJobs } from "@/dummy_data/searchData";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
-import { JOB_STATUSES, WORKING_TYPES } from "../../search_result/types";
+import { JOB_STATUSES, WORKING_TYPES, JOB_FILTERS } from "../../search_result/types";
+import type { JobFilter } from "../../search_result/types";
 
 interface JobListProps {
-  activeFilter: string;
+  activeFilter: JobFilter;
 }
 
 /**
@@ -18,24 +19,24 @@ interface JobListProps {
  */
 const JobList = ({ activeFilter }: JobListProps) => {
   const filteredJobs = useMemo(() => {
-    let jobs = sampleJobs.filter(
+    const jobs = sampleJobs.filter(
       (job) =>
         job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
     );
 
-    if (activeFilter === "All Jobs") {
+    if (activeFilter === JOB_FILTERS.ALL_JOBS) {
       return jobs;
-    } else if (activeFilter === "Applied") {
+    } else if (activeFilter === JOB_FILTERS.APPLIED) {
       return jobs.filter((job) => job.status === JOB_STATUSES.applied);
-    } else if (activeFilter === "In Progress") {
+    } else if (activeFilter === JOB_FILTERS.IN_PROGRESS) {
       return jobs.filter((job) => job.status === JOB_STATUSES.inprogress);
-    } else if (activeFilter === "Completed") {
+    } else if (activeFilter === JOB_FILTERS.COMPLETED) {
       return jobs.filter((job) => job.status === JOB_STATUSES.completed);
-    } else if (activeFilter === "Remote") {
+    } else if (activeFilter === JOB_FILTERS.REMOTE) {
       return jobs.filter((job) => job.type === WORKING_TYPES.remote);
-    } else if (activeFilter === "On-Site") {
+    } else if (activeFilter === JOB_FILTERS.ON_SITE) {
       return jobs.filter((job) => job.type === WORKING_TYPES.onsite);
-    } else if (activeFilter === "Hybrid") {
+    } else if (activeFilter === JOB_FILTERS.HYBRID) {
       return jobs.filter((job) => job.type === WORKING_TYPES.hybrid);
     } else {
       // For other filters like "Today", "Declined", "Cancelled", return all jobs for now as they might not be implemented

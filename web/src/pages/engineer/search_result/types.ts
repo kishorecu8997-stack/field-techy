@@ -109,6 +109,21 @@ export interface Options {
   value: string;
 }
 
+export const JOB_FILTERS = {
+  ALL_JOBS: "All Jobs",
+  APPLIED: "Applied",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  REMOTE: "Remote",
+  ON_SITE: "On-Site",
+  HYBRID: "Hybrid",
+  TODAY: "Today",
+  DECLINED: "Declined",
+  CANCELLED: "Cancelled",
+} as const;
+
+export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];
+
 export const OfferedJobStatus = {
   initial: "initial",
   accepted: "accepted",
