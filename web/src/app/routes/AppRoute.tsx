@@ -47,6 +47,7 @@ const JobDetailsPage = React.lazy(
   () => import("@/pages/engineer/my_job/JobDetailsPage")
 );
 const SearchResult = React.lazy(() => import("@/pages/engineer/search_result"));
+const SearchAnalyticsPage = React.lazy(() => import("@/pages/engineer/search_analytics/SearchAnalyticsPage"));
 const PrivacyPolicy = React.lazy(
   () => import("@/pages/engineer/privacy_policy/PolicyPage")
 );
@@ -455,6 +456,10 @@ export const routes = createBrowserRouter([
       {
         path: urls.engineer.home.search_result,
         element: withSuspense(SearchResult),
+      },
+      {
+        path: urls.engineer.home.search_analytics,
+        element: withSuspense(SearchAnalyticsPage),
       },
       {
         path: urls.engineer.home.privacy_policy,
