@@ -5,7 +5,7 @@ import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
-import { Button } from "@headlessui/react";
+import { Button } from "./commonUI/Buttons";
 
 /**
  * A search bar component for job search.
