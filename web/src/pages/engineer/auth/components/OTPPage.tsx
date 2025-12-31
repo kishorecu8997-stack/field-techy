@@ -59,7 +59,7 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
       setTimeLeft(getTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [getTimeLeft]);
 
   const method = useForm({
     defaultValues: {

@@ -110,7 +110,7 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
       {twoFactorEnabled && (
         <DrawerMenuSection className="my-4" items={subMenuItem} />
       )}
-      {codeBackupEnabled && (
+      {codeBackupEnabled && twoFactorEnabled && (
         <div className="w-full bg-neutral-primary-soft border rounded-xl border-gray-200 shadow-sm rounded-base">
           <ul
             role="list"
