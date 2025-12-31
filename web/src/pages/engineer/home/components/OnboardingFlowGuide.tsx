@@ -1,80 +1,105 @@
-import { OnboardingSteps } from "@/dummy_data/engineers";
+import React, { useEffect, useRef } from "react";
+import { useTour } from "@reactour/tour";
+import { steps } from "@/dummy_data/onBoardingDate";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import Popup from "@/shared/components/Popup";
-import React, {
-  useEffect,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import { urls } from "@/config/urls";
 
-interface OnBoardingProps {
-  onBoardOpen: boolean;
-  setOnBoard: Dispatch<SetStateAction<boolean>>;
-  setAccessPopup: Dispatch<SetStateAction<boolean>>;
-}
-
-const OnboardingFlowGuide: React.FC<OnBoardingProps> = ({
-  onBoardOpen,
-  setOnBoard,
-  setAccessPopup,
-}) => {
-  const [step, setStep] = useState(0);
-  const current = OnboardingSteps[step];
-  const Icon = current?.icon;
-
+const OnboardingFlowGuide = () => {
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const { currentStep, setCurrentStep, setIsOpen } = useTour();
   useEffect(() => {
-    if (step === OnboardingSteps.length) {
-      finishOnboarding();
-    } else if (step < 0 || step > OnboardingSteps.length) {
-      setOnBoard(false);
+    const onboarding = localStorage.getItem("onboarding_guide") === "true";
+    const engineerpath = location.pathname.endsWith(urls.engineer.base);
+    if (onboarding || !engineerpath) {
+      setIsOpen(false);
+      return;
     }
-  }, [step]);
 
-  const finishOnboarding = () => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const el = popoverRef.current;
+      const path = e.composedPath?.() ?? [];
+      const inside = el && (el.contains(e.target as Node) || path.includes(el));
+      if (!inside) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("click", handleGlobalClick, true);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("click", handleGlobalClick, true);
+      document.body.style.overflow = "auto";
+    };
+  }, [document.body.style.overflow]);
+
+  const handlecomplete = () => {
+    setIsOpen(false);
+    toast.success("Ready to survey the engineer");
     localStorage.setItem("onboarding_guide", "true");
-    setOnBoard(false);
-    setAccessPopup(true);
   };
+
+  const isFirstStep = currentStep === 0;
+  const isLastStep = currentStep === steps.length - 1;
+  const current = steps[currentStep];
+
   return (
-    <Popup onClose={() => setOnBoard(false)} open={onBoardOpen}>
-      <div className="pb-6 px-10 text-center">
-        {Icon && (
-          <Icon className="text-center bg-teal-900 size-14 p-2 rounded-full text-gray-300 mx-auto my-4 text-5xl" />
-        )}
-
-        <p className="text-2xl font-semibold">{current?.title}</p>
-        <p className="text-center mt-4 text-md text-gray-600">
-          {current?.description}
-        </p>
-        <div className="flex space-x-3 items-center">
+    <div ref={popoverRef} className="flex flex-col gap-y-2">
+      <span className="font-bold w-fit px-3 py-2 rounded-lg bg-[#065450] text-white">
+        Step {currentStep + 1}
+      </span>
+      <div className="text-xl font-semibold">{current.title}</div>
+      <p className="text-md text-gray-600">{current.content}</p>
+      <div className="flex justify-between mt-4">
+        <Button size="sm" variant="outline" onClick={() => setIsOpen(false)}>
+          Skip
+        </Button>
+        <div className="flex gap-3 px-1 py-1">
           <Button
-            type="button"
-            variant="secondary"
-            className="w-full bg-transparent border-0 text-gray-600 hover:underline p-0 shadow-none rounded-lg py-2"
-            onClick={() => {
-              setStep((prev) => prev - 1);
-              localStorage.setItem("onboarding_state", `${step}`);
-            }}
+            variant="outline"
+            disabled={isFirstStep}
+            onClick={() => setCurrentStep(currentStep - 1)}
           >
-            Back
+            <FaArrowLeftLong />
           </Button>
 
-          <Button
-            type="button"
-            variant="primary"
-            className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            onClick={() => {
-              setStep((prev) => prev + 1),
-                localStorage.setItem("onboarding_state", `${step}`);
-            }}
-          >
-            {step === OnboardingSteps.length - 1 ? "Finish" : "Next"}
-          </Button>
+          {!isLastStep ? (
+            <Button
+              size="md"
+              variant="primary"
+              onClick={() => setCurrentStep(currentStep + 1)}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button size="sm" variant="primary" onClick={handlecomplete}>
+              Finish
+            </Button>
+          )}
         </div>
       </div>
-    </Popup>
+    </div>
   );
 };
-
 export default OnboardingFlowGuide;
+
+export const tourStyles = {
+  maskArea: (base: any) => ({
+    ...base,
+    rx: 10,
+    overflow: "hidden",
+  }),
+  badge: (base: any) => ({
+    ...base,
+    backgroundColor: "#005e59",
+  }),
+  controls: (base: any) => ({
+    ...base,
+    marginTop: 12,
+  }),
+  dot: (base: any, { current }: any) => ({
+    ...base,
+    backgroundColor: current ? "#005e59" : "#e0e0e0",
+  }),
+};
