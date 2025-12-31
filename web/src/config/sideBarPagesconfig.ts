@@ -217,6 +217,7 @@ export const sectionConfig: Record<
     component: ProfileCompletionCard,
     title: "Profile Completion",
     parent: "profile",
+  },
   activeSessions: {
     component: ActiveSessions,
     title: "Active Sessions",

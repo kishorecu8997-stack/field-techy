@@ -6,11 +6,10 @@ import type { DownloadInvoiceModalProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
-import { IoCloseSharp } from 'react-icons/io5';
-import question_icon from '@/assets/gif-file/question_icon.gif';
 import companyLogo from '@/assets/company-logo.png';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+
 /**
  * DownloadInvoice Component
  *
@@ -32,7 +31,6 @@ import html2canvas from 'html2canvas';
  *
  * @returns {JSX.Element | null} Returns the modal UI when open, otherwise null
  */
-
 const dateRanges = [
   "Last Month",
   "Last 3 Months",
@@ -44,11 +42,13 @@ const radioOptions = dateRanges.map((range) => ({
   label: range,
   value: range,
 }));
+
 interface IFormInputs {
   dateRange: string;
   startDate?: string;
   endDate?: string;
 }
+
 const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   isOpen,
   onClose,
@@ -61,65 +61,9 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
   });
   const { watch, handleSubmit } = methods;
   const selectedRange = watch("dateRange");
+
   if (!isOpen) return null;
-  const onSubmit = () => {
-    onDownload();
-  };
 
-  return (
-    <FormProvider {...methods}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform transition-all bg-white dark:bg-gray-900">
-          <form onSubmit={handleSubmit(onSubmit)} className="p-6 relative">
-            <Button
-              onClick={onClose}
-              type="button"
-              aria-label="Close"
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-            </Button>
-
-            <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-4">
-              Download Account Statement
-            </h2>
-
-            <RadioField
-              name="dateRange"
-              options={radioOptions}
-              direction="vertical"
-              isShowLabel={false}
-            />
-
-            {selectedRange === "Custom Date Range" && (
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <InputField
-                  name="startDate"
-                  label="Start Date"
-                  type="date"
-                  rules={{ required: "Start date is required" }}
-                />
-                <InputField
-                  name="endDate"
-                  label="End Date"
-                  type="date"
-                  rules={{ required: "End date is required" }}
-                />
-              </div>
-            )}
-
-            <p className="text-center text-gray-600 dark:text-gray-300 my-6">
-              Do You Want to Download Invoice as PDF Document?
-            </p>
-
-            <Button
-              type="submit"
-              leftIcon={<GoDownload className="h-6 w-6" />}
-              className="cursor-pointer w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-            >
-              <span>Download</span>
-            </Button>
-          </form>
   // Function to generate A4 PDF and download directly
   const generateAndDownloadPDF = async () => {
     try {
@@ -317,56 +261,70 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
       alert('Failed to generate PDF. Please try again.');
     }
   };
- 
-  const handleDownloadClick = async () => {
+
+  const onSubmit = async () => {
     await generateAndDownloadPDF();
     onDownload();
   };
- 
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform transition-all">
-        {/* Modal Content */}
-        <div className="bg-white dark:bg-gray-900 p-6 relative">
-          
-          {/* Close Button */}
-          <Button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-0 bg-transparent hover:bg-transparent shadow-none"
-          >
-            <IoCloseSharp className="h-6 w-6 cursor-pointer" />
-          </Button>
- 
-          {/* Header with Question Mark Icon */}
-          <div className="flex justify-center mb-4 ">          
-            <img
-              src={question_icon}
-              alt="question icon"
-              className="h-12 w-12 text-emerald-700 dark:text-emerald-500"
+    <FormProvider {...methods}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transform transition-all bg-white dark:bg-gray-900">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-6 relative">
+            <Button
+              onClick={onClose}
+              type="button"
+              aria-label="Close"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <IoCloseSharp className="h-6 w-6 cursor-pointer" />
+            </Button>
+
+            <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-4">
+              Download Account Statement
+            </h2>
+
+            <RadioField
+              name="dateRange"
+              options={radioOptions}
+              direction="vertical"
+              isShowLabel={false}
             />
-          </div>
- 
-          {/* Title */}
-          <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-2">
-            Download Invoice?
-          </h2>
- 
-          {/* Description */}
-          <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
-            Do You Want to Download Invoice as a PDF Document?
-          </p>
- 
-          {/* Download Button */}
-          <Button
-            onClick={handleDownloadClick}
-            leftIcon={<GoDownload className="h-6 w-6" />}
-            className="cursor-pointer w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-          >
-            <span>Download</span>
-          </Button>
+
+            {selectedRange === "Custom Date Range" && (
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <InputField
+                  name="startDate"
+                  label="Start Date"
+                  type="date"
+                  rules={{ required: "Start date is required" }}
+                />
+                <InputField
+                  name="endDate"
+                  label="End Date"
+                  type="date"
+                  rules={{ required: "End date is required" }}
+                />
+              </div>
+            )}
+
+            <p className="text-center text-gray-600 dark:text-gray-300 my-6">
+              Do You Want to Download Invoice as a PDF Document?
+            </p>
+
+            <Button
+              type="submit"
+              leftIcon={<GoDownload className="h-6 w-6" />}
+              className="cursor-pointer w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+            >
+              <span>Download</span>
+            </Button>
+          </form>
         </div>
       </div>
     </FormProvider>
   );
 };
+
 export default DownloadInvoice;
