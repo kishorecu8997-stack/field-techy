@@ -59,6 +59,13 @@ export class ClientAdapter {
     throw new Error("An unknown error occurred. Please try again later.");
   }
 
+  /**
+   * Registers a new client.
+   *
+   * @param data - Client registration data including personal and company information
+   * @returns Promise resolving to the created client data with assigned ID
+   * @throws {Error} If registration fails or request encounters an error
+   */
   static async signup(data: ClientData): Promise<ClientData> {
     try {
       // TODO: Replace with actual API call when backend is ready
@@ -84,6 +91,15 @@ export class ClientAdapter {
     // });
   }
 
+  /**
+   * Authenticates a client user.
+   *
+   * @param data - Login credentials
+   * @param data.email - Email address or phone number
+   * @param data.password - User's password
+   * @returns Promise resolving to authentication response data
+   * @throws {Error} If authentication fails or request encounters an error
+   */
   static async signin(data: LoginFormData) {
     const payload = {
       phoneOrEmail: data.email,
@@ -96,16 +112,41 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Retrieves a client by their unique identifier.
+   *
+   * @param id - Unique identifier of the client
+   * @returns Promise resolving to client data
+   * @throws {Error} If the client is not found or request encounters an error
+   */
   static async getById(id: string): Promise<ClientData> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
     return response.data;
   }
 
+  /**
+   * Retrieves all clients (non-paginated).
+   *
+   * @returns Promise resolving to an array of all client data
+   * @throws {Error} If the request encounters an error
+   * @remarks For large datasets, consider using the paginated `getAll` method instead.
+   */
   static async getAllClients(): Promise<ClientData[]> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_ALL);
     return response.data;
   }
 
+  /**
+   * Retrieves a paginated list of clients.
+   *
+   * @param params - Pagination and sorting parameters
+   * @param params.page - Page number (default: 0)
+   * @param params.size - Number of items per page (default: 10)
+   * @param params.sortBy - Field to sort by (default: "createdAt")
+   * @param params.direction - Sort direction: "ASC" or "DESC" (default: "DESC")
+   * @returns Promise resolving to paginated client data
+   * @throws {Error} If the request encounters an error
+   */
   static async getAll(
     params: ClientPaginationParams = {}
   ): Promise<PagedResponse<ClientData>> {
@@ -121,6 +162,14 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Updates an existing client.
+   *
+   * @param id - Unique identifier of the client to update
+   * @param data - Updated client data
+   * @returns Promise resolving to the updated client data
+   * @throws {Error} If the update fails or request encounters an error
+   */
   static async update(id: string, data: ClientData): Promise<ClientData> {
     const response = await axiosInstance.put(
       CLIENT_ROUTER_PATHS.UPDATE(id),
@@ -129,11 +178,26 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Deletes a client by ID.
+   *
+   * @param id - Unique identifier of the client to delete
+   * @returns Promise that resolves when the deletion is complete
+   * @throws {Error} If the deletion fails or request encounters an error
+   */
   static async delete(id: string): Promise<void> {
     await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
   }
 
-  // OTP Methods (Stubbed for now)
+  // ===== OTP Methods =====
+
+  /**
+   * Sends an OTP (One-Time Password) to the specified email address.
+   *
+   * @param email - Email address to send OTP to (will be URL encoded)
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
     const urlEncodedEmail = encodeURIComponent(email);
@@ -151,6 +215,13 @@ export class ClientAdapter {
     // });
   }
 
+  /**
+   * Sends an OTP to either an email address or phone number.
+   *
+   * @param emailOrPhone - Email address or phone number to send OTP to
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
   static async sendEmailMobileOtp(
     emailOrPhone: string
   ): Promise<{ message: string }> {
@@ -161,6 +232,13 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Sends an OTP to the specified phone number.
+   *
+   * @param phoneNumber - Phone number to send OTP to
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
     const response = await axiosInstance.post(
@@ -177,6 +255,14 @@ export class ClientAdapter {
     // });
   }
 
+  /**
+   * Verifies an OTP code for email or phone verification.
+   *
+   * @param emailOrPhone - Email address or phone number that received the OTP
+   * @param otp - One-time password code to verify
+   * @returns Promise resolving to verification result with message and verified status
+   * @throws {Error} If OTP verification fails or request encounters an error
+   */
   static async verifyOtp(
     emailOrPhone: string,
     otp: string
@@ -352,6 +438,15 @@ export class ClientAdapter {
     }
   }
 
+  // ===== File Management Methods =====
+
+  /**
+   * Retrieves all files associated with a client.
+   *
+   * @param clientId - Unique identifier of the client
+   * @returns Promise resolving to an array of client file data
+   * @throws {Error} If the request encounters an error
+   */
   static async getFiles(clientId: string): Promise<ClientFile[]> {
     const response = await axiosInstance.get(
       CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
@@ -359,6 +454,17 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Uploads a file for a client.
+   *
+   * @param params - File upload parameters
+   * @param params.clientId - Unique identifier of the client
+   * @param params.file - File to upload
+   * @param params.documentType - Type of document being uploaded
+   * @param params.onUploadProgress - Optional callback to track upload progress
+   * @returns Promise resolving to file upload response with file details
+   * @throws {Error} If the upload fails or request encounters an error
+   */
   static async uploadFile(
     params: ClientFileUploadParams
   ): Promise<FileUploadResponse> {
@@ -390,10 +496,25 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Deletes a file by its unique identifier.
+   *
+   * @param fileId - Unique identifier of the file to delete
+   * @returns Promise that resolves when the deletion is complete
+   * @throws {Error} If the deletion fails or request encounters an error
+   */
   static async deleteFile(fileId: string): Promise<void> {
     await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE_FILE(fileId));
   }
 
+  /**
+   * Downloads a file by its file key.
+   *
+   * @param fileKey - Unique file key identifier
+   * @param fileName - Optional file name for the download (defaults to file key if not provided)
+   * @returns Promise that resolves when the file download is complete
+   * @throws {Error} If the download fails or request encounters an error
+   */
   static async downloadFile(fileKey: string, fileName?: string): Promise<void> {
     const response = await axiosInstance.get(
       CLIENT_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),

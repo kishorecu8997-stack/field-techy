@@ -48,6 +48,15 @@ export interface ClientProfilePaginationParams {
  * Responsible for making API calls to the client profile endpoints.
  */
 export class ClientProfileAdapter {
+  /**
+   * Creates a new client profile.
+   *
+   * Endpoint: POST /client/api/v1/clients/signup
+   *
+   * @param data - Client profile data including personal and company information
+   * @returns Promise resolving to the created client profile data
+   * @throws {Error} If profile creation fails or request encounters an error
+   */
   static async create(data: ClientProfileData): Promise<ClientProfileData> {
     const response = await axiosInstance.post(
       CLIENT_PROFILE_ROUTER_PATHS.SIGNUP,
@@ -56,6 +65,15 @@ export class ClientProfileAdapter {
     return response.data;
   }
 
+  /**
+   * Retrieves a client profile by ID.
+   *
+   * Endpoint: GET /client/api/v1/clients/{id}
+   *
+   * @param id - Unique identifier of the client
+   * @returns Promise resolving to client profile data
+   * @throws {Error} If the client profile is not found or request encounters an error
+   */
   static async getById(id: string): Promise<ClientProfileData> {
     const response = await axiosInstance.get(
       CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id)
@@ -98,6 +116,19 @@ export class ClientProfileAdapter {
     return response.data;
   }
 
+  /**
+   * Retrieves a paginated list of client profiles.
+   *
+   * Endpoint: GET /client/api/v1/clients/paged
+   *
+   * @param params - Pagination and sorting parameters
+   * @param params.page - Page number (default: 0)
+   * @param params.size - Number of items per page (default: 10)
+   * @param params.sortBy - Field to sort by (default: "createdAt")
+   * @param params.direction - Sort direction: "ASC" or "DESC" (default: "DESC")
+   * @returns Promise resolving to paginated client profile data
+   * @throws {Error} If the request encounters an error
+   */
   static async getAll(
     params: ClientProfilePaginationParams = {}
   ): Promise<unknown> {
@@ -116,6 +147,16 @@ export class ClientProfileAdapter {
     return response.data;
   }
 
+  /**
+   * Updates an existing client profile.
+   *
+   * Endpoint: PUT /client/api/v1/clients/update/{id}
+   *
+   * @param id - Unique identifier of the client to update
+   * @param data - Updated client profile data
+   * @returns Promise resolving to the updated client profile data
+   * @throws {Error} If the update fails or request encounters an error
+   */
   static async update(
     id: string,
     data: ClientProfileData
@@ -127,6 +168,15 @@ export class ClientProfileAdapter {
     return response.data;
   }
 
+  /**
+   * Deletes a client profile by ID.
+   *
+   * Endpoint: DELETE /client/api/v1/clients/delete/{id}
+   *
+   * @param id - Unique identifier of the client to delete
+   * @returns Promise that resolves when the deletion is complete
+   * @throws {Error} If the deletion fails or request encounters an error
+   */
   static async delete(id: string): Promise<void> {
     await axiosInstance.delete(CLIENT_PROFILE_ROUTER_PATHS.DELETE(id));
   }

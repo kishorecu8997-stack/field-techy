@@ -528,7 +528,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(clientDocuments),
       },
       {
-        path: "verification",
+        path: urls.client.auth.verification,
         element: withSuspense(ClientContactVerification),
       },
     ],
