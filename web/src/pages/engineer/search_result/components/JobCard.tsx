@@ -42,6 +42,7 @@ const JobCard: React.FC<{
 
   return (
     <Link
+      id="recommendedJobs"
       to={navigateToJob}
       onClick={() => {
         scrollToTop();

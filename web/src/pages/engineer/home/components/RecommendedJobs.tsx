@@ -11,16 +11,15 @@ interface RecommendedJobsProps {
 
 /**
  * Displays a list of recommended jobs.
- * 
+ *
  * @param {RecommendedJobsProps} props - Props for the RecommendedJobs component.
- * @returns {JSX.Element} The rendered RecommendedJobs component.   
+ * @returns {JSX.Element} The rendered RecommendedJobs component.
  */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   jobs,
   title = "Recommended Jobs",
   onViewAll,
 }) => {
-
   const filteredJobs = jobs.filter((job) => {
     return job.place === "recommended";
   });
@@ -39,7 +38,11 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
         )}
       </div>
       {filteredJobs.map((job: Job) => (
-        <JobCard key={job.id} job={job} navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`} />
+        <JobCard
+          key={job.id}
+          job={job}
+          navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
+        />
       ))}
     </div>
   );
