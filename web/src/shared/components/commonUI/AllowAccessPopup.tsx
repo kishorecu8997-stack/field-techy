@@ -35,25 +35,26 @@ export default function AllowAccessPopup({
     locationPermission,
     notificationPermission,
     setLocationPermission,
-    setNotificationPermission
+    setNotificationPermission,
   } = useDeviceStore();
 
   // Determine initial step based on permission states
   // If location is not 'prompt', skip to notification step
   const [isNotificationStep, setIsNotificationStep] = useState(
-    locationPermission !== 'prompt'
+    locationPermission !== "prompt"
   );
 
   const { requestLocation, loading: locationLoading } = useGeolocation();
-  const { requestNotificationPermission, loading: notificationLoading } = useFCM();
+  const { requestNotificationPermission, loading: notificationLoading } =
+    useFCM();
 
   // When popup opens, check if we should show it at all
   useEffect(() => {
     if (accessPopup) {
       // If location is not 'prompt', skip to notification
-      if (locationPermission !== 'prompt') {
+      if (locationPermission !== "prompt") {
         // If notification is also not 'default', close popup entirely
-        if (notificationPermission !== 'default') {
+        if (notificationPermission !== "default") {
           setAccessPopup(false);
         } else {
           setIsNotificationStep(true);
@@ -68,7 +69,7 @@ export default function AllowAccessPopup({
         className="flex text-lg justify-end px-6 pt-4 cursor-pointer"
         onClick={() => setAccessPopup(false)}
       >
-        <AiOutlineClose />
+        <AiOutlineClose className="dark:text-white" />
       </div>
 
       {!isNotificationStep ? (
@@ -94,16 +95,16 @@ export default function AllowAccessPopup({
               const success = await requestLocation();
               if (success) {
                 onAllowLocation?.();
-                setLocationPermission('granted');
+                setLocationPermission("granted");
                 setIsNotificationStep(true); // Move to Step 2
               } else {
                 toast.error("Location access denied or failed.");
-                setLocationPermission('denied');
+                setLocationPermission("denied");
                 setIsNotificationStep(true);
               }
             }}
           >
-            {locationLoading ? 'Allowing...' : 'Allow Access'}
+            {locationLoading ? "Allowing..." : "Allow Access"}
           </Button>
 
           {/* Deny Location */}
@@ -113,7 +114,7 @@ export default function AllowAccessPopup({
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyLocation?.();
-              setLocationPermission('denied');
+              setLocationPermission("denied");
               setIsNotificationStep(true);
             }}
           >
@@ -129,8 +130,10 @@ export default function AllowAccessPopup({
             className="text-center mx-auto my-4"
           />
 
-          <p className="text-2xl font-semibold">Enable Notifications</p>
-          <p className="text-center mt-4 text-lg text-gray-600">
+          <p className="text-2xl font-semibold dark:text-white">
+            Enable Notifications
+          </p>
+          <p className="text-center mt-4 text-lg text-gray-600 ">
             Enable notifications to stay informed with real-time alerts,
             important updates, and timely reminders.
           </p>
@@ -144,15 +147,15 @@ export default function AllowAccessPopup({
               const success = await requestNotificationPermission();
               if (success) {
                 onAllowNotification?.();
-                setNotificationPermission('granted');
+                setNotificationPermission("granted");
               } else {
                 toast.error("Notification access denied or failed.");
-                setNotificationPermission('denied');
+                setNotificationPermission("denied");
               }
               setAccessPopup(false);
             }}
           >
-            {notificationLoading ? 'Allowing...' : 'Allow Access'}
+            {notificationLoading ? "Allowing..." : "Allow Access"}
           </Button>
 
           {/* Deny Notification */}
@@ -162,7 +165,7 @@ export default function AllowAccessPopup({
             className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyNotification?.();
-              setNotificationPermission('denied');
+              setNotificationPermission("denied");
               setAccessPopup(false);
             }}
           >

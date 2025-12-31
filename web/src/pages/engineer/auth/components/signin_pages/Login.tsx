@@ -83,9 +83,11 @@ const Login = ({
       {
         onSuccess: async (resp) => {
           //second layer of verification
-          setIsOpen(true);
-          toast.success("OTP Requested, kindly check your email for OTP");
+          // setIsOpen(true);
+          // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
         },
         onError: (error) => {
           console.error(error);
@@ -111,8 +113,9 @@ const Login = ({
           const stubbedResponse: UserSession = {
             accessToken: "something fake",
             userId: "uuid-123",
-            displayName: "John Doe",
-            metadata: {},
+            role: "engineer",
+            // displayName: "John Doe",
+            // metadata: {},
           };
 
           setIsOpen(false);

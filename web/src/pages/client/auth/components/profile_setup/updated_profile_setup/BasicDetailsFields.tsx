@@ -467,7 +467,7 @@ const BasicDetailsFields = () => {
       {!urlRole && (
         <div className="flex gap-2 text-center justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <div
-            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200
+            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
         role === "HOME"
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
@@ -479,7 +479,7 @@ const BasicDetailsFields = () => {
           </div>
 
           <div
-            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200
+            className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
         role === "CORPORATE"
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"

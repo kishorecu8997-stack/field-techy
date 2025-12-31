@@ -10,6 +10,17 @@ export const JOB_STATUSES = {
   inprogress: "inprogress",
   new: "new",
   offer: "offer",
+  notified: "Notified",
+  unallocated: "Unallocated",
+  partiallyAssigned: "Partially Assigned",
+  assigned: "Assigned",
+  selected: "Selected",
+  hold: "Hold",
+  draft: "Draft",
+  canceled: "Canceled",
+  escalationInProgress: "Escalation In Progress",
+  workInProgress: "Work In Progress", 
+  closed: "Closed"
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -25,11 +36,12 @@ export const WORKING_TYPES_PROPERTY = {
 };
 
 export const getExperienceLevel = (years?: number) => {
-  if (!years) return "";
-  if (years < 2) return "L1"; // 0-1 year: Junior/Entry-level
-  if (years < 4) return "L2"; // 2-3 years: Mid-level
+  if (years === undefined || years === 0) return "Not specified";
+  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years <= 3) return "L2"; // 2-3 years: Mid-level
   return "L3"; // 4+ years: Senior/Expert-level
 };
+
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -74,6 +86,7 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
+  allocationType?: 'Automatic' | 'Manual';
   serviceType?: ServiceType;
   languages?: string;
   tools?: string[];
@@ -83,7 +96,7 @@ export interface Job {
     role?: string; // e.g., "Project Coordinator"
     avatar?: string; // optional avatar URL
   };
-  matchScore?: number; // e.g., 85 for 85%
+   matchScore?: number;
 }
 
 /**
@@ -109,7 +122,6 @@ export interface Filters {
 
 /**
  * Sort options
- * Now includes all criteria you need for sorting jobs
  */
 export const SORT_OPTIONS = {
   RELEVANCE: "relevance",
@@ -120,6 +132,7 @@ export const SORT_OPTIONS = {
 } as const;
 
 export type SortOption = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS];
+// → "relevance" | "date" | "salary" | "distance"
 
 /**
  * Generic option shape (label/value)

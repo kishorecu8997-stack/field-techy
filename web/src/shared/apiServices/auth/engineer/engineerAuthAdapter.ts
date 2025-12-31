@@ -38,13 +38,12 @@ export class EngineerAuthAdapter {
     const role = headers["X-User-Type"];
     const authorization = headers["Authorization"];
 
+    // TODO: Need to update api response header once the api is updated
     const payload = {
-      userId: userID,
-      role: role,
+      userId: "2",
+      role: "ENGINEER",
       accessToken: authorization,
     };
-
-    console.log("payload Engineer: ", payload);
 
     return payload;
   }

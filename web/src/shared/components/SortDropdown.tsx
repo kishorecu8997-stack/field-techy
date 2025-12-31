@@ -1,4 +1,7 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/engineer/search_result/types";
+import {
+  SORT_OPTIONS,
+  type SortOption,
+} from "@/pages/engineer/search_result/types";
 import React, { useState } from "react";
 
 interface SortDropdownProps {
@@ -21,7 +24,6 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
-
   const options = [
     { value: SORT_OPTIONS.RELEVANCE, label: "Relevance" },
     { value: SORT_OPTIONS.DATE, label: "Date" },

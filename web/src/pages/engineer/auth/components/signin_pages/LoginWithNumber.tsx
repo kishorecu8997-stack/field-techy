@@ -3,6 +3,10 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
+import {
+  detectAndStoreCurrency,
+  getCurrencyFromStorage,
+} from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -161,10 +165,21 @@ const LoginWithNumber = ({
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header="Verify Mobile Number"
-            description="A verification OTP has been sent to your phone. Please check your phone."
+            header={`Verify ${
+              otpfor === "phoneNumber" ? "Phone Number" : "Email"
+            }`}
+            description={`A verification OTP has been sent to your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }. Please check your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }.`}
             onClose={() => setIsOpen(false)}
-            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onSubmit={(data) => {
+              handleOtpSubmission(data.otp)
+              const phoneNumber = method.getValues("phone");
+              detectAndStoreCurrency(phoneNumber);
+              getCurrencyFromStorage();
+            }}
           />
         </Popup>
       </div>

@@ -29,14 +29,14 @@ const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
-
+  const { navigationSource, returnToKey, setActiveKey, setISOpenSidebar, resetNavigationSource } = useDrawerStore();
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
    * involve making an API call to save the user's data.
    * @param {EditProfileFormData} data - The validated form data.
    */
+  
   const handleSubmit = async (data: EditProfileFormData) => {
     await showPopup({
       title: "Update Profile",
@@ -59,7 +59,15 @@ const PersonalInformation = () => {
             toast.success("Profile Updated Successfully");
             console.log("Form submitted with data:", data);
             close(true);
+
+            //  Conditional redirect if the navigation source is from profile completion card
+          if (navigationSource === "profilecompletion" && returnToKey) {
+            setActiveKey(returnToKey); 
+            setISOpenSidebar(true);
+            resetNavigationSource();
+          } else {
             setActiveKey("profile");
+          }
           },
         },
       ],

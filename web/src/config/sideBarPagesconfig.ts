@@ -18,7 +18,7 @@ const AddBankDetails = React.lazy(() => import("@/pages/engineer/account_setting
 const BankAccountList = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/BankAccountList"));
 const EditBankDetails = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/EditBankDetails"));
 const MyEarning = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/MyEarning"));
-const TransactionDashboard = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/TransactionDashboard"));
+const AllTransactionsPage = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage"));
 const Withdraw = React.lazy(() => import("@/pages/engineer/account_settings/bank_details/Withdraw"));
 const ChangePassword = React.lazy(() => import("@/pages/engineer/account_settings/ChangePassword"));
 const ContactUs = React.lazy(() => import("@/pages/engineer/account_settings/contact_us/ContactUs"));
@@ -41,7 +41,6 @@ const EditTools = React.lazy(() => import("@/pages/engineer/user_profile/compone
 const SkillsAndTools = React.lazy(() => import("@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools"));
 const WorkPreference = React.lazy(() => import("@/pages/engineer/user_profile/components/WorkPreference/WorkPreference"));
 const UserProfileSidebar = React.lazy(() => import("@/pages/engineer/user_profile/UserProfileSidebar"));
-
 const AccountSettingsDrawerMenu = React.lazy(() => import("@/pages/client/account_settings"));
 const ClientDocuments = React.lazy(() => import("@/pages/client/my_account/components/documents/ClientDocuments"));
 const ClientEditDocument = React.lazy(() => import("@/pages/client/my_account/components/documents/components/ClientEditDocument"));
@@ -61,6 +60,11 @@ const ActionButtonsForRecentTransactions = React.lazy(() =>
   RecentTransactionsModule.then(module => ({ default: module.ActionButtonsForRecentTransactions }))
 );
 
+import ProfileCompletionCard from "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard";
+import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
+import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
+import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
+import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
 /**
  * Configuration object mapping route keys to their corresponding components, titles, and optional parent sections.
@@ -220,6 +224,11 @@ export const sectionConfig: Record<
     component: ClientNotification,
     title: "Notification",
   },
+  profileCompletion: {
+    component: ProfileCompletionCard,
+    title: "Profile Completion",
+    parent: "profile",
+  },
   activeSessions: {
     component: ActiveSessions,
     title: "Active Sessions",
@@ -297,7 +306,7 @@ export const sectionConfig: Record<
     title: "Edit Project Member Details",
   },
   engineerRecentTransactions: {
-    component: TransactionDashboard,
+    component: AllTransactionsPage,
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "myEarning",

@@ -42,11 +42,13 @@ export class ClientAuthAdapter {
     const role = response.headers["x-user-type"];
     const authorization = response.headers["authorization"];
 
+    // TODO: Need to update api response header once the api is updated
     const payload = {
-      userId: userID,
-      role: role,
+      userId: "1",
+      role: "CLIENT",
       accessToken: authorization,
     };
+    console.log("payload :", payload);
 
     return payload;
   }

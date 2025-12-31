@@ -1,10 +1,17 @@
 import { icons } from "@/config/icons";
 import { scrollToTop } from "@/utils";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import React, { useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
 import { calculateMatchScore } from "@/utils/matchCalculator";
@@ -261,29 +268,9 @@ const JobCard: React.FC<{
                   {JOB_STATUSES[job.status] ?? job.status}
                 </Badge>
               )}
+              {job.time && <span>| {job.time}</span>}
             </div>
           </div>
-
-          {showBookmark && (
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsBookmarked(!isBookmarked);
-                }}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-              >
-                {isBookmarked ? (
-                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
-                ) : (
-                  <icons.bookmark className="w-4 h-4" />
-                )}
-              </div>
-              <span>{job.postedTime || "Just now"}</span>
-            </div>
-          )}
         </div>
 
         {/* DESCRIPTION */}
@@ -349,9 +336,32 @@ const JobCard: React.FC<{
               </span>
             </div>
           </div>
+
+          {/* BOOKMARK */}
+          {showBookmark && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsBookmarked(!isBookmarked);
+                }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+              >
+                {isBookmarked ? (
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
+                ) : (
+                  <icons.bookmark className="w-4 h-4" />
+                )}
+              </div>
+              <span>{job.postedTime || "Just now"}</span>
+            </div>
+          )}
+
           {/* POC Section */}
           {job.poc && (
-            <div className=" pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
               <div>
                 <p className="text-xs font-semibold text-gray-900 dark:text-white">
                   Point of Contact
