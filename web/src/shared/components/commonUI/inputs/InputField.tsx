@@ -100,11 +100,11 @@ export const InputField = ({
       },
     };
 
-    const { regex, message } = patterns[allowedCharacters];
+    const { regex, message } = patterns[allowedCharacters] ?? {};
 
     validationRules.validate = {
       ...(rules?.validate ?? {}),
-      allowedCharacters: (v: string) => regex.test(v) || message,
+      allowedCharacters: (v: string) => (regex?.test(v) || message) ?? true,
     };
   }
 

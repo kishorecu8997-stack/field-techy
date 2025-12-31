@@ -51,7 +51,10 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
   const filteredTransactions = validAndSortedTransactions.filter((tx) => {
-    if (searchTerm && !tx.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (
+      searchTerm &&
+      !tx.description.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
       return false;
     }
     const txDate = new Date(tx.date); // Already validated in the step above
@@ -64,7 +67,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     reset();
   };
   // Determine which transactions to display: all filtered, or the 10 most recent ones.
-  const transactionsToShow = showAll ? filteredTransactions : filteredTransactions.slice(0, 10);
+  const transactionsToShow = showAll
+    ? filteredTransactions
+    : filteredTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
   return (
@@ -209,7 +214,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         {transactionsToShow.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">
-              {hasActiveFilters ? "No transactions match your filters." : "No transactions found."}
+              {hasActiveFilters
+                ? "No transactions match your filters."
+                : "No transactions found."}
             </p>
           </div>
         )}

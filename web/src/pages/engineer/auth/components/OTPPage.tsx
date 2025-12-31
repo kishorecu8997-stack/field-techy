@@ -122,10 +122,10 @@ const OTPPage: React.FC<OTPPageProps> = ({
             <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
           </div>
           {!isSuccess && (
-            <div className="p-2">
+            <div className="p-1">
               <OTPInput
                 name="otp"
-                length={4}
+                length={6}
                 errorAlign="center"
               />
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">

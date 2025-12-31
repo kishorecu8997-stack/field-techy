@@ -83,14 +83,8 @@
 
 // export default RootLayout;
 
-import React from 'react'
-
 const RootLayout = () => {
-  return (
-    <div>
-      hi testing
-    </div>
-  )
-}
+  return <div>hi testing</div>;
+};
 
-export default RootLayout
+export default RootLayout;

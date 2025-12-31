@@ -4,7 +4,8 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useVerifyEmailOTP, useVerifyPhoneOTP } from "@/shared/apiServices/client/clientService";
+import { } from "@/shared/apiServices/client/clientService";
+import { useVerifyEmailOTP, useVerifyPhoneOTP } from "@/shared/apiServices/engineer/engineerService";
 
 interface ClientOTPPageProps {
     header?: string;
@@ -128,7 +129,7 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
                     <div className="p-2">
                         <OTPInput
                             name="otp"
-                            length={4}
+                            length={6}
                             errorAlign="center"
                         />
                         <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">

@@ -10,7 +10,6 @@ interface SidebarProfileProps {
 }
 
 const SidebarJobPostWallet: React.FC<SidebarProfileProps> = () => {
-
   return (
     <div className="space-y-6">
       <TalentSection />

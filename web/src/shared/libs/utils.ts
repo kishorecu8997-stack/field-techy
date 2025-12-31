@@ -1,9 +1,8 @@
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
 
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Utility function to join multiple class names into a single string,
@@ -14,7 +13,7 @@ import { twMerge } from "tailwind-merge"
  * @returns A space-separated string of valid class names
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -43,7 +42,7 @@ export const validatePassword = (value: string, oldPassword?: string) => {
   if (/\s/.test(value)) {
     return "Password must not contain spaces";
   }
-  if (typeof oldPassword === 'string' && oldPassword) {
+  if (typeof oldPassword === "string" && oldPassword) {
     if (oldPassword === value) {
       return "Password cannot be the same as the old password";
     }

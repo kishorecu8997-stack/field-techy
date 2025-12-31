@@ -94,7 +94,7 @@ export const urls = {
       background_verification: "background-verification",
       profile_setup: "profile-setup",
       documents: "documents",
-
+      verification: "verification",
     },
   },
 

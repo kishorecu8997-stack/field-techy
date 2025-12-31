@@ -119,7 +119,7 @@ export const OTPInput = ({
 
         return (
           <div className="flex flex-col gap-2">
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-2 justify-center">
               {Array.from({ length }).map((_, idx) => (
                 <input
                   key={idx}
@@ -135,20 +135,19 @@ export const OTPInput = ({
                   onChange={(e) => handleChange(e, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   onPaste={handlePaste}
-                  className="w-16 h-16 text-center text-xl rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="w-12 h-12 text-center text-lg rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                   aria-label={`OTP digit ${idx + 1} of ${length}`}
                 />
               ))}
             </div>
             {error && (
               <p
-                className={`text-sm text-red-600 dark:text-red-500 ${
-                  errorAlign === "left"
+                className={`text-sm text-red-600 dark:text-red-500 ${errorAlign === "left"
                     ? "text-left"
                     : errorAlign === "right"
-                    ? "text-right"
-                    : "text-center"
-                }`}
+                      ? "text-right"
+                      : "text-center"
+                  }`}
               >
                 {error.message?.toString()}
               </p>

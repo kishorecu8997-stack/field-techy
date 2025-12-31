@@ -1,4 +1,3 @@
-
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -22,7 +21,7 @@ export interface SignUpFormData {
 }
 
 /**
- * Sign-up form component for new engineer users.
+ * Sign-up form component for new client users.
  * Collects the user's email and consent to terms, then triggers an OTP verification flow
  * via a modal popup. Also provides alternative login options:
  * - Switch to phone number login
@@ -33,6 +32,7 @@ export interface SignUpFormData {
  * - Terms & Conditions acceptance enforcement (submit disabled until accepted)
  * - Navigation to Sign In page for existing users
  * - Modal-based OTP verification after form submission
+ * - Resume registration flow if user previously started registration
  *
  * @component
  * @param {Object} props - Component props
@@ -50,17 +50,17 @@ const SignUp = ({
 }) => {
   const logo_light = assetsConfig.logos.companyLogo;
 
-
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
 
-  const { signupEmail, emailVerified, setSignupData, clearStore } = useClientRegistrationStore();
+  const { signupEmail, emailVerified, setSignupData, clearStore } =
+    useClientRegistrationStore();
   const { showPopup } = usePopupStore();
 
   const methods = useForm<SignUpFormData>({
     defaultValues: {
-      email: "",  // Start empty, will be filled based on user choice
+      email: "", // Start empty, will be filled based on user choice
       terms: false,
     },
   });
@@ -85,7 +85,9 @@ const SignUp = ({
       setHasAskedToContinue(true);
 
       showPopup({
-        title: emailVerified ? "Resume Registration?" : "Continue Registration?",
+        title: emailVerified
+          ? "Resume Registration?"
+          : "Continue Registration?",
         body: emailVerified
           ? `You have a verified email: ${signupEmail}. Would you like to continue your registration or start fresh?`
           : `You previously started registration with: ${signupEmail}. Would you like to continue or start fresh?`,
@@ -115,7 +117,15 @@ const SignUp = ({
         ],
       });
     }
-  }, [signupEmail, emailVerified, hasAskedToContinue, methods, clearStore, navigate, showPopup]);
+  }, [
+    signupEmail,
+    emailVerified,
+    hasAskedToContinue,
+    methods,
+    clearStore,
+    navigate,
+    showPopup,
+  ]);
 
   const handleOTPVerified = () => {
     setIsOpen(false);
@@ -188,10 +198,11 @@ const SignUp = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:opacity-90"
-              }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted || isSendingOTP
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
+            }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

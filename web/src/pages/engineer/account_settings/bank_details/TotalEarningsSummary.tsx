@@ -31,7 +31,7 @@ const TotalEarningsSummary: React.FC = () => {
     })
     .reduce((sum, tx) => sum + tx.amount, 0);
   const totalWithdrawn = transactions
-    .filter((tx) => tx.amount < 0 && tx.status !== "failed")
+    .filter((tx) => tx.amount < 0 && tx.status !== "Failed")
     .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
   const availableBalance = totalEarnings - totalWithdrawn;
   return (

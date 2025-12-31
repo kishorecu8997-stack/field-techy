@@ -39,13 +39,14 @@ const ExploreJobs: React.FC = () => {
     slaLevel: "",
   });
 
-  // Step 1: Base - Only show jobs with status "new"
-  const newJobs = useMemo<Job[]>(() => {
+  // Keep only jobs that are NOT new or offer
+  const allNewJobs = useMemo(() => {
     return sampleJobs.filter((job) => job.status === JOB_STATUSES.new);
   }, []);
+
   // Step 2: Apply filters
   const filteredJobs = useMemo<Job[]>(() => {
-    return newJobs.filter((job) => {
+    return allNewJobs.filter((job) => {
       // Location filter
       if (filters.location.length > 0 && job.location) {
         if (!filters.location.includes(job.location)) return false;
@@ -82,7 +83,7 @@ const ExploreJobs: React.FC = () => {
 
       return true;
     });
-  }, [newJobs, filters]);
+  }, [allNewJobs, filters]);
   const sortedJobs = useMemo<Job[]>(() => {
     const jobsCopy = [...filteredJobs];
 
