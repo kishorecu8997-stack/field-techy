@@ -10,8 +10,6 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
-import { setCurrencyInStorage } from "@/utils/currency";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -85,9 +83,11 @@ const Login = ({
       {
         onSuccess: async (resp) => {
           //second layer of verification
-          setIsOpen(true);
-          toast.success("OTP Requested, kindly check your email for OTP");
+          // setIsOpen(true);
+          // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
         },
         onError: (error) => {
           console.error(error);
@@ -113,8 +113,9 @@ const Login = ({
           const stubbedResponse: UserSession = {
             accessToken: "something fake",
             userId: "uuid-123",
-            displayName: "John Doe",
-            metadata: {},
+            role: "engineer",
+            // displayName: "John Doe",
+            // metadata: {},
           };
 
           setIsOpen(false);
