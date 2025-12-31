@@ -65,7 +65,6 @@ const OTPPage: React.FC<OTPPageProps> = ({
   header,
   description,
   onClose,
-  handleNavigate,
   onSubmit,
   buttonText,
   isSuccess,
@@ -90,11 +89,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
   }, [timeLeft]);
 
   const handleSubmit = (data: OTPValues) => {
-    if (onSubmit) {
-      onSubmit(data);
-    } else {
-      handleNavigate?.();
-    }
+      onSubmit?.(data);
   };
 
   const handleResend = () => {

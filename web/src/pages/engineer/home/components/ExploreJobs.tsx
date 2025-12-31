@@ -1,9 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
+import { loginData } from "@/dummy_data/personalInfoData";
 import { sampleJobs } from "@/dummy_data/searchData";
 import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import {
   JOB_STATUSES,
   SORT_OPTIONS,
@@ -11,9 +11,9 @@ import {
   type Job,
   type SortOption,
 } from "@/pages/engineer/search_result/types";
-import React, { useMemo, useState } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { loginData } from "@/dummy_data/personalInfoData";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import React, { useMemo, useState } from "react";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -39,12 +39,9 @@ const ExploreJobs: React.FC = () => {
     slaLevel: "",
   });
 
-  // Keep only jobs that are NOT new or offer
-  const allNewJobs = useMemo(() => {
-    return sampleJobs.filter(
-      (job) =>
-        job.status === JOB_STATUSES.new
-    );
+  // Step 1: Base - Only show jobs with status "new"
+  const newJobs = useMemo<Job[]>(() => {
+    return sampleJobs.filter((job) => job.status === JOB_STATUSES.new);
   }, []);
   // Step 2: Apply filters
   const filteredJobs = useMemo<Job[]>(() => {

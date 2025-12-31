@@ -118,6 +118,9 @@ const LoginWithNumber = ({
               getCurrencyFromStorage();
             onSubmit={() => {
               goToHome();
+              const phoneNumber = method.getValues("phone");
+              detectAndStoreCurrency(phoneNumber);
+              getCurrencyFromStorage();
               toast.success("Logged in successfully");
             }}
           />

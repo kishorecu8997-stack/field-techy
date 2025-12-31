@@ -1,21 +1,13 @@
 import { icons } from "@/config/icons";
+import jobSkillsData from "@/dummy_data/jobSkills.json";
+import toolsData from "@/dummy_data/tools.json";
 import { scrollToTop } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
-import React, { useState } from "react";
+import { calculateMatchScore } from "@/utils/matchCalculator";
+import React, { useMemo, useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
-import {
-  toggleSavedJob,
-  isJobSaved,
-  BOOKMARK_CHANGE_EVENT,
-} from "@/utils/bookmarkUtils";
-import { toast } from "react-toastify";
-import jobSkillsData from "@/dummy_data/jobSkills.json";
-import toolsData from "@/dummy_data/tools.json";
-import { calculateMatchScore } from "@/utils/matchCalculator";
-import { useMemo } from "react";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 
 // Reusable Badge
@@ -183,7 +175,6 @@ const JobCard: React.FC<{
   job: Job;
   showBookmark?: boolean;
   navigateToJob?: string;
-  onBookmarkChange?: () => void;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
   const [isBookmarked, setIsBookmarked] = useState(job.isBookmarked || false);
   const [showWhyPopover, setShowWhyPopover] = useState(false);
