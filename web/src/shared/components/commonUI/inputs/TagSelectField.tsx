@@ -200,7 +200,6 @@ interface TagSelectFieldProps {
   maxTags?: number;
   options: TagOption[]; // ✅ Updated type
   disabled?: boolean;
-  disabled?: boolean;
 }
 
 /**
