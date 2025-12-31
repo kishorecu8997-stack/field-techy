@@ -10,6 +10,8 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { setCurrencyInStorage } from "@/utils/currency";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";

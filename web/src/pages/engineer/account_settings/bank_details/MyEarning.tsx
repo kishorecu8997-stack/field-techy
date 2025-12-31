@@ -1,6 +1,11 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import TransactionDashboard from "./TransactionDashboard";
+import BestPayingJobs from "./BestPayingJobs";
+import TotalEarningsSummary from "./TotalEarningsSummary";
+import EarningHistoryChart from "./EarningHistoryChart";
+import MonthlyComparison from "./MonthlyComparison";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -8,9 +13,7 @@ import TransactionDashboard from "./TransactionDashboard";
  */
 const MyEarning = () => {
   const { setActiveKey } = useDrawerStore();
-
   const currentBalance = 1000;
-
   const BankSection = () => {
     return (
       <div className="text-center">
@@ -18,7 +21,7 @@ const MyEarning = () => {
           Current Balance
         </p>
         <h1 className="text-4xl font-bold mt-1">
-          ${currentBalance.toFixed(2)}
+          {getCurrencyFromStorage()}{currentBalance.toFixed(2)}
         </h1>
         <div className="mt-4 flex gap-3 justify-center">
           <Button
@@ -44,11 +47,26 @@ const MyEarning = () => {
         <BankSection />
       </div>
       <div className="h-[75%] overflow-y-auto">
-        <TransactionDashboard
-          onViewAllClick={() => {
-            setActiveKey("engineerRecentTransactions");
-          }}
-        />
+        <div className="pt-4">
+          <TotalEarningsSummary />
+        </div>
+        <div className="pt-4">
+          <TransactionDashboard
+            onViewAllClick={() => {
+              setActiveKey("engineerRecentTransactions");
+            }}
+          />
+        </div>
+        <div className="pt-4">
+          <BestPayingJobs />
+        </div>
+
+        <div className="pt-4">
+          <EarningHistoryChart />
+        </div>
+        <div className="pt-4">
+          <MonthlyComparison />
+        </div>
       </div>
     </div>
   );

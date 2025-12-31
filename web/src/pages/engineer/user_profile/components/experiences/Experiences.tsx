@@ -4,7 +4,6 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
 import { toast } from "react-toastify";
 import { WorkExperienceList } from "./components/WorkExperienceList";
-
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
 }
@@ -19,7 +18,7 @@ interface DrawerMenuProps {
  */
 const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
+  const { setActiveKey, setImmediateParentKey } = useDrawerStore();
 
   const handleDeleteExperience = async (id: number) => {
     await showPopup({
@@ -55,9 +54,13 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <WorkExperienceList
         title="Experiences"
         items={workExperienceList}
-        onAddAction={() => onMenuItemClick(`addExperiences`)}
+        onAddAction={() => {
+          setImmediateParentKey("experiences");
+          onMenuItemClick(`addExperiences`);
+        }}
         onEditAction={(id) => {
           localStorage.setItem("editExperiencesId", id.toString());
+          setImmediateParentKey("experiences");
           onMenuItemClick("editExperiences");
         }}
         // TODO: Implement a proper confirmation modal for deletion instead of a browser alert.

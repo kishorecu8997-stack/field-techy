@@ -26,12 +26,6 @@ interface AddCardProps {
   onAddCard: (cardData: CardFormData) => void;
 }
 
-/**
- * AddCard component
- *
- * Renders a small form for adding a payment card. When the form is
- * validated successfully, `onAddCard` is invoked with the typed values.
- */
 const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
   const methods = useFormContext();
 
@@ -60,6 +54,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
           placeholder="9999 9999 9999 9999"
           rules={{ validate: (v: string) => cardNumberValidation(v) }}
           required
+          allowedCharacters="numbers"
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -69,13 +64,16 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
             placeholder="MM/YY"
             rules={{ validate: (v: string) => expiryDateValidation(v) }}
             required
+            allowedCharacters="digits-slash"
           />
+
           <InputField
             label="CVV"
             name="cvv"
             placeholder="Enter CVV"
             rules={{ validate: (v: string) => cvvValidation(v) }}
             required
+            allowedCharacters="numbers"
           />
         </div>
 

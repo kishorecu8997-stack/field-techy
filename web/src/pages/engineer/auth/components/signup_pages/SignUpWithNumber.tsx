@@ -5,6 +5,9 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
 import Popup from "@/shared/components/Popup";
+import {
+  detectAndStoreCurrency
+} from "@/utils/currency";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -109,6 +112,10 @@ const SignUpWithNumber = ({
   }, [signupPhone, mobileVerified, hasAskedToContinue, method, clearStore, navigate, showPopup]);
 
   const handleOTPVerified = () => {
+    const phoneNumber = method.getValues("phone");
+
+    detectAndStoreCurrency(phoneNumber);
+
     setIsOpen(false);
 
     // Save to store instead of location.state

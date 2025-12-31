@@ -3,6 +3,10 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { PhoneInputField } from "@/shared/components/commonUI/inputs/PhoneInputField";
+import {
+  detectAndStoreCurrency,
+  getCurrencyFromStorage,
+} from "@/utils/currency";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -170,7 +174,12 @@ const LoginWithNumber = ({
               otpfor === "phoneNumber" ? "phone" : "email"
             }.`}
             onClose={() => setIsOpen(false)}
-            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onSubmit={(data) => {
+              handleOtpSubmission(data.otp)
+              const phoneNumber = method.getValues("phone");
+              detectAndStoreCurrency(phoneNumber);
+              getCurrencyFromStorage();
+            }}
           />
         </Popup>
       </div>

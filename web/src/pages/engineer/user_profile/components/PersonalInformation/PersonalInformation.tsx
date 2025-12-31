@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -25,18 +25,18 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
-const PersonalInformation: React.FC = () => {
+const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
-
+  const { navigationSource, returnToKey, setActiveKey, setISOpenSidebar, resetNavigationSource } = useDrawerStore();
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would
    * involve making an API call to save the user's data.
    * @param {EditProfileFormData} data - The validated form data.
    */
+  
   const handleSubmit = async (data: EditProfileFormData) => {
     await showPopup({
       title: "Update Profile",
@@ -45,7 +45,7 @@ const PersonalInformation: React.FC = () => {
         {
           label: "Cancel",
           value: "no",
-          variant:"secondary",
+          variant: "secondary",
           action: async (close) => {
             console.log("No button clicked");
             close(true);
@@ -54,12 +54,20 @@ const PersonalInformation: React.FC = () => {
         {
           label: "Yes, update",
           value: "yes",
-          variant:"primary",
+          variant: "primary",
           action: async (close) => {
             toast.success("Profile Updated Successfully");
             console.log("Form submitted with data:", data);
             close(true);
+
+            //  Conditional redirect if the navigation source is from profile completion card
+          if (navigationSource === "profilecompletion" && returnToKey) {
+            setActiveKey(returnToKey); 
+            setISOpenSidebar(true);
+            resetNavigationSource();
+          } else {
             setActiveKey("profile");
+          }
           },
         },
       ],
@@ -106,6 +114,7 @@ const PersonalInformation: React.FC = () => {
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
           rules={{ validate: (v: string) => validateName(v) }}
+          allowedCharacters="string"
         />
 
         <VerifiedPhoneInputField

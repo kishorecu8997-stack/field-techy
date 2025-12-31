@@ -1,33 +1,28 @@
-import React from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validatePassingYear } from "../../Validate";
+import {
+  validateMajorSubject,
+  validatePassingYear,
+  validateUniversity,
+} from "../../Validate";
 import type { EducationFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import {
   educationLevels,
   courses,
-  universities,
-  majors,
 } from "@/dummy_data/engineer_profile/education-data";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
-interface AddEducationProps {
-  onMenuItemClick: (key: string) => void;
-  onClose: () => void;
-}
-
 /**
  * The AddEducation component renders a form for adding a new education entry.
  * It uses `react-hook-form` for form management and validation.
- * @param {AddEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC<AddEducationProps> = ({ }) => {
+const AddEducation: React.FC = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
@@ -51,6 +46,7 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Added Successfully");
+            console.log(data);
             close(true);
             setActiveKey("education");
           },
@@ -58,6 +54,7 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
       ],
     });
   };
+
   const methods = useForm<EducationFormData>({
     defaultValues: {
       educationLevel: "",
@@ -100,35 +97,33 @@ const AddEducation: React.FC<AddEducationProps> = ({ }) => {
           required
         />
 
-        <SelectField
+        <InputField
           label="University"
-          isShowLabel={false}
+          isShowLabel={true}
           name="university"
-          placeholder="University"
-          options={universities.map((u) => ({
-            value: u.key,
-            label: u.label,
-          }))}
+          placeholder="Enter university name (e.g., University of Example)"
+          aria-required="true"
           required
+          rules={{ validate: (v: string) => validateUniversity(v) }}
         />
 
-        <SelectField
+        <InputField
           label="Major Subject"
-          isShowLabel={false}
-          name="majorSubject"
-          placeholder="Major Subject"
-          options={majors.map((m) => ({
-            value: m.key,
-            label: m.label,
-          }))}
+          isShowLabel={true}
+          name="major_Subject"
+          placeholder="Enter major subject name (e.g. Physics)"
+          aria-required="true"
           required
+          rules={{ validate: (v: string) => validateMajorSubject(v) }}
         />
+
         <InputField
           label="Passing Year"
           isShowLabel={false}
           name="passingYear"
           placeholder="Passing Year"
           required
+          allowedCharacters="numbers"
           rules={{ validate: (v: string) => validatePassingYear(v) }}
         />
       </div>

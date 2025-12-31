@@ -6,6 +6,8 @@ import { twMerge } from "tailwind-merge"
 
 
 
+import { transactions } from "@/dummy_data/bankDetails";
+
 
 /**
  * Utility function to join multiple class names into a single string,

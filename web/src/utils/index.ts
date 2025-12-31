@@ -369,3 +369,11 @@ export function getMinTentativeEndDate(
   const finalValue = appEnd > tentStart ? appEnd : tentStart;
   return finalValue;
 }
+
+export const getExperienceLevel = (years?: number) => {
+  if (!years) return "";
+  if (years <= 1) return "L1"; // 0-1 year: Junior/Entry-level
+  if (years <= 3) return "L2"; // 2-3 years: Mid-level
+  return "L3"; // 4+ years: Senior/Expert-level
+};
+

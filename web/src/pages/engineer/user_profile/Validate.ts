@@ -221,6 +221,49 @@ export const validateExperience = (value: string) => {
   return true;
 };
 
+// following two validations created by Mithun for validate university and major subject text fields
+
+// validate university text field
+export const validateUniversity = (
+  value: string,
+  required: boolean = true
+) => {
+  const trimmed = value?.trim() ?? "";
+
+  //  Check the field is Required or null it will give error message 
+  if (required && !trimmed) {
+    return "Please enter a university name.";
+  }
+
+  // Length check above 200 characters
+  if (trimmed.length > 200) {
+    return "University must not exceed 200 characters";
+  }
+  return true;
+};
+
+
+//  validate Major Subject 
+export const validateMajorSubject = (
+  value: string,
+  required: boolean = true
+) => {
+  const trimmed = value?.trim() ?? "";
+
+  //  Check the field is Required or null  it will  give error message 
+  if (required && !trimmed) {
+    return "Please enter a major subject name.";
+  }
+
+  // Length check above 200 characters 
+  if (trimmed.length > 200) {
+    return "Major Subject must not exceed 200 characters";
+  }
+  return true;
+};
+
+
+
 /**
  * Validate passing year.
  * - must be a 4-digit number
@@ -282,7 +325,21 @@ export const validateDateRange = (
   return true;
 };
 
+export const validateEndDate = (value: Date | null) => {
+  if (!value) return "End date is required";
 
+  const selected = new Date(value);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+  selected.setHours(0, 0, 0, 0);
+
+  if (selected > today) {
+    return "End date can't be in the future";
+  }
+
+  return true;
+};
 
 export const validateFilterDateRange = (
   startDate: Date | null,
@@ -489,4 +546,6 @@ export default {
   validateIsVerified,
   validateIsPhoneVerified,
   validateVatNumber,
+  validateUniversity,
+  validateMajorSubject,
 };
