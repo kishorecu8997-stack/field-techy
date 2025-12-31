@@ -1,10 +1,11 @@
 import { absoluteUrls } from "@/config/urls";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
+import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
+import { Button } from "./commonUI/Buttons";
 
 /**
  * A search bar component for job search.
@@ -14,7 +15,6 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  * <JobSearchBar /> 
  *
  */
-
 export const JobSearchBar = () => {
   const methods = useForm({});
   const navigate = useNavigate();
@@ -103,6 +103,17 @@ export const JobSearchBar = () => {
 
           <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
 
+         {/* Analytics Button/Icon */}
+        <Button
+          type="button"
+          onClick={() => navigate(absoluteUrls.engineer.home.search_analytics)}
+          className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
+          title="View Search Analytics"
+          aria-label="View Search Analytics"
+        >
+          <FaChartBar size={20} />
+        </Button>
+        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
           {/* Location */}
           <InputField
             name="location"
