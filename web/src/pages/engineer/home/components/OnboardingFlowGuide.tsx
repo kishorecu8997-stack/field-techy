@@ -6,6 +6,31 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { urls } from "@/config/urls";
 
+/**
+ * OnboardingFlowGuide is a custom UI component used as the content popover
+ * for the interactive product tour (onboarding guide) powered by Reactour.
+ * It displays the current step's title and content, provides navigation controls
+ * (Previous / Next / Skip / Finish), and handles persistence of onboarding status
+ * via localStorage.
+ *
+ * The tour automatically disables itself if:
+ * - The user has already completed onboarding (`localStorage.onboarding_guide === "true"`), OR
+ * - The current route is not the engineer base path.
+ *
+ * It also prevents clicks outside the popover from closing the tour by
+ * intercepting global click events during the tour.
+ *
+ * @component
+ * @example
+ * <TourProvider
+ *   steps={steps}
+ *   components={{ Popover: OnboardingFlowGuide }}
+ *   showBadge={false}
+ *   styles={tourStyles}
+ * >
+ *   <YourApp />
+ * </TourProvider>
+ */
 const OnboardingFlowGuide = () => {
   const popoverRef = useRef<HTMLDivElement>(null);
   const { currentStep, setCurrentStep, setIsOpen } = useTour();
