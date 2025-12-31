@@ -3,12 +3,13 @@ import { absoluteUrls } from "@/config/urls";
 import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { JobSearchBar } from "./JobSearchBar";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
+import Tooltip from "@/shared/components/Tooltip";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -31,6 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
+  const notificationCount = 20;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,23 +67,29 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           }}
         />
         <nav className="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
-          <NavLink
-            to={absoluteUrls.engineer.home.my_jobs}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
-          >
-            My Jobs
-          </NavLink>
-          <div
-            // to={absoluteUrls.engineer.home.my_jobs}
+          <Tooltip text="View your applied and active jobs">
+            <NavLink
+              to={absoluteUrls.engineer.home.my_jobs}
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              aria-label="View your applied and active jobs"
+            >
+              My Jobs
+            </NavLink>
+          </Tooltip>
 
-            onClick={() => {
-              onDrawerToggle();
-              setActiveKey("myEarning");
-            }}
-            className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
-          >
-            Earning
-          </div>
+          <Tooltip text="Check your earnings summary">
+            <div
+              // to={absoluteUrls.engineer.home.my_jobs}
+
+              onClick={() => {
+                onDrawerToggle();
+                setActiveKey("myEarning");
+              }}
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
+            >
+              Earning
+            </div>
+          </Tooltip>
         </nav>
       </div>
 
@@ -108,13 +116,27 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           >
             <div className="py-2">
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div className="flex items-center space-x-3">
+                <div
+                  className="flex items-center space-x-3"
+                  onClick={() => {
+                    navigate(absoluteUrls.engineer.home.my_jobs);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
                   <span>My Jobs</span>
                 </div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
-                <div className="flex items-center space-x-3">Earning</div>
+              <div
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  onDrawerToggle();
+                  setActiveKey("myEarning");
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Earning
               </div>
+
               <div
                 className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
                 onClick={onDrawerToggle}
@@ -124,16 +146,34 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
-                  <span>Notifications</span>
+                  <div
+                    onClick={() => {
+                      onDrawerToggle();
+                      setActiveKey("notification");
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Notifications
+                  </div>
+
                   <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
                 </div>
               </div>
+
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
-                  <span>Messages</span>
+                  <div
+                    onClick={() => {
+                      navigate(absoluteUrls.engineer.home.chat);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Messages
+                  </div>
+
                   <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     3
                   </span>
@@ -148,7 +188,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
       <div className="hidden md:flex items-center space-x-4">
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
+          onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
           <FaComment size={20} />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
@@ -156,20 +196,25 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           </span>
         </div>
         <div
-          className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("notification");
           }}
         >
           <FaBell size={20} />
+          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+            {notificationCount}
+          </span>
         </div>
         <div
           onClick={onDrawerToggle}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
-          <span className="max-w-[6rem] truncate text-left">Hi, Nick Wilson</span>
+          <span className="max-w-[6rem] truncate text-left">
+            Hi, Nick Wilson
+          </span>
           <img
             src={assetsConfig.images.users.user}
             alt="User"

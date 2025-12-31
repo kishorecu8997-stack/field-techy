@@ -8,8 +8,8 @@
 
 /**
  * Represents the available options for sorting job lists.
- */
-export type SortOption = "newest" | "oldest" | "highest-rated";
+//  */
+// export type SortOption = "Relevance" | "Date" | "Salary" | "Distance";
 
 /**
  * Represents the possible statuses for a job.
@@ -61,7 +61,7 @@ export interface EarningsData {
 export interface SidebarProfileProps {
   user: UserProfile;
   earnings: EarningsData;
-}
+ }
 
 /**
  * Props for the card displaying client information.
@@ -205,3 +205,5 @@ export interface WorkInfoItem {
   label: string;
   value: string;
 }
+
+

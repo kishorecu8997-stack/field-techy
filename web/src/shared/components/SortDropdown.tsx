@@ -1,28 +1,34 @@
-import { SORT_OPTIONS, type SortOption } from "@/pages/engineer/search_result/types";
+import {
+  SORT_OPTIONS,
+  type SortOption,
+} from "@/pages/engineer/search_result/types";
 import React, { useState } from "react";
-import type { SortDropdownProps } from "./type";
 
-
+interface SortDropdownProps {
+  currentSort?: SortOption;
+  onSortChange?: (sort: SortOption) => void;
+}
 
 /**
  * SortDropdown Component
  * Renders a dropdown menu to sort jobs by criteria (e.g., Newest, Oldest).
- *
+ * Renders a dropdown menu to sort jobs by criteria (e.g., Relevance, Date, Salary, Distance).
  * @param {Object} props - Component props
- * @param {string} props.currentSort - Current sort value
- * @param {(sort: string) => void} props.onSortChange - Callback when sort option is selected
+ * @param {SortOption} props.currentSort - Current sort value
+ * @param {(sort: SortOption) => void} props.onSortChange - Callback when sort option is selected
  * @returns {JSX.Element} Rendered dropdown
  */
 const SortDropdown: React.FC<SortDropdownProps> = ({
-  currentSort = SORT_OPTIONS.NEWEST,
+  currentSort = SORT_OPTIONS.RELEVANCE,
   onSortChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
-
   const options = [
-    { value: SORT_OPTIONS.NEWEST, label: "Newest" },
-    { value: SORT_OPTIONS.OLDEST, label: "Oldest" },
+    { value: SORT_OPTIONS.RELEVANCE, label: "Relevance" },
+    { value: SORT_OPTIONS.DATE, label: "Date" },
+    { value: SORT_OPTIONS.SALARY, label: "Salary" },
+    { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
   return (
     <div className="relative inline-block">
@@ -60,7 +66,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
                 setIsOpen(false);
               }}
               className={`block w-full text-left px-4 py-2 text-sm ${
-                currentSort === option.label
+                currentSort === option.value
                   ? "bg-emerald-100 text-emerald-800"
                   : "text-gray-700 hover:bg-gray-100"
               }`}

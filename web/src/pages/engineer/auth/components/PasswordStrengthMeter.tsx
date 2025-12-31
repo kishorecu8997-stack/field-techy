@@ -1,4 +1,5 @@
 import React from "react";
+import { icons } from "@/config/icons";
 interface PasswordStrengthMeterProps {
   password: string;
 }
@@ -75,7 +76,9 @@ if (metCriteriaCount === totalCriteriaCount) {
               criterion.isValid ? "text-green-600" : "text-red-500"
             }`}
           >
-            <span className="mr-2">{criterion.isValid ? "✔" : "✘"}</span>
+            <span className="mr-2">{criterion.isValid ? 
+            <icons.checkmark /> 
+            : <icons.close />}</span>
             {criterion.name}
           </li>
         ))}

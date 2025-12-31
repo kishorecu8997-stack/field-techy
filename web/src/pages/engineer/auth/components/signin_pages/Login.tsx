@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -9,7 +10,9 @@ import {
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
+import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import { validatePassword } from "@/shared/libs/utils";
+import { setCurrencyInStorage } from "@/utils/currency";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
@@ -17,8 +20,6 @@ import { LuPhone } from "react-icons/lu";
 import { NavLink } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 
 /**
  * Renders the primary login form for users to sign in with their email and password.
@@ -142,7 +143,9 @@ const Login = ({
             header="Enter the OTP"
             description="We sent you an OTP code please scan using autendicator/backupcodes"
             onClose={() => setIsOpen(false)}
-            handleNavigate={(data) => verify(data)}
+            handleNavigate={(data) => {
+              verify(data), setCurrencyInStorage("$");
+            }}
             otpauthUrl={otpauthUrl ?? ""}
           />
         </Popup>

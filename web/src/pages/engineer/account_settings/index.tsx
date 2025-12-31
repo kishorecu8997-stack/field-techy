@@ -6,6 +6,7 @@ import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "./types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Main account settings page displaying a list of configurable options including security, bank details,
@@ -15,29 +16,40 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
-  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
+  // Handle drawer navigation
+  const { setNavigationSource } = useDrawerStore();
   const menuItems: MenuItem[] = [
     {
       label: "Change Password",
       icon: icons.lock,
       id: "changePassword",
-      onClick: () => onMenuItemClick("changePassword"),
+      onClick: () => {
+        setNavigationSource("settings", "settings");
+        onMenuItemClick("changePassword");
+      },
     },
     {
       label: "Manage Bank Accounts",
       icon: icons.wallet,
       id: "manageBankAccounts",
-      onClick: () => onMenuItemClick("manageBankAccounts"),
+      onClick: () => {
+        setNavigationSource("settings", "settings");
+        onMenuItemClick("manageBankAccounts");
+     },
     },
     {
       id: "notifications",
       label: "Notifications",
       icon: icons.notifications,
-      isToggle: true,
-      toggleValue: notificationsEnabled,
-      onToggleChange: setNotificationsEnabled,
+      onClick: () => onMenuItemClick("NotificationPreferences"),
+    },
+    {
+      id: "activeSessions",
+      label: "Active Sessions",
+      icon: icons.sessions,
+      onClick: () => onMenuItemClick("activeSessions")
     },
     {
       id: "security",

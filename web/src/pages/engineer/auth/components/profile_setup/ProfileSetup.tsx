@@ -9,10 +9,11 @@ import { IoWalletOutline } from "react-icons/io5";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import {
   validateZipcode,
   validateName,
-  validateAddress,  
+  validateAddress,
   validateAmount,
   validateCompany,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
@@ -88,6 +89,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="First Name"
         required
+        allowedCharacters="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
@@ -97,6 +99,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Last Name"
         required
+        allowedCharacters="string"
         leftIcon={<FaRegUser className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateName(v, "Last Name") }}
       />
@@ -188,7 +191,7 @@ const ProfileSetup = () => {
         name="amount"
         label="Amount"
         type="text"
-        placeholder="$50/hr"
+        placeholder={`${getCurrencyFromStorage()}50/hr`}
         required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}
@@ -203,6 +206,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Current Designation"
         required
+        allowedCharacters="string"
         rules={{ validate: (v: string) => validateDesignation(v) }}
       />
       <InputField
@@ -211,6 +215,7 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Company/Employer"
         required
+        allowedCharacters="string"
         rules={{ validate: (v: string) => validateCompany(v) }}
       />
       <InputField

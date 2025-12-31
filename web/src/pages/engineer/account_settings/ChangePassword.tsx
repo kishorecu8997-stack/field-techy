@@ -34,17 +34,7 @@ const ChangePassword = () => {
           variant: "primary",
           action: async (close) => {
             try {
-              //placeholder API - replace with actual API call later
-              const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-              });
-              if (!response.ok) {
-                throw new Error("Network response was not ok");
-              }
+              // TODO: Integrate with secure backend API for password update.
               toast.success("Password updated successfully!");
               setActiveKey("settings");
               close(true);
@@ -85,6 +75,7 @@ const ChangePassword = () => {
       </div>
     </FormContainer>
   );
+
 };
 
 export default ChangePassword;
