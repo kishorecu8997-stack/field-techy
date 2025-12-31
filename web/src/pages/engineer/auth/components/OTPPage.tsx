@@ -110,9 +110,9 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
                 <span>{`00:${timeLeft.toString().padStart(2, "0")}`}</span>
                 <button
                   onClick={handleResend}
-                  disabled={timeLeft !== 30}
+                  disabled={timeLeft > 0}
                   className={`text-green-600 font-medium ${
-                    timeLeft !== 30 ? "opacity-50 cursor-not-allowed" : ""
+                    timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   Resend

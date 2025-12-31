@@ -12,9 +12,7 @@ import { toast } from "react-toastify";
  * Persist state to localStorage with error handling.
  * @returns [value, setValue]
  */
-
 const SecurityPage: React.FC<DrawerMenuProps> = () => {
-
   const emailVerified = true; // Replace with actual check
   const mobileVerified = true; // Replace with actual check
   const isVerified = emailVerified && mobileVerified;
@@ -93,7 +91,10 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
             } space-y-3 p-6 divide-y divide-gray-200`}
           >
             {codes.map((code) => (
-              <li className="flex items-center justify-between pb-3 text-gray-700">
+              <li
+                key={code}
+                className="flex items-center justify-between pb-3 text-gray-700"
+              >
                 <div className="flex items-center font-medium">
                   <span>{code}</span>
                 </div>

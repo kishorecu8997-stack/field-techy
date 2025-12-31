@@ -141,7 +141,7 @@ const Login = ({
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code please scan using autendicator/backupcodes"
+            description="We sent you an OTP code. Please scan it using your authenticator app or enter a backup code."
             onClose={() => setIsOpen(false)}
             handleNavigate={(data) => {
               verify(data), setCurrencyInStorage("$");
