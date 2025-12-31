@@ -1,7 +1,9 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { getCurrencyFromStorage } from "@/utils/currency";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { FaUser } from "react-icons/fa";
 import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
+import { getProfileCompletion } from "@/utils/profileCompletion";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
@@ -39,7 +41,16 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
-  const { name, phone, role, profileCompletion } = user;
+  const { 
+    profileData, 
+    setActiveKey, 
+    setISOpenSidebar, 
+    setNavigationSource 
+  } = useDrawerStore();
+  // Get the overall profile completion percentage with the each field status
+  const profileCompletion = getProfileCompletion(profileData);
+  
+  const { name, phone, role } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
       <div className="flex flex-row justify-between">
@@ -53,7 +64,15 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
             <p className="text-xs opacity-80">{role}</p>
           </div>
         </div>
-        <button className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
+        <button
+          type="button"
+          onClick={() => {
+            setNavigationSource("profilecompletion", "profileCompletion");
+            setActiveKey("profileCompletion");
+            setISOpenSidebar(true);
+          }}
+        className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+        >
           Complete Now
         </button>
       </div>
@@ -104,7 +123,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
           Current Balance
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
-          $
+          {getCurrencyFromStorage()}
           {balance.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,

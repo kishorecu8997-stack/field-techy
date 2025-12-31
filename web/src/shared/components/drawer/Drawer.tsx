@@ -1,6 +1,5 @@
 import { sectionConfig } from "@/config/sideBarPagesconfig";
 import { useEffect } from "react";
-
 import DrawerHeader from "./DrawerHeader";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
@@ -22,13 +21,21 @@ export type MenuItems = {
   onClick?: () => void;
 };
 
-
 /**
  * Drawer component that slides in from the right when opened.
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  const { activeKey, setActiveKey } = useDrawerStore();
+  // Modified to get navigation to source from the store 
+  const { 
+    activeKey, 
+    setActiveKey,
+    navigationSource,
+    returnToKey,
+    resetNavigationSource,
+    immediateParentKey,
+    setImmediateParentKey 
+  } = useDrawerStore();
 
   // Escape key & scroll lock effect
   useEffect(() => {
@@ -67,9 +74,24 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
-  const onBack = config.parent
-    ? () => setActiveKey(config.parent as string)
-    : undefined;
+// modified onBack function to handle navigation Source  
+  const onBack = () => {
+  if (immediateParentKey) {
+    setActiveKey(immediateParentKey);
+    setImmediateParentKey(undefined); // clear after use
+    return;
+  }
+
+  if (navigationSource === "profilecompletion" && returnToKey) {
+    setActiveKey(returnToKey);
+    resetNavigationSource();
+    return;
+  }
+
+  if (config.parent) {
+    setActiveKey(config.parent as string);
+  }
+};
 
   return (
     <>

@@ -14,7 +14,7 @@ import AddBankDetails from "@/pages/engineer/account_settings/bank_details/AddBa
 import BankAccountList from "@/pages/engineer/account_settings/bank_details/BankAccountList";
 import EditBankDetails from "@/pages/engineer/account_settings/bank_details/EditBankDetails";
 import MyEarning from "@/pages/engineer/account_settings/bank_details/MyEarning";
-import TransactionDashboard from "@/pages/engineer/account_settings/bank_details/TransactionDashboard";
+import AllTransactionsPage from "@/pages/engineer/account_settings/bank_details/AllTransactionsPage";
 import Withdraw from "@/pages/engineer/account_settings/bank_details/Withdraw";
 import ChangePassword from "@/pages/engineer/account_settings/ChangePassword";
 import ContactUs from "@/pages/engineer/account_settings/contact_us/ContactUs";
@@ -37,7 +37,6 @@ import EditTools from "@/pages/engineer/user_profile/components/skills_and_tools
 import SkillsAndTools from "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools";
 import WorkPreference from "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference";
 import UserProfileSidebar from "@/pages/engineer/user_profile/UserProfileSidebar";
-
 import AccountSettingsDrawerMenu from "@/pages/client/account_settings";
 import ClientDocuments from "@/pages/client/my_account/components/documents/ClientDocuments";
 import ClientEditDocument from "@/pages/client/my_account/components/documents/components/ClientEditDocument";
@@ -50,6 +49,9 @@ import AddExistingFTMember from "@/pages/client/my_projects/createProject/compon
 import EditProjectMember from "@/pages/client/my_projects/createProject/components/EditProjectMember";
 import Feedback from "@/pages/client/my_job_client/components/FeedbackForm";
 import ClientNotification from "@/pages/client/messages/ClientNotification";
+import ProfileCompletionCard from "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard";
+import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
+import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
 import NotificationPreferences from "@/pages/engineer/account_settings/notification/NotificationPreferences";
 
@@ -197,9 +199,24 @@ export const sectionConfig: Record<
     component: NotificationPage,
     title: "Notification",
   },
+  security: {
+    component: SecurityPage,
+    title: "Security",
+    parent: "settings",
+  },
+  loginHistory: {
+    component: LoginHistory,
+    title: "Login History",
+    parent: "settings",
+  },
   clientNotification: {
     component: ClientNotification,
     title: "Notification",
+  },
+  profileCompletion: {
+    component: ProfileCompletionCard,
+    title: "Profile Completion",
+    parent: "profile",
   },
   activeSessions: {
     component: ActiveSessions,
@@ -278,7 +295,7 @@ export const sectionConfig: Record<
     title: "Edit Project Member Details",
   },
   engineerRecentTransactions: {
-    component: TransactionDashboard,
+    component: AllTransactionsPage,
     title: "Recent Transactions",
     actions: ActionButtonsForRecentTransactions,
     parent: "myEarning",

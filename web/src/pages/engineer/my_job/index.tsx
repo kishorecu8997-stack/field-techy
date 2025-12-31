@@ -4,11 +4,8 @@ import { SORT_OPTIONS, JOB_FILTERS } from "../search_result/types";
 import type { JobFilter } from "../search_result/types";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
-import FilterButton from "@/shared/components/commonUI/FilterButton";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
+import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -59,6 +56,10 @@ const MyJobsPage = () => {
           </Button>
         </div>
 
+        <StatusFilter
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList activeFilter={activeFilter} />
           <div className="lg:col-span-1">
