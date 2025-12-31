@@ -1,5 +1,12 @@
 import React from "react";
 
+interface Props {
+  keyword: string;
+  count: number;
+  total: number;
+  className?: string;
+}
+
 /**
  * KeywordRow Component
  * 
@@ -13,14 +20,6 @@ import React from "react";
  * @example
  * <KeywordRow keyword="React" count={120} total={1000} />
  */
-
-interface Props {
-  keyword: string;
-  count: number;
-  total: number;
-  className?: string;
-}
-
 const KeywordRow: React.FC<Props> = ({ keyword, count, total, className }) => {
   const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
   return (

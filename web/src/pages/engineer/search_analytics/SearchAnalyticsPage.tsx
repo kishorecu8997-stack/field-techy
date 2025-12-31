@@ -8,19 +8,26 @@ import {
   getKeywordFrequency,
   getSearchTrends,
   getCTR,
-  getSearchHistory,
-} from "@/utils/searchAnalytics";
+  getSearchHistory
+} from "@/utils/searchServiceAnalytics";
 import AnalyticsCard from "@/shared/components/search-analytics/AnalyticsCard";
 import Section from "@/shared/components/search-analytics/Section";
 import KeywordRow from "@/shared/components/search-analytics/KeywordRow";
 import TrendRow from "@/shared/components/search-analytics/TrendRow";
+import { CustomTable, type Column } from "@/shared/components/commonUI/custom_table";
+
+interface SearchHistoryItem {
+  id: string;
+  keyword: string;
+  date: string;
+  clicked: boolean;
+}
 
 /**
  * SearchAnalyticsPage Component
  *
  * Main page component for displaying search analytics for engineers.
  * Shows analytics cards, most searched keywords, search trends, and search history.
- *
  * Fetches data from dummy data and utility functions to calculate:
  * - Total searches
  * - Click-through rate
@@ -32,8 +39,7 @@ import TrendRow from "@/shared/components/search-analytics/TrendRow";
  * @example
  * <SearchAnalyticsPage />
  */
-
-const SearchAnalyticsPage: React.FC = () => {
+  const SearchAnalyticsPage: React.FC = () => {
   const totalSearches = getTotalSearches(searchEvents);
   const keywordFrequency = getKeywordFrequency(searchEvents);
   const searchTrends = getSearchTrends(searchEvents);
@@ -46,6 +52,26 @@ const SearchAnalyticsPage: React.FC = () => {
   const sortedTrends = Object.entries(searchTrends).sort(([a], [b]) =>
     a.localeCompare(b)
   );
+
+  /**  Columns definition for CustomTable */
+  const searchHistoryColumns: Column<SearchHistoryItem>[] = [
+    {
+      key: "keyword",
+      label: "Keyword",
+      align: "left",
+    },
+    {
+      key: "date",
+      label: "Date",
+      align: "left",
+    },
+    {
+      key: "clicked",
+      label: "Clicked",
+      align: "center",
+      renderCell: (row) => (row.clicked ? "Yes" : "No"),
+    },
+  ];
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
@@ -101,33 +127,12 @@ const SearchAnalyticsPage: React.FC = () => {
 
       {/* Search History Analytics */}
       <Section title="Search History Analytics">
-        {searchHistory.length > 0 ? (
-          <table className="w-full border-collapse mt-4 text-sm">
-            <caption className="sr-only">
-              Search history with keywords, search date, and click status
-            </caption>
-            <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700 text-left">
-                <th scope="col" className="p-3 border-b border-gray-200 dark:border-gray-600">Keyword</th>
-                <th scope="col" className="p-3 border-b border-gray-200 dark:border-gray-600">Date</th>
-                <th scope="col" className="p-3 border-b border-gray-200 dark:border-gray-600">Clicked</th>
-              </tr>
-            </thead>
-            <tbody>
-              {searchHistory.map((item, index) => (
-              <tr key={item.id} className={index % 2 === 0 ? "bg-white dark:bg-gray-800" : "bg-gray-50 dark:bg-gray-700"}>
-                  <td className="p-3">{item.keyword}</td>
-                  <td className="p-3">{item.date}</td>
-                  <td className="p-3">{item.clicked ? "Yes" : "No"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="p-3 text-gray-500 dark:text-gray-400">
-            No search history available
-          </p>
-        )}
+        <CustomTable<SearchHistoryItem>
+          columns={searchHistoryColumns}
+          data={searchHistory}
+          initialPageSize={10}
+          showPagination={true}
+        />
       </Section>
     </div>
   );

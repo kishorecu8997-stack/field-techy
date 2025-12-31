@@ -15,7 +15,6 @@ import { Button } from "./commonUI/Buttons";
  * <JobSearchBar /> 
  *
  */
-
 export const JobSearchBar = () => {
   const methods = useForm({});
   const navigate = useNavigate();

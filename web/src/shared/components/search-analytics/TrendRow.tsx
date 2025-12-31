@@ -1,5 +1,11 @@
 import React from "react";
 
+interface Props {
+  date: string;
+  count: number;
+  className?: string;
+}
+
 /**
  * TrendRow Component
  * 
@@ -12,13 +18,6 @@ import React from "react";
  * @example
  * <TrendRow date="2025-12-29" count={50} />
  */
-
-interface Props {
-  date: string;
-  count: number;
-  className?: string;
-}
-
 const TrendRow: React.FC<Props> = ({ date, count, className }) => (
   <div className={`flex justify-between py-2 border-b border-gray-200 dark:border-gray-700 ${className}`}>
     <span>{date}</span>
