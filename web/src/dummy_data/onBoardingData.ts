@@ -1,4 +1,4 @@
- interface StepsProps {
+interface StepsProps {
   selector: string;
   content: string;
   title: string;
@@ -9,7 +9,7 @@ export const steps: StepsProps[] = [
     selector: "#welcome",
     title: "Welcome ",
     content:
-      "✨ “Welcome aboard — every great story starts with a single visit.”",
+      "✨ Welcome aboard — every great story starts with a single visit.",
   },
   {
     selector: "#exploreJobs",

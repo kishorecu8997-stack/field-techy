@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import { useTour } from "@reactour/tour";
+import { urls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { useTour } from "@reactour/tour";
+import { useEffect, useRef } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
-import { urls } from "@/config/urls";
 
 /**
  * OnboardingFlowGuide is a custom UI component used as the content popover
