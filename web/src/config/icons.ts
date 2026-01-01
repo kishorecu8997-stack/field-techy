@@ -78,7 +78,7 @@ export const icons = {
   security: MdOutlineSecurity,
   history: MdHistory,
   codebackup: IoKey,
-  TOTP: RiQrScanLine,
+  totp: RiQrScanLine,
   checkmark: IoMdCheckmark,
   active: FiZap,
   sessions: MdOutlineMobileFriendly,

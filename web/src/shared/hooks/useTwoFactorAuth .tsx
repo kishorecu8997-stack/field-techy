@@ -75,9 +75,7 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
       if (!base32) return;
 
       const backupCodes = localStorage.getItem("backup_codes") ?? "";
-
       const secret = Secret.fromBase32(base32);
-
       const totp = new TOTP({
         issuer: "Field-Techy",
         label: email,
