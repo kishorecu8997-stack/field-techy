@@ -24,7 +24,7 @@ const ClientActions = () => {
           navigate(URl);
         }}
       >
-        Invite a job
+        Invite to job
       </Button>
     </div>
   );
