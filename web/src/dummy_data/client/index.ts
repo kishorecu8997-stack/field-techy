@@ -1,7 +1,4 @@
-import {
-  locationType,
-  RepeatByFields
-} from "@/pages/client/post_job/types";
+import { locationType, RepeatByFields } from "@/pages/client/post_job/types";
 import type { ChatMessage, Conversation } from "@/pages/engineer/chat/types";
 
 export const experienceLevel = [
@@ -41,6 +38,7 @@ export const safetyWears = [
 export const workTypes = [
   { label: "Remote", value: locationType.remote },
   { label: "On-site", value: locationType.onsite },
+  { label: "Hybrid", value: locationType.hybrid },
 ];
 
 export const primaryLanguageOptions = [
@@ -140,9 +138,47 @@ export const TemplateData = [
     estimatedDuration: "1 day",
     saveAsTemplate: true,
   },
+  {
+    id: 3,
+    templatesName: "Template 3",
+    projectName: "Hybrid Mobile App",
+    jobName: "Fullstack Developer",
+    jobTitle: "React Native Developer",
+    locationType: "hybrid",
+    location: "New York, Remote Option Available",
+    experienceLevel: "mid-level",
+    numberOfVacancy: "3",
+    skills: ["React Native", "Node.js", "GraphQL"],
+    tools: ["VSCode", "GitHub"],
+    task: "Develop cross-platform mobile app features",
+    safetyWears: [],
+    description:
+      "Looking for a developer who can work partly on-site and partly remotely.",
+    backFills: "required",
+    budget: "5000",
+    primaryLanguage: "English",
+    secondaryLanguage: "",
+    attachment: null,
+    otherInfo: "Bring your own device for on-site days",
+    startDate: new Date("2025-03-05"),
+    startTime: "09:00",
+    endDate: new Date("2025-03-05"),
+    endTime: "17:00",
+    jobDuration: "8 hours",
+    tentativeStartDate: null,
+    tentativeEndDate: null,
+    tentativeEndTime: "",
+    jobOccurrence: "repeat",
+    repeatedBy: "everyWeek",
+    occurrenceEndType: "onDate",
+    after: "",
+    repeatedByMonth: "",
+    repeatedByYear: "",
+    JobOccurrenceEndDate: new Date("2025-06-01"),
+    estimatedDuration: "12 weeks",
+    saveAsTemplate: true,
+  },
 ];
-
-
 
 export const messages: ChatMessage[] = [
   {
@@ -191,7 +227,6 @@ export const messages: ChatMessage[] = [
   },
 ];
 
-
 // src/data/conversations.ts
 
 export const conversations: Conversation[] = [
@@ -232,7 +267,6 @@ export const conversations: Conversation[] = [
     members: ["Alice", "Ben", "Chris", "You"],
   },
 ];
-
 
 export const projectCountries = [
   { label: "United Kingdom", value: "UK" },
