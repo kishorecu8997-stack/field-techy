@@ -365,7 +365,7 @@ export const routes = createBrowserRouter([
   // Default route redirecting to client login
   {
     path: "/",
-    element: <Navigate to={absoluteUrls.client.auth.login} replace />,
+    element: <Navigate to={absoluteUrls.ft_landing.landing} replace />,
   },
 
   // Engineer Auth Routes
@@ -375,8 +375,14 @@ export const routes = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.engineer.auth.signup, element: withSuspense(engineerProfileSetup) },
-      { path: urls.engineer.auth.verification, element: withSuspense(engineerContactVerification) },
+      {
+        path: urls.engineer.auth.signup,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.verification,
+        element: withSuspense(engineerContactVerification),
+      },
       // {
       //   path: urls.engineer.auth.profile_setup,
       //   element: withSuspense(MultiStepRegistrationForm),
