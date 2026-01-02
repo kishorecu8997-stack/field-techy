@@ -7,14 +7,6 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useFormContext, Controller } from "react-hook-form";
 
-/**
- * Represents a payment card option displayed in the selector.
- *
- * @property {string} id - Unique identifier for the card
- * @property {string} last4 - Last 4 digits of the card number
- * @property {string} brand - Card brand (visa, mastercard, amex, discover, etc.)
- * @property {string} name - Cardholder or card display name
- */
 export interface PaymentCardOption {
   id: string;
   last4: string;
@@ -32,7 +24,13 @@ interface PaymentMethodSelectorProps {
 }
 
 /**
- * Props for the PaymentMethod selector component.
+ * PaymentMethod
+ *
+ * Displays available payment cards and an option to add a new card. Uses
+ * the `cards` dummy data when no `options` prop is provided. The AddCard
+ * dialog is shown in a Popup; when a new card is submitted `onAddNew` is called.
+ *
+ * Now integrated with react-hook-form for validation.
  *
  * @property {PaymentCardOption[]} [options] - Optional array of payment cards to display. If omitted, the component falls back to default dummy data.
  * @property {(id: string) => void} [onChange] - Optional callback invoked when the selected card changes.
@@ -46,15 +44,6 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
   name = "paymentMethodId",
   required = true,
 }) => {
-  /**
-   * PaymentMethod
-   *
-   * Displays available payment cards and an option to add a new card. Uses
-   * the `cards` dummy data when no `options` prop is provided. The AddCard
-   * dialog is shown in a Popup; when a new card is submitted `onAddNew` is called.
-   * 
-   * Now integrated with react-hook-form for validation.
-   */
   const formContext = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -71,15 +60,6 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
     onAddNew?.(cardData);
     setIsOpen(false);
   };
-
-  /**
-   * handleAddCard
-   *
-   * Called when the AddCard dialog returns validated card data. Forwards the
-   * data to the optional `onAddNew` prop and closes the popup.
-   *
-   * @param {CardFormData} cardData - validated card form values
-   */
 
   return (
     <div className="">
@@ -106,13 +86,15 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
                   <div
                     key={card.id}
                     onClick={() => field.onChange(card.id)}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${field.value === card.id
-                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
-                      : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      } ${index !== 0
+                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${
+                      field.value === card.id
+                        ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20"
+                        : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    } ${
+                      index !== 0
                         ? "mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
                         : ""
-                      }`}
+                    }`}
                   >
                     <label className="flex items-center space-x-3 w-full cursor-pointer">
                       <input

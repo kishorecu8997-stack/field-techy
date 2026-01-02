@@ -122,10 +122,17 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
         className="w-full"
       >
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3">
-          <icons.closeFilled
-            className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
+          <Button
+            type="button"
+            variant="no_style"
+            aria-label="Close"
             onClick={onClose}
-          />
+            className="absolute top-3 right-3 text-gray-500 dark:text-gray-400
+             hover:text-gray-700 dark:hover:text-gray-300
+             focus:outline-none focus:ring-2 focus:ring-teal-500 rounded"
+          >
+            <icons.closeFilled className="h-7 w-7" aria-hidden="true" />
+          </Button>
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
               {header}
