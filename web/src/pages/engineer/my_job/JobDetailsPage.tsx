@@ -10,21 +10,24 @@ import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeade
 import JobTabSection from "./job_details_components/JobTabSection";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 
+/**
+ * Page component displaying detailed information about a specific job.
+ *
+ * @returns {JSX.Element} Job details page layout.
+ */
+
 const JobDetailsPage = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
-
   const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   const filter = () => {
     return sampleJobs.find((job) => job.id === Number(params.jobId));
   };
-
   const selectedJob = filter();
-
   const handleSubmitReview = (payload: { rating: number; review: string }) => {
     console.log("Review submitted:", {
       client: selectedJob?.client,

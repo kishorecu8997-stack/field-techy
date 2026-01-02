@@ -60,7 +60,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
               key={idx}
               variant="no_style"
               size={size}
-              disabled={readOnly}
+              aria-disabled={readOnly}
               onClick={() => !readOnly && onChange(idx + 1)}
               onKeyDown={(e) => handleKeyDown(idx, e)}
               className={`transition-transform ${
