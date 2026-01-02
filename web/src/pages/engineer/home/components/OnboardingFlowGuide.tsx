@@ -77,7 +77,14 @@ const OnboardingFlowGuide = () => {
       <div className="text-xl font-semibold">{current.title}</div>
       <p className="text-md text-gray-600">{current.content}</p>
       <div className="flex justify-between mt-4">
-        <Button size="sm" variant="outline" onClick={() => setIsOpen(false)}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            setIsOpen(false);
+            localStorage.setItem("onboarding_guide", "true");
+          }}
+        >
           Skip
         </Button>
         <div className="flex gap-3 px-1 py-1">
