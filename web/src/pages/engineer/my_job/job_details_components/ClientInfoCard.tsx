@@ -30,9 +30,7 @@ const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
           🏢
         </div>
         <div>
-          <div className="font-bold text-gray-900 dark:text-white">
-            {name}
-          </div>
+          <div className="font-bold text-gray-900 dark:text-white">{name}</div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
             Member since {memberSince}
           </div>
@@ -67,14 +65,11 @@ const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
           </li>
         ))}
       </ul>
-      
       <Button
         fullWidth
         variant="primary"
         onClick={onOpenReview}
-        leftIcon={
-          StarIcon ? <StarIcon className="h-4 w-4" /> : <span>⭐</span>
-        }
+        leftIcon={StarIcon ? <StarIcon className="h-4 w-4" /> : <span>⭐</span>}
       >
         Rate this Client
       </Button>

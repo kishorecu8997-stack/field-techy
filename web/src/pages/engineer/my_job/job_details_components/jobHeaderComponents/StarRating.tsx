@@ -48,7 +48,11 @@ export const StarRating: React.FC<StarRatingProps> = ({
           {label}
         </span>
       )}
-      <div className="flex items-center gap-1">
+      <div
+        className="flex items-center gap-1"
+        role="radiogroup"
+        aria-label={label || "Star rating"}
+      >
         {[0, 1, 2, 3, 4].map((idx) => {
           const filled = idx < value;
           return (
@@ -62,7 +66,10 @@ export const StarRating: React.FC<StarRatingProps> = ({
               className={`transition-transform ${
                 readOnly ? "cursor-default" : "hover:scale-110"
               } p-0`}
-              aria-label={`Rate ${idx + 1} star${idx + 1 > 1 ? "s" : ""}`}
+              role="radio"
+              aria-checked={filled}
+              aria-label={`Rate ${idx + 1} star${idx + 1 !== 1 ? "s" : ""}`}
+              tabIndex={readOnly ? -1 : 0}
             >
               <svg
                 className={`${sizes[size]} ${

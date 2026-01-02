@@ -18,9 +18,6 @@ const JobDetailsPage = () => {
   const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
 
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [pendingReview, setPendingReview] = useState<
-    { rating: number; review: string} | null
-  >(null);
 
   const filter = () => {
     return sampleJobs.find((job) => job.id === Number(params.jobId));
@@ -29,12 +26,10 @@ const JobDetailsPage = () => {
   const selectedJob = filter();
 
   const handleSubmitReview = (payload: { rating: number; review: string }) => {
-    setPendingReview(payload);
     console.log("Review submitted:", {
       client: selectedJob?.client,
       ...payload,
-    });
-    
+    }); 
   };
 
   return (

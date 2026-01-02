@@ -215,6 +215,6 @@ export type ClientInfoCardProps = {
   rating: number | string;
   reviews: number | string;
   verifications: string[];
-  // Optional: add UI hook for opening review modal
   onOpenReview?: () => void;
 };
+type ClientInfoCardUIProps = ClientInfoCardProps;

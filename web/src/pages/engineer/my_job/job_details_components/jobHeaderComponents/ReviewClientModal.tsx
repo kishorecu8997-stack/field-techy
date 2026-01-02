@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StarRating } from "./StarRating";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
@@ -19,20 +19,39 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   const [review, setReview] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [showToast, setShowToast] = useState<boolean>(false);
+  const [submittedPayload, setSubmittedPayload] = useState<{
+    rating: number;
+    review: string;
+  } | null>(null);
+
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+  const TOAST_DISPLAY_DURATION_MS = 1000;
+  const MIN_REVIEW_LENGTH = 10;
 
   useEffect(() => {
     if (isOpen) {
+      lastFocusedRef.current = document.activeElement as HTMLElement;
       setRating(0);
       setReview("");
       setError("");
+
+      setTimeout(() => closeBtnRef.current?.focus(), 0);
+    } else if (lastFocusedRef.current) {
+      lastFocusedRef.current.focus();
     }
   }, [isOpen]);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleSubmit = () => {
-    if (rating === 0 && review.trim().length === 0) {
-      setError("Please provide a rating and write a review.");
-      return;
-    }
     if (rating === 0) {
       setError("Please provide a star rating.");
       return;
@@ -41,8 +60,8 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
       setError("Please write a review.");
       return;
     }
-    if (review.trim().length < 10) {
-      setError("Review must be at least 10 characters long.");
+    if (review.trim().length < MIN_REVIEW_LENGTH) {
+      setError(`Review must be at least ${MIN_REVIEW_LENGTH} characters long.`);
       return;
     }
 
@@ -51,16 +70,17 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
     const payload = { rating, review: review.trim() };
     onSubmit?.(payload);
 
+    setSubmittedPayload(payload);
 
     setShowToast(true);
-
     setRating(0);
     setReview("");
 
     setTimeout(() => {
       setShowToast(false);
+      setSubmittedPayload(null);
       onClose();
-    }, 1000); // 1000 ms = 1 second
+    }, TOAST_DISPLAY_DURATION_MS);
   };
 
   if (!isOpen && !showToast) return null;
@@ -121,7 +141,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
                   rows={5}
                 />
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Minimum 10 characters.
+                  Minimum {MIN_REVIEW_LENGTH} characters.
                 </p>
               </div>
 
@@ -145,14 +165,14 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
         </div>
       )}
 
-      {showToast && (
+      {showToast && submittedPayload && (
         <div className="fixed bottom-4 right-4 z-50">
           <div className="rounded-xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-[22rem] transition-opacity duration-300">
             <div className="text-sm text-gray-700 dark:text-gray-300">
               <div className="font-semibold mb-1">Review Submitted</div>
-              <div>Rating: {rating}★</div>
+              <div>Rating: {submittedPayload.rating}★</div>
               <div className="mt-2 text-gray-600 dark:text-gray-400 line-clamp-3">
-                {review}
+                {submittedPayload.review}
               </div>
             </div>
           </div>
