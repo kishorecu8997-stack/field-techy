@@ -232,8 +232,6 @@ const BasicDetails = () => {
     });
   };
 
-
-
   // Helper to safely get value from string or Select option
   const getValue = (val: any) => {
     if (!val) return "";
