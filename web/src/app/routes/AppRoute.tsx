@@ -366,7 +366,7 @@ export const routes = createBrowserRouter([
   // Default route redirecting to client login
   {
     path: "/",
-    element: <Navigate to={absoluteUrls.ft_landing.landing} replace />,
+    element: <Navigate to={absoluteUrls.client.auth.login} replace />,
   },
 
   // Engineer Auth Routes
