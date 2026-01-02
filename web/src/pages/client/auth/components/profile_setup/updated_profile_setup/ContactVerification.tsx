@@ -3,8 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-
-
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import { absoluteUrls } from "@/config/urls";
@@ -19,6 +17,19 @@ interface VerificationCardProps {
   onVerifySuccess: () => void;
 }
 
+/**
+ * VerificationCard
+ *
+ * Displays a verification card for email or phone number verification.
+ * Handles OTP sending, verification, and error handling.
+ *
+ * @param {VerificationCardProps} props - The props for the component.
+ * @param {"email" | "phone"} props.type - The type of verification (email or phone).
+ * @param {string} props.contact - The contact information (email or phone number).
+ * @param {boolean} props.isVerified - Whether the contact is already verified.
+ * @param {() => void} props.onVerifySuccess - Callback function to handle successful verification.
+ * @returns {JSX.Element} The rendered VerificationCard component.
+ */
 const VerificationCard = ({
   type,
   contact,
@@ -158,6 +169,20 @@ const VerificationCard = ({
   );
 };
 
+
+/**
+ * ContactVerification
+ *
+ * This component renders a verification card for email and phone number verification.
+ * It uses the `useClientRegistrationStore` hook to access the client's email and phone number.
+ * It also uses the `useSendEmailOTP` and `useSendPhoneOTP` hooks to send OTPs.
+ * The `useVerifyOtp` hook is used to verify the OTPs.
+ *
+ * The component handles the verification process, including sending and verifying OTPs.
+ * It also handles the case where the user needs to resend the OTP.
+ *
+ * @returns {JSX.Element} The rendered ContactVerification component.
+ */
 const ContactVerification = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
