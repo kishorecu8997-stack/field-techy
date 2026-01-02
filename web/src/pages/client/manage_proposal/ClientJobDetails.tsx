@@ -32,8 +32,8 @@ const ClientJobDetails = () => {
   const matchedJob = proposal
     ? sampleJobs1.find((job) => job.id === proposal.jobID)
     : data
-    ? sampleJobs.find((job) => job.id === jobId)
-    : null;
+      ? sampleJobs.find((job) => job.id === jobId)
+      : null;
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -57,6 +57,7 @@ const ClientJobDetails = () => {
               OfferJobStatus={OfferJobStatus}
             />
             <JobTabSection
+              //@ts-expect-error Unable to resolve to a known type, refer the right type of job status and fix the mismatch
               status={matchedJob?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}

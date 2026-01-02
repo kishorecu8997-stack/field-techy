@@ -251,6 +251,7 @@ export const mockNotifications: NotificationProps[] = [
     jobTitle: "Senior React Developer",
     timestamp: "2h ago",
     icon: "📅",
+    read: false,
   },
 ];
 

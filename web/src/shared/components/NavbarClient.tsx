@@ -1,12 +1,15 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
+import { useCurrentClientProfile } from "../apiServices/profiles/client/clientProfileService";
+import { useClientFiles } from "../apiServices/client/clientService";
+import { ClientAdapter } from "../apiServices/client/clientAdapter";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -36,7 +39,84 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { setActiveKey } = useDrawerStore();
+
+  // Fetch current client profile
+  const { data: clientProfile, isLoading: isLoadingProfile } =
+    useCurrentClientProfile();
+
+  // Get client ID
+  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47"; // Fallback to hardcoded ID
+
+  // Fetch client files to get profile picture
+  const { data: clientFiles = [], isLoading: isLoadingFiles } =
+    useClientFiles(clientId);
+
+  // Find profile picture file
+  const profilePictureFile = useMemo(() => {
+    return (
+      clientFiles.find((file) => file.fileType === "PROFILE_PICTURE") || null
+    );
+  }, [clientFiles]);
+
+  // State for profile picture URL
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
+    assetsConfig.images.users.user
+  );
+
+  // State for loading profile picture
+  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(false);
+
+  // Download profile picture if available
+  useEffect(() => {
+    if (!profilePictureFile) {
+      setIsLoadingProfilePicture(false);
+      setProfilePictureUrl(assetsConfig.images.users.user);
+      return;
+    }
+
+    let blobUrl: string | null = null;
+    let isCancelled = false;
+
+    const downloadProfilePicture = async () => {
+      setIsLoadingProfilePicture(true);
+
+      try {
+        const downloadResponse = await ClientAdapter.downloadFileStream(
+          profilePictureFile.fileKey
+        );
+
+        // Check if component is still mounted and file hasn't changed
+        if (!isCancelled) {
+          blobUrl = URL.createObjectURL(downloadResponse.blob);
+          setProfilePictureUrl(blobUrl);
+          setIsLoadingProfilePicture(false);
+        } else {
+          // Cleanup if cancelled - revoke the blob URL we just created
+          const tempBlobUrl = URL.createObjectURL(downloadResponse.blob);
+          URL.revokeObjectURL(tempBlobUrl);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error("Failed to download profile picture:", error);
+          setProfilePictureUrl(assetsConfig.images.users.user);
+          setIsLoadingProfilePicture(false);
+        }
+      }
+    };
+
+    downloadProfilePicture();
+
+    // Cleanup on unmount or when profilePictureFile changes
+    return () => {
+      isCancelled = true;
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+      setIsLoadingProfilePicture(false);
+    };
+  }, [profilePictureFile]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,6 +138,20 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  // Get display name from client profile
+  const displayName = useMemo(() => {
+    if (!clientProfile) return "Guest";
+
+    // For corporate clients, prefer company name, fallback to contact person name
+    // For home clients, use contact person name
+    if (clientProfile.clientType === "CORPORATE") {
+      return (
+        clientProfile.companyName || clientProfile.contactPersonName || "Client"
+      );
+    }
+    return clientProfile.contactPersonName || "Client";
+  }, [clientProfile]);
+
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
       <div className="flex items-center space-x-8 ">
@@ -69,13 +163,21 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         />
         <NavLink
           to={absoluteUrls.client.home.my_projects}
-          className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           to={absoluteUrls.client.home.my_jobs}
-          className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>
@@ -188,14 +290,25 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
-          <span className="max-w-[6rem] truncate text-left">
-            Hi, Nick Wilson
+          <span className="max-w-24 truncate text-left">
+            {isLoadingProfile ? "Loading..." : `Hi, ${displayName}`}
           </span>
-          <img
-            src={assetsConfig.images.users.user}
-            alt="User"
-            className="h-8 w-8 rounded-full bg-white"
-          />
+          {isLoadingProfilePicture || isLoadingFiles ? (
+            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
+              <div className="h-4 w-4 border-2 border-teal-800 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <img
+              src={profilePictureUrl}
+              alt={clientProfile?.contactPersonName || "User"}
+              className="h-8 w-8 rounded-full bg-white object-cover"
+              onError={(e) => {
+                // Fallback to default image if profile picture fails to load
+                (e.target as HTMLImageElement).src =
+                  assetsConfig.images.users.user;
+              }}
+            />
+          )}
         </div>
       </div>
 

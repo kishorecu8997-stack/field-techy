@@ -33,7 +33,7 @@ export const FileUpload = ({
   label = "Upload Document",
   required = false,
   accept = ".pdf,.jpeg,.jpg,.png",
-  minSize = 50 * 1024, // ✅ Minimum file size: 50 KB
+  // minSize = 50 * 1024, // ✅ Minimum file size: 50 KB
   maxSize = 350 * 1024, // ✅ Maximum file size: 350 KB
   containerClassName = "flex flex-col py-1",
   placeholder = "upload a document",
@@ -317,10 +317,9 @@ export const FileUpload = ({
       {isShowLabel && (
         <label
           className={`block mb-1 text-md font-semibold 
-            ${
-              disabled
-                ? "text-gray-400 dark:text-gray-400"
-                : "text-gray-700 dark:text-gray-300"
+            ${disabled
+              ? "text-gray-400 dark:text-gray-400"
+              : "text-gray-700 dark:text-gray-300"
             }`}
         >
           {label}{" "}
@@ -337,13 +336,12 @@ export const FileUpload = ({
           return (
             <>
               <div
-                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${
-                  disabled
-                    ? "border-gray-400  cursor-not-allowed opacity-50"
-                    : displayError
+                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${disabled
+                  ? "border-gray-400  cursor-not-allowed opacity-50"
+                  : displayError
                     ? "border-red-500  cursor-pointer"
                     : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500  cursor-pointer"
-                }`}
+                  }`}
                 onClick={() =>
                   !fileName && document.getElementById(name)?.click()
                 }

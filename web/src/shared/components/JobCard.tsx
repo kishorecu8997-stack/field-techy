@@ -1,16 +1,14 @@
 import { absoluteUrls } from "@/config/urls";
 import {
-  JOB_STATUSES,
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
   type Job,
-  type JobStatus,
 } from "@/pages/engineer/search_result/types";
 import { scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge"; 
+import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 interface JobCardProps extends Job {
   allocationType?: "Automatic" | "Manual";
 }
@@ -31,7 +29,7 @@ const JobCard: React.FC<JobCardProps> = ({
   pay,
   status,
   type,
-  allocationType="Automatic"
+  allocationType = "Automatic",
 }) => {
   return (
     <Link
@@ -78,16 +76,19 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>{getCurrencyFromStorage()}{pay}</span>
+          <span>
+            {getCurrencyFromStorage()}
+            {pay}
+          </span>
         </div>
       </div>
-      
+
       <div className="mt-3">
         <JobStatusBadge status={status} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
           <span className="font-medium">Allocation:</span> {allocationType}
         </div>
-      </div> 
+      </div>
     </Link>
   );
 };

@@ -4,7 +4,7 @@ import { ImageUploaderField } from "./inputs/ImageUploaderField";
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
  * Features a progress indicator around the avatar and dark mode support.
- * 
+ *
  * @component
  * @param {Object} props - Component props
  * @param {string} props.avatarUrl - URL of the user's avatar image
@@ -13,7 +13,7 @@ import { ImageUploaderField } from "./inputs/ImageUploaderField";
  * @param {number} props.rating - Average rating (e.g., 4.5)
  * @param {number} props.reviewCount - Total number of reviews
  * @param {number} props.completionPercentage - Profile completion percentage (0-100)
- * 
+ *
  * @example
  * <ProfileCard
  *   avatarUrl="/path/to/avatar.jpg"
@@ -24,13 +24,15 @@ import { ImageUploaderField } from "./inputs/ImageUploaderField";
  *   completionPercentage={85}
  * />
  */
-const ProfileCard = ({  
+const ProfileCard = ({
+  avatarUrl,
   name,
   title,
   rating,
-  reviewCount,  
-  flex = 'row',
-  backgroundcolor =true,
+  reviewCount,
+  flex = "row",
+  backgroundcolor = true,
+  isLoadingProfilePicture = false,
 }: {
   avatarUrl: string;
   name: string;
@@ -38,23 +40,30 @@ const ProfileCard = ({
   rating: number;
   reviewCount: number;
   completionPercentage: number;
-  flex?: 'row' | 'col';
+  flex?: "row" | "col";
   backgroundcolor?: boolean;
+  isLoadingProfilePicture?: boolean;
 }) => {
   return (
-    <div 
-  className={`flex 
-    ${flex === 'row' ? 'flex-row' : 'flex-col'} 
+    <div
+      className={`flex 
+    ${flex === "row" ? "flex-row" : "flex-col"} 
     items-center 
     space-x-4 
     mb-6 
     p-4 
-    ${backgroundcolor 
-      ? 'bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900' 
-      : ''}`}
->
+    ${
+      backgroundcolor
+        ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
+        : ""
+    }`}
+    >
       <div className="relative">
-        <ImageUploaderField name="profileImage" />
+        <ImageUploaderField
+          name="profileImage"
+          initialImageUrl={avatarUrl}
+          isLoading={isLoadingProfilePicture}
+        />
       </div>
       <div>
         <h2 className="font-bold text-lg text-gray-800">{name}</h2>

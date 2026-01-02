@@ -14,7 +14,7 @@ import { StatusTypes, type TransactionRequest } from "../wallet_overview/types";
  */
 const RejectedTable: React.FC = () => {
   const getRejectedData = () => {
-    return transactionRequest.filter((item) => item.status === StatusTypes.rejected);
+    return transactionRequest.filter((item) => item.status === StatusTypes.Reject);
   };
 
   const columns: Column<TransactionRequest>[] = [
@@ -43,7 +43,10 @@ const RejectedTable: React.FC = () => {
     {
       key: "status",
       label: "Status",
-      renderCell: (row: TransactionRequest) => row.status.charAt(0).toUpperCase() + row.status.slice(1),
+      renderCell: (row: TransactionRequest) => {
+        const d = row?.status ?? "";
+        return d.charAt(0).toUpperCase() + d.slice(1);
+      },
     },
   ];
   return (

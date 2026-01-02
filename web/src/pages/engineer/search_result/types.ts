@@ -92,6 +92,7 @@ export interface Job {
   serviceType?: ServiceType;
   languages?: string;
   tools?: string[];
+  slaLevel?: string;
   poc?: {
     name: string; // e.g., "Raj Patel"
     role?: string; // e.g., "Project Coordinator"

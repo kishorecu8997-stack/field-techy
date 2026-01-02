@@ -1,17 +1,20 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
+import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../OTPPage";
+import EngineerOTPPage from "../EngineerOTPPage";
 
 export interface SignUpFormData {
   email: string;
@@ -41,39 +44,60 @@ const SignUpWithEmail = ({
 }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { setSignupData } = useEngineerRegistrationStore();
   const methods = useForm<SignUpFormData>({
     defaultValues: {
       email: "",
       terms: false,
     },
   });
-  // Inside handleOTPVerified in SignUp
+
+  // Send Email OTP mutation
+  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
+    onSuccess: (data) => {
+      console.log("OTP sent successfully:", data);
+      setIsOpen(true);
+    },
+    onError: (error) => {
+      console.error("Failed to send OTP:", error);
+      methods.setError("email", {
+        type: "manual",
+        message: "Failed to send OTP. Please try again.",
+      });
+    },
+  });
+
   const handleOTPVerified = () => {
     setIsOpen(false);
-    navigate(absoluteUrls.engineer.auth.profile_setup, {
-      state: {
-        signupEmail: methods.getValues("email"),
-        emailVerified: true, // Pre-verified
-        disableEmail: true, // Lock email in ProfileSetup
-        disableMobile: false, // Mobile should be editable in ProfileSetup
-      },
+    // Save to store
+    setSignupData({
+      email: methods.getValues("email"),
+      emailVerified: true,
     });
+    navigate(absoluteUrls.engineer.auth.updated_basic_details);
+  };
+
+  const handleResendOTP = () => {
+    const email = methods.getValues("email");
+    sendEmailOTP(email);
   };
 
   const termsAccepted = methods.watch("terms");
 
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = (data: SignUpFormData) => {
+    sendEmailOTP(data.email);
   };
+
+  const logo_light = assetsConfig.logos.ftLogo;
 
   return (
     <div className="flex items-center justify-center w-full">
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
               className="h-20 w-24"
             />
           </div>
@@ -82,7 +106,7 @@ const SignUpWithEmail = ({
             Already have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.login}
-              className="text-teal-900 hover:underline font-semibold"
+              className="text-teal-900 hover:underline font-semibold dark:text-teal-400"
             >
               Sign In
             </NavLink>
@@ -109,7 +133,7 @@ const SignUpWithEmail = ({
               secondaryLabel="I have read and agree to the"
             />
             <NavLink
-              className="text-teal-900 underline font-semibold pl-1"
+              className="text-teal-900 underline font-semibold pl-1 dark:text-teal-400"
               to={absoluteUrls.engineer.auth.signup}
             >
               Terms and Conditions
@@ -117,18 +141,17 @@ const SignUpWithEmail = ({
           </div>
           <Button
             type="submit"
-            disabled={!termsAccepted}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            disabled={!termsAccepted || isSendingOTP}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
-            Create Account
+            {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
         </FormContainer>
         <div
-          className="text-gray-900 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
+          className="dark:text-neutral-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
           <LuPhone />
@@ -149,11 +172,14 @@ const SignUpWithEmail = ({
           </Button>
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
+          <EngineerOTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code"
+            description="We sent you an OTP code to your email"
             onClose={() => setIsOpen(false)}
             handleNavigate={handleOTPVerified}
+            verificationType="email"
+            contact={methods.getValues("email")}
+            onResendOTP={handleResendOTP}
           />
         </Popup>
       </div>

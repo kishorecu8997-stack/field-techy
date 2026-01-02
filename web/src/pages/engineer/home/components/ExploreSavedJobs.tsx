@@ -1,5 +1,4 @@
 import { absoluteUrls } from "@/config/urls";
-import { sampleJobs } from "@/dummy_data/searchData";
 import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
@@ -26,6 +25,15 @@ const ExploreSavedJobs = () => {
     experience: 0,
     budgetType: null,
     skills: [],
+    budgetRange: { min: 0, max: 0 },
+    serviceType: [],
+    tools: [],
+    experienceLevel: [],
+    jobType: [],
+    locationType: [],
+    locationRadius: 0,
+    primaryLanguage: "",
+    slaLevel: "",
   });
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
@@ -62,6 +70,15 @@ const ExploreSavedJobs = () => {
       experience: 0,
       budgetType: null,
       skills: [],
+      budgetRange: { min: 0, max: 0 },
+      serviceType: [],
+      tools: [],
+      experienceLevel: [],
+      jobType: [],
+      locationType: [],
+      locationRadius: 0,
+      primaryLanguage: "",
+      slaLevel: "",
     });
     setCurrentPage(1);
   };
@@ -73,9 +90,8 @@ const ExploreSavedJobs = () => {
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${allSavedJobs.length} saved job${
-            allSavedJobs.length !== 1 ? "s" : ""
-          }`}
+          description={`${allSavedJobs.length} saved job${allSavedJobs.length !== 1 ? "s" : ""
+            }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">

@@ -38,7 +38,7 @@ const EditEducation = () => {
     };
   }, []);
 
-  const handleSubmit = async (data: EducationFormData) => {
+  const handleSubmit = async (_: EducationFormData) => {
     await showPopup({
       title: "Update Education",
       body: "Are you sure you want to update this education?",
@@ -57,7 +57,6 @@ const EditEducation = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("education");
           },
@@ -102,7 +101,7 @@ const EditEducation = () => {
           required
         />
 
-        <InputField 
+        <InputField
           label="University"
           isShowLabel={true}
           name="university"
@@ -110,8 +109,8 @@ const EditEducation = () => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateUniversity(v) }}
-      />
-    
+        />
+
         <InputField
           label="Major Subject"
           isShowLabel={true}
@@ -120,8 +119,8 @@ const EditEducation = () => {
           aria-required="true"
           required
           rules={{ validate: (v: string) => validateMajorSubject(v) }}
-       />
- 
+        />
+
         <InputField
           label="Passing Year"
           isShowLabel={false}

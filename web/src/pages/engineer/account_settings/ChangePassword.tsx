@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
 
-  const handleSubmit = async (data: bankDetails) => {
+  const handleSubmit = async (_: bankDetails) => {
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",

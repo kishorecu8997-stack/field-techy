@@ -12,7 +12,6 @@ import type { MenuItem } from "@/pages/engineer/account_settings/types";
  * notifications toggle, support links, and logout. Integrates navigation, drawer control, and a logout confirmation modal.
  */
 const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({
-  onMenuItemClick,
   onClose,
 }) => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
