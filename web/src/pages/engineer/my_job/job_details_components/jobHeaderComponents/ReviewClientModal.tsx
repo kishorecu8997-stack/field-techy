@@ -91,15 +91,15 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6"
-        >
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+    >
           <div
             className="absolute inset-0 bg-black/40"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          <div className="relative z-10 w-full sm:max-w-lg bg-white dark:bg-gray-800 rounded-t-2xl sm:rounded-xl shadow-xl">
+          <div className="relative z-10 w-full max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-xl mx-2 sm:mx-0 ">
             <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Rate {clientName}
@@ -167,7 +167,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
 
       {showToast && submittedPayload && (
         <div className="fixed bottom-4 right-4 z-50">
-          <div className="rounded-xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 p-4 w-[22rem] transition-opacity duration-300">
+          <div className="px-5 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-center sm:justify-end gap-3">
             <div className="text-sm text-gray-700 dark:text-gray-300">
               <div className="font-semibold mb-1">Review Submitted</div>
               <div>Rating: {submittedPayload.rating}★</div>

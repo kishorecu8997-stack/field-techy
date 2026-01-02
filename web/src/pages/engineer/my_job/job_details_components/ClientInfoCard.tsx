@@ -2,6 +2,12 @@ import React from "react";
 import type { ClientInfoCardProps } from "../types";
 import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
+/**
+ * Displays client profile information including name, location, rating, and verifications.
+ *
+ * @param props - The component props.
+ * @returns Client information sidebar component.
+ */
 
 type ClientInfoCardUIProps = ClientInfoCardProps & {
   onOpenReview?: () => void;
