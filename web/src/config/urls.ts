@@ -32,6 +32,7 @@ export const urls = {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
       search_result: "search-result",
+      search_analytics: "search-analytics",
       faq: "faq",
       terms_and_conditions: "terms-and-conditions",
       privacy_policy: "privacy-policy",
@@ -94,7 +95,7 @@ export const urls = {
       background_verification: "background-verification",
       profile_setup: "profile-setup",
       documents: "documents",
-
+      verification: "verification",
     },
   },
 
@@ -178,6 +179,7 @@ export const absoluteUrls = {
       dashboard: `${BASE.ENGINEER}/dashboard`,
       my_jobs: `${BASE.ENGINEER}/my-jobs`,
       search_result: `${BASE.ENGINEER}/search-result`,
+      search_analytics: `${BASE.ENGINEER}/search-analytics`,
       faq: `${BASE.ENGINEER}/faq`,
       terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
       privacy_policy: `${BASE.ENGINEER}/privacy-policy`,

@@ -97,3 +97,12 @@ export interface FileUploadResponse {
     fileSize: number;
     uploadedAt: string;
 }
+
+export interface FileDownloadResponse {
+    blob: Blob;
+    fileName: string;
+    mimeType: string;
+    size: number;
+    contentDisposition?: string;
+    contentLength?: number;
+}

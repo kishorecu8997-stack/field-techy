@@ -1,10 +1,16 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+
+import { BackgroundVerificationFields } from "./BackgroundVerificationFields";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { ClientAdapter } from "@/shared/apiServices/client/clientAdapter";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 export type BackgroundVerificationData = {
   governmentId: string;
@@ -20,6 +26,10 @@ export type BackgroundVerificationData = {
  */
 const BackgroundVerification = () => {
   const navigate = useNavigate();
+  const { showPopup } = usePopupStore();
+  const { clientId, clearStore } = useClientRegistrationStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const methods = useForm<BackgroundVerificationData>({
     defaultValues: {
       certificate: "",
@@ -27,8 +37,58 @@ const BackgroundVerification = () => {
     },
   });
 
-  const handleSubmit = () => {
-    navigate(absoluteUrls.client.auth.set_password);
+  const handleSubmit = async (data: any) => {
+    if (!clientId) {
+      toast.error("Client ID is missing. Please complete the registration first.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { updateDocuments } = useClientRegistrationStore.getState();
+
+      // 1. Upload Government ID
+      if (data.governmentId && data.governmentId[0]) {
+        const response = await ClientAdapter.uploadFile({
+          clientId,
+          file: data.governmentId[0],
+          documentType: "GOVERNMENT_ID",
+        });
+        updateDocuments({ governmentIdUrl: response.fileId });
+      }
+
+      // 2. Upload Certificate
+      if (data.certificate && data.certificate[0]) {
+        const response = await ClientAdapter.uploadFile({
+          clientId,
+          file: data.certificate[0],
+          documentType: "CERTIFICATE",
+        });
+        updateDocuments({ certificateUrl: response.fileId });
+      }
+
+      // 3. Show Success Popup -> Redirect to Login
+      await showPopup({
+        title: "Registration Successful",
+        body: "Your profile has been set up successfully. Please proceed to login.",
+        actionButtons: [
+          {
+            label: "Proceed to Login",
+            value: true,
+            action: (close) => {
+              clearStore();
+              navigate(absoluteUrls.client.auth.login);
+              close(true);
+            },
+          },
+        ],
+      });
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      toast.error(error.message || "Failed to upload documents.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -85,12 +145,13 @@ const BackgroundVerification = () => {
             validatePDF={true}
           />
           */}
-          <FileUpload name="governmentId" label="Government ID" placeholder="Government ID" required />
-          <FileUpload name="certificate" label="Certificate" placeholder="Certificate" required />
+
+          <BackgroundVerificationFields />
           <div className="pt-6">
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+              loading={isSubmitting}
             >
               Submit
             </Button>

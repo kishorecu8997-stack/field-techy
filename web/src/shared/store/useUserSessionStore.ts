@@ -1,11 +1,11 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface UserSession {
   userId: string;
-  displayName: string;
+  role: string;
   accessToken: string;
-  metadata: Record<string, string>;
+  // metadata: Record<string, string>;
 }
 
 interface UserSessionStore {
@@ -14,8 +14,6 @@ interface UserSessionStore {
   logout: () => void;
 }
 
-
-//TODO: add 
 export const useUserSessionStore = create<UserSessionStore>()(
   persist(
     (set) => ({
@@ -23,6 +21,6 @@ export const useUserSessionStore = create<UserSessionStore>()(
       setSession: (session) => set({ session }),
       logout: () => set({ session: null }),
     }),
-    { name: 'generic-user-session' }
+    { name: "generic-user-session" }
   )
 );

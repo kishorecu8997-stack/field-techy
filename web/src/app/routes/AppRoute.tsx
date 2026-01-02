@@ -11,9 +11,7 @@ const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
-const SignUpPage = React.lazy(
-  () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
-);
+
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
 );
@@ -47,6 +45,7 @@ const JobDetailsPage = React.lazy(
   () => import("@/pages/engineer/my_job/JobDetailsPage")
 );
 const SearchResult = React.lazy(() => import("@/pages/engineer/search_result"));
+const SearchAnalyticsPage = React.lazy(() => import("@/pages/engineer/search_analytics/SearchAnalyticsPage"));
 const PrivacyPolicy = React.lazy(
   () => import("@/pages/engineer/privacy_policy/PolicyPage")
 );
@@ -376,8 +375,14 @@ export const routes = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.engineer.auth.signup, element: withSuspense(engineerProfileSetup) },
-      { path: urls.engineer.auth.verification, element: withSuspense(engineerContactVerification) },
+      {
+        path: urls.engineer.auth.signup,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.verification,
+        element: withSuspense(engineerContactVerification),
+      },
       // {
       //   path: urls.engineer.auth.profile_setup,
       //   element: withSuspense(MultiStepRegistrationForm),
@@ -451,6 +456,10 @@ export const routes = createBrowserRouter([
         element: withSuspense(SearchResult),
       },
       {
+        path: urls.engineer.home.search_analytics,
+        element: withSuspense(SearchAnalyticsPage),
+      },
+      {
         path: urls.engineer.home.privacy_policy,
         element: withSuspense(PrivacyPolicy),
       },
@@ -510,16 +519,8 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientBackgroundVerification),
       },
       {
-        path: urls.client.auth.forget_password,
-        element: withSuspense(ForgetPassword),
-      },
-      {
         path: urls.client.auth.account_type,
         element: withSuspense(ClientAccountType),
-      },
-      {
-        path: urls.client.auth.reset_password,
-        element: withSuspense(ResetPassword),
       },
       {
         path: `${urls.client.auth.profile_setup}/:role`,
@@ -530,7 +531,7 @@ export const routes = createBrowserRouter([
         element: withSuspense(clientDocuments),
       },
       {
-        path: "verification",
+        path: urls.client.auth.verification,
         element: withSuspense(ClientContactVerification),
       },
     ],
@@ -635,59 +636,6 @@ export const routes = createBrowserRouter([
         path: urls.client.home.chat,
         element: withSuspense(EngineerChatPage),
       },
-    ],
-  },
-
-  {
-    path: BASE.AUTH,
-    element: withSuspense(Layout),
-    children: [
-      { index: true, element: <Navigate to="login" replace /> },
-      { path: urls.client.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
-      {
-        path: urls.client.auth.forget_password,
-        element: withSuspense(ForgetPassword),
-      },
-      {
-        path: urls.client.auth.reset_password,
-        element: withSuspense(ResetPassword),
-      },
-      {
-        path: urls.client.auth.set_password,
-        element: withSuspense(SetPassword),
-      },
-      {
-        path: urls.client.auth.background_verification,
-        element: withSuspense(BackgroundVerification),
-      },
-    ],
-  },
-
-  {
-    path: BASE.CLIENT,
-    element: withSuspense(RootLayout),
-    children: [
-      { index: true, element: withSuspense(MyJobsPage) },
-      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
-      {
-        path: `${urls.client.home.my_jobs}/:jobId`,
-        element: withSuspense(JobDetailsPage),
-      },
-      {
-        path: urls.client.home.search_result,
-        element: withSuspense(SearchResult),
-      },
-      {
-        path: urls.client.home.privacy_policy,
-        element: withSuspense(ClientPrivacyPolicy),
-      },
-      {
-        path: urls.client.home.terms_and_conditions,
-        element: withSuspense(ClientTermsAndConditions),
-      },
-      { path: urls.client.home.faq, element: withSuspense(ClientFAQ) },
-      { path: urls.client.home.chat, element: withSuspense(EngineerChatPage) },
     ],
   },
 

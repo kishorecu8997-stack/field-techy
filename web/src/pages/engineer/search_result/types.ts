@@ -27,12 +27,14 @@ export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 export const WORKING_TYPES = {
   onsite: "on-site",
   remote: "remote",
+  hybrid: "hybrid",
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
   remote: "Remote",
+  hybrid: "Hybrid",
 };
 
 export const getExperienceLevel = (years?: number) => {
@@ -142,9 +144,21 @@ export interface Options {
   value: string;
 }
 
-/**
- * Offered job status flow
- */
+export const JOB_FILTERS = {
+  ALL_JOBS: "All Jobs",
+  APPLIED: "Applied",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  REMOTE: "Remote",
+  ON_SITE: "On-Site",
+  HYBRID: "Hybrid",
+  TODAY: "Today",
+  DECLINED: "Declined",
+  CANCELLED: "Cancelled",
+} as const;
+
+export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];
+
 export const OfferedJobStatus = {
   initial: "initial",
   accepted: "accepted",

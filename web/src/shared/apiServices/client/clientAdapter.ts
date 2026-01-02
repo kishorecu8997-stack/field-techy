@@ -8,8 +8,11 @@ import type {
   ClientFile,
   ClientFileUploadParams,
   FileUploadResponse,
+  FileDownloadResponse,
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
+import type { Country } from "@/shared/components/commonUI/inputs/type";
+import { AxiosError } from "axios";
 
 /*
  * ClientAdapter
@@ -22,28 +25,54 @@ import type { LoginFormData } from "@/pages/admin/auth/types";
  * parameters into the expected format for the API.
  */
 export class ClientAdapter {
-
   /**
    * Helper to handle API errors and return standardized messages
    */
-  private static handleApiError(error: any): never {
-    if (error.response) {
-      const status = error.response.status;
+  private static handleApiError(error: unknown): never {
+    if (error instanceof AxiosError) {
+      const status = error.response?.status;
+
+      if (status === 401) {
+        throw new Error("Unauthorized. Please check your credentials.");
+      }
+
+      if (status === 403) {
+        throw new Error(
+          "Forbidden. You are not authorized to access this resource."
+        );
+      }
+
       if (status === 400) {
         throw new Error("Invalid request details. Please check your inputs.");
       }
       if (status === 500) {
         throw new Error("Internal server error. Please try again later.");
       }
+
+      if (status === 409) {
+        throw new Error(
+          "Resource already exists. Please try again with a different value."
+        );
+      }
     }
     // Re-throw original error if not handled above
-    throw error;
+    throw new Error("An unknown error occurred. Please try again later.");
   }
 
+  /**
+   * Registers a new client.
+   *
+   * @param data - Client registration data including personal and company information
+   * @returns Promise resolving to the created client data with assigned ID
+   * @throws {Error} If registration fails or request encounters an error
+   */
   static async signup(data: ClientData): Promise<ClientData> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SIGNUP, data);
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SIGNUP,
+        data
+      );
       return response.data;
     } catch (error) {
       ClientAdapter.handleApiError(error);
@@ -62,6 +91,15 @@ export class ClientAdapter {
     // });
   }
 
+  /**
+   * Authenticates a client user.
+   *
+   * @param data - Login credentials
+   * @param data.email - Email address or phone number
+   * @param data.password - User's password
+   * @returns Promise resolving to authentication response data
+   * @throws {Error} If authentication fails or request encounters an error
+   */
   static async signin(data: LoginFormData) {
     const payload = {
       phoneOrEmail: data.email,
@@ -74,24 +112,64 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Retrieves a client by their unique identifier.
+   *
+   * @param id - Unique identifier of the client
+   * @returns Promise resolving to client data
+   * @throws {Error} If the client is not found or request encounters an error
+   */
   static async getById(id: string): Promise<ClientData> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
     return response.data;
   }
 
+  /**
+   * Retrieves all clients (non-paginated).
+   *
+   * @returns Promise resolving to an array of all client data
+   * @throws {Error} If the request encounters an error
+   * @remarks For large datasets, consider using the paginated `getAll` method instead.
+   */
   static async getAllClients(): Promise<ClientData[]> {
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_ALL);
     return response.data;
   }
 
-  static async getAll(params: ClientPaginationParams = {}): Promise<PagedResponse<ClientData>> {
-    const { page = 0, size = 10, sortBy = "createdAt", direction = "DESC" } = params;
+  /**
+   * Retrieves a paginated list of clients.
+   *
+   * @param params - Pagination and sorting parameters
+   * @param params.page - Page number (default: 0)
+   * @param params.size - Number of items per page (default: 10)
+   * @param params.sortBy - Field to sort by (default: "createdAt")
+   * @param params.direction - Sort direction: "ASC" or "DESC" (default: "DESC")
+   * @returns Promise resolving to paginated client data
+   * @throws {Error} If the request encounters an error
+   */
+  static async getAll(
+    params: ClientPaginationParams = {}
+  ): Promise<PagedResponse<ClientData>> {
+    const {
+      page = 0,
+      size = 10,
+      sortBy = "createdAt",
+      direction = "DESC",
+    } = params;
     const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
       params: { page, size, sortBy, direction },
     });
     return response.data;
   }
 
+  /**
+   * Updates an existing client.
+   *
+   * @param id - Unique identifier of the client to update
+   * @param data - Updated client data
+   * @returns Promise resolving to the updated client data
+   * @throws {Error} If the update fails or request encounters an error
+   */
   static async update(id: string, data: ClientData): Promise<ClientData> {
     const response = await axiosInstance.put(
       CLIENT_ROUTER_PATHS.UPDATE(id),
@@ -100,58 +178,112 @@ export class ClientAdapter {
     return response.data;
   }
 
+  /**
+   * Deletes a client by ID.
+   *
+   * @param id - Unique identifier of the client to delete
+   * @returns Promise that resolves when the deletion is complete
+   * @throws {Error} If the deletion fails or request encounters an error
+   */
   static async delete(id: string): Promise<void> {
     await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
   }
 
-  // OTP Methods (Stubbed for now)
+  // ===== OTP Methods =====
+
+  /**
+   * Sends an OTP (One-Time Password) to the specified email address.
+   *
+   * @param email - Email address to send OTP to (will be URL encoded)
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP, { email });
-    // return response.data;
+    const urlEncodedEmail = encodeURIComponent(email);
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail)
+    );
+    return response.data;
 
-    // Stubbed response
-    console.log(`[STUB] Sending email OTP to: ${email}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: "OTP sent successfully to email" });
-      }, 1000);
-    });
+    // // Stubbed response
+    // console.log(`[STUB] Sending email OTP to: ${email}`);
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({ message: "OTP sent successfully to email" });
+    //   }, 1000);
+    // });
   }
 
+  /**
+   * Sends an OTP to either an email address or phone number.
+   *
+   * @param emailOrPhone - Email address or phone number to send OTP to
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
+  static async sendEmailMobileOtp(
+    emailOrPhone: string
+  ): Promise<{ message: string }> {
+    // TODO: Replace with actual API call when backend is ready
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone)
+    );
+    return response.data;
+  }
+
+  /**
+   * Sends an OTP to the specified phone number.
+   *
+   * @param phoneNumber - Phone number to send OTP to
+   * @returns Promise resolving to a message confirming OTP was sent
+   * @throws {Error} If OTP sending fails or request encounters an error
+   */
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.SEND_PHONE_OTP, { phoneNumber });
-    // return response.data;
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber)
+    );
+    return response.data;
 
     // Stubbed response
-    console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: "OTP sent successfully to phone" });
-      }, 1000);
-    });
+    // console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
+    // return new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({ message: "OTP sent successfully to phone" });
+    //   }, 1000);
+    // });
   }
 
-  static async verifyEmailOTP(
-    email: string,
+  /**
+   * Verifies an OTP code for email or phone verification.
+   *
+   * @param emailOrPhone - Email address or phone number that received the OTP
+   * @param otp - One-time password code to verify
+   * @returns Promise resolving to verification result with message and verified status
+   * @throws {Error} If OTP verification fails or request encounters an error
+   */
+  static async verifyOtp(
+    emailOrPhone: string,
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
     // TODO: Replace with actual API call when backend is ready
-    // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_EMAIL_OTP, { email, otp });
-    // return response.data;
+    const response = await axiosInstance.post(
+      CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp)
+    );
+    return response.data;
 
     // Stubbed response - accepts any 4-digit OTP
-    console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (otp.length === 4) {
-          resolve({ message: "Email OTP verified successfully", verified: true });
-        } else {
-          reject(new Error("Invalid OTP"));
-        }
-      }, 800);
-    });
+    // console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     if (otp.length === 4) {
+    //       resolve({ message: "Email OTP verified successfully", verified: true });
+    //     } else {
+    //       reject(new Error("Invalid OTP"));
+    //     }
+    //   }, 800);
+    // });
   }
 
   static async verifyPhoneOTP(
@@ -167,7 +299,10 @@ export class ClientAdapter {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (otp.length === 4) {
-          resolve({ message: "Phone OTP verified successfully", verified: true });
+          resolve({
+            message: "Phone OTP verified successfully",
+            verified: true,
+          });
         } else {
           reject(new Error("Invalid OTP"));
         }
@@ -180,8 +315,10 @@ export class ClientAdapter {
   /**
    * Get list of states for a country
    */
-  static async getStates(countryId?: string): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || 'all'}`);
+  static async getStates(
+    countryId?: string
+  ): Promise<{ value: string; label: string }[]> {
+    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
     return new Promise((resolve) => {
       setTimeout(() => {
         const states = [
@@ -199,21 +336,23 @@ export class ClientAdapter {
   /**
    * Get list of cities for a state
    */
-  static async getCities(stateId: string): Promise<{ value: string; label: string }[]> {
+  static async getCities(
+    stateId: string
+  ): Promise<{ value: string; label: string }[]> {
     console.log(`[STUB] Fetching cities for state: ${stateId}`);
     return new Promise((resolve) => {
       setTimeout(() => {
         const cityMap: Record<string, { value: string; label: string }[]> = {
-          "Maharashtra": [
+          Maharashtra: [
             { value: "Mumbai", label: "Mumbai" },
             { value: "Pune", label: "Pune" },
             { value: "Nagpur", label: "Nagpur" },
           ],
-          "Karnataka": [
+          Karnataka: [
             { value: "Bangalore", label: "Bangalore" },
             { value: "Mysore", label: "Mysore" },
           ],
-          "Delhi": [
+          Delhi: [
             { value: "New Delhi", label: "New Delhi" },
             { value: "Old Delhi", label: "Old Delhi" },
           ],
@@ -227,7 +366,7 @@ export class ClientAdapter {
    * Get list of industries
    */
   static async getIndustries(): Promise<{ value: string; label: string }[]> {
-    console.log('[STUB] Fetching industries');
+    console.log("[STUB] Fetching industries");
     return new Promise((resolve) => {
       setTimeout(() => {
         const industries = [
@@ -248,7 +387,7 @@ export class ClientAdapter {
    * Get list of VAT options
    */
   static async getVatOptions(): Promise<{ value: string; label: string }[]> {
-    console.log('[STUB] Fetching VAT options');
+    console.log("[STUB] Fetching VAT options");
     return new Promise((resolve) => {
       setTimeout(() => {
         const vatOptions = [
@@ -262,51 +401,127 @@ export class ClientAdapter {
     });
   }
 
-  static async getFiles(clientId: string): Promise<ClientFile[]> {
-    const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_FILES(clientId));
-    return response.data;
+  /**
+   * Get list of phone countries
+   * TODO: Replace with actual API call when backend is ready
+   */
+  static async getPhoneCountries(): Promise<Country[]> {
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      // const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PHONE_COUNTRIES);
+      // return response.data;
+
+      // Stubbed response for now
+      console.log("[STUB] Fetching phone countries");
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const phoneCountries: Country[] = [
+            {
+              code: "+91",
+              name: "India",
+              flag: "https://flagcdn.com/w40/in.png",
+              validationKey: "india",
+            },
+            {
+              code: "+44",
+              name: "UK",
+              flag: "https://flagcdn.com/w40/gb.png",
+              validationKey: "uk",
+            },
+          ];
+          resolve(phoneCountries);
+        }, 500);
+      });
+    } catch (error) {
+      ClientAdapter.handleApiError(error);
+      throw error; // This will never be reached due to handleApiError, but satisfies TypeScript
+    }
   }
 
-  static async uploadFile(params: ClientFileUploadParams): Promise<FileUploadResponse> {
-    const { clientId, file, documentType, onUploadProgress } = params;
+  // ===== File Management Methods =====
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('documentType', documentType);
-
-    const response = await uploadAxiosInstance.post(
-      CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId),
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          if (onUploadProgress && progressEvent.total) {
-            const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            onUploadProgress({
-              loaded: progressEvent.loaded,
-              total: progressEvent.total,
-              percentage,
-            });
-          }
-        },
-      }
+  /**
+   * Retrieves all files associated with a client.
+   *
+   * @param clientId - Unique identifier of the client
+   * @returns Promise resolving to an array of client file data
+   * @throws {Error} If the request encounters an error
+   */
+  static async getFiles(clientId: string): Promise<ClientFile[]> {
+    const response = await axiosInstance.get(
+      CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
     );
     return response.data;
   }
 
+  /**
+   * Uploads a file for a client.
+   *
+   * @param params - File upload parameters
+   * @param params.clientId - Unique identifier of the client
+   * @param params.file - File to upload
+   * @param params.documentType - Type of document being uploaded
+   * @param params.onUploadProgress - Optional callback to track upload progress
+   * @returns Promise resolving to file upload response with file details
+   * @throws {Error} If the upload fails or request encounters an error
+   */
+  static async uploadFile(
+    params: ClientFileUploadParams
+  ): Promise<FileUploadResponse> {
+    const { clientId, file, documentType, onUploadProgress } = params;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const path = CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType);
+    console.log(`Uploading file to: ${path}`);
+    const response = await uploadAxiosInstance.post(path, formData, {
+      headers: {
+        "X-USER": "CLIENT",
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onUploadProgress && progressEvent.total) {
+          const percentage = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onUploadProgress({
+            loaded: progressEvent.loaded,
+            total: progressEvent.total,
+            percentage,
+          });
+        }
+      },
+    });
+    return response.data;
+  }
+
+  /**
+   * Deletes a file by its unique identifier.
+   *
+   * @param fileId - Unique identifier of the file to delete
+   * @returns Promise that resolves when the deletion is complete
+   * @throws {Error} If the deletion fails or request encounters an error
+   */
   static async deleteFile(fileId: string): Promise<void> {
     await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE_FILE(fileId));
   }
 
+  /**
+   * Downloads a file by its file key.
+   *
+   * @param fileKey - Unique file key identifier
+   * @param fileName - Optional file name for the download (defaults to file key if not provided)
+   * @returns Promise that resolves when the file download is complete
+   * @throws {Error} If the download fails or request encounters an error
+   */
   static async downloadFile(fileKey: string, fileName?: string): Promise<void> {
     const response = await axiosInstance.get(
       CLIENT_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
       {
-        responseType: 'blob',
+        responseType: "blob",
         headers: {
-          'Content-Type': 'application/octet-stream',
+          "Content-Type": "application/octet-stream",
         },
       }
     );
@@ -316,14 +531,72 @@ export class ClientAdapter {
     const url = window.URL.createObjectURL(blob);
 
     // Create temporary anchor element and trigger download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = fileName || 'download';
+    link.download = fileName || "download";
     document.body.appendChild(link);
     link.click();
 
     // Cleanup
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Download file stream with metadata
+   * Returns blob with associated metadata (fileName, mimeType, size, etc.)
+   */
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<FileDownloadResponse> {
+    const response = await axiosInstance.get(
+      CLIENT_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+      {
+        responseType: "blob",
+        headers: {
+          accept: "*/*",
+        },
+      }
+    );
+
+    // Extract metadata from response headers
+    const contentDisposition = response.headers["content-disposition"];
+    const contentLength = response.headers["content-length"]
+      ? parseInt(response.headers["content-length"], 10)
+      : undefined;
+    const contentType =
+      response.headers["content-type"] || "application/octet-stream";
+
+    // Extract filename from Content-Disposition header if available
+    let fileName = "download";
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(
+        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+      );
+      if (fileNameMatch && fileNameMatch[1]) {
+        fileName = fileNameMatch[1].replace(/['"]/g, "");
+        // Handle URL-encoded filenames
+        try {
+          fileName = decodeURIComponent(fileName);
+        } catch (e) {
+          console.error("Failed to decode file name:", e);
+          // If decoding fails, use the original filename
+          throw new Error(
+            "Failed to decode file name. Please try again later."
+          );
+        }
+      }
+    }
+
+    const blob = new Blob([response.data], { type: contentType });
+
+    return {
+      blob,
+      fileName,
+      mimeType: contentType,
+      size: blob.size,
+      contentDisposition,
+      contentLength,
+    };
   }
 }

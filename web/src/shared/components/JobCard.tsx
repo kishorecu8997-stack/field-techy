@@ -1,16 +1,14 @@
 import { absoluteUrls } from "@/config/urls";
 import {
-  JOB_STATUSES,
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
   type Job,
-  type JobStatus,
 } from "@/pages/engineer/search_result/types";
 import { scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge"; 
+import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 interface JobCardProps extends Job {
   allocationType?: "Automatic" | "Manual";
 }
@@ -31,7 +29,7 @@ const JobCard: React.FC<JobCardProps> = ({
   pay,
   status,
   type,
-  allocationType="Automatic"
+  allocationType = "Automatic",
 }) => {
   return (
     <Link
@@ -46,7 +44,18 @@ const JobCard: React.FC<JobCardProps> = ({
         <span
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
-          {type === WORKING_TYPES.onsite ? WORKING_TYPES_PROPERTY.onsite : WORKING_TYPES_PROPERTY.remote}
+          {(() => {
+            switch (type) {
+              case WORKING_TYPES.onsite:
+                return WORKING_TYPES_PROPERTY.onsite;
+              case WORKING_TYPES.remote:
+                return WORKING_TYPES_PROPERTY.remote;
+              case WORKING_TYPES.hybrid:
+                return WORKING_TYPES_PROPERTY.hybrid;
+              default:
+                return "Unknown"; // Fallback for unexpected types
+            }
+          })()}
         </span>
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -67,16 +76,19 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
-          <span>{getCurrencyFromStorage()}{pay}</span>
+          <span>
+            {getCurrencyFromStorage()}
+            {pay}
+          </span>
         </div>
       </div>
-      
+
       <div className="mt-3">
         <JobStatusBadge status={status} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
           <span className="font-medium">Allocation:</span> {allocationType}
         </div>
-      </div> 
+      </div>
     </Link>
   );
 };
