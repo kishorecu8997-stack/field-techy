@@ -1,21 +1,13 @@
 import { icons } from "@/config/icons";
+import jobSkillsData from "@/dummy_data/jobSkills.json";
+import toolsData from "@/dummy_data/tools.json";
 import { scrollToTop } from "@/utils";
-import { getCurrencyFromStorage } from "@/utils/currency";
-import React, { useState } from "react";
+import { calculateMatchScore } from "@/utils/matchCalculator";
+import React, { useMemo, useState } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
-import {
-  toggleSavedJob,
-  isJobSaved,
-  BOOKMARK_CHANGE_EVENT,
-} from "@/utils/bookmarkUtils";
-import { toast } from "react-toastify";
-import jobSkillsData from "@/dummy_data/jobSkills.json";
-import toolsData from "@/dummy_data/tools.json";
-import { calculateMatchScore } from "@/utils/matchCalculator";
-import { useMemo } from "react";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 
 // Reusable Badge
@@ -257,14 +249,17 @@ const JobCard: React.FC<{
               {job.status && (
                 <Badge
                   variant={
-                    STATUS_VARIANT_MAP[job.status] ??
+                    STATUS_VARIANT_MAP[
+                      job.status as keyof typeof STATUS_VARIANT_MAP
+                    ] ??
                     (() => {
                       console.warn(`Unknown job status: ${job.status}`);
                       return "gray"; // fallback to a valid variant
                     })()
                   }
                 >
-                  {JOB_STATUSES[job.status] ?? job.status}
+                  {JOB_STATUSES[job.status as keyof typeof JOB_STATUSES] ??
+                    job.status}
                 </Badge>
               )}
               {job.time && <span>| {job.time}</span>}

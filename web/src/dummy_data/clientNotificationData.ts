@@ -8,6 +8,7 @@ export const mockNotifications: NotificationProps[] = [
     message: 'Aisha Khan submitted a proposal for "UI Developer – Dashboard Project".',
     timestamp: '1h',
     icon: '⚡',
+    read: false,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const mockNotifications: NotificationProps[] = [
     message: 'The client has reviewed your proposal.',
     timestamp: '1h',
     icon: '⚡',
+    read: false,
   },
   {
     id: 3,
@@ -24,5 +26,6 @@ export const mockNotifications: NotificationProps[] = [
     message: 'Aisha Khan submitted a proposal for "UI Developer – Dashboard Project".',
     timestamp: '2h',
     icon: '⚡',
+    read: false,
   },
 ];

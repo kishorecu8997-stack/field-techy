@@ -443,7 +443,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Arjun Mehta",
       phone: "+91 98765 43210",
     },
-    status: "approved",
+    status: "Approve",
     walletBalance: 12500.75,
   },
   {
@@ -452,7 +452,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Priya Sharma",
       phone: "+91 99887 65432",
     },
-    status: "approved",
+    status: "Approve",
     walletBalance: 8450.0,
   },
   {
@@ -461,7 +461,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Rohit Verma",
       phone: "+91 91234 56789",
     },
-    status: "rejected",
+    status: "Reject",
     walletBalance: 15780.5,
   },
   {
@@ -470,7 +470,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Sneha Iyer",
       phone: "+91 90011 22334",
     },
-    status: "approved",
+    status: "Approve",
     walletBalance: 11200.25,
   },
   {
@@ -479,7 +479,7 @@ export const transactionRequest: TransactionRequest[] = [
       name: "Karan Patel",
       phone: "+91 90909 11122",
     },
-    status: "rejected",
+    status: "Reject",
     walletBalance: 9800.0,
   },
 ];

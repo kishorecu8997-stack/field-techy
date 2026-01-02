@@ -3,6 +3,8 @@ import NavbarClient from "@/shared/components/NavbarClient";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEffect, useState, type JSX } from "react";
 import { Outlet } from "react-router-dom";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
 
 /**
  * Root layout component that wraps all authenticated/engineer-facing pages.
@@ -26,6 +28,14 @@ import { Outlet } from "react-router-dom";
 const ClientLayout = (): JSX.Element => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
+
+  useEffect(() => {
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
     const handleScroll = () => {

@@ -20,14 +20,13 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 /**
  * The AddEducation component renders a form for adding a new education entry.
  * It uses `react-hook-form` for form management and validation.
- * @param {AddEducationProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation = () => {
+const AddEducation: React.FC = ({ }) => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (data: EducationFormData) => {
+  const handleSubmit = async (_: EducationFormData) => {
     await showPopup({
       title: "Add Education",
       body: "Are you sure you want to add this education?",
@@ -47,7 +46,6 @@ const AddEducation = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Education Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("education");
           },

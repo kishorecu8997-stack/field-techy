@@ -1,21 +1,26 @@
 // Currency mapping based on phone number prefixes
 const CURRENCY_MAP: Record<string, CurrencySymbol> = {
-  '+91': '₹', // India
-  '+44': '£', // UK
+  "+91": "₹", // India
+  "+44": "£", // UK
 };
 
 // Default currency symbol
-const DEFAULT_CURRENCY: CurrencySymbol = '$';
+const DEFAULT_CURRENCY: CurrencySymbol = "$";
 
 /**
  * Detects the currency symbol based on the phone number prefix.
  * @param phoneNumber - The full phone number string (e.g., "+91 1234567890" or "+1 1234567890")
  * @returns The currency symbol for the detected country or default "$"
  */
-export function detectCurrencyFromPhone(phoneNumber: string | null | undefined): CurrencySymbol {
-
+export function detectCurrencyFromPhone(
+  phoneNumber: string | null | undefined
+): CurrencySymbol {
   // Explicit input validation
-  if (phoneNumber === null || phoneNumber === undefined || phoneNumber.trim() === '') {
+  if (
+    phoneNumber === null ||
+    phoneNumber === undefined ||
+    phoneNumber.trim() === ""
+  ) {
     return DEFAULT_CURRENCY;
   }
 
@@ -43,7 +48,7 @@ export function detectCurrencyFromPhone(phoneNumber: string | null | undefined):
  * @param currency - The currency symbol to store
  */
 export function setCurrencyInStorage(currency: CurrencySymbol): void {
-  localStorage.setItem('userCurrency', currency);
+  localStorage.setItem("userCurrency", currency);
 }
 
 /**
@@ -51,14 +56,16 @@ export function setCurrencyInStorage(currency: CurrencySymbol): void {
  * @returns The stored currency symbol or default "$" if not found
  */
 export function getCurrencyFromStorage(): CurrencySymbol {
-  return (localStorage.getItem('userCurrency') as CurrencySymbol) || DEFAULT_CURRENCY;
+  return (
+    (localStorage.getItem("userCurrency") as CurrencySymbol) || DEFAULT_CURRENCY
+  );
 }
 
 /**
  * Initializes currency to default if not set (for new users who bypass signup/login)
  */
 export function initializeDefaultCurrency(): void {
-  if (!localStorage.getItem('userCurrency')) {
+  if (!localStorage.getItem("userCurrency")) {
     setCurrencyInStorage(DEFAULT_CURRENCY);
   }
 }
@@ -67,15 +74,19 @@ export function initializeDefaultCurrency(): void {
  * Combined function to detect and store currency from phone number.
  * @param phoneNumber - The phone number to detect currency from
  */
-export function detectAndStoreCurrency(phoneNumber: string | null | undefined): void {
+export function detectAndStoreCurrency(
+  phoneNumber: string | null | undefined
+): void {
   const currency = detectCurrencyFromPhone(phoneNumber);
   setCurrencyInStorage(currency);
 }
 
 // Type for currency symbol
-export type CurrencySymbol = '$' | '₹' | '£';
+export type CurrencySymbol = "$" | "₹" | "£";
 
 // Debug function to test currency detection
-export function testCurrencyDetection(phoneNumber: string | null | undefined): void {
-  const result = detectCurrencyFromPhone(phoneNumber);
+export function testCurrencyDetection(
+  phoneNumber: string | null | undefined
+): void {
+  detectCurrencyFromPhone(phoneNumber);
 }

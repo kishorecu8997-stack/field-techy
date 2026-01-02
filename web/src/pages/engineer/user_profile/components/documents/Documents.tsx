@@ -13,7 +13,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * @param {function(): void} props.onClose - Callback to close the parent drawer/sidebar.
  * @returns {React.ReactElement} The rendered Documents component.
  */
-const Documents: React.FC= () => {
+const Documents: React.FC = () => {
   const [documents, setDocuments] = useState(initialDocuments);
   const { showPopup } = usePopupStore();
   const { setActiveKey, setImmediateParentKey } = useDrawerStore();
@@ -68,33 +68,33 @@ const Documents: React.FC= () => {
    * Handles the deletion of a document after user confirmation.
    * @param {number} id - The ID of the document to be deleted.
    */
-  const handleDeleteDocument = async(id: number) => {
+  const handleDeleteDocument = async (id: number) => {
     await showPopup({
       title: "Delete Document",
-          body: "Are you sure you want to delete the document?",
-          actionButtons: [
-            {
-              label: "Cancel",
-              value: "no",
-              variant:"secondary",
-              action: async (close) => {
-                console.log("No button clicked");
-                close(true);
-              },
-            },
-            {
-              label: "Yes, delete",
-              value: "yes",
-              variant:"primary",
-              action: async (close) => {
-                toast.success("Document Deleted Successfully");
-                console.log("Form submitted with data:", id);
-                close(true);
-                setActiveKey("profile");
-              },
-            },
-          ],
-        });
+      body: "Are you sure you want to delete the document?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            console.log("No button clicked");
+            close(true);
+          },
+        },
+        {
+          label: "Yes, delete",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            toast.success("Document Deleted Successfully");
+            console.log("Form submitted with data:", id);
+            close(true);
+            setActiveKey("profile");
+          },
+        },
+      ],
+    });
   };
 
   /**

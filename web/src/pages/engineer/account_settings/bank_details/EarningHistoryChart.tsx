@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
+import { formatCurrency } from "@/shared/libs/utils";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
 
