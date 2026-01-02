@@ -26,8 +26,40 @@ export async function responseLoggerInterceptor(response: AxiosResponse) {
   return response;
 }
 
-axiosInstance.interceptors.request.use(addAuthTokenIfExists);
-axiosInstance.interceptors.response.use(responseLoggerInterceptor);
+axiosInstance.interceptors.request.use(
+  addAuthTokenIfExists,
+  (error) => {
+    console.error('Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+axiosInstance.interceptors.response.use(
+  responseLoggerInterceptor,
+  (error) => {
+    console.error('API Error:', error);
+
+    const status = error.response?.status;
+
+    if (status === 401) {
+      //TODO: Add more specific error handling
+      // - redirect to login
+      // - refresh token
+      // - clear auth state
+      // window.location.href = '/login';
+    }
+
+    if (status === 403) {
+      console.warn('Access forbidden');
+    }
+
+    if (status >= 500) {
+      console.error('Server error occurred');
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 
 // ---------------------------------------------------------------------------
