@@ -8,7 +8,22 @@ export interface ClientFilesContextValue {
   refetch: () => void;
 }
 
-export const ClientFilesContext = createContext<ClientFilesContextValue | undefined>(
-  undefined
-);
-
+/**
+ * A context for client files.
+ *
+ * This context provides a way to access client files and related information.
+ * It is designed to be used within a `ClientFilesProvider` to provide the files context to child components.
+ *
+ * @example
+ * <ClientFilesProvider>
+ *   <ClientFilesContext.Provider value={filesContextValue}>
+ *     <ClientFiles />
+ *   </ClientFilesContext.Provider>
+ * </ClientFilesProvider>
+ *
+ * @param {ClientFilesContextValue} value - The value for the context.
+ * @returns {ClientFilesContextValue | undefined} The context value.
+ */
+export const ClientFilesContext = createContext<
+  ClientFilesContextValue | undefined
+>(undefined);
