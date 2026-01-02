@@ -46,15 +46,35 @@ export const OTPInput = ({
     inputRefs.current = inputRefs.current.slice(0, length);
   }, [length]);
 
-  const validationRules: RegisterOptions = {
+  // Extract any user-provided validation rules but prevent overrides for length-related validators
+  const {
+    minLength: _minLength,
+    maxLength: _maxLength,
+    pattern: _pattern,
+    validate: _validate,
+    required: _required,
+    ...otherRules
+  } = rules || {};
+
+  const validationRules = {
+    // preserve unrelated user-provided options (careful: some props may be incompatible with string-only inputs)
+    ...otherRules,
+    // required is controlled via the `required` prop
     required: required ? "OTP is required" : false,
+    // enforce exact length
+    minLength: { value: length, message: `OTP must be ${length} digits` },
+    maxLength: { value: length, message: `OTP must be ${length} digits` },
+    // ensure numeric-only and exact length
+    pattern: {
+      value: new RegExp(`^\\d{${length}}$`),
+      message: `OTP must contain only numbers and be ${length} digits`,
+    },
     validate: {
       isComplete: (value: string) =>
         value?.length === length || `Please enter ${length} digits`,
-      ...rules?.validate,
+      ...(_validate || {}),
     },
-    ...rules,
-  };
+  } as RegisterOptions;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -100,8 +120,9 @@ export const OTPInput = ({
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const paste = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (paste.length === length) {
-      setValue(name, paste);
+    if (paste.length >= length) {
+      const code = paste.slice(0, length);
+      setValue(name, code);
       // Focus last input after paste
       setTimeout(() => {
         inputRefs.current[length - 1]?.focus();
@@ -119,7 +140,7 @@ export const OTPInput = ({
 
         return (
           <div className="flex flex-col gap-2">
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-2 justify-center">
               {Array.from({ length }).map((_, idx) => (
                 <input
                   key={idx}
@@ -135,20 +156,19 @@ export const OTPInput = ({
                   onChange={(e) => handleChange(e, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   onPaste={handlePaste}
-                  className="w-12 h-12 text-center text-xl rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="w-12 h-12 text-center text-lg rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                   aria-label={`OTP digit ${idx + 1} of ${length}`}
                 />
               ))}
             </div>
             {error && (
               <p
-                className={`text-sm text-red-600 dark:text-red-500 ${
-                  errorAlign === "left"
+                className={`text-sm text-red-600 dark:text-red-500 ${errorAlign === "left"
                     ? "text-left"
                     : errorAlign === "right"
-                    ? "text-right"
-                    : "text-center"
-                }`}
+                      ? "text-right"
+                      : "text-center"
+                  }`}
               >
                 {error.message?.toString()}
               </p>

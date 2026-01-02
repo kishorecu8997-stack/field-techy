@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form';
 import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
 import { DatePickerInput } from '@/shared/components/commonUI/inputs/DatePickerInput';
 
@@ -17,7 +16,7 @@ import { DatePickerInput } from '@/shared/components/commonUI/inputs/DatePickerI
 const BackgroundVerification = () => {
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-    
+
       <FileUpload
         name="governmentId"
         label="Government ID"

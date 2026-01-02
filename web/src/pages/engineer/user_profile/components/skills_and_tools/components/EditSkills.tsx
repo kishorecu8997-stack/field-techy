@@ -11,9 +11,9 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 export type EditSkillsFormData = {
   skills: string[];
 };
-interface EditSkillsProps {
-  currentSkills?: string[];
-}
+// interface EditSkillsProps {
+//   currentSkills?: string[];
+// }
 
 /**
  * The EditSkills component renders a form to modify a user's professional skills.
@@ -92,7 +92,6 @@ const EditSkills = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Skills Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

@@ -3,18 +3,16 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import {
-  useSendEmailOTP,
-  useSendPhoneOTP,
-  useVerifyEmailOTP,
-  useVerifyPhoneOTP,
-} from "@/shared/apiServices/client/clientService";
-
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import { absoluteUrls } from "@/config/urls";
 import { buildQuery } from "@/utils";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import {
+  useSendEmailOTP,
+  useSendPhoneOTP,
+  useVerifyOtp,
+} from "@/shared/apiServices/client/clientService";
 
 interface VerificationCardProps {
   type: "email" | "phone";
@@ -23,6 +21,32 @@ interface VerificationCardProps {
   onVerifySuccess: () => void;
 }
 
+/**
+ * A component representing the verification card for email or mobile number.
+ *
+ * This component renders a verification card that allows users to verify their email or mobile number.
+ * It utilizes the reusable `OTPInput` component for handling the OTP input.
+ *
+ * This component is designed to be rendered within a `FormContainer` from `react-hook-form`
+ * to connect the OTP input to the main form state.
+ *
+ * @param {VerificationCardProps} props - The props for the VerificationCard component.
+ * @param {string} props.type - The type of verification (email or phone).
+ * @param {string} props.contact - The contact email or phone number.
+ * @param {boolean} props.isVerified - Whether the contact is verified.
+ * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
+ *
+ * @returns {JSX.Element} The verification card for email or mobile number.
+ *
+ * @example
+ * <VerificationCard
+ *   type="email"
+ *   contact="test@example.com"
+ *   isVerified={false}
+ *   onVerifySuccess={() => {}}
+ * />
+ *
+ */
 const VerificationCard = ({
   type,
   contact,
@@ -55,23 +79,21 @@ const VerificationCard = ({
     onError: () => toast.error("Failed to send mobile OTP"),
   });
 
-  const { isPending: isVerifyingEmail, mutate: verifyEmail } =
-    useVerifyEmailOTP({
-      onSuccess: () => {
-        toast.success("Email verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Email OTP"),
-    });
+  const { isPending: isVerifyingEmail, mutate: verifyEmail } = useVerifyOtp({
+    onSuccess: () => {
+      toast.success("Email verified successfully");
+      onVerifySuccess();
+    },
+    onError: () => toast.error("Invalid Email OTP"),
+  });
 
-  const { isPending: isVerifyingPhone, mutate: verifyPhone } =
-    useVerifyPhoneOTP({
-      onSuccess: () => {
-        toast.success("Mobile number verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Mobile OTP"),
-    });
+  const { isPending: isVerifyingPhone, mutate: verifyPhone } = useVerifyOtp({
+    onSuccess: () => {
+      toast.success("Mobile number verified successfully");
+      onVerifySuccess();
+    },
+    onError: () => toast.error("Invalid Mobile OTP"),
+  });
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -85,8 +107,11 @@ const VerificationCard = ({
   };
 
   const onSubmit = (data: { otp: string }) => {
-    if (type === "email") verifyEmail({ email: contact, otp: data.otp });
-    else verifyPhone({ phoneNumber: contact, otp: data.otp });
+    if (type === "email") verifyEmail({ emailOrPhone: contact, otp: data.otp });
+    else {
+      alert("in mobile");
+      verifyPhone({ emailOrPhone: contact, otp: data.otp });
+    }
   };
 
   const isPending =
@@ -124,13 +149,13 @@ const VerificationCard = ({
               </Button>
             ) : (
               <>
-                <OTPInput name="otp" length={4} errorAlign="center" />
+                <OTPInput name="otp" length={6} errorAlign="center" />
 
                 <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5 px-1">
                   <span>
                     {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                   </span>
-                  <button
+                  <Button
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
@@ -141,7 +166,7 @@ const VerificationCard = ({
                     }`}
                   >
                     Resend
-                  </button>
+                  </Button>
                 </div>
 
                 <Button
@@ -160,33 +185,45 @@ const VerificationCard = ({
   );
 };
 
+/**
+ * ContactVerification
+ *
+ * This component renders a verification card for email and phone number verification.
+ * It uses the `useClientRegistrationStore` hook to access the client's email and phone number.
+ * It also uses the `useSendEmailOTP` and `useSendPhoneOTP` hooks to send OTPs.
+ * The `useVerifyOtp` hook is used to verify the OTPs.
+ *
+ * The component handles the verification process, including sending and verifying OTPs.
+ * It also handles the case where the user needs to resend the OTP.
+ *
+ * @returns {JSX.Element} The rendered ContactVerification component.
+ */
 const ContactVerification = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const clientId = searchParams.get("id");
+  const urlClientId = searchParams.get("id");
 
   const {
     email,
     phone,
+    clientId,
     setClientId,
     setSignupData,
-    emailVerified: storeEmailVerified,
-    mobileVerified: storePhoneVerified,
+    emailVerified,
+    mobileVerified,
   } = useClientRegistrationStore();
 
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-
-  // Sync with store
+  // Sync clientId from URL if needed
   useEffect(() => {
-    if (storeEmailVerified) setIsEmailVerified(true);
-    if (storePhoneVerified) setIsPhoneVerified(true);
-    if (clientId) setClientId(clientId);
-  }, [storeEmailVerified, storePhoneVerified, clientId, setClientId]);
+    if (urlClientId && urlClientId !== clientId) {
+      setClientId(urlClientId);
+    }
+  }, [urlClientId, clientId, setClientId]);
 
   const handleContinue = () => {
-    if (isEmailVerified && isPhoneVerified) {
-      const param = buildQuery({ id: clientId || "" });
+    if (emailVerified && mobileVerified) {
+      const finalId = clientId || urlClientId || "";
+      const param = buildQuery({ id: finalId });
       navigate(`${absoluteUrls.client.auth.documents}?${param}`);
     } else {
       toast.error("Please verify both email and mobile number");
@@ -209,9 +246,8 @@ const ContactVerification = () => {
           <VerificationCard
             type="email"
             contact={email}
-            isVerified={isEmailVerified}
+            isVerified={emailVerified}
             onVerifySuccess={() => {
-              setIsEmailVerified(true);
               setSignupData({ emailVerified: true });
             }}
           />
@@ -221,9 +257,8 @@ const ContactVerification = () => {
           <VerificationCard
             type="phone"
             contact={phone}
-            isVerified={isPhoneVerified}
+            isVerified={mobileVerified}
             onVerifySuccess={() => {
-              setIsPhoneVerified(true);
               setSignupData({ mobileVerified: true });
             }}
           />
@@ -235,7 +270,7 @@ const ContactVerification = () => {
           <Button
             onClick={handleContinue}
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            disabled={!isEmailVerified || !isPhoneVerified}
+            disabled={!emailVerified || !mobileVerified}
           >
             Continue
           </Button>

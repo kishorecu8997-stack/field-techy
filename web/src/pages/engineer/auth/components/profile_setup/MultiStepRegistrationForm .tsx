@@ -147,10 +147,9 @@ const MultiStepRegistrationForm = () => {
     >
       {currentStep > 1 && (
         <div>
-          <button
-            type="button"
+          <div
             onClick={goToPreviousStep}
-            className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-full w-fit cursor-pointer bg-white shadow-md hover:bg-gray-100 transition-colors"
             aria-label="Go back"
           >
             <svg
@@ -167,7 +166,7 @@ const MultiStepRegistrationForm = () => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </button>
+          </div>
         </div>
       )}
 

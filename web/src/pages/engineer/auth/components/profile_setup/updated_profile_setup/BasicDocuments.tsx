@@ -1,205 +1,279 @@
+
+
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { usePopupStore } from "@/shared/store/popupStore";
-import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
+import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerDocuments } from "./types";
 import { useState } from "react";
 
+
+interface DocumentFormData {
+  profileImage: File | string | null;
+  governmentId: FileList | null;
+  certificate: FileList | null;
+}
+
 /**
- * Component for uploading engineer profile documents.
+ * Document upload component for engineer registration.
+ *
+ * Allows engineers to upload optional documents:
+ * - Profile image
+ * - Government ID
+ * - Certificates
+ *
+ * Users can either:
+ * 1. Upload at least ONE document and save
+ * 2. Skip and complete later
  */
 const BasicDocuments = () => {
-    const navigate = useNavigate();
-    const { showPopup } = usePopupStore();
-    const {
-        engineerId,
-        resumeUrl,
-        governmentIdUrl,
-        certificateUrl,
-        profileImageUrl,
-        updateDocuments,
-        markRegistrationComplete,
-        clearStore
-    } = useEngineerRegistrationStore();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const engineerId = searchParams.get("id");
 
-    const formCtx = useForm<EngineerDocuments>({
-        defaultValues: {
-            profileImageUrl: profileImageUrl || "",
-            resumeUrl: resumeUrl || "",
-            governmentIdUrl: governmentIdUrl || "",
-            certificateUrl: certificateUrl || "",
+  const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
+    {}
+  );
+
+  const formCtx = useForm<DocumentFormData>({
+    defaultValues: {
+      profileImage: null,
+      governmentId: null,
+      certificate: null,
+    },
+  });
+
+  const { showPopup } = usePopupStore();
+  const { clearStore, updateDocuments } = useEngineerRegistrationStore();
+
+  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
+    onSuccess: () => {
+      setUploadingDoc(null);
+      toast.success("File uploaded successfully!");
+    },
+    onError: (error: any) => {
+      console.error("Upload failed:", error);
+      setUploadingDoc(null);
+      toast.error("Failed to upload file");
+    },
+     onProgress: (progress) => {
+      setUploadProgress((prev) => ({
+        ...prev,
+        [uploadingDoc!]: progress.percentage!,
+      }));
+    },
+  });
+
+  const handleSkip = () => {
+    showPopup({
+      title: "Skip Document Upload?",
+      body: "You can upload documents later from your profile. Continue to dashboard?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: false,
+          variant: "outline",
+          action: (close) => close(false),
         },
+        {
+          label: "Skip",
+          value: true,
+          action: (close) => {
+            clearStore();
+            navigate(absoluteUrls.engineer.home.dashboard);
+            close(true);
+          },
+        },
+      ],
     });
+  };
 
-    // File Upload Mutation
-    const { mutateAsync: uploadFile } = useEngineerFileUpload();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleSubmit = async (data: DocumentFormData) => {
+    if (!engineerId) {
+      toast.error("Engineer ID not found. Please restart registration.");
+      return;
+    }
 
-    // Helper to handle individual file uploads if needed, 
-    // but FileUpload component might handle it or we handle it on submit.
-    // Assuming FileUpload component returns the File object or URL? 
-    // Usually FileUpload handles upload internally or returns File. 
-    // If FileUpload component takes `onFileSelect`, we can upload immediately.
-    // HOWEVER, Client `BasicDocuments.tsx` usually uploads on selection if using a reusable component that supports it, 
-    // or uploads all on submit.
-    // Given `useEngineerFileUpload` exists, we probably want to upload when file is selected or on submit.
+    // Check if at least one document is selected
+    const hasAtLeastOne =
+      data.profileImage || data.governmentId || data.certificate;
 
-    // Checking `FileUpload.tsx` (not visible here but assuming standard behavior from other tasks).
-    // If `FileUpload` component is controlled, `data` in handleSubmit will contain the file values.
+    if (!hasAtLeastOne) {
+      toast.error("Please upload at least one document or click 'Skip'.");
+      return;
+    }
 
-    const handleSubmit = async (data: any) => {
-        // Determine which files need uploading if they are File objects
-        // If they are strings (URLs), they are already uploaded.
+    // Upload files
+    const uploads: Promise<any>[] = [];
 
-        // The Form Data will likely contain File objects if valid files are selected.
-        // We need to upload them one by one.
+    if (data.profileImage && data.profileImage instanceof File) {
+      setUploadingDoc("PICTURE");
+      uploads.push(
+        uploadFileAsync({
+          engineerId,
+          file: data.profileImage,
+          documentType: "PICTURE",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                PICTURE: progress.percentage!,
+              }));
+            }
+          },
+        }).then((res) => {
+          updateDocuments({ profileImageUrl: res.fileId });
+        })
+      );
+    }
 
-        if (!engineerId) {
-            toast.error("Engineer ID missing. Please restart registration.");
-            return;
-        }
+    if (data.governmentId && data.governmentId.length > 0) {
+      setUploadingDoc("GOVERNMENT_ID");
+      uploads.push(
+        uploadFileAsync({
+          engineerId,
+          file: data.governmentId[0],
+          documentType: "GOVERNMENT_ID",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                GOVERNMENT_ID: progress.percentage!,
+              }));
+            }
+          },
+        }).then((res) => {
+          updateDocuments({ governmentIdUrl: res.fileId });
+        })
+      );
+    }
 
-        setIsSubmitting(true);
-        try {
-            // Upload logic would go here if not handled by components.
-            // Assuming for now the components might separate file selection from upload or we do it here.
-            // Since `useEngineerFileUpload` expects `file`, `documentType`...
+    if (data.certificate && data.certificate.length > 0) {
+      setUploadingDoc("CERTIFICATE");
+      uploads.push(
+        uploadFileAsync({
+          engineerId,
+          file: data.certificate[0],
+          documentType: "CERTIFICATE",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                CERTIFICATE: progress.percentage!,
+              }));
+            }
+          },
+        }).then((res) => {
+          updateDocuments({ certificateUrl: res.fileId });
+        })
+      );
+    }
 
-            // TODO: Access the actual File objects from the form data.
-            // The `data` object keys (resumeUrl etc) might hold the File object if the input is `FileUpload`.
-            // Let's assume standard `react-hook-form` controller behavior with `FileUpload`.
+    try {
+      await Promise.all(uploads);
 
-            // Parallel uploads could be done here.
-            // For this task, we'll assume the user wants the flow structure first.
+      showPopup({
+        title: "Documents Uploaded Successfully!",
+        body: "Your documents have been uploaded. Proceed to Login?",
+        actionButtons: [
+          {
+            label: "Proceed to Login",
+            value: true,
+            action: (close) => {
+              clearStore();
+              toast.success("Registration completed successfully!");
+              navigate(absoluteUrls.engineer.auth.login);
+              close(true);
+            },
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Some documents failed to upload. Please try again.");
+    }
+  };
 
-            // STUB: "Uploading" logic simulation or actual implementation if File objects are present.
+  const isUploading = uploadingDoc !== null;
 
-            await showPopup({
-                title: "Document Submission Confirmation",
-                body: "Are you sure you want to complete your profile with these documents?",
-                actionButtons: [
-                    {
-                        label: "Cancel",
-                        value: false,
-                        variant: "outline",
-                        action: (close) => {
-                            close(false);
-                            setIsSubmitting(false);
-                        },
-                    },
-                    {
-                        label: "Submit",
-                        value: true,
-                        action: async (close) => {
-                            // Here we would await all uploads
+  return (
+    <FormContainer
+      methods={formCtx}
+      onSubmit={handleSubmit}
+      className="flex flex-col h-screen w-full"
+    >
+      {/* header - sticky */}
+      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
+        <h2 className="text-3xl font-bold">Background Verification</h2>
+        <h2 className="text-md font-extralight">
+          Please upload at least one document for background verification{" "}
+          <span className="text-sm text-gray-500">(or skip for now)</span>
+        </h2>
+      </div>
 
-                            // Update store
-                            updateDocuments({
-                                // ... set URLs returned from uploads
-                            });
+      {/* body - scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        {/* profile image */}
+        <div className="flex flex-row justify-center items-center py-1">
+          <div className="w-fit">
+            <ImageUploaderField name="profileImage" />
+          </div>
+        </div>
 
-                            markRegistrationComplete();
-                            clearStore(); // Clear local storage after success
+        {/* documents */}
+        <div className="p-4 flex flex-col gap-2 items-center justify-center">
+          <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+            <BackgroundVerification />
 
-                            toast.success("Registration completed successfully!");
-                            navigate(absoluteUrls.engineer.home.dashboard);
-                            close(true);
-                        },
-                    },
-                ],
-            });
-        } catch (e) {
-            console.error(e);
-            toast.error("Error uploading documents.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <FormContainer
-            methods={formCtx}
-            onSubmit={handleSubmit}
-            className="flex flex-col h-screen w-full"
-        >
-            <div className="shrink-0 p-2 flex flex-col gap-2 items-center justify-center bg-white sticky top-0 z-10">
-                <h2 className="text-3xl font-bold">Documents</h2>
-                <h2 className="text-md font-extralight text-center px-4">
-                    Upload your documents to complete verification.
-                </h2>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-4 py-6">
-                {/* Profile Image */}
-                <div className="flex flex-row justify-center items-center mb-6">
-                    <div className="w-fit">
-                        <ImageUploaderField name="profileImageUrl" />
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-                    {/* Resume */}
-                    <FileUpload
-                        name="resumeUrl"
-                        label="Resume/CV"
-                        required
-                        accept=".pdf"
-                        maxPages={5}
-                        validatePDF={true}
+            {isUploading && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm font-medium text-blue-800">
+                  Uploading {uploadingDoc?.replace("_", " ")}...
+                </p>
+                {uploadProgress[uploadingDoc] && (
+                  <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-blue-600 h-full transition-all duration-300"
+                      style={{ width: `${uploadProgress[uploadingDoc]}%` }}
                     />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-                    {/* Government ID */}
-                    <FileUpload
-                        name="governmentIdUrl"
-                        label="Government ID"
-                        placeholder="Government ID"
-                        accept='.pdf'
-                        maxPages={5}
-                        validatePDF={true}
-                    />
-
-                    {/* Certificate */}
-                    <FileUpload
-                        name="certificateUrl"
-                        label="Certificate"
-                        placeholder="Certificate"
-                        accept='.pdf'
-                        maxPages={5}
-                        validatePDF={true}
-                    />
-                </div>
-            </div>
-
-            <div className="flex-shrink-0 p-4 bg-white dark:bg-gray-900">
-                <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-                    <div className="flex gap-2">
-                        <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={() => {
-                                // Skip logic
-                                markRegistrationComplete();
-                                clearStore();
-                                navigate(absoluteUrls.engineer.home.dashboard);
-                            }}
-                        >
-                            Skip for now
-                        </Button>
-                        <Button type="submit" className="flex-1" loading={isSubmitting}>
-                            Complete Registration
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </FormContainer>
-    );
+      {/* footer - sticky */}
+      <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
+        <div className="w-full max-w-md flex gap-3">
+          <Button
+            type="button"
+            onClick={handleSkip}
+            variant="outline"
+            disabled={isUploading}
+            className="w-1/2 flex-1"
+          >
+            Skip for Now
+          </Button>
+          <Button
+            type="submit"
+            disabled={isUploading}
+            className="w-1/2 bg-linear-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          >
+            {isUploading ? "Uploading..." : "Save and Continue"}
+          </Button>
+        </div>
+      </div>
+    </FormContainer>
+  );
 };
 
 export default BasicDocuments;

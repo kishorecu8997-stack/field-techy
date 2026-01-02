@@ -2,16 +2,17 @@ import { absoluteUrls } from "@/config/urls";
 import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import BasicDetailsFields from "./BasicDetailsFields";
 import SetPassword from "../SetPassword"; // Resuing existing
+import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
-import { buildQuery } from "@/utils";
 
 /**
  * A component that represents the main profile setup step for engineers.
@@ -41,7 +42,6 @@ const BasicDetails = () => {
     updateProfileData,
     setEngineerId,
     markStepCompleted,
-    clearStore: resetStore,
   } = useEngineerRegistrationStore();
 
   const formCtx = useForm<EngineerBasicDetails>({
@@ -216,39 +216,23 @@ const BasicDetails = () => {
         <BasicDetailsFields />
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto mt-4">
           <SetPassword />
-
-          <Controller
-            control={formCtx.control}
-            name="termsAndConditions"
-            rules={{ required: "You must agree to the terms and conditions" }}
-            render={({ field, fieldState: { error } }) => (
-              <div className="flex flex-col mt-4">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                    checked={!!field.value}
-                    id="terms"
-                    className="accent-primary h-4 w-4"
-                  />
-                  <label htmlFor="terms" className="text-sm text-gray-700">
-                    I agree to the{" "}
-                    <span className="text-blue-600 underline cursor-pointer">
-                      Terms and Conditions
-                    </span>
-                  </label>
-                </div>
-                {error && (
-                  <span className="text-red-500 text-xs mt-1">
-                    {error.message}
-                  </span>
-                )}
-              </div>
-            )}
-          />
+          <div className="mt-4 flex items-center gap-2">
+            <CheckboxInput
+              name="termsAndConditions"
+              required
+              isShowLabel={false}
+              rules={{ required: "You must agree to the terms and conditions" }}
+            />
+            <label
+              htmlFor="termsAndConditions"
+              className="text-sm text-gray-700 cursor-pointer"
+            >
+              I agree to the{" "}
+              <span className="text-blue-600 underline cursor-pointer">
+                Terms and Conditions
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 

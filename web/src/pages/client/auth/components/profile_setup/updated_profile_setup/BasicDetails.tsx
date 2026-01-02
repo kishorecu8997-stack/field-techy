@@ -2,13 +2,13 @@ import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassw
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
-import { Controller } from "react-hook-form";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
@@ -98,9 +98,11 @@ const BasicDetails = () => {
 
       toast.success("Profile registered successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Signup failed:", error);
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error(
+        (error as Error)?.message || "Registration failed. Please try again."
+      );
     },
   });
 
@@ -232,17 +234,8 @@ const BasicDetails = () => {
     });
   };
 
-  // Pre-fill form from store (for fields that might have been edited)
-  useEffect(() => {
-    // Only update if values exist in store (don't override with empty strings)
-    if (signupEmail && !formCtx.getValues("email"))
-      formCtx.setValue("email", signupEmail);
-    if (signupPhone && !formCtx.getValues("phone"))
-      formCtx.setValue("phone", signupPhone);
-  }, [signupEmail, signupPhone, formCtx]);
-
   // Helper to safely get value from string or Select option
-  const getValue = (val: any) => {
+  const getValue = (val: unknown) => {
     if (!val) return "";
     if (typeof val === "object" && "value" in val) return val.value as string;
     return String(val);
@@ -287,38 +280,23 @@ const BasicDetails = () => {
         <BasicDetailsFields />
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <SetPassword />
-          <Controller
-            control={formCtx.control}
-            name="termsAndConditions"
-            rules={{ required: "You must agree to the terms and conditions" }}
-            render={({ field, fieldState: { error } }) => (
-              <div className="flex flex-col mt-4">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    ref={field.ref}
-                    checked={!!field.value}
-                    id="terms"
-                    className="accent-primary h-4 w-4"
-                  />
-                  <label htmlFor="terms" className="text-sm text-gray-700">
-                    I agree to the{" "}
-                    <span className="text-blue-600 underline cursor-pointer">
-                      Terms and Conditions
-                    </span>
-                  </label>
-                </div>
-                {error && (
-                  <span className="text-red-500 text-xs mt-1">
-                    {error.message}
-                  </span>
-                )}
-              </div>
-            )}
-          />
+          <div className="mt-4 flex items-center gap-2">
+            <CheckboxInput
+              name="termsAndConditions"
+              required
+              isShowLabel={false}
+              rules={{ required: "You must agree to the terms and conditions" }}
+            />
+            <label
+              htmlFor="termsAndConditions"
+              className="text-sm text-gray-700 cursor-pointer"
+            >
+              I agree to the{" "}
+              <span className="text-blue-600 underline cursor-pointer">
+                Terms and Conditions
+              </span>
+            </label>
+          </div>
         </div>
       </div>
       <div className="flex-shrink-0 p-4">

@@ -18,7 +18,6 @@ import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { adminJobsStatus, ManageJobProps } from "../types";
-import { validateBudget } from "@/utils/validate";
 
 /**
  * Renders the "All Jobs" tab content within the manage jobs page.
@@ -41,13 +40,13 @@ const AllJob: React.FC = () => {
   const [filterType, setFilterType] = useState<string | null>(null);
 
   const [budget, setBudget] = useState("");
-  const [budgetError, setBudgetError] = useState<string | null>(null);
+  // const [budgetError, setBudgetError] = useState<string | null>(null);
 
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setBudget(value);
 
-    const result = validateBudget(value);
+    // const result = validateBudget(value);
   };
 
   const handleStatusChange = async (data: ManageJobProps) => {
@@ -55,9 +54,8 @@ const AllJob: React.FC = () => {
     const status = data.status;
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
-      body: `Are you sure you want to ${
-        status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this job?`,
+      body: `Are you sure you want to ${status?.charAt(0).toUpperCase() + status?.slice(1)
+        } this job?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -67,9 +65,8 @@ const AllJob: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: `${
-            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
-          }`,
+          variant: `${status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+            }`,
           action: async (close: any) => {
             console.log("close :", close);
             // await handlePostAJob(data);

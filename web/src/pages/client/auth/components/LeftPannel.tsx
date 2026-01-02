@@ -54,7 +54,6 @@ const LeftPanel: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col text-white">
-      {/* <div className="flex-shrink-0 h-12 md:h-16 lg:h-24"></div> */}
       <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-6 md:p-8 lg:p-12">
         <Slider {...settings} className="w-full">
           {sections.map((section, index) => (

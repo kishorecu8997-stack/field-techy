@@ -1,25 +1,22 @@
 import { assetsConfig } from "@/assets";
-import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
-import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { validatePassword } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import OTPPage from "../OTPPage";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  type LoginEmailFormData,
-} from "../../validations/LoginEmail";
+import type { LoginFormData } from "../types";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+import { type LoginEmailFormData } from "../../validations/LoginEmail";
 import {
   useUserSessionStore,
   type UserSession,
@@ -29,7 +26,6 @@ import {
   useReqEmailVerificationOtpMutation,
   useVerifyEmailVerificationOtpMutation,
 } from "@/shared/apiServices/auth/engineer/engineerAuthService";
-import { validatePassword } from "@/shared/libs/utils";
 import { CiMail } from "react-icons/ci";
 
 /**
@@ -57,8 +53,7 @@ const Login = ({
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
   const [isOpen, setIsOpen] = useState(false);
-  const methods = useForm({
-    resolver: zodResolver(loginSchema),
+  const methods = useForm<LoginFormData>({
     defaultValues: {
       email: "",
       password: "",
@@ -148,40 +143,39 @@ const Login = ({
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="px-10 w-full max-w-lg">
+      <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <IconWithTheme
-              lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={logo_light}
-              className="h-15 w-20"
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
             />
           </div>
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Sign In
-            </h2>
-            <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
-              Don't have an account?{" "}
-              <NavLink
-                to={absoluteUrls.engineer.auth.signup}
-                className="text-teal-900 dark:text-teal-400 underline font-semibold "
-              >
-                Sign Up
-              </NavLink>
-            </h2>
-          </div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Sign In
+          </h2>
+          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
+            Don't have an account?{" "}
+            <NavLink
+              to={absoluteUrls.engineer.auth.signup}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+            >
+              Sign Up
+            </NavLink>
+          </h2>
         </div>
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 w-full"
+          className="flex flex-col gap-3 p-2 w-full"
         >
           <InputField
             name="email"
-            label="Email Address"
-            type="email"
+            label="Email ID"
+            type="text"
             required
+            rules={validateEmailRules}
           />
           <PasswordInput
             name="password"
@@ -193,7 +187,7 @@ const Login = ({
             }}
           />
           <div className="flex items-center justify-between flex-wrap">
-            <CheckboxInput name="rememberMe" secondaryLabel="Remember Me" />
+            <CheckboxInput name="rememberMe" secondaryLabel="Remember me" />
             <NavLink
               className="text-teal-900 dark:text-teal-400 hover:underline font-semibold"
               to={absoluteUrls.engineer.auth.forget_password}
@@ -228,7 +222,6 @@ const Login = ({
           <Button
             className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             variant="outline"
-            disabled
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap text-gray-900 dark:text-white">

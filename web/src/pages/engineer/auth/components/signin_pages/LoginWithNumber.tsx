@@ -175,10 +175,11 @@ const LoginWithNumber = ({
             }.`}
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => {
-              handleOtpSubmission(data.otp)
+              handleOtpSubmission(data.otp);
               const phoneNumber = method.getValues("phone");
               detectAndStoreCurrency(phoneNumber);
               getCurrencyFromStorage();
+              toast.success("Logged in successfully");
             }}
           />
         </Popup>

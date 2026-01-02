@@ -14,7 +14,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * @returns {React.ReactElement} The rendered Documents component.
  */
 const Documents: React.FC = () => {
-  const [documents] = useState(initialDocuments);
+  const [documents, setDocuments] = useState(initialDocuments);
   const { showPopup } = usePopupStore();
   const { setActiveKey, setImmediateParentKey } = useDrawerStore();
 

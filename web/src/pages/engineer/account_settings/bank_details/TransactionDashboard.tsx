@@ -1,12 +1,11 @@
-import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { useTransactionStore } from "@/dummy_data/transactionStore";
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { HiFilter, HiSearch } from "react-icons/hi";
-import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { InputField } from "@/shared/components/commonUI/inputs/InputField";
+import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { getStatusBadge } from "@/utils/statusUtils";
-import { getCurrencyFromStorage } from "@/utils/currency";
+import React, { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { HiFilter, HiSearch } from "react-icons/hi";
 
 // Define TypeScript interfaces
 export interface Transaction {
@@ -52,7 +51,10 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
   const hasActiveFilters = !!(searchTerm || filterDateFrom || filterDateTo);
   const filteredTransactions = validAndSortedTransactions.filter((tx) => {
-    if (searchTerm && !tx.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (
+      searchTerm &&
+      !tx.description.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
       return false;
     }
     const txDate = new Date(tx.date); // Already validated in the step above
@@ -65,7 +67,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     reset();
   };
   // Determine which transactions to display: all filtered, or the 10 most recent ones.
-  const transactionsToShow = showAll ? filteredTransactions : filteredTransactions.slice(0, 10);
+  const transactionsToShow = showAll
+    ? filteredTransactions
+    : filteredTransactions.slice(0, 10);
   const title = showAll ? "All Transactions" : "Last 10 Transactions";
 
   return (
@@ -210,7 +214,9 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         {transactionsToShow.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">
-              {hasActiveFilters ? "No transactions match your filters." : "No transactions found."}
+              {hasActiveFilters
+                ? "No transactions match your filters."
+                : "No transactions found."}
             </p>
           </div>
         )}

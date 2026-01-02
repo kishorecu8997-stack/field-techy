@@ -6,14 +6,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
 import { useState } from "react";
-// import type { ClientDocumentType } from "@/shared/apiServices/client/clientTypes";
 
 interface DocumentFormData {
-  profileImage: FileList | null;
+  profileImage: File | string | null;
   governmentId: FileList | null;
   certificate: FileList | null;
 }
@@ -50,10 +49,26 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore } = useClientRegistrationStore();
+  const { updateDocuments } = useClientRegistrationStore();
 
-  const { mutate: uploadFile } = useUploadClientFile({
-    onSuccess: (data) => {
+  const { mutateAsync: uploadFileAsync } = useUploadClientFile({
+    // @ts-ignore - The types from react-query/clientService might be slightly off regarding the second argument 'variables'
+    onSuccess: (data: any, variables: any) => {
       console.log("File uploaded:", data);
+
+      // Map document type to store key
+      switch (variables.documentType) {
+        case "PROFILE_PICTURE":
+          updateDocuments({ profileImageUrl: data.fileId });
+          break;
+        case "GOVERNMENT_ID":
+          updateDocuments({ governmentIdUrl: data.fileId });
+          break;
+        case "CERTIFICATE":
+          updateDocuments({ certificateUrl: data.fileId });
+          break;
+      }
+
       setUploadingDoc(null);
       toast.success("File uploaded successfully!");
     },
@@ -110,32 +125,23 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<void>[] = [];
+    const uploads: Promise<any>[] = [];
 
-    if (data.profileImage && data.profileImage.length > 0) {
+    if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
       uploads.push(
-        new Promise((resolve, reject) => {
-          uploadFile(
-            {
-              clientId,
-              file: data.profileImage![0],
-              documentType: "PROFILE_PICTURE",
-              onUploadProgress: (progress: {
-                loaded: number;
-                total?: number;
-                percentage?: number;
-              }) => {
-                if (progress.percentage) {
-                  setUploadProgress((prev) => ({
-                    ...prev,
-                    PROFILE_PICTURE: progress.percentage!,
-                  }));
-                }
-              },
-            },
-            { onSuccess: () => resolve(), onError: reject }
-          );
+        uploadFileAsync({
+          clientId,
+          file: data.profileImage,
+          documentType: "PROFILE_PICTURE",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,  
+                PROFILE_PICTURE: progress.percentage!,
+              }));
+            }
+          },
         })
       );
     }
@@ -143,27 +149,18 @@ const BasicDocuments = () => {
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
       uploads.push(
-        new Promise((resolve, reject) => {
-          uploadFile(
-            {
-              clientId,
-              file: data.governmentId![0],
-              documentType: "GOVERNMENT_ID",
-              onUploadProgress: (progress: {
-                loaded: number;
-                total?: number;
-                percentage?: number;
-              }) => {
-                if (progress.percentage) {
-                  setUploadProgress((prev) => ({
-                    ...prev,
-                    GOVERNMENT_ID: progress.percentage!,
-                  }));
-                }
-              },
-            },
-            { onSuccess: () => resolve(), onError: reject }
-          );
+        uploadFileAsync({
+          clientId,
+          file: data.governmentId[0],
+          documentType: "GOVERNMENT_ID",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                GOVERNMENT_ID: progress.percentage!,
+              }));
+            }
+          },
         })
       );
     }
@@ -171,27 +168,18 @@ const BasicDocuments = () => {
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
       uploads.push(
-        new Promise((resolve, reject) => {
-          uploadFile(
-            {
-              clientId,
-              file: data.certificate![0],
-              documentType: "CERTIFICATE",
-              onUploadProgress: (progress: {
-                loaded: number;
-                total?: number;
-                percentage?: number;
-              }) => {
-                if (progress.percentage) {
-                  setUploadProgress((prev) => ({
-                    ...prev,
-                    CERTIFICATE: progress.percentage!,
-                  }));
-                }
-              },
-            },
-            { onSuccess: () => resolve(), onError: reject }
-          );
+        uploadFileAsync({
+          clientId,
+          file: data.certificate[0],
+          documentType: "CERTIFICATE",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                CERTIFICATE: progress.percentage!,
+              }));
+            }
+          },
         })
       );
     }
@@ -201,15 +189,15 @@ const BasicDocuments = () => {
 
       showPopup({
         title: "Documents Uploaded Successfully!",
-        body: "Your documents have been uploaded. Continue to dashboard?",
+        body: "Your documents have been uploaded. Continue to Login?",
         actionButtons: [
           {
-            label: "Continue",
+            label: "Proceed to Login",
             value: true,
             action: (close) => {
               clearStore();
               toast.success("Registration completed successfully!");
-              navigate(absoluteUrls.client.home.dashboard);
+              navigate(absoluteUrls.client.auth.login);
               close(true);
             },
           },
@@ -229,7 +217,6 @@ const BasicDocuments = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      {/* header - sticky */}
       <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
@@ -237,21 +224,15 @@ const BasicDocuments = () => {
           <span className="text-sm text-gray-500">(or skip for now)</span>
         </h2>
       </div>
-
-      {/* body - scrollable */}
       <div className="flex-1 overflow-y-auto">
-        {/* profile image */}
         <div className="flex flex-row justify-center items-center py-1">
           <div className="w-fit">
             <ImageUploaderField name="profileImage" />
           </div>
         </div>
-
-        {/* documents */}
         <div className="p-4 flex flex-col gap-2 items-center justify-center">
           <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-            <BackgroundVerification />
-
+            <BackgroundVerificationFields />
             {isUploading && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-800">
@@ -270,8 +251,6 @@ const BasicDocuments = () => {
           </div>
         </div>
       </div>
-
-      {/* footer - sticky */}
       <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
         <div className="w-full max-w-md flex gap-3">
           <Button
