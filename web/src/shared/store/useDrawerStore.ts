@@ -5,8 +5,10 @@ export type FieldStatus = "complete" | "pending" | "rejected";
 
 interface DrawerState {
   activeKey: string;
-  setActiveKey: (key: string) => void;
+  setActiveKey: (key: string, showBackButton?: boolean) => void;
   reset: () => void;
+  showBackButton: boolean;
+  setShowBackButton: (show: boolean) => void;
   isOpenSidebar: boolean;
   setISOpenSidebar: (isOpen: boolean) => void;
   selectedId: string | number;
@@ -32,7 +34,13 @@ interface DrawerState {
  */
 const useDrawerStore = create<DrawerState>((set) => ({
   activeKey: "myAccount",
-  setActiveKey: (key) => set({ activeKey: key }),
+  setActiveKey: (key, showBackButton) =>
+    set(() => ({
+      activeKey: key,
+      showBackButton: showBackButton !== undefined ? showBackButton : true,
+    })),
+  showBackButton: true,
+  setShowBackButton: (show: boolean) => set({ showBackButton: show }),
   isOpenSidebar: false,
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
   selectedId: "",
@@ -67,6 +75,7 @@ const useDrawerStore = create<DrawerState>((set) => ({
       selectedId: "",
       navigationSource: "sidebar",
       returnToKey: undefined,
+      showBackButton: true,
     }),
 }));
 

@@ -3,16 +3,19 @@ import { IoChevronBack, IoCloseSharp } from "react-icons/io5";
 type DrawerHeaderProps = {
   onClose: () => void;
   title: string;
-  onBack?: (key: string) => void;
+  /** show back button explicitly */
+  showBack?: boolean;
+  /** Back handler invoked when back is clicked; if omitted, back will call onClose() */
+  onBack?: () => void;
   actions?: React.ReactNode | React.ComponentType;
 };
 
 /**
  * DrawerHeader
  *
- * A small header used at the top of drawer panels. When `onBack` is supplied the
- * component renders a back arrow which calls `onBack('back')` — otherwise the
- * back arrow is omitted and the close (X) button will call `onClose`.
+ * A small header used at the top of drawer panels. The `showBack` prop controls
+ * whether the back arrow is rendered. When the back arrow is clicked, `onBack`
+ * is invoked if provided; otherwise it falls back to `onClose()`.
  *
  * The component keeps markup minimal and relies on the parent to manage drawer
  * state. Title text is required and displayed prominently.
@@ -20,11 +23,12 @@ type DrawerHeaderProps = {
 const DrawerHeader: React.FC<DrawerHeaderProps> = ({
   onClose,
   title = "title",
+  showBack = false,
   onBack,
   actions,
 }) => {
   const handleBack = () => {
-    if (onBack) onBack("back");
+    if (onBack) onBack();
     else onClose();
   };
 
@@ -51,9 +55,10 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
     return actions;
   };
 
+
   return (
     <div className="flex items-center gap-3">
-      {onBack ? (
+      {showBack ? (
         <button
           onClick={handleBack}
           aria-label="Back"

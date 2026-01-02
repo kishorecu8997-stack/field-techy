@@ -28,14 +28,15 @@ export type MenuItems = {
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
   // Modified to get navigation to source from the store 
-  const { 
-    activeKey, 
+  const {
+    activeKey,
     setActiveKey,
     navigationSource,
     returnToKey,
     resetNavigationSource,
     immediateParentKey,
-    setImmediateParentKey 
+    setImmediateParentKey,
+    showBackButton,
   } = useDrawerStore();
 
   // Escape key & scroll lock effect
@@ -75,24 +76,24 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
-// modified onBack function to handle navigation Source  
+  // modified onBack function to handle navigation Source  
   const onBack = () => {
-  if (immediateParentKey) {
-    setActiveKey(immediateParentKey);
-    setImmediateParentKey(undefined); // clear after use
-    return;
-  }
+    if (immediateParentKey) {
+      setActiveKey(immediateParentKey);
+      setImmediateParentKey(undefined); // clear after use
+      return;
+    }
 
-  if (navigationSource === "profilecompletion" && returnToKey) {
-    setActiveKey(returnToKey);
-    resetNavigationSource();
-    return;
-  }
+    if (navigationSource === "profilecompletion" && returnToKey) {
+      setActiveKey(returnToKey);
+      resetNavigationSource();
+      return;
+    }
 
-  if (config.parent) {
-    setActiveKey(config.parent as string);
-  }
-};
+    if (config.parent) {
+      setActiveKey(config.parent as string);
+    }
+  };
 
   return (
     <>
@@ -121,6 +122,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
                 title={config.title}
                 onClose={onClose}
                 onBack={onBack}
+                showBack={showBackButton}
                 actions={config.actions}
               />
             </div>

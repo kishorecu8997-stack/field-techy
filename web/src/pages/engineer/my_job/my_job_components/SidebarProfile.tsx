@@ -41,15 +41,15 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
-  const { 
-    profileData, 
-    setActiveKey, 
-    setISOpenSidebar, 
-    setNavigationSource 
+  const {
+    profileData,
+    setActiveKey,
+    setISOpenSidebar,
+    setNavigationSource
   } = useDrawerStore();
   // Get the overall profile completion percentage with the each field status
   const profileCompletion = getProfileCompletion(profileData);
-  
+
   const { name, phone, role } = user;
   return (
     <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
@@ -71,7 +71,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}
-        className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+          className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
         >
           Complete Now
         </button>
@@ -101,7 +101,6 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">
@@ -134,7 +133,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <Button
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-            setActiveKey("manageBankAccounts");
+                setActiveKey("manageBankAccounts", false);
             setISOpenSidebar(true);
           }}
         >
@@ -143,7 +142,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <Button
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-            setActiveKey("withdraw");
+                setActiveKey("withdraw", false);
             setISOpenSidebar(true);
           }}
         >

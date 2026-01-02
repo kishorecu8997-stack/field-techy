@@ -54,7 +54,7 @@ export const sampleJobs: Job[] = [
     skills: ["HTML", "CSS", "JavaScript", "UI/UX"],
     tools: ["VS Code", "Chrome DevTools", "Postman", "Git"],
     status: "new",
-    startDate: "December 25, 2025, 11:01 AM",
+    startDate: "January 03, 2026, 19:57 AM",
     duration: "8 Hours of Work",
     pay: "400",
     place: "featured",

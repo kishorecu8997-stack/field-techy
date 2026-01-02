@@ -1,3 +1,4 @@
+import { transactions } from "@/dummy_data/bankDetails";
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
 
@@ -359,4 +360,42 @@ export const formatDate = (dateStr: string) => {
     minute: "2-digit",
     hour12: true,
   });
+};
+
+/**
+ * Represents monthly earnings data used for chart visualization.
+ */
+export interface MonthlyData {
+  month: string;
+  earnings: number;
+}
+
+
+
+/**
+ * Computes total earnings per month from transaction data.
+ *
+ * @returns Array of monthly earnings sorted chronologically.
+ */
+export const getMonthlyEarnings = (): MonthlyData[] => {
+  const monthlyMap = new Map<string, number>();
+
+  transactions.forEach((tx) => {
+    if (tx.amount > 0) {
+      const date = new Date(tx.date);
+      const monthKey = date.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
+      monthlyMap.set(monthKey, (monthlyMap.get(monthKey) || 0) + tx.amount);
+    }
+  });
+
+  return Array.from(monthlyMap.entries())
+    .map(([month, earnings]) => ({ month, earnings }))
+    .sort((a, b) => {
+      const dateA = new Date(a.month + " 1");
+      const dateB = new Date(b.month + " 1");
+      return dateA.getTime() - dateB.getTime();
+    });
 };

@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
-import { formatCurrency } from "@/shared/libs/utils";
+import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
 
@@ -69,9 +69,8 @@ const EarningHistoryChart: React.FC = () => {
           </div>
         </div>
         <div
-          className={`transition-transform duration-300 ${
-            isExpanded ? "rotate-180" : ""
-          }`}
+          className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
+            }`}
         >
           {isExpanded ? (
             <BiChevronUp className="w-6 h-6 text-gray-500" />
@@ -83,9 +82,8 @@ const EarningHistoryChart: React.FC = () => {
 
       {/* Chart */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${
-          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="px-6 pb-6">
           <ResponsiveContainer width="100%" height={300}>

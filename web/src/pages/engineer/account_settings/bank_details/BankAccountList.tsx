@@ -1,16 +1,18 @@
 import { bankDetails } from "@/dummy_data/bankDetails";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 
 /**
  * Displays a list of saved bank accounts with options to add or edit details.
  * Uses dummy data and triggers navigation via `onMenuItemClick` callback.
  */
-const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+const BankAccountList: React.FC<DrawerMenuProps> = () => {
+  const { setActiveKey } = useDrawerStore();
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex justify-end">
         <div
-          onClick={() => onMenuItemClick("addBankdetails")}
+              onClick={() => setActiveKey("addBankdetails")}
           className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
           aria-label="Add Bank"
         >
@@ -28,7 +30,7 @@ const BankAccountList: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
               {bank.bankName}
             </h3>
             <div
-              onClick={() => onMenuItemClick("editBankdetails")}
+                  onClick={() => setActiveKey("editBankdetails", true)}
               className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
               aria-label={`Edit details for ${bank.bankName}`}
             >
