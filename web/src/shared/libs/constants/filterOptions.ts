@@ -1,9 +1,9 @@
 // Location Options
 export const LOCATION_OPTIONS = [
   { value: "all", label: "All" },
-  { value: "on-site", label: "on-site" },
-  { value: "remote", label: "remote" },
-  { value: "hybrid", label: "hybrid" },
+  { value: "on-site", label: "On-site" },
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
 ] as const;
 
 // Budget Options
