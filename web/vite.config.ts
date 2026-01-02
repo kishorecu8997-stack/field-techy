@@ -66,7 +66,7 @@ const pwaPlugin = VitePWA({
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), pwaPlugin],
+  plugins: [react(), tailwindcss()],
   base: "/",
   resolve: {
     alias: {

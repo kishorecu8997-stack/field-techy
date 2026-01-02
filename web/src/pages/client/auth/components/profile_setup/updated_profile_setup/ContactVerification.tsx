@@ -4,13 +4,16 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 
-
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import { absoluteUrls } from "@/config/urls";
 import { buildQuery } from "@/utils";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useSendEmailOTP, useSendPhoneOTP, useVerifyOtp } from "@/shared/apiServices/client/clientService";
+import {
+  useSendEmailOTP,
+  useSendPhoneOTP,
+  useVerifyOtp,
+} from "@/shared/apiServices/client/clientService";
 
 interface VerificationCardProps {
   type: "email" | "phone";
@@ -19,6 +22,32 @@ interface VerificationCardProps {
   onVerifySuccess: () => void;
 }
 
+/**
+ * A component representing the verification card for email or mobile number.
+ *
+ * This component renders a verification card that allows users to verify their email or mobile number.
+ * It utilizes the reusable `OTPInput` component for handling the OTP input.
+ *
+ * This component is designed to be rendered within a `FormContainer` from `react-hook-form`
+ * to connect the OTP input to the main form state.
+ *
+ * @param {VerificationCardProps} props - The props for the VerificationCard component.
+ * @param {string} props.type - The type of verification (email or phone).
+ * @param {string} props.contact - The contact email or phone number.
+ * @param {boolean} props.isVerified - Whether the contact is verified.
+ * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
+ *
+ * @returns {JSX.Element} The verification card for email or mobile number.
+ *
+ * @example
+ * <VerificationCard
+ *   type="email"
+ *   contact="test@example.com"
+ *   isVerified={false}
+ *   onVerifySuccess={() => {}}
+ * />
+ *
+ */
 const VerificationCard = ({
   type,
   contact,
@@ -51,23 +80,21 @@ const VerificationCard = ({
     onError: () => toast.error("Failed to send mobile OTP"),
   });
 
-  const { isPending: isVerifyingEmail, mutate: verifyEmail } =
-    useVerifyOtp({
-      onSuccess: () => {
-        toast.success("Email verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Email OTP"),
-    });
+  const { isPending: isVerifyingEmail, mutate: verifyEmail } = useVerifyOtp({
+    onSuccess: () => {
+      toast.success("Email verified successfully");
+      onVerifySuccess();
+    },
+    onError: () => toast.error("Invalid Email OTP"),
+  });
 
-  const { isPending: isVerifyingPhone, mutate: verifyPhone } =
-    useVerifyOtp({
-      onSuccess: () => {
-        toast.success("Mobile number verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Mobile OTP"),
-    });
+  const { isPending: isVerifyingPhone, mutate: verifyPhone } = useVerifyOtp({
+    onSuccess: () => {
+      toast.success("Mobile number verified successfully");
+      onVerifySuccess();
+    },
+    onError: () => toast.error("Invalid Mobile OTP"),
+  });
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -83,7 +110,7 @@ const VerificationCard = ({
   const onSubmit = (data: { otp: string }) => {
     if (type === "email") verifyEmail({ emailOrPhone: contact, otp: data.otp });
     else {
-      alert("in mobile")
+      alert("in mobile");
       verifyPhone({ emailOrPhone: contact, otp: data.otp });
     }
   };
@@ -129,17 +156,18 @@ const VerificationCard = ({
                   <span>
                     {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                   </span>
-                  <button
+                  <Button
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                      }`}
+                    className={`text-green-600 dark:text-green-400 font-medium ${
+                      timeLeft > 0 || isPending
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   >
                     Resend
-                  </button>
+                  </Button>
                 </div>
 
                 <Button

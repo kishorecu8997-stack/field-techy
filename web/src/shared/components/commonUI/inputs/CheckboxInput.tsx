@@ -13,6 +13,8 @@ interface CheckboxInputProps {
   /** Optional react-hook-form validation rules */
   rules?: RegisterOptions;
   disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 /**
@@ -31,6 +33,8 @@ export const CheckboxInput = ({
   rules,
   secondaryLabel,
   disabled = false,
+  onChange,
+  onBlur,
 }: CheckboxInputProps) => {
   const { control } = useFormContext();
 
@@ -47,7 +51,7 @@ export const CheckboxInput = ({
         control={control}
         rules={validationRules}
         render={({ field, fieldState: { error } }) => (
-          <>
+          <div className="flex flex-col">
             <div className="flex items-center gap-1">
               <input
                 {...field}
@@ -57,14 +61,22 @@ export const CheckboxInput = ({
                 aria-controls="endDateSection"
                 className="accent-primary mt-[2px]"
                 disabled={disabled}
+                onBlur={(e) => {
+                  field.onBlur();
+                  if (onBlur) {
+                    onBlur(e);
+                  }
+                }}
                 onChange={(e) => {
-                  field.onChange(e);  
+                  field.onChange(e);
+                  if (onChange) {
+                    onChange(e);
+                  }
                   if (rules?.onChange) {
                     rules.onChange(e);
                   }
                 }}
               />
-
 
               {isShowLabel && (
                 <label
@@ -84,11 +96,11 @@ export const CheckboxInput = ({
               )}
             </div>
             {error && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+              <p className="mt-1 ml-6 text-sm text-red-600 dark:text-red-500">
                 {error.message}
               </p>
             )}
-          </>
+          </div>
         )}
       />
     </div>
