@@ -41,6 +41,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { setActiveKey } = useDrawerStore();
+  const notificationCount = 3;
 
   // Fetch current client profile
   const { data: clientProfile, isLoading: isLoadingProfile } =
