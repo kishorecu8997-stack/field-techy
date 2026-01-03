@@ -2,7 +2,7 @@ import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {} from "@/shared/apiServices/client/clientService";
 import {

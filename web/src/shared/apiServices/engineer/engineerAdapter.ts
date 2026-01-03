@@ -11,6 +11,7 @@ import type {
   JobAssignment,
   AssignJobParams,
 } from "./engineerTypes";
+import { GlobalApiErrorHandler } from "../utils";
 
 /*
  * EngineerAdapter
@@ -24,128 +25,168 @@ import type {
  */
 export class EngineerAdapter {
   static async signup(data: EngineerData): Promise<EngineerData> {
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.SIGNUP,
-      data
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.SIGNUP,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async getById(id: string): Promise<EngineerData> {
-    const response = await axiosInstance.get(
-      ENGINEER_ROUTER_PATHS.GET_BY_ID(id)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async delete(id: string): Promise<boolean> {
-    await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
-    return true;
+    try {
+      await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
+      return true;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async getFiles(engineerId: string): Promise<EngineerFile[]> {
-    const response = await axiosInstance.get(
-      ENGINEER_ROUTER_PATHS.GET_FILES(engineerId)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_FILES(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async downloadFile(fileKey: string, fileName?: string): Promise<void> {
-    const response = await axiosInstance.get(
-      ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
-      {
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/octet-stream",
-        },
-      }
-    );
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
 
-    // Create blob URL
-    const blob = new Blob([response.data]);
-    const url = window.URL.createObjectURL(blob);
+      // Create blob URL
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
 
-    // Create temporary anchor element and trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName || "download";
-    document.body.appendChild(link);
-    link.click();
+      // Create temporary anchor element and trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName || "download";
+      document.body.appendChild(link);
+      link.click();
 
-    // Cleanup
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async uploadFile(
     params: FileUploadParams
   ): Promise<FileUploadResponse> {
-    const { engineerId, file, documentType, onUploadProgress } = params;
+    try {
+      const { engineerId, file, documentType, onUploadProgress } = params;
 
-    const formData = new FormData();
-    formData.append("file", file);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const response = await uploadAxiosInstance.post(
-      ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
-      formData,
-      {
-       headers: {
-          'X-USER': 'ENGINEER',
-          "Content-Type": "multipart/form-data"
-        },
-        onUploadProgress: (progressEvent) => {
-          if (onUploadProgress && progressEvent.total) {
-            const percentage = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            onUploadProgress({
-              loaded: progressEvent.loaded,
-              total: progressEvent.total,
-              percentage,
-            });
-          }
-        },
-      }
-    );
-    return response.data;
+      const response = await uploadAxiosInstance.post(
+        ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
+        formData,
+        {
+         headers: {
+            'X-USER': 'ENGINEER',
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress: (progressEvent) => {
+            if (onUploadProgress && progressEvent.total) {
+              const percentage = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onUploadProgress({
+                loaded: progressEvent.loaded,
+                total: progressEvent.total,
+                percentage,
+              });
+            }
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async assignJob(params: AssignJobParams): Promise<JobAssignment> {
-    const { engineerId, jobId, status } = params;
-    const response = await axiosInstance.post(
-      `${ENGINEER_ROUTER_PATHS.ASSIGN_JOB(
-        engineerId
-      )}?jobId=${jobId}&status=${status}`
-    );
-    return response.data;
+    try {
+      const { engineerId, jobId, status } = params;
+      const response = await axiosInstance.post(
+        `${ENGINEER_ROUTER_PATHS.ASSIGN_JOB(
+          engineerId
+        )}?jobId=${jobId}&status=${status}`
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async getJobs(engineerId: string): Promise<JobAssignment[]> {
-    const response = await axiosInstance.get(
-      ENGINEER_ROUTER_PATHS.GET_JOBS(engineerId)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_JOBS(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async updateJobStatus(
     jobId: string,
     status: string
   ): Promise<JobAssignment> {
-    const response = await axiosInstance.put(
-      `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.put(
+        `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   // OTP Methods (Stubbed for now)
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    console.log('email :', email);
-    const urlEncodedEmail = encodeURIComponent(email);
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      console.log('email :', email);
+      const urlEncodedEmail = encodeURIComponent(email);
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // Stubbed response
     // console.log(`[STUB] Sending engineer email OTP to: ${email}`);
@@ -157,11 +198,15 @@ export class EngineerAdapter {
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.REQ_OTP(phoneNumber)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.REQ_OTP(phoneNumber)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // Stubbed response
     // console.log(`[STUB] Sending engineer phone OTP to: ${phoneNumber}`);
@@ -176,11 +221,15 @@ export class EngineerAdapter {
     email: string,
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // Stubbed response - accepts any 4-digit OTP
     // console.log(
@@ -204,10 +253,14 @@ export class EngineerAdapter {
     phoneNumber: string,
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 }

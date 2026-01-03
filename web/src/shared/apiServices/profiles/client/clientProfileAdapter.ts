@@ -1,5 +1,6 @@
 import axiosInstance from "@/axiosInstance";
 import { CLIENT_PROFILE_ROUTER_PATHS } from "./clientProfileRouterPaths";
+import { GlobalApiErrorHandler } from "../../utils";
 
 /**
  * Client Profile Data Response
@@ -58,11 +59,15 @@ export class ClientProfileAdapter {
    * @throws {Error} If profile creation fails or request encounters an error
    */
   static async create(data: ClientProfileData): Promise<ClientProfileData> {
-    const response = await axiosInstance.post(
-      CLIENT_PROFILE_ROUTER_PATHS.SIGNUP,
-      data
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.post(
+        CLIENT_PROFILE_ROUTER_PATHS.SIGNUP,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -75,10 +80,14 @@ export class ClientProfileAdapter {
    * @throws {Error} If the client profile is not found or request encounters an error
    */
   static async getById(id: string): Promise<ClientProfileData> {
-    const response = await axiosInstance.get(
-      CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -91,10 +100,14 @@ export class ClientProfileAdapter {
    * @returns Client profile data
    */
   static async getProfileById(clientId: string): Promise<ClientProfileData> {
-    const response = await axiosInstance.get(
-      CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(clientId)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(clientId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -107,13 +120,17 @@ export class ClientProfileAdapter {
    * @returns Client profile data for the currently authenticated client
    */
   static async getCurrentClient(): Promise<ClientProfileData> {
-    // TODO: Extract client ID from authentication token in production
-    // Hardcoded client ID for testing: 9f034ed8-2ea5-44b6-a410-973e559e2c47
-    const CLIENT_ID = "ce1dece0-78e4-4076-b73c-4060b718c8a9";
-    const response = await axiosInstance.get(
-      CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(CLIENT_ID)
-    );
-    return response.data;
+    try {
+      // TODO: Extract client ID from authentication token in production
+      // Hardcoded client ID for testing: 9f034ed8-2ea5-44b6-a410-973e559e2c47
+      const CLIENT_ID = "ce1dece0-78e4-4076-b73c-4060b718c8a9";
+      const response = await axiosInstance.get(
+        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(CLIENT_ID)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -132,19 +149,23 @@ export class ClientProfileAdapter {
   static async getAll(
     params: ClientProfilePaginationParams = {}
   ): Promise<unknown> {
-    const {
-      page = 0,
-      size = 10,
-      sortBy = "createdAt",
-      direction = "DESC",
-    } = params;
-    const response = await axiosInstance.get(
-      CLIENT_PROFILE_ROUTER_PATHS.GET_PAGED,
-      {
-        params: { page, size, sortBy, direction },
-      }
-    );
-    return response.data;
+    try {
+      const {
+        page = 0,
+        size = 10,
+        sortBy = "createdAt",
+        direction = "DESC",
+      } = params;
+      const response = await axiosInstance.get(
+        CLIENT_PROFILE_ROUTER_PATHS.GET_PAGED,
+        {
+          params: { page, size, sortBy, direction },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -161,11 +182,15 @@ export class ClientProfileAdapter {
     id: string,
     data: ClientProfileData
   ): Promise<ClientProfileData> {
-    const response = await axiosInstance.put(
-      CLIENT_PROFILE_ROUTER_PATHS.UPDATE(id),
-      data
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.put(
+        CLIENT_PROFILE_ROUTER_PATHS.UPDATE(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -178,6 +203,10 @@ export class ClientProfileAdapter {
    * @throws {Error} If the deletion fails or request encounters an error
    */
   static async delete(id: string): Promise<void> {
-    await axiosInstance.delete(CLIENT_PROFILE_ROUTER_PATHS.DELETE(id));
+    try {
+      await axiosInstance.delete(CLIENT_PROFILE_ROUTER_PATHS.DELETE(id));
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 }

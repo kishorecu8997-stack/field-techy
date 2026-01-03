@@ -8,6 +8,7 @@ import { TourProvider } from "@reactour/tour";
 import OnboardingFlowGuide, {
   tourStyles,
 } from "@/pages/engineer/home/components/OnboardingFlowGuide";
+import { useTokenExpiration } from "@/hooks/useTokenExpiration";
 
 /**
  * The main application component that sets up routing.
@@ -21,6 +22,7 @@ import OnboardingFlowGuide, {
 const App = () => {
   useOfflineSync();
   useJobExpirationNotification();
+  useTokenExpiration();
   return (
     <>
       <TourProvider
