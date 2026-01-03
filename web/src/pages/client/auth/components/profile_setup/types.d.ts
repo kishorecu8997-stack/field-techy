@@ -3,13 +3,17 @@ export type CompleteRegistrationData = {
   profileImage?: File;
   companyName: string;
   contactPersonName: string;
+  email: string;
   phoneNumber: string;
   businessType: string;
   industry: string;
   address: string;
   state: string;
   city: string;
+  country: string;
+  fullName: string;
   vatRegistrationNumber: string;
+  postalCode: string;
   // Background Verification
   governmentId?: File;
   certificate?: File;

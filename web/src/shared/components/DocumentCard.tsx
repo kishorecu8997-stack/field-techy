@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import PDFPreview from "./PdfPreview";
+import LoaderComponent from "./commonUI/LoaderComponent";
+
+const PDFPreview = React.lazy(() => import("./PdfPreview"));
 
 /**
  * Represents a user-uploaded document and its basic metadata.
@@ -68,7 +70,17 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   const [expiryDate, setExpiryDate] = React.useState(document.expiryDate || '');
   const renderPreview = (doc: Document) => {
     if (doc.fileType === "PDF" && doc.previewUrl) {
-      return <PDFPreview url={doc.previewUrl} />;
+      return (
+        <Suspense
+          fallback={
+            <div className="w-full h-56 flex items-center justify-center bg-gray-50 rounded-lg border">
+              <LoaderComponent />
+            </div>
+          }
+        >
+          <PDFPreview key={doc.previewUrl} url={doc.previewUrl} />
+        </Suspense>
+      );
     }
 
     if (doc.previewUrl) {

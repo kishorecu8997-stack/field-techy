@@ -112,6 +112,8 @@ export interface ImageUploadFieldProps {
   accept?: string;
   allowUpload?: boolean;
   disabled?: boolean;
+  initialImageUrl?: string;
+  isLoading?: boolean;
 }
 
 /**

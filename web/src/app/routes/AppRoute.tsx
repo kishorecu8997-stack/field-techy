@@ -11,15 +11,7 @@ const Layout = React.lazy(() => import("@/layout/auth-pannel"));
 const SignInPage = React.lazy(
   () => import("@/pages/engineer/auth/components/signin_pages/SignInPage")
 );
-const SignUpPage = React.lazy(
-  () => import("@/pages/engineer/auth/components/signup_pages/SignUpPage")
-);
-const MultiStepRegistrationForm = React.lazy(
-  () =>
-    import(
-      "@/pages/engineer/auth/components/profile_setup/MultiStepRegistrationForm "
-    )
-);
+
 const ForgetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ForgetPassword")
 );
@@ -86,10 +78,7 @@ const ClientSignInPage = React.lazy(
 const ClientSignUpPage = React.lazy(
   () => import("@/pages/client/auth/components/signup_pages/SignUpPage")
 );
-const ClientProfileSettingPage = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
-);
+
 const ClientForgetPassword = React.lazy(
   () => import("@/pages/client/auth/components/ForgetPassword")
 );
@@ -99,10 +88,6 @@ const ClientResetPassword = React.lazy(
 
 const ClientAccountType = React.lazy(
   () => import("@/pages/client/auth/components/AccountType")
-);
-const CorporateMultiStepRegistration = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/ProfileSettingPage")
 );
 
 const ClientBackgroundVerification = React.lazy(
@@ -311,6 +296,47 @@ const ClientPrivacyPolicy = React.lazy(
   () => import("@/pages/client/privacy_policy/PolicyPage")
 );
 
+//updated_profile_setup
+const engineerProfileSetup = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
+);
+const engineerDocuments = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/BasicDocuments"
+    )
+);
+const engineerContactVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/ContactVerification"
+    )
+);
+
+const clientProfileSetup = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDetails"
+    )
+);
+
+const clientDocuments = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/BasicDocuments"
+    )
+);
+
+const ClientContactVerification = React.lazy(
+  () =>
+    import(
+      "@/pages/client/auth/components/profile_setup/updated_profile_setup/ContactVerification"
+    )
+);
+
 const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
 const FTLayout = React.lazy(() => import("@/layout/FTLayout"));
 const NotificationListPage = React.lazy(
@@ -349,10 +375,25 @@ export const routes = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="login" replace /> },
       { path: urls.engineer.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.engineer.auth.signup, element: withSuspense(SignUpPage) },
       {
-        path: urls.engineer.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
+        path: urls.engineer.auth.signup,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.verification,
+        element: withSuspense(engineerContactVerification),
+      },
+      // {
+      //   path: urls.engineer.auth.profile_setup,
+      //   element: withSuspense(MultiStepRegistrationForm),
+      // },
+      {
+        path: urls.engineer.auth.updated_basic_details,
+        element: withSuspense(engineerProfileSetup),
+      },
+      {
+        path: urls.engineer.auth.updated_documents,
+        element: withSuspense(engineerDocuments),
       },
       {
         path: urls.engineer.auth.forget_password,
@@ -453,10 +494,14 @@ export const routes = createBrowserRouter([
         path: urls.client.auth.signup,
         element: withSuspense(ClientSignUpPage),
       },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(ClientProfileSettingPage),
-      },
+      // {
+      //   path: urls.client.auth.profile_setup_home,
+      //   element: withSuspense(clientProfileSetup),
+      // },
+      // {
+      //   path: urls.client.auth.profile_setup_corporate,
+      //   element: withSuspense(clientProfileSetup),
+      // },
       {
         path: urls.client.auth.forget_password,
         element: withSuspense(ClientForgetPassword),
@@ -474,20 +519,20 @@ export const routes = createBrowserRouter([
         element: withSuspense(ClientBackgroundVerification),
       },
       {
-        path: urls.client.auth.forget_password,
-        element: withSuspense(ForgetPassword),
-      },
-      {
         path: urls.client.auth.account_type,
         element: withSuspense(ClientAccountType),
       },
       {
-        path: urls.client.auth.reset_password,
-        element: withSuspense(ResetPassword),
+        path: `${urls.client.auth.profile_setup}/:role`,
+        element: withSuspense(clientProfileSetup),
       },
       {
-        path: `${urls.client.auth.profile_setup}/:role`,
-        element: withSuspense(CorporateMultiStepRegistration),
+        path: urls.client.auth.documents,
+        element: withSuspense(clientDocuments),
+      },
+      {
+        path: urls.client.auth.verification,
+        element: withSuspense(ClientContactVerification),
       },
     ],
   },
@@ -591,63 +636,6 @@ export const routes = createBrowserRouter([
         path: urls.client.home.chat,
         element: withSuspense(EngineerChatPage),
       },
-    ],
-  },
-
-  {
-    path: BASE.AUTH,
-    element: withSuspense(Layout),
-    children: [
-      { index: true, element: <Navigate to="login" replace /> },
-      { path: urls.client.auth.login, element: withSuspense(SignInPage) },
-      { path: urls.client.auth.signup, element: withSuspense(SignUpPage) },
-      {
-        path: urls.client.auth.profile_setup,
-        element: withSuspense(MultiStepRegistrationForm),
-      },
-      {
-        path: urls.client.auth.forget_password,
-        element: withSuspense(ForgetPassword),
-      },
-      {
-        path: urls.client.auth.reset_password,
-        element: withSuspense(ResetPassword),
-      },
-      {
-        path: urls.client.auth.set_password,
-        element: withSuspense(SetPassword),
-      },
-      {
-        path: urls.client.auth.background_verification,
-        element: withSuspense(BackgroundVerification),
-      },
-    ],
-  },
-
-  {
-    path: BASE.CLIENT,
-    element: withSuspense(RootLayout),
-    children: [
-      { index: true, element: withSuspense(MyJobsPage) },
-      { path: urls.client.home.my_jobs, element: withSuspense(MyJobsPage) },
-      {
-        path: `${urls.client.home.my_jobs}/:jobId`,
-        element: withSuspense(JobDetailsPage),
-      },
-      {
-        path: urls.client.home.search_result,
-        element: withSuspense(SearchResult),
-      },
-      {
-        path: urls.client.home.privacy_policy,
-        element: withSuspense(ClientPrivacyPolicy),
-      },
-      {
-        path: urls.client.home.terms_and_conditions,
-        element: withSuspense(ClientTermsAndConditions),
-      },
-      { path: urls.client.home.faq, element: withSuspense(ClientFAQ) },
-      { path: urls.client.home.chat, element: withSuspense(EngineerChatPage) },
     ],
   },
 

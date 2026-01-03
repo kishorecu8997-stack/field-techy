@@ -79,9 +79,9 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
             <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
           </div>
           <div className="p-2">
-            <OTPInput 
-              name="otp" 
-              length={4} 
+            <OTPInput
+              name="otp"
+              length={6}
               errorAlign="center"
             />
             <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
@@ -91,9 +91,8 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
               <button
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 Resend
               </button>

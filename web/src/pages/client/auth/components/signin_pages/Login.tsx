@@ -1,5 +1,7 @@
 import { assetsConfig } from "@/assets";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 import Popup from "@/shared/components/Popup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -10,20 +12,24 @@ import {
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BiLogoLinkedin } from "react-icons/bi";
-import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
-import OTPPage from "../../../../engineer/auth/components/OTPPage";
-import type { LoginFormData } from "../../../../engineer/auth/components/types";
 import { toast } from "react-toastify";
-
-/**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
- */
+import OTPPage from "../../../../engineer/auth/components/OTPPage";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import {
+  useClientSignInMutation,
+  useReqEmailVerificationOtpMutation,
+  useVerifyEmailVerificationOtpMutation,
+} from "@/shared/apiServices/auth/clients/clientAuthService";
+import { CiMail } from "react-icons/ci";
 
 /**
  * Login component
@@ -43,8 +49,15 @@ const Login = ({
 }) => {
   const navigate = useNavigate();
 
+  const clientSignInMutation = useClientSignInMutation();
+  const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
+  const verifyEmailVerificationOtpMutation =
+    useVerifyEmailVerificationOtpMutation();
+  const setUserSession = useUserSessionStore((s) => s.setSession);
+
   const [isOpen, setIsOpen] = useState(false);
-  const methods = useForm<LoginFormData>({
+  const methods = useForm({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -60,38 +73,108 @@ const Login = ({
    * implementations should validate credentials against an API and only
    * open the OTP/modal on success.
    */
-  const handleSubmit = () => {
-    setIsOpen(true);
+  const handleSubmit = async (data: LoginEmailFormData) => {
+    await clientSignInMutation.mutateAsync(
+      {
+        phoneOrEmail: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: async (resp) => {
+          //second layer of verification
+          // setIsOpen(true);
+          // toast.success("OTP Requested, kindly check your email for OTP");
+          console.log(`Login Response: `, resp);
+          navigate(absoluteUrls.client.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("Login failed");
+        },
+      }
+    );
+  };
+
+  /**
+   * handleOtpSubmission
+   * call verifyEmailVerificationOtpMutation to verify the otp
+   * @param otp otp code
+   */
+  const handleOtpSubmission = async (otp: string) => {
+    const email = methods.getValues("email");
+    await verifyEmailVerificationOtpMutation.mutateAsync(
+      { email, otp },
+      {
+        onSuccess: async (resp) => {
+          console.log(`OTP Response: `, resp);
+          //TODO: integrate the otp stubbed version
+          const stubbedResponse: UserSession = {
+            accessToken: "something fake",
+            userId: "uuid-123",
+            role: "client",
+            // displayName: "John Doe",
+            // metadata: {},
+          };
+
+          setIsOpen(false);
+          setUserSession(stubbedResponse);
+          navigate(absoluteUrls.client.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("");
+        },
+      }
+    );
+  };
+
+  const onResendOtp = async () => {
+    const email = methods.getValues("email");
+    await reqEmailVerificationOtpMutation.mutateAsync(email, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.success("OTP Requested, kindly check your email for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    });
   };
 
   return (
-    <div className="flex items-center justify-center max-w-lg md:w-lg ">
-      <div className="p-10 w-full max-w-lg">
+    <div className="flex items-center justify-center w-full">
+      <div className="px-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
-              className="h-20 w-24"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
+              className="h-15 w-20"
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Sign In
-          </h2>
-          <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
-            Don't have an account?{" "}
-            <NavLink
-              to={absoluteUrls.client.auth.signup}
-              className="text-teal-900 dark:text-teal-400 underline font-semibold"
-            >
-              Sign Up
-            </NavLink>
-          </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Sign In
+            </h2>
+            <h2 className="text-md font-extralight text-gray-700 dark:text-gray-300">
+              Don't have an account?{" "}
+              <NavLink
+                to={absoluteUrls.client.auth.signup}
+                className="text-teal-900 dark:text-teal-400 underline font-semibold "
+              >
+                Sign Up
+              </NavLink>
+            </h2>
+          </div>
         </div>
         <FormContainer
           methods={methods}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-3 p-2 w-full"
+          className="flex flex-col gap-3 w-full"
         >
           <InputField
             name="email"
@@ -111,6 +194,10 @@ const Login = ({
           </div>
           <Button
             type="submit"
+            loading={
+              clientSignInMutation.isPending ||
+              reqEmailVerificationOtpMutation.isPending
+            }
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -120,35 +207,33 @@ const Login = ({
           className="text-gray-900 dark:text-gray-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
-          <LuPhone className="dark:text-gray-300" />
-          Sign in with Phone Number
+          <CiMail className="dark:text-gray-300 text-lg" />
+          Sign In with OTP
         </div>
-        <div className="flex flex-row items-center justify-center gap-4 pt-5">
+        {/* <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
           <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
-        </div>
-        <div className="flex flex-col gap-2 items-center justify-center pt-5">
+        </div> */}
+        {/* <div className="flex flex-col gap-2 items-center justify-center pt-5">
           <Button
             className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
             variant="outline"
+            disabled
             leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
           >
             <span className="whitespace-nowrap text-gray-900 dark:text-white">
               LinkedIn
             </span>
           </Button>
-        </div>
+        </div> */}
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => {
-              setIsOpen(false);
-              navigate(absoluteUrls.client.home.dashboard);
-              toast.success("Logged in successfully")
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

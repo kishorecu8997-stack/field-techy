@@ -19,9 +19,9 @@ export interface TransactionRequest {
 }
 
 export const StatusTypes = {
-  approved: "approved",
-  pending: "pending",
-  rejected: "rejected",
+  Approve: "Approve",
+  Pending: "Pending",
+  Reject: "Reject",
 } as const;
 
 export type TransactionRequestStatus =
