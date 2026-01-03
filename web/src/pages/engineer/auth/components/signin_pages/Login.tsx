@@ -28,6 +28,7 @@ import {
 } from "@/shared/apiServices/auth/engineer/engineerAuthService";
 import { CiMail } from "react-icons/ci";
 import { UserRole } from "@/shared/enums/users";
+import { AxiosError } from "axios";
 
 /**
  * Login component
@@ -88,6 +89,10 @@ const Login = ({
         },
         onError: (error) => {
           console.error(error);
+          // Skip showing toast for 401 errors as axios interceptor already handles it
+          if (error instanceof AxiosError && error.response?.status === 401) {
+            return;
+          }
           const errorMessage =
             error instanceof Error ? error.message : "Login failed";
           toast.error(errorMessage);

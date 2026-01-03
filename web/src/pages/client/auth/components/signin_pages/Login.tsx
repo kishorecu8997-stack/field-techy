@@ -30,6 +30,8 @@ import {
   useVerifyEmailVerificationOtpMutation,
 } from "@/shared/apiServices/auth/clients/clientAuthService";
 import { CiMail } from "react-icons/ci";
+import { UserRole } from "@/shared/enums/users";
+import { AxiosError } from "axios";
 
 /**
  * Login component
@@ -91,6 +93,10 @@ const Login = ({
         },
         onError: (error) => {
           console.error(error);
+          // Skip showing toast for 401 errors as axios interceptor already handles it
+          if (error instanceof AxiosError && error.response?.status === 401) {
+            return;
+          }
           const errorMessage =
             error instanceof Error ? error.message : "Login failed";
           toast.error(errorMessage);
@@ -115,7 +121,7 @@ const Login = ({
           const stubbedResponse: UserSession = {
             accessToken: "something fake",
             userId: "uuid-123",
-            role: "client",
+            role: UserRole.CLIENT,
             initiatedAt: Date.now(),
             // displayName: "John Doe",
             // metadata: {},

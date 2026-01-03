@@ -7,7 +7,7 @@ import type { UserRole } from "@/shared/enums/users";
 export interface RouteConfig {
   path: string;
   element:
-    | React.LazyExoticComponent<React.ComponentType<any>>
+    | React.LazyExoticComponent<React.ComponentType<unknown>>
     | React.ReactElement;
   children?: RouteConfig[];
   index?: boolean;

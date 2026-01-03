@@ -45,20 +45,28 @@ export class EngineerAuthAdapter {
         );
         throw new AxiosError(
           "Authentication failed",
-          "401",
+          undefined,
           response.config,
-          response.data,
-          response
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
       if (!Object.values(UserRole).includes(role as unknown as UserRole)) {
         throw new AxiosError(
           "Authentication failed, invalid role",
-          "401",
+          undefined,
           response.config,
-          response.data,
-          response
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
@@ -147,20 +155,28 @@ export class EngineerAuthAdapter {
         );
         throw new AxiosError(
           "Authentication failed",
-          "401",
+          undefined,
           response.config,
-          response.data,
-          response
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
       if (!Object.values(UserRole).includes(role as unknown as UserRole)) {
         throw new AxiosError(
           "Authentication failed, invalid role",
-          "401",
+          undefined,
           response.config,
-          response.data,
-          response
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
