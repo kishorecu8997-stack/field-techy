@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+//@ts-expect-error to be used in later phase of development
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const pwaPlugin = VitePWA({
   registerType: "autoUpdate",
   injectRegister: "auto",
@@ -73,8 +75,9 @@ export default defineConfig({
       "@": "/src", // Direct alias path for the src directory
     },
   },
+  // enable on production only
   esbuild: {
-    drop: ["console", "debugger"],
+    drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
   },
   build: {
     rollupOptions: {
