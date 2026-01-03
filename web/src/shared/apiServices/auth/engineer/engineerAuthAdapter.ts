@@ -31,6 +31,9 @@ export class EngineerAuthAdapter {
         args
       );
 
+      // Axios normalizes all response header names to lowercase, so accessing
+      // them with lowercase keys (e.g. "authorization", "x-user", "x-user-type")
+      // is intentional and safe here.
       const authorization = response.headers["authorization"];
       const userId = response.headers["x-user"];
       const role = response.headers["x-user-type"];
