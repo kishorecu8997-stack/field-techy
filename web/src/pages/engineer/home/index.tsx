@@ -54,9 +54,15 @@ const Home = () => {
   }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
+    const onboardingsteps = localStorage.getItem("onboarding_guide") === "true";
     // Show popup if either permission is in 'prompt' state (not asked yet)
-    if (locationPermission === 'prompt' || notificationPermission === 'default') {
-      setAccessPopup(true);
+    if (
+      locationPermission === "prompt" ||
+      notificationPermission === "default"
+    ) {
+      if (onboardingsteps) {
+        setAccessPopup(true);
+      }
     }
   }, [locationPermission, notificationPermission]);
 
