@@ -91,7 +91,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
             return (
               <div key={item.name} className="w-full">
                 <div
-                  onClick={() => toggle(item.name)}
+                  onClick={() => !isCollapsed && toggle(item.name)}
                   className={`flex items-center cursor-pointer justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${isCollapsed ? "justify-center pl-0" : "px-3"
                     }`}
                 >
