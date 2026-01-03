@@ -11,6 +11,12 @@ import { AxiosError } from "axios";
  *   "detail": "Already in use.",
  *   "instance": "/api/v1/users/exists/testertesting070%2Bc1%40gmail.com"
  * }
+ *
+ * Alternative format:
+ * {
+ *   "message": "Invalid credentials",
+ *   "failedAttempts": 1
+ * }
  */
 export interface ApiErrorResponse {
   type?: string;
@@ -18,6 +24,8 @@ export interface ApiErrorResponse {
   status?: number;
   detail?: string;
   instance?: string;
+  message?: string;
+  failedAttempts?: number;
 }
 
 /**
@@ -137,7 +145,7 @@ export class GlobalApiErrorHandler {
 
   /**
    * Extract error message from API error response
-   * Priority: detail > title > status-based default > generic fallback
+   * Priority: path override > message > detail > title > status-based default > generic fallback
    *
    * @param errorResponse - The error response from the API
    * @param instancePath - The instance path from the error (for path-based overrides)
@@ -172,6 +180,11 @@ export class GlobalApiErrorHandler {
     }
 
     // Try to extract from error response fields
+    // Priority: message > detail > title
+    if (errorResponse.message) {
+      return errorResponse.message;
+    }
+
     if (errorResponse.detail) {
       return errorResponse.detail;
     }

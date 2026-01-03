@@ -84,13 +84,16 @@ const Login = ({
           //second layer of verification
           // setIsOpen(true);
           // toast.success("OTP Requested, kindly check your email for OTP");
+          setUserSession(resp);
           console.log(`Login Response: `, resp);
           navigate(absoluteUrls.client.home.dashboard);
           toast.success("Logged in successfully");
         },
         onError: (error) => {
           console.error(error);
-          toast.error("Login failed");
+          const errorMessage =
+            error instanceof Error ? error.message : "Login failed";
+          toast.error(errorMessage);
         },
       }
     );
@@ -113,6 +116,7 @@ const Login = ({
             accessToken: "something fake",
             userId: "uuid-123",
             role: "client",
+            initiatedAt: Date.now(),
             // displayName: "John Doe",
             // metadata: {},
           };
