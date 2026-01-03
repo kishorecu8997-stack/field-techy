@@ -50,7 +50,7 @@ export default function AdminLogin() {
       className="h-screen flex items-center justify-center"
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
-      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center rounded-2xl shadow-lg p-6 w-1/4">
+      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center mx-4 md:mx-0 rounded-2xl shadow-lg p-4 md:p-6 w-full md:w-5/12 xl:w-1/4">
         <img
           src={assetsConfig.logos.ftLogo}
           alt="admin_logo"
@@ -78,7 +78,7 @@ export default function AdminLogin() {
             required
             rules={{
               required: "Password is required",
-              validate:(v:string)=>validatePassword(v)
+              validate: (v: string) => validatePassword(v),
             }}
           />
           <div className="flex items-center justify-between flex-wrap">
