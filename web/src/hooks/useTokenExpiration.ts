@@ -76,5 +76,5 @@ export function useTokenExpiration() {
         intervalRef.current = null;
       }
     };
-  }, [session, logout]);
+  }, [session]);
 }
