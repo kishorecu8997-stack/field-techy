@@ -14,6 +14,12 @@ const sizes = {
   md: "h-5 w-5 sm:h-6 sm:w-6",
   lg: "h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
 };
+/**
+ * StarRating
+ *
+ * Accessible star-based rating component.
+ * Supports mouse and keyboard interaction and optional read-only mode.
+ */
 export const StarRating: React.FC<StarRatingProps> = ({
   value,
   onChange,

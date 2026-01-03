@@ -1,4 +1,3 @@
-
 import { client } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchData";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";

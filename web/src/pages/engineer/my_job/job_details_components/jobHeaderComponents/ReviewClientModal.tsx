@@ -9,6 +9,14 @@ type ReviewClientModalProps = {
   onSubmit?: (payload: { rating: number; review: string }) => void;
 };
 
+/**
+ * ReviewClientModal
+ *
+ * Modal dialog that allows a user to submit a star rating and written review
+ * for a client. Includes validation, accessibility handling, and a
+ * temporary success toast after submission.
+ */
+
 const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   isOpen,
   onClose,
