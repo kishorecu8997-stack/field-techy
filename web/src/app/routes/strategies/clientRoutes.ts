@@ -133,14 +133,6 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientSearchResult),
           },
           {
-            path: urls.engineer.home.terms_and_conditions,
-            element: withSuspense(Components.EngineerTermsAndConditions),
-          },
-          {
-            path: urls.engineer.home.faq,
-            element: withSuspense(Components.EngineerFAQ),
-          },
-          {
             path: urls.client.home.post_a_job,
             element: withSuspense(Components.PostAJobPage),
           },
