@@ -10,7 +10,6 @@ import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
 import { useState } from "react";
-// import type { ClientDocumentType } from "@/shared/apiServices/client/clientTypes";
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -50,7 +49,6 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore } = useClientRegistrationStore();
-
   const { updateDocuments } = useClientRegistrationStore();
 
   const { mutateAsync: uploadFileAsync } = useUploadClientFile({
@@ -139,7 +137,7 @@ const BasicDocuments = () => {
           onUploadProgress: (progress) => {
             if (progress.percentage) {
               setUploadProgress((prev) => ({
-                ...prev,
+                ...prev,  
                 PROFILE_PICTURE: progress.percentage!,
               }));
             }
@@ -219,7 +217,6 @@ const BasicDocuments = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      {/* header - sticky */}
       <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
@@ -227,21 +224,15 @@ const BasicDocuments = () => {
           <span className="text-sm text-gray-500">(or skip for now)</span>
         </h2>
       </div>
-
-      {/* body - scrollable */}
       <div className="flex-1 overflow-y-auto">
-        {/* profile image */}
         <div className="flex flex-row justify-center items-center py-1">
           <div className="w-fit">
             <ImageUploaderField name="profileImage" />
           </div>
         </div>
-
-        {/* documents */}
         <div className="p-4 flex flex-col gap-2 items-center justify-center">
           <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
             <BackgroundVerificationFields />
-
             {isUploading && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-800">
@@ -260,8 +251,6 @@ const BasicDocuments = () => {
           </div>
         </div>
       </div>
-
-      {/* footer - sticky */}
       <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
         <div className="w-full max-w-md flex gap-3">
           <Button

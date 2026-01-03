@@ -23,6 +23,30 @@ interface VerificationCardProps {
   onVerifySuccess: () => void;
 }
 
+/**
+ * A component representing the verification card for email or mobile number.
+ *
+ * This component renders a verification card that allows users to verify their email or mobile number.
+ * It utilizes the reusable `OTPInput` component for handling the OTP input.
+ *
+ * This component is designed to be rendered within a `FormContainer` from `react-hook-form`
+ * to connect the OTP input to the main form state.
+ * @param {VerificationCardProps} props - The props for the VerificationCard component.
+ * @param {string} props.type - The type of verification (email or phone).
+ * @param {string} props.contact - The contact email or phone number.
+ * @param {boolean} props.isVerified - Whether the contact is verified.
+ * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
+ *
+ * @returns {JSX.Element} The verification card for email or mobile number.
+ *
+ * @example
+ * <VerificationCard
+ *   type="email"
+ *   contact="test@example.com"
+ *   isVerified={false}
+ *   onVerifySuccess={() => {}}
+ * />
+ */
 const VerificationCard = ({
   type,
   contact,
@@ -130,7 +154,7 @@ const VerificationCard = ({
                   <span>
                     {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                   </span>
-                  <button
+                  <Button
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
@@ -141,7 +165,7 @@ const VerificationCard = ({
                     }`}
                   >
                     Resend
-                  </button>
+                  </Button>
                 </div>
 
                 <Button

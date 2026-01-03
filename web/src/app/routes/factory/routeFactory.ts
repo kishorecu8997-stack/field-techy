@@ -56,7 +56,6 @@ export class RouteFactory {
    * Get all routes (public + private) combined
    */
   getAllRoutes(): RouteObject[] {
-    return [...this.getPublicRoutes(), ...this.getPrivateRoutes()];
+    return [...this.getPrivateRoutes(), ...this.getPublicRoutes()];
   }
 }
-

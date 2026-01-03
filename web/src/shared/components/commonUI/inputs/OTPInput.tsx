@@ -46,15 +46,35 @@ export const OTPInput = ({
     inputRefs.current = inputRefs.current.slice(0, length);
   }, [length]);
 
-  const validationRules: RegisterOptions = {
+  // Extract any user-provided validation rules but prevent overrides for length-related validators
+  const {
+    minLength: _minLength,
+    maxLength: _maxLength,
+    pattern: _pattern,
+    validate: _validate,
+    required: _required,
+    ...otherRules
+  } = rules || {};
+
+  const validationRules = {
+    // preserve unrelated user-provided options (careful: some props may be incompatible with string-only inputs)
+    ...otherRules,
+    // required is controlled via the `required` prop
     required: required ? "OTP is required" : false,
+    // enforce exact length
+    minLength: { value: length, message: `OTP must be ${length} digits` },
+    maxLength: { value: length, message: `OTP must be ${length} digits` },
+    // ensure numeric-only and exact length
+    pattern: {
+      value: new RegExp(`^\\d{${length}}$`),
+      message: `OTP must contain only numbers and be ${length} digits`,
+    },
     validate: {
       isComplete: (value: string) =>
         value?.length === length || `Please enter ${length} digits`,
-      ...rules?.validate,
+      ...(_validate || {}),
     },
-    ...rules,
-  };
+  } as RegisterOptions;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -100,8 +120,9 @@ export const OTPInput = ({
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const paste = e.clipboardData.getData("text").replace(/\D/g, "");
-    if (paste.length === length) {
-      setValue(name, paste);
+    if (paste.length >= length) {
+      const code = paste.slice(0, length);
+      setValue(name, code);
       // Focus last input after paste
       setTimeout(() => {
         inputRefs.current[length - 1]?.focus();

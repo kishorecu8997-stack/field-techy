@@ -96,14 +96,12 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 bg-[rgba(61,63,66,0.6)] animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer Panel */}
       <div
         className="fixed inset-y-0 right-0 z-50 w-[90%] md:w-[30rem] bg-white shadow-xl dark:bg-gray-800"
         role="dialog"

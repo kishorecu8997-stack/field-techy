@@ -10,7 +10,7 @@ interface InputFieldProps {
   label?: string;
   placeholder?: string;
   required?: boolean | string;
-  type?: "text" | "email" | "number" | "date";
+  type?: "text" | "email" | "number" | "date" | "tel";
   isShowLabel?: boolean;
   rules?: RegisterOptions;
   leftIcon?: React.ReactNode;
@@ -20,6 +20,7 @@ interface InputFieldProps {
   disabled?: boolean;
   onChange?: (value: string) => void;
   inputMode?: "number" | "string" | "both";
+  maxLength?: number;
   allowedCharacters?:
     | "numbers"
     | "numbers-dot"
@@ -52,6 +53,7 @@ export const InputField = ({
   showValidationCheck = false,
   disabled = false,
   onChange,
+  maxLength,
   allowedCharacters,
 }: InputFieldProps) => {
   const { control, trigger } = useFormContext();
@@ -143,8 +145,14 @@ export const InputField = ({
                 type={type}
                 placeholder={placeholder || label}
                 disabled={disabled}
+                maxLength={maxLength}
                 onChange={async (e) => {
                   let value = e.target.value;
+
+                  // Apply maxLength if specified
+                  if (maxLength && value.length > maxLength) {
+                    value = value.slice(0, maxLength);
+                  }
 
                   // Sanitization for allowedCharacters
                   if (allowedCharacters) {
@@ -175,7 +183,7 @@ export const InputField = ({
                   }
                 }}
                 onBlur={(e) => {
-                  if (type === "number") {
+                  if (type === "number" || type === "tel") {
                     const trimmed = e.target.value.trim();
                     field.onChange(trimmed);
                   }

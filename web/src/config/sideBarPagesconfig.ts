@@ -3,7 +3,6 @@ import NotificationPreferences from "@/pages/engineer/account_settings/notificat
 import ActiveSessions from "@/pages/engineer/auth/components/ActiveSessions";
 import LoginHistory from "@/pages/engineer/auth/components/LoginHistory";
 import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
-import ProfileCompletionCard from "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard";
 import React from "react";
 
 const ClientAccountDrawerMenu = React.lazy(
@@ -52,10 +51,6 @@ const EditBankDetails = React.lazy(
 );
 const MyEarning = React.lazy(
   () => import("@/pages/engineer/account_settings/bank_details/MyEarning")
-);
-const AllTransactionsPage = React.lazy(
-  () =>
-    import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage")
 );
 const Withdraw = React.lazy(
   () => import("@/pages/engineer/account_settings/bank_details/Withdraw")
@@ -217,6 +212,16 @@ const ActionButtonsForRecentTransactions = React.lazy(() =>
   RecentTransactionsModule.then((module) => ({
     default: module.ActionButtonsForRecentTransactions,
   }))
+);
+const ProfileCompletionCard = React.lazy(
+  () =>
+    import(
+      "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard"
+    )
+);
+const AllTransactionsPage = React.lazy(
+  () =>
+    import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage")
 );
 
 /**

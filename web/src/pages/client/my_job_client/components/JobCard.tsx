@@ -5,7 +5,11 @@ import {
   IoCalendarOutline,
   IoConstructOutline,
 } from "react-icons/io5";
-import { WORKING_TYPES, WORKING_TYPES_PROPERTY, type Job } from "../../search_result/types";
+import {
+  WORKING_TYPES,
+  WORKING_TYPES_PROPERTY,
+  type Job,
+} from "../../search_result/types";
 import { Link } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
@@ -13,6 +17,23 @@ interface JobCardProps {
   job: Job;
 }
 
+/**
+ * A component representing the job card.
+ *
+ * This component renders a job card that displays the job details.
+ * It utilizes the reusable `Link` component for handling the navigation.
+ *
+ * This component is designed to be rendered within a `Route` from `react-router-dom`
+ * to connect the job card to the main route.
+ *
+ * @param {JobCardProps} props - The props for the JobCard component.
+ * @param {Job} props.job - The job data.
+ *
+ * @returns {JSX.Element} The job card.
+ *
+ * @example
+ * <JobCard job={job} />
+ */
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const {
     id,
@@ -52,15 +73,18 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       to={`${absoluteUrls.client.home.my_jobs}/${id}`}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
-
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
           {title}
         </h3>
         <span
-          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(type)}`}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
+            type
+          )}`}
         >
-          {isOnsite ? WORKING_TYPES_PROPERTY.onsite : WORKING_TYPES_PROPERTY.remote}
+          {isOnsite
+            ? WORKING_TYPES_PROPERTY.onsite
+            : WORKING_TYPES_PROPERTY.remote}
         </span>
       </div>
 
