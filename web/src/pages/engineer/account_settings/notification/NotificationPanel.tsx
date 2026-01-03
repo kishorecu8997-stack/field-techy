@@ -9,7 +9,11 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * Displays notifications grouped by date (e.g., Today, Yesterday) using mock data.
  * Renders each notification through the NotificationItem component with proper grouping and layout.
  */
-const NotificationPanel = ({ grouped, onDismiss }: { grouped: GroupedNotifications; onDismiss?: (id: number) => void; }) => {
+interface NotificationPanelProps {
+  grouped: GroupedNotifications;
+  onDismiss?: (id: number) => void;
+}
+const NotificationPanel = ({ grouped, onDismiss }: NotificationPanelProps) => {
   const { setISOpenSidebar } = useDrawerStore();
   const { isPaused, pendingId } = useNotificationGate();
   const groupedLast20 = Object.fromEntries(

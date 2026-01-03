@@ -104,11 +104,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           onClick={() => onDismiss(id)}
         />
       )}
+
+      {/* Timestamp */}
+      <span className="absolute bottom-2 right-2 text-xs text-gray-500 dark:text-gray-200">
+        {timestamp}
+      </span>
       <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full mr-4 shadow-sm dark:bg-gray-400">
         <span className="text-xl">{icon}</span>
       </div>
       <div className="flex-1">
-        <div className="flex justify-between items-start dark:text-gray-200">
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-200">
               {title}
@@ -119,12 +123,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             {renderJobDetails()}
             {renderActionButtons(id)}
           </div>
-          <span className="text-xs text-gray-500 ml-4 whitespace-nowrap dark:text-gray-200">
-            {timestamp}
-          </span>
         </div>
       </div>
-    </div>
   );
 };
 
