@@ -6,7 +6,7 @@ export interface ProfileFormData {
 }
 
 export interface ChangePasswordFormData {
-  oldPassword: string;
+  currentPassword: string;
   password: string;
   confirmPassword: string;
 }

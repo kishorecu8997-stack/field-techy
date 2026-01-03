@@ -274,14 +274,17 @@ const JobCard: React.FC<{
               {job.status && (
                 <Badge
                   variant={
-                    STATUS_VARIANT_MAP[job.status] ??
+                    STATUS_VARIANT_MAP[
+                      job.status as keyof typeof STATUS_VARIANT_MAP
+                    ] ??
                     (() => {
                       console.warn(`Unknown job status: ${job.status}`);
                       return "gray"; // fallback to a valid variant
                     })()
                   }
                 >
-                  {JOB_STATUSES[job.status] ?? job.status}
+                  {JOB_STATUSES[job.status as keyof typeof JOB_STATUSES] ??
+                    job.status}
                 </Badge>
               )}
               {job.time && <span>| {job.time}</span>}

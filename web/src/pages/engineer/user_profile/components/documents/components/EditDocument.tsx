@@ -25,7 +25,7 @@ const EditDocument = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const onSubmit = async (data: EditDocumentFormData) => {
+  const onSubmit = async (_: EditDocumentFormData) => {
     await showPopup({
       title: "Update Document",
       body: "Are you sure you want to update this document?",

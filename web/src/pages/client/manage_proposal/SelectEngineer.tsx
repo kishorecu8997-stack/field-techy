@@ -1,16 +1,12 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  EngineersList,
-  ProposalsList,
-} from "@/dummy_data/client/manage-proposal";
-import { sampleJobs } from "@/dummy_data/searchData";
+import { EngineersList } from "@/dummy_data/client/manage-proposal";
 import FreelancerCard from "@/shared/components/cards/client/FreelancerCard";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Pagination from "../search_result/components/Pagination";
 import Popup from "@/shared/components/Popup";
@@ -22,7 +18,7 @@ import InvitationSentModal from "../explore_engineer/components/invite_job/Invit
  * @returns {JSX.Element} Job details page layout.
  */
 const SelectEngineer = () => {
-  const params = useParams();
+  // const params = useParams();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,12 +39,12 @@ const SelectEngineer = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
 
-  const jobId = Number(params.id);
+  // const jobId = Number(params.id);
 
-  const proposal = ProposalsList.find((job) => job.id === jobId);
-  const matchedJob = proposal
-    ? sampleJobs.find((job) => job.id === proposal.jobID)
-    : null;
+  // const proposal = ProposalsList.find((job) => job.id === jobId);
+  // const matchedJob = proposal
+  //   ? sampleJobs.find((job) => job.id === proposal.jobID)
+  //   : null;
 
   const handleSelect = (id: number) => {
     setSelectedIds(

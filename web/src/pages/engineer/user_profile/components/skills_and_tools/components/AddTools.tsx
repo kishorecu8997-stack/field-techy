@@ -32,7 +32,7 @@ const AddTools = () => {
     },
   });
 
-  const onSubmit = async (data: AddToolsFormData) => {
+  const onSubmit = async (_: AddToolsFormData) => {
     await showPopup({
       title: "Add Tools",
       body: "Are you sure you want to add these tools?",
@@ -51,7 +51,6 @@ const AddTools = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Tools Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

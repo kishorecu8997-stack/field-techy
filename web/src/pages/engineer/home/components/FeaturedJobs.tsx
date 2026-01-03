@@ -334,9 +334,8 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
-                jobCardGradients[index % jobCardGradients.length]
-              }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
+                }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}

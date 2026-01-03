@@ -15,15 +15,15 @@ import JobTabSection from "./JobTabSection";
  * @returns {React.ReactElement} The rendered job details page.
  */
 const JobsDetails: React.FC = () => {
-  const jobFilters = [
-    "Engineers Logs",
-    "Work Submissions",
-    "Job Information",
-    "Requirement",
-    "SPOC",
-    "Other",
-    "Proposal's Terms & Conditions",
-  ];
+  // const jobFilters = [
+  //   "Engineers Logs",
+  //   "Work Submissions",
+  //   "Job Information",
+  //   "Requirement",
+  //   "SPOC",
+  //   "Other",
+  //   "Proposal's Terms & Conditions",
+  // ];
   const params = useParams();
   const [isWorkSubmitted] = useState(false);
   const [isSendProposal] = useState(false);
@@ -43,7 +43,7 @@ const JobsDetails: React.FC = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isReport
-            onSortChange={() => {}}
+            onSortChange={() => { }}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
