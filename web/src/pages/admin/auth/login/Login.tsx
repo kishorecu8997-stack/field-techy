@@ -13,6 +13,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
+import { useAdminSignInMutation } from "@/shared/apiServices/admin/adminService";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import { UserRole } from "@/shared/enums/users";
 
 /**
  * AdminLogin
@@ -39,10 +45,29 @@ export default function AdminLogin() {
   });
 
   const navigate = useNavigate();
+  const adminSignInMutation = useAdminSignInMutation();
+  const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const handleSubmit = () => {
-    navigate(`${absoluteUrls.admin.home.dashboard}`);
-    toast.success("Logged in successfully!");
+  const handleSubmit = (data: LoginFormData) => {
+    adminSignInMutation.mutateAsync(
+      { phoneOrEmail: data.email, password: data.password },
+      {
+        onSuccess: (resp) => {
+          const stubbedResponse: UserSession = {
+            accessToken: resp.accessToken,
+            userId: resp.userId,
+            role: resp.role || UserRole.ADMIN,
+            initiatedAt: resp.initiatedAt || Date.now(),
+          };
+          setUserSession(stubbedResponse);
+          navigate(`${absoluteUrls.admin.home.dashboard}`);
+          toast.success("Logged in successfully!");
+        },
+        onError: (error: unknown) => {
+          toast.error((error as Error)?.message || "Login failed");
+        },
+      }
+    );
   };
 
   return (
