@@ -1,10 +1,11 @@
+import { icons } from "@/config/icons";
 import { urls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { usePopupStore } from "@/shared/store/popupStore";
 import { useTour } from "@reactour/tour";
 import { useEffect, useRef } from "react";
-import { FaArrowLeftLong } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 /**
  * OnboardingFlowGuide is a custom UI component used as the content popover
@@ -33,7 +34,31 @@ import { toast } from "react-toastify";
  */
 const OnboardingFlowGuide = () => {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const { showPopup, closePopup } = usePopupStore();
   const { currentStep, setCurrentStep, setIsOpen } = useTour();
+
+  const Completebanner = () => {
+    return (
+      <div className="relative flex flex-col items-center text-center justify-center p-4 bg-white rounded-lg dark:bg-gray-800 sm:p-5">
+        <span
+          onClick={closePopup}
+          className="cursor-pointer text-gray-400 text-3xl absolute top-0 right-2.5 "
+        >
+          <icons.close />
+        </span>
+        <span className="text-7xl text-[#083734]">
+          <RiVerifiedBadgeFill />
+        </span>
+        <p className="mb-1 font-semibold text-xl">
+          You're all set! Start applying for jobs
+        </p>
+        <p className="text-md font-normal text-gray-400">
+          Start exploring jobs and manage your earnings easily.
+        </p>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const onboarding = localStorage.getItem("onboarding_guide") === "true";
     const engineerpath = location.pathname.endsWith(urls.engineer.base);
@@ -59,9 +84,13 @@ const OnboardingFlowGuide = () => {
     };
   }, [document.body.style.overflow]);
 
-  const handlecomplete = () => {
-    setIsOpen(false);
-    toast.success("Ready to survey the engineer");
+  const handlecomplete = async () => {
+    await setIsOpen(false);
+    await showPopup({
+      title: "",
+      body: <Completebanner />,
+      actionButtons: [],
+    });
     localStorage.setItem("onboarding_guide", "true");
   };
 
@@ -71,43 +100,54 @@ const OnboardingFlowGuide = () => {
 
   return (
     <div ref={popoverRef} className="flex flex-col gap-y-2">
-      <span className="font-bold w-fit px-3 py-2 rounded-lg bg-[#065450] text-white">
-        Step {currentStep + 1}
+      <span className="font-bold w-fit px-3 py-2 rounded-xl bg-[#c4e9e4]">
+        Step {currentStep + 1} of {steps.length}
       </span>
-      <div className="text-xl font-semibold">{current.title}</div>
-      <p className="text-md text-gray-600">{current.content}</p>
-      <div className="flex justify-between mt-4">
-        <Button
-          size="sm"
-          variant="outline"
+      <div className="text-xl font-bold">{current.title}</div>
+      <p className="text-md text-gray-600 font-medium">{current.content}</p>
+      <div className="flex items-center justify-between mt-4">
+        <span
+          className="font-medium cursor-pointer text-[#014d44]"
           onClick={() => {
             setIsOpen(false);
             localStorage.setItem("onboarding_guide", "true");
           }}
         >
           Skip
-        </Button>
-        <div className="flex gap-3 px-1 py-1">
-          <Button
-            variant="outline"
-            disabled={isFirstStep}
-            onClick={() => setCurrentStep(currentStep - 1)}
-          >
-            <FaArrowLeftLong />
-          </Button>
+        </span>
+        <div className="flex gap-3 items-center px-1 py-1">
+          {!isFirstStep && (
+            <span
+              className="flex flex-row-reverse gap-2 items-center cursor-pointer"
+              onClick={() => setCurrentStep(currentStep - 1)}
+            >
+              Back
+              <span className="p-1 flex justify-center items-center rounded-full border border-gray-400 size-8">
+                <IoMdArrowBack className="font-medium text-gray-400" />
+              </span>
+            </span>
+          )}
 
           {!isLastStep ? (
-            <Button
-              size="md"
-              variant="primary"
+            <span
+              className="flex gap-2 items-center cursor-pointer"
               onClick={() => setCurrentStep(currentStep + 1)}
             >
               Next
-            </Button>
+              <span className="p-1 flex justify-center items-center border size-8 rounded-full bg-[#014d44]">
+                <IoMdArrowForward className="font-medium text-white" />
+              </span>
+            </span>
           ) : (
-            <Button size="sm" variant="primary" onClick={handlecomplete}>
+            <span
+              className="flex gap-2 items-center cursor-pointer"
+              onClick={handlecomplete}
+            >
               Finish
-            </Button>
+              <span className="p-1 flex justify-center items-center border size-8 rounded-full bg-[#014d44]">
+                <IoMdArrowForward className="font-medium text-white" />
+              </span>
+            </span>
           )}
         </div>
       </div>
