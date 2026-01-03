@@ -1,5 +1,7 @@
 import { icons } from "@/config/icons";
+import type { EngineerStatusUpdate } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 import { validateDescription } from "@/pages/engineer/home/validation";
+import { useEngineerUpdateJobStatus } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -10,16 +12,34 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 /**
- * UpdateStatus Component   
+ * UpdateStatus Component
  * Renders the Update Status form for the Manage Proposal page.
  * @param {UpdateStatusProps} props - Configuration props including the engineer object
  * @returns {JSX.Element} The rendered Update Status form
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
-  const FormCtx = useForm();
-  const { showPopup } = usePopupStore();
+  const { mutate: updateJobStatus } = useEngineerUpdateJobStatus({
+    onSuccess: () => {
+      toast.success("Your status was updated");
+    },
 
-  const handleSubmit = async () => {
+    onError: (error) => {
+      console.error("Update status failed:", error);
+      toast.error("Failed to update status");
+    },
+  });
+
+  const formCtx = useForm<EngineerStatusUpdate>({
+    defaultValues: {
+      status: "",
+      remarks: "",
+      workScreenShot: null,
+    },
+  });
+
+  const { showPopup } = usePopupStore();
+  const handleSubmit = async (data: EngineerStatusUpdate) => {
+
     await showPopup({
       title: "Update Status",
       body: "Are you sure you want to update this job status?",
@@ -34,7 +54,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Job status updated successfully!");
+            // await updateJobStatus(data);
             close(true);
             onClose();
           },
@@ -55,7 +75,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
       <div className="text-xl text-gray-900 dark:text-white font-bold text-center">
         Update Status
       </div>
-      <FormContainer methods={FormCtx} onSubmit={handleSubmit}>
+      <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <SelectField
           name="status"
           label="Status"

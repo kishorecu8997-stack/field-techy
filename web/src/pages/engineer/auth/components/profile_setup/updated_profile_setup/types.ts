@@ -30,3 +30,9 @@ export interface EngineerDocuments {
   certificateUrl: string;
   profileImageUrl: string;
 }
+
+export interface EngineerStatusUpdate {
+  status: string;
+  remarks: string;
+  workScreenShot: FileList | null;
+}
