@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import App from "./app/App.tsx";
 import "./index.css";
 import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
+import "./shared/apiServices/utils/errorHandlerConfig";
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
