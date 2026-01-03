@@ -55,20 +55,20 @@ const PostAJobFields = ({
       currentLocation === CurrentLocation.dedicated
         ? dedicatedFields
         : currentLocation === CurrentLocation.dispatch
-        ? dispatchFields
-        : scheduledFields;
+          ? dispatchFields
+          : scheduledFields;
 
     isValid = await trigger(currentValidatedFields);
 
     if (isValid) {
-    console.log('isValid :', isValid);
+      console.log('isValid :', isValid);
       setIsDisable(true);
     } else {
       toast.error("Please fill all the required fields");
     }
   };
 
-  const handleDeleteInterviewer = async (id: number) => {
+  const handleDeleteInterviewer = async (_: number) => {
     await showPopup({
       title: "Delete Client Interviewer",
       body: "Are you sure you want to delete this interviewer?",

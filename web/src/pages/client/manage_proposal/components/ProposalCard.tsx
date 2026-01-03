@@ -1,6 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import type { EngineerCardProps } from "../types";
 
 /**ProposalCard Component
  * Renders a card for a proposal, displaying the engineer's name, rating, title, and availability.

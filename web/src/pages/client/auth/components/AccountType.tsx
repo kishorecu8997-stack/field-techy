@@ -1,8 +1,8 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import type { JSX } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 /**
  * ClientAccountType
  *
@@ -15,18 +15,16 @@ import { useLocation, useNavigate } from "react-router-dom";
  */
 export default function ClientAccountType(): JSX.Element {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { setAccountType, } = useClientRegistrationStore();
+
 
   /**
-   * Navigate to the provided path while forwarding the current location.state
-   * (used to carry data from the OTP step into the profile setup flow).
-   *
-   * @param {string} path - destination route path
+   * Handle account type selection
+   * Saves to store and navigates to profile setup
    */
-  const handleSelectType = (path: string) => {
-    navigate(path, {
-      state: location.state, // Forward the state from OTP step
-    });
+  const handleSelectType = (type: 'corporate' | 'home') => {
+    setAccountType(type);
+    navigate(`${absoluteUrls.client.auth.profile_setup}/${type}`);
   };
 
   return (
@@ -46,11 +44,7 @@ export default function ClientAccountType(): JSX.Element {
           </div>
           <div className="flex gap-8 mt-8 justify-center">
             <div
-              onClick={() =>
-                handleSelectType(
-                  `${absoluteUrls.client.auth.profile_setup}/corporate`
-                )
-              }
+              onClick={() => handleSelectType('corporate')}
               className="border font-semibold cursor-pointer rounded-xl w-36 h-36 p-4 border-teal-700 flex flex-col items-center justify-center"
             >
               <img
@@ -62,11 +56,7 @@ export default function ClientAccountType(): JSX.Element {
             </div>
 
             <div
-              onClick={() =>
-                handleSelectType(
-                  `${absoluteUrls.client.auth.profile_setup}/home`
-                )
-              }
+              onClick={() => handleSelectType('home')}
               className="border font-semibold cursor-pointer rounded-xl w-36 h-36 p-4 border-teal-700 flex flex-col items-center justify-center text-center"
             >
               <img

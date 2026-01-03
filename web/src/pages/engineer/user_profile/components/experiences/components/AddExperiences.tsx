@@ -27,7 +27,7 @@ const AddExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (data: ExperiencesFormData) => {
+  const handleSubmit = async (_: ExperiencesFormData) => {
     await showPopup({
       title: "Add Experience",
       body: "Are you sure you want to add this experience?",
@@ -46,7 +46,6 @@ const AddExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Added Successfully");
-            console.log(data);
             close(true);
             setActiveKey("experiences");
           },
@@ -161,7 +160,7 @@ const AddExperiences = () => {
               const checked = e.target.checked;
               methods.setValue("isCurrent", checked)
               if (checked) {
-              methods.setValue("endDate", null); // Remove end date
+                methods.setValue("endDate", null); // Remove end date
               }
             }
           }}

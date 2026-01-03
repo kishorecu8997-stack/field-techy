@@ -7,7 +7,7 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { getDurationString, getMinTentativeEndDate } from "@/utils";
+import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
 import { validateDateRange } from "@/utils/validate";
 import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
@@ -42,10 +42,10 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   const startDate = ctx.watch("startDate");
   const endDate = ctx.watch("endDate");
 
-  const minTentativeEndDate = getMinTentativeEndDate(
-    applicationEndDate,
-    tentativeStartDate
-  );
+  // const minTentativeEndDate = getMinTentativeEndDate(
+  //   applicationEndDate,
+  //   tentativeStartDate
+  // );
 
   const minStartTimes = useMemo(() => {
     if (!applicationEndDate) return undefined;
@@ -139,11 +139,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   };
 
   const { min: minEndDate, max: maxEndDate } = useMemo(() => {
-  if (currentLocation === CurrentLocation.dedicated && tentativeStartDate) {
-    return getDedicatedEndDateRange(tentativeStartDate);
-  }
-  return { min: undefined, max: undefined };
-}, [tentativeStartDate, currentLocation]);
+    if (currentLocation === CurrentLocation.dedicated && tentativeStartDate) {
+      return getDedicatedEndDateRange(tentativeStartDate);
+    }
+    return { min: undefined, max: undefined };
+  }, [tentativeStartDate, currentLocation]);
 
   return (
     <>
@@ -220,7 +220,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="Tentative End Date"
                       placeholder="Select Tentative End date"
                       {...field}
-                       minDate={minEndDate}
+                      minDate={minEndDate}
                       maxDate={maxEndDate}
                       required
                     />

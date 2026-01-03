@@ -6,7 +6,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import React, { useState } from "react";
+import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
@@ -46,9 +46,8 @@ export default function PendingRequest() {
     const status = data.status;
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Engineer`,
-      body: `Are you sure you want to ${
-        status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this Engineer?`,
+      body: `Are you sure you want to ${status?.charAt(0).toUpperCase() + status?.slice(1)
+        } this Engineer?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -62,10 +61,9 @@ export default function PendingRequest() {
             status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
           action: async (close) => {
             toast.success(
-              `Enginner ${
-                status.toLocaleLowerCase() === "approve"
-                  ? "approved"
-                  : "rejected"
+              `Enginner ${status.toLocaleLowerCase() === "approve"
+                ? "approved"
+                : "rejected"
               } successfully!`
             );
             close(true);

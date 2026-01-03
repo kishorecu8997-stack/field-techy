@@ -1,94 +1,69 @@
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import type { CompleteRegistrationData } from "../types";
 import BackgroundVerification from "./BackgroundVerification";
 import SetPassword from "./SetPassword";
-import ProfileSettingPage from "./ProfileSettingPage";
-
-// Types (without Zod)
-export type CompleteRegistrationData = {
-  // Profile Setup
-  profileImage?: File;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  phone: string;
-  address: string;
-  tags: string[];
-  skills: string[];
-  portfolio?: string;
-  amount: string;
-  designation: string;
-  company: string;
-  location: string;
-  country: string;
-  postalCode: string;
-  experience: string;
-  resume?: File;
-
-  // Background Verification
-  governmentId?: File;
-  certificate?: File;
-
-  // Set Password
-  password: string;
-  confirmPassword: string;
-
-  mobileOTP?: string;
-  emailOTP?: string;
-};
+import { toast } from "react-toastify";
 
 /**
- * A multi-step registration form component that guides users through
- * profile setup, background verification, and password creation.
- *
- * This component manages the overall flow of the registration process,
- * handling step navigation, form submission, and integration with
- * `react-hook-form` for state management and validation across steps.
- * It orchestrates the display of `ProfileSettingPage`, `BackgroundVerification`,
- * and `SetPassword` components.
- *
- * Upon successful completion of all steps, it displays a success popup
- * and navigates the user to the sign-in page.
- *
+ * Multi-step Registration Form
+ * 
+ * This component is a multi-step registration form that guides the user through the registration process.
+ * It consists of three steps: Profile Setting, Background Verification, and Password Setting.
+ * 
+ * The form is divided into two parts: the first part (Profile Setting) is where the user sets up their profile information,
+ * such as name, email, phone number, address, skills, portfolio, service category, amount, designation, company, and experience.
+ * 
+ * The second part (Background Verification) is where the user verifies their identity by providing government ID and certificate.
+ * 
+ * The third part (Password Setting) is where the user sets up their password and confirms it.
  */
 const MultiStepRegistrationForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { isPending: isSubmitting } = useEngineerSignup({
+    onSuccess: () => {
+      toast.success("Completed registration successfully");
+      navigate("/engineer/auth");
+    },
+    onError: (error: any) => {
+      console.error("Submit error:", error);
+      toast.error("Registration failed. Please try again.");
+    }
+  });
 
   const methods = useForm<CompleteRegistrationData>({
     mode: "onSubmit",
     defaultValues: {
-      // Profile Setup
+      // Step 1: Profile Setup
       profileImage: undefined,
       firstName: "",
       lastName: "",
       email: "",
-      phoneNumber: "",
       phone: "",
       address: "",
-      tags: [],
       skills: [],
       portfolio: "",
       amount: "",
       designation: "",
       company: "",
-      location: "",
       country: "",
       postalCode: "",
+      serviceCategory: "",
       experience: "",
       resume: undefined,
 
-      // Background Verification
+      // Step 2: Background Verification
       governmentId: undefined,
       certificate: undefined,
 
-      // Set Password
+      // Step 3: Password Create
       password: "",
       confirmPassword: "",
 
@@ -99,6 +74,7 @@ const MultiStepRegistrationForm = () => {
 
   const { trigger } = methods;
 
+  // Handle step validation & navigation
   const handleStepSubmit: SubmitHandler<CompleteRegistrationData> = async (
     data
   ) => {
@@ -106,57 +82,42 @@ const MultiStepRegistrationForm = () => {
 
     switch (currentStep) {
       case 1:
-        // Trigger validation for step 1 fields
         isValid = await trigger([
           "firstName",
           "lastName",
           "email",
-          "phoneNumber",
           "phone",
           "address",
           "country",
           "postalCode",
+          "skills",
+          "portfolio",
+          "serviceCategory",
+          "amount",
           "designation",
           "company",
-          "location",
           "experience",
+          "resume",
         ]);
-        if (isValid) {
-          setCurrentStep(2);
-        }
+        if (isValid) setCurrentStep(2);
         break;
 
       case 2:
-        isValid = await trigger(["governmentId", "certificate"]);
-        if (isValid) {
-          setCurrentStep(3);
-        }
+        setCurrentStep(3);
         break;
 
       case 3:
         isValid = await trigger(["password", "confirmPassword"]);
-        if (isValid) {
-          await submitCompleteForm(data);
-        }
+        if (isValid) submitCompleteForm(data);
         break;
     }
   };
 
-  const submitCompleteForm = async (data: CompleteRegistrationData) => {
-    setIsSubmitting(true);
+  const submitCompleteForm = async (_: CompleteRegistrationData) => {
     try {
-      // 🔥 MOCK API CALL (replace with real fetch when backend is ready)
-      console.log("Submitting registration data:", data);
-
-      // Simulate network delay
-      await new Promise((r) => setTimeout(r, 800));
-
-      // Simulate success
-      navigate("/engineer/auth");
+      // await signup(data);
     } catch (error) {
-      console.error("Network error:", error);
-    } finally {
-      setIsSubmitting(false);
+      console.error("Submit error:", error);
     }
   };
 
@@ -164,16 +125,17 @@ const MultiStepRegistrationForm = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  // Step renderer
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
-        return <ProfileSettingPage />;
+      // case 1:
+      //   return <ProfileSettingPage />;
       case 2:
         return <BackgroundVerification />;
       case 3:
         return <SetPassword />;
       default:
-        return <ProfileSettingPage />;
+      // return <ProfileSettingPage />;
     }
   };
 
@@ -185,10 +147,9 @@ const MultiStepRegistrationForm = () => {
     >
       {currentStep > 1 && (
         <div>
-          <button
-            type="button" // Prevents form submission
+          <div
             onClick={goToPreviousStep}
-            className="p-2 rounded-full bg-white shadow-md hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-full w-fit cursor-pointer bg-white shadow-md hover:bg-gray-100 transition-colors"
             aria-label="Go back"
           >
             <svg
@@ -205,7 +166,7 @@ const MultiStepRegistrationForm = () => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </button>
+          </div>
         </div>
       )}
 
@@ -218,7 +179,6 @@ const MultiStepRegistrationForm = () => {
           />
         </div>
 
-        {/* ✅ FIXED: Added key={currentStep} to force re-render on step change */}
         <div
           key={currentStep}
           className="flex-1 p-2 relative gap-3 overflow-y-auto max-h-[75vh] w-full justify-items-center"
