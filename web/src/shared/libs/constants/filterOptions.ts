@@ -1,10 +1,9 @@
 // Location Options
 export const LOCATION_OPTIONS = [
   { value: 'all', label: 'All' },
-  { value: 'new', label: 'New First' },
-  { value: 'old', label: 'Old First' },
-  { value: 'top', label: 'Top Rated' },
-  { value: 'popular', label: 'Popular First' },
+  { value: 'on-site', label: 'On-site' },
+  { value: 'remote', label: 'Remote' },
+  { value: 'hybrid', label: 'Hybrid' },
 ] as const;
 
 // Budget Options
