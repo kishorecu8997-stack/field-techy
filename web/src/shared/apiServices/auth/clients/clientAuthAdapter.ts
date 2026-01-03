@@ -131,7 +131,7 @@ export class ClientAuthAdapter {
    * @throws {Error} If OTP verification fails or request encounters an error
    * @remarks
    * Currently uses hardcoded userId and role. The API response headers should be updated
-   * to include user-id and x-user-type headers for proper user identification.
+   * to include x-user and x-user-type headers for proper user identification.
    */
   static async verifyOtp(phoneOrEmail: string, otp: string) {
     try {
