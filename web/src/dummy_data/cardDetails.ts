@@ -1,4 +1,4 @@
-import type { PaymentCardOption } from "@/shared/components/commonUI/PaymentMethod";
+import type { PaymentCardOption } from "@/shared/components/type";
 
 export interface Card {
   id: string;
@@ -16,13 +16,13 @@ export const cards: Card[] = [
     title: "Mobile App UI/UX Designer",
     icon: "V",
   },
-  {
-    id: "2",
-    number: "xxxx xxxx xxxx 5678",
-    type: "M",
-    title: "Mobile App UI/UX Designer",
-    icon: "M",
-  },
+  // {
+  //   id: "2",
+  //   number: "xxxx xxxx xxxx 5678",
+  //   type: "M",
+  //   title: "Mobile App UI/UX Designer",
+  //   icon: "M",
+  // },
 ];
 
 export const initialPaymentOptions: PaymentCardOption[] = [

@@ -49,7 +49,7 @@ const ClientFields = () => {
             <Controller
               name="startDate"
               control={ctx.control}
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <>
                   <DatePickerInput
                     label="Start Date"

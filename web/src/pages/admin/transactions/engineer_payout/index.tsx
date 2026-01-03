@@ -83,8 +83,8 @@ const EngineerPayout: React.FC = () => {
     {
       key: "action",
       label: "Download Invoice",
-      renderCell: (row: TransactionProps) => (
-        <div className="flex items-center gap-2 justify-center cursor-pointer" onClick={()=>console.log('download invoice')}>
+      renderCell: (_: TransactionProps) => (
+        <div className="flex items-center gap-2 justify-center cursor-pointer" onClick={() => console.log('download invoice')}>
           <FiDownload className="text-emerald-600 hover:text-emerald-700" />
         </div>
       ),
@@ -93,11 +93,11 @@ const EngineerPayout: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col gap-3 ">
       <div className=" h-full w-full flex flex-1 overflow-y-auto">
-          <CustomTable<TransactionProps>
-            columns={columns}
-            data={transactions}
-            initialPageSize={10}
-          />
+        <CustomTable<TransactionProps>
+          columns={columns}
+          data={transactions}
+          initialPageSize={10}
+        />
       </div>
     </div>
   );

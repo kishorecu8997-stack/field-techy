@@ -1,29 +1,13 @@
-import { useState } from "react";
-import SignUpWithEmail from "./SignUpWithEmail";
-import SignUpWithNumber from "./SignUpWithNumber";
+import BasicDetails from "../profile_setup/updated_profile_setup/BasicDetails";
 
 /**
- * Sign Up page component that provides both email and phone number registration options.
- * Manages the state to toggle between email signup and phone number signup components.
- *
- * @component
- * @example
- * return (
- *   <SignUpPage />
- * )
- *
- * @returns {JSX.Element} The rendered Sign Up page component with conditional rendering
+ * Sign Up page component that renders the Basic Details form directly.
+ * This is now the entry point for client registration.
  */
 const ClientSignUpPage = () => {
-  const [isNumberLogin, setIsNumberLogin] = useState(false);
-
   return (
-    <div>
-      {isNumberLogin ? (
-        <SignUpWithNumber setIsNumberLogin={setIsNumberLogin} />
-      ) : (
-        <SignUpWithEmail setIsNumberLogin={setIsNumberLogin} />
-      )}
+    <div className="flex w-full justify-center">
+      <BasicDetails />
     </div>
   );
 };

@@ -5,7 +5,10 @@ import { sampleJobs } from "@/dummy_data/searchDataClient";
 import React, { useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
-import AllowAccessPopup from "../auth/components/AccessPopup";
+import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useFCM } from "@/shared/hooks/useFCM";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
@@ -19,15 +22,29 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  */
 const Dashboard: React.FC = () => {
   const [accessPopup, setAccessPopup] = React.useState<boolean>(false);
+  const { locationPermission, notificationPermission } = useDeviceStore();
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
     []
   );
 
+  // Check actual browser permission states on mount and sync with store
   useEffect(() => {
-    setAccessPopup(true);
-  }, []);
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
+
+  useEffect(() => {
+    // Show popup if either permission is in 'prompt' state (or not granted/denied explicitly yet)
+    // We can also check for 'denied' if we want to re-prompt, but usually we respect 'denied' until user resets.
+    // Here we check if it's 'prompt' or 'default'.
+    if (locationPermission === 'prompt' || notificationPermission === 'default') {
+      setAccessPopup(true);
+    }
+  }, [locationPermission, notificationPermission]);
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -89,7 +106,7 @@ const Dashboard: React.FC = () => {
                 </NavLink>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">
-                {inProgressJobsData.map((job:Job) => (
+                {inProgressJobsData.map((job: Job) => (
                   <InProgressJobCard
                     key={job.id}
                     job={job}
