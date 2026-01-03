@@ -77,13 +77,4 @@ export function useTokenExpiration() {
       }
     };
   }, [session, logout]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 }
