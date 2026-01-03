@@ -77,87 +77,85 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   return (
     <div
-      className={`text-white flex flex-col transition-all text-sm duration-300 ease-out space-y-1 ${
-        isCollapsed ? "w-16" : "w-64"
-      } p-3`}
+      className={`text-white flex flex-col transition-all text-sm duration-300 ease-out h-full ${isCollapsed ? "w-16" : "w-64"
+        } p-3`}
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
-      {menuItems.map((item) => {
-        const hasChildren = !!item.children;
-        const isExpanded = openMenus[item.name];
+      {/* menu items */}
+      <div className="flex-1 overflow-y-auto space-y-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+        {menuItems.map((item) => {
+          const hasChildren = !!item.children;
+          const isExpanded = openMenus[item.name];
 
-        if (hasChildren) {
-          return (
-            <div key={item.name} className="w-full">
-              <div
-                onClick={() => toggle(item.name)}
-                className={`flex items-center cursor-pointer justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
-                  isCollapsed ? "justify-center pl-0" : "px-3"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <span>{item.icon}</span>
-                  {!isCollapsed && <span>{item.name}</span>}
-                </div>
-                {!isCollapsed && (
-                  <HiChevronDown
-                    className={`transition-transform text-xl ${
-                      isExpanded ? "rotate-180" : ""
+          if (hasChildren) {
+            return (
+              <div key={item.name} className="w-full">
+                <div
+                  onClick={() => toggle(item.name)}
+                  className={`flex items-center cursor-pointer justify-between w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${isCollapsed ? "justify-center pl-0" : "px-3"
                     }`}
-                  />
-                )}
-              </div>
+                >
+                  <div className="flex items-center gap-3">
+                    <span>{item.icon}</span>
+                    {!isCollapsed && <span>{item.name}</span>}
+                  </div>
+                  {!isCollapsed && (
+                    <HiChevronDown
+                      className={`transition-transform text-xl ${isExpanded ? "rotate-180" : ""
+                        }`}
+                    />
+                  )}
+                </div>
 
-              {/* Submenu Items */}
-              {!isCollapsed && isExpanded && (
-                <div className="mt-1 space-y-1 ml-6">
-                  {item.children?.map((child) => (
-                    <NavLink
-                      key={child.path}
-                      to={child.path!}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2 rounded-lg ${
-                          isActive
+                {/* Submenu Items */}
+                {!isCollapsed && isExpanded && (
+                  <div className="mt-1 space-y-1 ml-6">
+                    {item.children?.map((child) => (
+                      <NavLink
+                        key={child.path}
+                        to={child.path!}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2 rounded-lg ${isActive
                             ? "bg-[#ffffff] text-gray-800 font-medium"
                             : "text-white hover:bg-white/10"
-                        }`
-                      }
-                    >
-                      <span>{child.icon}</span>
-                      <span>{child.name}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        }
+                          }`
+                        }
+                      >
+                        <span>{child.icon}</span>
+                        <span>{child.name}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
 
-        // Regular item (no children)
-        return (
-          <NavLink
-            key={item.path}
-            to={item.path!}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg ${
-                isActive
+          // Regular item (no children)
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path!}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg ${isActive
                   ? "bg-white text-gray-800 font-medium"
                   : "text-white hover:bg-white/10"
-              }`
-            }
-          >
-            <span>{item.icon}</span>
-            {!isCollapsed && <span>{item.name}</span>}
-          </NavLink>
-        );
-      })}
+                }`
+              }
+            >
+              <span>{item.icon}</span>
+              {!isCollapsed && <span>{item.name}</span>}
+            </NavLink>
+          );
+        })}
+      </div>
 
-      <div className="absolute bottom-0 w-58 mb-2">
+      {/* logout button */}
+      <div className="mt-auto pt-2">
         <div
           onClick={handleLogout}
-          className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors mt-auto ${
-            isCollapsed ? "justify-center px-2 w-fit" : "w-58"
-          }`}
+          className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors w-full ${isCollapsed ? "justify-center px-0" : ""
+            }`}
           aria-label="Logout"
         >
           <HiOutlineLogout className="text-lg" />
