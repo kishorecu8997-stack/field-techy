@@ -14,6 +14,7 @@ import { transactions } from "@/dummy_data/bankDetails";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import type { MonthlyData } from "@/shared/libs/utils";
 
+
 /**
  * EarningHistoryChart Component
  * Displays a line chart of the user's monthly earnings history with an expandable view.

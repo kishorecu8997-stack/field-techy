@@ -76,9 +76,11 @@ const LoginWithNumber = ({
         toast.success("OTP Requested, kindly check your phone for OTP");
         setIsOpen(true);
       },
-      onError: async (resp) => {
-        console.log(`OTP Response: `, resp);
-        toast.error("OTP Request failed");
+      onError: async (error) => {
+        console.log(`OTP Response: `, error);
+        const errorMessage =
+          error instanceof Error ? error.message : "OTP Request failed";
+        toast.error(errorMessage);
       },
     });
   };
@@ -96,8 +98,10 @@ const LoginWithNumber = ({
           navigate(absoluteUrls.client.home.dashboard);
           toast.success("Logged in successfully");
         },
-        onError: () => {
-          toast.error("OTP Verification failed");
+        onError: (error) => {
+          const errorMessage =
+            error instanceof Error ? error.message : "OTP Verification failed";
+          toast.error(errorMessage);
         },
       }
     );

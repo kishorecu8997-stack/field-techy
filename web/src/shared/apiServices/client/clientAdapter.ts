@@ -12,7 +12,7 @@ import type {
 } from "./clientTypes";
 import type { LoginFormData } from "@/pages/admin/auth/types";
 import type { Country } from "@/shared/components/commonUI/inputs/type";
-import { AxiosError } from "axios";
+import { GlobalApiErrorHandler } from "../utils";
 
 /*
  * ClientAdapter
@@ -25,39 +25,6 @@ import { AxiosError } from "axios";
  * parameters into the expected format for the API.
  */
 export class ClientAdapter {
-  /**
-   * Helper to handle API errors and return standardized messages
-   */
-  private static handleApiError(error: unknown): never {
-    if (error instanceof AxiosError) {
-      const status = error.response?.status;
-
-      if (status === 401) {
-        throw new Error("Unauthorized. Please check your credentials.");
-      }
-
-      if (status === 403) {
-        throw new Error(
-          "Forbidden. You are not authorized to access this resource."
-        );
-      }
-
-      if (status === 400) {
-        throw new Error("Invalid request details. Please check your inputs.");
-      }
-      if (status === 500) {
-        throw new Error("Internal server error. Please try again later.");
-      }
-
-      if (status === 409) {
-        throw new Error(
-          "Resource already exists. Please try again with a different value."
-        );
-      }
-    }
-    // Re-throw original error if not handled above
-    throw new Error("An unknown error occurred. Please try again later.");
-  }
 
   /**
    * Registers a new client.
@@ -75,7 +42,7 @@ export class ClientAdapter {
       );
       return response.data;
     } catch (error) {
-      ClientAdapter.handleApiError(error);
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
 
     // Stubbed for testing - returns fixed client ID to enable document upload flow
@@ -101,15 +68,19 @@ export class ClientAdapter {
    * @throws {Error} If authentication fails or request encounters an error
    */
   static async signin(data: LoginFormData) {
-    const payload = {
-      phoneOrEmail: data.email,
-      password: data.password,
-    };
-    const response = await axiosInstance.post(
-      CLIENT_ROUTER_PATHS.SIGNIN,
-      payload
-    );
-    return response.data;
+    try {
+      const payload = {
+        phoneOrEmail: data.email,
+        password: data.password,
+      };
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SIGNIN,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -120,8 +91,12 @@ export class ClientAdapter {
    * @throws {Error} If the client is not found or request encounters an error
    */
   static async getById(id: string): Promise<ClientData> {
-    const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
-    return response.data;
+    try {
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -132,8 +107,12 @@ export class ClientAdapter {
    * @remarks For large datasets, consider using the paginated `getAll` method instead.
    */
   static async getAllClients(): Promise<ClientData[]> {
-    const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_ALL);
-    return response.data;
+    try {
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_ALL);
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -150,16 +129,20 @@ export class ClientAdapter {
   static async getAll(
     params: ClientPaginationParams = {}
   ): Promise<PagedResponse<ClientData>> {
-    const {
-      page = 0,
-      size = 10,
-      sortBy = "createdAt",
-      direction = "DESC",
-    } = params;
-    const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
-      params: { page, size, sortBy, direction },
-    });
-    return response.data;
+    try {
+      const {
+        page = 0,
+        size = 10,
+        sortBy = "createdAt",
+        direction = "DESC",
+      } = params;
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_PAGED, {
+        params: { page, size, sortBy, direction },
+      });
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -171,11 +154,15 @@ export class ClientAdapter {
    * @throws {Error} If the update fails or request encounters an error
    */
   static async update(id: string, data: ClientData): Promise<ClientData> {
-    const response = await axiosInstance.put(
-      CLIENT_ROUTER_PATHS.UPDATE(id),
-      data
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.put(
+        CLIENT_ROUTER_PATHS.UPDATE(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -186,7 +173,11 @@ export class ClientAdapter {
    * @throws {Error} If the deletion fails or request encounters an error
    */
   static async delete(id: string): Promise<void> {
-    await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
+    try {
+      await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   // ===== OTP Methods =====
@@ -199,12 +190,16 @@ export class ClientAdapter {
    * @throws {Error} If OTP sending fails or request encounters an error
    */
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    const urlEncodedEmail = encodeURIComponent(email);
-    const response = await axiosInstance.post(
-      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const urlEncodedEmail = encodeURIComponent(email);
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // // Stubbed response
     // console.log(`[STUB] Sending email OTP to: ${email}`);
@@ -225,11 +220,15 @@ export class ClientAdapter {
   static async sendEmailMobileOtp(
     emailOrPhone: string
   ): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -240,11 +239,15 @@ export class ClientAdapter {
    * @throws {Error} If OTP sending fails or request encounters an error
    */
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // Stubbed response
     // console.log(`[STUB] Sending phone OTP to: ${phoneNumber}`);
@@ -267,11 +270,15 @@ export class ClientAdapter {
     emailOrPhone: string,
     otp: string
   ): Promise<{ message: string; verified: boolean }> {
-    // TODO: Replace with actual API call when backend is ready
-    const response = await axiosInstance.post(
-      CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp)
-    );
-    return response.data;
+    try {
+      // TODO: Replace with actual API call when backend is ready
+      const response = await axiosInstance.post(
+        CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
 
     // Stubbed response - accepts any 4-digit OTP
     // console.log(`[STUB] Verifying email OTP for: ${email}, OTP: ${otp}`);
@@ -433,8 +440,7 @@ export class ClientAdapter {
         }, 500);
       });
     } catch (error) {
-      ClientAdapter.handleApiError(error);
-      throw error; // This will never be reached due to handleApiError, but satisfies TypeScript
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 
@@ -448,10 +454,14 @@ export class ClientAdapter {
    * @throws {Error} If the request encounters an error
    */
   static async getFiles(clientId: string): Promise<ClientFile[]> {
-    const response = await axiosInstance.get(
-      CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.get(
+        CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -468,32 +478,36 @@ export class ClientAdapter {
   static async uploadFile(
     params: ClientFileUploadParams
   ): Promise<FileUploadResponse> {
-    const { clientId, file, documentType, onUploadProgress } = params;
+    try {
+      const { clientId, file, documentType, onUploadProgress } = params;
 
-    const formData = new FormData();
-    formData.append("file", file);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const path = CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType);
-    console.log(`Uploading file to: ${path}`);
-    const response = await uploadAxiosInstance.post(path, formData, {
-      headers: {
-        "X-USER": "CLIENT",
-        "Content-Type": "multipart/form-data",
-      },
-      onUploadProgress: (progressEvent) => {
-        if (onUploadProgress && progressEvent.total) {
-          const percentage = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          onUploadProgress({
-            loaded: progressEvent.loaded,
-            total: progressEvent.total,
-            percentage,
-          });
-        }
-      },
-    });
-    return response.data;
+      const path = CLIENT_ROUTER_PATHS.UPLOAD_FILE(clientId, documentType);
+      console.log(`Uploading file to: ${path}`);
+      const response = await uploadAxiosInstance.post(path, formData, {
+        headers: {
+          "X-USER": "CLIENT",
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          if (onUploadProgress && progressEvent.total) {
+            const percentage = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            onUploadProgress({
+              loaded: progressEvent.loaded,
+              total: progressEvent.total,
+              percentage,
+            });
+          }
+        },
+      });
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -504,7 +518,11 @@ export class ClientAdapter {
    * @throws {Error} If the deletion fails or request encounters an error
    */
   static async deleteFile(fileId: string): Promise<void> {
-    await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE_FILE(fileId));
+    try {
+      await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE_FILE(fileId));
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -516,30 +534,34 @@ export class ClientAdapter {
    * @throws {Error} If the download fails or request encounters an error
    */
   static async downloadFile(fileKey: string, fileName?: string): Promise<void> {
-    const response = await axiosInstance.get(
-      CLIENT_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
-      {
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/octet-stream",
-        },
-      }
-    );
+    try {
+      const response = await axiosInstance.get(
+        CLIENT_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
 
-    // Create blob URL
-    const blob = new Blob([response.data]);
-    const url = window.URL.createObjectURL(blob);
+      // Create blob URL
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
 
-    // Create temporary anchor element and trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName || "download";
-    document.body.appendChild(link);
-    link.click();
+      // Create temporary anchor element and trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName || "download";
+      document.body.appendChild(link);
+      link.click();
 
-    // Cleanup
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -549,54 +571,58 @@ export class ClientAdapter {
   static async downloadFileStream(
     fileKey: string
   ): Promise<FileDownloadResponse> {
-    const response = await axiosInstance.get(
-      CLIENT_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
-      {
-        responseType: "blob",
-        headers: {
-          accept: "*/*",
-        },
-      }
-    );
-
-    // Extract metadata from response headers
-    const contentDisposition = response.headers["content-disposition"];
-    const contentLength = response.headers["content-length"]
-      ? parseInt(response.headers["content-length"], 10)
-      : undefined;
-    const contentType =
-      response.headers["content-type"] || "application/octet-stream";
-
-    // Extract filename from Content-Disposition header if available
-    let fileName = "download";
-    if (contentDisposition) {
-      const fileNameMatch = contentDisposition.match(
-        /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+    try {
+      const response = await axiosInstance.get(
+        CLIENT_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            accept: "*/*",
+          },
+        }
       );
-      if (fileNameMatch && fileNameMatch[1]) {
-        fileName = fileNameMatch[1].replace(/['"]/g, "");
-        // Handle URL-encoded filenames
-        try {
-          fileName = decodeURIComponent(fileName);
-        } catch (e) {
-          console.error("Failed to decode file name:", e);
-          // If decoding fails, use the original filename
-          throw new Error(
-            "Failed to decode file name. Please try again later."
-          );
+
+      // Extract metadata from response headers
+      const contentDisposition = response.headers["content-disposition"];
+      const contentLength = response.headers["content-length"]
+        ? parseInt(response.headers["content-length"], 10)
+        : undefined;
+      const contentType =
+        response.headers["content-type"] || "application/octet-stream";
+
+      // Extract filename from Content-Disposition header if available
+      let fileName = "download";
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+        );
+        if (fileNameMatch && fileNameMatch[1]) {
+          fileName = fileNameMatch[1].replace(/['"]/g, "");
+          // Handle URL-encoded filenames
+          try {
+            fileName = decodeURIComponent(fileName);
+          } catch (e) {
+            console.error("Failed to decode file name:", e);
+            // If decoding fails, use the original filename
+            throw new Error(
+              "Failed to decode file name. Please try again later."
+            );
+          }
         }
       }
+
+      const blob = new Blob([response.data], { type: contentType });
+
+      return {
+        blob,
+        fileName,
+        mimeType: contentType,
+        size: blob.size,
+        contentDisposition,
+        contentLength,
+      };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
-
-    const blob = new Blob([response.data], { type: contentType });
-
-    return {
-      blob,
-      fileName,
-      mimeType: contentType,
-      size: blob.size,
-      contentDisposition,
-      contentLength,
-    };
   }
 }

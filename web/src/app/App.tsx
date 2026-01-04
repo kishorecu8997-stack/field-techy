@@ -3,6 +3,7 @@ import { routes } from "./routes/AppRoute";
 import OfflineBanner from "@/shared/components/commonUI/OfflineBanner";
 import { useOfflineSync } from "@/offline/useOfflineSync";
 import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotifications";
+import { useTokenExpiration } from "@/hooks/useTokenExpiration";
 
 
 /**
@@ -18,6 +19,7 @@ import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotificati
 const App = () => {
   useOfflineSync();
   useJobExpirationNotification();
+  useTokenExpiration();
   return(
     <>
       <OfflineBanner />

@@ -1,6 +1,6 @@
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
-
+import { transactions } from "@/dummy_data/bankDetails";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -361,6 +361,7 @@ export const formatDate = (dateStr: string) => {
   });
 };
 
+
 /**
  * Represents monthly earnings data used for chart visualization.
  */
@@ -398,4 +399,14 @@ export const getMonthlyEarnings = (
       const dateB = new Date(b.month + " 1");
       return dateA.getTime() - dateB.getTime();
     });
+};
+
+
+
+export const getLatestEarnings = (data: MonthlyData[]) => {
+  if (!data || data.length === 0) {
+    return { earnings: 0, month: "No data" };
+  }
+  const latest = data[data.length - 1];
+  return { earnings: latest.earnings, month: latest.month };
 };
