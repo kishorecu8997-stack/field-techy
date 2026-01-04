@@ -1,4 +1,3 @@
-import { transactions } from "@/dummy_data/bankDetails";
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
 
@@ -370,14 +369,15 @@ export interface MonthlyData {
   earnings: number;
 }
 
-
-
 /**
  * Computes total earnings per month from transaction data.
  *
- * @returns Array of monthly earnings sorted chronologically.
+ * @param transactions - Array of transaction objects with at least { date: string; amount: number }
+ * @returns Array of monthly earnings sorted chronologically (oldest → newest)
  */
-export const getMonthlyEarnings = (): MonthlyData[] => {
+export const getMonthlyEarnings = (
+  transactions: { date: string; amount: number }[]
+): MonthlyData[] => {
   const monthlyMap = new Map<string, number>();
 
   transactions.forEach((tx) => {

@@ -10,7 +10,6 @@ import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 
-
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
@@ -22,7 +21,6 @@ import { absoluteUrls } from "@/config/urls";
  * <SidebarProfile user={user} earnings={earnings} />
  */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
-
   return (
     <div className="space-y-6">
       <ProfileCard user={user} />
@@ -41,12 +39,8 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
-  const {
-    profileData,
-    setActiveKey,
-    setISOpenSidebar,
-    setNavigationSource
-  } = useDrawerStore();
+  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
+    useDrawerStore();
   // Get the overall profile completion percentage with the each field status
   const profileCompletion = getProfileCompletion(profileData);
 
@@ -133,7 +127,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <Button
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-                setActiveKey("manageBankAccounts", false);
+            setActiveKey("manageBankAccounts", false);
             setISOpenSidebar(true);
           }}
         >
@@ -142,7 +136,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <Button
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-                setActiveKey("withdraw", false);
+            setActiveKey("withdraw", false);
             setISOpenSidebar(true);
           }}
         >

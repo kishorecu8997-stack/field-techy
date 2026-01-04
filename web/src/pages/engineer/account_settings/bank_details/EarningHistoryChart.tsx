@@ -10,8 +10,9 @@ import {
 } from "recharts";
 import { BiLineChart, BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
+import { transactions } from "@/dummy_data/bankDetails";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
-import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
+import type { MonthlyData } from "@/shared/libs/utils";
 
 /**
  * EarningHistoryChart Component
@@ -26,10 +27,17 @@ import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
 const EarningHistoryChart: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Get monthly earnings
-  const data: MonthlyData[] = getMonthlyEarnings();
+  // Safely convert dates to string format
+  const data: MonthlyData[] = getMonthlyEarnings(
+    transactions.map((tx) => ({
+      date:
+        typeof tx.date === "string"
+          ? tx.date
+          : (tx.date as Date).toISOString().split("T")[0],
+      amount: tx.amount,
+    }))
+  );
 
-  // Get latest earnings safely
   const latest = data.length
     ? data[data.length - 1]
     : { earnings: 0, month: "No data" };
@@ -49,7 +57,7 @@ const EarningHistoryChart: React.FC = () => {
       {/* Header */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+        className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-4">
           <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
@@ -69,8 +77,9 @@ const EarningHistoryChart: React.FC = () => {
           </div>
         </div>
         <div
-          className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
-            }`}
+          className={`transition-transform duration-300 ${
+            isExpanded ? "rotate-180" : ""
+          }`}
         >
           {isExpanded ? (
             <BiChevronUp className="w-6 h-6 text-gray-500" />
@@ -80,10 +89,11 @@ const EarningHistoryChart: React.FC = () => {
         </div>
       </div>
 
-      {/* Chart */}
+      {/* Chart Body */}
       <div
-        className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
         <div className="px-6 pb-6">
           <ResponsiveContainer width="100%" height={300}>
@@ -100,7 +110,7 @@ const EarningHistoryChart: React.FC = () => {
               <YAxis
                 tick={{ fontSize: 13, fill: "#6b7280" }}
                 stroke="#9ca3af"
-                tickFormatter={(value) =>
+                tickFormatter={(value: number) =>
                   value >= 1000 ? `$${(value / 1000).toFixed(0)}k` : `$${value}`
                 }
               />
