@@ -1,24 +1,36 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import PasswordSection from "../auth/components/PasswordSection";
-import type { bankDetails } from "./types";
-import { validatePassword } from "./validation";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { validateIsVerified } from "../user_profile/Validate";
+import PasswordOTPVerification from "./PasswordOTPVerification";
+import { validatePassword } from "./validation";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
  * Uses React Hook Form for validation and submission handling.
  */
 const ChangePassword = () => {
-  const FormCtx = useForm<bankDetails>();
+  const FormCtx = useForm<{ emailId: string, password: string, otp: string }>({
+    defaultValues: {
+      emailId: "",
+      password: "",
+      otp: "",
+    },
+    mode: "onChange",
+  });
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const otp = FormCtx.watch("otp");
+  console.log("otp :", otp);
 
-  const handleSubmit = async (_: bankDetails) => {
+  const handleSubmit = async () => {
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",
@@ -37,6 +49,7 @@ const ChangePassword = () => {
               // TODO: Integrate with secure backend API for password update.
               toast.success("Password updated successfully!");
               setActiveKey("settings");
+              setIsDisabled(true);
               close(true);
             } catch (error) {
               toast.error("Failed to update password");
@@ -55,14 +68,27 @@ const ChangePassword = () => {
       className="flex h-full flex-col"
     >
       <div className="flex-1">
-        <PasswordInput
-          label="Current Password"
-          name="currentPassword"
-          placeholder="Enter your current password"
+        <PasswordOTPVerification
+          name="emailId"
+          label="Email ID"
+          isShowLabel={false}
           required
+          rules={{
+            validate: () => validateIsVerified(isEmailVerified, "Email"),
+          }}
+          verified={isEmailVerified}
+          setVerified={setIsEmailVerified}
+
+        />
+        <PasswordInput
+          label="Password"
+          name="password"
+          placeholder="Enter your password"
+          required
+          disabled={!isDisabled}
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-        <PasswordSection />
+        {/* <PasswordSection /> */}
       </div>
 
       <div className="mt-auto flex justify-end">
@@ -75,7 +101,6 @@ const ChangePassword = () => {
       </div>
     </FormContainer>
   );
-
 };
 
 export default ChangePassword;

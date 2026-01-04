@@ -135,8 +135,13 @@ interface PasswordInputProps {
   label?: string;
   placeholder?: string;
   required?: boolean;  
-  isShowLabel?:boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
+  disabled?: boolean;
+  containerClassName?: string;
+  inputClassName?: string;
+  leftIcon?: React.ReactNode;
+  showValidationCheck?: boolean;
 }
 
 /**
