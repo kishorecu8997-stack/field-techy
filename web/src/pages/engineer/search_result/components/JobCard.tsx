@@ -182,6 +182,7 @@ const JobCard: React.FC<{
   job: Job;
   showBookmark?: boolean;
   navigateToJob?: string;
+  onBookmarkChange?: () => void;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
   const [isBookmarked, setIsBookmarked] = useState(isJobSaved(job.id));
   const [showWhyPopover, setShowWhyPopover] = useState(false);
