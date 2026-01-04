@@ -47,6 +47,21 @@ export class EngineerAdapter {
     }
   }
 
+  static async updateById(
+    id: string,
+    data: EngineerData
+  ): Promise<EngineerData> {
+    try {
+      const response = await axiosInstance.put(
+        ENGINEER_ROUTER_PATHS.UPDATE_ENGINEER(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
   static async delete(id: string): Promise<boolean> {
     try {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
@@ -111,9 +126,9 @@ export class EngineerAdapter {
         ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
         formData,
         {
-         headers: {
-            'X-USER': 'ENGINEER',
-            "Content-Type": "multipart/form-data"
+          headers: {
+            "X-USER": "ENGINEER",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
@@ -178,7 +193,7 @@ export class EngineerAdapter {
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      console.log('email :', email);
+      console.log("email :", email);
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)

@@ -1,4 +1,8 @@
 import { skillsData } from "@/dummy_data";
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -25,13 +29,18 @@ export type AddSkillsFormData = {
 const AddSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+
+  const { data: engineerData } = useEngineerGetById("id");
+  const { mutate } = useEngineerUpdateById("id");
+
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
     },
   });
 
-  const onSubmit = async (_: AddSkillsFormData) => {
+  const onSubmit = async (data: AddSkillsFormData) => {
+    const engineerSkills = { ...engineerData, data } as any;
     await showPopup({
       title: "Add Skills",
       body: "Are you sure you want to add these skills?",
@@ -51,6 +60,7 @@ const AddSkills = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Skills Added Successfully");
+            mutate(engineerSkills);
             close(true);
             setActiveKey("skillsAndTools");
           },

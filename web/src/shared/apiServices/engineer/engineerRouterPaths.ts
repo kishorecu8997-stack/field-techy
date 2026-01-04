@@ -2,6 +2,7 @@
 export const ENGINEER_ROUTER_PATHS = {
   SIGNUP: "/eng/api/v1/engineers/signup",
   GET_BY_ID: (id: string) => `/eng/api/v1/engineers/${id}`,
+  UPDATE_ENGINEER:(id:string)=> `/eng/api/v1/engineer/${id}`,
   DELETE: (id: string) => `/eng/api/v1/engineers/delete/${id}`,
 
   // signin otp endpoints

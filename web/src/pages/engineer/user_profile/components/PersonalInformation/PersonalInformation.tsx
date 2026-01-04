@@ -18,6 +18,11 @@ import { toast } from "react-toastify";
 import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -29,15 +34,19 @@ const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const { showPopup } = usePopupStore();
-  const { navigationSource, returnToKey, setActiveKey, setISOpenSidebar, resetNavigationSource } = useDrawerStore();
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the user's data.
-   * @param {EditProfileFormData} data - The validated form data.
-   */
-  
+  const {
+    navigationSource,
+    returnToKey,
+    setActiveKey,
+    setISOpenSidebar,
+    resetNavigationSource,
+  } = useDrawerStore();
+
+  const { data: engineerData } = useEngineerGetById("id");
+  const { mutate } = useEngineerUpdateById("id");
+
   const handleSubmit = async (data: EditProfileFormData) => {
+    const updatedData = { ...engineerData, data } as EngineerData;
     await showPopup({
       title: "Update Profile",
       body: "Are you sure you want to update your profile?",
@@ -59,15 +68,14 @@ const PersonalInformation = () => {
             toast.success("Profile Updated Successfully");
             console.log("Form submitted with data:", data);
             close(true);
-
-            //  Conditional redirect if the navigation source is from profile completion card
-          if (navigationSource === "profilecompletion" && returnToKey) {
-            setActiveKey(returnToKey); 
-            setISOpenSidebar(true);
-            resetNavigationSource();
-          } else {
-            setActiveKey("profile");
-          }
+            if (navigationSource === "profilecompletion" && returnToKey) {
+              setActiveKey(returnToKey);
+              setISOpenSidebar(true);
+              mutate(updatedData);
+              resetNavigationSource();
+            } else {
+              setActiveKey("profile");
+            }
           },
         },
       ],
@@ -76,10 +84,10 @@ const PersonalInformation = () => {
 
   const methods = useForm<PersonalInfo>({
     defaultValues: {
-      fullName: loginData[0].fullName,
-      phoneNumber: loginData[0].phoneNumber,
-      emailId: loginData[0].emailId,
-      addressLocation: loginData[0].addressLocation,
+      fullName: engineerData?.fullName || loginData[0].fullName,
+      phoneNumber: engineerData?.phoneNumber || loginData[0].phoneNumber,
+      emailId: engineerData?.email || loginData[0].emailId,
+      addressLocation: engineerData?.address || loginData[0].addressLocation,
     },
     mode: "onSubmit",
   });

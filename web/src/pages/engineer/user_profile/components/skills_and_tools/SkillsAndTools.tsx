@@ -1,6 +1,9 @@
-import React from "react";
-import ChipsCard from "@/shared/components/ChipsCard";
 import { jobSkillsData, toolsData } from "@/dummy_data";
+import {
+  useEngineerGetById
+} from "@/shared/apiServices/engineer/engineerService";
+import ChipsCard from "@/shared/components/ChipsCard";
+import React from "react";
 
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -14,12 +17,17 @@ interface DrawerMenuProps {
  * @returns {React.ReactElement} The rendered SkillsAndTools component.
  */
 const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
+  const { data } = useEngineerGetById("id");
+
+  const engineerSkills = data?.jobSkills as string[] || []
+  const engineerTools = data?.tools as string[] || []
+
   return (
     <>
       <div className="flex flex-col gap-4">
         <ChipsCard
           title="Skills"
-          chips={jobSkillsData.map((skill) => skill.label)}
+          chips={engineerSkills?.map((skill) => skill)}
           onAddAction={() => onMenuItemClick(`addSkills`)}
           onEditAction={() => {
             onMenuItemClick(`editSkills`);
@@ -31,7 +39,7 @@ const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
         />
         <ChipsCard
           title="Tools"
-          chips={toolsData.map((tool) => tool.label)}
+          chips={engineerTools.map((tool) => tool)}
           onAddAction={() => onMenuItemClick(`addTools`)}
           onEditAction={() => {
             onMenuItemClick(`editTools`);

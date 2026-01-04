@@ -1,6 +1,9 @@
+import { queryClient } from "@/main";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
+    AssignJobParams,
     EngineerData,
     // EngineerPaginationParams,
     // PagedResponse,
@@ -8,10 +11,7 @@ import type {
     FileUploadResponse,
     // EngineerFile,
     JobAssignment,
-    AssignJobParams,
 } from "./engineerTypes";
-import { queryKeys } from "../queryKeys";
-import { queryClient } from "@/main";
 
 // --- Mutations ---
 
@@ -66,6 +66,15 @@ export function useEngineerGetById(id: string, options?: { enabled?: boolean }) 
         enabled: !!id && (options?.enabled ?? true),
     });
 }
+
+export function useEngineerUpdateById(id: string) {
+    return useMutation({
+        mutationFn: (data: EngineerData) => EngineerAdapter.updateById(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.detail(id) });
+        },
+    });
+}   
 
 export function useEngineerGetFiles(engineerId: string, options?: { enabled?: boolean }) {
     return useQuery({

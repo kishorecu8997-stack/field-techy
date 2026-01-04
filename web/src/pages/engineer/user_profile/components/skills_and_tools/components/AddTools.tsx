@@ -6,6 +6,11 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
  * Defines the shape of the form data for adding tools.
@@ -26,13 +31,18 @@ const AddTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
+  const { data: engineerData } = useEngineerGetById("id");
+  const { mutate } = useEngineerUpdateById("id");
+
   const methods = useForm<AddToolsFormData>({
     defaultValues: {
       tools: [],
     },
   });
 
-  const onSubmit = async (_: AddToolsFormData) => {
+  const onSubmit = async (data: AddToolsFormData) => {
+    const engineerTools = { ...engineerData, data } as EngineerData;
+
     await showPopup({
       title: "Add Tools",
       body: "Are you sure you want to add these tools?",
@@ -51,6 +61,7 @@ const AddTools = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Tools Added Successfully");
+            mutate(engineerTools);
             close(true);
             setActiveKey("skillsAndTools");
           },
