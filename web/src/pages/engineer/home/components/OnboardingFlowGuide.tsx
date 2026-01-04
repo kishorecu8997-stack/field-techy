@@ -1,5 +1,5 @@
 import { icons } from "@/config/icons";
-import { urls } from "@/config/urls";
+import { absoluteUrls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useTour } from "@reactour/tour";
@@ -61,10 +61,13 @@ const OnboardingFlowGuide = () => {
 
   useEffect(() => {
     const onboarding = localStorage.getItem("onboarding_guide") === "true";
-    const engineerpath = location.pathname.endsWith(urls.engineer.base);
-    if (onboarding || !engineerpath) {
+    const engineerpath = location.pathname.endsWith(
+      absoluteUrls.engineer.home.dashboard
+    );
+    if (!onboarding && engineerpath) {
+      setIsOpen(true);
+    } else {
       setIsOpen(false);
-      return;
     }
 
     const handleGlobalClick = (e: MouseEvent) => {
@@ -100,7 +103,7 @@ const OnboardingFlowGuide = () => {
 
   return (
     <div ref={popoverRef} className="flex flex-col gap-y-2">
-      <span className="font-bold w-fit px-3 py-2 rounded-xl bg-[#c4e9e4]">
+      <span className="font-medium w-fit px-3 py-2 rounded-xl bg-[#c4e9e4]">
         Step {currentStep + 1} of {steps.length}
       </span>
       <div className="text-xl font-bold">{current.title}</div>
