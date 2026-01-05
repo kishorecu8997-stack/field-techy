@@ -103,7 +103,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </h3>
         <div
           onClick={() => {
-            setActiveKey("myEarning");
+            setActiveKey("myEarning", false);
             setISOpenSidebar(true);
           }}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"

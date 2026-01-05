@@ -8,11 +8,12 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  */
 const BankAccountList: React.FC<DrawerMenuProps> = () => {
   const { setActiveKey } = useDrawerStore();
+
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex justify-end">
         <div
-          onClick={() => setActiveKey("addBankdetails")}
+          onClick={() => setActiveKey("addBankdetails", true)}
           className="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300 text-sm font-medium transition-colors underline-offset-2 hover:underline cursor-pointer"
           aria-label="Add Bank"
         >

@@ -1,5 +1,15 @@
 import { IoChevronBack, IoCloseSharp } from "react-icons/io5";
 
+/**
+ * Props for the DrawerHeader component.
+ *
+ * @property onClose - Required callback invoked when the close (X) button is clicked.
+ * @property title - Header title shown in the drawer. Defaults to 'title' when not provided.
+ * @property onBack - Optional callback invoked when the back button is available and clicked.
+ *                     Receives a string key (current implementation sends 'back').
+ * @property actions - Optional array of action buttons to display instead of the close button.
+ *                     Each action must have an icon, onClick handler, and ariaLabel.
+ */
 type DrawerHeaderProps = {
   onClose: () => void;
   title: string;
@@ -54,7 +64,6 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
     // Otherwise, it's a ReactNode (JSX, string, fragment, etc.)
     return actions;
   };
-
 
   return (
     <div className="flex items-center gap-3">
