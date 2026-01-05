@@ -10,7 +10,6 @@ import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 
-
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
@@ -22,7 +21,6 @@ import { absoluteUrls } from "@/config/urls";
  * <SidebarProfile user={user} earnings={earnings} />
  */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
-
   return (
     <div className="space-y-6">
       <ProfileCard user={user} />
@@ -52,7 +50,10 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
   
   const { name, phone, role } = user;
   return (
-    <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
+    <div
+      id="completeProfile"
+      className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm"
+    >
       <div className="flex flex-row justify-between">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
@@ -132,6 +133,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Button
+          id="myEarnings"
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
             setActiveKey("manageBankAccounts");
@@ -141,6 +143,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
           Bank Details
         </Button>
         <Button
+          id="withdrawMoney"
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
             setActiveKey("withdraw");

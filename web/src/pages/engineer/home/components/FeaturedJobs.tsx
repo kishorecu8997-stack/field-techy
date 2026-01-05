@@ -332,6 +332,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
           );
           return (
             <div
+              id="featuredJobs"
               key={job.id || index}
               className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
                 }`}
