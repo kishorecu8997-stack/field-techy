@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { mockNotifications } from "@/dummy_data/notificationData";
 import type { NotificationProps, GroupedNotifications } from "../types";
 import NotificationPanel from "./NotificationPanel";
@@ -25,11 +26,16 @@ const groupNotificationsByDate = (
  * Page component that centers the notification panel in the viewport for displaying grouped notifications.
  */
 function NotificationPage() {
-  const grouped = groupNotificationsByDate(mockNotifications);
+  const [notifications, setNotifications] = useState(mockNotifications);
+  const grouped = groupNotificationsByDate(notifications);
+
+  const handleDismiss = (id: number) => {
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  };
 
   return (
     <div className=" flex justify-center items-start">
-      <NotificationPanel grouped={grouped} />
+      <NotificationPanel grouped={grouped} onDismiss={handleDismiss} />
     </div>
   );
 }
