@@ -9,6 +9,7 @@ import { AiFillThunderbolt } from "react-icons/ai";
 
 interface NotificationItemProps {
   notification: NotificationProps;
+  onDismiss?: (id: number) => void;
 }
 
 /**
@@ -17,6 +18,7 @@ interface NotificationItemProps {
  */
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
+  onDismiss,
 }) => {
   //this is for testing purpose, will be removed later
   const index = "10";
@@ -95,12 +97,22 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   return (
-    <div className="flex items-start p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200  dark:bg-gray-600">
+    <div className="relative flex items-start p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200  dark:bg-gray-600">
+      {onDismiss && (
+        <IoMdClose
+          className="absolute top-1 right-1 size-5 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white cursor-pointer"
+          onClick={() => onDismiss(id)}
+        />
+      )}
+
+      {/* Timestamp */}
+      <span className="absolute bottom-2 right-2 text-xs text-gray-500 dark:text-gray-200">
+        {timestamp}
+      </span>
       <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full mr-4 shadow-sm dark:bg-gray-400">
         <span className="text-xl">{icon}</span>
       </div>
       <div className="flex-1">
-        <div className="flex justify-between items-start dark:text-gray-200">
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-200">
               {title}
@@ -111,12 +123,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             {renderJobDetails()}
             {renderActionButtons(id)}
           </div>
-          <span className="text-xs text-gray-500 ml-4 whitespace-nowrap dark:text-gray-200">
-            {timestamp}
-          </span>
         </div>
       </div>
-    </div>
   );
 };
 
