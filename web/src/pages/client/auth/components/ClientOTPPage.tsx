@@ -2,9 +2,9 @@ import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import {} from "@/shared/apiServices/client/clientService";
+import { } from "@/shared/apiServices/client/clientService";
 import {
   useVerifyEmailOTP,
   useVerifyPhoneOTP,
@@ -62,35 +62,11 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
   });
 
   // Select appropriate verification hook based on type
-  const { mutate: verifyEmailOTP, isPending: isVerifyingEmail } =
-    useVerifyEmailOTP({
-      onSuccess: (data) => {
-        console.log("Email OTP verified:", data);
-        handleNavigate?.();
-      },
-      onError: (error) => {
-        console.error("Email OTP verification failed:", error);
-        method.setError("otp", {
-          type: "manual",
-          message: error.message || "Invalid OTP. Please try again.",
-        });
-      },
-    });
+  const { mutateAsync: verifyEmailOTP, isPending: isVerifyingEmail } =
+    useVerifyEmailOTP();
 
-  const { mutate: verifyPhoneOTP, isPending: isVerifyingPhone } =
-    useVerifyPhoneOTP({
-      onSuccess: (data) => {
-        console.log("Phone OTP verified:", data);
-        handleNavigate?.();
-      },
-      onError: (error) => {
-        console.error("Phone OTP verification failed:", error);
-        method.setError("otp", {
-          type: "manual",
-          message: error.message || "Invalid OTP. Please try again.",
-        });
-      },
-    });
+  const { mutateAsync: verifyPhoneOTP, isPending: isVerifyingPhone } =
+    useVerifyPhoneOTP();
 
   const isPending = isVerifyingEmail || isVerifyingPhone;
 
@@ -100,11 +76,22 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSubmit = (data: OTPValues) => {
-    if (verificationType === "email") {
-      verifyEmailOTP({ email: contact, otp: data.otp });
-    } else {
-      verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
+  const handleSubmit = async (data: OTPValues) => {
+    try {
+      if (verificationType === "email") {
+        const result = await verifyEmailOTP({ email: contact, otp: data.otp });
+        console.log("Email OTP verified:", result);
+      } else {
+        const result = await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
+        console.log("Phone OTP verified:", result);
+      }
+      handleNavigate?.();
+    } catch (error: any) {
+      console.error(`${verificationType === "email" ? "Email" : "Phone"} OTP verification failed:`, error);
+      method.setError("otp", {
+        type: "manual",
+        message: error?.message || "Invalid OTP. Please try again.",
+      });
     }
   };
 
@@ -151,9 +138,8 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 Resend
               </button>

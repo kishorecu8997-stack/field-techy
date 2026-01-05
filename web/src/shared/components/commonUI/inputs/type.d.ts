@@ -296,4 +296,5 @@ interface VerifyEmailModalProps {
   name?: string;
   isClose?: boolean;
   footer?: React.ReactNode;
+  loading?: boolean;
 }

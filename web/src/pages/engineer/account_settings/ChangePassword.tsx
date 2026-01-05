@@ -11,7 +11,6 @@ import PasswordOTPVerification from "./PasswordOTPVerification";
 import { validatePassword } from "./validation";
 import { useUpdatePassword } from "@/shared/apiServices/engineer/engineerService";
 import type { UpdatePasswordParams } from "@/shared/apiServices/engineer/engineerTypes";
-import axios from "axios";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -27,26 +26,11 @@ const ChangePassword = () => {
     mode: "onChange",
   });
 
-  const { mutate: updatePassword } = useUpdatePassword({
-    onSuccess: (data) => {
-      console.log("Password updated successfully:", data);
-      setActiveKey("settings");
-      setIsDisabled(true);
-    },
-    onError: (error) => {
-      console.error("Failed to update password:", error);
-      const errorMessage =
-        axios.isAxiosError(error) && error.response?.data?.message
-          ? error.response.data.message
-          : "Failed to update password. Please try again.";
-      toast.error(errorMessage);
-    },
-  });
+  const { mutateAsync: updatePassword } = useUpdatePassword();
 
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleSubmit = async (data: UpdatePasswordParams) => {
     await showPopup({
@@ -64,15 +48,17 @@ const ChangePassword = () => {
           variant: "primary",
           action: async (close) => {
             try {
-              // TODO: Integrate with secure backend API for password update.
+              await updatePassword(data);
+              console.log("Password updated successfully");
               toast.success("Password updated successfully!");
               setActiveKey("settings");
-              setIsDisabled(true);
-              updatePassword(data);
               close(true);
-            } catch (error) {
-              toast.error("Failed to update password");
-              console.error("Error updating password:", error);
+            } catch (error: any) {
+              console.error("Failed to update password:", error);
+              const errorMessage =
+                error?.response?.data?.message ||
+                "Failed to update password. Please try again.";
+              toast.error(errorMessage);
             }
           },
         },
@@ -103,7 +89,7 @@ const ChangePassword = () => {
           name="password"
           placeholder="Enter your password"
           required
-          disabled={!isDisabled}
+          disabled={!isEmailVerified}
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
         {/* <PasswordSection /> */}

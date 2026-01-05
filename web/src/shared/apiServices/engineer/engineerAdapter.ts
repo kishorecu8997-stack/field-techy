@@ -139,8 +139,6 @@ export class EngineerAdapter {
 
   // OTP Methods (Stubbed for now)
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
-    // TODO: Replace with actual API call when backend is ready
-    console.log("email :", email);
     const urlEncodedEmail = encodeURIComponent(email);
     const response = await axiosInstance.post(
       ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
@@ -153,8 +151,8 @@ export class EngineerAdapter {
     const response = await axiosInstance.post(
       ENGINEER_ROUTER_PATHS.RESET_PASSWORD(params.otp),
       {
-        email,
-        password,
+        phoneOrEmail: email,
+        password: password,
       }
     );
     return response.data;
