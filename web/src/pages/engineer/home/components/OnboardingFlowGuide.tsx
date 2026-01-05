@@ -158,23 +158,3 @@ const OnboardingFlowGuide = () => {
   );
 };
 export default OnboardingFlowGuide;
-
-export const tourStyles = {
-  maskArea: (base: CSSProperties) => ({
-    ...base,
-    rx: 10,
-    overflow: "hidden",
-  }),
-  badge: (base: CSSProperties) => ({
-    ...base,
-    backgroundColor: "#005e59",
-  }),
-  controls: (base: CSSProperties) => ({
-    ...base,
-    marginTop: 12,
-  }),
-  dot: (base: CSSProperties, { current }: { current?: boolean }) => ({
-    ...base,
-    backgroundColor: current ? "#005e59" : "#e0e0e0",
-  }),
-};

@@ -5,10 +5,9 @@ import { useOfflineSync } from "@/offline/useOfflineSync";
 import { useJobExpirationNotification } from "@/hooks/useJobExpirationNotifications";
 import { steps } from "@/dummy_data/onBoardingData";
 import { TourProvider } from "@reactour/tour";
-import OnboardingFlowGuide, {
-  tourStyles,
-} from "@/pages/engineer/home/components/OnboardingFlowGuide";
+import OnboardingFlowGuide from "@/pages/engineer/home/components/OnboardingFlowGuide";
 import { useTokenExpiration } from "@/hooks/useTokenExpiration";
+import { tourStyles } from "@/utils/styles";
 
 /**
  * The main application component that sets up routing.
