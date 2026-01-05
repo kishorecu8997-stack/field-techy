@@ -1,15 +1,15 @@
-import axiosInstance from "@/axiosInstance";
-import { uploadAxiosInstance } from "@/axiosInstance";
+import axiosInstance, { uploadAxiosInstance } from "@/axiosInstance";
 import { ENGINEER_ROUTER_PATHS } from "./engineerRouterPaths";
 import type {
+  AssignJobParams,
   EngineerData,
+  EngineerFile,
   // EngineerPaginationParams,
   // PagedResponse,
   FileUploadParams,
   FileUploadResponse,
-  EngineerFile,
   JobAssignment,
-  AssignJobParams,
+  UpdatePasswordParams,
 } from "./engineerTypes";
 
 /*
@@ -89,9 +89,9 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
       formData,
       {
-       headers: {
-          'X-USER': 'ENGINEER',
-          "Content-Type": "multipart/form-data"
+        headers: {
+          "X-USER": "ENGINEER",
+          "Content-Type": "multipart/form-data",
         },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
@@ -140,20 +140,24 @@ export class EngineerAdapter {
   // OTP Methods (Stubbed for now)
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     // TODO: Replace with actual API call when backend is ready
-    console.log('email :', email);
+    console.log("email :", email);
     const urlEncodedEmail = encodeURIComponent(email);
     const response = await axiosInstance.post(
       ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
     );
     return response.data;
+  }
 
-    // Stubbed response
-    // console.log(`[STUB] Sending engineer email OTP to: ${email}`);
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({ message: "OTP sent successfully to email" });
-    //   }, 1000);
-    // });
+  static async updatePassword(params: UpdatePasswordParams): Promise<boolean> {
+    const { email, password } = params;
+    const response = await axiosInstance.post(
+      ENGINEER_ROUTER_PATHS.RESET_PASSWORD(params.otp),
+      {
+        email,
+        password,
+      }
+    );
+    return response.data;
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
@@ -162,14 +166,6 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.REQ_OTP(phoneNumber)
     );
     return response.data;
-
-    // Stubbed response
-    // console.log(`[STUB] Sending engineer phone OTP to: ${phoneNumber}`);
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({ message: "OTP sent successfully to phone" });
-    //   }, 1000);
-    // });
   }
 
   static async verifyEmailOTP(
@@ -181,23 +177,6 @@ export class EngineerAdapter {
       ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp)
     );
     return response.data;
-
-    // Stubbed response - accepts any 4-digit OTP
-    // console.log(
-    //   `[STUB] Verifying engineer email OTP for: ${email}, OTP: ${otp}`
-    // );
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     if (otp.length === 4) {
-    //       resolve({
-    //         message: "Email OTP verified successfully",
-    //         verified: true,
-    //       });
-    //     } else {
-    //       reject(new Error("Invalid OTP"));
-    //     }
-    //   }, 800);
-    // });
   }
 
   static async verifyPhoneOTP(

@@ -17,4 +17,6 @@ export const ENGINEER_ROUTER_PATHS = {
   GET_JOBS: (engineerId: string) => `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   ASSIGN_JOB: (engineerId: string) => `/eng/api/v1/engineers/jobs/${engineerId}/assign`,
   UPDATE_JOB_STATUS: (jobId: string) => `/eng/api/v1/engineers/jobs/${jobId}/status`,
+
+  RESET_PASSWORD: (otp: string) => `/eng/api/v1/engineers/password/reset/by-otp/${otp}`,
 } as const;

@@ -138,3 +138,10 @@ export interface AssignJobParams {
     jobId: string;
     status: string;
 }
+
+
+export interface UpdatePasswordParams {
+    email: string;
+    password: string;
+    otp: string;
+}

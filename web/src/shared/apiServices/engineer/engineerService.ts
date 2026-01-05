@@ -9,6 +9,7 @@ import type {
     // EngineerFile,
     JobAssignment,
     AssignJobParams,
+    UpdatePasswordParams,
 } from "./engineerTypes";
 import { queryKeys } from "../queryKeys";
 import { queryClient } from "@/main";
@@ -123,6 +124,17 @@ export function useEngineerUpdateJobStatus(options?: {
             queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
             options?.onSuccess?.(data);
         },
+        onError: options?.onError,
+    });
+}
+
+export function useUpdatePassword(options?: {
+    onSuccess?: (data: boolean) => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        mutationFn: (params: UpdatePasswordParams) => EngineerAdapter.updatePassword(params),
+        onSuccess: options?.onSuccess,
         onError: options?.onError,
     });
 }
