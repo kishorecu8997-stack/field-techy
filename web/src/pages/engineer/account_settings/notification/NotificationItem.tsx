@@ -100,7 +100,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <div className="relative flex items-start p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200  dark:bg-gray-600">
       {onDismiss && (
         <IoMdClose
-          className="absolute top-1 right-1 size-5 text-gray-400 hover:text-gray-600 cursor-pointer"
+          className="absolute top-1 right-1 size-5 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white cursor-pointer"
           onClick={() => onDismiss(id)}
         />
       )}
