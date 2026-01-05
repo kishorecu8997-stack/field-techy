@@ -10,6 +10,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -67,19 +68,32 @@ const ManageNotification: React.FC = () => {
     { key: "sendTo", label: "Send To" },
     { key: "createdDate", label: "Created Date" },
     {
-      key: "action",
-      label: "Action",
-      renderCell: (row: NotificationProps) => (
-        <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteNotification(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
-          </div>
-        </div>
-      ),
-    },
+  key: "action",
+  label: "Action",
+  renderCell: (row: NotificationProps) => (
+    <div className="flex items-center gap-2">
+      {/* Edit Button */}
+      <div
+        className="p-2 bg-blue-100 rounded-md cursor-pointer"
+        onClick={() =>
+          navigate(
+            `${absoluteUrls.admin.home.manage_notification_edit}/${row.id}`
+          )
+        }
+      >
+        <CiEdit className="text-blue-600" />
+      </div>
+
+      {/* Delete Button */}
+      <div
+        className="p-2 bg-red-100 rounded-md cursor-pointer"
+        onClick={() => handleDeleteNotification(row)}
+      >
+        <RiDeleteBin6Line className="text-red-600" />
+      </div>
+    </div>
+  ),
+}
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
