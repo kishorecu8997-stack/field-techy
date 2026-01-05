@@ -5,14 +5,14 @@ import { absoluteUrls } from "@/config/urls";
 import useNotificationGate from "@/shared/store/useNotificationGate";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 
-/**
- * Displays notifications grouped by date (e.g., Today, Yesterday) using mock data.
- * Renders each notification through the NotificationItem component with proper grouping and layout.
- */
 interface NotificationPanelProps {
   grouped: GroupedNotifications;
   onDismiss?: (id: number) => void;
 }
+/**
+ * Displays notifications grouped by date (e.g., Today, Yesterday) using mock data.
+ * Renders each notification through the NotificationItem component with proper grouping and layout.
+ */
 const NotificationPanel = ({ grouped, onDismiss }: NotificationPanelProps) => {
   const { setISOpenSidebar } = useDrawerStore();
   const { isPaused, pendingId } = useNotificationGate();
