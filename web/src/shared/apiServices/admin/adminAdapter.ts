@@ -72,4 +72,35 @@ export class AdminAdapter {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
+
+  /** Forgot Password OTP Request */
+  static async forgotPasswordOtpRequest(phoneOrEmail: string) {
+    try {
+      const encodedPhoneOrEmail = encodeURIComponent(phoneOrEmail);
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.FORGOTPASSWORD_OTP_REQUEST(encodedPhoneOrEmail)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Reset Password Using OTP */
+  static async resetPasswordByOtp(data: {
+    otp: string;
+    phoneOrEmail: string;
+    password: string;
+  }) {
+    const { otp, ...restData } = data;
+    try {
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.REST_PASSWORD_USING_OTP(otp),
+        restData
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
 }
