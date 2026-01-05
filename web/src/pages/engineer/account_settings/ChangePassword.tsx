@@ -1,5 +1,5 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { PasswordInput } from "@/shared/components/commonUI/inputs";
+import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
@@ -83,6 +83,23 @@ const ChangePassword = () => {
           }}
           verified={isEmailVerified}
           setVerified={setIsEmailVerified}
+        />
+        <InputField
+          label="OTP"
+          name="otp"
+          placeholder="Enter your OTP"
+          required
+          disabled={!isEmailVerified}
+          rules={{
+            maxLength:{
+              value: 6,
+              message: "OTP should be 6 digits"
+            },
+            minLength:{
+              value: 4,
+              message: "OTP should be 4 digits"
+            },
+          }}
         />
         <PasswordInput
           label="Password"

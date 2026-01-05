@@ -1,16 +1,13 @@
-import { useState, useMemo, useEffect, useRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { MdOutlineMailOutline, MdCheckCircle } from "react-icons/md";
-import OTPPage from "@/shared/components/commonUI/inputs/OTPModal";
-import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import {
-  useSendEmailOTP,
-  useVerifyEmailOTP,
+  useSendEmailOTP
 } from "@/shared/apiServices/engineer/engineerService";
-import { toast } from "react-toastify";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
-import Popup from "@/shared/components/Popup";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export const PasswordOTPVerification = ({
   name,
@@ -20,14 +17,11 @@ export const PasswordOTPVerification = ({
   required = false,
   disabled: externalDisabled = false,
   inputClassName = "w-full h-11 rounded-md border border-gray-300 dark:border-gray-600 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
-  onVerifySuccess,
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedEmailInputFieldProps) => {
-  const { control, watch, clearErrors, setValue, trigger, setError } =
+  const { control, watch, clearErrors, setError } =
     useFormContext();
-  const [showOTP, setShowOTP] = useState(false);
-  const otp = watch("otp");
   const [localVerified, setLocalVerified] = useState(false);
 
   const verified =
@@ -35,8 +29,6 @@ export const PasswordOTPVerification = ({
   const setVerified = parentSetVerified || setLocalVerified;
 
   const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } = useSendEmailOTP();
-
-  const { mutateAsync: verifyEmailOTP, isPending: isVerifying } = useVerifyEmailOTP();
 
   // ✅ Track latest verified state
   const verifiedRef = useRef(verified);
@@ -67,7 +59,8 @@ export const PasswordOTPVerification = ({
       await sendEmailOTP(emailValue);
       console.log("OTP sent successfully");
       toast.success("OTP sent successfully to your email.");
-      setShowOTP(true);
+      clearErrors(name); // Clear any previous errors
+      setVerified(true);
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
       const errorMessage =
@@ -178,37 +171,6 @@ export const PasswordOTPVerification = ({
           )}
         />
       </div>
-
-      <Popup open={showOTP} onClose={() => setShowOTP(false)}>
-        <OTPPage
-          header="Verify Email"
-          description="A verification OTP has been sent to your email. Please check your inbox."
-          name="otp"
-          onClose={() => setShowOTP(false)}
-          loading={isVerifying}
-          onVerifySuccess={async () => {
-            try {
-              await verifyEmailOTP({ email: emailValue, otp });
-              console.log("OTP verified successfully");
-              setVerified(true);
-              verifiedRef.current = true;
-              onVerifySuccess?.();
-              const currentValue = watch(name);
-              setValue(name, currentValue, { shouldValidate: true });
-              setValue("otp", otp);
-              clearErrors(name);
-              trigger(name);
-              setShowOTP(false);
-            } catch (error: any) {
-              console.error("Failed to verify OTP:", error);
-              const errorMessage =
-                error?.response?.data?.message ||
-                "Failed to verify OTP. Please try again.";
-              toast.error(errorMessage);
-            }
-          }}
-        />
-      </Popup>
     </div>
   );
 };
