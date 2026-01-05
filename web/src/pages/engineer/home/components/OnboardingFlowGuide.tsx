@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useTour } from "@reactour/tour";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
@@ -160,20 +160,20 @@ const OnboardingFlowGuide = () => {
 export default OnboardingFlowGuide;
 
 export const tourStyles = {
-  maskArea: (base: any) => ({
+  maskArea: (base: CSSProperties) => ({
     ...base,
     rx: 10,
     overflow: "hidden",
   }),
-  badge: (base: any) => ({
+  badge: (base: CSSProperties) => ({
     ...base,
     backgroundColor: "#005e59",
   }),
-  controls: (base: any) => ({
+  controls: (base: CSSProperties) => ({
     ...base,
     marginTop: 12,
   }),
-  dot: (base: any, { current }: any) => ({
+  dot: (base: CSSProperties, { current }: { current?: boolean }) => ({
     ...base,
     backgroundColor: current ? "#005e59" : "#e0e0e0",
   }),
