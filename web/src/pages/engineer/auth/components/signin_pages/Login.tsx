@@ -9,40 +9,53 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useHomeNavigation } from "@/shared/hooks/useHomeNavigation";
-import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import { validatePassword } from "@/shared/libs/utils";
-import { setCurrencyInStorage } from "@/utils/currency";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { BiLogoLinkedin } from "react-icons/bi";
-import { LuPhone } from "react-icons/lu";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import OTPPage from "../OTPPage";
 import type { LoginFormData } from "../types";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { toast } from "react-toastify";
+import { type LoginEmailFormData } from "../../validations/LoginEmail";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import {
+  useEngineerSignInMutation,
+  useReqEmailVerificationOtpMutation,
+  useVerifyEmailVerificationOtpMutation,
+} from "@/shared/apiServices/auth/engineer/engineerAuthService";
+import { CiMail } from "react-icons/ci";
+import { UserRole } from "@/shared/enums/users";
+import { AxiosError } from "axios";
 
 /**
- * Renders the primary login form for users to sign in with their email and password.
+ * Login component
  *
- * This component provides a standard login interface, including fields for email and password,
- * a "Remember me" checkbox, and a link to the "Forgot Password" page. It uses `react-hook-form`
- * for form state management and validation.
+ * Renders the engineer sign-in form (email/password) with options to sign in
+ * via phone number or LinkedIn. Submitting opens the OTP dialog in this
+ * implementation; after OTP success the access popup is shown.
  *
- * Upon successful form submission, it displays an OTP modal for two-factor authentication.
- * It also provides UI options to switch to a phone-based login or to use social login providers
- * like LinkedIn.
- *
- * @param {object} props - The component props.
- * @param {React.Dispatch<React.SetStateAction<boolean>>} props.setIsNumberLogin - A state setter function
- *   passed from the parent component to toggle the view to the phone number login screen.
- * @returns {JSX.Element} The rendered login form component.
+ * Props:
+ * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - A single prop used to switch to number-based login UI.
+ * @returns {JSX.Element} Login form UI
  */
 const Login = ({
   setIsNumberLogin,
 }: {
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { goToHome } = useHomeNavigation();
+  const navigate = useNavigate();
+
+  const engineerSignInMutation = useEngineerSignInMutation();
+  const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
+  const verifyEmailVerificationOtpMutation =
+    useVerifyEmailVerificationOtpMutation();
+  const setUserSession = useUserSessionStore((s) => s.setSession);
+
+  const [isOpen, setIsOpen] = useState(false);
   const methods = useForm<LoginFormData>({
     defaultValues: {
       email: "",
@@ -50,9 +63,92 @@ const Login = ({
       rememberMe: false,
     },
   });
-  const data = methods.watch();
-  const { isOpen, handleSubmit, setIsOpen, verify, otpauthUrl } =
-    useTwoFactorAuth(data.email, goToHome);
+
+  /**
+   * handleSubmit
+   *
+   * Called by the form when the user submits credentials. Current behaviour
+   * opens the OTP popup (simulating second-factor or phone flow). Real
+   * implementations should validate credentials against an API and only
+   * open the OTP/modal on success.
+   */
+  const handleSubmit = async (data: LoginEmailFormData) => {
+    await engineerSignInMutation.mutateAsync(
+      {
+        phoneOrEmail: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: async (resp) => {
+          //second layer of verification
+          // setIsOpen(true);
+          // toast.success("OTP Requested, kindly check your email for OTP");
+          console.log(`Login Response: `, resp);
+          setUserSession(resp as UserSession);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          // Skip showing toast for 401 errors as axios interceptor already handles it
+          if (error instanceof AxiosError && error.response?.status === 401) {
+            return;
+          }
+          const errorMessage =
+            error instanceof Error ? error.message : "Login failed";
+          toast.error(errorMessage);
+        },
+      }
+    );
+  };
+
+  /**
+   * handleOtpSubmission
+   * call verifyEmailVerificationOtpMutation to verify the otp
+   * @param otp otp code
+   */
+  const handleOtpSubmission = async (otp: string) => {
+    const email = methods.getValues("email");
+    await verifyEmailVerificationOtpMutation.mutateAsync(
+      { email, otp },
+      {
+        onSuccess: async (resp) => {
+          console.log(`OTP Response: `, resp);
+          //TODO: integrate the otp stubbed version
+          const stubbedResponse: UserSession = {
+            accessToken: "something fake",
+            userId: "uuid-123",
+            role: UserRole.ENGINEER,
+            initiatedAt: Date.now(),
+          };
+
+          setIsOpen(false);
+          setUserSession(stubbedResponse);
+          navigate(absoluteUrls.engineer.home.dashboard);
+          toast.success("Logged in successfully");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("");
+        },
+      }
+    );
+  };
+
+  const onResendOtp = async () => {
+    const email = methods.getValues("email");
+    await reqEmailVerificationOtpMutation.mutateAsync(email, {
+      onSuccess: async (resp) => {
+        console.log(`OTP Response: `, resp);
+        toast.success("OTP Requested, kindly check your email for OTP");
+        setIsOpen(true);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error("OTP Request failed");
+      },
+    });
+  };
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -110,6 +206,10 @@ const Login = ({
           </div>
           <Button
             type="submit"
+            loading={
+              engineerSignInMutation.isPending ||
+              reqEmailVerificationOtpMutation.isPending
+            }
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -119,10 +219,10 @@ const Login = ({
           className="text-gray-900 dark:text-gray-300 hover:underline flex flex-row gap-2 items-center justify-center pt-5 cursor-pointer"
           onClick={() => setIsNumberLogin(true)}
         >
-          <LuPhone className="dark:text-gray-300" />
-          Sign in with Phone Number
+          <CiMail className="dark:text-gray-300 text-lg" />
+          Sign In with OTP
         </div>
-        <div className="flex flex-row items-center justify-center gap-4 pt-5">
+        {/* <div className="flex flex-row items-center justify-center gap-4 pt-5">
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
           <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
           <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
@@ -137,16 +237,14 @@ const Login = ({
               LinkedIn
             </span>
           </Button>
-        </div>
+        </div> */}
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
             description="We sent you an OTP code. Please scan it using your authenticator app or enter a backup code."
             onClose={() => setIsOpen(false)}
-            handleNavigate={(data) => {
-              verify(data), setCurrencyInStorage("$");
-            }}
-            otpauthUrl={otpauthUrl ?? ""}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

@@ -144,7 +144,7 @@ const PostJobPage = () => {
     });
   };
 
-  const handlePostAJob = async (data: any) => {
+  const handlePostAJob = async (_: any) => {
     toast.success("Job Posted successfully");
   };
 
@@ -157,8 +157,8 @@ const PostJobPage = () => {
             currentLocation === CurrentLocation.dedicated
               ? "Post a Job - Dedicated Service"
               : currentLocation === CurrentLocation.dispatch
-              ? "Post a Job - Dispatch Service"
-              : "Post a Job - Scheduled Service"
+                ? "Post a Job - Dispatch Service"
+                : "Post a Job - Scheduled Service"
           }
           isReport={false}
           isShowSort={false}

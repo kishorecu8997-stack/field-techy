@@ -18,7 +18,7 @@ export const PasswordInput = ({
   label,
   placeholder,
   required = false,
-  isShowLabel=true,
+  isShowLabel = true,
   rules,
 }: PasswordInputProps) => {
   const { control } = useFormContext();
@@ -58,7 +58,10 @@ export const PasswordInput = ({
                 type={showPassword ? "text" : "password"}
                 placeholder={placeholder || label}
                 autoComplete="new-password"
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5 pr-12 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition"
+                className={`w-full rounded-md border py-3 px-5 pr-12 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition ${error
+                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                    : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
+                  }`}
               />
               <button
                 type="button"

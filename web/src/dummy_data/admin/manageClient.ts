@@ -1,4 +1,4 @@
-import type { ManageClientProps } from "@/pages/admin/client";
+import type { ManageClientProps } from "@/pages/admin/client/types";
 
 export const manageClient: ManageClientProps[] = [
   {

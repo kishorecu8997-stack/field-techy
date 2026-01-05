@@ -1,7 +1,8 @@
 import { bankList } from "@/dummy_data/bankDetails";
 import xss from "xss";
 import { transactions } from "@/dummy_data/bankDetails";
-
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Utility function to join multiple class names into a single string,
@@ -11,8 +12,8 @@ import { transactions } from "@/dummy_data/bankDetails";
  * @param classes - One or more class name strings or falsy values
  * @returns A space-separated string of valid class names
  */
-export function cn(...classes: (string | boolean | undefined | null)[]) {
-  return classes.filter(Boolean).join(" ");
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 /**
@@ -41,7 +42,7 @@ export const validatePassword = (value: string, oldPassword?: string) => {
   if (/\s/.test(value)) {
     return "Password must not contain spaces";
   }
-  if (oldPassword) {
+  if (typeof oldPassword === "string" && oldPassword) {
     if (oldPassword === value) {
       return "Password cannot be the same as the old password";
     }
@@ -50,7 +51,7 @@ export const validatePassword = (value: string, oldPassword?: string) => {
 };
 
 export const validatePortfolioLink = (value: string) => {
-  if (!value) return "Portfolio link is required";
+  if (!value) return true;
 
   const original = value.trim();
 
@@ -360,6 +361,7 @@ export const formatDate = (dateStr: string) => {
   });
 };
 
+
 /**
  * Represents monthly earnings data used for chart visualization.
  */
@@ -405,4 +407,3 @@ export const getLatestEarnings = (data: MonthlyData[]) => {
   const latest = data[data.length - 1];
   return { earnings: latest.earnings, month: latest.month };
 };
-

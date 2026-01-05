@@ -3,7 +3,8 @@ import { absoluteUrls } from "@/config/urls";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
-import React, { useState } from "react";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import React, { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaChevronRight,
@@ -15,6 +16,10 @@ import {
 import { IoDocumentText } from "react-icons/io5";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { useClientFiles } from "@/shared/apiServices/client/clientService";
+import { useCurrentClientProfile } from "@/shared/apiServices/profiles/client/clientProfileService";
+import { ClientFilesProvider } from "./context/ClientFilesProvider";
+import { ClientAdapter } from "@/shared/apiServices/client/clientAdapter";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -50,14 +55,123 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   onMenuItemClick,
   onClose,
 }) => {
+  const logoutTrigger = useUserSessionStore((s) => s.logout);
+
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // State for profile picture URL
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
+    assetsConfig.images.users.user
+  );
+
+  // State for loading profile picture
+  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(false);
+
   const methods = useForm({
     defaultValues: {
-      profileImage: assetsConfig.images.profile.defaultProfileImage,
+      profileImage: profilePictureUrl,
     },
   });
+
+  // Extract setValue for stable reference
+  const { setValue } = methods;
+
+  // Update form value when profile picture URL changes
+  useEffect(() => {
+    if (!isLoadingProfilePicture) {
+      setValue("profileImage", profilePictureUrl, {
+        shouldValidate: false,
+      });
+    }
+  }, [profilePictureUrl, setValue, isLoadingProfilePicture]);
+
+  // Get client ID from current client profile
+  const { data: clientProfile } = useCurrentClientProfile();
+  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47"; // Fallback to hardcoded ID
+
+  // Fetch client files - single API call for all files
+  const {
+    data: clientFiles = [],
+    isLoading: isLoadingFiles,
+    refetch: refetchFiles,
+  } = useClientFiles(clientId);
+
+  // Separate profile picture from other documents
+  const { profilePictureFile, documentFiles } = useMemo(() => {
+    const profilePic = clientFiles.find(
+      (file) => file.fileType === "PROFILE_PICTURE"
+    );
+    const documents = clientFiles.filter(
+      (file) => file.fileType !== "PROFILE_PICTURE"
+    );
+    return {
+      profilePictureFile: profilePic || null,
+      documentFiles: documents,
+    };
+  }, [clientFiles]);
+
+  // Download profile picture if available
+  useEffect(() => {
+    if (!profilePictureFile) {
+      setIsLoadingProfilePicture(false);
+      setProfilePictureUrl(assetsConfig.images.users.user);
+      return;
+    }
+
+    let blobUrl: string | null = null;
+    let isCancelled = false;
+
+    const downloadProfilePicture = async () => {
+      setIsLoadingProfilePicture(true);
+
+      try {
+        const downloadResponse = await ClientAdapter.downloadFileStream(
+          profilePictureFile.fileKey
+        );
+
+        // Check if component is still mounted and file hasn't changed
+        if (!isCancelled) {
+          blobUrl = URL.createObjectURL(downloadResponse.blob);
+          setProfilePictureUrl(blobUrl);
+          setIsLoadingProfilePicture(false);
+        } else {
+          // Cleanup if cancelled - revoke the blob URL we just created
+          const tempBlobUrl = URL.createObjectURL(downloadResponse.blob);
+          URL.revokeObjectURL(tempBlobUrl);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error("Failed to download profile picture:", error);
+          setProfilePictureUrl(assetsConfig.images.users.user);
+          setIsLoadingProfilePicture(false);
+        }
+      }
+    };
+
+    downloadProfilePicture();
+
+    // Cleanup on unmount or when profilePictureFile changes
+    return () => {
+      isCancelled = true;
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+      setIsLoadingProfilePicture(false);
+    };
+  }, [profilePictureFile]);
+
+  // Prepare context value
+  const filesContextValue = useMemo(
+    () => ({
+      files: documentFiles,
+      profilePictureFile,
+      isLoading: isLoadingFiles,
+      refetch: refetchFiles,
+    }),
+    [documentFiles, profilePictureFile, isLoadingFiles, refetchFiles]
+  );
 
   const menuItems: ClientMenuItems[] = [
     {
@@ -80,23 +194,43 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       key: "logout",
       isLogout: true,
       onClick: () => {
-        console.log("Logout clicked");
         setIsOpen(true);
       },
     },
   ];
 
+  const handleConfirmationLogout = () => {
+    logoutTrigger();
+    navigate(absoluteUrls.root);
+  };
+
+  // Get display name from client profile
+  const displayName = useMemo(() => {
+    if (!clientProfile) return "Guest";
+    if (clientProfile.clientType === "CORPORATE") {
+      return (
+        clientProfile.companyName || clientProfile.contactPersonName || "Client"
+      );
+    }
+    return clientProfile.contactPersonName || "Client";
+  }, [clientProfile]);
+
   return (
-    <>
+    <ClientFilesProvider value={filesContextValue}>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.users.user}
-            name="Nick Wilson"
-            title="Software Engineer"
+            avatarUrl={profilePictureUrl}
+            name={displayName}
+            title={
+              clientProfile?.clientType === "CORPORATE"
+                ? "Corporate Client"
+                : "Home Client"
+            }
             rating={4}
             reviewCount={10}
             completionPercentage={39}
+            isLoadingProfilePicture={isLoadingProfilePicture || isLoadingFiles}
           />
         </div>
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
@@ -118,31 +252,28 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
-              }
+              ${item.isLogout
+                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    : ""
+                  }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
-                  }
+                  ${item.isLogout
+                        ? "text-red-600 dark:text-red-400 "
+                        : "text-gray-600 dark:text-gray-300 "
+                      }
                 `}
                   />
                   <span
                     className={`
-                ${
-                  item.isLogout
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200"
-                }
+                ${item.isLogout
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-gray-700 dark:text-gray-200"
+                      }
                 `}
                   >
                     {item.label}
@@ -163,15 +294,12 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
           <LogoutConfirmationPopup
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            onConfirm={() => {
-              onClose();
-              navigate(absoluteUrls.client.auth.login);
-            }}
+            onConfirm={handleConfirmationLogout}
             onCancel={() => setIsOpen(false)}
           />
         </div>
       </FormContainer>
-    </>
+    </ClientFilesProvider>
   );
 };
 

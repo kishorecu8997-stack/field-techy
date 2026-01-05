@@ -31,7 +31,7 @@ const EditExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (data: ExperiencesFormData) => {
+  const handleSubmit = async (_: ExperiencesFormData) => {
     await showPopup({
       title: "Update Experience",
       body: "Are you sure you want to update this experience?",
@@ -50,7 +50,6 @@ const EditExperiences = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Experience Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("experiences");
           },
@@ -172,7 +171,7 @@ const EditExperiences = () => {
               onChange: () => methods.trigger("startDate")
             }}
           />
-        )}   
+        )}
 
         {/* Checkbox label */}
         <CheckboxInput
@@ -181,7 +180,7 @@ const EditExperiences = () => {
           isShowLabel={true}
           rules={{
             onChange: (e) => {
-             const checked = e.target.checked;
+              const checked = e.target.checked;
               if (checked) {
                 methods.setValue("endDate", null);
               }

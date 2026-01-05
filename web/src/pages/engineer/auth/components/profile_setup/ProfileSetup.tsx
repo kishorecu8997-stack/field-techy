@@ -6,7 +6,6 @@ import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp } from "react-icons/io5";
 import { IoWalletOutline } from "react-icons/io5";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/countries";
 import { getCurrencyFromStorage } from "@/utils/currency";
@@ -28,6 +27,7 @@ import skills from "@/dummy_data/skills";
 import { useLocation } from "react-router-dom";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
+import SetPassword from "./SetPassword";
 
 /**
  * A form component for collecting a user's detailed profile information.
@@ -79,12 +79,12 @@ const ProfileSetup = () => {
   }, [isMobileVerified, isEmailVerified, trigger]);
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+    <div>
       <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
         Basic Details
       </div>
       <InputField
-        name="firstname"
+        name="firstName"
         label="First Name"
         type="text"
         placeholder="First Name"
@@ -94,7 +94,7 @@ const ProfileSetup = () => {
         rules={{ validate: (v: string) => validateName(v, "First Name") }}
       />
       <InputField
-        name="lastname"
+        name="lastName"
         label="Last Name"
         type="text"
         placeholder="Last Name"
@@ -131,7 +131,6 @@ const ProfileSetup = () => {
           />
         )}
       />
-
       <InputField
         name="address"
         label="Address"
@@ -177,7 +176,6 @@ const ProfileSetup = () => {
         type="text"
         placeholder="Portfolio Link"
         leftIcon={<IoUnlinkSharp className="text-lg text-gray-500" />}
-        //rules={{ validate: (v: string) => validatePortfolio(v, country) }}
         rules={{ validate: (v: string) => validatePortfolioLink(v) }}
       />
       <SelectField
@@ -196,8 +194,7 @@ const ProfileSetup = () => {
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}
       />
-
-      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+      <div className="text-lg mt-2 font-semibold text-gray-700 dark:text-gray-300">
         Experience Details
       </div>
       <InputField
@@ -226,14 +223,7 @@ const ProfileSetup = () => {
         required
         rules={{ validate: (v: string) => validateExperience(v) }}
       />
-      <FileUpload
-        name="resume"
-        label="Resume/CV"
-        required
-        accept=".pdf"
-        maxPages={5}
-        validatePDF={true}
-      />
+      <SetPassword />
     </div>
   );
 };

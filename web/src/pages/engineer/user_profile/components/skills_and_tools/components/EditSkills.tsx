@@ -11,9 +11,9 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 export type EditSkillsFormData = {
   skills: string[];
 };
-interface EditSkillsProps {
-  currentSkills?: string[];
-}
+// interface EditSkillsProps {
+//   currentSkills?: string[];
+// }
 
 /**
  * The EditSkills component renders a form to modify a user's professional skills.
@@ -72,7 +72,7 @@ const EditSkills = () => {
    *
    * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
    */
-  const onSubmit = async (data: EditSkillsFormData) => {
+  const onSubmit = async (_: EditSkillsFormData) => {
     await showPopup({
       title: "Update Skills",
       body: "Are you sure you want to update these skills?",
@@ -92,7 +92,6 @@ const EditSkills = () => {
           variant: "primary",
           action: async (close) => {
             toast.success("Skills Updated Successfully");
-            console.log(data);
             close(true);
             setActiveKey("skillsAndTools");
           },

@@ -13,6 +13,7 @@ import { formatCurrency, getMonthlyEarnings } from "@/shared/libs/utils";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import type { MonthlyData } from "@/shared/libs/utils"; // ✅ type-only import
 
+
 /**
  * EarningHistoryChart Component
  * Displays a line chart of the user's monthly earnings history with an expandable view.

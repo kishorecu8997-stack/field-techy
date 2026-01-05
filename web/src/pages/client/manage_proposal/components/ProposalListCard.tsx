@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import React from "react";
 import { Link } from "react-router-dom";
+import type { EngineerCardListProps } from "../types";
 
 /**
  * `ProposalListCard` is a React component that displays a summary of an engineer's proposal.

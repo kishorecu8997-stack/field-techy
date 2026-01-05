@@ -6,18 +6,38 @@ import { QRCodeCanvas } from "qrcode.react";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface VerifyEmailModalProps {
+export interface OTPValues {
+  otp: string;
+}
+
+interface OTPPageProps {
   header?: string;
   description?: string;
   onClose?: () => void;
-  handleNavigate?: (data: string) => void;
+  /**
+   * @deprecated Use onSubmit instead.
+   */
+  handleNavigate?: () => void;
+  /**
+   * Optional handler that receives the OTP value on submission.
+   */
+  onSubmit?: (data: OTPValues) => void;
   buttonText?: string;
   isSuccess?: boolean;
-  otpauthUrl?: string;
-}
-
-export interface OTPValues {
-  otp: string;
+  /**
+   * Initial time in seconds for the countdown timer.
+   * @default 60
+   */
+  initialTimerSeconds?: number;
+  /**
+   * Maximum number of resend attempts allowed.
+   * @default Infinity
+   */
+  maxResendAttempts?: number;
+  /**
+   * Callback function triggered when the resend button is clicked.
+   */
+  onResend?: () => void;
 }
 
 /**
@@ -30,27 +50,31 @@ export interface OTPValues {
  * It is used for various verification flows, such as email/phone confirmation during sign-up,
  * password resets, or two-factor authentication at login.
  *
- * @param {VerifyEmailModalProps} props - The props for the component.
+ * @param {OTPPageProps} props - The props for the component.
  * @param {string} [props.header] - The main title displayed in the modal.
  * @param {string} [props.description] - A descriptive text shown below the header.
  * @param {() => void} [props.onClose] - Callback function to close the modal.
- * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed.
+ * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed (Deprecated, use onSubmit).
+ * @param {function} [props.onSubmit] - Optional handler that receives the OTP value on submission.
  * @param {string} [props.buttonText="Submit"] - The text for the submit button.
  * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
+ * @param {number} [props.initialTimerSeconds=60] - Initial time in seconds for the countdown timer.
+ * @param {number} [props.maxResendAttempts=Infinity] - Maximum number of resend attempts allowed.
+ * @param {() => void} [props.onResend] - Callback function triggered when the resend button is clicked.
  */
-const OTPPage: React.FC<VerifyEmailModalProps> = ({
+const OTPPage: React.FC<OTPPageProps> = ({
   header,
   description,
   onClose,
-  handleNavigate,
-  otpauthUrl,
+  onSubmit,
   buttonText,
   isSuccess,
+  initialTimerSeconds = 60,
+  maxResendAttempts = Infinity,
+  onResend,
 }) => {
-  const TOTP_PERIOD = 30;
-  const getTimeLeft = () =>
-    TOTP_PERIOD - (Math.floor(Date.now() / 1000) % TOTP_PERIOD);
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
+  const [timeLeft, setTimeLeft] = useState<number>(initialTimerSeconds);
+  const [resendCount, setResendCount] = useState<number>(0);
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const enrolled = localStorage.getItem("2fa_enrolled") === "true";
 
@@ -61,20 +85,33 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
     return () => clearInterval(interval);
   }, [getTimeLeft]);
 
-  const method = useForm({
+  const method = useForm<OTPValues>({
     defaultValues: {
       otp: "",
     },
   });
 
-  const data = method.getValues("otp");
-  const handleSubmit = () => {
-    handleNavigate?.(data);
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  const handleSubmit = (data: OTPValues) => {
+      onSubmit?.(data);
   };
 
   const handleResend = () => {
-    setTimeLeft(30);
-    inputRefs.current[0].focus();
+    if (resendCount >= maxResendAttempts) return;
+
+    onResend?.();
+    setTimeLeft(initialTimerSeconds);
+    setResendCount((prev) => prev + 1);
+
+    // Attempt to focus if refs are available
+    if (inputRefs.current && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
   };
 
   return (
@@ -104,16 +141,20 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
           )}
 
           {!isSuccess && (
-            <div className="p-2">
-              <OTPInput name="otp" length={6} errorAlign="center" />
+            <div className="p-1">
+              <OTPInput
+                name="otp"
+                length={6}
+                errorAlign="center"
+              />
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
                 <span>{`00:${timeLeft.toString().padStart(2, "0")}`}</span>
                 <button
+                  type="button"
                   onClick={handleResend}
-                  disabled={timeLeft > 0}
-                  className={`text-green-600 font-medium ${
-                    timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  disabled={timeLeft > 0 || resendCount >= maxResendAttempts}
+                  className={`text-green-600 dark:text-green-400 font-medium ${(timeLeft > 0 || resendCount >= maxResendAttempts) ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                 >
                   Resend
                 </button>
