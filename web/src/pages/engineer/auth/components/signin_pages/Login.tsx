@@ -29,6 +29,9 @@ import {
 import { CiMail } from "react-icons/ci";
 import { UserRole } from "@/shared/enums/users";
 import { AxiosError } from "axios";
+import TwoFASetup from "@/shared/components/TwoFASetup";
+import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
+import { getTwoFaStorage } from "@/utils/TwoFAStorage";
 
 /**
  * Login component
@@ -62,6 +65,16 @@ const Login = ({
       rememberMe: false,
     },
   });
+  const email = methods.watch("email");
+  const {
+    isTwoFaOpen,
+    setIsTwoFaOpen,
+    otpauthUrl,
+    handleSubmit: triggerTwoFA,
+    verify,
+  } = useTwoFactorAuth(email, setUserSession, () => {
+    navigate(absoluteUrls.engineer.home.dashboard);
+  });
 
   /**
    * handleSubmit
@@ -79,12 +92,18 @@ const Login = ({
       },
       {
         onSuccess: async (resp) => {
+          const twoFa = getTwoFaStorage();
+          if (twoFa.enabled) {
+            // 🚀 Trigger TOTP flow
+            triggerTwoFA();
+            return;
+          }
           //second layer of verification
           // setIsOpen(true);
           // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
           setUserSession(resp as UserSession);
-          
+
           navigate(absoluteUrls.engineer.home.dashboard);
           toast.success("Logged in successfully");
         },
@@ -245,6 +264,14 @@ const Login = ({
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
             onResend={onResendOtp}
+          />
+        </Popup>
+
+        <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
+          <TwoFASetup
+            otpauthUrl={otpauthUrl}
+            onVerify={verify}
+            onClose={() => setIsTwoFaOpen(false)}
           />
         </Popup>
       </div>
