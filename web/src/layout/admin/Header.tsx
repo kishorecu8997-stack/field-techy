@@ -8,6 +8,7 @@ import { absoluteUrls } from "@/config/urls";
 import { countries } from "@/dummy_data/adminDashboard";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Header
@@ -30,6 +31,8 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const email = useUserSessionStore((s) => s.session?.email);
+  console.log('email profile:', email);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -93,13 +96,17 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         <Link to={absoluteUrls.admin.home.profile}>
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-              <span className="font-bold text-gray-800">K</span>
+              <span className="font-bold text-gray-800">
+                {email?.charAt(0).toLocaleUpperCase()}
+              </span>
               {/* <img src="" /> */}
             </div>
 
             <div className="hidden sm:block">
-              <div className="font-semibold text-md">Kevin Smith</div>
-              <div className="text-xs text-gray-300">Admin</div>
+              <div className="font-semibold text-md">
+                {email?.split("@")[0]}
+              </div>
+              {/* <div className="text-xs text-gray-300">Admin</div> */}
             </div>
           </div>
         </Link>

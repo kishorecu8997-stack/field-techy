@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -24,10 +25,12 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 export default function PersonalDetails() {
   const navigate = useNavigate();
+  const email = useUserSessionStore((s) => s.session?.email);
+  console.log("email :", email);
   const methods = useForm<ProfileFormData>({
     defaultValues: {
-      name: "Kevin Smith",
-      email: "kevinsmith@gmail.com",
+      name: "",
+      email: email,
       phoneNumber: "",
       profileImage: null,
     },

@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 export interface UserSession {
   userId: string;
   role: string;
+  email?: string;
   accessToken: string;
   initiatedAt: number; // Timestamp when session was created (in milliseconds)
   // metadata: Record<string, string>;
