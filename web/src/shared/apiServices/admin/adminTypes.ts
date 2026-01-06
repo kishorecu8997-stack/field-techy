@@ -36,3 +36,7 @@ export interface PagedNotificationsResponse {
   page: number;
   size: number;
 }
+export type AdminData = {
+    phoneOrEmail: string;
+    password: string;
+}

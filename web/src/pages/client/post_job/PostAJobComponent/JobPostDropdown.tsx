@@ -93,7 +93,7 @@ export default function JobPostDropdown({
                 setOpen(false);
                 opt.action?.();
               }}
-              className={`block text-left w-full px-4 py-2 rounded-lg hover:bg-emerald-100 transition cursor-pointer ${
+              className={`flex justify-start w-full px-4 py-2 rounded-lg hover:bg-emerald-100 transition cursor-pointer ${
                 selected?.value === opt.value ? "bg-emerald-100" : ""
               }`}
             >
