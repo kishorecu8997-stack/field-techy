@@ -13,6 +13,7 @@ import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
 import { scrollToTop } from "@/utils";
+import { useGetJobs } from "@/shared/apiServices/client/clientService";
 
 /**
  * Home page component.
@@ -26,6 +27,9 @@ const Home = () => {
   const { locationPermission, notificationPermission } = useDeviceStore();
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
+
+  const {data: jobs} = useGetJobs();
+  console.log('jobs :', jobs);
 
   const handleExploreJobs = () => {
     scrollToTop();

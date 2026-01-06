@@ -242,7 +242,8 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
       )}
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
-          {getCurrencyFromStorage()}{salary}
+          {getCurrencyFromStorage()}
+          {salary}
         </span>
         <span className="text-gray-500 dark:text-gray-400 text-sm">
           {location}
@@ -252,6 +253,21 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
   );
 };
 
+interface FeaturedJobsProps {
+  jobs: Job[];
+  title?: string;
+  onViewAll?: () => void;
+}
+const jobCardGradients = [
+  "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700",
+  "bg-gradient-to-br from-green-50 to-green-100 dark:from-emerald-900/30 dark:to-emerald-800/30",
+  "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20",
+  "bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30",
+  "bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/30 dark:to-pink-800/30",
+  "bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30",
+  "bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/30 dark:to-teal-800/30",
+  "bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20",
+];
 /**
  * FeaturedJobs Component - Displays a list of featured job cards
  *
@@ -283,33 +299,20 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
  *   ]}
  * />
  */
-interface FeaturedJobsProps {
-  jobs: Job[];
-  title?: string;
-  onViewAll?: () => void;
-}
-const jobCardGradients = [
-  "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700",
-  "bg-gradient-to-br from-green-50 to-green-100 dark:from-emerald-900/30 dark:to-emerald-800/30",
-  "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20",
-  "bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30",
-  "bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/30 dark:to-pink-800/30",
-  "bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/30 dark:to-indigo-800/30",
-  "bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/30 dark:to-teal-800/30",
-  "bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20",
-];
 const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   jobs,
   title = "Featured Jobs",
   onViewAll,
 }) => {
   const navigate = useNavigate();
+  
   const userSkillsAndTools = useMemo(() => {
     return [
       ...jobSkillsData.jobSkills.map((s) => s.label),
       ...toolsData.tools.map((t) => t.label),
     ];
   }, []);
+  console.log('jobs :', jobs);
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
@@ -334,8 +337,9 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
-                }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
+                jobCardGradients[index % jobCardGradients.length]
+              }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}

@@ -10,6 +10,7 @@ import type {
   EngineerFile,
   JobAssignment,
   AssignJobParams,
+  ProposalJobData,
 } from "./engineerTypes";
 import { GlobalApiErrorHandler } from "../utils";
 
@@ -111,9 +112,9 @@ export class EngineerAdapter {
         ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
         formData,
         {
-         headers: {
-            'X-USER': 'ENGINEER',
-            "Content-Type": "multipart/form-data"
+          headers: {
+            "X-USER": "ENGINEER",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
@@ -178,7 +179,7 @@ export class EngineerAdapter {
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      console.log('email :', email);
+      console.log("email :", email);
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
@@ -230,23 +231,6 @@ export class EngineerAdapter {
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
-
-    // Stubbed response - accepts any 4-digit OTP
-    // console.log(
-    //   `[STUB] Verifying engineer email OTP for: ${email}, OTP: ${otp}`
-    // );
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     if (otp.length === 4) {
-    //       resolve({
-    //         message: "Email OTP verified successfully",
-    //         verified: true,
-    //       });
-    //     } else {
-    //       reject(new Error("Invalid OTP"));
-    //     }
-    //   }, 800);
-    // });
   }
 
   static async verifyPhoneOTP(
@@ -257,6 +241,81 @@ export class EngineerAdapter {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  // proposals endpoints
+
+  static async sendProposalJob(data: ProposalJobData): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.SEND_PROPOSAL_JOB(),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getProposalJobsById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_JOBS_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getProposalAll(): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_ALL()
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getEngineerProposals(
+    engineerId: string
+  ): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_ENGINEER_PROPOSALS(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async updateProposalById(
+    id: string,
+    data: ProposalJobData
+  ): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.put(
+        ENGINEER_ROUTER_PATHS.UPDATE_PROPOSAL_BY_ID(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async deleteProposalById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.delete(
+        ENGINEER_ROUTER_PATHS.DELETE_PROPOSAL_BY_ID(id)
       );
       return response.data;
     } catch (error) {

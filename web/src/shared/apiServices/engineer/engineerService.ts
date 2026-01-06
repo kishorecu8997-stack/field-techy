@@ -9,6 +9,7 @@ import type {
     // EngineerFile,
     JobAssignment,
     AssignJobParams,
+    ProposalJobData,
 } from "./engineerTypes";
 import { queryKeys } from "../queryKeys";
 import { queryClient } from "@/main";
@@ -173,4 +174,76 @@ export function useVerifyPhoneOTP(options?: {
         onSuccess: options?.onSuccess,
         onError: options?.onError,
     });
+}
+
+// --- Proposals Endpoints ---
+
+export function useSendProposalJob(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+}) {
+  return useMutation({
+    mutationFn: (data: ProposalJobData) => EngineerAdapter.sendProposalJob(data),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useGetProposalJobsById(id:string,options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), 'jobs'] as const,
+    queryFn: () => EngineerAdapter.getProposalJobsById(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useGetProposalAll(id:string,options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), 'jobs'] as const,
+    queryFn: () => EngineerAdapter.getProposalAll(),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useGetEngineerProposals(id:string,options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), 'jobs'] as const,
+    queryFn: () => EngineerAdapter.getEngineerProposals(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useUpdateProposalById(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+}) {
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: ProposalJobData }) => 
+      EngineerAdapter.updateProposalById(id, data),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useDeleteProposalById(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+}) {
+  return useMutation({
+    mutationFn: (id: string) => EngineerAdapter.deleteProposalById(id),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
 }
