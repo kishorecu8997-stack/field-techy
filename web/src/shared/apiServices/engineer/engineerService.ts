@@ -45,17 +45,17 @@ export function useEngineerDelete(options?: {
     });
 }
 
-export function useEngineerFileUpload(options?: {
-    onSuccess?: (data: FileUploadResponse) => void;
-    onError?: (error: unknown) => void;
-    onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
-}) {
-    return useMutation({
-        mutationFn: (params: FileUploadParams) => EngineerAdapter.uploadFile(params),
-        onSuccess: options?.onSuccess,
-        onError: options?.onError,
-    });
-}
+// export function useEngineerFileUpload(options?: {
+//     onSuccess?: (data: FileUploadResponse) => void;
+//     onError?: (error: unknown) => void;
+//     onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
+// }) {
+//     return useMutation({
+//         mutationFn: (params: FileUploadParams) => EngineerAdapter.uploadFile(params),
+//         onSuccess: options?.onSuccess,
+//         onError: options?.onError,
+//     });
+// }
 
 // --- Queries ---
 
@@ -67,11 +67,11 @@ export function useEngineerGetById(id: string, options?: { enabled?: boolean }) 
     });
 }
 
-export function useEngineerUpdateById(id: string) {
+export function useEngineerUpdateById(userId: string) {
     return useMutation({
-        mutationFn: (data: EngineerData) => EngineerAdapter.updateById(id, data),
+        mutationFn: (data: EngineerData) => EngineerAdapter.updateById(userId, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.detail(id) });
+            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.detail(userId) });
         },
     });
 }   
@@ -180,6 +180,52 @@ export function useVerifyPhoneOTP(options?: {
         mutationFn: ({ phoneNumber, otp }: { phoneNumber: string; otp: string }) =>
             EngineerAdapter.verifyPhoneOTP(phoneNumber, otp),
         onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
+}
+
+
+export function useDeleteEngineerFile(options?: {
+    engineerId?: string;
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (fileId: string) => EngineerAdapter.deleteFile(fileId),
+        onSuccess: () => {
+            if (options?.engineerId) {
+                queryClient.invalidateQueries({
+                    queryKey: [...queryKeys.engineer.detail(options.engineerId), 'files']
+                });
+            } else {
+                queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+            }
+            options?.onSuccess?.();
+        },
+        onError: options?.onError,
+    });
+}
+
+export function useEngineerFileUpload(options?: {
+    engineerId?: string;
+    onSuccess?: (data: FileUploadResponse) => void;
+    onError?: (error: unknown) => void;
+    onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
+}) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (params: FileUploadParams) => EngineerAdapter.uploadFile(params),
+        onSuccess: (data) => {
+            if (options?.engineerId) {
+                queryClient.invalidateQueries({
+                    queryKey: [...queryKeys.engineer.detail(options.engineerId), 'files']
+                });
+            } else {
+                queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+            }
+            options?.onSuccess?.(data);
+        },
         onError: options?.onError,
     });
 }

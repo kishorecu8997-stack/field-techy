@@ -3,6 +3,7 @@ import {
   useEngineerGetById
 } from "@/shared/apiServices/engineer/engineerService";
 import ChipsCard from "@/shared/components/ChipsCard";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React from "react";
 
 interface DrawerMenuProps {
@@ -17,17 +18,19 @@ interface DrawerMenuProps {
  * @returns {React.ReactElement} The rendered SkillsAndTools component.
  */
 const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
-  const { data } = useEngineerGetById("id");
+ const { session } = useUserSessionStore();
+const engineerId = session?.userId || "";
+const { data: engineerData } = useEngineerGetById(engineerId);
 
-  const engineerSkills = data?.jobSkills as string[] || []
-  const engineerTools = data?.tools as string[] || []
+  const engineerSkills = engineerData?.jobSkills as string[] || []
+  const engineerTools = engineerData?.tools as string[] || []
 
   return (
     <>
       <div className="flex flex-col gap-4">
         <ChipsCard
           title="Skills"
-          chips={engineerSkills?.map((skill) => skill)}
+           chips={engineerSkills.map((skill) => skill)}
           onAddAction={() => onMenuItemClick(`addSkills`)}
           onEditAction={() => {
             onMenuItemClick(`editSkills`);
