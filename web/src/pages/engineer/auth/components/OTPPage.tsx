@@ -2,8 +2,7 @@ import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
-import { QRCodeCanvas } from "qrcode.react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 export interface OTPValues {
@@ -76,14 +75,6 @@ const OTPPage: React.FC<OTPPageProps> = ({
   const [timeLeft, setTimeLeft] = useState<number>(initialTimerSeconds);
   const [resendCount, setResendCount] = useState<number>(0);
   const inputRefs = useRef<HTMLInputElement[]>([]);
-  const enrolled = localStorage.getItem("2fa_enrolled") === "true";
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [getTimeLeft]);
 
   const method = useForm<OTPValues>({
     defaultValues: {
@@ -127,19 +118,9 @@ const OTPPage: React.FC<OTPPageProps> = ({
             onClick={onClose}
           />
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {header}
-            </h2>
-            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">
-              {description}
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{header}</h2>
+            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
           </div>
-          {!enrolled && (
-            <div className="flex justify-center">
-              <QRCodeCanvas value={otpauthUrl ?? ""} />
-            </div>
-          )}
-
           {!isSuccess && (
             <div className="p-1">
               <OTPInput
@@ -148,7 +129,9 @@ const OTPPage: React.FC<OTPPageProps> = ({
                 errorAlign="center"
               />
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
-                <span>{`00:${timeLeft.toString().padStart(2, "0")}`}</span>
+                <span>
+                  {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
+                </span>
                 <button
                   type="button"
                   onClick={handleResend}

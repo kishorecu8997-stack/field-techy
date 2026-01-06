@@ -1,7 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
-import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -85,6 +84,7 @@ const Login = ({
           // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
           setUserSession(resp as UserSession);
+          
           navigate(absoluteUrls.engineer.home.dashboard);
           toast.success("Logged in successfully");
         },
@@ -241,7 +241,7 @@ const Login = ({
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
-            description="We sent you an OTP code. Please scan it using your authenticator app or enter a backup code."
+            description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
             onResend={onResendOtp}
