@@ -111,9 +111,9 @@ export class EngineerAdapter {
         ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
         formData,
         {
-         headers: {
-            'X-USER': 'ENGINEER',
-            "Content-Type": "multipart/form-data"
+          headers: {
+            "X-USER": "ENGINEER",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
@@ -178,7 +178,7 @@ export class EngineerAdapter {
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      console.log('email :', email);
+      console.log("email :", email);
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
@@ -191,15 +191,15 @@ export class EngineerAdapter {
 
   static async updatePassword(params: UpdatePasswordParams): Promise<boolean> {
     try {
-    const { email, password } = params;
-    const response = await axiosInstance.post(
-      ENGINEER_ROUTER_PATHS.RESET_PASSWORD(params.otp),
-      {
-        phoneOrEmail: email,
-        password: password,
-      }
-    );
-    return response.data;
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.CHANGE_PASSWORD,
+        {
+          phoneOrEmail: params.phoneOrEmail,
+          oldPassword: params.oldPassword,
+          newPassword: params.newPassword,
+        }
+      );
+      return response.data;
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }

@@ -1,6 +1,4 @@
-import {
-  useSendEmailOTP
-} from "@/shared/apiServices/engineer/engineerService";
+import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
@@ -9,11 +7,11 @@ import { Controller, useFormContext } from "react-hook-form";
 import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
-/**   
+/**
  * Password OTP Verification component
- *       
+ *
  *  @param param0 VerifiedEmailInputFieldProps
- * 
+ *
  * @returns JSX.Element
  */
 export const PasswordOTPVerification = ({
@@ -27,17 +25,15 @@ export const PasswordOTPVerification = ({
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedEmailInputFieldProps) => {
-  const { control, watch, clearErrors, setError } =
-    useFormContext();
+  const { control, watch, clearErrors, setError } = useFormContext();
   const [localVerified, setLocalVerified] = useState(false);
 
   const verified =
     typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
-  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } = useSendEmailOTP();
-
-
+  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } =
+    useSendEmailOTP();
 
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
@@ -118,8 +114,7 @@ export const PasswordOTPVerification = ({
               if (emailValid !== true) return emailValid;
 
               // ✅ Use verified state directly
-              if (!verified)
-                return "Please verify your email address";
+              if (!verified) return "Please verify your email address";
 
               return true;
             },

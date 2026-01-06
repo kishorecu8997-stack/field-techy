@@ -1,38 +1,49 @@
+import {
+  useEngineerGetById,
+  useUpdatePassword,
+} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
+import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { validateIsVerified } from "../user_profile/Validate";
-import PasswordOTPVerification from "./PasswordOTPVerification";
+import PasswordSection from "../auth/components/PasswordSection";
 import { validatePassword } from "./validation";
-import { useUpdatePassword } from "@/shared/apiServices/engineer/engineerService";
-import type { UpdatePasswordParams } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
-  * Page component for resetting a user's password via email OTP verification.
- * Collects email, OTP, and a new password, and uses React Hook Form for validation and submission handling.
+ * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
+ * Uses React Hook Form for validation and submission handling.
  */
 const ChangePassword = () => {
-  const formCtx = useForm<UpdatePasswordParams>({
-    defaultValues: {
-      email: "",
-      password: "",
-      otp: "",
-    },
+  const FormCtx = useForm<{
+    email: string;
+    currentPassword: string;
+    password: string;
+  }>({
     mode: "onChange",
+    defaultValues: {
+      currentPassword: "",
+      password: "",
+    },
   });
-
-  const { mutateAsync: updatePassword } = useUpdatePassword();
-
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
-  const handleSubmit = async (data: UpdatePasswordParams) => {
+  const raw = localStorage.getItem("generic-user-session");
+
+  const userId = raw ? JSON.parse(raw)?.state?.session?.userId ?? null : null;
+
+  const { data: sessionData } = useEngineerGetById(userId!, {
+    enabled: !!userId,
+  });
+  const { mutateAsync: updatePassword } = useUpdatePassword();
+
+  const handleSubmit = async (data: {
+    currentPassword: string;
+    password: string;
+  }) => {
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",
@@ -48,15 +59,17 @@ const ChangePassword = () => {
           variant: "primary",
           action: async (close) => {
             try {
-              await updatePassword(data);
+              await updatePassword({
+                phoneOrEmail: sessionData?.email || "",
+                newPassword: data.password,
+                oldPassword: data.currentPassword,
+              });
               toast.success("Password updated successfully!");
               setActiveKey("settings");
               close(true);
-            } catch (error: any) {
-              const errorMessage =
-                error?.response?.data?.message ||
-                "Failed to update password. Please try again.";
-              toast.error(errorMessage);
+            } catch (error) {
+              toast.error("Failed to update password");
+              console.error("Error updating password:", error);
             }
           },
         },
@@ -66,48 +79,19 @@ const ChangePassword = () => {
 
   return (
     <FormContainer
-      methods={formCtx}
+      methods={FormCtx}
       onSubmit={handleSubmit}
       className="flex h-full flex-col"
     >
       <div className="flex-1">
-        <PasswordOTPVerification
-          name="email"
-          label="Email ID"
-          isShowLabel={false}
-          required
-          rules={{
-            validate: () => validateIsVerified(isEmailVerified, "Email"),
-          }}
-          verified={isEmailVerified}
-          setVerified={setIsEmailVerified}
-        />
-        <InputField
-          label="OTP"
-          name="otp"
-          placeholder="Enter your OTP"
-          required
-          disabled={!isEmailVerified}
-          rules={{
-            maxLength: {
-              value: 6,
-              message: "OTP must be between 4 and 6 digits"
-            },
-            minLength: {
-              value: 4,
-              message: "OTP must be between 4 and 6 digits"
-            },
-          }}
-        />
         <PasswordInput
-          label="Password"
-          name="password"
-          placeholder="Enter your password"
+          label="Current Password"
+          name="currentPassword"
+          placeholder="Enter your current password"
           required
-          disabled={!isEmailVerified}
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-        {/* <PasswordSection /> */}
+        <PasswordSection />
       </div>
 
       <div className="mt-auto flex justify-end">

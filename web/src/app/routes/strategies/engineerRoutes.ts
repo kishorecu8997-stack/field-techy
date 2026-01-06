@@ -86,13 +86,14 @@ export class EngineerRouteStrategy implements RouteStrategy {
     return [
       {
         path: BASE.ENGINEER,
-        element: React.createElement(ProtectedRoute, {
-          requiredRole: UserRole.ENGINEER,
-          children: [
-            React.createElement(Components.RootLayout),
-            withSuspense(Components.LiveChatWidget),
-          ],
-        }),
+        // element: React.createElement(ProtectedRoute, {
+        //   requiredRole: UserRole.ENGINEER,
+        //   children: [
+        //     React.createElement(Components.RootLayout),
+        //     withSuspense(Components.LiveChatWidget),
+        //   ],
+        // }),
+        element: withSuspense(Components.RootLayout),
         children: [
           { index: true, element: withSuspense(Components.EngineerHome) },
           {
