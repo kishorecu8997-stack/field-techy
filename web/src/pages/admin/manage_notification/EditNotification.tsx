@@ -20,6 +20,16 @@ import {
   NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
 
+/**
+ * EditNotification lets admins view and update a notification.
+ * It loads the notification by ID API, populates a form,
+ * and submits updates via PUT after user confirmation. On success, it
+ * navigates back and shows a success toast.
+ *
+ * @returns {JSX.Element} Form UI for editing a notification.
+ */
+
+
 interface EditNotificationProps {
   title: string;
   notificationType: string;
@@ -48,11 +58,8 @@ export default function EditNotification() {
     const fetchNotification = async () => {
       if (!id) return;
 
-      let notification: NotificationProps | null = null;
-
-      if (!isNaN(Number(id))) {
-        notification = notifications[Number(id)]; 
-      }
+      let notification: NotificationProps | null =
+        notifications.find((n) => n.id === id || n.id === Number(id)) ?? null;
       
       try {
         const res = await fetch(`/api/notifications/${id}`);
@@ -61,16 +68,15 @@ export default function EditNotification() {
           notification = data;
         }
       } catch (err) {
-        console.warn("Failed to fetch from API, falling back to dummy data.");
+        console.warn("Failed to fetch from API, falling back to dummy data.", err);
+        toast.error("Failed to fetch notification from server. Showing local data if available.");
       }
 
       if (notification) {
         methods.reset({
           title: notification.title,
 
-          notificationType:
-            NotificationTypes.find((o) => o.label === notification.type)?.value ||
-            "",
+          notificationType: notification.type,
           sendTo:
             NotificationSendTo.find((o) => o.label === notification.sendTo)?.value ||
             "",
@@ -85,7 +91,7 @@ export default function EditNotification() {
     };
 
     fetchNotification();
-  }, [id]);
+  }, [id, methods, navigate]);
 
   const handleUpdateConfirmation = async (data: EditNotificationProps) => {
     await showPopup({
@@ -124,7 +130,19 @@ export default function EditNotification() {
     handleUpdateConfirmation(data);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="w-full h-full flex items-center justify-center py-10">
+        <div
+          className="h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"
+          role="status"
+          aria-label="Loading"
+        ></div>
+        <span className="ml-3 text-sm text-gray-600 dark:text-gray-300">
+          Loading notification...
+        </span>
+      </div>
+    );
 
   return (
     <div className="w-full h-full flex flex-col px-4 py-2 gap-3">
