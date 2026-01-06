@@ -19,6 +19,7 @@ import {
   NotificationTypes,
   NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
+import { useRef } from "react";
 
 /**
  * EditNotification lets admins view and update a notification.
@@ -43,6 +44,7 @@ export default function EditNotification() {
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
+  const errorToastShown = useRef(false);
 
   const methods = useForm<EditNotificationProps>({
     defaultValues: {
@@ -69,7 +71,13 @@ export default function EditNotification() {
         }
       } catch (err) {
         console.warn("Failed to fetch from API, falling back to dummy data.", err);
-        toast.error("Failed to fetch notification from server. Showing local data if available.");
+
+        if (!errorToastShown.current) {
+          toast.error(
+            "Failed to fetch notification from server. Showing local data if available."
+          );
+          errorToastShown.current = true;
+        }
       }
 
       if (notification) {
@@ -91,7 +99,7 @@ export default function EditNotification() {
     };
 
     fetchNotification();
-  }, [id, methods, navigate]);
+  }, [id, navigate]);
 
   const handleUpdateConfirmation = async (data: EditNotificationProps) => {
     await showPopup({
