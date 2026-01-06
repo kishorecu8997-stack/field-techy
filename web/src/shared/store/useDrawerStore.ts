@@ -5,8 +5,10 @@ export type FieldStatus = "complete" | "pending" | "rejected";
 
 interface DrawerState {
   activeKey: string;
-  setActiveKey: (key: string) => void;
+  setActiveKey: (key: string, showBackButton?: boolean) => void;
   reset: () => void;
+  showBackButton: boolean;
+  setShowBackButton: (show: boolean) => void;
   isOpenSidebar: boolean;
   setISOpenSidebar: (isOpen: boolean) => void;
   selectedId: string | number;
@@ -25,14 +27,34 @@ interface DrawerState {
     fieldLabel: string,
     status: FieldStatus
   ) => void;
+  // New additions for bank navigation back handling
+  previousShowBack: boolean;
+  goBack: () => void;
 }
 
 /**
  * Zustand store for managing global drawer/sidebar state, including the active menu key and sidebar open/closed status.
  */
-const useDrawerStore = create<DrawerState>((set) => ({
+const useDrawerStore = create<DrawerState>((set, get) => ({
   activeKey: "myAccount",
-  setActiveKey: (key) => set({ activeKey: key }),
+  setActiveKey: (key, showBackButton) =>
+    set((state) => {
+      const currentKey = state.activeKey;
+      const newState: Partial<DrawerState> = {
+        activeKey: key,
+        showBackButton: showBackButton !== undefined ? showBackButton : true,
+      };
+      // New: If navigating from manageBankAccounts to a sub-view, remember the showBack
+      if (
+        currentKey === "manageBankAccounts" &&
+        (key === "addBankdetails" || key === "editBankdetails")
+      ) {
+        newState.previousShowBack = state.showBackButton;
+      }
+      return newState;
+    }),
+  showBackButton: true,
+  setShowBackButton: (show: boolean) => set({ showBackButton: show }),
   isOpenSidebar: false,
   setISOpenSidebar: (isOpen) => set({ isOpenSidebar: isOpen }),
   selectedId: "",
@@ -60,13 +82,32 @@ const useDrawerStore = create<DrawerState>((set) => ({
           : section
       ),
     })),
-    reset: () =>
+  reset: () =>
     set({
       activeKey: "myAccount",
       isOpenSidebar: false,
       selectedId: "",
       navigationSource: "sidebar",
       returnToKey: undefined,
+      showBackButton: true,
+    }),
+  // New: For bank sub-nav back handling
+  previousShowBack: true,
+  goBack: () =>
+    set((state) => {
+      const currentKey = state.activeKey;
+      if (currentKey === "addBankdetails" || currentKey === "editBankdetails") {
+        // Return to manageBankAccounts with preserved showBack
+        return {
+          activeKey: "manageBankAccounts",
+          showBackButton: state.previousShowBack,
+        };
+      } else {
+        // Top-level: close the drawer (similar to reset but preserve other state if needed)
+        return {
+          isOpenSidebar: false,
+        };
+      }
     }),
 }));
 
