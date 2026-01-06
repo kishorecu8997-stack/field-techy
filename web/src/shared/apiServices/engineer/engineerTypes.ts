@@ -53,8 +53,8 @@ export interface EngineerData {
   updatedBy?: string | null;
   deletedBy?: string | null;
   isDeleted?: boolean;
-  jobSkills?: JobSkill[];
-  tools?: Tool[];
+  jobSkills?: string[];
+  tools?: string[];
   experiences?: Experience[];
   educations?: Education[];
   files?: any;
