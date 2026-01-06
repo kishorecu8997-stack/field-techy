@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Secret, TOTP } from "otpauth";
 import { toast } from "react-toastify";
+import type { UserSession } from "../store/useUserSessionStore";
+import { UserRole } from "../enums/users";
+import { getTwoFaStorage, setTwoFaStorage } from "@/utils/TwoFAStorage";
 
 /**
  * Custom React hook to handle Two-Factor Authentication (2FA) using TOTP.
@@ -15,28 +18,33 @@ import { toast } from "react-toastify";
  * @param {() => void} [onSuccess] - Optional callback executed after successful authentication
  *
  * @returns {{
- *   isOpen: boolean;
+ *   isTwoFaOpen: boolean;
  *   otpauthUrl: string | null;
  *   handleSubmit: () => void;
  *   verify: (token: string) => void;
- *   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+ *   setIsTwoFaOpen: React.Dispatch<React.SetStateAction<boolean>>;
  * }}
  */
-export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const useTwoFactorAuth = (
+  email: string,
+  setUserSession: any,
+  onSuccess?: () => void
+) => {
+  const [isTwoFaOpen, setIsTwoFaOpen] = useState(false);
   const [base32, setBase32] = useState<string | null>(null);
   const [otpauthUrl, setOtpauthUrl] = useState<string | null>(null);
 
   // Load persisted values once
   useEffect(() => {
-    setBase32(localStorage.getItem("totp_secret"));
-    setOtpauthUrl(localStorage.getItem("otpauth_url"));
+    const twoFa = getTwoFaStorage();
+    setBase32(twoFa.secretBase32);
+    setOtpauthUrl(twoFa.otpauthUrl);
   }, []);
 
   const setup2FA = useCallback(() => {
-    const storedEmail = localStorage.getItem("email");
+    const twoFa = getTwoFaStorage();
 
-    if (!base32 || storedEmail !== email) {
+    if (!base32 || twoFa.email !== email) {
       const secret = new Secret({ size: 20 });
 
       const totp = new TOTP({
@@ -48,10 +56,13 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
       const newBase32 = secret.base32;
       const newOtpauthUrl = totp.toString();
 
-      localStorage.setItem("totp_secret", newBase32);
-      localStorage.setItem("otpauth_url", newOtpauthUrl);
-      localStorage.setItem("email", email);
-      localStorage.setItem("2fa_enrolled", "false");
+      setTwoFaStorage({
+        email: email,
+        secretBase32: newBase32,
+        otpauthUrl: newOtpauthUrl,
+        enrolled: false,
+        enabled: true,
+      });
 
       setBase32(newBase32);
       setOtpauthUrl(newOtpauthUrl);
@@ -59,14 +70,14 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
   }, [base32, email]);
 
   const handleSubmit = useCallback(() => {
-    const twoFactorEnabled = localStorage.getItem("2FA_Auth") === "true";
+    const twoFa = getTwoFaStorage();
 
-    if (!twoFactorEnabled) {
+    if (!twoFa.enabled) {
       onSuccess?.();
       return;
     }
 
-    setIsOpen(true);
+    setIsTwoFaOpen(true);
     setup2FA();
   }, [onSuccess, setup2FA]);
 
@@ -74,7 +85,7 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
     (token: string) => {
       if (!base32) return;
 
-      const backupCodes = localStorage.getItem("backup_codes") ?? "";
+      const twoFa = getTwoFaStorage();
       const secret = Secret.fromBase32(base32);
       const totp = new TOTP({
         issuer: "Field-Techy",
@@ -89,10 +100,24 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
           window: 1,
         }) !== null;
 
-      if (valid || backupCodes.includes(token)) {
-        localStorage.setItem("2fa_enrolled", "true");
+      const session: UserSession = {
+        accessToken: "demo-token",
+        userId: "demo-user",
+        role: UserRole.ENGINEER,
+        initiatedAt: Date.now(),
+      };
+
+      if (valid || twoFa.backupCodes.includes(token)) {
         setOtpauthUrl(null); // hide QR
+        setUserSession(session);
         onSuccess?.();
+        setTwoFaStorage({
+          email: email,
+          secretBase32: base32,
+          otpauthUrl: otpauthUrl,
+          enrolled: true,
+          enabled: true,
+        });
         toast.success("Logged in successfully");
       } else {
         toast.error("Code Invalid");
@@ -102,10 +127,10 @@ export const useTwoFactorAuth = (email: string, onSuccess?: () => void) => {
   );
 
   return {
-    isOpen,
+    isTwoFaOpen,
     otpauthUrl,
     handleSubmit,
     verify,
-    setIsOpen,
+    setIsTwoFaOpen,
   };
 };
