@@ -148,10 +148,10 @@ export interface AssignJobParams {
 }
 
 export interface ProposalJobData {
-  id: string;
+  id?: string;
   engineerId: string;
   proposalDescription: string;
-  expectedPrice: string;
+  expectedPay: string;
   payType: string;
   availability: string;
 }

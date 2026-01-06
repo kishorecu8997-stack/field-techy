@@ -281,6 +281,6 @@ export function useGetJobs() {
   return useQuery({
     queryKey: ["client-jobs"],
     queryFn: () => ClientAdapter.getJobs(),
-    enabled: false,
+    enabled: true,
   });
 }

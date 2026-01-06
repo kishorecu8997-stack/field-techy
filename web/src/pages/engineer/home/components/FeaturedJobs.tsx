@@ -305,14 +305,12 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   onViewAll,
 }) => {
   const navigate = useNavigate();
-  
   const userSkillsAndTools = useMemo(() => {
     return [
       ...jobSkillsData.jobSkills.map((s) => s.label),
       ...toolsData.tools.map((t) => t.label),
     ];
   }, []);
-  console.log('jobs :', jobs);
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
