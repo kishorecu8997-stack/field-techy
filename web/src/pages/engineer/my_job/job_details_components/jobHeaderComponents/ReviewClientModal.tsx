@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StarRating } from "./StarRating";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { validateReview, MIN_REVIEW_LENGTH } from "@/utils/reviewValidation";
+import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
+
 
 type ReviewClientModalProps = {
   isOpen: boolean;
@@ -10,12 +13,30 @@ type ReviewClientModalProps = {
 };
 
 /**
- * ReviewClientModal
+ * ReviewClientModal Component
  *
- * Modal dialog that allows a user to submit a star rating and written review
- * for a client. Includes validation, accessibility handling, and a
- * temporary success toast after submission.
+ * Displays a modal dialog allowing users to submit a star rating and written review for a client.
+ * Includes validation logic from `utils/reviewValidation.ts` and accessibility features.
+ *
+ * @component
+ * @param {ReviewClientModalProps} props - Props for the ReviewClientModal component.
+ * @param {boolean} props.isOpen - Whether the modal is currently open.
+ * @param {() => void} props.onClose - Function to close the modal.
+ * @param {string} props.clientName - Name of the client being reviewed.
+ * @param {(payload: { rating: number; review: string }) => void} [props.onSubmit] - Optional callback when review is submitted.
+ *
+
+* @returns {JSX.Element | null} The rendered modal component or null if not open.
+ *
+ * @example
+ * <ReviewClientModal
+ *   isOpen={true}
+ *   onClose={() => setIsReviewOpen(false)}
+ *   clientName="John Doe"
+ *   onSubmit={(payload) => console.log(payload)}
+ * />
  */
+
 
 const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   isOpen,
@@ -25,7 +46,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
 }) => {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState<boolean>(false);
   const [submittedPayload, setSubmittedPayload] = useState<{
     rating: number;
@@ -35,20 +56,20 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const TOAST_DISPLAY_DURATION_MS = 1000;
-  const MIN_REVIEW_LENGTH = 10;
 
   useEffect(() => {
     if (isOpen) {
       lastFocusedRef.current = document.activeElement as HTMLElement;
       setRating(0);
       setReview("");
-      setError("");
+      setError(null);
 
       setTimeout(() => closeBtnRef.current?.focus(), 0);
     } else if (lastFocusedRef.current) {
       lastFocusedRef.current.focus();
     }
   }, [isOpen]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -60,29 +81,20 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   }, [isOpen, onClose]);
 
   const handleSubmit = () => {
-    if (rating === 0) {
-      setError("Please provide a star rating.");
+    const validationError = validateReview(rating, review);
+    if (validationError) {
+      setError(validationError);
       return;
     }
-    if (review.trim().length === 0) {
-      setError("Please write a review.");
-      return;
-    }
-    if (review.trim().length < MIN_REVIEW_LENGTH) {
-      setError(`Review must be at least ${MIN_REVIEW_LENGTH} characters long.`);
-      return;
-    }
-
-    setError("");
 
     const payload = { rating, review: review.trim() };
     onSubmit?.(payload);
-
     setSubmittedPayload(payload);
-
     setShowToast(true);
+
     setRating(0);
     setReview("");
+    setError(null);
 
     setTimeout(() => {
       setShowToast(false);
@@ -100,14 +112,14 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
           role="dialog"
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-    >
+        >
           <div
             className="absolute inset-0 bg-black/40"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          <div className="relative z-10 w-full max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-xl mx-2 sm:mx-0 ">
+          <div className="relative z-10 w-full max-w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-gray-800 rounded-xl shadow-xl mx-2 sm:mx-0">
             <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Rate {clientName}
@@ -128,7 +140,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
                 value={rating}
                 onChange={(value) => {
                   setRating(value);
-                  setError("");
+                  setError(null);
                 }}
                 size="lg"
                 label="Your rating"
@@ -138,15 +150,28 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Your review
                 </label>
-                <textarea
-                  value={review}
-                  onChange={(e) => {
-                    setReview(e.target.value);
-                    setError("");
+                <TextareaInput
+                  name="review"
+                  label="Your review"
+                  isShowLabel={true}
+                  placeholder={`Share your experience working with ${clientName}…`}
+                  containerClassName="w-full"
+                  textareaClassName="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-teal-400"
+                  rules={{
+                    minLength: {
+                      value: MIN_REVIEW_LENGTH,
+                      message: `Minimum ${MIN_REVIEW_LENGTH} characters.`,
+                    },
                   }}
-                  placeholder="Share your experience working with this client…"
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-teal-400"
-                  rows={5}
+                  disabled={false}
+                  // @ts-ignore
+                  control={{
+                    value: review,
+                    onChange: (val: string) => {
+                      setReview(val);
+                      setError(null);
+                    },
+                  }}
                 />
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Minimum {MIN_REVIEW_LENGTH} characters.
@@ -160,6 +185,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
               )}
             </div>
 
+            {/* Footer */}
             <div className="px-5 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end gap-3">
               <Button variant="ghost" onClick={onClose}>
                 Cancel
@@ -172,7 +198,6 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
           </div>
         </div>
       )}
-
       {showToast && submittedPayload && (
         <div className="fixed bottom-4 right-4 z-50">
           <div className="px-5 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-center sm:justify-end gap-3">

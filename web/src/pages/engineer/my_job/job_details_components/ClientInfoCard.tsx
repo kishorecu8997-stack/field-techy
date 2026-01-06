@@ -3,10 +3,20 @@ import type { ClientInfoCardProps } from "../types";
 import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 /**
- * Displays client profile information including name, location, rating, and verifications.
+ * ClientInfoCard
  *
- * @param props - The component props.
- * @returns Client information sidebar component.
+ * Displays a client's profile information, including name, membership date,
+ * location, rating, reviews, and verifications. Provides a button to open
+ * a review modal or form.
+ *
+ * @param {ClientInfoCardUIProps} props - Component props
+ * @param {string} props.name - Client's name
+ * @param {string} props.memberSince - Date the client joined
+ * @param {string} props.location - Client's location
+ * @param {number} props.rating - Client's average rating
+ * @param {number} props.reviews - Number of reviews
+ * @param {string[]} props.verifications - List of client verifications
+ * @returns {JSX.Element} The client info card UI component
  */
 
 type ClientInfoCardUIProps = ClientInfoCardProps & {
