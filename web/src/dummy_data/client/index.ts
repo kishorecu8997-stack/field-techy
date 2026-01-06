@@ -1,7 +1,4 @@
-import {
-  locationType,
-  RepeatByFields
-} from "@/pages/client/post_job/types";
+import { locationType, RepeatByFields } from "@/pages/client/post_job/types";
 import type { ChatMessage, Conversation } from "@/pages/engineer/chat/types";
 
 export const experienceLevel = [
@@ -41,6 +38,7 @@ export const safetyWears = [
 export const workTypes = [
   { label: "Remote", value: locationType.remote },
   { label: "On-site", value: locationType.onsite },
+  { label: "Hybrid", value: locationType.hybrid },
 ];
 
 export const primaryLanguageOptions = [
@@ -142,8 +140,6 @@ export const TemplateData = [
   },
 ];
 
-
-
 export const messages: ChatMessage[] = [
   {
     id: "m1",
@@ -191,7 +187,6 @@ export const messages: ChatMessage[] = [
   },
 ];
 
-
 // src/data/conversations.ts
 
 export const conversations: Conversation[] = [
@@ -232,7 +227,6 @@ export const conversations: Conversation[] = [
     members: ["Alice", "Ben", "Chris", "You"],
   },
 ];
-
 
 export const projectCountries = [
   { label: "United Kingdom", value: "UK" },

@@ -27,15 +27,16 @@ export type MenuItems = {
  * Contains user profile info and action buttons.
  */
 const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
-  // Modified to get navigation to source from the store 
-  const { 
-    activeKey, 
+  // Modified to get navigation to source from the store
+  const {
+    activeKey,
     setActiveKey,
     navigationSource,
     returnToKey,
     resetNavigationSource,
     immediateParentKey,
-    setImmediateParentKey 
+    setImmediateParentKey,
+    showBackButton,
   } = useDrawerStore();
 
   // Escape key & scroll lock effect
@@ -75,24 +76,33 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
 
   const currentKey = activeKey.split("-")[0];
   const config = sectionConfig[currentKey] || sectionConfig.myAccount;
-// modified onBack function to handle navigation Source  
+
   const onBack = () => {
-  if (immediateParentKey) {
-    setActiveKey(immediateParentKey);
-    setImmediateParentKey(undefined); // clear after use
-    return;
-  }
+    if (immediateParentKey) {
+      setActiveKey(immediateParentKey);
+      setImmediateParentKey(undefined);
+      return;
+    }
 
-  if (navigationSource === "profilecompletion" && returnToKey) {
-    setActiveKey(returnToKey);
-    resetNavigationSource();
-    return;
-  }
+    if (activeKey === "addBankdetails" || activeKey === "editBankdetails") {
+      const { previousShowBack } = useDrawerStore.getState();
+      setActiveKey("manageBankAccounts", previousShowBack);
+      return;
+    }
 
-  if (config.parent) {
-    setActiveKey(config.parent as string);
-  }
-};
+    if (navigationSource !== "sidebar" && returnToKey) {
+      setActiveKey(returnToKey);
+      resetNavigationSource();
+      return;
+    }
+
+    if (config.parent) {
+      setActiveKey(config.parent as string);
+      return;
+    }
+
+    onClose();
+  };
 
   return (
     <>
@@ -121,6 +131,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
                 title={config.title}
                 onClose={onClose}
                 onBack={onBack}
+                showBack={showBackButton}
                 actions={config.actions}
               />
             </div>

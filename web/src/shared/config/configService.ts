@@ -6,6 +6,7 @@ import { z } from "zod";
  */
 const configSchema = z.object({
     apiUrl: z.url({ error: "Invalid API URL" }),
+    tokenExpirationDuration: z.number().positive("Token expiration duration must be positive"),
     firebase: z.object({
         apiKey: z.string().min(1, "Firebase API Key is required"),
         authDomain: z.string().min(1, "Firebase Auth Domain is required"),
@@ -28,6 +29,9 @@ export type AppConfigKey = keyof AppConfig;
  */
 const rawConfig: AppConfig = {
     apiUrl: import.meta.env.VITE_API_URL || "",
+    tokenExpirationDuration: import.meta.env.VITE_TOKEN_EXPIRATION_DURATION
+        ? Number(import.meta.env.VITE_TOKEN_EXPIRATION_DURATION)
+        : 60 * 60 * 1000, // Default: 1 hour in milliseconds
     firebase: {
         apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
         authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "YOUR_PROJECT_ID.firebaseapp.com",

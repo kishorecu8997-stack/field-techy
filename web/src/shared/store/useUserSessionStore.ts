@@ -5,6 +5,7 @@ export interface UserSession {
   userId: string;
   role: string;
   accessToken: string;
+  initiatedAt: number; // Timestamp when session was created (in milliseconds)
   // metadata: Record<string, string>;
 }
 

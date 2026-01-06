@@ -34,6 +34,7 @@ export type OccurrenceEndTypeType =
 export const locationType = {
   remote: "remote",
   onsite: "onsite",
+  hybrid: "hybrid",
 };
 
 export type locationTypeType = (typeof locationType)[keyof typeof locationType];

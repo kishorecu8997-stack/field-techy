@@ -1,3 +1,8 @@
+import { LuHandshake } from "react-icons/lu";
+import { MdBarChart, MdOutlineDone } from "react-icons/md";
+import { PiLightbulbFilamentFill } from "react-icons/pi";
+import { TfiLocationArrow } from "react-icons/tfi";
+
 export interface Engineer {
   id: number;
   name: string;
@@ -136,7 +141,7 @@ export const engineerCardList: EngineerCardListProps[] = [
     title: "Full-Stack Developer",
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/alex-johnson.jpg",
-    status:"new",
+    status: "new",
   },
   {
     id: 2,
@@ -148,7 +153,7 @@ export const engineerCardList: EngineerCardListProps[] = [
     title: "UI/UX Designer",
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/priya-mehta.jpg",
-    status:"new",
+    status: "new",
   },
   {
     id: 3,
@@ -161,7 +166,8 @@ export const engineerCardList: EngineerCardListProps[] = [
     availability: "Immediate",
     imageUrl: "https://example.com/profiles/james-wilson.jpg",
     status: "applied",
-  },{
+  },
+  {
     id: 5,
     name: "John Wilson",
     rating: 4.6,
