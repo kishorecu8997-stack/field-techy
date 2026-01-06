@@ -17,7 +17,7 @@ export default function AdminVerifyOTP() {
   const searchParams = useSearchParams();
   const navigate = useNavigate();
 
-  const email = searchParams[0].get("email") || "";
+  const email = searchParams[0].get("email") || navigate(-1);
   const adminPasswordResetOtp = useUserPasswordResetByOtpMutation();
 
   const methods = useForm({
@@ -33,7 +33,7 @@ export default function AdminVerifyOTP() {
     adminPasswordResetOtp.mutateAsync(
       {
         otp: data.otp,
-        phoneOrEmail: data.email,
+        phoneOrEmail: data.email as string,
         password: data.password,
       },
       {

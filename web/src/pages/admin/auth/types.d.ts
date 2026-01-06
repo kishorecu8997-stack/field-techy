@@ -16,5 +16,5 @@ export type ResetPasswordFormData = {
 export type VerifyOtpFormData = {
   otp: string;
   password: string;
-  email: string;
+  email: string | unknown;
 };

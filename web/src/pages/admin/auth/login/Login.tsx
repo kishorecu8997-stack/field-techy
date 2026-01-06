@@ -53,17 +53,6 @@ export default function AdminLogin() {
       { phoneOrEmail: data.email, password: data.password },
       {
         onSuccess: (resp) => {
-          if (
-            !resp.accessToken ||
-            !resp.userId ||
-            !resp.role ||
-            !resp.initiatedAt
-          ) {
-            throw new Error(
-              "Invalid authentication response: missing required fields"
-            );
-          }
-
           const session: UserSession = {
             accessToken: resp.accessToken,
             userId: resp.userId,
