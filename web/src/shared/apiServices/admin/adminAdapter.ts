@@ -16,15 +16,6 @@ import { GlobalApiErrorHandler } from "../utils";
  * parameters into the expected format for the API.
  */
 export class AdminAdapter {
-  /**
-   * Authenticates an admin user.
-   *
-   * @param data - Login credentials
-   * @param data.email - Email address or phone number
-   * @param data.password - User's password
-   * @returns Promise resolving to authentication response data
-   * @throws {Error} If authentication fails or request encounters an error
-   */
   static async signIn(args: { phoneOrEmail: string; password: string }) {
     try {
       const response = await axiosInstance.post(
@@ -43,20 +34,28 @@ export class AdminAdapter {
         );
         throw new AxiosError(
           "Authentication failed",
-          "401",
+          undefined,
           response.config,
           response.data,
-          response
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
       if (!Object.values(UserRole).includes(role as unknown as UserRole)) {
         throw new AxiosError(
-          "Authentication failed, invalid role",
-          "401",
+          "Authentication failed",
+          undefined,
           response.config,
           response.data,
-          response
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
         );
       }
 
@@ -95,7 +94,7 @@ export class AdminAdapter {
     const { otp, ...restData } = data;
     try {
       const response = await axiosInstance.post(
-        ADMIN_ROUTER_PATHS.REST_PASSWORD_USING_OTP(otp),
+        ADMIN_ROUTER_PATHS.RESET_PASSWORD_USING_OTP(otp),
         restData
       );
       return response.data;

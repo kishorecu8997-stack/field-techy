@@ -25,7 +25,7 @@ export function useAdminForgotPasswordOtpRequestMutation(options?: {
   });
 }
 
-export function useUserPassworResetByOtpMutation(options?: {
+export function useUserPasswordResetByOtpMutation(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
 }) {

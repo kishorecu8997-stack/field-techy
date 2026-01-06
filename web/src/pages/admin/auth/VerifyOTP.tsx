@@ -1,9 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
-import { useUserPassworResetByOtpMutation } from "@/shared/apiServices/admin/adminService";
+import { useUserPasswordResetByOtpMutation } from "@/shared/apiServices/admin/adminService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { validatePassword } from "@/shared/libs/utils";
+import { validateOtp, validatePassword } from "@/shared/libs/utils";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,7 +18,7 @@ export default function AdminVerifyOTP() {
   const navigate = useNavigate();
 
   const email = searchParams[0].get("email") || "";
-  const adminPwdResetOtp = useUserPassworResetByOtpMutation();
+  const adminPasswordResetOtp = useUserPasswordResetByOtpMutation();
 
   const methods = useForm({
     defaultValues: {
@@ -30,15 +30,14 @@ export default function AdminVerifyOTP() {
   });
 
   const handleSubmit = async (data: VerifyOtpFormData) => {
-    adminPwdResetOtp.mutateAsync(
+    adminPasswordResetOtp.mutateAsync(
       {
         otp: data.otp,
         phoneOrEmail: data.email,
         password: data.password,
       },
       {
-        onSuccess: (resp) => {
-          console.log("resp :", resp);
+        onSuccess: () => {
           toast.success(
             "Password reset successfully! You can now log in with your new password."
           );
@@ -58,7 +57,7 @@ export default function AdminVerifyOTP() {
     >
       <FormContainer
         methods={methods}
-        className="bg:white m-6 w-full max-w-md mx-auto dark:bg-gray-800 p-4 rounded-lg"
+        className="bg-white m-6 w-full max-w-md mx-auto dark:bg-gray-800 p-4 rounded-lg"
         onSubmit={handleSubmit}
       >
         <p className="text-center my-4 text-2xl dark:text-white">
@@ -66,6 +65,13 @@ export default function AdminVerifyOTP() {
         </p>
 
         <InputField name="email" label="Email Address" type="text" disabled />
+        <InputField
+          name="otp"
+          label="OTP"
+          type="text"
+          required
+          rules={validateOtp}
+        />
         <PasswordInput
           name="password"
           label="Password"
@@ -75,7 +81,6 @@ export default function AdminVerifyOTP() {
             validate: (v) => validatePassword(v, ""),
           }}
         />
-        <InputField name="otp" label="OTP" type="text" required />
         <span className="dark:text-gray-500 text-sm">
           Enter the OTP sent to your email
         </span>

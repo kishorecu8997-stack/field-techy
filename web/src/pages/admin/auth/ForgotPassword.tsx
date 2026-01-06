@@ -29,8 +29,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = (data: ForgotPasswordFormData) => {
     requestPasswordOTPMutation.mutate(data.email, {
-      onSuccess: (resp) => {
-        console.log("resp :", resp);
+      onSuccess: () => {
         toast.success(
           "OTP sent successfully! Please check your email for further instructions."
         );
