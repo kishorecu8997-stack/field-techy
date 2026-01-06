@@ -13,6 +13,7 @@ import type {
 import type { LoginFormData } from "@/pages/admin/auth/types";
 import type { Country } from "@/shared/components/commonUI/inputs/type";
 import { GlobalApiErrorHandler } from "../utils";
+import type { JobData } from "@/pages/client/type";
 
 /*
  * ClientAdapter
@@ -621,6 +622,16 @@ export class ClientAdapter {
         contentDisposition,
         contentLength,
       };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  // jobs endpoints
+  static async getJobs(): Promise<JobData[]> {
+    try {
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_JOBS);
+      return response.data;
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
