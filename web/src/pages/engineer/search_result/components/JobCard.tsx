@@ -3,38 +3,19 @@ import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
 import { scrollToTop } from "@/utils";
 import { calculateMatchScore } from "@/utils/matchCalculator";
-import React, { useMemo, useState } from "react";
+import {
+  toggleSavedJob,
+  isJobSaved,
+  BOOKMARK_CHANGE_EVENT,
+} from "@/utils/bookmarkUtils";
+import { toast } from "react-toastify";
+import React, { useMemo, useState, useEffect } from "react";
 import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import type { Job } from "../types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
-
-// Reusable Badge
-type BadgeVariant = "green" | "blue" | "purple" | "yellow" | "teal" | "gray";
-const Badge: React.FC<{
-  children: React.ReactNode;
-  variant?: BadgeVariant;
-}> = ({ children, variant = "gray" }) => {
-  const styles = {
-    green:
-      "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-    blue: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-    purple:
-      "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
-    yellow:
-      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-    teal: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400",
-    gray: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-  };
-  return (
-    <span
-      className={`px-3 py-1.5 rounded-full text-xs font-semibold ${styles[variant]}`}
-    >
-      {children}
-    </span>
-  );
-};
+import { Badge } from "./BadgeVariant";
 
 // Match Score Ring (clean, no tooltip)
 const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
@@ -106,7 +87,7 @@ const WhyRecommendedPopover: React.FC<{
 
       {/* Popover Card */}
       <div
-        className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300 "
+        className="relative max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in-95 duration-300"
         role="dialog"
         aria-modal="true"
         aria-labelledby="why-recommended-title"
@@ -114,7 +95,7 @@ const WhyRecommendedPopover: React.FC<{
         {/* Close Button */}
         <div
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full  hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
              focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2
              dark:focus-visible:ring-offset-gray-800"
           aria-label="Close"
@@ -155,6 +136,7 @@ const WhyRecommendedPopover: React.FC<{
     </div>
   );
 };
+
 // Extract once at module level
 const USER_SKILLS = jobSkillsData.jobSkills.map((s) => s.label);
 const USER_TOOLS = toolsData.tools.map((t) => t.label);
@@ -177,7 +159,7 @@ const JobCard: React.FC<{
   navigateToJob?: string;
   onBookmarkChange?: () => void;
 }> = ({ job, showBookmark = true, navigateToJob = "#" }) => {
-  const [isBookmarked, setIsBookmarked] = useState(job.isBookmarked || false);
+  const [isBookmarked, setIsBookmarked] = useState(isJobSaved(job.id));
   const [showWhyPopover, setShowWhyPopover] = useState(false);
 
   const userSkills = USER_SKILLS;
@@ -190,20 +172,65 @@ const JobCard: React.FC<{
     );
   }, [job.skills, job.tools, userSkills, userTools]);
 
+  // Sync bookmark state on mount and when job.id changes
+  useEffect(() => {
+    if (job.id) {
+      setIsBookmarked(isJobSaved(job.id));
+    }
+  }, [job.id]);
+
+  // Listen for bookmark changes
+  useEffect(() => {
+    const handleBookmarkChange = () => {
+      if (job.id) {
+        setIsBookmarked(isJobSaved(job.id));
+      }
+    };
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    return () => {
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    };
+  }, [job.id]);
+
+  // Handle bookmark toggle
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!job.id) return;
+    const wasBookmarked = isBookmarked;
+    toggleSavedJob(job);
+    setIsBookmarked(!wasBookmarked);
+
+    if (!wasBookmarked) {
+      toast.success("Job saved successfully");
+    } else {
+      toast.error("Job removed from saved");
+    }
+  };
+
   const STATUS_VARIANT_MAP = {
     new: "green",
     offer: "blue",
     applied: "yellow",
     inprogress: "teal",
     completed: "gray",
-  } as const satisfies Record<
-    "new" | "offer" | "applied" | "inprogress" | "completed",
-    "green" | "blue" | "purple" | "yellow" | "teal" | "gray"
-  >;
+    notified: "purple",
+    unallocated: "yellow",
+    partiallyAssigned: "amber",
+    assigned: "teal",
+    selected: "blue",
+    hold: "red",
+    draft: "gray",
+    canceled: "rose",
+    escalationInProgress: "pink",
+    workInProgress: "teal",
+    closed: "gray",
+  } as const;
 
   return (
     <>
       <Link
+        id="recommendedJobs"
         to={navigateToJob}
         onClick={scrollToTop}
         className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
@@ -336,16 +363,12 @@ const JobCard: React.FC<{
           {showBookmark && (
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsBookmarked(!isBookmarked);
-                }}
+                onClick={handleBookmarkClick}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                 aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
               >
                 {isBookmarked ? (
-                  <icons.bookmarkFilled className="w-4 h-4 text-green-600" />
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
                 ) : (
                   <icons.bookmark className="w-4 h-4" />
                 )}

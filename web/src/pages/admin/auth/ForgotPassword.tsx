@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { ForgotPasswordFormData } from "./types";
 import { absoluteUrls } from "@/config/urls";
+import { useAdminForgotPasswordOtpRequestMutation } from "@/shared/apiServices/admin/adminService";
+import { toast } from "react-toastify";
 
 /**
  * ForgotPassword component renders a form for users to request a password reset link.
@@ -16,27 +18,27 @@ import { absoluteUrls } from "@/config/urls";
  * @component
  */
 export default function ForgotPassword() {
-  /**
-   * React Hook Form methods for managing form state and validation.
-   */
   const methods = useForm<ForgotPasswordFormData>({
     defaultValues: {
       email: "",
     },
   });
-
-  /**
-   * React Router navigation function.
-   */
   const navigate = useNavigate();
 
-  /**
-   * Handles form submission. Navigates to the OTP page after submit.
-   * @returns {void}
-   */
-  const handleSubmit = () => {
-    // console.log("Admin Login Submitted");
-    navigate(`${absoluteUrls.admin.auth.otp}`);
+  const requestPasswordOTPMutation = useAdminForgotPasswordOtpRequestMutation();
+
+  const handleSubmit = (data: ForgotPasswordFormData) => {
+    requestPasswordOTPMutation.mutate(data.email, {
+      onSuccess: () => {
+        toast.success(
+          "OTP sent successfully! Please check your email for further instructions."
+        );
+        navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}`);
+      },
+      onError: (error: unknown) => {
+        toast.error((error as Error)?.message || "Request failed");
+      },
+    });
   };
 
   return (
@@ -44,7 +46,7 @@ export default function ForgotPassword() {
       className="h-screen flex items-center justify-center"
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
-      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center rounded-2xl shadow-lg p-6 w-1/4">
+      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center mx-4 md:mx-0 rounded-2xl shadow-lg p-4 md:p-6 w-full md:w-5/12 xl:w-1/4">
         <img
           src={assetsConfig.logos.ftLogo}
           alt="admin_logo"

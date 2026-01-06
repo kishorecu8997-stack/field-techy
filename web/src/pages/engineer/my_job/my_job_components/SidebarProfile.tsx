@@ -10,7 +10,6 @@ import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 
-
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
  *
@@ -22,7 +21,6 @@ import { absoluteUrls } from "@/config/urls";
  * <SidebarProfile user={user} earnings={earnings} />
  */
 const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
-
   return (
     <div className="space-y-6">
       <ProfileCard user={user} />
@@ -41,18 +39,17 @@ export default SidebarProfile;
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
 const ProfileCard = ({ user }: { user: UserProfile }) => {
-  const { 
-    profileData, 
-    setActiveKey, 
-    setISOpenSidebar, 
-    setNavigationSource 
-  } = useDrawerStore();
+  const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
+    useDrawerStore();
   // Get the overall profile completion percentage with the each field status
   const profileCompletion = getProfileCompletion(profileData);
-  
+
   const { name, phone, role } = user;
   return (
-    <div className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm">
+    <div
+      id="completeProfile"
+      className="bg-gradient-to-br from-teal-800 to-teal-900 text-white p-5 rounded-xl shadow-sm"
+    >
       <div className="flex flex-row justify-between">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-teal-700/30 backdrop-blur-sm rounded-full flex items-center justify-center text-xl">
@@ -71,7 +68,7 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}
-        className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+          className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
         >
           Complete Now
         </button>
@@ -101,7 +98,6 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">
@@ -110,7 +106,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         </h3>
         <div
           onClick={() => {
-            setActiveKey("myEarning");
+            setActiveKey("myEarning", false);
             setISOpenSidebar(true);
           }}
           className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
@@ -132,18 +128,20 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Button
+          id="myEarnings"
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-            setActiveKey("manageBankAccounts");
+            setActiveKey("manageBankAccounts", false);
             setISOpenSidebar(true);
           }}
         >
           Bank Details
         </Button>
         <Button
+          id="withdrawMoney"
           className="bg-teal-800 hover:bg-teal-900 text-white py-2.5 rounded-lg text-sm font-medium transition"
           onClick={() => {
-            setActiveKey("withdraw");
+            setActiveKey("withdraw", false);
             setISOpenSidebar(true);
           }}
         >
