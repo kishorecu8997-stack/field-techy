@@ -78,15 +78,12 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   const handleSubmit = async (data: OTPValues) => {
     try {
       if (verificationType === "email") {
-        const result = await verifyEmailOTP({ email: contact, otp: data.otp });
-        console.log("Email OTP verified:", result);
+        await verifyEmailOTP({ email: contact, otp: data.otp });
       } else {
-        const result = await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
-        console.log("Phone OTP verified:", result);
+         await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
       }
       handleNavigate?.();
     } catch (error: any) {
-      console.error(`${verificationType === "email" ? "Email" : "Phone"} OTP verification failed:`, error);
       method.setError("otp", {
         type: "manual",
         message: error?.message || "Invalid OTP. Please try again.",

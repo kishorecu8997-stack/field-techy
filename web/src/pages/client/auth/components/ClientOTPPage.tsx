@@ -1,14 +1,13 @@
 import { icons } from "@/config/icons";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { } from "@/shared/apiServices/client/clientService";
 import {
   useVerifyEmailOTP,
   useVerifyPhoneOTP,
 } from "@/shared/apiServices/engineer/engineerService";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface ClientOTPPageProps {
   header?: string;
@@ -79,15 +78,12 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
   const handleSubmit = async (data: OTPValues) => {
     try {
       if (verificationType === "email") {
-        const result = await verifyEmailOTP({ email: contact, otp: data.otp });
-        console.log("Email OTP verified:", result);
+        await verifyEmailOTP({ email: contact, otp: data.otp });
       } else {
-        const result = await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
-        console.log("Phone OTP verified:", result);
+        await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
       }
       handleNavigate?.();
     } catch (error: any) {
-      console.error(`${verificationType === "email" ? "Email" : "Phone"} OTP verification failed:`, error);
       method.setError("otp", {
         type: "manual",
         message: error?.message || "Invalid OTP. Please try again.",

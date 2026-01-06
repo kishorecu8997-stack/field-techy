@@ -4,11 +4,18 @@ import {
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
+/**   
+ * Password OTP Verification component
+ *       
+ *  @param param0 VerifiedEmailInputFieldProps
+ * 
+ * @returns JSX.Element
+ */
 export const PasswordOTPVerification = ({
   name,
   label = "Email ID",
@@ -30,11 +37,7 @@ export const PasswordOTPVerification = ({
 
   const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } = useSendEmailOTP();
 
-  // ✅ Track latest verified state
-  const verifiedRef = useRef(verified);
-  useEffect(() => {
-    verifiedRef.current = verified;
-  }, [verified]);
+
 
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
@@ -57,12 +60,10 @@ export const PasswordOTPVerification = ({
     if (!isValidEmail) return;
     try {
       await sendEmailOTP(emailValue);
-      console.log("OTP sent successfully");
       toast.success("OTP sent successfully to your email.");
       clearErrors(name); // Clear any previous errors
       setVerified(true);
     } catch (error: any) {
-      console.error("Failed to send OTP:", error);
       const errorMessage =
         error?.response?.data?.message ||
         "Failed to send OTP. Please try again.";
@@ -116,8 +117,8 @@ export const PasswordOTPVerification = ({
               const emailValid = validateEmail(trimmed);
               if (emailValid !== true) return emailValid;
 
-              // ✅ Use ref to get latest verified state
-              if (!verifiedRef.current)
+              // ✅ Use verified state directly
+              if (!verified)
                 return "Please verify your email address";
 
               return true;

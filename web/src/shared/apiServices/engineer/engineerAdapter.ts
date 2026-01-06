@@ -190,6 +190,7 @@ export class EngineerAdapter {
   }
 
   static async updatePassword(params: UpdatePasswordParams): Promise<boolean> {
+    try {
     const { email, password } = params;
     const response = await axiosInstance.post(
       ENGINEER_ROUTER_PATHS.RESET_PASSWORD(params.otp),
@@ -199,6 +200,9 @@ export class EngineerAdapter {
       }
     );
     return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {

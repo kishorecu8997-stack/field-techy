@@ -13,11 +13,11 @@ import { useUpdatePassword } from "@/shared/apiServices/engineer/engineerService
 import type { UpdatePasswordParams } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
- * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
- * Uses React Hook Form for validation and submission handling.
+  * Page component for resetting a user's password via email OTP verification.
+ * Collects email, OTP, and a new password, and uses React Hook Form for validation and submission handling.
  */
 const ChangePassword = () => {
-  const FormCtx = useForm<UpdatePasswordParams>({
+  const formCtx = useForm<UpdatePasswordParams>({
     defaultValues: {
       email: "",
       password: "",
@@ -49,12 +49,10 @@ const ChangePassword = () => {
           action: async (close) => {
             try {
               await updatePassword(data);
-              console.log("Password updated successfully");
               toast.success("Password updated successfully!");
               setActiveKey("settings");
               close(true);
             } catch (error: any) {
-              console.error("Failed to update password:", error);
               const errorMessage =
                 error?.response?.data?.message ||
                 "Failed to update password. Please try again.";
@@ -68,7 +66,7 @@ const ChangePassword = () => {
 
   return (
     <FormContainer
-      methods={FormCtx}
+      methods={formCtx}
       onSubmit={handleSubmit}
       className="flex h-full flex-col"
     >
@@ -91,13 +89,13 @@ const ChangePassword = () => {
           required
           disabled={!isEmailVerified}
           rules={{
-            maxLength:{
+            maxLength: {
               value: 6,
-              message: "OTP should be 6 digits"
+              message: "OTP must be between 4 and 6 digits"
             },
-            minLength:{
+            minLength: {
               value: 4,
-              message: "OTP should be 4 digits"
+              message: "OTP must be between 4 and 6 digits"
             },
           }}
         />
