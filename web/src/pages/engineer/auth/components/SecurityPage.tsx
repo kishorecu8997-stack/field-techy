@@ -6,6 +6,7 @@ import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { TbCopy } from "react-icons/tb";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
+import { removeTwoFaStorage, setTwoFaStorage } from "@/utils/TwoFAStorage";
 
 /**
  * SecurityPage Component
@@ -46,17 +47,18 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
   const isVerified = emailVerified && mobileVerified;
   const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
   const [codeBackupEnabled, setCodeBackupEnabled] = useState<boolean>(false);
-  const [codes, setCodes] = useState<number[]>([]);
+  const [codes, setCodes] = useState<string[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("backup_codes", JSON.stringify(codes));
     if (twoFactorEnabled) {
-      localStorage.setItem("2FA_Auth", `${twoFactorEnabled}`);
+      // Update 2FA storage with backup codes and enabled flag
+      setTwoFaStorage({
+        backupCodes: codes,
+        enabled: twoFactorEnabled,
+      });
     } else {
-      localStorage.removeItem("2FA_Auth");
-      localStorage.removeItem("totp_secret");
-      localStorage.removeItem("otpauth_url");
-      localStorage.removeItem("backup_codes");
+      // Remove all 2FA storage if 2FA is disabled
+      removeTwoFaStorage();
     }
   }, [codes, twoFactorEnabled]);
 
@@ -84,9 +86,9 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
   ];
 
   function generateBackupCodes() {
-    const backupCodes: number[] = [];
+    const backupCodes: string[] = [];
     for (let i = 0; i < 4; i++) {
-      const code = Math.floor(100000 + Math.random() * 900000);
+      const code = Math.floor(100000 + Math.random() * 900000).toString(); // convert to string
       backupCodes.push(code);
     }
     setCodes(backupCodes);
