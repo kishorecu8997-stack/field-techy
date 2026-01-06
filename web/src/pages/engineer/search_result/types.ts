@@ -5,22 +5,22 @@ export const BUDGET_TYPES = {
 export type BudgetType = (typeof BUDGET_TYPES)[keyof typeof BUDGET_TYPES];
 
 export const JOB_STATUSES = {
-  completed: "completed",
-  applied: "applied",
-  inprogress: "inprogress",
   new: "new",
   offer: "offer",
-  notified: "Notified",
-  unallocated: "Unallocated",
-  partiallyAssigned: "Partially Assigned",
-  assigned: "Assigned",
-  selected: "Selected",
-  hold: "Hold",
-  draft: "Draft",
-  canceled: "Canceled",
-  escalationInProgress: "Escalation In Progress",
-  workInProgress: "Work In Progress", 
-  closed: "Closed"
+  applied: "applied",
+  inprogress: "inprogress",
+  completed: "completed",
+  notified: "notified",
+  unallocated: "unallocated",
+  partiallyAssigned: "partiallyAssigned",
+  assigned: "assigned",
+  selected: "selected",
+  hold: "hold",
+  draft: "draft",
+  canceled: "canceled",
+  escalationInProgress: "escalationInProgress",
+  workInProgress: "workInProgress",
+  closed: "closed",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -43,7 +43,6 @@ export const getExperienceLevel = (years?: number) => {
   if (years <= 3) return "L2"; // 2-3 years: Mid-level
   return "L3"; // 4+ years: Senior/Expert-level
 };
-
 
 export const LOG_STATUSES = {
   checkIn: "check-in",
@@ -88,7 +87,7 @@ export interface Job {
   employmentType?: string;
   place: string;
   isBookmarked?: boolean;
-  allocationType?: 'Automatic' | 'Manual';
+  allocationType?: "Automatic" | "Manual";
   serviceType?: ServiceType;
   languages?: string;
   tools?: string[];
@@ -98,7 +97,7 @@ export interface Job {
     role?: string; // e.g., "Project Coordinator"
     avatar?: string; // optional avatar URL
   };
-   matchScore?: number;
+  matchScore?: number;
 }
 
 /**

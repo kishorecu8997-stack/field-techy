@@ -1,6 +1,10 @@
 import axiosInstance from "@/axiosInstance";
 import { ENGINEER_USER_AUTH_ROUTER_PATHS } from "./engineerAuthRouterPaths";
 import type { EngineerSignUpData } from "./engineerAuthTypes";
+import type { UserSession } from "@/shared/store/useUserSessionStore";
+import { AxiosError } from "axios";
+import { UserRole } from "@/shared/enums/users";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils";
 
 /**
  * EngineerAuthAdapter
@@ -21,11 +25,62 @@ export class EngineerAuthAdapter {
    * @throws {Error} If authentication fails or request encounters an error
    */
   static async signIn(args: { phoneOrEmail: string; password: string }) {
-    const response = await axiosInstance.post(
-      ENGINEER_USER_AUTH_ROUTER_PATHS.LOGIN,
-      args
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_USER_AUTH_ROUTER_PATHS.LOGIN,
+        args
+      );
+
+      // Axios normalizes all response header names to lowercase, so accessing
+      // them with lowercase keys (e.g. "authorization", "x-user", "x-user-type")
+      // is intentional and safe here.
+      const authorization = response.headers["authorization"];
+      const userId = response.headers["x-user"];
+      const role = response.headers["x-user-type"];
+
+      if (!authorization || !userId || !role) {
+        console.error(
+          "Authentication failed, missing headers:",
+          response.headers
+        );
+        throw new AxiosError(
+          "Authentication failed",
+          undefined,
+          response.config,
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
+        );
+      }
+
+      if (!Object.values(UserRole).includes(role as unknown as UserRole)) {
+        throw new AxiosError(
+          "Authentication failed, invalid role",
+          undefined,
+          response.config,
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
+        );
+      }
+
+      const authResponsePayload: UserSession = {
+        accessToken: authorization,
+        userId: userId,
+        role: role as UserRole,
+        initiatedAt: Date.now(),
+      };
+
+      return authResponsePayload;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -38,11 +93,15 @@ export class EngineerAuthAdapter {
    * @throws {Error} If registration fails or request encounters an error
    */
   static async signup(data: EngineerSignUpData): Promise<unknown> {
-    const response = await axiosInstance.post(
-      ENGINEER_USER_AUTH_ROUTER_PATHS.SIGNUP,
-      data
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_USER_AUTH_ROUTER_PATHS.SIGNUP,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -55,10 +114,14 @@ export class EngineerAuthAdapter {
    * @throws {Error} If OTP request fails or request encounters an error
    */
   static async requestVerificationOtp(phoneOrEmail: string) {
-    const response = await axiosInstance.post(
-      ENGINEER_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail)
-    );
-    return response.data;
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**
@@ -72,29 +135,62 @@ export class EngineerAuthAdapter {
    * @throws {Error} If OTP verification fails or request encounters an error
    * @remarks
    * Currently uses hardcoded userId and role. The API response headers should be updated
-   * to include X-User and X-User-Type headers for proper user identification.
+   * to include x-user and x-user-type headers for proper user identification.
    */
   static async verifyOtp(phoneOrEmail: string, otp: string) {
-    const response = await axiosInstance.post(
-      ENGINEER_USER_AUTH_ROUTER_PATHS.VERIFYOTPENGINEER(otp),
-      { phoneOrEmail, password: "" }
-    );
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_USER_AUTH_ROUTER_PATHS.VERIFYOTPENGINEER(otp),
+        { phoneOrEmail, password: "" }
+      );
 
-    const headers = response.headers;
+      const authorization = response.headers["authorization"];
+      const userId = response.headers["x-user"];
+      const role = response.headers["x-user-type"];
 
-    //FIXME: Need to update api response header once the api is updated
-    // const userID = headers["X-User"];
-    // const role = headers["X-User-Type"];
-    const authorization = headers["Authorization"];
+      if (!authorization || !userId || !role) {
+        console.error(
+          "Authentication failed, missing headers:",
+          response.headers
+        );
+        throw new AxiosError(
+          "Authentication failed",
+          undefined,
+          response.config,
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
+        );
+      }
 
-    // TODO: Need to update api response header once the api is updated
-    const payload = {
-      userId: "2",
-      role: "ENGINEER",
-      accessToken: authorization,
-    };
+      if (!Object.values(UserRole).includes(role as unknown as UserRole)) {
+        throw new AxiosError(
+          "Authentication failed, invalid role",
+          undefined,
+          response.config,
+          response.request,
+          {
+            ...response,
+            status: 401,
+            statusText: "Unauthorized",
+          }
+        );
+      }
 
-    return payload;
+      const authResponsePayload: UserSession = {
+        accessToken: authorization,
+        userId: userId,
+        role: role as UserRole,
+        initiatedAt: Date.now(),
+      };
+
+      return authResponsePayload;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
   }
 
   /**

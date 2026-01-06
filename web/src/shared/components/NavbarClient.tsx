@@ -41,6 +41,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { setActiveKey } = useDrawerStore();
+  const notificationCount = 3;
 
   // Fetch current client profile
   const { data: clientProfile, isLoading: isLoadingProfile } =
@@ -274,13 +275,16 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           </span>
         </div>
         <div
-          className="p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientNotification");
           }}
         >
           <FaBell size={20} />
+          <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+            {notificationCount}
+          </span>
         </div>
         <div
           onClick={() => {

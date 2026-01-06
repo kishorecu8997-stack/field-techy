@@ -27,6 +27,8 @@ import {
   useVerifyEmailVerificationOtpMutation,
 } from "@/shared/apiServices/auth/engineer/engineerAuthService";
 import { CiMail } from "react-icons/ci";
+import { UserRole } from "@/shared/enums/users";
+import { AxiosError } from "axios";
 
 /**
  * Login component
@@ -81,12 +83,19 @@ const Login = ({
           // setIsOpen(true);
           // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
+          setUserSession(resp as UserSession);
           navigate(absoluteUrls.engineer.home.dashboard);
           toast.success("Logged in successfully");
         },
         onError: (error) => {
           console.error(error);
-          toast.error("Login failed");
+          // Skip showing toast for 401 errors as axios interceptor already handles it
+          if (error instanceof AxiosError && error.response?.status === 401) {
+            return;
+          }
+          const errorMessage =
+            error instanceof Error ? error.message : "Login failed";
+          toast.error(errorMessage);
         },
       }
     );
@@ -108,9 +117,8 @@ const Login = ({
           const stubbedResponse: UserSession = {
             accessToken: "something fake",
             userId: "uuid-123",
-            role: "engineer",
-            // displayName: "John Doe",
-            // metadata: {},
+            role: UserRole.ENGINEER,
+            initiatedAt: Date.now(),
           };
 
           setIsOpen(false);
