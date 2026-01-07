@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -68,6 +69,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
+
+  const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate();
   return (
     <>
@@ -140,6 +143,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
+            logout();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}

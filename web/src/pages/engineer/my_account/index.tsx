@@ -16,6 +16,7 @@ import type { MenuItem } from "../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -87,6 +88,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
+  const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate();
   return (
     <>
@@ -110,6 +112,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
+            logout();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}
