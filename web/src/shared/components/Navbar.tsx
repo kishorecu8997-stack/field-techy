@@ -217,7 +217,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           </span>
         </div>
         <div
-          onClick={onDrawerToggle}
+          onClick={() => {
+            onDrawerToggle();
+            setActiveKey("myAccount", false);
+          }}
           className="flex items-center space-x-2 bg-teal-800 text-white pl-2 pr-1 py-2 rounded-full hover:bg-teal-900 transition cursor-pointer flex-row gap-2"
         >
           <TbAlignLeft className="h-5 w-5" />
