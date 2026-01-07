@@ -1,19 +1,19 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import type { Job } from "../../search_result/types";
-import { getCurrencyFromStorage } from "@/utils/currency";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
-import { calculateMatchScore } from "@/utils/matchCalculator";
 import { getExperienceLevel } from "@/utils";
 import {
-  toggleSavedJob,
-  isJobSaved,
   BOOKMARK_CHANGE_EVENT,
+  isJobSaved,
+  toggleSavedJob,
 } from "@/utils/bookmarkUtils";
+import { getCurrencyFromStorage } from "@/utils/currency";
+import { calculateMatchScore } from "@/utils/matchCalculator";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import type { JobItem } from "../types";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -109,49 +109,33 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  * matchScore: 85,
  * />
  */
-const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
-  const {
-    id,
-    title,
-    company,
-    category,
-    employmentType,
-    type,
-    salary,
-    location,
-    isBookmarked = false,
-    experience,
-    skills,
-    tools,
-    slaLevel,
-    matchScore,
-  } = props;
-
-  const job = props as Job;
-  const [isSelected, setSelected] = useState(isBookmarked);
+const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
+  const job = props as JobItem;
+  const [isSelected, setSelected] = useState(false);
+  const matchScore = props.matchScore;
 
   useEffect(() => {
-    if (id) {
-      setSelected(isJobSaved(id));
+    if (props.id) {
+      setSelected(isJobSaved(props.id));
     }
-  }, [id]);
+  }, [props.id]);
 
   useEffect(() => {
     const handleBookmarkChange = () => {
-      if (id) {
-        setSelected(isJobSaved(id));
+      if (props.id) {
+        setSelected(isJobSaved(props.id));
       }
     };
     window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
     return () => {
       window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
     };
-  }, [id]);
+  }, [props.id]);
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!id) return;
+    if (!props.id) return;
     const wasBookmarked = isSelected;
     toggleSavedJob(job);
 
@@ -168,10 +152,10 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
         <div className="flex items-center space-x-3">
           <div>
             <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-              {title}
+              {props.jobTitle}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              {company}
+              {props.client?.companyName}
             </p>
           </div>
         </div>
@@ -195,33 +179,33 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
       {/* Tags section - theme-aware background */}
       <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
         <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-          {category}
+          {props.category || "--"}
         </span>
-        {employmentType && (
+        {props.jobType && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {employmentType}
+            {props.jobType}
           </span>
         )}
-        {type && (
+        {props.jobVisibility && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {type}
+            {props.jobVisibility}
           </span>
         )}
-        {experience && (
+        {props.experience && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {getExperienceLevel(experience)}
+            {getExperienceLevel(1)}
           </span>
         )}
-        {slaLevel && (
+        {/* {props.slaLevel && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {slaLevel}
+            {props.slaLevel}
           </span>
-        )}
+        )} */}
       </div>
 
-      {Boolean(skills?.length || tools?.length) && (
+      {Boolean(props.skills?.length || props.tools?.length) && (
         <div className="flex flex-wrap gap-2">
-          {skills?.map((skill) => (
+          {props.skills?.map((skill) => (
             <span
               key={skill}
               className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
@@ -230,7 +214,7 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
             </span>
           ))}
 
-          {tools?.map((tool) => (
+          {props.tools?.map((tool) => (
             <span
               key={tool}
               className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
@@ -243,10 +227,10 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
           {getCurrencyFromStorage()}
-          {salary}
+          {props.salary}
         </span>
         <span className="text-gray-500 dark:text-gray-400 text-sm">
-          {location}
+          {props.location}
         </span>
       </div>
     </div>
@@ -254,7 +238,7 @@ const FeatureJobCard: React.FC<Job & { matchScore?: number }> = (props) => {
 };
 
 interface FeaturedJobsProps {
-  jobs: Job[];
+  jobs: JobItem[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -300,7 +284,7 @@ const jobCardGradients = [
  * />
  */
 const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
-  jobs,
+  jobs = [],
   title = "Featured Jobs",
   onViewAll,
 }) => {
@@ -335,9 +319,8 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
-                jobCardGradients[index % jobCardGradients.length]
-              }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
+                }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}
@@ -351,4 +334,8 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   );
 };
 
-export { FeaturedJobs, FeatureJobCard };
+const FeaturedJobsMemo = React.memo(FeaturedJobs);
+const FeatureJobCardMemo = React.memo(FeatureJobCard);
+
+export { FeaturedJobsMemo as FeaturedJobs, FeatureJobCardMemo as FeatureJobCard };
+

@@ -16,7 +16,7 @@ interface RecommendedJobsProps {
  * @returns {JSX.Element} The rendered RecommendedJobs component.
  */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
-  jobs,
+  jobs = [],
   title = "Recommended Jobs",
   onViewAll,
 }) => {
@@ -47,4 +47,6 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   );
 };
 
-export { RecommendedJobs };
+const RecommendedJobsMemo = React.memo(RecommendedJobs);
+
+export { RecommendedJobsMemo as RecommendedJobs };

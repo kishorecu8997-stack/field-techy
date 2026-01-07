@@ -8,6 +8,7 @@ import {
 } from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
 import { useGetJobsByEngineerId } from "@/shared/apiServices/engineer/engineerService";
+import { getUserId } from "@/utils";
 
 interface JobListProps {
   activeFilter: JobFilter;
@@ -23,12 +24,9 @@ interface JobListProps {
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
 const JobList = ({ activeFilter }: JobListProps) => {
-  const raw = localStorage.getItem("generic-user-session");
 
-  const userId = raw ? JSON.parse(raw)?.state?.session?.userId ?? null : null;
-
-  const {data: jobs} = useGetJobsByEngineerId(userId ?? "");
-  console.log('jobs :', jobs);
+  const userId = getUserId()
+  const { data: jobs } = useGetJobsByEngineerId(userId ?? "");
 
   const filteredJobs = useMemo(() => {
     const jobs = sampleJobs.filter(
@@ -55,6 +53,7 @@ const JobList = ({ activeFilter }: JobListProps) => {
       return jobs;
     }
   }, [activeFilter]);
+  console.log('filteredJobs :', filteredJobs);
   return (
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

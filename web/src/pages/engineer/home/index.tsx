@@ -1,19 +1,20 @@
 import { absoluteUrls } from "@/config/urls";
 import { earningsData, userData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchData";
+import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
-import { useDeviceStore } from "@/shared/store/useDeviceStore";
-import { useGeolocation } from "@/shared/hooks/useGeolocation";
 import { useFCM } from "@/shared/hooks/useFCM";
-import { useEffect, useState } from "react";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
+import { getUserId, scrollToTop } from "@/utils";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
 import Pagination from "../search_result/components/Pagination";
 import { FeaturedJobs } from "./components/FeaturedJobs";
 import JobExplorationBanner from "./components/JobExplorationBanner";
 import { RecommendedJobs } from "./components/RecommendedJobs";
-import { scrollToTop } from "@/utils";
-import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import type { JobItem } from "./types";
 
 /**
  * Home page component.
@@ -23,13 +24,12 @@ import { useGetJobs } from "@/shared/apiServices/client/clientService";
  */
 const Home = () => {
   const navigate = useNavigate();
-  const [accessPopup, setAccessPopup] = useState(false);
-  const { locationPermission, notificationPermission } = useDeviceStore();
-  const { checkPermission: checkLocationPermission } = useGeolocation();
-  const { checkPermission: checkNotificationPermission } = useFCM();
+  const { data: jobs } = useGetJobs();
 
-  const {data: jobs} = useGetJobs();
-  console.log('jobs :', jobs);
+  const userId = getUserId();
+  if (!userId) return null;
+  const { data: engineerJobs } = useEngineerGetById(userId);
+  console.log("engineerJobs", engineerJobs);
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -40,35 +40,9 @@ const Home = () => {
   const handlePageChange = (page: number) => {
     console.log("Page changed to: ", page);
   };
-  const findNewJobs = sampleJobs.filter((job) => {
-    return job.status === "new";
-  });
-
-  const recommendedJobs = findNewJobs.filter((job) => {
-    return job.place === "recommended";
-  });
-  const featuredJobs = findNewJobs.filter((job) => {
-    return job.place === "featured";
-  });
-
-  // Check actual browser permission states on mount and sync with store
-  useEffect(() => {
-    checkLocationPermission();
-    checkNotificationPermission();
-  }, [checkLocationPermission, checkNotificationPermission]);
-
-  useEffect(() => {
-    const onboardingsteps = localStorage.getItem("onboarding_guide") === "true";
-    // Show popup if either permission is in 'prompt' state (not asked yet)
-    if (
-      locationPermission === "prompt" ||
-      notificationPermission === "default"
-    ) {
-      if (onboardingsteps) {
-        setAccessPopup(true);
-      }
-    }
-  }, [locationPermission, notificationPermission]);
+  const findNewJobs = useMemo(() => {
+    return jobs?.filter((job) => job.status === "NEW") || [];
+  }, [jobs]);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -77,12 +51,12 @@ const Home = () => {
           <div className="lg:col-span-2 space-y-6">
             <JobExplorationBanner />
             <FeaturedJobs
-              jobs={featuredJobs}
+              jobs={findNewJobs as JobItem[]}
               title="Featured Jobs"
               onViewAll={handleExploreJobs}
             />
             <RecommendedJobs
-              jobs={recommendedJobs}
+              jobs={[]}
               onViewAll={handleExploreJobs}
               title="Recommended Jobs"
             />
@@ -100,14 +74,47 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Allow access popup */}
-          <AllowAccessPopup
-            accessPopup={accessPopup}
-            setAccessPopup={setAccessPopup}
-          />
+          {/* Permission management isolated in its own component to prevent Home re-renders */}
+          <PermissionManager />
         </div>
       </div>
     </div>
+  );
+};
+
+/**
+ * Isolated component to handle permission checks and popup showing
+ * This prevents the entire Home component from re-rendering when permissions change
+ */
+const PermissionManager = () => {
+  const [accessPopup, setAccessPopup] = useState(false);
+  const locationPermission = useDeviceStore((state) => state.locationPermission);
+  const notificationPermission = useDeviceStore((state) => state.notificationPermission);
+  const { checkPermission: checkLocationPermission } = useGeolocation();
+  const { checkPermission: checkNotificationPermission } = useFCM();
+
+  useEffect(() => {
+    checkLocationPermission();
+    checkNotificationPermission();
+  }, [checkLocationPermission, checkNotificationPermission]);
+
+  useEffect(() => {
+    const onboardingsteps = localStorage.getItem("onboarding_guide") === "true";
+    if (
+      locationPermission === "prompt" ||
+      notificationPermission === "default"
+    ) {
+      if (onboardingsteps) {
+        setAccessPopup(true);
+      }
+    }
+  }, [locationPermission, notificationPermission]);
+
+  return (
+    <AllowAccessPopup
+      accessPopup={accessPopup}
+      setAccessPopup={setAccessPopup}
+    />
   );
 };
 

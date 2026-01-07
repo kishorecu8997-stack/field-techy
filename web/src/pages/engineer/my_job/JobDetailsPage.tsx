@@ -7,6 +7,8 @@ import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
+import { useEngineerGetById, useGetJobsById } from "@/shared/apiServices/engineer/engineerService";
+import { getUserId } from "@/utils";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -18,12 +20,35 @@ const JobDetailsPage = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
+  const [OfferJobStatus, setOfferJobStatus] = useState<
+    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
+  >("initial");
+
+
+  const userId = getUserId();
+  if (!userId) return null;
+  const { data: engineerJobs } = useEngineerGetById(userId);
+  console.log("engineerJobs", engineerJobs);
+
+  const { data: jobs } = useGetJobsById(params.jobId ?? "", {
+    onSuccess: (data) => {
+      console.log("jobs :", data);
+    },
+    onError: (error) => {
+      console.error("Failed to fetch job details:", error);
+    },
+    enabled: !!params.jobId,
+  });
+
+  if (!params.jobId) {
+    return null;
+  }
 
   const filter = () => {
-    return sampleJobs.find((job) => {
-      return job.id === Number(params.jobId);
+    const job = sampleJobs.find((job) => {
+      return String(job.id) === String(params.jobId);
     });
+    return job || (jobs as any);
   };
 
   return (
@@ -32,7 +57,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

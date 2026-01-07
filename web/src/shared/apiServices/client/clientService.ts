@@ -282,5 +282,6 @@ export function useGetJobs() {
     queryKey: ["client-jobs"],
     queryFn: () => ClientAdapter.getJobs(),
     enabled: true,
+    notifyOnChangeProps: ['data', 'error'],
   });
 }

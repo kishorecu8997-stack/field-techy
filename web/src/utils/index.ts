@@ -377,3 +377,15 @@ export const getExperienceLevel = (years?: number) => {
   return "L3"; // 4+ years: Senior/Expert-level
 };
 
+
+/**
+ * Get user id from local storage
+ * @returns 
+ */
+export function getUserId(): string | null {
+  const raw = localStorage.getItem("generic-user-session");
+  if (!raw) return null;
+
+  const parsed = JSON.parse(raw);
+  return parsed?.state?.session?.userId ?? null;
+}

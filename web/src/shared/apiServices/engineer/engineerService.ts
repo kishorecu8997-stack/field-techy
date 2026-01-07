@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
   EngineerData,
@@ -288,11 +289,33 @@ export function useGetJobsById(
     enabled?: boolean;
   }
 ) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
     queryFn: () => EngineerAdapter.getJobsById(id),
     enabled: !!id && (options?.enabled ?? true),
   });
+
+  const onSuccessRef = useRef(options?.onSuccess);
+  const onErrorRef = useRef(options?.onError);
+
+  useEffect(() => {
+    onSuccessRef.current = options?.onSuccess;
+    onErrorRef.current = options?.onError;
+  }, [options?.onSuccess, options?.onError]);
+
+  useEffect(() => {
+    if (query.isSuccess && onSuccessRef.current) {
+      onSuccessRef.current(query.data);
+    }
+  }, [query.isSuccess, query.data]);
+
+  useEffect(() => {
+    if (query.isError && onErrorRef.current) {
+      onErrorRef.current(query.error);
+    }
+  }, [query.isError, query.error]);
+
+  return query;
 }
 
 export function useGetJobsByEngineerId(
@@ -303,9 +326,31 @@ export function useGetJobsByEngineerId(
     enabled?: boolean;
   }
 ) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
     queryFn: () => EngineerAdapter.getJobsByEngineerId(id),
     enabled: !!id && (options?.enabled ?? true),
   });
+
+  const onSuccessRef = useRef(options?.onSuccess);
+  const onErrorRef = useRef(options?.onError);
+
+  useEffect(() => {
+    onSuccessRef.current = options?.onSuccess;
+    onErrorRef.current = options?.onError;
+  }, [options?.onSuccess, options?.onError]);
+
+  useEffect(() => {
+    if (query.isSuccess && onSuccessRef.current) {
+      onSuccessRef.current(query.data);
+    }
+  }, [query.isSuccess, query.data]);
+
+  useEffect(() => {
+    if (query.isError && onErrorRef.current) {
+      onErrorRef.current(query.error);
+    }
+  }, [query.isError, query.error]);
+
+  return query;
 }

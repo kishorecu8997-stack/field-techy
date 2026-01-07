@@ -17,7 +17,8 @@ import { config } from '../config/configService';
 export const useFCM = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setFcmToken, setNotificationPermission } = useDeviceStore();
+    const setFcmToken = useDeviceStore((state) => state.setFcmToken);
+    const setNotificationPermission = useDeviceStore((state) => state.setNotificationPermission);
 
     /**
      * Requests notification permission from the user.
