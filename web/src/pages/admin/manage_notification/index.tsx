@@ -15,24 +15,32 @@ import { CiEdit } from "react-icons/ci";
 const ManageNotification: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-
-  // Pagination state
-  const [page, setPage] = React.useState(0);
-  const size = 10;
-
-  // Fetch paged notifications
-  const { data, isLoading } = useGetPagedNotifications({ page, size });
-
-  const notificationList: AdminNotification[] = data?.content || [];
-  const totalPages = data?.totalPages || 0;
+  const { data } = useGetPagedNotifications({ page: 0, size: 10 });
 
   // Delete mutation
   const deleteNotificationMutation = useDeleteNotification({
     onSuccess: () => {
       toast.success("Notification deleted successfully!");
     },
-    onError: () => {
-      toast.error("Failed to delete notification. Please try again.");
+     onError: (error: unknown) => {
+      let message = "Failed to delete notification. Please try again.";
+      // Narrow common HTTP / network error shapes (e.g., Axios-style errors)
+      const anyError = error as any;
+      const status = anyError?.response?.status;
+      if (!anyError?.response) {
+        // Likely a network or connectivity issue
+        message = "Network error while deleting notification. Please check your connection and try again.";
+      } else if (status === 401 || status === 403) {
+        message = "You are not authorized to delete this notification.";
+      } else if (status === 400 || status === 422) {
+        message = "Unable to delete notification due to validation or request error.";
+      } else if (status >= 500 && status < 600) {
+        message = "Server error while deleting notification. Please try again later.";
+      } else if (anyError?.message && typeof anyError.message === "string") {
+        // Fall back to a more specific error message if available
+        message = anyError.message;
+      }
+      toast.error(message);
     },
   });
 
@@ -62,7 +70,7 @@ const ManageNotification: React.FC = () => {
 
   // Table columns
   const columns: Column<AdminNotification>[] = [
-    { key: "id", label: "Sr.No." },
+    { key: "id", label: "ID" },
     { key: "title", label: "Title" },
     { key: "message", label: "Message" },
     { key: "type", label: "Type" },
@@ -84,7 +92,6 @@ const ManageNotification: React.FC = () => {
           >
             <CiEdit className="text-blue-600" />
           </Button>
-
           {/* Delete Button */}
           <Button
             type="button"
@@ -99,7 +106,7 @@ const ManageNotification: React.FC = () => {
     },
   ];
 
-  if (isLoading)
+  if (deleteNotificationMutation.isPending)
     return (
       <div className="w-full h-full flex items-center justify-center py-10">
         <div
@@ -127,39 +134,17 @@ const ManageNotification: React.FC = () => {
           Add Notification
         </Button>
       </div>
-
       <div className="p-3 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-neutral-800 rounded-md gap-2">
         <div>
           <SearchInput />
         </div>
         <div className="h-full flex-1 overflow-y-auto">
-          <CustomTable<AdminNotification>
-            columns={columns}
-            data={notificationList}
-            initialPageSize={size}
-          />
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-3">
-          <Button
-            type="button"
-            disabled={page === 0}
-            onClick={() => setPage((prev) => prev - 1)}
-          >
-            Previous
-          </Button>
-          <span>
-            Page {page + 1} of {totalPages}
-          </span>
-          <Button
-            type="button"
-            disabled={page + 1 >= totalPages}
-            onClick={() => setPage((prev) => prev + 1)}
-          >
-            Next
-          </Button>
-        </div>
+        <CustomTable<AdminNotification>
+          columns={columns}
+          initialPageSize={10}
+          data={data?.content}
+        />
+      </div>
       </div>
     </div>
   );

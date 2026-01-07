@@ -19,8 +19,8 @@ export interface UpdateNotificationParams {
   id: string;
   title: string;
   message: string;
-  type: string;
-  sendTo: string;
+  type: AdminNotification["type"];
+  sendTo: AdminNotification["sendTo"];
 }
 export interface PagedNotificationsParams {
   page: number;

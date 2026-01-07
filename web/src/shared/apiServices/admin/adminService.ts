@@ -6,7 +6,7 @@ import { queryKeys } from "../queryKeys";
 // --- Get All Notifications ---
 export function useGetAllNotifications(options?: { enabled?: boolean }) {
   return useQuery({
-    queryKey: [queryKeys.admin.notifications],
+    queryKey: queryKeys.admin.notifications.all,
     queryFn: () => AdminAdapter.GetAllNotifications(),
     enabled: options?.enabled ?? true,
   });
@@ -23,8 +23,11 @@ export function useDeleteNotification(options?: {
     mutationFn: (id: string) => AdminAdapter.DeleteNotification(id),
     onSuccess: (data) => {
       // Refresh the list after deletion
-      queryClient.invalidateQueries({ queryKey: [queryKeys.admin.notifications] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.notifications.all });
       options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      options?.onError?.(error);
     },
   });
 }
@@ -58,7 +61,13 @@ export function useGetPagedNotifications(
   options?: { enabled?: boolean }
 ) {
   return useQuery({
-    queryKey: [queryKeys.admin.notifications, params.page, params.size],
+    queryKey: [
+      queryKeys.admin.notifications,
+      params.page,
+      params.size,
+      params.sortBy,
+      params.direction,
+    ],
     queryFn: () => AdminAdapter.GetPagedNotifications(params),
     enabled: options?.enabled ?? true,
     placeholderData: (previousData) => previousData, 
