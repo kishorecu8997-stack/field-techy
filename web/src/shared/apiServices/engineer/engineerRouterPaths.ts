@@ -24,7 +24,7 @@ export const ENGINEER_ROUTER_PATHS = {
   UPDATE_JOB_STATUS: (jobId: string) =>
     `/eng/api/v1/engineers/jobs/${jobId}/status`,
 
-  // Jobs endpoints
+  // proposal endpoints
   SEND_PROPOSAL_JOB: () => `/eng/api/v1/engineers/proposals/save`,
   GET_PROPOSAL_JOBS_BY_ID: (id: string) =>
     `/eng/api/v1/engineers/proposals/${id}`,
@@ -35,4 +35,9 @@ export const ENGINEER_ROUTER_PATHS = {
     `/eng/api/v1/engineers/proposals/update/${id}`,
   DELETE_PROPOSAL_BY_ID: (id: string) =>
     `/eng/api/v1/engineers/proposals/delete/${id}`,
+
+// Jobs endpoints
+GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/job/${id}`,
+GET_JOBS_BY_ENGINEER_ID: (engineerId: string) =>
+    `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
 } as const;

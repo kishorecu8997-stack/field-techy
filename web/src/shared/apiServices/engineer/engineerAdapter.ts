@@ -248,7 +248,7 @@ export class EngineerAdapter {
     }
   }
 
-  // proposals endpoints
+  // ----------------------------------------proposals endpoints ------------------------------------------
 
   static async sendProposalJob(data: ProposalJobData): Promise<JobAssignment> {
     try {
@@ -316,6 +316,30 @@ export class EngineerAdapter {
     try {
       const response = await axiosInstance.delete(
         ENGINEER_ROUTER_PATHS.DELETE_PROPOSAL_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  //--------------------------------- Jobs Endpoints ---------------------------------
+
+  static async getJobsById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getJobsByEngineerId(engineerId: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ENGINEER_ID(engineerId)
       );
       return response.data;
     } catch (error) {
