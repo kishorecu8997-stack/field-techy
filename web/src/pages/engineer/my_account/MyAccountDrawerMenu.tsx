@@ -4,7 +4,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { useEngineerProfile, useEngineerStore } from "@/shared/store/useEngineerStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -72,7 +72,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   ];
 
   const logout = useUserSessionStore((state) => state.logout);
-  const engineerProfile = useEngineerStore((state) => state.engineerProfile);
+  const engineerProfile = useEngineerProfile();
   const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
   return (

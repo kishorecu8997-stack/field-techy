@@ -10,8 +10,7 @@ import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
 import Tooltip from "@/shared/components/Tooltip";
-import { useEngineerGetById } from "../apiServices/engineer/engineerService";
-import { useUserSessionStore } from "../store/useUserSessionStore";
+import { useEngineerProfile } from "../store/useEngineerStore";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -56,12 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const session = useUserSessionStore((state) => state.session);
-  const userId = session?.userId;
-
-  const { data: sessionData } = useEngineerGetById(userId, {
-    enabled: !!userId,
-  });
+  const engineerProfile = useEngineerProfile();
 
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
@@ -225,7 +219,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         >
           <TbAlignLeft className="h-5 w-5" />
           <span className="max-w-[6rem] truncate text-left">
-            Hi, {sessionData?.fullName}
+            Hi, {engineerProfile?.fullName}
           </span>
           <img
             src={assetsConfig.images.users.user}
