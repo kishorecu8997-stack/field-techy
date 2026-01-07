@@ -258,6 +258,7 @@ export const absoluteUrls = {
       wallet_transaction_requests: `${BASE.ADMIN}/wallet-requests`,
       manage_notification: `${BASE.ADMIN}/notifications`,
       manage_notification_add: `${BASE.ADMIN}/notifications/add`,
+      manage_notification_edit: `${BASE.ADMIN}/notifications/edit`,
       manage_sub_admin: `${BASE.ADMIN}/sub-admins`,
       manage_sub_admin_add: `${BASE.ADMIN}/sub-admins/add`,
       manage_sub_admin_edit: `${BASE.ADMIN}/sub-admins/edit`,

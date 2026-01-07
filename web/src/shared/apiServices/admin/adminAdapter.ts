@@ -4,6 +4,11 @@ import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
+import type {
+    AdminNotification,
+    CreateNotificationParams,
+    UpdateNotificationParams
+} from './adminTypes';
 
 /*
  * AdminAdapter
@@ -102,4 +107,34 @@ export class AdminAdapter {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
+
+        // Create Notification
+    static async CreateNotification(data: CreateNotificationParams): Promise<AdminNotification> {
+        const response = await axiosInstance.post(
+            ADMIN_ROUTER_PATHS.CREATE_NOTIFICATION,
+            data
+        );
+        return response.data;
+    }
+
+        //Edit Notification
+    static async EditNotification(
+    data: UpdateNotificationParams
+    ): Promise<AdminNotification> {
+    const response = await axiosInstance.put(
+        ADMIN_ROUTER_PATHS.EDIT_NOTIFICATION(data.id),
+        data
+    );
+    return response.data;
+    }
+    
+    // Get Notification By ID
+    static async GetNotificationById(id: string): Promise<AdminNotification> {
+  const response = await axiosInstance.get(
+    ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id)
+  );
+  return response.data;
 }
+
+} 
+

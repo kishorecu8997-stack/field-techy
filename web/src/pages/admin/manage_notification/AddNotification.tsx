@@ -16,6 +16,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useCreateNotification } from "@/shared/apiServices/admin/adminService";
 
 interface AddNotificationProps {
   title: string;
@@ -37,6 +38,16 @@ interface AddNotificationProps {
  */
 export default function AddNotification() {
   const navigate = useNavigate();
+  const createNotificationMutation = useCreateNotification({
+    onSuccess: (data) => {
+      toast.success(`Notification ${data.title} added successfully!`);
+      navigate(absoluteUrls.admin.home.manage_notification);
+    },
+    onError: (error) => {
+      console.error("Error adding notification:", error);
+      toast.error("Failed to add notification. Please try again.");
+    }
+  });
   const { showPopup } = usePopupStore();
 
   const methods = useForm<AddNotificationProps>({
@@ -66,12 +77,14 @@ export default function AddNotification() {
           variant: "primary",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Notification added successfully!");
-            navigate(absoluteUrls.admin.home.manage_notification);
-            methods.reset();
+            // console.log("Deleting job:", close);
+            const payload = {
+              title: methods.getValues("title"),
+              type: methods.getValues("notificationType"),
+              sendTo: methods.getValues("sendTo"),
+              message: methods.getValues("notificationMessage"),
+            };
+            await createNotificationMutation.mutateAsync(payload);
             close(true);
           },
         },
