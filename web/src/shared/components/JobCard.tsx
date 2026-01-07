@@ -2,14 +2,14 @@ import { absoluteUrls } from "@/config/urls";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
-  type Job,
 } from "@/pages/engineer/search_result/types";
 import { scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
-interface JobCardProps extends Job {
+import type { JobAssignment } from "../apiServices/engineer/engineerTypes";
+interface JobCardProps extends JobAssignment {
   allocationType?: "Automatic" | "Manual";
 }
 

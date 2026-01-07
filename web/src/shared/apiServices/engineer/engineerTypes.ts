@@ -131,6 +131,17 @@ export interface JobAssignment {
     engineerId: string;
     jobId: string;
     status: string;
+    type: string;
+    title?: string;
+    client?: string;
+    duration?: string;
+    pay?: string;
+    statusDetail?: string;
+    location?: string;
+    assignedAt?: string;
+    startedAt?: string;
+    completedAt?: string;
+    startDate?: string;
 }
 
 export interface AssignJobParams {
