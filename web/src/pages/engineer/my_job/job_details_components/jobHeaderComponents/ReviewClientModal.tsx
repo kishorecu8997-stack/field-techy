@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StarRating } from "./StarRating";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { validateReview, MIN_REVIEW_LENGTH } from "@/utils/reviewValidation";
 import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
-
 
 type ReviewClientModalProps = {
   isOpen: boolean;
@@ -36,7 +34,6 @@ type ReviewClientModalProps = {
  *   onSubmit={(payload) => console.log(payload)}
  * />
  */
-
 
 const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   isOpen,
@@ -81,12 +78,6 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
   }, [isOpen, onClose]);
 
   const handleSubmit = () => {
-    const validationError = validateReview(rating, review);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
     const payload = { rating, review: review.trim() };
     onSubmit?.(payload);
     setSubmittedPayload(payload);
@@ -150,32 +141,13 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Your review
                 </label>
-                <TextareaInput
-                  name="review"
-                  label="Your review"
-                  isShowLabel={true}
+                <textarea
+                  value={review}
+                  onChange={(e) => setReview(e.target.value)}
                   placeholder={`Share your experience working with ${clientName}…`}
-                  containerClassName="w-full"
-                  textareaClassName="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-teal-400"
-                  rules={{
-                    minLength: {
-                      value: MIN_REVIEW_LENGTH,
-                      message: `Minimum ${MIN_REVIEW_LENGTH} characters.`,
-                    },
-                  }}
-                  disabled={false}
-                  // @ts-ignore
-                  control={{
-                    value: review,
-                    onChange: (val: string) => {
-                      setReview(val);
-                      setError(null);
-                    },
-                  }}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-teal-400"
+                  rows={4}
                 />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Minimum {MIN_REVIEW_LENGTH} characters.
-                </p>
               </div>
 
               {error && (
