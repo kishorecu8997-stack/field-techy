@@ -1,8 +1,13 @@
 import { sampleJobs } from "@/dummy_data/searchData";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
-import { JOB_STATUSES, WORKING_TYPES, JOB_FILTERS } from "../../search_result/types";
+import {
+  JOB_STATUSES,
+  WORKING_TYPES,
+  JOB_FILTERS,
+} from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
+import { useGetJobsByEngineerId } from "@/shared/apiServices/engineer/engineerService";
 
 interface JobListProps {
   activeFilter: JobFilter;
@@ -18,6 +23,13 @@ interface JobListProps {
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
 const JobList = ({ activeFilter }: JobListProps) => {
+  const raw = localStorage.getItem("generic-user-session");
+
+  const userId = raw ? JSON.parse(raw)?.state?.session?.userId ?? null : null;
+
+  const {data: jobs} = useGetJobsByEngineerId(userId ?? "");
+  console.log('jobs :', jobs);
+
   const filteredJobs = useMemo(() => {
     const jobs = sampleJobs.filter(
       (job) =>
