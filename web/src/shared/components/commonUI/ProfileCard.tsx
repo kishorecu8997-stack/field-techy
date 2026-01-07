@@ -38,7 +38,7 @@ const ProfileCard = ({
   name: string;
   title: string;
   rating: number;
-  reviewCount: number;
+  reviewCount?: number;
   completionPercentage: number;
   flex?: "row" | "col";
   backgroundcolor?: boolean;
@@ -69,7 +69,7 @@ const ProfileCard = ({
         <h2 className="font-bold text-lg text-gray-800">{name}</h2>
         <p className="text-sm text-gray-600">{title}</p>
         <p className="text-xs text-gray-500">
-          {rating} Ratings | {reviewCount} Reviews
+          {rating} Ratings {reviewCount && `| ${reviewCount} Reviews`}
         </p>
       </div>
     </div>

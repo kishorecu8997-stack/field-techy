@@ -18,6 +18,8 @@ import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
+import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -41,6 +43,20 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       profileImage: assetsConfig.images.profile.defaultProfileImage,
     },
   });
+
+  const session = useUserSessionStore((state) => state.session);
+  const setEngineerProfile = useEngineerStore((state) => state.setEngineerProfile);
+  const userId = session?.userId;
+
+  const { data: sessionData } = useEngineerGetById(userId!, {
+    enabled: !!userId,
+  });
+
+  React.useEffect(() => {
+    if (sessionData) {
+      setEngineerProfile(sessionData);
+    }
+  }, [sessionData, setEngineerProfile]);
 
   const menuItems: MenuItem[] = [
     {
@@ -89,6 +105,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
     },
   ];
   const logout = useUserSessionStore((state) => state.logout);
+  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
   return (
     <>
@@ -96,10 +113,9 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Nick Wilson"
-            title="Software Engineer"
-            rating={4}
-            reviewCount={10}
+            name={sessionData?.fullName || ""}
+            title={sessionData?.serviceCategory || ""}
+            rating={sessionData?.averageRating || 0}
             completionPercentage={39}
           />
         </div>
@@ -113,6 +129,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
             logout();
+            clearEngineerProfile();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}
