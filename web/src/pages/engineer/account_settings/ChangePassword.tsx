@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import PasswordSection from "../auth/components/PasswordSection";
 import { validatePassword } from "./validation";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -31,11 +32,10 @@ const ChangePassword = () => {
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
 
-  const raw = localStorage.getItem("generic-user-session");
+  const session = useUserSessionStore((state) => state.session);
+  const userId = session?.userId;
 
-  const userId = raw ? JSON.parse(raw)?.state?.session?.userId ?? null : null;
-
-  const { data: sessionData } = useEngineerGetById(userId!, {
+  const { data: sessionData } = useEngineerGetById(userId, {
     enabled: !!userId,
   });
   const { mutateAsync: updatePassword } = useUpdatePassword();
@@ -44,6 +44,11 @@ const ChangePassword = () => {
     currentPassword: string;
     password: string;
   }) => {
+    const email = sessionData?.email;
+    if (!email) {
+      toast.error("User information is not fully loaded. Please wait a moment and try again.");
+      return;
+    }
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",
@@ -60,7 +65,7 @@ const ChangePassword = () => {
           action: async (close) => {
             try {
               await updatePassword({
-                phoneOrEmail: sessionData?.email || "",
+                phoneOrEmail: email,
                 newPassword: data.password,
                 oldPassword: data.currentPassword,
               });

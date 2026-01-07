@@ -66,7 +66,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -86,7 +86,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -106,7 +106,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -129,7 +129,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -164,7 +164,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -189,7 +189,7 @@ export class ClientProfileAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 

@@ -60,18 +60,18 @@ export function useEngineerFileUpload(options?: {
 
 // --- Queries ---
 
-export function useEngineerGetById(id: string, options?: { enabled?: boolean }) {
+export function useEngineerGetById(id: string | null | undefined, options?: { enabled?: boolean }) {
     return useQuery({
-        queryKey: queryKeys.engineer.detail(id),
-        queryFn: () => EngineerAdapter.getById(id),
+        queryKey: queryKeys.engineer.detail(id || ""),
+        queryFn: () => id ? EngineerAdapter.getById(id) : Promise.reject("Invalid ID"),
         enabled: !!id && (options?.enabled ?? true),
     });
 }
 
-export function useEngineerGetFiles(engineerId: string, options?: { enabled?: boolean }) {
+export function useEngineerGetFiles(engineerId: string | null | undefined, options?: { enabled?: boolean }) {
     return useQuery({
-        queryKey: [...queryKeys.engineer.detail(engineerId), 'files'] as const,
-        queryFn: () => EngineerAdapter.getFiles(engineerId),
+        queryKey: [...queryKeys.engineer.detail(engineerId || ""), 'files'] as const,
+        queryFn: () => engineerId ? EngineerAdapter.getFiles(engineerId) : Promise.reject("Invalid ID"),
         enabled: !!engineerId && (options?.enabled ?? true),
     });
 }
@@ -106,10 +106,10 @@ export function useEngineerAssignJob(options?: {
     });
 }
 
-export function useEngineerGetJobs(engineerId: string, options?: { enabled?: boolean }) {
+export function useEngineerGetJobs(engineerId: string | null | undefined, options?: { enabled?: boolean }) {
     return useQuery({
-        queryKey: [...queryKeys.engineer.detail(engineerId), 'jobs'] as const,
-        queryFn: () => EngineerAdapter.getJobs(engineerId),
+        queryKey: [...queryKeys.engineer.detail(engineerId || ""), 'jobs'] as const,
+        queryFn: () => engineerId ? EngineerAdapter.getJobs(engineerId) : Promise.reject("Invalid ID"),
         enabled: !!engineerId && (options?.enabled ?? true),
     });
 }

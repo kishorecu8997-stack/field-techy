@@ -48,7 +48,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   const setEngineerProfile = useEngineerStore((state) => state.setEngineerProfile);
   const userId = session?.userId;
 
-  const { data: sessionData } = useEngineerGetById(userId!, {
+  const { data: sessionData } = useEngineerGetById(userId, {
     enabled: !!userId,
   });
 

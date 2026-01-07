@@ -2,16 +2,14 @@ import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
 /**
  * Password OTP Verification component
- *
- *  @param param0 VerifiedEmailInputFieldProps
- *
+ * here we are using react-hook-form to validate the email
  * @returns JSX.Element
  */
 export const PasswordOTPVerification = ({
@@ -25,12 +23,17 @@ export const PasswordOTPVerification = ({
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedEmailInputFieldProps) => {
-  const { control, watch, clearErrors, setError } = useFormContext();
+  const { trigger, control, watch, clearErrors, setError } = useFormContext();
   const [localVerified, setLocalVerified] = useState(false);
 
   const verified =
     typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
+
+  const verifiedRef = useRef(verified);
+  useEffect(() => {
+    verifiedRef.current = verified;
+  }, [verified]);
 
   const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } =
     useSendEmailOTP();
@@ -59,6 +62,7 @@ export const PasswordOTPVerification = ({
       toast.success("OTP sent successfully to your email.");
       clearErrors(name); // Clear any previous errors
       setVerified(true);
+      trigger(name);
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ||
@@ -113,8 +117,8 @@ export const PasswordOTPVerification = ({
               const emailValid = validateEmail(trimmed);
               if (emailValid !== true) return emailValid;
 
-              // ✅ Use verified state directly
-              if (!verified) return "Please verify your email address";
+              // ✅ Use verifiedRef to ensure constant access to the latest state
+              if (!verifiedRef.current) return "Please verify your email address";
 
               return true;
             },

@@ -11,6 +11,7 @@ import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
 import Tooltip from "@/shared/components/Tooltip";
 import { useEngineerGetById } from "../apiServices/engineer/engineerService";
+import { useUserSessionStore } from "../store/useUserSessionStore";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -55,11 +56,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const raw = localStorage.getItem("generic-user-session");
+  const session = useUserSessionStore((state) => state.session);
+  const userId = session?.userId;
 
-  const userId = raw ? JSON.parse(raw)?.state?.session?.userId ?? null : null;
-
-  const { data: sessionData } = useEngineerGetById(userId!, {
+  const { data: sessionData } = useEngineerGetById(userId, {
     enabled: !!userId,
   });
 

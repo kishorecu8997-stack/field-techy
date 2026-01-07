@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { MdOutlineMailOutline, MdCheckCircle } from "react-icons/md";
@@ -44,6 +44,12 @@ export const VerifiedEmailInputField = ({
 
   const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
+
+  const verifiedRef = useRef(verified);
+  useEffect(() => {
+    verifiedRef.current = verified;
+  }, [verified]);
+
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
 
@@ -103,8 +109,8 @@ export const VerifiedEmailInputField = ({
               const emailValid = validateEmail(trimmed);
               if (emailValid !== true) return emailValid;
 
-              // ✅ Use verified state directly
-              if (!verified) return "Please verify your email address";
+              // ✅ Use verifiedRef to ensure we have the latest state
+              if (!verifiedRef.current) return "Please verify your email address";
 
               return true;
             },
@@ -168,7 +174,7 @@ export const VerifiedEmailInputField = ({
             setVerified(true);
             onVerifySuccess?.();
 
-            // ✅ Re-validate with updated verified state
+            // Re-validate the email field via react-hook-form using the updated verified state
             const currentValue = watch(name);
             setValue(name, currentValue, { shouldValidate: true });
             setValue("emailOTP", ""); // Clear the OTP field

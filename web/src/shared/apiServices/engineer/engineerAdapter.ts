@@ -32,7 +32,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -43,7 +43,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -52,7 +52,7 @@ export class EngineerAdapter {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
       return true;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -63,7 +63,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -94,7 +94,7 @@ export class EngineerAdapter {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -131,7 +131,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -145,7 +145,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -156,7 +156,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -170,7 +170,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -185,7 +185,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -201,7 +201,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -268,7 +268,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 }

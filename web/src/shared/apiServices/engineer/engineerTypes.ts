@@ -148,9 +148,6 @@ export interface AssignJobParams {
 }
 
 export interface UpdatePasswordParams {
-  // email: string;
-  // password: string;
-  // otp: string;
   phoneOrEmail: string;
   oldPassword: string;
   newPassword: string;

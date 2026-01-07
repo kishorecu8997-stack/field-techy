@@ -1,6 +1,4 @@
-// src/shared/components/commonUI/inputs/VerifiedPhoneInputField.tsx
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Controller,
   useFormContext,
@@ -13,7 +11,6 @@ import OTPModal from "@/shared/components/commonUI/inputs/OTPModal";
 import { CountrySelect } from "./CountrySelect";
 import type { VerifiedPhoneInputFieldProps } from "./type";
 import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
-
 
 /**
  * A composite input field for entering and verifying a mobile phone number with an OTP.
@@ -48,14 +45,19 @@ export const VerifiedPhoneInputField = ({
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedPhoneInputFieldProps) => {
-  const { control, getValues, setValue, clearErrors, watch, trigger } = useFormContext();
+  const { control, getValues, setValue, clearErrors, watch, trigger } =
+    useFormContext();
   const [showOTP, setShowOTP] = useState(false);
   const [localVerified, setLocalVerified] = useState(false);
 
-  const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
+  const verified =
+    typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
-
+  const verifiedRef = useRef(verified);
+  useEffect(() => {
+    verifiedRef.current = verified;
+  }, [verified]);
 
   const isInputDisabled = verified || externalDisabled;
   const phoneValue = watch(name);
@@ -125,7 +127,8 @@ export const VerifiedPhoneInputField = ({
         return formatValid;
       }
 
-      if (!verified) {
+      // ✅ Use verifiedRef to ensure we have the latest state
+      if (!verifiedRef.current) {
         return "Please verify your mobile number";
       }
 
@@ -134,12 +137,12 @@ export const VerifiedPhoneInputField = ({
   };
 
   const getInputClassName = () => {
-    const baseClasses = `flex - 1 px - 5 py - 3 text - base placeholder - gray - 400 dark: placeholder - gray - 500 outline - none ${inputClassName || ""
-      } ${verified ? "pr-10" : ""} `;
+    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark: placeholder-gray-500 outline-none ${inputClassName || ""
+      } ${verified ? "p-0" : ""} `;
     if (isInputDisabled) {
-      return `${baseClasses} bg - gray - 100 dark: bg - gray - 700 text - gray - 500 dark: text - gray - 400 cursor - not - allowed rounded - md`;
+      return `${baseClasses} bg-gray-100 dark: bg-gray-700 text-gray-500 dark: text-gray-400 cursor-not-allowed rounded-md`;
     }
-    return `${baseClasses} bg - white dark: bg - gray - 800 text - gray - 900 dark: text - gray - 100 rounded - md`;
+    return `${baseClasses} bg-white dark: bg-gray-800 text-gray-900 dark: text-gray-100 rounded-md`;
   };
 
   return (
@@ -156,11 +159,19 @@ export const VerifiedPhoneInputField = ({
           control={control}
           rules={validationRules}
           render={({ field, fieldState: { error } }) => {
-            const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (field.value || "").split(" ");
+            const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (
+              field.value || ""
+            ).split(" ");
             const numberValue = rest.join(" ");
 
-            const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
-            const maxDigits = selectedCountry?.validationKey === "india" || selectedCountry?.validationKey === "uk" ? 10 : undefined;
+            const selectedCountry = PHONE_COUNTRIES.find(
+              (c) => c.code === countryCode
+            );
+            const maxDigits =
+              selectedCountry?.validationKey === "india" ||
+                selectedCountry?.validationKey === "uk"
+                ? 10
+                : undefined;
 
             return (
               <>
@@ -168,7 +179,7 @@ export const VerifiedPhoneInputField = ({
                   <div className="flex flex-1 min-w-0">
                     <div className="relative w-full">
                       <div
-                        className={`flex w - full rounded - md border ${error
+                        className={`flex w-full rounded-md border ${error
                             ? "border-red-500 ring-1 ring-red-400"
                             : "border-gray-300 dark:border-gray-600"
                           } `}
@@ -202,7 +213,9 @@ export const VerifiedPhoneInputField = ({
                             }
                           }}
                           onBlur={() => {
-                            field.onChange(`${countryCode} ${numberValue.trim()} `);
+                            field.onChange(
+                              `${countryCode} ${numberValue.trim()} `
+                            );
                           }}
                           placeholder={placeholder}
                           className={getInputClassName()}
