@@ -19,11 +19,11 @@ export interface Experience {
 
 export interface Education {
   id?: string;
-  institution: string;
-  degree: string;
-  fieldOfStudy: string;
-  startDate: string;
-  endDate?: string;
+  educationLevel: string;
+  course: string;
+  university: string;
+  majorSubject: string;
+  passingYear: number;
 }
 
 export interface EngineerData {

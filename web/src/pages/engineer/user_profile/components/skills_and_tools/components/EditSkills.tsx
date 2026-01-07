@@ -7,14 +7,16 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
 
 export type EditSkillsFormData = {
   skills: string[];
 };
-// interface EditSkillsProps {
-//   currentSkills?: string[];
-// }
-
 /**
  * The EditSkills component renders a form to modify a user's professional skills.
  * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing skills
@@ -25,54 +27,59 @@ export type EditSkillsFormData = {
 const EditSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+  const { session } = useUserSessionStore();
+  const engineerId = session?.userId || "";
+
+  const { data: engineerData, isLoading: isEngineerLoading } =
+    useEngineerGetById(engineerId);
+  const { mutate } = useEngineerUpdateById(engineerId);
 
   const initialSkillIds = useMemo(() => {
     const storedIds = localStorage.getItem("editSkillsId");
     if (storedIds) {
       try {
         const parsedIds: (string | number)[] = JSON.parse(storedIds);
-        // Ensure all IDs are strings for the form field
         return parsedIds.map(String);
       } catch (error) {
         console.error("Failed to parse skill IDs from localStorage", error);
-        return [];
       }
     }
-    return [];
-  }, []);
-  /**
-   * Transforms skillsData into select options.
-   */
+    return engineerData?.jobSkills?.map(String) || [];
+  }, [engineerData]);
+
   const skillOptions = skillsData.map((skill) => ({
     label: skill.label,
-    value: skill.id.toString(), // assuming skill.id is number
+    value: skill.id.toString(),
   }));
 
-  /**
-   * Initializes `react-hook-form` with default values for the edit skills form.
-   */
   const methods = useForm<EditSkillsFormData>({
     defaultValues: {
       skills: initialSkillIds,
     },
   });
 
-  /**
-   * Effect hook to clean up the `editSkillsId` from localStorage when the component unmounts.
-   */
   useEffect(() => {
     return () => {
       localStorage.removeItem("editSkillsId");
     };
   }, []);
-
   /**
    * Handles the form submission for updating skills.
    * Currently logs the data to the console and shows a success toast.
    *
    * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
    */
-  const onSubmit = async (_: EditSkillsFormData) => {
+  const onSubmit = async (formData: EditSkillsFormData) => {
+    if (!engineerData) {
+      toast.error("Unable to load current profile data. Please try again.");
+      return;
+    }
+
+    const updatedEngineer: EngineerData = {
+      ...engineerData,
+      jobSkills: formData.skills,
+    };
+
     await showPopup({
       title: "Update Skills",
       body: "Are you sure you want to update these skills?",
@@ -82,7 +89,6 @@ const EditSkills = () => {
           value: "no",
           variant: "secondary",
           action: async (close) => {
-            console.log("No button clicked");
             close(true);
           },
         },
@@ -91,14 +97,27 @@ const EditSkills = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Skills Updated Successfully");
-            close(true);
-            setActiveKey("skillsAndTools");
+            mutate(updatedEngineer, {
+              onSuccess: () => {
+                toast.success("Skills Updated Successfully");
+                close(true);
+                setActiveKey("skillsAndTools");
+              },
+              onError: (error) => {
+                console.error("Failed to update skills:", error);
+                toast.error("Failed to save skills. Please try again.");
+                close(true);
+              },
+            });
           },
         },
       ],
     });
   };
+
+  if (isEngineerLoading) {
+    return <div>Loading profile data...</div>;
+  }
 
   return (
     <FormContainer
