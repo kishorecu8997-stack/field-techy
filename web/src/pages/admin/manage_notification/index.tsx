@@ -75,7 +75,12 @@ const ManageNotification: React.FC = () => {
     { key: "message", label: "Message" },
     { key: "type", label: "Type" },
     { key: "sendTo", label: "Send To" },
-    { key: "createdAt", label: "Created Date" },
+    {
+      key: "createdAt",
+      label: "Created Date",
+      renderCell: (row: AdminNotification) =>
+        row.createdAt ? row.createdAt.split("T")[0] : "-",
+    },
     {
       key: "action",
       label: "Action",
