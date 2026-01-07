@@ -29,8 +29,6 @@ import { useRef } from "react";
  *
  * @returns {JSX.Element} Form UI for editing a notification.
  */
-
-
 interface EditNotificationProps {
   title: string;
   notificationType: string;
@@ -38,14 +36,12 @@ interface EditNotificationProps {
   users?: string;
   notificationMessage: string;
 }
-
 export default function EditNotification() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const errorToastShown = useRef(false);
-
   const methods = useForm<EditNotificationProps>({
     defaultValues: {
       title: "",
@@ -55,14 +51,11 @@ export default function EditNotification() {
       notificationMessage: "",
     },
   });
-
   useEffect(() => {
     const fetchNotification = async () => {
       if (!id) return;
-
       let notification: NotificationProps | null =
         notifications.find((n) => n.id === id || n.id === Number(id)) ?? null;
-      
       try {
         const res = await fetch(`/api/notifications/${id}`);
         if (res.ok) {
@@ -71,33 +64,26 @@ export default function EditNotification() {
         }
       } catch (err) {
         console.warn("Failed to fetch from API, falling back to dummy data.", err);
-
+        const FETCH_ERROR_MSG = "Failed to fetch notification from server. Showing local data if available.";
         if (!errorToastShown.current) {
-          toast.error(
-            "Failed to fetch notification from server. Showing local data if available."
-          );
+          toast.error(FETCH_ERROR_MSG);
           errorToastShown.current = true;
         }
       }
-
       if (notification) {
+        const sendToValue = NotificationSendTo.find((o) => o.label === notification.sendTo)?.value ?? "";
         methods.reset({
           title: notification.title,
-
           notificationType: notification.type,
-          sendTo:
-            NotificationSendTo.find((o) => o.label === notification.sendTo)?.value ||
-            "",
+          sendTo: sendToValue,
           notificationMessage: notification.message,
         });
       } else {
         toast.error("Notification not found");
         navigate(absoluteUrls.admin.home.manage_notification);
       }
-
       setLoading(false);
     };
-
     fetchNotification();
   }, [id, navigate]);
 
@@ -118,26 +104,21 @@ export default function EditNotification() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
               });
-
               if (!res.ok) throw new Error("Failed to update");
-
               toast.success("Notification updated successfully!");
               navigate(absoluteUrls.admin.home.manage_notification);
             } catch (err) {
               toast.error("Failed to update notification");
             }
-
             close(true);
           },
         },
       ],
     });
   };
-
   const handleSubmit = (data: EditNotificationProps) => {
     handleUpdateConfirmation(data);
   };
-
   if (loading)
     return (
       <div className="w-full h-full flex items-center justify-center py-10">
@@ -151,7 +132,6 @@ export default function EditNotification() {
         </span>
       </div>
     );
-
   return (
     <div className="w-full h-full flex flex-col px-4 py-2 gap-3">
       <div className="flex justify-between items-center">
@@ -193,7 +173,6 @@ export default function EditNotification() {
               />
             </div>
           </div>
-
           <div className="grid md:flex gap-4 w-full">
             <div className="md:w-1/2">
               <SelectField
@@ -214,7 +193,6 @@ export default function EditNotification() {
               />
             </div>
           </div>
-
           <div>
             <TextareaInput
               name="notificationMessage"
@@ -226,7 +204,6 @@ export default function EditNotification() {
               required
             />
           </div>
-
           <div className="flex justify-end mt-2">
             <Button
               type="submit"
