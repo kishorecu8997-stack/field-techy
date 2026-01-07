@@ -19,12 +19,13 @@
 export const validateName = (value: string, fieldLabel = 'Name') => {
   // length requirement: 2 to 50 characters
   const raw = value || "";
+    
+    // Reject multiple consecutive spaces while allowing single spaces between words
+    if (/\s{2,}/.test(value))
+      return `${fieldLabel} must not contain multiple consecutive spaces`;
 
-    // Reject any whitespace (leading/trailing/internal)
-    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
-
-    // Only letters allowed (A-Z)
-    if (!/^[A-Za-z]+$/.test(raw))
+    // Only letters allowed (A-Z) with a single space allowed between words
+    if (!/^[A-Za-z]+( [A-Za-z]+)?$/.test(raw))
       return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
 
     // length requirement: 2 to 50 characters
