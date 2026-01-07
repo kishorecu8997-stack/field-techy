@@ -5,4 +5,8 @@ export const ADMIN_ROUTER_PATHS = {
     `/user/api/v1/users/otp/request/${phoneOrEmail}`,
   RESET_PASSWORD_USING_OTP: (otp: string) =>
     `/user/api/v1/users/password/reset/by-otp/${otp}`,
+  ADMIN_PROFILE_UPDATE: (id: string) =>
+    `/admin/api/v1/admin/update/${id}`,
+  ADMIN_FILE_UPLOAD: (adminId: string, fileType: string) =>
+    `/admin/api/v1/admin/files/${adminId}/${fileType}/upload`,
 };

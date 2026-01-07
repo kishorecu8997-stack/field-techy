@@ -39,3 +39,32 @@ export function useUserPasswordResetByOtpMutation(options?: {
     onError: options?.onError,
   });
 }
+
+export function useAdminUpdateProfileMutation(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (data: {
+      id: string;
+      fullName: string;
+      email: string;
+      profilePicture: string;
+      password: string;
+      phoneNumber: string;
+    }) => AdminAdapter.updateAdminProfile(data),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAdminUploadFileMutation(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (params: any) => AdminAdapter.uploadFile(params),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}

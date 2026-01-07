@@ -11,7 +11,15 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import {
+  useAdminUpdateProfileMutation,
+  useAdminUploadFileMutation,
+} from "@/shared/apiServices/admin/adminService";
+import { useState } from "react";
 
 /**
  * `PersonalDetails` is a component that renders a form for updating a user's personal information.
@@ -25,20 +33,82 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
  */
 export default function PersonalDetails() {
   const navigate = useNavigate();
-  const email = useUserSessionStore((s) => s.session?.email);
-  console.log("email :", email);
+  const setUserSession = useUserSessionStore((s) => s.setSession);
+  const session = useUserSessionStore((s) => s.session);
+  const { showPopup } = usePopupStore();
+
+  const adminUpdateProfileMutation = useAdminUpdateProfileMutation();
   const methods = useForm<ProfileFormData>({
     defaultValues: {
-      name: "",
-      email: email,
-      phoneNumber: "",
-      profileImage: null,
+      fullName: session?.name,
+      email: session?.email,
+      phoneNumber: session?.phoneNumber,
+      profilePicture: null,
     },
   });
 
-  const { showPopup } = usePopupStore();
+  const [, setUploadingDoc] = useState<string | null>(null);
+  const [, setUploadProgress] = useState<Record<string, number>>({});
+  const [profilePictureId, setProfilePictureId] = useState<string | null>(null);
+  // console.log("profilePictureId :", profilePictureId);
 
-  const handleSubmit = async () => {
+  const { mutateAsync: updateProfileMutation } = useAdminUploadFileMutation({
+    onSuccess: () => {
+      setUploadingDoc(null);
+      toast.success("Profile picture updated successfully");
+    },
+    onError: (error) => {
+      setUploadingDoc(null);
+      toast.error("Failed to upload profile picture");
+      console.log("error :", error);
+    },
+  });
+
+  const handleSubmit = async (data: any) => {
+    // console.log("data 135468:", data);
+
+    const getFileFromProfilePicture = async (
+      profilePicture: File | string
+    ): Promise<File | null> => {
+      if (profilePicture instanceof File) {
+        return profilePicture;
+      }
+
+      if (typeof profilePicture === "string") {
+        const response = await fetch(profilePicture);
+        const blob = await response.blob();
+
+        return new File([blob], "avatar.jpeg", { type: blob.type });
+      }
+
+      return null;
+    };
+
+    if (data.profilePicture) {
+      setUploadingDoc("ADM_PROFILE_PIC");
+
+      const fileToUpload = await getFileFromProfilePicture(data.profilePicture);
+
+      if (!fileToUpload) return;
+
+      const res: any = await updateProfileMutation({
+        adminId: session?.userId || "",
+        file: fileToUpload,
+        fileType: "ADM_PROFILE_PIC",
+        onUploadProgress: (progress: any) => {
+          if (progress.percentage) {
+            setUploadProgress((prev) => ({
+              ...prev,
+              ADM_PROFILE_PIC: progress.percentage!,
+            }));
+          }
+        },
+      });
+
+      setProfilePictureId(res.fileKey);
+      console.log("res upload profile pic :", res);
+    }
+
     await showPopup({
       title: "Profile Update",
       body: "Are you sure you want to update this profile?",
@@ -53,9 +123,34 @@ export default function PersonalDetails() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Profile Updated Successfully!");
-            close(true);
-            navigate(absoluteUrls.admin.home.dashboard);
+            await adminUpdateProfileMutation.mutateAsync(
+              {
+                id: session?.userId || "",
+                profilePicture: profilePictureId,
+                fullName: data.fullName,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+              },
+              {
+                onSuccess: (data) => {
+                  const resp = data as ProfileFormData;
+                  if (!session) return;
+                  const sessionUpdate: UserSession = {
+                    ...session,
+                    email: resp.email,
+                    name: resp.fullName,
+                    phoneNumber: resp.phoneNumber,
+                  };
+                  setUserSession(sessionUpdate);
+                  toast.success("Profile updated successfully");
+                  navigate(absoluteUrls.admin.home.dashboard);
+                  close(true);
+                },
+                onError: (error) => {
+                  console.log("error :", error);
+                },
+              }
+            );
           },
         },
       ],
@@ -70,12 +165,12 @@ export default function PersonalDetails() {
         className="flex flex-col gap-2 mt-2 px-2 pb-4 w-full"
       >
         <div className="mb-4 w-fit">
-          <ImageUploaderField label="Profile Image" name="profileImage" />
+          <ImageUploaderField label="Profile Image" name="profilePicture" />
         </div>
         <div className="flex gap-4 w-full">
           <div className="flex-1">
             <InputField
-              name="name"
+              name="fullName"
               label="Name"
               type="text"
               placeholder="Enter Name"
@@ -96,7 +191,7 @@ export default function PersonalDetails() {
           </div>
 
           <div className="flex-1">
-            <PhoneInputField name="phone" label="Mobile Number" required />
+            <PhoneInputField name="phoneNumber" label="Mobile Number" />
           </div>
         </div>
         <div className="flex justify-end mt-2">

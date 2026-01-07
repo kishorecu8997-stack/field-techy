@@ -1,9 +1,11 @@
-import axiosInstance from "@/axiosInstance";
+import axiosInstance, { uploadAxiosInstance } from "@/axiosInstance";
 import { ADMIN_ROUTER_PATHS } from "./adminRouterPath";
 import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
+import type { FileUploadParams } from "../engineer/engineerTypes";
+import type { FileUploadResponse } from "../client/clientTypes";
 
 /*
  * AdminAdapter
@@ -96,6 +98,62 @@ export class AdminAdapter {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.RESET_PASSWORD_USING_OTP(otp),
         restData
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Update Admin Profile */
+  static async updateAdminProfile(data: {
+    id: string;
+    fullName: string;
+    email: string;
+    profilePicture: string;
+    password: string;
+    phoneNumber: string;
+  }) {
+    try {
+      const response = await axiosInstance.put(
+        ADMIN_ROUTER_PATHS.ADMIN_PROFILE_UPDATE(data.id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Upload Admin File */
+  static async uploadFile(params: any): Promise<FileUploadResponse> {
+    try {
+      const { adminId, file, fileType, onUploadProgress } = params;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await uploadAxiosInstance.post(
+        ADMIN_ROUTER_PATHS.ADMIN_FILE_UPLOAD(adminId, fileType),
+        formData,
+        {
+          headers: {
+            "X-USER": "ADMIN",
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            if (onUploadProgress && progressEvent.total) {
+              const percentage = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onUploadProgress({
+                loaded: progressEvent.loaded,
+                total: progressEvent.total,
+                percentage,
+              });
+            }
+          },
+        }
       );
       return response.data;
     } catch (error) {

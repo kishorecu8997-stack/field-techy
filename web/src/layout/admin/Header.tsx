@@ -31,8 +31,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const email = useUserSessionStore((s) => s.session?.email);
-  console.log('email profile:', email);
+  const session = useUserSessionStore((s) => s.session);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -97,14 +96,16 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
-                {email?.charAt(0).toLocaleUpperCase()}
+                {!session?.name
+                  ? session?.email?.charAt(0).toLocaleUpperCase()
+                  : session?.name?.charAt(0).toLocaleUpperCase()}
               </span>
               {/* <img src="" /> */}
             </div>
 
             <div className="hidden sm:block">
               <div className="font-semibold text-md">
-                {email?.split("@")[0]}
+                {!session?.name ? session?.email?.split("@")[0] : session?.name}
               </div>
               {/* <div className="text-xs text-gray-300">Admin</div> */}
             </div>
