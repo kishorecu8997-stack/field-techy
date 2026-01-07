@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StarRating } from "./StarRating";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { TextareaInput } from "@/shared/components/commonUI/inputs/TextareaInput";
 
 type ReviewClientModalProps = {
   isOpen: boolean;
