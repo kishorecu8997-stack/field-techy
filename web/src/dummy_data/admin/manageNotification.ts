@@ -74,7 +74,7 @@ export const notifications: NotificationProps[] = [
 
 export const NotificationTypes = [
   { value: "email", label: "Email" },
-  { value: "broadCost", label: "BroadCost" },
+  { value: "broadcast", label: "Broadcast" },
   { value: "notification", label: "Notification" },
 ];
 
@@ -83,6 +83,7 @@ export const NotificationSendTo = [
   { value: "client", label: "Client" },
   { value: "engineer", label: "Engineer" },
   { value: "both", label: "Both" },
+  { value: "users", label: "Users" }, 
 ];
 
 export const NotificationUsers = [

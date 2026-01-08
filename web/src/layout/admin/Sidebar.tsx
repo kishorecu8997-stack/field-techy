@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { SidebarTooltip } from "@/shared/components/SidebarTooltip";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Sidebar
@@ -26,11 +27,11 @@ import { SidebarTooltip } from "@/shared/components/SidebarTooltip";
  * @param {boolean} props.isCollapsed - Controls the sidebar's collapsed state
  * @returns {JSX.Element} Sidebar navigation component
  */
-
 export default function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
+  const logout = useUserSessionStore((s) => s.logout);
 
   const { showPopup } = usePopupStore();
 
@@ -50,6 +51,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
           value: "yes",
           variant: "danger",
           action: async (close) => {
+            await logout();
             navigate(absoluteUrls.admin.auth.login);
             toast.success("Logged out successfully!");
             close(true);
@@ -79,8 +81,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   return (
     <div
-      className={`text-white flex flex-col transition-all text-sm duration-300 ease-out h-full ${isCollapsed ? "w-20" : "w-64"
-        }`}
+      className={`text-white flex flex-col transition-all text-sm duration-300 ease-out h-full ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
       {/* menu items */}
@@ -96,31 +99,44 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                   <SidebarTooltip text={item.name} active={isCollapsed}>
                     <div
                       onClick={() => toggle(item.name)}
-                      className={`flex group relative items-center cursor-pointer w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${isCollapsed ? "justify-center px-1 gap-2" : "justify-between px-3"
-                        }`}
+                      className={`flex group relative items-center cursor-pointer w-full py-2 rounded-lg hover:bg-white/10 transition-colors ${
+                        isCollapsed
+                          ? "justify-center px-1 gap-2"
+                          : "justify-between px-3"
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <span>{item.icon}</span>
                         {!isCollapsed && <span>{item.name}</span>}
                       </div>
                       <HiChevronDown
-                        className={`transition-transform ${isCollapsed ? "text-xs" : "text-xl"} ${isExpanded ? "rotate-180" : ""
-                          }`}
+                        className={`transition-transform ${
+                          isCollapsed ? "text-xs" : "text-xl"
+                        } ${isExpanded ? "rotate-180" : ""}`}
                       />
                     </div>
                   </SidebarTooltip>
 
                   {/* Submenu Items */}
                   {isExpanded && (
-                    <div className={`mt-1 space-y-1 ${isCollapsed ? "ml-3" : "ml-6"}`}>
+                    <div
+                      className={`mt-1 space-y-1 ${
+                        isCollapsed ? "ml-3" : "ml-6"
+                      }`}
+                    >
                       {item.children?.map((child) => (
-                        <SidebarTooltip key={child.path} text={child.name} active={isCollapsed}>
+                        <SidebarTooltip
+                          key={child.path}
+                          text={child.name}
+                          active={isCollapsed}
+                        >
                           <NavLink
                             to={child.path!}
                             className={({ isActive }) =>
-                              `flex group relative items-center gap-3 py-2 rounded-lg w-full ${isActive
-                                ? "bg-[#ffffff] text-gray-800 font-medium"
-                                : "text-white hover:bg-white/10"
+                              `flex group relative items-center gap-3 py-2 rounded-lg w-full ${
+                                isActive
+                                  ? "bg-[#ffffff] text-gray-800 font-medium"
+                                  : "text-white hover:bg-white/10"
                               } ${isCollapsed ? "justify-center px-2" : "px-3"}`
                             }
                           >
@@ -137,13 +153,18 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
             // Regular item (no children)
             return (
-              <SidebarTooltip key={item.path} text={item.name} active={isCollapsed}>
+              <SidebarTooltip
+                key={item.path}
+                text={item.name}
+                active={isCollapsed}
+              >
                 <NavLink
                   to={item.path!}
                   className={({ isActive }) =>
-                    `flex items-center group relative gap-3 py-2 rounded-lg w-full ${isActive
-                      ? "bg-white text-gray-800 font-medium"
-                      : "text-white hover:bg-white/10"
+                    `flex items-center group relative gap-3 py-2 rounded-lg w-full ${
+                      isActive
+                        ? "bg-white text-gray-800 font-medium"
+                        : "text-white hover:bg-white/10"
                     } ${isCollapsed ? "justify-center px-2" : "px-3"}`
                   }
                 >
@@ -161,8 +182,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         <SidebarTooltip text="Logout" active={isCollapsed}>
           <div
             onClick={handleLogout}
-            className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors w-full ${isCollapsed ? "justify-center px-0" : ""
-              }`}
+            className={`flex cursor-pointer items-center gap-3 px-3 py-2 rounded-lg text-white hover:bg-white/10 transition-colors w-full ${
+              isCollapsed ? "justify-center px-0" : ""
+            }`}
             aria-label="Logout"
           >
             <HiOutlineLogout className="text-lg" />

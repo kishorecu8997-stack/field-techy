@@ -12,10 +12,13 @@ import {
   FaClipboardList,
   FaFile,
   FaGraduationCap,
+  FaSignOutAlt,
   FaUser,
   FaWrench
 } from "react-icons/fa";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
+import { useEngineerStore, useEngineerProfile } from "@/shared/store/useEngineerStore";
 import type { MenuItem } from "./types";
 
 /**
@@ -87,8 +90,17 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
       id: "documents",
       onClick: () => onMenuItemClick("documents"),
     },
+    {
+      label: "Logout",
+      icon: FaSignOutAlt,
+      id: "logout",
+      onClick: () => setIsOpen(true),
+    },
   ];
 
+  const logout = useUserSessionStore((state) => state.logout);
+  const engineerProfile = useEngineerProfile();
+  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
 
   return (
@@ -97,9 +109,9 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Nick Wilson"
-            title="Software Engineer"
-            rating={4}
+            name={engineerProfile?.fullName || ""}
+            title={engineerProfile?.serviceCategory || ""}
+            rating={engineerProfile?.averageRating || 0}
             reviewCount={10}
             completionPercentage={39}
             flex="col"
@@ -110,6 +122,8 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             onConfirm={() => {
+              logout();
+              clearEngineerProfile();
               onClose();
               navigate(absoluteUrls.engineer.auth.login);
             }}
