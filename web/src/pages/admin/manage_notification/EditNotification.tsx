@@ -10,14 +10,13 @@ import {
 } from "@/utils/validate";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useEffect } from "react";
+
 import {
   NotificationSendTo,
   NotificationTypes,
   NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
-import { useGetNotificationById, useEditNotification } from "@/shared/apiServices/admin/adminService";
+
 interface EditNotificationForm {
   title: string;
   notificationType: string;
@@ -26,16 +25,7 @@ interface EditNotificationForm {
   notificationMessage: string;
 }
 
-/**
- * EditNotification lets admins view and update a notification.
- * It loads the notification by ID API, populates a form,
- * and submits updates via PUT after user confirmation. On success, it
- * navigates back and shows a success toast.
- *
- * @returns {JSX.Element} Form UI for editing a notification.
- */
-
-export default function EditNotification() {
+export default function EditNotificationUIOnly() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const { id } = useParams<{ id: string }>();
@@ -49,67 +39,27 @@ export default function EditNotification() {
       notificationMessage: "",
     },
   });
-  const { data, isLoading, isError } = useGetNotificationById(id!);
-  const updateNotification = useEditNotification({
-    onSuccess: () => {
-      toast.success("Notification updated successfully!");
-      navigate(absoluteUrls.admin.home.manage_notification);
-    },
-    onError: () => {
-      toast.error("Failed to update notification");
-    },
-  });
-  useEffect(() => {
-    if (!data) return;
-    methods.reset({
-      title: data.title,
-      notificationType: data.type,
-      sendTo:
-      NotificationSendTo.find((o) => o.value.toLowerCase() === data.sendTo.toLowerCase())?.value || "",
-      users: data.users,
-      notificationMessage: data.message,
-    });
-  }, [data, methods]);
-const onSubmit = async (formData: EditNotificationForm) => {
-  await showPopup({
-    title: "Update Notification",
-    body: "Are you sure you want to save the changes?",
-    actionButtons: [
-      { label: "Cancel", value: null, variant: "outline" },
-      {
-        label: "Update",
-        value: "update",
-        variant: "primary",
-        action: (close) => {
-          updateNotification.mutate({
-            id: id!,
-            title: formData.title,
-            message: formData.notificationMessage,
-            type: formData.notificationType,
-            sendTo: formData.sendTo,
-            users: formData.users,
-          });
-          close(true);
+
+  const onSubmit = async (formData: EditNotificationForm) => {
+    // Only UI 
+    await showPopup({
+      title: "Update Notification",
+      body: "Are you sure you want to save the changes?",
+      actionButtons: [
+        { label: "Cancel", value: null, variant: "outline" },
+        {
+          label: "Update",
+          value: "update",
+          variant: "primary",
+          action: (close) => {
+            console.log("Form submitted:", { id, ...formData });
+            close(true);
+          },
         },
-      },
-    ],
-  });
-};
-  if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center py-10">
-        <div className="h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
-        <span className="ml-3 text-sm text-gray-600">
-          Loading notification...
-        </span>
-      </div>
-    );
-  }
-  if (isError) {
-    toast.error("Notification not found");
-    navigate(absoluteUrls.admin.home.manage_notification);
-    return null;
-  }
+      ],
+    });
+  };
+
   return (
     <div className="w-full h-full flex flex-col px-4 py-2 gap-3">
       {/* Header */}
