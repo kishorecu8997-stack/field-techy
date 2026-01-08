@@ -32,9 +32,7 @@ const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
   verifications,
   onOpenReview,
 }) => {
-  const StarIcon = (icons as any)?.star as
-    | React.ComponentType<React.SVGProps<SVGSVGElement>>
-    | undefined;
+// Use fallback directly
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
@@ -85,7 +83,7 @@ const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
         fullWidth
         variant="primary"
         onClick={onOpenReview}
-        leftIcon={StarIcon ? <StarIcon className="h-4 w-4" /> : <span>⭐</span>}
+        leftIcon={<span>⭐</span>}
       >
         Rate this Client
       </Button>

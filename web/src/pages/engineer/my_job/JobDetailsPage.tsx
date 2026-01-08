@@ -28,7 +28,7 @@ const JobDetailsPage = () => {
     (job) => job.id === Number(params.jobId)
   );
 
-  const handleSubmitReview = (payload: { rating: number; review: string }) => {
+  const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
