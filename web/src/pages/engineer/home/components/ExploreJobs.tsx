@@ -311,7 +311,7 @@ const ExploreJobs: React.FC = () => {
                   </p>
                   <Button
                     onClick={handleClearAllFilters}
-                    className="mt-6 text-lg font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400"
+                    className="mt-6 text-lg font-medium  hover:text-teal-700 dark:text-teal-400"
                   >
                     Clear all filters
                   </Button>
