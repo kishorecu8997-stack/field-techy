@@ -386,5 +386,6 @@ export function getUserId(): string | null {
   if (!raw) return null;
 
   const parsed = JSON.parse(raw);
-  return parsed?.state?.session?.userId ?? null;
+  const userId = parsed?.state?.session?.userId;
+  return userId ? String(userId) : null;
 }

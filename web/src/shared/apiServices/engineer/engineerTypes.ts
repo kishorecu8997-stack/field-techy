@@ -53,8 +53,8 @@ export interface EngineerData {
     updatedBy?: string | null;
     deletedBy?: string | null;
     isDeleted?: boolean;
-    jobSkills?: JobSkill[];
-    tools?: Tool[];
+    jobSkills?: string[];
+    tools?: string[];
     experiences?: Experience[];
     educations?: Education[];
     files?: any;
@@ -108,6 +108,7 @@ export interface EngineerFile {
     mimeType: string;
     size: number;
     proposalId: string | null;
+    createdAt: string;
 }
 
 export type DocumentType = "RESUME" | "GOVERNMENT_ID" | "CERTIFICATE" | "PICTURE";

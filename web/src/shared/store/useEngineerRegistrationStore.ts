@@ -218,8 +218,8 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
             state.company && state.designation
               ? [
                   {
-                    employer: state.company,
-                    designation: state.designation,
+                    company: state.company,
+                    position: state.designation,
                     startDate: new Date().toISOString(),
                   },
                 ]

@@ -9,6 +9,7 @@ import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerSer
 import { useMemo } from "react";
 import type { DocumentType } from "@/shared/apiServices/engineer/engineerTypes";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
+import { getUserId } from "@/utils";
 
 /**
  * Defines the shape of the form data for editing a document.
@@ -27,14 +28,10 @@ const EditDocument = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const userId = useMemo(() => {
-    const raw = localStorage.getItem("generic-user-session");
-    if (!raw) return null;
-    return JSON.parse(raw)?.state?.session?.userId ?? null;
-  }, []);
+  const userId = useMemo(() => getUserId(), []);
 
   const uploadMutation = useEngineerFileUpload({
-    engineerId: userId,
+    engineerId: userId || undefined,
     onSuccess: () => {
       toast.success("Document Uploaded Successfully");
       setActiveKey("documents");

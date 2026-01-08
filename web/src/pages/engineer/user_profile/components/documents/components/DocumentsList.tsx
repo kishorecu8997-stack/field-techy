@@ -99,7 +99,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     if (contextData) {
       return contextData.files;
     }
-
+    
     return (filesQuery.data || []).filter(
       (file) => file.fileType !== "PICTURE"
     );
