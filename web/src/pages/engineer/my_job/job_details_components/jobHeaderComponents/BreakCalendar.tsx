@@ -188,7 +188,7 @@ const BreakCalendar: React.FC = () => {
                 Icon={status.Icon}
                 label={status.label}
                 iconColor={status.iconColor}
-                textColor={`text-gray-700 dark:text-gray-300 ${status.textColor}`}
+                  textColor={status.textColor}
               />
             ))}
           </div>
