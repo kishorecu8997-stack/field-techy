@@ -6,21 +6,17 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDeleteNotification, useGetPagedNotifications } from "@/shared/apiServices/admin/adminService";
 import type { AdminNotification } from "@/shared/apiServices/admin/adminTypes";
-import { CiEdit } from "react-icons/ci";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { useQueryClient } from "@tanstack/react-query";
-
 
 const ManageNotification: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const { data, refetch, isFetching } = useGetPagedNotifications({ page: 0, size: 10 });
-  const queryClient = useQueryClient();
-
 
   // Delete mutation
   const deleteNotificationMutation = useDeleteNotification({

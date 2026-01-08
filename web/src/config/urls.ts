@@ -121,6 +121,7 @@ export const urls = {
       manage_rate_card: "rate-card",
       edit_role: "sub-admins/edit-role",
       manage_notification_add: "notifications/add",
+      manage_notification_edit: "notifications/edit",
       manage_payment: "revenue",
       manage_transactions: "transaction",
       wallet_overview: "wallet-overview",
