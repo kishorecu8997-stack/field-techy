@@ -82,7 +82,7 @@ const JobCard: React.FC<JobCardProps> = ({
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
           <span>
             {getCurrencyFromStorage()}
-            {jobs?.salary ?? "100"}
+            {jobs?.salary}
           </span>
         </div>
       </div>
