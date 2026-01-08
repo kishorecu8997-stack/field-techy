@@ -16,5 +16,6 @@ export const ENGINEER_ROUTER_PATHS = {
     `/eng/api/v1/engineers/files/${engineerId}/${documentType}/upload`,
   GET_JOBS: (engineerId: string) => `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   ASSIGN_JOB: (engineerId: string) => `/eng/api/v1/engineers/jobs/${engineerId}/assign`,
+  GET_JOB_BY_ID: (jobId: string) => `/eng/api/v1/engineers/jobs/job/${jobId}`,
   UPDATE_JOB_STATUS: (jobId: string) => `/eng/api/v1/engineers/jobs/${jobId}/status`,
 } as const;

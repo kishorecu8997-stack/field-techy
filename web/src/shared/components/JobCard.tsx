@@ -20,8 +20,8 @@ interface JobCardProps extends JobAssignment {
  * @param {Job} props - Job data including title, client, location, pay, status, etc.
  */
 const JobCard: React.FC<JobCardProps> = ({
-  id,
   title,
+  jobId,
   client,
   startDate,
   duration,
@@ -33,7 +33,7 @@ const JobCard: React.FC<JobCardProps> = ({
 }) => {
   return (
     <Link
-      to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
+      to={`${absoluteUrls.engineer.home.my_jobs}/${jobId}`}
       onClick={() => scrollToTop()}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
