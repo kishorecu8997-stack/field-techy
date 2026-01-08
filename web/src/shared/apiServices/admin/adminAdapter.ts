@@ -22,12 +22,16 @@ import { GlobalApiErrorHandler } from "../utils";
 
 export class AdminAdapter {
     // Delete Notification
-    static async DeleteNotification(id: string): Promise<{ message: string }> {
-        const response = await axiosInstance.delete(
-            ADMIN_ROUTER_PATHS.DELETE_NOTIFICATION(id)
-        );
-        return response.data;
+  static async DeleteNotification(id: string): Promise<{ message: string }> {
+    try {
+      const response = await axiosInstance.delete(
+        ADMIN_ROUTER_PATHS.DELETE_NOTIFICATION(id)
+      );
+      return response.data;
+    } catch (error: unknown) {
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
+  }
 
     // Get All Notifications
     static async GetAllNotifications(): Promise<AdminNotification[]> {

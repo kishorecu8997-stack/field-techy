@@ -11,16 +11,22 @@ import { toast } from "react-toastify";
 import { useDeleteNotification, useGetPagedNotifications } from "@/shared/apiServices/admin/adminService";
 import type { AdminNotification } from "@/shared/apiServices/admin/adminTypes";
 import { CiEdit } from "react-icons/ci";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 const ManageNotification: React.FC = () => {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const { data } = useGetPagedNotifications({ page: 0, size: 10 });
+  const { data, refetch, isFetching } = useGetPagedNotifications({ page: 0, size: 10 });
+  const queryClient = useQueryClient();
+
 
   // Delete mutation
   const deleteNotificationMutation = useDeleteNotification({
     onSuccess: () => {
       toast.success("Notification deleted successfully!");
+      refetch();
     },
      onError: (error: unknown) => {
       let message = "Failed to delete notification. Please try again.";
@@ -114,14 +120,7 @@ const ManageNotification: React.FC = () => {
   if (deleteNotificationMutation.isPending)
     return (
       <div className="w-full h-full flex items-center justify-center py-10">
-        <div
-          className="h-8 w-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"
-          role="status"
-          aria-label="Loading"
-        ></div>
-        <span className="ml-3 text-sm text-gray-600 dark:text-gray-300">
-          Loading notifications...
-        </span>
+        <LoaderComponent />
       </div>
     );
 
