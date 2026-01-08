@@ -16,6 +16,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   reviews,
   verifications,
 }) => {
+  console.log('verifications :', verifications);
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <h2 className="font-semibold text-gray-900 dark:text-white mb-4">
@@ -45,21 +46,26 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
           </span>
         </div>
       </div>
-
-      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
-        Client Verification
-      </h3>
-      <ul className="space-y-1.5">
-        {verifications.map((v, idx) => (
-          <li
-            key={idx}
-            className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
-          >
-            <span className="text-green-500 mt-0.5">✓</span>
-            <span>{v}</span>
-          </li>
-        ))}
-      </ul>
+      {verifications.length ? (
+        <>
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+            Client Verification
+          </h3>
+          <ul className="space-y-1.5">
+            {verifications.map((v, idx) => (
+              <li
+                key={idx}
+                className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
+              >
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span>{v}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

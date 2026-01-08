@@ -23,7 +23,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   client,
   duration,
   type,
-  status = "new",
+  status = "NEW",
   setIsWorkSubmitted,
   setSendProposal,
   isSendProposal,
@@ -62,6 +62,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     }
   };
 
+  console.log('type :', type);
   return (
     <>
       <div
@@ -75,7 +76,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <h1 className="text-xl md:text-2xl font-bold">{title || '-'}</h1>
           <div className="flex gap-2 items-center">
             <div
-              className="flex flex-row-reverse gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
+              className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
               onClick={handleBreakDetails}
             >
               <span>Break Details</span>

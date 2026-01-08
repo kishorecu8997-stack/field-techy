@@ -56,6 +56,7 @@ const SendProposal = () => {
     },
   });
   const handleSubmit = async (data: proposalTypes) => {
+  console.log('data :', data);
 
     const engineerId = sessionStorage.getItem("userId");
 
@@ -84,16 +85,17 @@ const SendProposal = () => {
           action: async (close) => {
             console.log("OK button clicked");
             try {
-              await sendProposal({
-                proposalDescription: data.description,
-                expectedPay: data.expected,
-                payType: data.type,
-                engineerId: engineerId as string,
-                availability: data.availability,
-              });
+              console.log('data :', data);
+              // await sendProposal({
+              //   proposalDescription: data.description,
+              //   expectedPay: data.expected,
+              //   payType: data.type,
+              //   engineerId: engineerId as string,
+              //   availability: data.availability,
+              // });
               toast.success("Proposal submitted successfully!");
               navigate(absoluteUrls.engineer.home.my_jobs);
-              close(true);
+              // close(true);
             } catch (error) {
               console.error("Proposal submission failed:", error);
             }

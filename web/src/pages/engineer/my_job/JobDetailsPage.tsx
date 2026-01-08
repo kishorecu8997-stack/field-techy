@@ -50,7 +50,7 @@ const JobDetailsPage = () => {
               client={client?.companyName as string}
               duration={getDuration as string}
               type={jobs?.engagementModel as string}
-              status={jobs?.status}
+              status={jobs?.status as JobStatus}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
@@ -69,11 +69,11 @@ const JobDetailsPage = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={client?.companyName as string}
-              memberSince={"" as string}
-              location={"" as string}
-              rating={""}
+              memberSince={"-" as string}
+              location={"-" as string}
+              rating={"-"}
               reviews={0}
-              verifications={[""]}
+              verifications={[]}
             />
           </div>
         </div>

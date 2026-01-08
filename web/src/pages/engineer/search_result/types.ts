@@ -5,29 +5,29 @@ export const BUDGET_TYPES = {
 export type BudgetType = (typeof BUDGET_TYPES)[keyof typeof BUDGET_TYPES];
 
 export const JOB_STATUSES = {
-  new: "new",
-  offer: "offer",
-  applied: "applied",
-  inprogress: "inprogress",
-  completed: "completed",
-  notified: "notified",
-  unallocated: "unallocated",
-  partiallyAssigned: "partiallyAssigned",
-  assigned: "assigned",
-  selected: "selected",
-  hold: "hold",
-  draft: "draft",
-  canceled: "canceled",
-  escalationInProgress: "escalationInProgress",
-  workInProgress: "workInProgress",
-  closed: "closed",
+  new: "NEW",
+  offer: "OFFER",
+  applied: "APPLIED",
+  inprogress: "IN_PROGRESS",
+  completed: "COMPLETED",
+  notified: "NOTIFIED",
+  unallocated: "UNALLOCATED",
+  partiallyAssigned: "PARTIALLY_ASSIGNED",
+  assigned: "ASSIGNED",
+  selected: "SELECTED",
+  hold: "HOLD",
+  draft: "DRAFT",
+  canceled: "CANCELED",
+  escalationInProgress: "ESCALATION_IN_PROGRESS",
+  workInProgress: "WORK_IN_PROGRESS",
+  closed: "CLOSED",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
 export const WORKING_TYPES = {
-  onsite: "on-site",
-  remote: "remote",
-  hybrid: "hybrid",
+  onsite: "ON_SITE",
+  remote: "REMOTE",
+  hybrid: "HYBRID",
 } as const;
 export type WorkingType = (typeof WORKING_TYPES)[keyof typeof WORKING_TYPES];
 
