@@ -139,8 +139,10 @@ export const OTPInput = ({
         const otp = field.value?.toString().padEnd(length, "") || "";
 
         return (
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 justify-center">
+<div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-xs sm:max-w-sm md:max-w-md">
+<div className="flex gap-2 justify-center">
+  <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-xs sm:max-w-sm md:max-w-md">
+
               {Array.from({ length }).map((_, idx) => (
                 <input
                   key={idx}
@@ -160,6 +162,7 @@ export const OTPInput = ({
                   aria-label={`OTP digit ${idx + 1} of ${length}`}
                 />
               ))}
+              </div>
             </div>
             {error && (
               <p
