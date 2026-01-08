@@ -98,6 +98,45 @@ export class EngineerAdapter {
     }
   }
 
+  static async downloadFileStream(fileKey: string, fileName?: string): Promise<{ blob: Blob }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
+
+      const blob = new Blob([response.data]);
+      return { blob };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async deleteFile(fileId: string): Promise<boolean> {
+    try {
+      await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE_FILE(fileId));
+      return true;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_ENGINEER_FILES(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
   static async uploadFile(
     params: FileUploadParams
   ): Promise<FileUploadResponse> {

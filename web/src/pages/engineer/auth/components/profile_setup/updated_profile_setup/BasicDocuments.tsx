@@ -8,14 +8,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import BackgroundVerification from "@/pages/engineer/auth/components/profile_setup/BackgroundVerification";
+import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
 import { useState } from "react";
 
-
 interface DocumentFormData {
   profileImage: File | string | null;
+  resume: FileList | null;
   governmentId: FileList | null;
   certificate: FileList | null;
 }
@@ -45,25 +45,46 @@ const BasicDocuments = () => {
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
       profileImage: null,
+      resume: null,
       governmentId: null,
       certificate: null,
     },
   });
 
   const { showPopup } = usePopupStore();
-  const { clearStore, updateDocuments } = useEngineerRegistrationStore();
+  const { clearStore } = useEngineerRegistrationStore();
+  const { updateDocuments } = useEngineerRegistrationStore();
 
   const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
-    onSuccess: () => {
+    // @ts-ignore - The types from react-query/engineerService might be slightly off regarding the second argument 'variables'
+    onSuccess: (data: any, variables: any) => {
+      console.log("File uploaded:", data);
+
+      // Map document type to store key
+      switch (variables.documentType) {
+        case "PROFILE_PICTURE":
+          updateDocuments({ profileImageUrl: data.fileId });
+          break;
+        case "RESUME":
+          updateDocuments({ resumeUrl: data.fileId });
+          break;
+        case "GOVERNMENT_ID":
+          updateDocuments({ governmentIdUrl: data.fileId });
+          break;
+        case "CERTIFICATE":
+          updateDocuments({ certificateUrl: data.fileId });
+          break;
+      }
+
       setUploadingDoc(null);
       toast.success("File uploaded successfully!");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.error("Upload failed:", error);
       setUploadingDoc(null);
       toast.error("Failed to upload file");
     },
-     onProgress: (progress) => {
+    onProgress: (progress) => {
       setUploadProgress((prev) => ({
         ...prev,
         [uploadingDoc!]: progress.percentage!,
@@ -103,7 +124,7 @@ const BasicDocuments = () => {
 
     // Check if at least one document is selected
     const hasAtLeastOne =
-      data.profileImage || data.governmentId || data.certificate;
+      data.profileImage || data.resume || data.governmentId || data.certificate;
 
     if (!hasAtLeastOne) {
       toast.error("Please upload at least one document or click 'Skip'.");
@@ -114,22 +135,20 @@ const BasicDocuments = () => {
     const uploads: Promise<any>[] = [];
 
     if (data.profileImage && data.profileImage instanceof File) {
-      setUploadingDoc("PICTURE");
+      setUploadingDoc("PROFILE_PICTURE");
       uploads.push(
         uploadFileAsync({
           engineerId,
           file: data.profileImage,
-          documentType: "PICTURE",
+          documentType: "PROFILE_PICTURE",
           onUploadProgress: (progress) => {
             if (progress.percentage) {
               setUploadProgress((prev) => ({
                 ...prev,
-                PICTURE: progress.percentage!,
+                PROFILE_PICTURE: progress.percentage!,
               }));
             }
           },
-        }).then((res) => {
-          updateDocuments({ profileImageUrl: res.fileId });
         })
       );
     }
@@ -149,8 +168,6 @@ const BasicDocuments = () => {
               }));
             }
           },
-        }).then((res) => {
-          updateDocuments({ governmentIdUrl: res.fileId });
         })
       );
     }
@@ -170,8 +187,6 @@ const BasicDocuments = () => {
               }));
             }
           },
-        }).then((res) => {
-          updateDocuments({ certificateUrl: res.fileId });
         })
       );
     }
@@ -181,7 +196,7 @@ const BasicDocuments = () => {
 
       showPopup({
         title: "Documents Uploaded Successfully!",
-        body: "Your documents have been uploaded. Proceed to Login?",
+        body: "Your documents have been uploaded. Continue to Login?",
         actionButtons: [
           {
             label: "Proceed to Login",
@@ -209,7 +224,6 @@ const BasicDocuments = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      {/* header - sticky */}
       <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
@@ -217,21 +231,15 @@ const BasicDocuments = () => {
           <span className="text-sm text-gray-500">(or skip for now)</span>
         </h2>
       </div>
-
-      {/* body - scrollable */}
       <div className="flex-1 overflow-y-auto">
-        {/* profile image */}
         <div className="flex flex-row justify-center items-center py-1">
           <div className="w-fit">
             <ImageUploaderField name="profileImage" />
           </div>
         </div>
-
-        {/* documents */}
         <div className="p-4 flex flex-col gap-2 items-center justify-center">
           <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-            <BackgroundVerification />
-
+            <BackgroundVerificationFields />
             {isUploading && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm font-medium text-blue-800">
@@ -250,8 +258,6 @@ const BasicDocuments = () => {
           </div>
         </div>
       </div>
-
-      {/* footer - sticky */}
       <div className="shrink-0 p-4 mb-8 bg-white flex justify-center gap-3">
         <div className="w-full max-w-md flex gap-3">
           <Button
@@ -266,7 +272,7 @@ const BasicDocuments = () => {
           <Button
             type="submit"
             disabled={isUploading}
-            className="w-1/2 bg-linear-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-1/2 bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             {isUploading ? "Uploading..." : "Save and Continue"}
           </Button>

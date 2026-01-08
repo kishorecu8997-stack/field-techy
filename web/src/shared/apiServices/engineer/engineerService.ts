@@ -87,6 +87,39 @@ export function useEngineerDownloadFile(options?: {
     });
 }
 
+/**
+ * Hook to download a file stream with metadata
+ * Returns a mutation that can be called with a fileKey
+ */
+export function useDownloadEngineerFileStream(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        mutationFn: (fileKey: string) => EngineerAdapter.downloadFileStream(fileKey),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
+}
+
+/**
+ * Hook to delete an engineer file
+ */
+export function useDeleteEngineerFile(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (fileId: string) => EngineerAdapter.deleteFile(fileId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+            options?.onSuccess?.();
+        },
+        onError: options?.onError,
+    });
+}
+
 export function useEngineerAssignJob(options?: {
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: unknown) => void;

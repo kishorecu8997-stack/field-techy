@@ -17,4 +17,11 @@ export const ENGINEER_ROUTER_PATHS = {
   GET_JOBS: (engineerId: string) => `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   ASSIGN_JOB: (engineerId: string) => `/eng/api/v1/engineers/jobs/${engineerId}/assign`,
   UPDATE_JOB_STATUS: (jobId: string) => `/eng/api/v1/engineers/jobs/${jobId}/status`,
+
+  // File upload endpoints
+  GET_ENGINEER_FILES: (engineerId: string) =>
+    `/engineer/api/v1/engineers/files/${engineerId}`,
+  DELETE_FILE: (fileId: string) => `/engineers/files/${fileId}`,
+  DOWNLOAD_FILE_STREAM: (fileKey: string) =>
+    `/engineer/api/v1/engineers/files/download/stream/${fileKey}`,
 } as const;

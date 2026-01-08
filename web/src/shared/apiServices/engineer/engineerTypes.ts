@@ -110,7 +110,7 @@ export interface EngineerFile {
     proposalId: string | null;
 }
 
-export type DocumentType = "RESUME" | "GOVERNMENT_ID" | "CERTIFICATE" | "PICTURE";
+export type DocumentType = "RESUME" | "GOVERNMENT_ID" | "CERTIFICATE" | "PROFILE_PICTURE";
 
 export interface FileUploadParams {
     engineerId: string;
