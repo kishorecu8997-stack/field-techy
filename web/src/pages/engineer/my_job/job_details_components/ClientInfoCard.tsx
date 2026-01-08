@@ -2,6 +2,11 @@ import React from "react";
 import type { ClientInfoCardProps } from "../types";
 import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
+
+type ClientInfoCardUIProps = ClientInfoCardProps & {
+  onOpenReview?: () => void;
+};
+
 /**
  * ClientInfoCard
  *
@@ -18,11 +23,6 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @param {string[]} props.verifications - List of client verifications
  * @returns {JSX.Element} The client info card UI component
  */
-
-type ClientInfoCardUIProps = ClientInfoCardProps & {
-  onOpenReview?: () => void;
-};
-
 const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
   name,
   memberSince,
@@ -32,7 +32,6 @@ const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
   verifications,
   onOpenReview,
 }) => {
-// Use fallback directly
 
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
