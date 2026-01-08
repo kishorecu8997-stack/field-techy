@@ -1,5 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
-import { useSendProposalJob } from "@/shared/apiServices/engineer/engineerService";
+import {
+  useEngineerFileUpload,
+  useSendProposalJob,
+} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -10,17 +13,17 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validateDescription, validateNumericInput } from "../validation";
+import { getUserId } from "@/utils";
 
 export interface proposalTypes {
   description: string;
   expected: string;
   type: string;
-  attachment: File;
+  attachment: File | null;
   availability: string;
   question: string;
   describe: string;
 }
-
 
 /**
  * A form component for submitting a job proposal.
@@ -41,26 +44,45 @@ export interface proposalTypes {
  */
 const SendProposal = () => {
   const { showPopup } = usePopupStore();
-  const navigate = useNavigate();
-  const { mutateAsync: sendProposal } = useSendProposalJob();
+  const userId = getUserId();
 
+
+  const navigate = useNavigate();
   const formCtx = useForm<proposalTypes>({
     mode: "onChange",
     defaultValues: {
-      description: "",
-      expected: "",
+      description: "Here we are using an attachment file. What should be the file type for this attachment",
+      expected: "300",
       type: "",
+      attachment: null,
       availability: "",
-      question: "",
-      describe: "",
+      question: "Here we are using an attachment file. What should be the file type for this attachment",
+      describe: "Here we are using an attachment file. What should be the file type for this attachment",
     },
   });
+
+  const file = formCtx.watch("attachment");
+  console.log('file :', file);
+
+  const { mutateAsync: uploadFile } = useEngineerFileUpload();
+  const { mutateAsync: sendProposal } = useSendProposalJob({
+    async onSuccess() {
+      try {
+        await uploadFile({
+          engineerId: userId as string,
+          file: file as File,
+          documentType: "PROPOSAL",
+        });
+        toast.success("Proposal submitted successfully!");
+        navigate(absoluteUrls.engineer.home.my_jobs);
+      } catch (error) {
+        console.error("Proposal submission failed:", error);
+      }
+    },
+  });
+
   const handleSubmit = async (data: proposalTypes) => {
-  console.log('data :', data);
-
-    const engineerId = sessionStorage.getItem("userId");
-
-    if (!engineerId) {
+    if (!userId) {
       toast.error("Please login to submit a proposal");
       return;
     }
@@ -85,17 +107,15 @@ const SendProposal = () => {
           action: async (close) => {
             console.log("OK button clicked");
             try {
-              console.log('data :', data);
-              // await sendProposal({
-              //   proposalDescription: data.description,
-              //   expectedPay: data.expected,
-              //   payType: data.type,
-              //   engineerId: engineerId as string,
-              //   availability: data.availability,
-              // });
-              toast.success("Proposal submitted successfully!");
-              navigate(absoluteUrls.engineer.home.my_jobs);
-              // close(true);
+              console.log("data :", data);
+              await sendProposal({
+                proposalDescription: data.description,
+                expectedPay: data.expected,
+                payType: data.type,
+                engineerId: userId as string,
+                availability: data.availability,
+              });
+              // Success flow handled in onSuccess
             } catch (error) {
               console.error("Proposal submission failed:", error);
             }

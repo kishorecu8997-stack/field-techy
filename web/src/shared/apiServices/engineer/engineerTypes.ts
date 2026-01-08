@@ -114,7 +114,8 @@ export type DocumentType =
   | "RESUME"
   | "GOVERNMENT_ID"
   | "CERTIFICATE"
-  | "PICTURE";
+  | "PICTURE"
+  | "PROPOSAL";
 
 export interface FileUploadParams {
   engineerId: string;

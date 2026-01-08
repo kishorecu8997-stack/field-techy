@@ -1,6 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
-import type { Job } from "@/pages/engineer/search_result/types";
 import React from "react";
 import type { JobItem } from "../types";
 
