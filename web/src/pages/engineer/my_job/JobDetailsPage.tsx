@@ -9,6 +9,7 @@ import JobTabSection from "./job_details_components/JobTabSection";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useEngineerGetJobById } from "@/shared/apiServices/engineer/engineerService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 /**
  * Page component displaying detailed information about a specific job.
  *
@@ -30,6 +31,8 @@ const JobDetailsPage = () => {
     enabled: !!jobId && !!engineerId,
   });
   const jobData = job?.[0];
+  const { data: jobs,
+   } = useClientGetJobsById( jobId?? "", );
   if (isLoading) {
   return (
     <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -56,10 +59,10 @@ const JobDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={jobData?.title as string}
-              client={jobData?.client as string}
-              duration={jobData?.duration as string}
-              type={jobData?.type}
+              title={jobs?.jobTitle as string}
+              client={jobs?.client.contactPersonName as string}
+              duration={jobs?.timePeriodOfJob as string}
+              type={jobs?.engagementModel}
               status={jobData?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
@@ -78,9 +81,9 @@ const JobDetailsPage = () => {
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={jobData?.client as string}
+              name={jobs?.client.contactPersonName as string}
               memberSince={client.memberSince}
-              location={jobData?.location as string}
+              location={jobs?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
