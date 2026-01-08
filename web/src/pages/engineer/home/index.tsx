@@ -1,12 +1,11 @@
 import { absoluteUrls } from "@/config/urls";
 import { earningsData, userData } from "@/dummy_data/jobDetails";
 import { useGetJobs } from "@/shared/apiServices/client/clientService";
-import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { useFCM } from "@/shared/hooks/useFCM";
 import { useGeolocation } from "@/shared/hooks/useGeolocation";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
-import { getUserId, scrollToTop } from "@/utils";
+import { scrollToTop } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
@@ -25,11 +24,6 @@ import type { JobItem } from "./types";
 const Home = () => {
   const navigate = useNavigate();
   const { data: jobs } = useGetJobs();
-
-  const userId = getUserId();
-  if (!userId) return null;
-  const { data: engineerJobs } = useEngineerGetById(userId);
-  console.log("engineerJobs", engineerJobs);
 
   const handleExploreJobs = () => {
     scrollToTop();

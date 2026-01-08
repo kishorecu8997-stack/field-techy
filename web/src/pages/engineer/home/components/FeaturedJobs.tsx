@@ -227,10 +227,10 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg text-gray-900 dark:text-white">
           {getCurrencyFromStorage()}
-          {props.salary}
+          {props.salary || "-"}
         </span>
         <span className="text-gray-500 dark:text-gray-400 text-sm">
-          {props.location}
+          {props.location || "-"}
         </span>
       </div>
     </div>
