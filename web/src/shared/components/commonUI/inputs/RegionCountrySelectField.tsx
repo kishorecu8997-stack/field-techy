@@ -40,7 +40,7 @@ export const RegionCountrySelectField = ({
   options,
 }: RegionCountrySelectFieldProps) => {
   const { control } = useFormContext();
-  const [search, setSearch] = useState("");
+
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
@@ -78,33 +78,27 @@ export const RegionCountrySelectField = ({
             region: option,
             countries: [],
           };
-        } else if (option.type === "country" && option.region) {
+        } else if (option.type === "subdivision" && option.region) {
           if (!acc[option.region]) {
             const regionOption = options.find(
               (o) => o.value === option.region && o.type === "region"
             );
-            if (regionOption) {
-              acc[option.region] = {
-                region: regionOption,
-                countries: [],
-              };
+            if (!regionOption) {
+              console.warn(
+                `RegionCountrySelectField: country "${option.label}" references unknown region "${option.region}".`
+              );
+              return acc;
             }
+            acc[option.region] = {
+              region: regionOption,
+              countries: [],
+            };
           }
-          if (acc[option.region]) {
-            acc[option.region].countries.push(option);
-          }
+          acc[option.region].countries.push(option);
         }
         return acc;
       }, {} as Record<string, { region: RegionCountryOption; countries: RegionCountryOption[] }>)
     : {};
-
-  const filteredGroupedOptions = Object.values(groupedOptions).filter(
-    (group) =>
-      group.region.label.toLowerCase().includes(search.toLowerCase()) ||
-      group.countries.some((country) =>
-        country.label.toLowerCase().includes(search.toLowerCase())
-      )
-  );
 
   const updatePosition = () => {
     if (!buttonRef.current) return;
@@ -152,7 +146,13 @@ export const RegionCountrySelectField = ({
           );
 
           const handleSelect = (selected: RegionCountryOption[]) => {
-            onChange(selected.map((s) => s.value));
+            const values = selected.map((s) => s.value);
+            onChange(values);
+
+            const isCountrySelected = values.includes("Country");
+            if (!isCountrySelected) {
+              setShowGroupedOptions(false);
+            }
           };
 
           const displayLabel =
@@ -173,10 +173,6 @@ export const RegionCountrySelectField = ({
                   requestAnimationFrame(updatePosition);
                 } else if (!open && openRef.current) {
                   openRef.current = false;
-                }
-
-                if (!open && search !== "") {
-                  setTimeout(() => setSearch(""), 0);
                 }
 
                 return (
@@ -267,12 +263,12 @@ export const RegionCountrySelectField = ({
 
                           {/* Grouped regions + countries */}
                           {showGroupedOptions &&
-                            (filteredGroupedOptions.length === 0 ? (
+                            (Object.values(groupedOptions).length === 0 ? (
                               <div className="py-2 px-4 text-gray-500 dark:text-gray-400">
                                 No results found
                               </div>
                             ) : (
-                              filteredGroupedOptions.map((group) => {
+                              Object.values(groupedOptions).map((group) => {
                                 const allCountriesSelected =
                                   group.countries.length > 0 &&
                                   group.countries.every((c) =>
@@ -311,8 +307,9 @@ export const RegionCountrySelectField = ({
 
                                     {/* Region Option (Select All Countries) */}
                                     {isExpanded && (
-                                      <div
-                                        className="relative flex items-center space-x-2 cursor-pointer select-none py-2 pl-6 pr-4 rounded-md hover:bg-green-100 dark:hover:bg-green-900"
+                                      <button
+                                        type="button"
+                                        className="relative flex w-full items-center space-x-2 select-none py-2 pl-6 pr-4 rounded-md text-left hover:bg-green-100 dark:hover:bg-green-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
                                         onClick={() => {
                                           if (allCountriesSelected) {
                                             onChange(
@@ -344,12 +341,12 @@ export const RegionCountrySelectField = ({
                                               el.indeterminate =
                                                 isIndeterminate;
                                           }}
-                                          className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                                          className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500 pointer-events-none"
                                         />
                                         <span className="block truncate font-medium">
                                           {group.region.label} (All Countries)
                                         </span>
-                                      </div>
+                                      </button>
                                     )}
 
                                     {/* Country Options */}
