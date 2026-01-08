@@ -19,7 +19,7 @@ export interface proposalTypes {
   description: string;
   expected: string;
   type: string;
-  attachment: File | null;
+  attachment: FileList | null;
   availability: string;
   question: string;
   describe: string;
@@ -65,21 +65,7 @@ const SendProposal = () => {
   console.log('file :', file);
 
   const { mutateAsync: uploadFile } = useEngineerFileUpload();
-  const { mutateAsync: sendProposal } = useSendProposalJob({
-    async onSuccess() {
-      try {
-        await uploadFile({
-          engineerId: userId as string,
-          file: file as File,
-          documentType: "PROPOSAL",
-        });
-        toast.success("Proposal submitted successfully!");
-        navigate(absoluteUrls.engineer.home.my_jobs);
-      } catch (error) {
-        console.error("Proposal submission failed:", error);
-      }
-    },
-  });
+  const { mutateAsync: sendProposal } = useSendProposalJob();
 
   const handleSubmit = async (data: proposalTypes) => {
     if (!userId) {
@@ -115,7 +101,18 @@ const SendProposal = () => {
                 engineerId: userId as string,
                 availability: data.availability,
               });
-              // Success flow handled in onSuccess
+
+              if (data.attachment && data.attachment.length > 0) {
+                await uploadFile({
+                  engineerId: userId as string,
+                  file: data.attachment[0],
+                  documentType: "PROPOSAL",
+                });
+              }
+
+              toast.success("Proposal submitted successfully!");
+              navigate(absoluteUrls.engineer.home.my_jobs);
+              close(true);
             } catch (error) {
               console.error("Proposal submission failed:", error);
             }
