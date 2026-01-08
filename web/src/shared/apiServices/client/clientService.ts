@@ -285,3 +285,12 @@ export function useGetJobs() {
     notifyOnChangeProps: ['data', 'error'],
   });
 }
+
+export function useClientGetJobsById(id: string) {
+  return useQuery({
+    queryKey: ["client-jobs", id],
+    queryFn: () => ClientAdapter.getJobsById(id),
+    enabled: !!id,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}

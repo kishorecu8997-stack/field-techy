@@ -37,7 +37,7 @@ export const ENGINEER_ROUTER_PATHS = {
     `/eng/api/v1/engineers/proposals/delete/${id}`,
 
 // Jobs endpoints
-GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/job/${id}`,
+GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/${id}`,
 GET_JOBS_BY_ENGINEER_ID: (engineerId: string) =>
     `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
 } as const;
