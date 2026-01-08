@@ -274,3 +274,12 @@ export function useDeleteClientFile(options?: {
     onError: options?.onError,
   });
 }
+
+export function useClientGetJobsById(id: string) {
+  return useQuery({
+    queryKey: ["client-jobs", id],
+    queryFn: () => ClientAdapter.getJobsById(id),
+    enabled: !!id,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}
