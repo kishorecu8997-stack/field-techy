@@ -1,5 +1,5 @@
 import { Listbox, Transition } from "@headlessui/react";
-import { Fragment, useRef, useState, useEffect } from "react";
+import { Fragment, useRef, useState, useEffect, useMemo } from "react";
 import {
   Controller,
   useFormContext,
@@ -71,34 +71,34 @@ export const RegionCountrySelectField = ({
   const [showGroupedOptions, setShowGroupedOptions] = useState(false);
 
   // NEW: Lazy grouping logic
-  const groupedOptions = showGroupedOptions
-    ? options.reduce((acc, option) => {
-        if (option.type === "region") {
-          acc[option.value] = {
-            region: option,
-            countries: [],
-          };
-        } else if (option.type === "subdivision" && option.region) {
-          if (!acc[option.region]) {
-            const regionOption = options.find(
-              (o) => o.value === option.region && o.type === "region"
-            );
-            if (!regionOption) {
-              console.warn(
-                `RegionCountrySelectField: country "${option.label}" references unknown region "${option.region}".`
-              );
-              return acc;
-            }
+  const groupedOptions = useMemo(() => {
+    if (!showGroupedOptions) return {};
+
+    return options.reduce((acc, option) => {
+      if (option.type === "region") {
+        acc[option.value] = {
+          region: option,
+          countries: [],
+        };
+      } else if (option.type === "subdivision" && option.region) {
+        if (!acc[option.region]) {
+          const regionOption = options.find(
+            (o) => o.value === option.region && o.type === "region"
+          );
+          if (regionOption) {
             acc[option.region] = {
               region: regionOption,
               countries: [],
             };
           }
+        }
+        if (acc[option.region]) {
           acc[option.region].countries.push(option);
         }
-        return acc;
-      }, {} as Record<string, { region: RegionCountryOption; countries: RegionCountryOption[] }>)
-    : {};
+      }
+      return acc;
+    }, {} as Record<string, { region: RegionCountryOption; countries: RegionCountryOption[] }>);
+  }, [options, showGroupedOptions]);
 
   const updatePosition = () => {
     if (!buttonRef.current) return;
@@ -289,11 +289,13 @@ export const RegionCountrySelectField = ({
                                 return (
                                   <div key={group.region.value}>
                                     {/* Region Header */}
-                                    <div
-                                      className="px-3 py-2 bg-gray-50 dark:bg-gray-700 font-semibold text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 cursor-pointer flex justify-between items-center"
+                                    <button
+                                      type="button"
+                                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 font-semibold text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center text-left cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
                                       onClick={() =>
                                         toggleRegion(group.region.value)
                                       }
+                                      aria-expanded={isExpanded}
                                     >
                                       <span className="block truncate font-medium">
                                         {group.region.label}
@@ -303,7 +305,7 @@ export const RegionCountrySelectField = ({
                                           isExpanded ? "rotate-180" : ""
                                         }`}
                                       />
-                                    </div>
+                                    </button>
 
                                     {/* Region Option (Select All Countries) */}
                                     {isExpanded && (
