@@ -60,13 +60,12 @@ const JobList = ({ activeFilter }: JobListProps) => {
     }
   }, [activeFilter, jobsAll]);
   if (isLoading) {
-  return (
-    <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
-      <LoaderComponent />
-    </div>
-  );
-}
-
+    return (
+      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
+        <LoaderComponent />
+      </div>
+    );
+ }
   if (isError) {
     return (
       <div className="col-span-2 text-center py-10 text-red-500">Failed to load jobs.</div>
