@@ -25,7 +25,7 @@ const ProfileCompletionCard = () => {
   const comparisonUI = getComparisonUI(overallCompletion);
   const getComparisonDarkClasses = (containerClass: string) => {
     if (containerClass.includes("bg-red-50")) {
-      return " dark:bg-red-400 dark:border-red-700 dark:text-red-100";
+      return " dark:bg-red-900/20 dark:border-red-700 dark:text-red-100";
     }
     if (containerClass.includes("bg-orange-50")) {
       return " dark:bg-orange-900/10 dark:border-orange-100 dark:text-orange-300";
@@ -42,7 +42,7 @@ const ProfileCompletionCard = () => {
 
       {/* Priority Guide */}
       <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2 dark:bg-gray-800 dark:border-gray-700">
-        <h4 className="font-semibold text-gray-700 dark:text-gray-100">Priority Guide</h4>
+        <h4 className="font-semibold text-gray-700 dark:text-gray-200">Priority Guide</h4>
         <ul className="space-y-1">
           {profilePriorityGuide.map((item) => (
             <li key={item.label}>
