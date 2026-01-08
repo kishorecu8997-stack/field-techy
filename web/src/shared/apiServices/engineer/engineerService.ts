@@ -48,6 +48,8 @@ export function useEngineerDelete(options?: {
   });
 }
 
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
+
 export function useEngineerFileUpload(options?: {
   onSuccess?: (data: FileUploadResponse) => void;
   onError?: (error: unknown) => void;
@@ -57,10 +59,18 @@ export function useEngineerFileUpload(options?: {
     percentage?: number;
   }) => void;
 }) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: FileUploadParams) =>
       EngineerAdapter.uploadFile(params),
-    onSuccess: options?.onSuccess,
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.engineer.detail(variables.engineerId),
+      });
+      // Refresh the store to get the updated profile image
+      useEngineerStore.getState().fetchEngineerProfile(variables.engineerId);
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }

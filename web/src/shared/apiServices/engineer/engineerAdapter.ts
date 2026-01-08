@@ -99,6 +99,35 @@ export class EngineerAdapter {
     }
   }
 
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<{ blob: Blob; fileName?: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
+
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "download";
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          fileName = match[1];
+        }
+      }
+
+      return { blob: response.data, fileName };
+    } catch (error) {
+      throw GlobalApiErrorHandler.handle(error);
+    }
+  }
+
   static async uploadFile(
     params: FileUploadParams
   ): Promise<FileUploadResponse> {
