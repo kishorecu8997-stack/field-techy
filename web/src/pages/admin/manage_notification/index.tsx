@@ -10,6 +10,7 @@ import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInp
 import { usePopupStore } from "@/shared/store/popupStore";
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { CiEdit } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -67,19 +68,36 @@ const ManageNotification: React.FC = () => {
     { key: "sendTo", label: "Send To" },
     { key: "createdDate", label: "Created Date" },
     {
-      key: "action",
-      label: "Action",
-      renderCell: (row: NotificationProps) => (
-        <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteNotification(row)}
-          >
-            <RiDeleteBin6Line className="text-red-600" />
-          </div>
-        </div>
-      ),
-    },
+  key: "action",
+  label: "Action",
+  renderCell: (row: NotificationProps) => (
+    <div className="flex items-center gap-2">
+      {/* Edit Button */}
+      <Button
+        type="button"
+        className="p-2 bg-blue-100 rounded-md cursor-pointer hover:bg-blue-200"
+        onClick={() =>
+          navigate(
+            `${absoluteUrls.admin.home.manage_notification_edit}/${row.id}`
+          )
+        }
+        aria-label="Edit notification"
+      >
+        <CiEdit className="text-blue-600 " />
+      </Button>
+
+      {/* Delete Button */}
+      <Button
+        type="button"
+        className="p-2 bg-red-100 rounded-md cursor-pointer  hover:bg-red-200"
+        onClick={() => handleDeleteNotification(row)}
+        aria-label="Delete notification"
+      >
+        <RiDeleteBin6Line className="text-red-600 bg:hover:bg-red-200" />
+      </Button>
+    </div>
+  ),
+}
   ];
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">

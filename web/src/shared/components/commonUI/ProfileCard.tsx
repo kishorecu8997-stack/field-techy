@@ -38,7 +38,7 @@ const ProfileCard = ({
   name: string;
   title: string;
   rating: number;
-  reviewCount: number;
+  reviewCount?: number;
   completionPercentage: number;
   flex?: "row" | "col";
   backgroundcolor?: boolean;
@@ -52,11 +52,10 @@ const ProfileCard = ({
     space-x-4 
     mb-6 
     p-4 
-    ${
-      backgroundcolor
-        ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
-        : ""
-    }`}
+    ${backgroundcolor
+          ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
+          : ""
+        }`}
     >
       <div className="relative">
         <ImageUploaderField
@@ -69,7 +68,7 @@ const ProfileCard = ({
         <h2 className="font-bold text-lg text-gray-800">{name}</h2>
         <p className="text-sm text-gray-600">{title}</p>
         <p className="text-xs text-gray-500">
-          {rating} Ratings | {reviewCount} Reviews
+          {rating} Ratings {reviewCount && `| ${reviewCount} Reviews`}
         </p>
       </div>
     </div>

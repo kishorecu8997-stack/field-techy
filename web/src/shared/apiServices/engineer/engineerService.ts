@@ -3,14 +3,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
-  AssignJobParams,
-  EngineerData,
-  // EngineerPaginationParams,
-  // PagedResponse,
-  FileUploadParams,
-  FileUploadResponse,
-  // EngineerFile,
-  JobAssignment,
+    EngineerData,
+    // EngineerPaginationParams,
+    // PagedResponse,
+    FileUploadParams,
+    FileUploadResponse,
+    // EngineerFile,
+    JobAssignment,
+    AssignJobParams,
+    UpdatePasswordParams,
 } from "./engineerTypes";
 
 // --- Mutations ---
@@ -129,15 +130,12 @@ export function useEngineerAssignJob(options?: {
   });
 }
 
-export function useEngineerGetJobs(
-  engineerId: string,
-  options?: { enabled?: boolean }
-) {
-  return useQuery({
-    queryKey: [...queryKeys.engineer.detail(engineerId), "jobs"] as const,
-    queryFn: () => EngineerAdapter.getJobs(engineerId),
-    enabled: !!engineerId && (options?.enabled ?? true),
-  });
+export function useEngineerGetJobs(engineerId: string | null | undefined, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.engineer.detail(engineerId || ""), 'jobs'] as const,
+        queryFn: () => engineerId ? EngineerAdapter.getJobs(engineerId) : Promise.reject("Invalid ID"),
+        enabled: !!engineerId && (options?.enabled ?? true),
+    });
 }
 
 export function useEngineerUpdateJobStatus(options?: {
@@ -153,6 +151,17 @@ export function useEngineerUpdateJobStatus(options?: {
     },
     onError: options?.onError,
   });
+}
+
+export function useUpdatePassword(options?: {
+    onSuccess?: (data: boolean) => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        mutationFn: (params: UpdatePasswordParams) => EngineerAdapter.updatePassword(params),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
 }
 
 // --- OTP Mutations ---

@@ -373,9 +373,12 @@ export interface MonthlyData {
 /**
  * Computes total earnings per month from transaction data.
  *
- * @returns Array of monthly earnings sorted chronologically.
+ * @param transactions - Array of transaction objects with at least { date: string; amount: number }
+ * @returns Array of monthly earnings sorted chronologically (oldest → newest)
  */
-export const getMonthlyEarnings = (): MonthlyData[] => {
+export const getMonthlyEarnings = (
+  transactions: { date: string; amount: number }[]
+): MonthlyData[] => {
   const monthlyMap = new Map<string, number>();
 
   transactions.forEach((tx) => {
@@ -406,4 +409,20 @@ export const getLatestEarnings = (data: MonthlyData[]) => {
   }
   const latest = data[data.length - 1];
   return { earnings: latest.earnings, month: latest.month };
+};
+
+export const validateOtp = {
+  required: "OTP is required",
+  maxLength: {
+    value: 6,
+    message: "OTP must be a 6-digit numeric code",
+  },
+  minLength: {
+    value: 6,
+    message: "OTP must be a 6-digit numeric code",
+  },
+  pattern: {
+    value: /^[0-9]{6}$/,
+    message: "OTP must be a 6-digit numeric code",
+  },
 };

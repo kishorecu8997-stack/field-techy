@@ -9,57 +9,55 @@ export interface Tool {
 }
 
 export interface Experience {
-  id?: string;
-  designation: string;
-  employer: string;
-  workLocationType?: string;
-  employmentType?: string;
-  startDate: string;
-  endDate?: string | null;
-  isCurrent?: boolean;
+    id?: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
 }
 
 export interface Education {
-  id?: string;
-  educationLevel?: string;
-  course?: string;
-  university?: string;
-  majorSubject?: string;
-  passingYear?: number;
+    id?: string;
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate?: string;
 }
 
 export interface EngineerData {
-  id?: string;
-  password?: string;
-  phoneNumber?: string;
-  email?: string;
-  fullName?: string;
-  address?: string;
-  portfolioLink?: string;
-  serviceCategory?: string;
-  budget?: string;
-  rate?: number;
-  experienceYears?: number;
-  preferredWorkType?: string;
-  enableNotifications?: boolean;
-  location?: string;
-  averageRating?: number;
-  resume?: string | null;
-  governmentIdProofDocument?: string | null;
-  certificationQualificationsDocument?: string | null;
-  profilePicture?: string | null;
-  isApproved?: boolean | null;
-  status?: string;
-  traceId?: string | null;
-  createdBy?: string | null;
-  updatedBy?: string | null;
-  deletedBy?: string | null;
-  isDeleted?: boolean;
-  jobSkills?: string[];
-  tools?: string[];
-  experiences?: Experience[];
-  educations?: Education[];
-  files?: any;
+    id?: string;
+    password?: string;
+    phoneNumber?: string;
+    email?: string;
+    fullName?: string;
+    address?: string;
+    portfolioLink?: string;
+    serviceCategory?: string;
+    budget?: string;
+    rate?: number;
+    experienceYears?: number;
+    preferredWorkType?: string;
+    enableNotifications?: boolean;
+    location?: string;
+    averageRating?: number;
+    resume?: string | null;
+    governmentIdProofDocument?: string | null;
+    certificationQualificationsDocument?: string | null;
+    profilePicture?: string | null;
+    isApproved?: boolean | null;
+    status?: string;
+    traceId?: string | null;
+    createdBy?: string | null;
+    updatedBy?: string | null;
+    deletedBy?: string | null;
+    isDeleted?: boolean;
+    jobSkills?: JobSkill[];
+    tools?: Tool[];
+    experiences?: Experience[];
+    educations?: Education[];
+    files?: any;
 }
 
 export interface Sort {
@@ -102,22 +100,17 @@ export interface EngineerPaginationParams {
 }
 
 export interface EngineerFile {
-  id: string;
-  engineerId: string;
-  fileKey: string;
-  fileType: DocumentType;
-  fileName: string;
-  mimeType: string;
-  size: number;
-  proposalId: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+    id: string;
+    engineerId: string;
+    fileKey: string;
+    fileType: DocumentType;
+    fileName: string;
+    mimeType: string;
+    size: number;
+    proposalId: string | null;
 }
-export type DocumentType =
-  | "RESUME"
-  | "GOVERNMENT_ID"
-  | "CERTIFICATE"
-  | "PICTURE";
+
+export type DocumentType = "RESUME" | "GOVERNMENT_ID" | "CERTIFICATE" | "PICTURE";
 
 export interface FileUploadParams {
   engineerId: string;

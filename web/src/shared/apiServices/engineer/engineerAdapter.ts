@@ -1,15 +1,15 @@
-import axiosInstance from "@/axiosInstance";
-import { uploadAxiosInstance } from "@/axiosInstance";
+import axiosInstance, { uploadAxiosInstance } from "@/axiosInstance";
 import { ENGINEER_ROUTER_PATHS } from "./engineerRouterPaths";
 import type {
+  AssignJobParams,
   EngineerData,
+  EngineerFile,
   // EngineerPaginationParams,
   // PagedResponse,
   FileUploadParams,
   FileUploadResponse,
-  EngineerFile,
   JobAssignment,
-  AssignJobParams,
+  UpdatePasswordParams,
 } from "./engineerTypes";
 import { GlobalApiErrorHandler } from "../utils";
 
@@ -32,7 +32,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -43,7 +43,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -67,7 +67,7 @@ export class EngineerAdapter {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
       return true;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -78,7 +78,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -109,7 +109,7 @@ export class EngineerAdapter {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -146,7 +146,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -160,7 +160,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -171,7 +171,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -185,7 +185,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -200,16 +200,24 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
+  }
 
-    // Stubbed response
-    // console.log(`[STUB] Sending engineer email OTP to: ${email}`);
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({ message: "OTP sent successfully to email" });
-    //   }, 1000);
-    // });
+  static async updatePassword(params: UpdatePasswordParams): Promise<boolean> {
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.CHANGE_PASSWORD,
+        {
+          phoneOrEmail: params.phoneOrEmail,
+          oldPassword: params.oldPassword,
+          newPassword: params.newPassword,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handle(error);
+    }
   }
 
   static async sendPhoneOTP(phoneNumber: string): Promise<{ message: string }> {
@@ -313,7 +321,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 }
