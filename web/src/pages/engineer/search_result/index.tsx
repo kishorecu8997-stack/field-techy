@@ -218,14 +218,6 @@ const SearchResult = () => {
           description={`${filteredJobs.length} jobs found`}
           isShowSort={false}
         />
-        <AdvancedSearchBar
-          onSaveCurrentSearch={handleSaveCurrentSearch}
-          onFilterChange={handleFilterChange}
-          currentFilters={filters}
-          sortOption={sortOption}
-          onSortChange={handleSortChange}
-        />
-
         <SearchHistory
           history={searchHistory}
           onApplyHistory={handleApplyHistory}

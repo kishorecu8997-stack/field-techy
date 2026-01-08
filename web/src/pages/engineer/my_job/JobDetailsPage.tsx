@@ -7,6 +7,8 @@ import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
 import { getDurationString } from "@/utils";
+import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import { toast } from "react-toastify";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -17,6 +19,7 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
@@ -33,6 +36,11 @@ const JobDetailsPage = () => {
     startDateStr: jobs?.startDate as string,
     endDateStr: jobs?.projectDeadline as string,
   });
+
+  const handleSubmitReview = () => {
+    toast.success("Review submitted successfully");
+    setIsReviewOpen(false);
+  };
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -58,6 +66,7 @@ const JobDetailsPage = () => {
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
             />
+
             <JobTabSection
               status={jobs?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
@@ -78,6 +87,13 @@ const JobDetailsPage = () => {
           </div>
         </div>
       </div>
+
+      <ReviewClientModal
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        clientName={(client?.companyName as string) ?? "Client"}
+        onSubmit={handleSubmitReview}
+      />
     </div>
   );
 };
