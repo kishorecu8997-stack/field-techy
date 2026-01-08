@@ -23,14 +23,26 @@ const ProfileCompletionCard = () => {
 
   const overallCompletion = getProfileCompletion(profileData);
   const comparisonUI = getComparisonUI(overallCompletion);
+  const getComparisonDarkClasses = (containerClass: string) => {
+    if (containerClass.includes("bg-red-50")) {
+      return " dark:bg-red-400 dark:border-red-700 dark:text-red-100";
+    }
+    if (containerClass.includes("bg-orange-50")) {
+      return " dark:bg-orange-900/10 dark:border-orange-100 dark:text-orange-300";
+    }
+    if (containerClass.includes("bg-teal-50")) {
+      return " dark:bg-teal-900 dark:border-teal-700 dark:text-teal-200";
+    }
+    return " dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200";
+  };
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-4 dark:text-gray-100">
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
 
       {/* Priority Guide */}
-      <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
-        <h4 className="font-semibold text-gray-700">Priority Guide</h4>
+      <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2 dark:bg-gray-800 dark:border-gray-700">
+        <h4 className="font-semibold text-gray-700 dark:text-gray-100">Priority Guide</h4>
         <ul className="space-y-1">
           {profilePriorityGuide.map((item) => (
             <li key={item.label}>
@@ -43,7 +55,9 @@ const ProfileCompletionCard = () => {
 
       {/* Comparison Info */}
       <div
-        className={`rounded-xl border p-4 text-sm ${comparisonUI.containerClass}`}
+        className={`rounded-xl border p-4 text-sm ${comparisonUI.containerClass}${getComparisonDarkClasses(
+          comparisonUI.containerClass
+        )}`}
       >
         <p className="font-semibold">{comparisonUI.title}</p>
         <p className="mt-1">{comparisonUI.description}</p>
@@ -62,18 +76,18 @@ const ProfileCompletionCard = () => {
         return (
           <div
             key={section.key}
-            className="border rounded-xl p-4 bg-white shadow-sm"
+            className="border rounded-xl p-4 bg-white shadow-sm dark:bg-gray-800 dark:border-gray-700"
           >
             {/* Section Header */}
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold">{section.title}</h3>
-              <span className="text-sm font-medium">{percentage}%</span>
+              <span className="text-sm font-medium dark:text-gray-200">{percentage}%</span>
             </div>
 
             {/* Progress Bar Showing Status With Percentage */}
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-3 dark:bg-gray-700">
               <div
-                className="bg-teal-600 h-2 rounded-full"
+                className="bg-teal-600 h-2 rounded-full dark:bg-teal-400"
                 style={{ width: `${percentage}%` }}
               />
             </div>
@@ -101,11 +115,11 @@ const ProfileCompletionCard = () => {
                     setActiveKey(section.navigateTo);
                     setISOpenSidebar(true);
                   }}
-                  className="text-teal-700 font-medium hover:underline"
+                  className="text-teal-700 font-medium hover:underline dark:text-teal-300"
                 >
                   Complete This Section
                 </button>
-                <span className="text-gray-500">{estimatedTime} minutes remaining</span>
+                <span className="text-gray-500 dark:text-gray-400">{estimatedTime} minutes remaining</span>
               </div>
             )}
           </div>
