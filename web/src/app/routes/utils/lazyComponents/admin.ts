@@ -81,6 +81,9 @@ export const ManageNotification = React.lazy(
 export const ManageNotificationAdd = React.lazy(
   () => import("@/pages/admin/manage_notification/AddNotification")
 );
+export const ManageNotificationEdit = React.lazy(
+  () => import("@/pages/admin/manage_notification/EditNotification")
+);
 export const ManageSubAdmin = React.lazy(
   () => import("@/pages/admin/sub_admin")
 );

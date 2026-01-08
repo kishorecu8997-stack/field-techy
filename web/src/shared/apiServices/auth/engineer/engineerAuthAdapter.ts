@@ -79,7 +79,7 @@ export class EngineerAuthAdapter {
 
       return authResponsePayload;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -100,7 +100,7 @@ export class EngineerAuthAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -120,7 +120,7 @@ export class EngineerAuthAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 

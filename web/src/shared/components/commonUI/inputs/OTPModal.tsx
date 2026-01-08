@@ -31,6 +31,7 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
   name = "otp",
   isClose,
   footer,
+  loading
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -94,6 +95,7 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
         )}
         <Button
           type="button"
+          loading={loading}
           onClick={handleSubmit}
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
