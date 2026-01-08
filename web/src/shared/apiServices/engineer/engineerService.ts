@@ -11,6 +11,7 @@ import type {
   JobAssignment,
   AssignJobParams,
   ProposalJobData,
+  UpdatePasswordParams,
 } from "./engineerTypes";
 import { queryKeys } from "../queryKeys";
 import { queryClient } from "@/main";
@@ -66,26 +67,20 @@ export function useEngineerFileUpload(options?: {
 
 // --- Queries ---
 
-export function useEngineerGetById(
-  id: string,
-  options?: { enabled?: boolean }
-) {
-  return useQuery({
-    queryKey: queryKeys.engineer.detail(id),
-    queryFn: () => EngineerAdapter.getById(id),
-    enabled: !!id && (options?.enabled ?? true),
-  });
+export function useEngineerGetById(id: string | null | undefined, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: queryKeys.engineer.detail(id || ""),
+        queryFn: () => id ? EngineerAdapter.getById(id) : Promise.reject("Invalid ID"),
+        enabled: !!id && (options?.enabled ?? true),
+    });
 }
 
-export function useEngineerGetFiles(
-  engineerId: string,
-  options?: { enabled?: boolean }
-) {
-  return useQuery({
-    queryKey: [...queryKeys.engineer.detail(engineerId), "files"] as const,
-    queryFn: () => EngineerAdapter.getFiles(engineerId),
-    enabled: !!engineerId && (options?.enabled ?? true),
-  });
+export function useEngineerGetFiles(engineerId: string | null | undefined, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.engineer.detail(engineerId || ""), 'files'] as const,
+        queryFn: () => engineerId ? EngineerAdapter.getFiles(engineerId) : Promise.reject("Invalid ID"),
+        enabled: !!engineerId && (options?.enabled ?? true),
+    });
 }
 
 export function useEngineerDownloadFile(options?: {
@@ -123,15 +118,12 @@ export function useEngineerAssignJob(options?: {
   });
 }
 
-export function useEngineerGetJobs(
-  engineerId: string,
-  options?: { enabled?: boolean }
-) {
-  return useQuery({
-    queryKey: [...queryKeys.engineer.detail(engineerId), "jobs"] as const,
-    queryFn: () => EngineerAdapter.getJobs(engineerId),
-    enabled: !!engineerId && (options?.enabled ?? true),
-  });
+export function useEngineerGetJobs(engineerId: string | null | undefined, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.engineer.detail(engineerId || ""), 'jobs'] as const,
+        queryFn: () => engineerId ? EngineerAdapter.getJobs(engineerId) : Promise.reject("Invalid ID"),
+        enabled: !!engineerId && (options?.enabled ?? true),
+    });
 }
 
 export function useEngineerUpdateJobStatus(options?: {
@@ -147,6 +139,17 @@ export function useEngineerUpdateJobStatus(options?: {
     },
     onError: options?.onError,
   });
+}
+
+export function useUpdatePassword(options?: {
+    onSuccess?: (data: boolean) => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        mutationFn: (params: UpdatePasswordParams) => EngineerAdapter.updatePassword(params),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
 }
 
 // --- OTP Mutations ---

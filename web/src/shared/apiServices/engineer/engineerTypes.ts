@@ -148,6 +148,12 @@ export interface AssignJobParams {
   status: string;
 }
 
+export interface UpdatePasswordParams {
+  phoneOrEmail: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface ProposalJobData {
   id?: string;
   engineerId: string;

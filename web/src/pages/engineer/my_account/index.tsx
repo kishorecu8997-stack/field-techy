@@ -16,7 +16,9 @@ import type { MenuItem } from "../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
+import { useEngineerStore, useEngineerProfile } from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -40,6 +42,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       profileImage: assetsConfig.images.profile.defaultProfileImage,
     },
   });
+
+  const engineerProfile = useEngineerProfile();
 
   const menuItems: MenuItem[] = [
     {
@@ -87,6 +91,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
+  const logout = useUserSessionStore((state) => state.logout);
+  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
   return (
     <>
@@ -94,10 +100,9 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Nick Wilson"
-            title="Software Engineer"
-            rating={4}
-            reviewCount={10}
+            name={engineerProfile?.fullName || ""}
+            title={engineerProfile?.serviceCategory || ""}
+            rating={engineerProfile?.averageRating || 0}
             completionPercentage={39}
           />
         </div>
@@ -110,6 +115,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
+            logout();
+            clearEngineerProfile();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}
