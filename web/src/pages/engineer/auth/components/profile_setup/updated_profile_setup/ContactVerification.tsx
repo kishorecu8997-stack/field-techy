@@ -61,41 +61,15 @@ const VerificationCard = ({
     mode: "onChange",
   });
 
-  const { isPending: isSendingEmail, mutate: sendEmail } = useSendEmailOTP({
-    onSuccess: () => {
-      toast.success("OTP sent to email");
-      setIsOtpSent(true);
-      setTimeLeft(60);
-    },
-    onError: () => toast.error("Failed to send email OTP"),
-  });
+  const { mutateAsync: sendEmail, isPending: isSendingEmail } = useSendEmailOTP();
 
-  const { isPending: isSendingPhone, mutate: sendPhone } = useSendPhoneOTP({
-    onSuccess: () => {
-      toast.success("OTP sent to mobile");
-      setIsOtpSent(true);
-      setTimeLeft(60);
-    },
-    onError: () => toast.error("Failed to send mobile OTP"),
-  });
+  const { mutateAsync: sendPhone, isPending: isSendingPhone } = useSendPhoneOTP();
 
-  const { isPending: isVerifyingEmail, mutate: verifyEmail } =
-    useVerifyEmailOTP({
-      onSuccess: () => {
-        toast.success("Email verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Email OTP"),
-    });
+  const { mutateAsync: verifyEmail, isPending: isVerifyingEmail } =
+    useVerifyEmailOTP();
 
-  const { isPending: isVerifyingPhone, mutate: verifyPhone } =
-    useVerifyPhoneOTP({
-      onSuccess: () => {
-        toast.success("Mobile number verified successfully");
-        onVerifySuccess();
-      },
-      onError: () => toast.error("Invalid Mobile OTP"),
-    });
+  const { mutateAsync: verifyPhone, isPending: isVerifyingPhone } =
+    useVerifyPhoneOTP();
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -103,14 +77,35 @@ const VerificationCard = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSendOtp = () => {
-    if (type === "email") sendEmail(contact);
-    else sendPhone(contact);
+  const handleSendOtp = async () => {
+    try {
+      if (type === "email") {
+        await sendEmail(contact);
+        toast.success("OTP sent to email");
+      } else {
+        await sendPhone(contact);
+        toast.success("OTP sent to mobile");
+      }
+      setIsOtpSent(true);
+      setTimeLeft(60);
+    } catch (error) {
+      toast.error(`Failed to send ${type === "email" ? "email" : "mobile"} OTP`);
+    }
   };
 
-  const onSubmit = (data: { otp: string }) => {
-    if (type === "email") verifyEmail({ email: contact, otp: data.otp });
-    else verifyPhone({ phoneNumber: contact, otp: data.otp });
+  const onSubmit = async (data: { otp: string }) => {
+    try {
+      if (type === "email") {
+        await verifyEmail({ email: contact, otp: data.otp });
+        toast.success("Email verified successfully");
+      } else {
+        await verifyPhone({ phoneNumber: contact, otp: data.otp });
+        toast.success("Mobile number verified successfully");
+      }
+      onVerifySuccess();
+    } catch (error) {
+      toast.error(`Invalid ${type === "email" ? "Email" : "Mobile"} OTP`);
+    }
   };
 
   const isPending =
@@ -158,11 +153,10 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${
-                      timeLeft > 0 || isPending
+                    className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
                         ? "opacity-50 cursor-not-allowed"
                         : ""
-                    }`}
+                      }`}
                   >
                     Resend
                   </Button>
