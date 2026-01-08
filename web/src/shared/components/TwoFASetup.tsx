@@ -16,6 +16,17 @@ interface TwoFASetupProps {
   buttonText?: string;
 }
 
+/**
+ * TwoFASetup component
+ *
+ * Renders a Two-Factor Authentication setup and verification UI.
+ * - Displays a QR code for authenticator apps if the user is not enrolled
+ * - Accepts a 6-digit OTP code
+ * - Shows a countdown for TOTP refresh interval
+ *
+ * @component
+ * @param {TwoFASetupProps} props - Component properties
+ */
 const TwoFASetup: React.FC<TwoFASetupProps> = ({
   header = "Two-Factor Authentication",
   description = "Enter the 6-digit code from your authenticator app",

@@ -9,6 +9,12 @@ type TwoFaStorage = {
   backupCodes: string[];
 };
 
+/**
+ * Retrieves the Two-Factor Authentication data from localStorage.
+ *
+ * @returns {TwoFaStorage} Parsed 2FA storage object.
+ * If no data exists, returns a default initialized object.
+ */
 export const getTwoFaStorage = (): TwoFaStorage => {
   const raw = localStorage.getItem(TWO_FA_KEY);
   return raw
