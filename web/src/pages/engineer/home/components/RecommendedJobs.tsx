@@ -2,9 +2,10 @@ import { absoluteUrls } from "@/config/urls";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import type { Job } from "@/pages/engineer/search_result/types";
 import React from "react";
+import type { JobItem } from "../types";
 
 interface RecommendedJobsProps {
-  jobs: Job[];
+  jobs: JobItem[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -20,9 +21,10 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   title = "Recommended Jobs",
   onViewAll,
 }) => {
-  const filteredJobs = jobs.filter((job) => {
-    return job.place === "recommended";
-  });
+  console.log('jobs :', jobs);
+  // const filteredJobs = jobs.filter((job) => {
+  //   return job.status === "NEW";
+  // });
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center  p-2">
@@ -36,7 +38,7 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
           </div>
         )}
       </div>
-      {filteredJobs.map((job: Job) => (
+      {jobs.map((job) => (
         <JobCard
           key={job.id}
           job={job}

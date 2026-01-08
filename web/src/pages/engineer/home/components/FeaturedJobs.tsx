@@ -146,6 +146,19 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
     }
   };
 
+  const handleSwitchJobs=(jobModel:string)=>{
+    switch(jobModel){
+      case "ON_SITE":
+        return "On Site";
+      case "REMOTE":
+        return "Remote";
+      case "HYBRID":
+        return "Hybrid";
+      default:
+        return "On Site";
+    }
+  }
+
   return (
     <div>
       <div className="flex justify-between items-start mb-3">
@@ -186,9 +199,9 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
             {props.jobType}
           </span>
         )}
-        {props.jobVisibility && (
+        {props.engagementModel && (
           <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {props.jobVisibility}
+            {handleSwitchJobs(props.engagementModel)}
           </span>
         )}
         {props.experience && (

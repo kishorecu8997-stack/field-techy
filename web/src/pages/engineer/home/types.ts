@@ -22,7 +22,7 @@ export interface JobItem {
   numberOfVacancy: number;
   timePeriodOfJob: string;
 
-  experience: string | null;
+  experience: string | null | number;
   salary: string | null;
 
   requirementDeliverable: string;
@@ -42,10 +42,10 @@ export interface JobItem {
 
   toolImage: string | null;
   toolAdditionalBudget: string | null;
-
+  postedTime: string;
+  jobDuration: string;
   client: Client;
 }
-
 
 export interface Client {
   id: string;

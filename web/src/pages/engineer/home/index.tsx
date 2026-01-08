@@ -24,6 +24,7 @@ import type { JobItem } from "./types";
 const Home = () => {
   const navigate = useNavigate();
   const { data: jobs } = useGetJobs();
+  console.log('jobs :', jobs);
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -37,7 +38,8 @@ const Home = () => {
   const findNewJobs = useMemo(() => {
     return jobs?.filter((job) => job.status === "NEW") || [];
   }, [jobs]);
-
+  
+  console.log('findNewJobs :', findNewJobs);
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -50,7 +52,7 @@ const Home = () => {
               onViewAll={handleExploreJobs}
             />
             <RecommendedJobs
-              jobs={[]}
+              jobs={findNewJobs}
               onViewAll={handleExploreJobs}
               title="Recommended Jobs"
             />

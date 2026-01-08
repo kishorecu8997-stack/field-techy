@@ -49,7 +49,7 @@ const JobDetailsPage = () => {
               title={jobs?.jobTitle as string}
               client={client?.companyName as string}
               duration={getDuration as string}
-              type={jobs?.jobType}
+              type={jobs?.engagementModel as string}
               status={jobs?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}

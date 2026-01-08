@@ -1,19 +1,19 @@
 import { icons } from "@/config/icons";
 import jobSkillsData from "@/dummy_data/jobSkills.json";
 import toolsData from "@/dummy_data/tools.json";
-import { scrollToTop } from "@/utils";
-import { calculateMatchScore } from "@/utils/matchCalculator";
+import { getDurationString, scrollToTop } from "@/utils";
 import {
-  toggleSavedJob,
-  isJobSaved,
   BOOKMARK_CHANGE_EVENT,
+  isJobSaved,
+  toggleSavedJob,
 } from "@/utils/bookmarkUtils";
-import { toast } from "react-toastify";
-import React, { useMemo, useState, useEffect } from "react";
-import { BiDollar, BiUser, BiWorld } from "react-icons/bi";
+import { calculateMatchScore } from "@/utils/matchCalculator";
+import React, { useEffect, useMemo, useState } from "react";
+import { BiDollar, BiUser } from "react-icons/bi";
 import { IoHelpCircleOutline, IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import type { Job } from "../types";
+import { toast } from "react-toastify";
+import type { JobItem } from "../../home/types";
 import { getExperienceLevel, JOB_STATUSES } from "../types";
 import { Badge } from "./BadgeVariant";
 
@@ -154,7 +154,7 @@ const USER_TOOLS = toolsData.tools.map((t) => t.label);
  * (default: "#").
  */
 const JobCard: React.FC<{
-  job: Job;
+  job: JobItem;
   showBookmark?: boolean;
   navigateToJob?: string;
   onBookmarkChange?: () => void;
@@ -227,6 +227,11 @@ const JobCard: React.FC<{
     closed: "gray",
   } as const;
 
+  const getDuration = getDurationString({
+    startDateStr: job.startDate as string,
+    endDateStr: job.projectDeadline as string,
+  });
+
   return (
     <>
       <Link
@@ -241,7 +246,7 @@ const JobCard: React.FC<{
             {/* Job title */}
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
-                {job.title}
+                {job.jobTitle}
               </h3>
 
               {/* Right-aligned: Match score & help button */}
@@ -269,11 +274,11 @@ const JobCard: React.FC<{
                 <span>
                   Client:{" "}
                   <strong className="text-gray-900 dark:text-white">
-                    {job.client}
+                    {job.client.companyName || "-"}
                   </strong>
                 </span>
               )}
-              {job.time && <span>| {job.time}</span>}
+              {job.jobDuration && <span>| {job.jobDuration}</span>}
               {job.status && (
                 <Badge
                   variant={
@@ -290,14 +295,14 @@ const JobCard: React.FC<{
                     job.status}
                 </Badge>
               )}
-              {job.time && <span>| {job.time}</span>}
+              {getDuration && <span>| {getDuration || "-"}</span>}
             </div>
           </div>
         </div>
 
         {/* DESCRIPTION */}
         <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-          {job.description}
+          {job.jobDescription}
         </p>
 
         {/* SKILLS & TOOLS */}
@@ -334,27 +339,27 @@ const JobCard: React.FC<{
               </div>
             )}
 
-            {(job.salary || job.pay) && (
+            {(job.salary || "-") && (
               <div className="flex items-center gap-1.5">
                 <BiDollar className="h-4 w-4 text-gray-500" />
                 <span className="text-gray-800 dark:text-gray-200">
-                  {job.salary || job.pay}
+                  {job.salary || "-"}
                 </span>
               </div>
             )}
 
-            {job.languages && (
+            {/* {job.languages && (
               <div className="flex items-center gap-2">
                 <BiWorld className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 <span className="font-medium text-gray-800 dark:text-gray-200">
                   {job.languages}
                 </span>
               </div>
-            )}
+            )} */}
             <div className="flex items-center gap-2">
               <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               <span className="font-medium text-gray-800 dark:text-gray-200">
-                {getExperienceLevel(job.experience)}
+                {getExperienceLevel(job.experience ? Number(job.experience) : 0)}
               </span>
             </div>
           </div>
@@ -378,7 +383,7 @@ const JobCard: React.FC<{
           )}
 
           {/* POC Section */}
-          {job.poc && (
+          {/* {job.poc && (
             <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
               <div>
                 <p className="text-xs font-semibold text-gray-900 dark:text-white">
@@ -392,7 +397,7 @@ const JobCard: React.FC<{
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </Link>
 
