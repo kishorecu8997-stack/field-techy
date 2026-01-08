@@ -47,7 +47,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="relative px-16 py-4 bg-white border-t">
+    <div className="relative px-16 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-t-gray-700">
       {/* ⭐ FLOATING ACTIONS (toggle with + button) */}
       <div
         className={`
@@ -59,7 +59,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           }
         `}
       >
-        <div className="h-16 w-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+        <div className="h-16 w-16 rounded-full bg-white dark:bg-gray-800 shadow-lg flex items-center justify-center">
           <Button
             className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
@@ -68,7 +68,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           </Button>
         </div>
 
-        <div className="h-16 w-16 rounded-full bg-white shadow-lg flex items-center justify-center">
+        <div className="h-16 w-16 rounded-full bg-white dark:bg-gray-800 shadow-lg flex items-center justify-center">
           <Button
             className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
@@ -83,7 +83,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         {/* voice icon */}
         <div
           onClick={onStartVoiceMessage}
-          className="p-2 rounded-full text-2xl text-gray-500 hover:bg-gray-100 cursor-pointer"
+          className="p-2 rounded-full text-2xl text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
         >
           <FaMicrophoneAlt />
         </div>
@@ -94,7 +94,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Write Text here..."
-            className="w-full rounded-2xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm outline-none"
+            className="w-full rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-4 py-3 text-sm outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 caret-emerald-800 dark:caret-white"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

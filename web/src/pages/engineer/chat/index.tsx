@@ -60,14 +60,14 @@ const ChatLayout: React.FC = () => {
           </div>
         }
       />
-      <div className="flex max-h-full bg-gray-50 overflow-hidden">
-        <div className="w-96 border-r border-gray-200 bg-white flex flex-col">
+      <div className="flex max-h-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <div className="w-96 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col">
           <div className="px-8 pt-6 pb-4 ">
             <div className="">
               <input
                 type="text"
                 placeholder="Search Jobs.."
-                className="w-full rounded-2xl bg-gray-100 px-4 py-2 text-sm outline-none placeholder:text-gray-400"
+                className="w-full rounded-2xl bg-gray-100 dark:bg-gray-700 px-4 py-2 text-sm outline-none placeholder:text-gray-400 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ const ChatLayout: React.FC = () => {
           />
         </div>
 
-        <div className="flex-1 flex flex-col bg-white">
+        <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
           <ChatWindow
             mode={mode}
             conversation={selectedConversation}
