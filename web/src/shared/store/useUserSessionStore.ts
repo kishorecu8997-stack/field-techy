@@ -10,6 +10,7 @@ export interface UserSession {
   // metadata: Record<string, string>;
   name?: string;
   phoneNumber?: string;
+  profilePicture?: string;
 }
 
 interface UserSessionStore {

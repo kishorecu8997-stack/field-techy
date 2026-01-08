@@ -4,8 +4,10 @@ import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
-import type { FileUploadParams } from "../engineer/engineerTypes";
-import type { FileUploadResponse } from "../client/clientTypes";
+import type {
+  FileDownloadResponse,
+  FileUploadResponse,
+} from "../client/clientTypes";
 
 /*
  * AdminAdapter
@@ -126,6 +128,7 @@ export class AdminAdapter {
   }
 
   /** Upload Admin File */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static async uploadFile(params: any): Promise<FileUploadResponse> {
     try {
       const { adminId, file, fileType, onUploadProgress } = params;
@@ -154,6 +157,94 @@ export class AdminAdapter {
             }
           },
         }
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Change Admin Password */
+  static async changePassword(data: {
+    phoneOrEmail: string;
+    oldPassword: string;
+    newPassword: string;
+  }) {
+    try {
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.ADMIN_CHANGE_PASSWORD,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Download Admin File Stream */
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<FileDownloadResponse> {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
+
+      // Extract metadata from response headers
+      const contentDisposition = response.headers["content-disposition"];
+      const contentLength = response.headers["content-length"]
+        ? parseInt(response.headers["content-length"], 10)
+        : undefined;
+      const contentType =
+        response.headers["content-type"] || "application/octet-stream";
+
+      // Extract filename from Content-Disposition header if available
+      let fileName = "download";
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+        );
+        if (fileNameMatch && fileNameMatch[1]) {
+          fileName = fileNameMatch[1].replace(/['"]/g, "");
+          // Handle URL-encoded filenames
+          try {
+            fileName = decodeURIComponent(fileName);
+          } catch (e) {
+            console.error("Failed to decode file name:", e);
+            // If decoding fails, use the original filename
+            throw new Error(
+              "Failed to decode file name. Please try again later."
+            );
+          }
+        }
+      }
+
+      const blob = new Blob([response.data], { type: contentType });
+
+      return {
+        blob,
+        fileName,
+        mimeType: contentType,
+        size: blob.size,
+        contentDisposition,
+        contentLength,
+      };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  /** Get Admin by ID */
+  static async getAdminById(id: string) {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.ADMIN_GET(id)
       );
       return response.data;
     } catch (error) {

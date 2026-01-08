@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
+import type { FileDownloadResponse } from "../client/clientTypes";
 
 export function useAdminSignInMutation(options?: {
   onSuccess?: (data: unknown) => void;
@@ -63,7 +64,51 @@ export function useAdminUploadFileMutation(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (params: any) => AdminAdapter.uploadFile(params),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/** Hook to change admin password */
+export function useAdminChangePasswordMutation(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (data: {
+      oldPassword: string;
+      newPassword: string;
+      phoneOrEmail: string;
+    }) => AdminAdapter.changePassword(data),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Hook to download a file stream with metadata
+ * Returns a mutation that can be called with a fileKey
+ */
+export function useDownloadAdminFileStream(options?: {
+  onSuccess?: (data: FileDownloadResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (fileKey: string) => AdminAdapter.downloadFileStream(fileKey),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/** Hook to get admin by ID */
+export function useAdminGetById(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (id: string) => AdminAdapter.getAdminById(id),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
