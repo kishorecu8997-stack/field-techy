@@ -20,7 +20,6 @@ import {
   useEngineerUpdateById,
 } from "@/shared/apiServices/engineer/engineerService";
 import { getUserId } from "@/utils";
-import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -55,10 +54,9 @@ const AddExperiences = () => {
           action: async (close: (v: boolean) => void) => {
             if (!engineerData || !userId) return;
 
-            const newExperience: Experience = {
-              id: crypto.randomUUID(),
-              designation: data.designation,
-              employer: data.employer,
+            const newExperience = {
+              designation: String(data.designation ?? ""),
+              employer: (data.employer || "").trim(),
               workLocationType: data.workLocationType,
               employmentType: data.employmentType,
               startDate: data.startDate?.toISOString().split("T")[0] || "",
@@ -75,7 +73,10 @@ const AddExperiences = () => {
             try {
               await mutateAsync({
                 ...engineerData,
-                experiences: updatedExperiences,
+                experiences:
+                  updatedExperiences.length > 0
+                    ? updatedExperiences
+                    : undefined,
               });
               toast.success("Experience Added Successfully");
               close(true);

@@ -23,6 +23,7 @@ import {
 } from "@/shared/apiServices/engineer/engineerService";
 import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -82,9 +83,8 @@ const PersonalInformation = () => {
       return;
     }
 
-
     const updatedEngineer: EngineerData = {
-      ...engineerData, 
+      ...engineerData,
       fullName: formData.fullName,
       phoneNumber: formData.phoneNumber,
       email: formData.emailId,
@@ -134,9 +134,12 @@ const PersonalInformation = () => {
     });
   };
 
-  // Show loading while fetching current engineer data
   if (isEngineerLoading) {
-    return <div>Loading profile data...</div>;
+    return (
+      <div className="flex justify-center items-center h-[80vh] w-full">
+        <LoaderComponent />
+      </div>
+    );
   }
 
   return (

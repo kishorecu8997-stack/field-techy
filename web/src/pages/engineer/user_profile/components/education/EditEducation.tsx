@@ -1,74 +1,160 @@
-import {
-  courses,
-  educationEdit,
-  educationLevels,
-} from "@/dummy_data/engineer_profile/education-data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  validateMajorSubject,
+  validatePassingYear,
+  validateUniversity,
+} from "../../Validate";
 import type { EducationFormData } from "./types";
 
+import {
+  educationLevels,
+  courses,
+} from "@/dummy_data/engineer_profile/education-data";
+
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { Education } from "@/shared/apiServices/engineer/engineerTypes";
+import { getUserId } from "@/utils";
+
 /**
- * The EditEducation component renders a form to modify an existing education entry.
- * It uses `react-hook-form` for form management and validation. The form is
- * pre-populated with the data passed via the `educationData` prop.
- * @param {EditEducationProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered EditEducation form component.
+ * EditEducation – unified component for both ADD and EDIT
+ * Exactly like EditExperiences.tsx
  */
 const EditEducation = () => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
-  const getEducationById = () => {
-    const id = localStorage.getItem("editEducationId");
-    const educationId = id;
-    return educationEdit.find((edu) => edu.id === +(educationId ?? ""));
-  };
+  const { setActiveKey, selectedId } = useDrawerStore();
+
+  const userId = getUserId();
+  if (!userId) return null;
+
+  const { data: engineerData } = useEngineerGetById(userId);
+  const { mutateAsync } = useEngineerUpdateById(userId);
+
+  const methods = useForm<EducationFormData>({
+    mode: "onSubmit",
+  });
 
   useEffect(() => {
-    // to prevent it from being used again accidentally.
-    return () => {
-      localStorage.removeItem("editEducationId");
-    };
-  }, []);
+    if (selectedId && engineerData?.educations) {
+      const education = engineerData.educations.find(
+        (edu) => edu.id === selectedId
+      );
 
-  const handleSubmit = async (_: EducationFormData) => {
+      if (education) {
+        methods.reset({
+          educationLevel: education.educationLevel || "",
+          course: education.course || "",
+          university: education.university || "",
+          majorSubject: education.majorSubject || "",
+          passingYear: education.passingYear
+            ? String(education.passingYear)
+            : "",
+        });
+        return;
+      }
+    }
+
+    methods.reset({
+      educationLevel: "",
+      course: "",
+      university: "",
+      majorSubject: "",
+      passingYear: "",
+    });
+  }, [engineerData, selectedId, methods]);
+
+  const handleSubmit = async () => {
     await showPopup({
-      title: "Update Education",
-      body: "Are you sure you want to update this education?",
+      title: selectedId ? "Update Education" : "Add Education",
+      body: selectedId
+        ? "Are you sure you want to update this education?"
+        : "Are you sure you want to add this education?",
       actionButtons: [
         {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
-          label: "Yes, update",
+          label: selectedId ? "Yes, update" : "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Education Updated Successfully");
-            close(true);
-            setActiveKey("education");
+            if (!engineerData) return;
+
+            const formData = methods.getValues();
+            const currentEducations = engineerData.educations || [];
+
+            let updatedEducations: Education[];
+
+            if (selectedId) {
+              // EDIT: Modify existing object
+              updatedEducations = currentEducations.map((edu) => {
+                if (edu.id === selectedId) {
+                  edu.educationLevel = formData.educationLevel || undefined;
+                  edu.course = formData.course || undefined;
+                  edu.university = formData.university?.trim() || undefined;
+                  edu.majorSubject = formData.majorSubject?.trim() || undefined;
+                  edu.passingYear = formData.passingYear
+                    ? Number(formData.passingYear)
+                    : undefined;
+                }
+                return edu;
+              });
+            } else {
+              // ADD NEW
+              const newEducation: Partial<Education> = {
+                educationLevel: formData.educationLevel || undefined,
+                course: formData.course || undefined,
+                university: formData.university?.trim() || undefined,
+                majorSubject: formData.majorSubject?.trim() || undefined,
+                passingYear: formData.passingYear
+                  ? Number(formData.passingYear)
+                  : undefined,
+              };
+
+              updatedEducations = [
+                ...currentEducations,
+                newEducation as Education,
+              ];
+            }
+
+            try {
+              await mutateAsync({
+                ...engineerData,
+                educations:
+                  updatedEducations.length > 0 ? updatedEducations : undefined,
+              });
+
+              toast.success(
+                selectedId
+                  ? "Education updated successfully"
+                  : "Education added successfully"
+              );
+
+              close(true);
+              setActiveKey("education");
+            } catch (error) {
+              console.error("Failed to save education:", error);
+              toast.error("Failed to save education. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
-
-  const methods = useForm<EducationFormData>({
-    defaultValues: getEducationById(),
-    mode: "onSubmit",
-  });
 
   return (
     <FormContainer
@@ -80,8 +166,8 @@ const EditEducation = () => {
         <SelectField
           label="Education Level"
           isShowLabel={false}
-          name="level"
-          placeholder="Education Level"
+          name="educationLevel"
+          placeholder="Select education level"
           options={educationLevels.map((e) => ({
             value: e.key,
             label: e.label,
@@ -93,7 +179,7 @@ const EditEducation = () => {
           label="Course"
           isShowLabel={false}
           name="course"
-          placeholder="Course"
+          placeholder="Select course"
           options={courses.map((c) => ({
             value: c.key,
             label: c.label,
@@ -103,41 +189,39 @@ const EditEducation = () => {
 
         <InputField
           label="University"
-          isShowLabel={true}
+          isShowLabel={false}
           name="university"
-          placeholder="Enter university name (e.g., University of Example)"
-          aria-required="true"
+          placeholder="Enter university name"
           required
-          rules={{ validate: (v: string) => validateUniversity(v) }}
+          rules={{ validate: (value: string) => validateUniversity(value) }} // ← Fixed: removed second param
         />
 
         <InputField
           label="Major Subject"
-          isShowLabel={true}
-          name="major"
-          placeholder="Enter major subject name (e.g. Physics)"
-          aria-required="true"
+          isShowLabel={false}
+          name="majorSubject"
+          placeholder="Enter major subject"
           required
-          rules={{ validate: (v: string) => validateMajorSubject(v) }}
+          rules={{ validate: (value: string) => validateMajorSubject(value) }} // ← Fixed
         />
 
         <InputField
           label="Passing Year"
           isShowLabel={false}
-          name="year"
-          placeholder="Passing Year"
-          required
+          name="passingYear"
+          placeholder="e.g., 2023"
           allowedCharacters="numbers"
-          rules={{ validate: (v: string) => validatePassingYear(v) }}
+          required
+          rules={{ validate: (value: string) => validatePassingYear(value) }}
         />
       </div>
 
-      <div className="bg-white ">
+      <div className="bg-white">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
-          Save
+          {selectedId ? "Update" : "Add"} Education
         </Button>
       </div>
     </FormContainer>

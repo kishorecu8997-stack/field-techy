@@ -25,11 +25,8 @@ import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 import { getUserId } from "@/utils";
 
 /**
- * The EditExperiences component renders a form to modify an existing work experience.
- * It uses `react-hook-form` for management and validation, and is pre-populated
- * with the data passed via the `experienceData` prop.
- * @param {EditExperiencesProps} props - Component props.
- * @returns {React.ReactElement} The rendered EditExperiences form component.
+ * EditExperiences component – now handles both ADDING a new experience
+ * and EDITING an existing one based on whether selectedId is present.
  */
 const EditExperiences = () => {
   const { showPopup } = usePopupStore();
@@ -37,8 +34,8 @@ const EditExperiences = () => {
 
   const userId = getUserId();
   if (!userId) return null;
+
   const { data: engineerData } = useEngineerGetById(userId);
-  console.log("Engineer Data:", engineerData);
 
   const methods = useForm<ExperiencesFormData>({
     mode: "onSubmit",
@@ -47,13 +44,13 @@ const EditExperiences = () => {
   const { mutateAsync } = useEngineerUpdateById(userId);
 
   useEffect(() => {
-    if (engineerData?.experiences && selectedId) {
+    if (selectedId && engineerData?.experiences) {
       const experience = engineerData.experiences.find(
         (exp) => exp.id === selectedId
       );
+
       if (experience) {
         methods.reset({
-          id: experience.id || "",
           designation: experience.designation,
           employer: experience.employer,
           workLocationType: experience.workLocationType,
@@ -70,34 +67,45 @@ const EditExperiences = () => {
             !experience.endDate ||
             experience.endDate === "present",
         });
+        return;
       }
     }
+
+    methods.reset({
+      designation: "",
+      employer: "",
+      workLocationType: "",
+      employmentType: "",
+      startDate: null,
+      endDate: null,
+      isCurrent: false,
+    });
   }, [engineerData, selectedId, methods]);
 
-  const handleSubmit = async (_: ExperiencesFormData) => {
+  const handleSubmit = async () => {
     await showPopup({
-      title: "Update Experience",
-      body: "Are you sure you want to update this experience?",
+      title: selectedId ? "Update Experience" : "Add Experience",
+      body: selectedId
+        ? "Are you sure you want to update this experience?"
+        : "Are you sure you want to add this experience?",
       actionButtons: [
         {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
-          label: "Yes, update",
+          label: selectedId ? "Yes, update" : "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
             if (!engineerData) return;
-            const experiences = engineerData?.experiences || [];
-            const formData = methods.getValues();
 
-            const updatedExperience: Experience = {
-              id: formData.id,
+            const formData = methods.getValues();
+            const currentExperiences = engineerData.experiences || [];
+
+            const experiencePayload: Partial<Experience> = {
               designation: formData.designation,
               employer: formData.employer,
               workLocationType: formData.workLocationType,
@@ -108,20 +116,62 @@ const EditExperiences = () => {
                 : formData.endDate?.toISOString().split("T")[0] || null,
             };
 
-            const updatedExperiences = experiences.map((exp) =>
-              exp.id === selectedId ? updatedExperience : exp
-            );
+            if (selectedId) {
+              experiencePayload.id = String(selectedId);
+            }
+
+            let updatedExperiences: Experience[];
+
+            if (selectedId) {
+              updatedExperiences = currentExperiences.map((exp) => {
+                if (exp.id === selectedId) {
+                  exp.designation = String(formData.designation ?? "");
+                  exp.employer = (formData.employer || "").trim();
+                  exp.workLocationType = formData.workLocationType as string;
+                  exp.employmentType = formData.employmentType as string;
+                  exp.startDate =
+                    formData.startDate?.toISOString().split("T")[0] || "";
+                  exp.endDate = formData.isCurrent
+                    ? null
+                    : formData.endDate?.toISOString().split("T")[0] || null;
+                }
+                return exp;
+              });
+            } else {
+              const newExperience = {
+                designation: String(formData.designation ?? ""),
+                employer: (formData.employer || "").trim(),
+                workLocationType: formData.workLocationType as string,
+                employmentType: formData.employmentType as string,
+                startDate:
+                  formData.startDate?.toISOString().split("T")[0] || "",
+                endDate: formData.isCurrent
+                  ? null
+                  : formData.endDate?.toISOString().split("T")[0] || null,
+              };
+
+              updatedExperiences = [...currentExperiences, newExperience];
+            }
+
             try {
               await mutateAsync({
                 ...engineerData,
-                experiences: updatedExperiences,
+                experiences:
+                  updatedExperiences.length > 0
+                    ? updatedExperiences
+                    : undefined,
               });
-              toast.success("Experience Updated Successfully");
+              toast.success(
+                selectedId
+                  ? "Experience updated successfully"
+                  : "Experience added successfully"
+              );
+
               close(true);
               setActiveKey("experiences");
             } catch (error) {
-              console.error("Failed to update experience:", error);
-              toast.error("Failed to update experience. Please try again.");
+              console.error("Failed to save experience:", error);
+              toast.error("Failed to save experience. Please try again.");
               close(true);
             }
           },
@@ -211,7 +261,6 @@ const EditExperiences = () => {
           />
         )}
 
-        {/* Checkbox label */}
         <CheckboxInput
           name="isCurrent"
           label="I currently work here"
@@ -227,13 +276,12 @@ const EditExperiences = () => {
         />
       </div>
 
-      {/* Fixed bottom button */}
-      <div className="bg-white ">
+      <div className="bg-white">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
-          Save
+          {selectedId ? "Update" : "Add"} Experience
         </Button>
       </div>
     </FormContainer>

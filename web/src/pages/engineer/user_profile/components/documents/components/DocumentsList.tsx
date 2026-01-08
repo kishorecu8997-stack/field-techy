@@ -11,6 +11,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 import { useEngineerFilesContext } from "../context/useEngineerFilesContext";
 import { getUserId } from "@/utils";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -80,6 +81,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   onAddDocument,
   onEditDocument,
 }) => {
+  const { showPopup } = usePopupStore();
   const userId = useMemo(() => getUserId(), []);
   const contextData = useEngineerFilesContext();
 
@@ -336,16 +338,37 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     onEditDocument?.(id);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     const document = documents[id];
-    if (!document?.metadata?.fileId) {
+
+    const fileId = document?.metadata?.fileId;
+
+    if (!fileId) {
       toast.error("Cannot delete: File ID not found");
       return;
     }
 
-    if (window.confirm("Are you sure you want to delete this document?")) {
-      deleteFileMutation.mutate(document.metadata.fileId);
-    }
+    await showPopup({
+      title: "Delete Document",
+      body: "Are you sure you want to delete this document? This action cannot be undone.",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: (close) => close(true),
+        },
+        {
+          label: "Yes, delete",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            deleteFileMutation.mutate(fileId);
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   if (isLoadingFiles) {
@@ -358,10 +381,9 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     );
   }
 
-  // Show loading state while previews are being downloaded
   if (isLoadingPreviews && engineerFiles.length > 0) {
     return (
-      <div className="bg-white rounded-lg ">
+      <div className="bg-white rounded-lg">
         {onAddDocument && (
           <div className="flex justify-end items-center mb-4">
             <Button
@@ -386,7 +408,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg ">
+    <div className="bg-white rounded-lg">
       {onAddDocument && (
         <div className="flex justify-end items-center mb-4">
           <Button
