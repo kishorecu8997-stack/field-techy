@@ -77,12 +77,12 @@ export default function AddNotification() {
           variant: "primary",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close: any) => {
-            // console.log("Deleting job:", close);
             const payload = {
               title: methods.getValues("title"),
               type: methods.getValues("notificationType"),
               sendTo: methods.getValues("sendTo"),
               message: methods.getValues("notificationMessage"),
+              users: methods.getValues("users"), // need to changed based on API later
             };
             await createNotificationMutation.mutateAsync(payload);
             close(true);

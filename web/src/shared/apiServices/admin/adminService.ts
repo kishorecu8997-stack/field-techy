@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
-import type { CreateNotificationParams, AdminNotification, UpdateNotificationParams } from "./adminTypes";
+import type {
+  CreateNotificationParams,
+  AdminNotification,
+  UpdateNotificationParams,
+} from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 
 export function useAdminSignInMutation(options?: {
@@ -50,9 +54,11 @@ export function useCreateNotification(options?: {
 
   return useMutation({
     mutationFn: (data: CreateNotificationParams) =>
-      AdminAdapter.CreateNotification(data),
+      AdminAdapter.createNotification(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.admin.notifications] });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.notifications.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -65,10 +71,12 @@ export function useEditNotification(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-   mutationFn: (data: UpdateNotificationParams) =>
-  AdminAdapter.EditNotification(data),
+    mutationFn: (data: UpdateNotificationParams) =>
+      AdminAdapter.editNotification(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.notifications.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.notifications.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -81,8 +89,8 @@ export function useGetNotificationById(
   options?: { enabled?: boolean }
 ) {
   return useQuery({
-    queryKey: [queryKeys.admin.notifications, id],
-    queryFn: () => AdminAdapter.GetNotificationById(id),
+    queryKey: queryKeys.admin.notifications.detail(id),
+    queryFn: () => AdminAdapter.getNotificationById(id),
     enabled: !!id && (options?.enabled ?? true),
   });
 }

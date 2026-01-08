@@ -5,10 +5,10 @@ import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
 import type {
-    AdminNotification,
-    CreateNotificationParams,
-    UpdateNotificationParams
-} from './adminTypes';
+  AdminNotification,
+  CreateNotificationParams,
+  UpdateNotificationParams,
+} from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -108,33 +108,44 @@ export class AdminAdapter {
     }
   }
 
-        // Create Notification
-    static async CreateNotification(data: CreateNotificationParams): Promise<AdminNotification> {
-        const response = await axiosInstance.post(
-            ADMIN_ROUTER_PATHS.CREATE_NOTIFICATION,
-            data
-        );
-        return response.data;
+  // Create Notification
+  static async createNotification(
+    data: CreateNotificationParams
+  ): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.CREATE_NOTIFICATION,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
-
-        //Edit Notification
-    static async EditNotification(
+  }
+  //Edit Notification
+  static async editNotification(
     data: UpdateNotificationParams
-    ): Promise<AdminNotification> {
-    const response = await axiosInstance.put(
+  ): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.put(
         ADMIN_ROUTER_PATHS.EDIT_NOTIFICATION(data.id),
         data
-    );
-    return response.data;
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
-    
-    // Get Notification By ID
-    static async GetNotificationById(id: string): Promise<AdminNotification> {
-  const response = await axiosInstance.get(
-    ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id)
-  );
-  return response.data;
+  }
+
+  // Get Notification By ID
+  static async getNotificationById(id: string): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
 }
-
-} 
-
