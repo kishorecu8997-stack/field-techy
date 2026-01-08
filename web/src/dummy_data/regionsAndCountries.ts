@@ -4,13 +4,10 @@ export interface RegionCountryOption {
   type: "option" | "region" | "subdivision";
   region?: string;
 }
-
 export const regionsAndCountries: RegionCountryOption[] = [
   { value: "Country", label: "Country", type: "option" },
-
   { value: "India", label: "India", type: "region" },
   { value: "UK", label: "UK", type: "region" },
-
   {
     value: "andhra-pradesh",
     label: "Andhra Pradesh",
@@ -126,7 +123,6 @@ export const regionsAndCountries: RegionCountryOption[] = [
     type: "subdivision",
     region: "India",
   },
-
   { value: "eng", label: "England", type: "subdivision", region: "UK" },
   { value: "sct", label: "Scotland", type: "subdivision", region: "UK" },
   { value: "wls", label: "Wales", type: "subdivision", region: "UK" },
@@ -136,7 +132,6 @@ export const regionsAndCountries: RegionCountryOption[] = [
     type: "subdivision",
     region: "UK",
   },
-
   { value: "lnd", label: "London", type: "subdivision", region: "UK" },
   { value: "man", label: "Manchester", type: "subdivision", region: "UK" },
   { value: "bml", label: "Birmingham", type: "subdivision", region: "UK" },

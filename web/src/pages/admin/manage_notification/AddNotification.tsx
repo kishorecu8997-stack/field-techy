@@ -137,9 +137,9 @@ export default function AddNotification() {
             </div>
             <div className="md:w-1/2">
               <RegionCountrySelectField
-                label="Select options for Users"
+                label="Select options"
                 name="targetRegionsCountries"
-                placeholder="Select options for Users"
+                placeholder="Select options"
                 options={regionsAndCountries}
                 required
               />

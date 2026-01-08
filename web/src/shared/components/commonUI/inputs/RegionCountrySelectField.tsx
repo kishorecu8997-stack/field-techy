@@ -15,7 +15,6 @@ const ChevronDownIcon = ({ open }: { open: boolean }) => (
     }`}
   />
 );
-
 interface RegionCountrySelectFieldProps {
   name: string;
   label?: string;
@@ -40,25 +39,20 @@ export const RegionCountrySelectField = ({
   options,
 }: RegionCountrySelectFieldProps) => {
   const { control } = useFormContext();
-
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
-
   const requiredMessage =
     typeof required === "string"
       ? required
       : required
       ? `${label || name} is required`
       : false;
-
   const validationRules: RegisterOptions = {
     required: requiredMessage,
     ...rules,
   };
-
   const [expandedRegions, setExpandedRegions] = useState<string[]>([]);
-
   const toggleRegion = (regionValue: string) => {
     setExpandedRegions((prev) =>
       prev.includes(regionValue)
@@ -66,14 +60,9 @@ export const RegionCountrySelectField = ({
         : [...prev, regionValue]
     );
   };
-
-  // NEW: Track if user clicked "Country"
   const [showGroupedOptions, setShowGroupedOptions] = useState(false);
-
-  // NEW: Lazy grouping logic
   const groupedOptions = useMemo(() => {
     if (!showGroupedOptions) return {};
-
     return options.reduce((acc, option) => {
       if (option.type === "region") {
         acc[option.value] = {
@@ -144,22 +133,18 @@ export const RegionCountrySelectField = ({
           const selectedOptions = options.filter((opt) =>
             selectedValues.includes(opt.value)
           );
-
           const handleSelect = (selected: RegionCountryOption[]) => {
             const values = selected.map((s) => s.value);
             onChange(values);
-
             const isCountrySelected = values.includes("Country");
             if (!isCountrySelected) {
               setShowGroupedOptions(false);
             }
           };
-
           const displayLabel =
             selectedOptions.length > 0
               ? selectedOptions.map((o) => o.label).join(", ")
               : placeholder;
-
           return (
             <Listbox
               multiple
@@ -174,7 +159,6 @@ export const RegionCountrySelectField = ({
                 } else if (!open && openRef.current) {
                   openRef.current = false;
                 }
-
                 return (
                   <div className="relative">
                     <Listbox.Button
