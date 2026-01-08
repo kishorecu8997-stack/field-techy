@@ -167,6 +167,7 @@ const ReviewClientModal: React.FC<ReviewClientModalProps> = ({
                   <TextareaInput
                     name="review"
                     placeholder={`Share your experience working with ${clientName}…`}
+                    required
                   />
                   {error.review && (
                     <p className="text-sm text-red-600 dark:text-red-400 mt-1">
