@@ -46,6 +46,7 @@ const EditTools = () => {
         return parsedIds.map(String);
       } catch (error) {
         console.error("Failed to parse tool IDs from localStorage", error);
+        return engineerData?.tools?.map(String) || [];
       }
     }
     return engineerData?.tools?.map(String) || [];

@@ -10,6 +10,7 @@ import { EngineerAdapter } from "@/shared/apiServices/engineer/engineerAdapter";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 import { useEngineerFilesContext } from "../context/useEngineerFilesContext";
+import { getUserId } from "@/utils";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -79,23 +80,24 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   onAddDocument,
   onEditDocument,
 }) => {
-  // Always call hooks (React rules)
+  const userId = useMemo(() => getUserId(), []);
   const contextData = useEngineerFilesContext();
-  // TODO: Get current engineer ID from auth store
-  const userId = useMemo(() => {
-    const raw = localStorage.getItem("generic-user-session");
-    if (!raw) return null;
-    return JSON.parse(raw)?.state?.session?.userId ?? null;
-  }, []);
+
+  if (!userId) {
+    return (
+      <div className="bg-white rounded-lg p-8 text-center text-gray-500">
+        Unable to load user session. Please log in again.
+      </div>
+    );
+  }
 
   const filesQuery = useEngineerGetFiles(userId);
 
-  // Use context if available, otherwise use direct query
   const engineerFiles = useMemo(() => {
     if (contextData) {
-      return contextData.files; // Already filtered in context
+      return contextData.files;
     }
-    // Filter out PICTURE if fetching directly
+
     return (filesQuery.data || []).filter(
       (file) => file.fileType !== "PICTURE"
     );
@@ -107,7 +109,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
   const refetchFiles = contextData ? contextData.refetch : filesQuery.refetch;
 
-  // Delete mutation
   const deleteFileMutation = useDeleteEngineerFile({
     engineerId: userId,
     onSuccess: () => {
@@ -228,21 +229,57 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       }
     };
 
-    downloadFiles();
-  }, [engineerFiles, downloadedFileIds]);
-
-  // Cleanup blob URLs on unmount
-  useEffect(() => {
-    const urls = Object.values(previewUrls);
-    return () => {
-      urls.forEach((url) => {
-        URL.revokeObjectURL(url);
+    downloadFiles().catch((error) => {
+      // Fallback error handling to keep state consistent if downloadFiles throws
+      // unexpectedly (e.g., logic error, aborted request outside allSettled, etc.).
+      // We clear previews and errors and stop the loading state so the UI does not
+      // remain stuck in an inconsistent "loading" state.
+      console.error("Failed to download document previews:", error);
+      setPreviewUrls({});
+      setPreviewErrors({
+        __global__: "Failed to load document previews. Please try again later.",
       });
-    };
-  }, [previewUrls]);
+      setIsLoadingPreviews(false);
+      toast.error("Failed to load document previews. Please try again later.");
+    });
+  }, [engineerFiles]);
 
-  // Map EngineerFile to Document format
-  // Only include documents that have been processed (downloaded or failed)
+  useEffect(() => {
+    const currentFileIds = new Set(engineerFiles.map((file) => file.id));
+
+    const urlsToRevoke: string[] = [];
+    Object.entries(previewUrls).forEach(([fileId, url]) => {
+      if (!currentFileIds.has(fileId)) {
+        urlsToRevoke.push(url);
+      }
+    });
+
+    urlsToRevoke.forEach((url) => URL.revokeObjectURL(url));
+
+    if (urlsToRevoke.length > 0) {
+      setPreviewUrls((prev) => {
+        const updated = { ...prev };
+        Object.keys(updated).forEach((id) => {
+          if (!currentFileIds.has(id)) delete updated[id];
+        });
+        return updated;
+      });
+
+      setDownloadedFileIds((prev) => {
+        const updated = new Set(prev);
+        Array.from(prev).forEach((id) => {
+          if (!currentFileIds.has(id)) updated.delete(id);
+        });
+        return updated;
+      });
+    }
+  }, [engineerFiles]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, []);
   const documents: Document[] = useMemo(() => {
     return engineerFiles
       .filter(

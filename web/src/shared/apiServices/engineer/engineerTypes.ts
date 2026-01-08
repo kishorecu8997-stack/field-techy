@@ -10,20 +10,22 @@ export interface Tool {
 
 export interface Experience {
   id?: string;
-  company: string;
-  position: string;
+  designation: string;
+  employer: string;
+  workLocationType?: string;
+  employmentType?: string;
   startDate: string;
-  endDate?: string;
-  description?: string;
+  endDate?: string | null;
+  isCurrent?: boolean;
 }
 
 export interface Education {
   id?: string;
-  educationLevel: string;
-  course: string;
-  university: string;
-  majorSubject: string;
-  passingYear: number;
+  educationLevel?: string;
+  course?: string;
+  university?: string;
+  majorSubject?: string;
+  passingYear?: number;
 }
 
 export interface EngineerData {
@@ -149,9 +151,6 @@ export interface AssignJobParams {
 }
 
 export interface UpdatePasswordParams {
-  // email: string;
-  // password: string;
-  // otp: string;
   phoneOrEmail: string;
   oldPassword: string;
   newPassword: string;

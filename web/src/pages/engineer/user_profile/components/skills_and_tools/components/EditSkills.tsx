@@ -42,6 +42,7 @@ const EditSkills = () => {
         return parsedIds.map(String);
       } catch (error) {
         console.error("Failed to parse skill IDs from localStorage", error);
+        return engineerData?.jobSkills?.map(String) || [];
       }
     }
     return engineerData?.jobSkills?.map(String) || [];

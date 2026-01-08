@@ -26,12 +26,16 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
+ * It uses `react-hook-form` for state management and validation.
+ * @param {PersonalInfoProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
 const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const { showPopup } = usePopupStore();
+
   const {
     navigationSource,
     returnToKey,
@@ -43,7 +47,8 @@ const PersonalInformation = () => {
   const { session } = useUserSessionStore();
   const engineerId = session?.userId || "";
 
-  const { data: engineerData, isLoading: isEngineerLoading } = useEngineerGetById(engineerId);
+  const { data: engineerData, isLoading: isEngineerLoading } =
+    useEngineerGetById(engineerId);
   const { mutate } = useEngineerUpdateById(engineerId);
 
   const methods = useForm<EditProfileFormData>({
@@ -77,9 +82,9 @@ const PersonalInformation = () => {
       return;
     }
 
-    // Create full updated engineer object (important for PUT)
+
     const updatedEngineer: EngineerData = {
-      ...engineerData,              // Keep all existing fields
+      ...engineerData, 
       fullName: formData.fullName,
       phoneNumber: formData.phoneNumber,
       email: formData.emailId,

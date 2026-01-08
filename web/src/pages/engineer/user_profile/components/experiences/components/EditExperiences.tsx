@@ -1,4 +1,3 @@
-import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -18,7 +17,12 @@ import {
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
+import { getUserId } from "@/utils";
 
 /**
  * The EditExperiences component renders a form to modify an existing work experience.
@@ -29,7 +33,46 @@ import {
  */
 const EditExperiences = () => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
+  const { setActiveKey, selectedId } = useDrawerStore();
+
+  const userId = getUserId();
+  if (!userId) return null;
+  const { data: engineerData } = useEngineerGetById(userId);
+  console.log("Engineer Data:", engineerData);
+
+  const methods = useForm<ExperiencesFormData>({
+    mode: "onSubmit",
+  });
+
+  const { mutateAsync } = useEngineerUpdateById(userId);
+
+  useEffect(() => {
+    if (engineerData?.experiences && selectedId) {
+      const experience = engineerData.experiences.find(
+        (exp) => exp.id === selectedId
+      );
+      if (experience) {
+        methods.reset({
+          id: experience.id || "",
+          designation: experience.designation,
+          employer: experience.employer,
+          workLocationType: experience.workLocationType,
+          employmentType: experience.employmentType,
+          startDate: experience.startDate
+            ? new Date(experience.startDate)
+            : null,
+          endDate:
+            experience.endDate && experience.endDate !== "present"
+              ? new Date(experience.endDate)
+              : null,
+          isCurrent:
+            experience.isCurrent ||
+            !experience.endDate ||
+            experience.endDate === "present",
+        });
+      }
+    }
+  }, [engineerData, selectedId, methods]);
 
   const handleSubmit = async (_: ExperiencesFormData) => {
     await showPopup({
@@ -49,54 +92,49 @@ const EditExperiences = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Experience Updated Successfully");
-            close(true);
-            setActiveKey("experiences");
+            if (!engineerData) return;
+            const experiences = engineerData?.experiences || [];
+            const formData = methods.getValues();
+
+            const updatedExperience: Experience = {
+              id: formData.id,
+              designation: formData.designation,
+              employer: formData.employer,
+              workLocationType: formData.workLocationType,
+              employmentType: formData.employmentType,
+              startDate: formData.startDate?.toISOString().split("T")[0] || "",
+              endDate: formData.isCurrent
+                ? null
+                : formData.endDate?.toISOString().split("T")[0] || null,
+            };
+
+            const updatedExperiences = experiences.map((exp) =>
+              exp.id === selectedId ? updatedExperience : exp
+            );
+            try {
+              await mutateAsync({
+                ...engineerData,
+                experiences: updatedExperiences,
+              });
+              toast.success("Experience Updated Successfully");
+              close(true);
+              setActiveKey("experiences");
+            } catch (error) {
+              console.error("Failed to update experience:", error);
+              toast.error("Failed to update experience. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  const getExperienceById = () => {
-    const id = localStorage.getItem("editExperiencesId");
-    console.log(id)
-    const experienceId = id;
-    const found = experianceEdit.find(
-      (exp) => exp.id === experienceId
-    );
-
-
-    if (!found) return undefined;
-
-    // Convert string dates to Date objects (handle empty/undefined endDate)
-    return {
-      ...found,
-      startDate: found.startDate ? new Date(found.startDate) : undefined,
-      endDate: found.endDate ? new Date(found.endDate) : undefined,
-    };
-  };
-
-  const methods = useForm<ExperiencesFormData>({
-    defaultValues: getExperienceById(),
-    mode: "onSubmit",
-  });
-
   useEffect(() => {
-    // Clean up the ID from localStorage after the component has mounted
-    // to prevent it from being used again accidentally.
     return () => {
       localStorage.removeItem("editExperiencesId");
     };
   }, []);
-
-  useEffect(() => {
-    const endDate = methods.getValues("endDate");
-    if (!endDate) {
-      methods.setValue("isCurrent", true);
-    }
-  }, []);
-
 
   return (
     <FormContainer
@@ -168,7 +206,7 @@ const EditExperiences = () => {
                 }
                 return true;
               },
-              onChange: () => methods.trigger("startDate")
+              onChange: () => methods.trigger("startDate"),
             }}
           />
         )}
@@ -184,7 +222,7 @@ const EditExperiences = () => {
               if (checked) {
                 methods.setValue("endDate", null);
               }
-            }
+            },
           }}
         />
       </div>
