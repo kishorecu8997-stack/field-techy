@@ -112,10 +112,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         {isMobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="absolute top-16 right-6 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50"
+            className="absolute top-16 right-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-64 z-50"
           >
             <div className="py-2">
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                 <div
                   className="flex items-center space-x-3"
                   onClick={() => {
@@ -127,7 +127,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                 </div>
               </div>
               <div
-                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                 onClick={() => {
                   onDrawerToggle();
                   setActiveKey("myEarning");
@@ -138,12 +138,12 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               </div>
 
               <div
-                className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
+                className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={onDrawerToggle}
               >
                 <div className="flex items-center space-x-3">My Account</div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
                   <div
@@ -162,7 +162,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                 </div>
               </div>
 
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
                   <div
