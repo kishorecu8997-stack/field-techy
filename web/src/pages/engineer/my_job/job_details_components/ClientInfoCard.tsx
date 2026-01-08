@@ -16,7 +16,6 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
   reviews,
   verifications,
 }) => {
-  console.log('verifications :', verifications);
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <h2 className="font-semibold text-gray-900 dark:text-white mb-4">
