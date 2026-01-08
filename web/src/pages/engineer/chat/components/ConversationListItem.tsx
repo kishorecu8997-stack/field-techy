@@ -49,7 +49,7 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
             <p className="font-medium text-sm text-gray-900 dark:text-gray-100">
               {conversation.name}
             </p>
-            <span className="text-xs text-gray-400 dark:text-gray-400">
+            <span className="text-xs text-gray-400">
               {conversation.updatedAt}
             </span>
           </div>
