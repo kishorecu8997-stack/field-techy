@@ -13,6 +13,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
+import { useAdminSignInMutation } from "@/shared/apiServices/admin/adminService";
+import {
+  useUserSessionStore,
+  type UserSession,
+} from "@/shared/store/useUserSessionStore";
+import { UserRole } from "@/shared/enums/users";
 
 /**
  * AdminLogin
@@ -39,10 +45,30 @@ export default function AdminLogin() {
   });
 
   const navigate = useNavigate();
+  const adminSignInMutation = useAdminSignInMutation();
+  const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const handleSubmit = () => {
-    navigate(`${absoluteUrls.admin.home.dashboard}`);
-    toast.success("Logged in successfully!");
+  const handleSubmit = (data: LoginFormData) => {
+    adminSignInMutation.mutateAsync(
+      { phoneOrEmail: data.email, password: data.password },
+      {
+        onSuccess: (resp) => {
+          const session: UserSession = {
+            accessToken: resp.accessToken,
+            userId: resp.userId,
+            role: resp.role || UserRole.ADMIN,
+            initiatedAt: resp.initiatedAt || Date.now(),
+          };
+
+          setUserSession(session);
+          navigate(`${absoluteUrls.admin.home.dashboard}`);
+          toast.success("Logged in successfully!");
+        },
+        onError: (error: unknown) => {
+          toast.error((error as Error)?.message || "Login failed");
+        },
+      }
+    );
   };
 
   return (
@@ -50,7 +76,7 @@ export default function AdminLogin() {
       className="h-screen flex items-center justify-center"
       style={{ background: "linear-gradient(to right, #034444, #014d45)" }}
     >
-      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center rounded-2xl shadow-lg p-6 w-1/4">
+      <div className="bg-white dark:text-gray-300 dark:bg-gray-800 items-center mx-4 md:mx-0 rounded-2xl shadow-lg p-4 md:p-6 w-full md:w-5/12 xl:w-1/4">
         <img
           src={assetsConfig.logos.ftLogo}
           alt="admin_logo"
@@ -78,7 +104,7 @@ export default function AdminLogin() {
             required
             rules={{
               required: "Password is required",
-              validate:(v:string)=>validatePassword(v)
+              validate: (v: string) => validatePassword(v),
             }}
           />
           <div className="flex items-center justify-between flex-wrap">

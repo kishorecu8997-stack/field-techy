@@ -410,3 +410,19 @@ export const getLatestEarnings = (data: MonthlyData[]) => {
   const latest = data[data.length - 1];
   return { earnings: latest.earnings, month: latest.month };
 };
+
+export const validateOtp = {
+  required: "OTP is required",
+  maxLength: {
+    value: 6,
+    message: "OTP must be a 6-digit numeric code",
+  },
+  minLength: {
+    value: 6,
+    message: "OTP must be a 6-digit numeric code",
+  },
+  pattern: {
+    value: /^[0-9]{6}$/,
+    message: "OTP must be a 6-digit numeric code",
+  },
+};

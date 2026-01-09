@@ -10,6 +10,8 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useEngineerGetJobById } from "@/shared/apiServices/engineer/engineerService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
+import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import { toast } from "react-toastify";
 /**
  * Page component displaying detailed information about a specific job.
  *
@@ -23,6 +25,11 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const handleSubmitReview = () => {
+    toast.success("Review submitted successfully");
+    setIsReviewOpen(false);
+  };
   const {
     data:job,
     isLoading,
@@ -71,6 +78,7 @@ const JobDetailsPage = () => {
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
             />
+
             <JobTabSection
               status={jobData?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
@@ -87,10 +95,18 @@ const JobDetailsPage = () => {
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
+              onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>
         </div>
       </div>
+
+      <ReviewClientModal
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        clientName={(jobs?.client.contactPersonName as string) ?? "Client"}
+        onSubmit={handleSubmitReview}
+      />
     </div>
   );
 };
