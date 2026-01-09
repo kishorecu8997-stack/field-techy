@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
 import type { FileDownloadResponse } from "../client/clientTypes";
 import type { getAdminByIdResponse } from "./adminTypes";
@@ -103,6 +103,7 @@ export function useDownloadAdminFileStream(options?: {
   });
 }
 
+
 /** Hook to get admin by ID */
 export function useAdminGetById(options?: {
   onSuccess?: (data: getAdminByIdResponse) => void;
@@ -112,5 +113,20 @@ export function useAdminGetById(options?: {
     mutationFn: (id: string) => AdminAdapter.getAdminById(id),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+/**
+ * Hook to download a file stream as a query for Admin
+ */
+export function useAdminFileStream(
+  fileKey?: string | null,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ["admin-file-stream", fileKey],
+    queryFn: () => AdminAdapter.downloadFileStream(fileKey!),
+    enabled: !!fileKey && (options?.enabled ?? true),
+    staleTime: Infinity,
   });
 }

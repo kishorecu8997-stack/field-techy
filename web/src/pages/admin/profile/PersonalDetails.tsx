@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validateName } from "@/pages/engineer/user_profile/Validate";
@@ -16,10 +17,11 @@ import {
   useAdminGetById,
   useAdminUpdateProfileMutation,
   useAdminUploadFileMutation,
+  useAdminFileStream,
 } from "@/shared/apiServices/admin/adminService";
 
-import { useStreamedImage } from "./useStreamedImage";
-import { AdminAdapter } from "@/shared/apiServices/admin/adminAdapter";
+import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
+import type { getAdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
 import type { ProfileFormData } from "./types";
 
 /* ---------- Helper ---------- */
@@ -44,29 +46,40 @@ export default function PersonalDetails() {
   const session = useUserSessionStore((s) => s.session);
   const adminUpdateProfileMutation = useAdminUpdateProfileMutation();
 
-  /* ---------- SINGLE source of truth ---------- */
-  const [profilePictureId, setProfilePictureId] = useState<string | null>(
-    session?.profilePicture ?? null
-  );
+  const { adminProfile, setAdminProfile } = useAdminProfileStore();
+  const queryClient = useQueryClient();
 
   /* ---------- Stream image ---------- */
-  const { url: adminProfilePic } = useStreamedImage(
-    profilePictureId,
-    AdminAdapter.downloadFileStream
+  const { data: adminProfileStream } = useAdminFileStream(
+    adminProfile?.profilePicture
   );
+
+  const [adminProfilePic, setAdminProfilePic] = useState<string>("");
+
+  useEffect(() => {
+    if (!adminProfileStream?.blob) return;
+
+    const url = URL.createObjectURL(adminProfileStream.blob);
+    setAdminProfilePic(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [adminProfileStream]);
 
   /* ---------- Get admin by id ---------- */
   const { mutate: getAdminById } = useAdminGetById({
     onSuccess: (data: unknown) => {
-      const resp = data as ProfileFormData;
-      methods.reset({
+      const resp = data as getAdminByIdResponse;
+      setAdminProfile({
+        id: resp.id,
         fullName: resp.fullName,
         email: resp.email,
         phoneNumber: resp.phoneNumber,
-        profilePicture: null,
+        profilePicture: resp.profilePicture,
       });
 
-      setProfilePictureId(resp.profilePicture ?? null);
+      // Form reset is handled by useEffect listening to adminProfile changes
     },
     onError: () => {
       toast.error("Failed to load profile details");
@@ -74,10 +87,18 @@ export default function PersonalDetails() {
   });
 
   useEffect(() => {
-    if (session?.userId) {
+    if (adminProfile) {
+      methods.reset({
+        fullName: adminProfile.fullName,
+        email: adminProfile.email,
+        phoneNumber: adminProfile.phoneNumber,
+        profilePicture: null,
+      });
+    } else if (session?.userId) {
+      // Fallback if store is empty
       getAdminById(session.userId);
     }
-  }, [session?.userId]);
+  }, [adminProfile, session?.userId]);
 
   /* ---------- Form ---------- */
   const methods = useForm<ProfileFormData>({
@@ -105,7 +126,7 @@ export default function PersonalDetails() {
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
-    let finalProfilePicKey = profilePictureId;
+    let finalProfilePicKey = adminProfile?.profilePicture;
 
     if (data.profilePicture) {
       const file = await getFileFromProfilePicture(data.profilePicture);
@@ -119,7 +140,7 @@ export default function PersonalDetails() {
       });
 
       finalProfilePicKey = res.fileKey;
-      setProfilePictureId(res.fileKey);
+      // setProfilePictureId(res.fileKey); // Store updates handled by parent fetch or mutation success
     }
 
     await showPopup({
@@ -153,6 +174,9 @@ export default function PersonalDetails() {
                   //   profilePicture: resp.profilePicture,
                   // });
                   getAdminById(session?.userId || "");
+
+                  // Invalidate file stream cache to ensure fresh image is fetched
+                  queryClient.invalidateQueries({ queryKey: ["admin-file-stream"] });
 
                   toast.success("Profile updated successfully");
                   navigate(absoluteUrls.admin.home.dashboard);
