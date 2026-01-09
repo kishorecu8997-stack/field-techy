@@ -1,5 +1,5 @@
 import { assetsConfig } from "@/assets";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -12,6 +12,7 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useStreamedImage } from "@/pages/admin/profile/useStreamedImage";
 import { AdminAdapter } from "@/shared/apiServices/admin/adminAdapter";
 import { useAdminGetById } from "@/shared/apiServices/admin/adminService";
+import type { getAdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
 
 /**
  * Header
@@ -35,8 +36,9 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const session = useUserSessionStore((s) => s.session);
-  const [adminRes, setAdminRes] = useState<any>();
+  const [adminRes, setAdminRes] = useState<getAdminByIdResponse>();
   const location = useLocation();
+  const [profilePicKey, setProfilePicKey] = useState<string | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,10 +60,10 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const toggleNotifications = () => {
     setIsNotificationOpen((prev) => !prev);
   };
-  const [profilePicKey, setProfilePicKey] = useState<string | null>(null);
+
   // /* ---------- Get admin by id ---------- */
   const { mutate: getAdminById } = useAdminGetById({
-    onSuccess: (resp: any) => {
+    onSuccess: (resp: getAdminByIdResponse) => {
       setAdminRes(resp);
       setProfilePicKey(resp.profilePicture ?? null);
     },
@@ -73,8 +75,13 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     }
   }, [location.pathname, session?.userId]);
 
+  const cacheBustedKey = useMemo(() => {
+    if (!profilePicKey) return null;
+    return `${profilePicKey}?v=${Date.now()}`;
+  }, [profilePicKey]);
+
   const { url: adminProfilePic } = useStreamedImage(
-    profilePicKey,
+    cacheBustedKey,
     AdminAdapter.downloadFileStream
   );
 
@@ -123,7 +130,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                 {adminProfilePic ? (
                   <img
                     src={adminProfilePic}
-                    alt="Profile"
+                    // alt="Profile"
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (

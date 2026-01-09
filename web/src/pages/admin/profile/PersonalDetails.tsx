@@ -57,7 +57,8 @@ export default function PersonalDetails() {
 
   /* ---------- Get admin by id ---------- */
   const { mutate: getAdminById } = useAdminGetById({
-    onSuccess: (resp: any) => {
+    onSuccess: (data: unknown) => {
+      const resp = data as ProfileFormData;
       methods.reset({
         fullName: resp.fullName,
         email: resp.email,
@@ -110,6 +111,7 @@ export default function PersonalDetails() {
       const file = await getFileFromProfilePicture(data.profilePicture);
       if (!file) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await uploadProfileImage({
         adminId: session?.userId || "",
         file,
@@ -136,11 +138,11 @@ export default function PersonalDetails() {
                 fullName: data.fullName,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
-                profilePicture: finalProfilePicKey,
+                profilePicture: finalProfilePicKey as string,
+                password: "",
               },
               {
-                onSuccess: (resp: any) => {
-                  console.log("resp :", resp);
+                onSuccess: () => {
                   // if (!session) return;
 
                   // setUserSession({
