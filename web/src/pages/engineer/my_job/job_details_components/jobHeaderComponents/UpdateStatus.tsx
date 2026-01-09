@@ -1,7 +1,10 @@
 import { icons } from "@/config/icons";
 import type { EngineerStatusUpdate } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 import { validateDescription } from "@/pages/engineer/home/validation";
-import { useEngineerUpdateJobStatus } from "@/shared/apiServices/engineer/engineerService";
+import {
+  useEngineerScreenShotUpload,
+  useEngineerUpdateJobStatus,
+} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -18,8 +21,21 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered Update Status form
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
+  const { mutate: updateJobScreenShot } = useEngineerScreenShotUpload();
   const { mutate: updateJobStatus } = useEngineerUpdateJobStatus({
-    onSuccess: () => {
+    onSuccess: (data, variable) => {
+      updateJobScreenShot({
+        engineerId: data.engineerId,
+        documentType: "WORK_SCREEN_SHOT",
+        file: variable.workScreenShot ?? null,
+        metadata: {
+          workScreenshotId: "a68daf89-198a-4552-a6fa-d4df0eada914",
+          remarks: variable.remarks ?? null,
+          id: data.id,
+          engineerJobId: data.engineerId,
+          activityDate: new Date().toISOString().split("T")[0],
+        },
+      });
       toast.success("Your status was updated");
     },
 
@@ -31,6 +47,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const formCtx = useForm<EngineerStatusUpdate>({
     defaultValues: {
+      id: "616bedff-31ea-44c9-aac8-333bd72049e9",
       status: "",
       remarks: "",
       workScreenShot: null,
@@ -39,7 +56,6 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const { showPopup } = usePopupStore();
   const handleSubmit = async (data: EngineerStatusUpdate) => {
-
     await showPopup({
       title: "Update Status",
       body: "Are you sure you want to update this job status?",
@@ -54,7 +70,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            // await updateJobStatus(data);
+            await updateJobStatus(data);
             close(true);
             onClose();
           },
@@ -81,7 +97,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           label="Status"
           required
           options={[
-            { label: "In Progress", value: "in-progress" },
+            { label: "In Progress", value: "inprogress" },
             { label: "Completed", value: "completed" },
           ]}
         />
@@ -95,7 +111,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           name="workScreenShot"
           label="Work Screenshot"
           required
-          accept=".pdf"
+          accept=".pdf,.jpeg,.jpg,.png"
           maxPages={5}
           validatePDF={true}
         />
