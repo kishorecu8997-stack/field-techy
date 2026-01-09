@@ -18,10 +18,9 @@ import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
  */
 const SearchResult = () => {
 
-  const { data: jobs } = useGetJobs()
+  const { data: jobs } = useGetJobs();
 
   // State management
-  // const [jobs] = useState<JobItem[]>(sampleJobs);
   const [filteredJobs, setFilteredJobs] = useState<JobItem[]>(jobs || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -70,7 +69,7 @@ const SearchResult = () => {
   }, [filteredJobs]);
   // Apply filters and sorting
   useEffect(() => {
-    let filtered = [...filteredJobs];
+    let filtered = [...(jobs || [])];
     // Apply location filter
     if (filters.location.length > 0) {
       filtered = filtered.filter((job) =>
@@ -83,12 +82,6 @@ const SearchResult = () => {
         filters.category.some((cat) => job.category?.includes(cat))
       );
     }
-    // Apply rating filter
-    // if (filters.rating.length > 0) {
-    //   filtered = filtered.filter(
-    //     (job) => job.rating && filters.rating.includes(job.rating)
-    //   );
-    // }
     // Apply experience filter
     if (filters.experience > 0) {
       filtered = filtered.filter(

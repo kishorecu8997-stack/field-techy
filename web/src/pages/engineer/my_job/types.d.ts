@@ -70,9 +70,11 @@ export interface ClientInfoCardProps {
   name: string;
   memberSince: string;
   location: string;
-  rating: string;
-  reviews: number;
+  rating: number | string;
+  reviews: number | string;
   verifications: string[];
+  onOpenReview?: () => void;
+  onClose?: () => void;
 }
 
 export interface JobHeaderCardProps {
@@ -207,14 +209,3 @@ export interface WorkInfoItem {
 }
 
 
-// ../types.ts
-export type ClientInfoCardProps = {
-  name: string;
-  memberSince: string;
-  location: string;
-  rating: number | string;
-  reviews: number | string;
-  verifications: string[];
-  onOpenReview?: () => void;
-};
-type ClientInfoCardUIProps = ClientInfoCardProps;

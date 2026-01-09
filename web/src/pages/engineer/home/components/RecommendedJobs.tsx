@@ -20,10 +20,6 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   title = "Recommended Jobs",
   onViewAll,
 }) => {
-  console.log('jobs :', jobs);
-  // const filteredJobs = jobs.filter((job) => {
-  //   return job.status === "NEW";
-  // });
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center  p-2">

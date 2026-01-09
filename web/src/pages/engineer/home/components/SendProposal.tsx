@@ -46,7 +46,6 @@ const SendProposal = () => {
   const { showPopup } = usePopupStore();
   const userId = getUserId();
 
-
   const navigate = useNavigate();
   const formCtx = useForm<proposalTypes>({
     mode: "onChange",
@@ -109,6 +108,8 @@ const SendProposal = () => {
               close(true);
             } catch (error) {
               console.error("Proposal submission failed:", error);
+              toast.error("Failed to submit proposal. Please try again.");
+              throw error;
             }
           },
         },

@@ -13,7 +13,7 @@ import {
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import type { JobItem } from "../types";
 
 
@@ -240,7 +240,7 @@ const ExploreJobs: React.FC = () => {
   }, [filteredJobs, sortBy, loginData]);
 
   // Helper to convert dummy Job to JobItem
-  const mapJobToJobItem = (job: Job): JobItem => {
+  const mapJobToJobItem = useCallback((job: Job): JobItem => {
     return {
       id: String(job.id),
       clientId: "dummy-client",
@@ -299,7 +299,7 @@ const ExploreJobs: React.FC = () => {
         password: null
       }
     };
-  };
+  }, []); // Empty dependency array since the function doesn't depend on any props or state
 
   // Step 4: Pagination
   const jobsPerPage = 4;
@@ -307,7 +307,7 @@ const ExploreJobs: React.FC = () => {
   const paginatedJobs = useMemo<JobItem[]>(() => {
     const start = (currentPage - 1) * jobsPerPage;
     return sortedJobs.slice(start, start + jobsPerPage).map(mapJobToJobItem);
-  }, [sortedJobs, currentPage]);
+  }, [sortedJobs, currentPage, mapJobToJobItem]);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });

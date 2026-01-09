@@ -25,22 +25,89 @@ const JobDetailsPage = () => {
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
 
-  const { data: jobs } = useClientGetJobsById(params.jobId ?? "");
-  const client = jobs?.client;
-
-  if (!params.jobId) {
-    return null;
-  }
-
-  const getDuration = getDurationString({
-    startDateStr: jobs?.startDate as string,
-    endDateStr: jobs?.projectDeadline as string,
-  });
-
+  // Always call hooks - pass empty string if jobId is missing
+  const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
+
+  // Handle missing jobId with a proper error state
+  if (!params.jobId) {
+    return (
+      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto px-4 py-6 md:px-6">
+          <MyJobsHeader
+            title="Job Details"
+            currentSort={SORT_OPTIONS.NEWEST}
+            onSortChange={() => { }}
+            isReport
+          />
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold mb-2">Job Not Found</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                The job ID is missing or invalid. Please check the URL and try again.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto px-4 py-6 md:px-6">
+          <MyJobsHeader
+            title="Job Details"
+            currentSort={SORT_OPTIONS.NEWEST}
+            onSortChange={() => { }}
+            isReport
+          />
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading job details...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle case where job data is not found
+  if (!jobs) {
+    return (
+      <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div className="container mx-auto px-4 py-6 md:px-6">
+          <MyJobsHeader
+            title="Job Details"
+            currentSort={SORT_OPTIONS.NEWEST}
+            onSortChange={() => { }}
+            isReport
+          />
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold mb-2">Job Not Found</h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                The requested job could not be found.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const client = jobs.client;
+
+  const getDuration = getDurationString({
+    startDateStr: jobs.startDate as string,
+    endDateStr: jobs.projectDeadline as string,
+  });
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -48,7 +115,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -83,6 +150,7 @@ const JobDetailsPage = () => {
               rating={"-"}
               reviews={0}
               verifications={[]}
+              onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>
         </div>
