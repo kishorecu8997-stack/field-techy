@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import type { MenuItem } from "@/pages/engineer/account_settings/types";
@@ -18,6 +19,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const [isOpen, setIsOpen] = React.useState(false);
+  const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate();
   const menuItems: MenuItem[] = [
     {
@@ -73,6 +75,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
+          logout();
           onClose();
           navigate(isClient ? absoluteUrls.client.auth.login : absoluteUrls.engineer.auth.login);
         }}

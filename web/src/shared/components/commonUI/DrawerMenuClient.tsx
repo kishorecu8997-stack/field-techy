@@ -1,16 +1,17 @@
 import { absoluteUrls } from "@/config/urls";
 import React, { useState } from "react";
-import {  
+import {
   FaChevronRight,
   FaCog,
   FaSignOutAlt,
   FaUser,
-  FaWallet,  
+  FaWallet,
 } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
 import { useNavigate } from "react-router";
 import LogoutConfirmationPopup from "../LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import type { DrawerMenuProps } from "../drawer/Drawer";
 
 
@@ -34,13 +35,13 @@ export type MenuItems = {
  * @example
  * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
  */
-const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }) => {
+const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuItems: MenuItems[] = [
     { label: "Manage Proposal", icon: IoDocumentText, key: "proposal" },
-    { label: "Company Information", icon:FaUser , key: "company" },
+    { label: "Company Information", icon: FaUser, key: "company" },
     { label: "Documents", icon: IoDocumentText, key: "document" },
-    { label: "Payment Methods", icon: FaWallet , key: "payment" },
+    { label: "Payment Methods", icon: FaWallet, key: "payment" },
     { label: "Change Password", icon: RiLockPasswordFill, key: "changePwd" },
     { label: "Account Details", icon: FaCog, key: "account" },
     {
@@ -54,6 +55,7 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }
     },
   ];
 
+  const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate()
 
   return (
@@ -72,10 +74,9 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
+              ${item.isLogout
+                ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                : ""
               }
             `}
           >
@@ -83,20 +84,18 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }
               <item.icon
                 className={`
                   h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
+                  ${item.isLogout
+                    ? "text-red-600 dark:text-red-400 "
+                    : "text-gray-600 dark:text-gray-300 "
                   }
                 `}
               />
               <span
                 className={`
-                ${
-                  item.isLogout
+                ${item.isLogout
                     ? "text-red-600 dark:text-red-400"
                     : "text-gray-700 dark:text-gray-200"
-                }
+                  }
               `}
               >
                 {item.label}
@@ -118,9 +117,11 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick,onClose }
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
+          logout();
           onClose();
-           navigate(absoluteUrls.client.auth.login); }}
-        onCancel={() => setIsOpen(false)}        
+          navigate(absoluteUrls.client.auth.login);
+        }}
+        onCancel={() => setIsOpen(false)}
       />
     </div>
   );
