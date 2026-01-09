@@ -119,7 +119,7 @@ const AddEducation: React.FC = ({}) => {
         <InputField
           label="Passing Year"
           isShowLabel={false}
-          name="passingYear"
+          name="year"
           placeholder="Passing Year"
           rules={{
             required: "Passing year is required",

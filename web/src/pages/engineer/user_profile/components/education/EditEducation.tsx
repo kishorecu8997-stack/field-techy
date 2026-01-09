@@ -128,8 +128,9 @@ const EditEducation = () => {
         <InputField
           label="Passing Year"
           isShowLabel={false}
-          name="passingYear"
+          name="year"
           placeholder="Passing Year"
+          allowedCharacters="numbers"
           rules={{
             required: "Passing year is required",
             validate: validatePassingYear,
