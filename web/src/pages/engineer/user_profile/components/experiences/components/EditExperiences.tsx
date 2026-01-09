@@ -1,4 +1,3 @@
-import { experianceEdit } from "@/dummy_data/engineer_profile/work-experience";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -18,85 +17,150 @@ import {
   employmentTypeOptions,
   workLocationTypeOptions,
 } from "./constants";
-
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
+import { getUserId } from "@/utils";
 
 /**
- * The EditExperiences component renders a form to modify an existing work experience.
- * It uses `react-hook-form` for management and validation, and is pre-populated
- * with the data passed via the `experienceData` prop.
- * @param {EditExperiencesProps} props - Component props.
- * @returns {React.ReactElement} The rendered EditExperiences form component.
+ * EditExperiences component – now handles both ADDING a new experience
+ * and EDITING an existing one based on whether selectedId is present.
  */
 const EditExperiences = () => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey } = useDrawerStore();
+  const { setActiveKey, selectedId } = useDrawerStore();
 
-  const handleSubmit = async (_: ExperiencesFormData) => {
+  const userId = getUserId();
+  if (!userId) return null;
+
+  const { data: engineerData } = useEngineerGetById(userId);
+  const { mutateAsync } = useEngineerUpdateById(userId);
+
+  const methods = useForm<ExperiencesFormData>({
+    mode: "onSubmit",
+  });
+
+  useEffect(() => {
+    if (selectedId && engineerData?.experiences) {
+      const experience = engineerData.experiences.find(
+        (exp) => exp.id === selectedId
+      );
+
+      if (experience) {
+        methods.reset({
+          designation: experience.designation,
+          employer: experience.employer,
+          workLocationType: experience.workLocationType,
+          employmentType: experience.employmentType,
+          startDate: experience.startDate
+            ? new Date(experience.startDate)
+            : null,
+          endDate: experience.endDate ? new Date(experience.endDate) : null,
+          isCurrent: experience.isCurrent ?? !experience.endDate,
+        });
+        return;
+      }
+    }
+
+    methods.reset({
+      designation: "",
+      employer: "",
+      workLocationType: "",
+      employmentType: "",
+      startDate: null,
+      endDate: null,
+      isCurrent: false,
+    });
+  }, [engineerData, selectedId, methods]);
+
+  const handleSubmit = async () => {
     await showPopup({
-      title: "Update Experience",
-      body: "Are you sure you want to update this experience?",
+      title: selectedId ? "Update Experience" : "Add Experience",
+      body: selectedId
+        ? "Are you sure you want to update this experience?"
+        : "Are you sure you want to add this experience?",
       actionButtons: [
         {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
-          label: "Yes, update",
+          label: selectedId ? "Yes, update" : "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Experience Updated Successfully");
-            close(true);
-            setActiveKey("experiences");
+            if (!engineerData) return;
+
+            const formData = methods.getValues();
+            const currentExperiences = engineerData.experiences || [];
+
+            let updatedExperiences: Experience[];
+
+            if (selectedId) {
+              updatedExperiences = currentExperiences.map((exp) => {
+                if (exp.id === selectedId) {
+                  exp.designation = String(formData.designation ?? "");
+                  exp.employer = (formData.employer || "").trim();
+                  exp.workLocationType = formData.workLocationType as string;
+                  exp.employmentType = formData.employmentType as string;
+                  exp.startDate =
+                    formData.startDate?.toISOString().split("T")[0] || "";
+                  exp.endDate = formData.isCurrent
+                    ? undefined // ← Fixed: undefined instead of null
+                    : formData.endDate?.toISOString().split("T")[0] ||
+                      undefined;
+                  exp.isCurrent = formData.isCurrent;
+                }
+                return exp;
+              });
+            } else {
+              const newExperience: Experience = {
+                designation: String(formData.designation ?? ""),
+                employer: (formData.employer || "").trim(),
+                workLocationType: formData.workLocationType as string,
+                employmentType: formData.employmentType as string,
+                startDate:
+                  formData.startDate?.toISOString().split("T")[0] || "",
+                endDate: formData.isCurrent
+                  ? undefined
+                  : formData.endDate?.toISOString().split("T")[0] || undefined,
+                isCurrent: formData.isCurrent,
+              };
+
+              updatedExperiences = [...currentExperiences, newExperience];
+            }
+
+            try {
+              await mutateAsync({
+                ...engineerData,
+                experiences:
+                  updatedExperiences.length > 0
+                    ? updatedExperiences
+                    : undefined,
+              });
+
+              toast.success(
+                selectedId
+                  ? "Experience updated successfully"
+                  : "Experience added successfully"
+              );
+
+              close(true);
+              setActiveKey("experiences");
+            } catch (error) {
+              console.error("Failed to save experience:", error);
+              toast.error("Failed to save experience. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
-
-  const getExperienceById = () => {
-    const id = localStorage.getItem("editExperiencesId");
-    console.log(id)
-    const experienceId = id;
-    const found = experianceEdit.find(
-      (exp) => exp.id === experienceId
-    );
-
-
-    if (!found) return undefined;
-
-    // Convert string dates to Date objects (handle empty/undefined endDate)
-    return {
-      ...found,
-      startDate: found.startDate ? new Date(found.startDate) : undefined,
-      endDate: found.endDate ? new Date(found.endDate) : undefined,
-    };
-  };
-
-  const methods = useForm<ExperiencesFormData>({
-    defaultValues: getExperienceById(),
-    mode: "onSubmit",
-  });
-
-  useEffect(() => {
-    // Clean up the ID from localStorage after the component has mounted
-    // to prevent it from being used again accidentally.
-    return () => {
-      localStorage.removeItem("editExperiencesId");
-    };
-  }, []);
-
-  useEffect(() => {
-    const endDate = methods.getValues("endDate");
-    if (!endDate) {
-      methods.setValue("isCurrent", true);
-    }
-  }, []);
-
 
   return (
     <FormContainer
@@ -111,8 +175,8 @@ const EditExperiences = () => {
           name="designation"
           placeholder="Designation"
           options={designationOptions.map((e) => ({
-            value: e.id,
-            label: e.title,
+            value: e.value,
+            label: e.label,
           }))}
           required
         />
@@ -160,42 +224,38 @@ const EditExperiences = () => {
             isShowLabel={false}
             placeholder="End date (required if not current)"
             minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+            maxDate={new Date()}
             required={!methods.watch("isCurrent")}
             rules={{
               validate: (value) => {
-                if (!methods.watch("isCurrent") && !value) {
-                  return "End date is required when not currently working";
-                }
-                return true;
-              },
-              onChange: () => methods.trigger("startDate")
+  if (!methods.watch("isCurrent")) {
+    if (!value) return "End date is required when not currently working";
+    
+    const start = methods.getValues("startDate");
+    if (start && value && start > value) {
+      return "End date must be after start date";
+    }
+  }
+  return true;
+},
+              onChange: () => methods.trigger("startDate"),
             }}
           />
         )}
 
-        {/* Checkbox label */}
         <CheckboxInput
           name="isCurrent"
           label="I currently work here"
           isShowLabel={true}
-          rules={{
-            onChange: (e) => {
-              const checked = e.target.checked;
-              if (checked) {
-                methods.setValue("endDate", null);
-              }
-            }
-          }}
         />
       </div>
 
-      {/* Fixed bottom button */}
-      <div className="bg-white ">
+      <div className="bg-white">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
-          Save
+          {selectedId ? "Update" : "Add"} Experience
         </Button>
       </div>
     </FormContainer>

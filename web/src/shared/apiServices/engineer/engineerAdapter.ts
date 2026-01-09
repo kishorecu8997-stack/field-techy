@@ -48,6 +48,21 @@ export class EngineerAdapter {
     }
   }
 
+  static async updateById(
+    id: string,
+    data: EngineerData
+  ): Promise<EngineerData> {
+    try {
+      const response = await axiosInstance.put<EngineerData>(
+        ENGINEER_ROUTER_PATHS.UPDATE_ENGINEER(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
   static async delete(id: string): Promise<boolean> {
     try {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE(id));
@@ -265,6 +280,44 @@ export class EngineerAdapter {
         ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp)
       );
       return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+   static async deleteFile(fileId: string): Promise<boolean> {
+    try {
+      await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE_FILE(fileId));
+      return true;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<{ blob: Blob; fileName: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        {
+          responseType: "blob",
+        }
+      );
+
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "file";
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+        if (fileNameMatch?.[1]) {
+          fileName = fileNameMatch[1];
+        }
+      }
+
+      return {
+        blob: response.data,
+        fileName,
+      };
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }

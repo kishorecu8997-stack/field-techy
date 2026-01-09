@@ -2,12 +2,15 @@
 export const ENGINEER_ROUTER_PATHS = {
   SIGNUP: "/eng/api/v1/engineers/signup",
   GET_BY_ID: (id: string) => `/eng/api/v1/engineers/${id}`,
+  UPDATE_ENGINEER: (id: string) => `/eng/api/v1/engineers/update/${id}`,
   DELETE: (id: string) => `/eng/api/v1/engineers/delete/${id}`,
 
   // signin otp endpoints
   ENG_SIGNIN: (otp: string) => `/eng/api/v1/engineers/eng/signin/by-otp/${otp}`,
-  REQ_OTP: (emailorPhone: string) =>
-    `/user/api/v1/users/otp/request/${emailorPhone}`,
+  REQ_OTP: (emailorPhone: string) => `/user/api/v1/users/otp/request/${emailorPhone}`,
+  DELETE_FILE: (fileId: string) =>
+    `/eng/api/v1/engineers/files/${fileId}/delete`,
+
 
   // verify email and phone otp endpoints
   VERIFY_OTP: (emailorPhone: string, otp: string) =>
