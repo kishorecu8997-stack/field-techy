@@ -265,16 +265,35 @@ export const validateMajorSubject = (
  */
 
 export const validatePassingYear = (value: string) => {
-  if (!/^\d{4}$/.test(value)) {
+  if (/^\s|\s$/.test(value || ""))
+    return "Passing Year must not start or end with a space";
+
+  const yearStr = (value || "").trim();
+  if (!yearStr) return "Passing Year is required";
+
+  // Disallow leading or trailing spaces
+
+  if (/\s/.test(yearStr))
+    return "Passing Year must not contain internal spaces";
+  // Ensure the value contains only digits and is exactly 4 characters long.
+  if (!/^\d{4}$/.test(yearStr) || /\D/.test(yearStr)) {
+    return "Passing year must be a 4-digit number without symbols or letters";
+  }
+
+  const year = parseInt(yearStr, 10);
+  const currentYear = new Date().getFullYear();
+
+  if (year < 1970) {
     return "Passing year must be 1970 or later";
   }
 
-  if (Number(value) > new Date().getFullYear()) {
-    return "Passing year cannot be in the future";
+  if (year > currentYear) {
+    return `Passing year cannot be in the future`;
   }
 
   return true;
 };
+
 /**
  * Validate a date range.
  * - Start date must not be in the future.
