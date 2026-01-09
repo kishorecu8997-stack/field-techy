@@ -11,7 +11,9 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { getUserId } from "@/utils";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 /**
@@ -21,21 +23,11 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered Update Status form
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
-  const { mutate: updateJobScreenShot } = useEngineerScreenShotUpload();
-  const { mutate: updateJobStatus } = useEngineerUpdateJobStatus({
-    onSuccess: (data, variable) => {
-      updateJobScreenShot({
-        engineerId: data.engineerId,
-        documentType: "WORK_SCREEN_SHOT",
-        file: variable.workScreenShot ?? null,
-        metadata: {
-          workScreenshotId: "a68daf89-198a-4552-a6fa-d4df0eada914",
-          remarks: variable.remarks ?? null,
-          id: data.id,
-          engineerJobId: data.engineerId,
-          activityDate: new Date().toISOString().split("T")[0],
-        },
-      });
+  const userId = getUserId();
+  const jobid = useParams();
+  const { mutateAsync: updateJobScreenShot } = useEngineerScreenShotUpload();
+  const { mutateAsync: updateJobStatus } = useEngineerUpdateJobStatus({
+    onSuccess: () => {
       toast.success("Your status was updated");
     },
 
@@ -47,7 +39,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const formCtx = useForm<EngineerStatusUpdate>({
     defaultValues: {
-      id: "616bedff-31ea-44c9-aac8-333bd72049e9",
+      id: jobid.jobId,
       status: "",
       remarks: "",
       workScreenShot: null,
@@ -70,7 +62,19 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            await updateJobStatus(data);
+            const res = await updateJobStatus(data);
+            if (data.workScreenShot && data.workScreenShot[0]) {
+              await updateJobScreenShot({
+                engineerId: userId as string,
+                documentType: "WORK_SCREEN_SHOT",
+                file: data.workScreenShot[0] ?? null,
+                metadata: {
+                  remarks: data.remarks ?? null,
+                  engineerJobId: res.jobId,
+                },
+              });
+            }
+
             close(true);
             onClose();
           },
