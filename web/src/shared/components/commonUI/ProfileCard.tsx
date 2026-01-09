@@ -55,10 +55,13 @@ const ProfileCard = ({
 
   const userId = getUserId();
   const profileImage = watch ? watch("profileImage") : null;
-  const { mutate: uploadFile } = useEngineerFileUpload({
-    onSuccess: () => toast.success("Profile picture updated successfully!"),
-    onError: () => toast.error("Failed to update profile picture."),
-  });
+  const { mutate: uploadFile } = useEngineerFileUpload(
+    userId || undefined,
+    {
+      onSuccess: () => toast.success("Profile picture updated successfully!"),
+      onError: () => toast.error("Failed to update profile picture."),
+    }
+  );
 
   console.log("engineerId :", userId);
   console.log("profileImage :", profileImage);

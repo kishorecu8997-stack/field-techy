@@ -18,7 +18,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const userId = getUserId();
   const { data: engineerData } = useEngineerGetById(userId || "");
 
-  const handleDeleteEducation = async (id: string) => {
+  const handleDeleteEducation = async () => {
     await showPopup({
       title: "Delete Education",
       body: "Are you sure you want to delete this education?",
@@ -64,7 +64,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           setImmediateParentKey("education");
           onMenuItemClick("editEducation");
         }}
-        onDeleteAction={(id) => handleDeleteEducation(id)}
+        onDeleteAction={() => handleDeleteEducation()}
       />
     </div>
   );

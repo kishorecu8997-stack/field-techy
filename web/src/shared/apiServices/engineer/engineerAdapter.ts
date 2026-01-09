@@ -294,35 +294,6 @@ export class EngineerAdapter {
     }
   }
 
-  static async downloadFileStream(
-    fileKey: string
-  ): Promise<{ blob: Blob; fileName: string }> {
-    try {
-      const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
-        {
-          responseType: "blob",
-        }
-      );
-
-      const contentDisposition = response.headers["content-disposition"];
-      let fileName = "file";
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
-        if (fileNameMatch?.[1]) {
-          fileName = fileNameMatch[1];
-        }
-      }
-
-      return {
-        blob: response.data,
-        fileName,
-      };
-    } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
-    }
-  }
-
   static async verifyPhoneOTP(
     phoneNumber: string,
     otp: string

@@ -1,8 +1,7 @@
-import React from "react";
-import ChipsCard from "@/shared/components/ChipsCard";
-import { getUserId } from "@/utils";
 import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
+import ChipsCard from "@/shared/components/ChipsCard";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import React from "react";
 
 import { jobSkillsData, toolsData } from "@/dummy_data";
 

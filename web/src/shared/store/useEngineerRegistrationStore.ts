@@ -218,9 +218,12 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
             state.company && state.designation
               ? [
                   {
-                    company: state.company,
-                    position: state.designation,
+                    designation: state.designation,
+                    employer: state.company,
+                    workLocationType: "REMOTE",
+                    employmentType: "FULL_TIME",
                     startDate: new Date().toISOString(),
+                    isCurrent: true,
                   },
                 ]
               : [],

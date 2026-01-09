@@ -51,7 +51,7 @@ export function useEngineerDelete(options?: {
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 export function useEngineerFileUpload(
-  engineerId : string,
+  engineerId?: string,
   options?: {
     onSuccess?: (data: FileUploadResponse) => void;
     onError?: (error: unknown) => void;
