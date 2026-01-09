@@ -64,7 +64,6 @@ export const JobSearchBar = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    handleNavigate(value); // Keep existing navigation
     if (value.trim()) {
       const filtered = suggestions.filter(suggestion =>
         suggestion.toLowerCase().includes(value.toLowerCase())
@@ -96,7 +95,7 @@ export const JobSearchBar = () => {
             name="searchQuery"
             placeholder="Search Jobs.."
             leftIcon={<FaSearch className="text-gray-400" />}
-            containerClassName="flex-1 min-w-0 py-0"
+            containerClassName="flex-none w-32 sm:w-40 md:w-48 py-0"
             onChange={(e) => handleSearchChange(e)}
             inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
           />
