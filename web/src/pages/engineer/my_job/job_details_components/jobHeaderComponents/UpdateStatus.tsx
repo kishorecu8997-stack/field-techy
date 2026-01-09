@@ -24,7 +24,7 @@ import { toast } from "react-toastify";
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
   const userId = getUserId();
-  const jobid = useParams();
+  const jobId = useParams();
   const { mutateAsync: updateJobScreenShot } = useEngineerScreenShotUpload();
   const { mutateAsync: updateJobStatus } = useEngineerUpdateJobStatus({
     onSuccess: () => {
@@ -39,7 +39,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const formCtx = useForm<EngineerStatusUpdate>({
     defaultValues: {
-      id: jobid.jobId,
+      id: jobId.jobId ?? undefined,
       status: "",
       remarks: "",
       workScreenShot: null,
@@ -64,15 +64,19 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           action: async (close) => {
             const res = await updateJobStatus(data);
             if (data.workScreenShot && data.workScreenShot[0]) {
-              await updateJobScreenShot({
-                engineerId: userId as string,
-                documentType: "WORK_SCREEN_SHOT",
-                file: data.workScreenShot[0] ?? null,
-                metadata: {
-                  remarks: data.remarks ?? null,
-                  engineerJobId: res.jobId,
-                },
-              });
+              try {
+                await updateJobScreenShot({
+                  engineerId: userId as string,
+                  documentType: "WORK_SCREEN_SHOT",
+                  file: data.workScreenShot[0] ?? null,
+                  metadata: {
+                    remarks: data.remarks ?? null,
+                    engineerJobId: res.jobId,
+                  },
+                });
+              } catch (error) {
+                toast.error("Screenshot upload failed");
+              }
             }
 
             close(true);

@@ -143,7 +143,11 @@ export class EngineerAdapter {
     try {
       const { engineerId, file, documentType, metadata } = params;
       const formData = new FormData();
-      formData.append("file", file || "");
+
+      if (file) {
+        formData.append("file", file);
+      }
+
       formData.append(
         "metadata",
         new Blob(
@@ -169,7 +173,7 @@ export class EngineerAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -208,7 +212,7 @@ export class EngineerAdapter {
         {},
         {
           headers: {
-            "X-USER": "ENGINEER",
+            "X-USER": "Engineer",
           },
         }
       );
