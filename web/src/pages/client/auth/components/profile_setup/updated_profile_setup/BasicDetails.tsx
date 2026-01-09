@@ -5,14 +5,13 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import { useFormState } from "react-hook-form";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -288,18 +287,24 @@ const BasicDetails = () => {
               name="termsAndConditions"
               required
               isShowLabel={false}
+              renderError={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer"
-            >
+
+            <label htmlFor="termsAndConditions">
               I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+              <span className="text-blue-600 underline">
                 Terms and Conditions
               </span>
             </label>
           </div>
+
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
+
           {errors?.termsAndConditions && (
             <p className="mt-1 text-sm text-red-600 ">
               {errors.termsAndConditions.message}
