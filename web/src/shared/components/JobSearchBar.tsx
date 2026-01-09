@@ -113,7 +113,7 @@ export const JobSearchBar = () => {
           <FaChartBar size={20} />
         </Button>
           {/* Location */}
-          <div className="flex-none flex-shrink-0 w-32 sm:w-40 md:w-48 py-0">
+          <div className="flex-none w-32 sm:w-40 md:w-48 py-0">
             <InputField
               name="location"
               placeholder="Location"
