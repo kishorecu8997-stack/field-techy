@@ -1,5 +1,5 @@
 import { assetsConfig } from "@/assets";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsTextLeft } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -75,13 +75,8 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
     }
   }, [location.pathname, session?.userId]);
 
-  const cacheBustedKey = useMemo(() => {
-    if (!profilePicKey) return null;
-    return `${profilePicKey}?v=${Date.now()}`;
-  }, [profilePicKey]);
-
   const { url: adminProfilePic } = useStreamedImage(
-    cacheBustedKey,
+    profilePicKey,
     AdminAdapter.downloadFileStream
   );
 
