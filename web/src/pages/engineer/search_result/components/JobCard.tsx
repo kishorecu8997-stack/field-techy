@@ -165,19 +165,43 @@ const JobCard: React.FC<{
   const userSkills = USER_SKILLS;
   const userTools = USER_TOOLS;
 
+  const jobData = useMemo(() => {
+    const clientName =
+      typeof job.client === "string"
+        ? job.client
+        : job.client?.companyName || "-";
+
+    return {
+      id: job.id,
+      title: (job as any).jobTitle || (job as any).title || "",
+      clientName,
+      location: job.location,
+      salary: job.salary || (job as any).pay || "-",
+      status: job.status,
+      skills: job.skills,
+      tools: job.tools,
+      description: (job as any).jobDescription || (job as any).description,
+      postedTime: job.postedTime,
+      experience: job.experience,
+      duration: (job as any).jobDuration || (job as any).duration,
+      projectDeadline: (job as any).projectDeadline,
+      startDate: job.startDate as string,
+    };
+  }, [job]);
+
   const matchScore = useMemo(() => {
     return calculateMatchScore(
-      [...(job.skills || []), ...(job.tools || [])],
+      [...(jobData.skills || []), ...(jobData.tools || [])],
       [...userSkills, ...userTools]
     );
-  }, [job.skills, job.tools, userSkills, userTools]);
+  }, [jobData.skills, jobData.tools, userSkills, userTools]);
 
   // Sync bookmark state on mount and when job.id changes
   useEffect(() => {
-    if (job.id) {
-      setIsBookmarked(isJobSaved(job.id));
+    if (jobData.id) {
+      setIsBookmarked(isJobSaved(jobData.id));
     }
-  }, [job.id]);
+  }, [jobData.id]);
 
   // Listen for bookmark changes
   useEffect(() => {
@@ -283,7 +307,7 @@ const JobCard: React.FC<{
                 <Badge
                   variant={
                     STATUS_VARIANT_MAP[
-                      job.status as keyof typeof STATUS_VARIANT_MAP
+                    job.status as keyof typeof STATUS_VARIANT_MAP
                     ] ??
                     (() => {
                       console.warn(`Unknown job status: ${job.status}`);

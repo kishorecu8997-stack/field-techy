@@ -37,6 +37,8 @@ export interface JobItem {
   status: "NEW" | "ACTIVE" | "CLOSED" | string;
   featured: boolean;
 
+  budgetType?: "FIXED" | "HOURLY" | "NEGOTIABLE" | string;
+
   skills: string[] | null;
   tools: string[] | null;
 

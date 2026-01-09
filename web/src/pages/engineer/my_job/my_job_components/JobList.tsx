@@ -7,8 +7,7 @@ import {
   JOB_FILTERS,
 } from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
-import { useGetJobsByEngineerId } from "@/shared/apiServices/engineer/engineerService";
-import { getUserId } from "@/utils";
+
 
 interface JobListProps {
   activeFilter: JobFilter;

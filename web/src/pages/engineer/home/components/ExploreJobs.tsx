@@ -16,6 +16,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
 
+
 /**
  * ExploreJobs Page - Browse and filter open job listings
  */
@@ -221,8 +222,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-                Math.cos(toRad(c2.lat)) *
-                Math.sin(dLng / 2) ** 2;
+              Math.cos(toRad(c2.lat)) *
+              Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -238,12 +239,74 @@ const ExploreJobs: React.FC = () => {
     }
   }, [filteredJobs, sortBy, loginData]);
 
+  // Helper to convert dummy Job to JobItem
+  const mapJobToJobItem = (job: Job): JobItem => {
+    return {
+      id: String(job.id),
+      clientId: "dummy-client",
+      jobTitle: job.title || "Untitled Job",
+      jobDescription: job.description || "",
+      category: job.category || "",
+      jobType: job.employmentType || "CONTRACT",
+      jobVisibility: "PUBLIC",
+      engagementModel: (job.type as string) || "ON_SITE",
+      country: "Unknown",
+      state: "Unknown",
+      city: "Unknown",
+      location: job.location || null,
+      startDate: job.startDate || new Date().toISOString(),
+      startTime: "09:00:00",
+      numberOfVacancy: 1,
+      timePeriodOfJob: job.duration || "",
+      experience: job.experience || 0,
+      salary: job.salary || job.pay || null,
+      requirementDeliverable: "",
+      otherDetails: "",
+      rateCardRequiredSkill: "",
+      rateCardExperienceLevel: "MID_LEVEL",
+      projectDeadline: "",
+      milestoneStructure: "",
+      status: (job.status as string) || "NEW",
+      featured: false,
+      budgetType: job.budgetType || "HOURLY",
+      skills: job.skills || [],
+      tools: job.tools || [],
+      toolImage: null,
+      toolAdditionalBudget: null,
+      postedTime: job.postedTime || new Date().toISOString(),
+      jobDuration: job.duration || "",
+      client: {
+        id: "dummy-client-id",
+        clientType: "COMPANY",
+        businessType: "Unknown",
+        companyName: job.company || job.client || "Hidden Client",
+        contactPersonName: "Unknown",
+        email: "hidden@example.com",
+        phoneNumber: "",
+        country: "",
+        state: "",
+        city: "",
+        postalCode: "",
+        address: "",
+        industry: "",
+        isApproved: true,
+        enableNotifications: false,
+        profilePicture: job.companyLogo || null,
+        governmentIdProofDocument: null,
+        certificationQualificationsDocument: null,
+        taxDocumentVat: "",
+        vatRegistrationNumber: "",
+        password: null
+      }
+    };
+  };
+
   // Step 4: Pagination
   const jobsPerPage = 4;
   const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
   const paginatedJobs = useMemo<JobItem[]>(() => {
     const start = (currentPage - 1) * jobsPerPage;
-    return sortedJobs.slice(start, start + jobsPerPage);
+    return sortedJobs.slice(start, start + jobsPerPage).map(mapJobToJobItem);
   }, [sortedJobs, currentPage]);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -283,9 +346,8 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${
-            sortedJobs.length !== 1 ? "s" : ""
-          } found`}
+          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
+            } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}

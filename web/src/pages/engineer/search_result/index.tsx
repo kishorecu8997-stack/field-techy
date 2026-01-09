@@ -1,14 +1,15 @@
-import { sampleJobs } from "@/dummy_data/searchData";
+import { absoluteUrls } from "@/config/urls";
+import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEffect, useState } from "react";
-import FilterPanel from "./components/FilterPanel";
+import type { JobItem } from "../home/types";
 import AdvancedSearchBar from "./components/AdvancedSearchBar";
+import FilterPanel from "./components/FilterPanel";
 import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
-import { SORT_OPTIONS, type Filters, type Job, type SortOption } from "./types";
-import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { absoluteUrls } from "@/config/urls";
 import SearchHistory from "./components/SearchHistory";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
 
 /**
  * Main application component for job search results
@@ -16,9 +17,12 @@ import { Button } from "@/shared/components/commonUI/Buttons";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
+
+  const { data: jobs } = useGetJobs()
+
   // State management
-  const [jobs] = useState<Job[]>(sampleJobs);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(sampleJobs);
+  // const [jobs] = useState<JobItem[]>(sampleJobs);
+  const [filteredJobs, setFilteredJobs] = useState<JobItem[]>(jobs || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -66,7 +70,7 @@ const SearchResult = () => {
   }, [filteredJobs]);
   // Apply filters and sorting
   useEffect(() => {
-    let filtered = [...jobs];
+    let filtered = [...filteredJobs];
     // Apply location filter
     if (filters.location.length > 0) {
       filtered = filtered.filter((job) =>
@@ -80,15 +84,15 @@ const SearchResult = () => {
       );
     }
     // Apply rating filter
-    if (filters.rating.length > 0) {
-      filtered = filtered.filter(
-        (job) => job.rating && filters.rating.includes(job.rating)
-      );
-    }
+    // if (filters.rating.length > 0) {
+    //   filtered = filtered.filter(
+    //     (job) => job.rating && filters.rating.includes(job.rating)
+    //   );
+    // }
     // Apply experience filter
     if (filters.experience > 0) {
       filtered = filtered.filter(
-        (job) => job.experience && job.experience >= filters.experience
+        (job) => job.experience && Number(job.experience) >= filters.experience
       );
     }
     // Apply budget type filter
