@@ -1,10 +1,6 @@
 import axiosInstance from "@/axiosInstance";
 import { ADMIN_ROUTER_PATHS } from "./adminRouterPath";
-import type {
-  AdminNotification,
-  PagedNotificationsParams,
-  PagedNotificationsResponse,
-} from "./adminTypes";
+import type {  AdminNotification,  PagedNotificationsParams,  PagedNotificationsResponse } from "./adminTypes";
 import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
@@ -17,8 +13,6 @@ import { GlobalApiErrorHandler } from "../utils";
  * Provides methods for signing in, fetching notifications, and password reset.
  */
 export class AdminAdapter {
-  // ------------------ Notifications ------------------
-
   /** Delete Notification */
   static async DeleteNotification(id: string): Promise<{ message: string }> {
     try {

@@ -18,7 +18,6 @@ const ManageNotification: React.FC = () => {
   const { showPopup } = usePopupStore();
   const { data, refetch, isFetching } = useGetPagedNotifications({ page: 0, size: 10 });
 
-  // Delete mutation
   const deleteNotificationMutation = useDeleteNotification({
     onSuccess: () => {
       toast.success("Notification deleted successfully!");
@@ -26,11 +25,9 @@ const ManageNotification: React.FC = () => {
     },
      onError: (error: unknown) => {
       let message = "Failed to delete notification. Please try again.";
-      // Narrow common HTTP / network error shapes (e.g., Axios-style errors)
       const anyError = error as any;
       const status = anyError?.response?.status;
       if (!anyError?.response) {
-        // Likely a network or connectivity issue
         message = "Network error while deleting notification. Please check your connection and try again.";
       } else if (status === 401 || status === 403) {
         message = "You are not authorized to delete this notification.";
@@ -39,14 +36,12 @@ const ManageNotification: React.FC = () => {
       } else if (status >= 500 && status < 600) {
         message = "Server error while deleting notification. Please try again later.";
       } else if (anyError?.message && typeof anyError.message === "string") {
-        // Fall back to a more specific error message if available
         message = anyError.message;
       }
       toast.error(message);
     },
   });
 
-  // Delete confirmation popup
   const handleDeleteNotification = async (notification: AdminNotification) => {
     await showPopup({
       title: "Delete Notification",
@@ -70,7 +65,6 @@ const ManageNotification: React.FC = () => {
     });
   };
 
-  // Table columns
   const columns: Column<AdminNotification>[] = [
     { key: "id", label: "ID" },
     { key: "title", label: "Title" },
@@ -88,7 +82,6 @@ const ManageNotification: React.FC = () => {
       label: "Action",
       renderCell: (row: AdminNotification) => (
         <div className="flex items-center gap-2">
-          {/* Edit Button */}
           <Button
             type="button"
             className="p-2 bg-blue-100 rounded-md cursor-pointer hover:bg-blue-200"
@@ -99,7 +92,6 @@ const ManageNotification: React.FC = () => {
           >
             <CiEdit className="text-blue-600" />
           </Button>
-          {/* Delete Button */}
           <Button
             type="button"
             className="p-2 bg-red-100 rounded-md cursor-pointer hover:bg-red-200"
