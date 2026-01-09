@@ -90,39 +90,39 @@ export const JobSearchBar = () => {
         methods={methods}
         className="flex items-center w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden shadow-sm z-10"
       >
-        <div className="flex items-center w-full z-10">
+        <div className="flex items-center w-full z-10 gap-2 min-w-0">
           {/* Search Query */}
           <InputField
             name="searchQuery"
             placeholder="Search Jobs.."
             leftIcon={<FaSearch className="text-gray-400" />}
-            containerClassName="flex-1 py-0"
+            containerClassName="flex-1 min-w-0 py-0"
             onChange={(e) => handleSearchChange(e)}
             inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
           />
 
-          <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
 
          {/* Analytics Button/Icon */}
         <Button
           type="button"
           onClick={() => navigate(absoluteUrls.engineer.home.search_analytics)}
-          className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
+          className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors flex items-center justify-center"
           title="View Search Analytics"
           aria-label="View Search Analytics"
         >
           <FaChartBar size={20} />
         </Button>
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
           {/* Location */}
-          <InputField
-            name="location"
-            placeholder="Location"
-            leftIcon={<FaMapMarkerAlt className="text-gray-400" />}
-            containerClassName="flex-1 py-0 hidden lg:block"
-            onChange={(e) => handleNavigate(e)}
-            inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none"
-          />
+          <div className="flex-none flex-shrink-0 w-32 sm:w-40 md:w-48 py-0">
+            <InputField
+              name="location"
+              placeholder="Location"
+              leftIcon={<FaMapMarkerAlt className="text-gray-400" />}
+              containerClassName="w-full py-0"
+              onChange={(e) => handleNavigate(e)}
+              inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none truncate"
+            />
+          </div>
         </div>
       </FormContainer>
 
