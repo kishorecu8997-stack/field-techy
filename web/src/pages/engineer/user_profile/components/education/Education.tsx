@@ -1,53 +1,41 @@
 import React from "react";
-import DrawerCard from "@/shared/components/DrawerCard";
-import { toast } from "react-toastify";
-import { educationList } from "@/dummy_data/engineer_profile/education-data";
-import { usePopupStore } from "@/shared/store/popupStore";
+import EducationList from "./EducationList";
+import { getUserId } from "@/utils";
+import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
 
-/**
- * Props for the Education component, typically used for components
- * rendered within a drawer that require navigation and close actions.
- */
 interface DrawerMenuProps {
-  /** Callback to navigate to a different view within the drawer (e.g., 'addEducation'). */
   onMenuItemClick: (key: string) => void;
-  /** Callback to close the parent drawer or sidebar. */
-  onClose: () => void;
 }
 
-/**
- * The Education component renders a list of a user's educational qualifications.
- * It provides UI for viewing the list and triggers callback functions to handle
- * adding, editing, and deleting entries.
- * @param {DrawerMenuProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered Education component.
- */
 const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey, setImmediateParentKey } = useDrawerStore();
+  const { setActiveKey, setImmediateParentKey, setSelectedId } =
+    useDrawerStore();
 
-  const handleDeleteEducation = async (id: number) => {
+  const userId = getUserId();
+  const { data: engineerData } = useEngineerGetById(userId || "");
+
+  const handleDeleteEducation = async (id: string) => {
     await showPopup({
       title: "Delete Education",
       body: "Are you sure you want to delete this education?",
       actionButtons: [
         {
           label: "Cancel",
-          value: "no",
+          value: "cancel",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: (close) => close(true),
         },
         {
           label: "Yes, delete",
-          value: "yes",
+          value: "delete",
           variant: "primary",
           action: async (close) => {
             toast.success("Education Deleted Successfully");
             close(true);
-            console.log("Yes button clicked", id);
             setActiveKey("education");
           },
         },
@@ -56,23 +44,29 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   };
 
   return (
-    <>
-      <DrawerCard
+    <div className="">
+      <EducationList
         title="Education"
-        items={educationList}
+        items={(engineerData?.educations || []).map((edu) => ({
+          id: edu.id || "temp-id",
+          educationLevel: edu.educationLevel ?? null,
+          course: edu.course ?? null,
+          university: edu.university ?? null,
+          majorSubject: edu.majorSubject ?? null,
+          passingYear: edu.passingYear ?? null,
+        }))}
         onAddAction={() => {
           setImmediateParentKey("education");
-          onMenuItemClick(`addEducation`);
+          onMenuItemClick("addEducation");
         }}
         onEditAction={(id) => {
-          localStorage.setItem("editEducationId", id.toString());
+          setSelectedId(id);
           setImmediateParentKey("education");
           onMenuItemClick("editEducation");
         }}
-        // TODO: Implement a proper confirmation modal for deletion.
         onDeleteAction={(id) => handleDeleteEducation(id)}
       />
-    </>
+    </div>
   );
 };
 
