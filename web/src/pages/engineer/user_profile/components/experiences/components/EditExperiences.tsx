@@ -160,16 +160,13 @@ const EditExperiences = () => {
             isShowLabel={false}
             placeholder="End date (required if not current)"
             minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+            maxDate={new Date()}
             required={!methods.watch("isCurrent")}
             rules={{
-              validate: (value) => {
-                if (!methods.watch("isCurrent") && !value) {
-                  return "End date is required when not currently working";
-                }
-                return true;
-              },
-              onChange: () => methods.trigger("startDate")
-            }}
+                validate: (value) =>
+              validateDateRange(value, methods.getValues("endDate")),
+                onChange: () => methods.trigger("startDate")
+              }}
           />
         )}
 
