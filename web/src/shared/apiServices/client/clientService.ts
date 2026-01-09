@@ -290,3 +290,12 @@ export function useClientFileStream(
     staleTime: Infinity, // Cache indefinitely since file content for a key shouldn't change
   });
 }
+
+export function useClientGetJobsById(id: string) {
+  return useQuery({
+    queryKey: ["client-jobs", id],
+    queryFn: () => ClientAdapter.getJobsById(id),
+    enabled: !!id,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}

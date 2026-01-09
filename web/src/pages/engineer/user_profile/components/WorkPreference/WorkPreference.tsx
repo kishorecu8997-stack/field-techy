@@ -22,10 +22,8 @@ import type { WorkPreferenceFormData } from "./types";
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
 const WorkPreference = () => {
-
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
-
   const handleSubmit = async (_: WorkPreferenceFormData) => {
     await showPopup({
       title: "Update Work Preferences",
@@ -116,7 +114,6 @@ const WorkPreference = () => {
           placeholder="Hourly/Fixed Rate Preference"
           leftIcon={<CiWallet className="text-lg text-gray-500" />}
           required
-          allowedCharacters="currency"
           rules={{ validate: (v: string) => validateRate(v) }}
         />
       </div>

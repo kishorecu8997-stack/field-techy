@@ -224,13 +224,10 @@ export const validateExperience = (value: string) => {
 // following two validations created by Mithun for validate university and major subject text fields
 
 // validate university text field
-export const validateUniversity = (
-  value: string,
-  required: boolean = true
-) => {
+export const validateUniversity = (value: string, required: boolean = true) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null it will give error message 
+  //  Check the field is Required or null it will give error message
   if (required && !trimmed) {
     return "Please enter a university name.";
   }
@@ -242,33 +239,31 @@ export const validateUniversity = (
   return true;
 };
 
-
-//  validate Major Subject 
+//  validate Major Subject
 export const validateMajorSubject = (
   value: string,
   required: boolean = true
 ) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null  it will  give error message 
+  //  Check the field is Required or null  it will  give error message
   if (required && !trimmed) {
     return "Please enter a major subject name.";
   }
 
-  // Length check above 200 characters 
+  // Length check above 200 characters
   if (trimmed.length > 200) {
     return "Major Subject must not exceed 200 characters";
   }
   return true;
 };
 
-
-
 /**
  * Validate passing year.
  * - must be a 4-digit number
  * - must be between 1970 and the current year
  */
+
 export const validatePassingYear = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "Passing Year must not start or end with a space";
