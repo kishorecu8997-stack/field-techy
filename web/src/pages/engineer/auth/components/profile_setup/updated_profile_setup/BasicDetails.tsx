@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
-
+import { useFormState } from "react-hook-form";
 /**
  * A component that represents the main profile setup step for engineers.
  */
@@ -67,7 +67,9 @@ const BasicDetails = () => {
       confirmPassword: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
 
   const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
@@ -233,6 +235,12 @@ const BasicDetails = () => {
               </span>
             </label>
           </div>
+
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600 ">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
 
