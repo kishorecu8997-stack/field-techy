@@ -53,7 +53,6 @@ export default function AdminLogin() {
       { phoneOrEmail: data.email, password: data.password },
       {
         onSuccess: (resp) => {
-          console.log("resp :", resp);
           const session: UserSession = {
             accessToken: resp.accessToken,
             userId: resp.userId,

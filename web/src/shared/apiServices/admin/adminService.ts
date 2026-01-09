@@ -103,7 +103,6 @@ export function useDownloadAdminFileStream(options?: {
   });
 }
 
-
 /** Hook to get admin by ID */
 export function useAdminGetById(options?: {
   onSuccess?: (data: getAdminByIdResponse) => void;

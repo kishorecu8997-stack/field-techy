@@ -8,6 +8,7 @@ import type {
   FileDownloadResponse,
   FileUploadResponse,
 } from "../client/clientTypes";
+import type { UploadFile } from "./adminTypes";
 
 /*
  * AdminAdapter
@@ -128,8 +129,7 @@ export class AdminAdapter {
   }
 
   /** Upload Admin File */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static async uploadFile(params: any): Promise<FileUploadResponse> {
+  static async uploadFile(params: UploadFile): Promise<FileUploadResponse> {
     try {
       const { adminId, file, fileType, onUploadProgress } = params;
 

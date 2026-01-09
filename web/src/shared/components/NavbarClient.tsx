@@ -47,7 +47,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
     useCurrentClientProfile();
 
   // Get client ID
-  const clientId = clientProfile?.id
+  const clientId = clientProfile?.id;
 
   // Fetch client files to get profile picture
   const { data: clientFiles = [], isLoading: isLoadingFiles } =

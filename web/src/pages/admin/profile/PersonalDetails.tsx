@@ -113,7 +113,6 @@ export default function PersonalDetails() {
   /* ---------- ONLY effect needed ---------- */
   useEffect(() => {
     if (adminProfilePic) {
-      console.log("adminProfilePic :", adminProfilePic);
       methods.setValue("profilePicture", adminProfilePic, {
         shouldDirty: false,
         shouldValidate: false,
@@ -139,8 +138,7 @@ export default function PersonalDetails() {
         fileType: "ADM_PROFILE_PIC",
       });
 
-      finalProfilePicKey = res.fileKey;
-      // setProfilePictureId(res.fileKey); // Store updates handled by parent fetch or mutation success
+      finalProfilePicKey = res.fileKey as string;
     }
 
     await showPopup({
@@ -164,19 +162,12 @@ export default function PersonalDetails() {
               },
               {
                 onSuccess: () => {
-                  // if (!session) return;
-
-                  // setUserSession({
-                  //   ...session,
-                  //   name: resp.fullName,
-                  //   email: resp.email,
-                  //   phoneNumber: resp.phoneNumber,
-                  //   profilePicture: resp.profilePicture,
-                  // });
                   getAdminById(session?.userId || "");
 
                   // Invalidate file stream cache to ensure fresh image is fetched
-                  queryClient.invalidateQueries({ queryKey: ["admin-file-stream"] });
+                  queryClient.invalidateQueries({
+                    queryKey: ["admin-file-stream"],
+                  });
 
                   toast.success("Profile updated successfully");
                   navigate(absoluteUrls.admin.home.dashboard);

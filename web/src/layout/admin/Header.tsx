@@ -121,7 +121,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                 {adminProfile?.profilePicture && adminProfilePic ? (
                   <img
                     src={adminProfilePic}
-                    // alt="Profile"
+                    alt="profile"
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (
@@ -136,8 +136,6 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                   ? adminProfile.fullName
                   : adminProfile?.email?.split("@")[0]}
               </div>
-
-              {/* <div className="text-xs text-gray-300">Admin</div> */}
             </div>
           </div>
         </Link>
