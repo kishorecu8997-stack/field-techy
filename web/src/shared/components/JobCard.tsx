@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 import type { JobAssignment } from "../apiServices/engineer/engineerTypes";
 import { useClientGetJobsById } from "../apiServices/client/clientService";
+import LoaderComponent from "./commonUI/LoaderComponent";
 interface JobCardProps extends JobAssignment {
   allocationType?: "Automatic" | "Manual";
 }
@@ -18,7 +19,7 @@ interface JobCardProps extends JobAssignment {
  * Reusable job card component displaying key job details with status and type badges.
  * Links to the job details page on click.
  *
- * @param {Job} props - Job data including title, client, location, pay, status, etc.
+ * @param {JobAssignment} props - Job data including title, client, location, pay, status, etc.
  */
 const JobCard: React.FC<JobCardProps> = ({
   title,
@@ -32,9 +33,14 @@ const JobCard: React.FC<JobCardProps> = ({
   type,
   allocationType = "Automatic",
 }) => {
- const { data: jobs } = useClientGetJobsById( jobId?? "", );
- 
- 
+  const { data: jobs,isLoading } = useClientGetJobsById(jobId ?? "");
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
+        <LoaderComponent />
+      </div>
+    );
+  }
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${jobId}`}
@@ -49,7 +55,7 @@ const JobCard: React.FC<JobCardProps> = ({
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
           {(() => {
-            switch (jobs?.engagementModel) {
+            switch (jobs?.engagementModel.toLowerCase()) {
               case WORKING_TYPES.onsite:
                 return WORKING_TYPES_PROPERTY.onsite;
               case WORKING_TYPES.remote:
@@ -64,10 +70,12 @@ const JobCard: React.FC<JobCardProps> = ({
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
-          <span className="font-medium">Client:</span> {jobs?.client?.contactPersonName ?? "N/A"}
+          <span className="font-medium">Client:</span>{" "}
+          {jobs?.client?.contactPersonName ?? "N/A"}
         </p>
         <p>
-          <span className="font-medium">Start:</span> {jobs?.startDate} {jobs?.startTime}
+          <span className="font-medium">Start:</span>
+          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(", ") ||"N/A"}
         </p>
         <p>
           <span className="font-medium">Duration:</span> {jobs?.timePeriodOfJob}
@@ -76,7 +84,9 @@ const JobCard: React.FC<JobCardProps> = ({
       <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <MdLocationPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{jobs?.city}, {jobs?.country}</span>
+          <span className="truncate">
+            {[jobs?.city, jobs?.country].filter(Boolean).join(", ") || "N/A"}
+          </span>
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">

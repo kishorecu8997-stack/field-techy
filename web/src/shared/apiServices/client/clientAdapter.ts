@@ -626,7 +626,6 @@ export class ClientAdapter {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
-
   // -------------------------- Jobs Endpoints -------------------------------
   static async getJobsById(id: string): Promise<JobItem> {
     try {
@@ -636,7 +635,4 @@ export class ClientAdapter {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
-
 }
-
-
