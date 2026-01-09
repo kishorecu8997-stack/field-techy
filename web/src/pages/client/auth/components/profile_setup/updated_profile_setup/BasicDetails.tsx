@@ -12,6 +12,7 @@ import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { useFormState } from "react-hook-form";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -81,7 +82,9 @@ const BasicDetails = () => {
       cardAddress: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
   // Signup mutation
   const { mutateAsync: signup, isPending: isSubmitting } = useClientSignup({
@@ -297,6 +300,11 @@ const BasicDetails = () => {
               </span>
             </label>
           </div>
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600 ">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex-shrink-0 p-4">
