@@ -84,8 +84,8 @@ export const validateName = (value: string) => {
   if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
 
   // Length requirement: 2 to 50 characters
-  if (raw.length < 2) return `${value} must be at least 2 characters`;
-  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+  if (raw.length < 2) return `A minimum of 2 characters is required for this field.`;
+  if (raw.length > 50) return `This field must not exceed 50 characters`;
 
   return true;
 };
