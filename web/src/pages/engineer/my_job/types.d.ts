@@ -207,3 +207,14 @@ export interface WorkInfoItem {
 }
 
 
+// ../types.ts
+export type ClientInfoCardProps = {
+  name: string;
+  memberSince: string;
+  location: string;
+  rating: number | string;
+  reviews: number | string;
+  verifications: string[];
+  onOpenReview?: () => void;
+};
+type ClientInfoCardUIProps = ClientInfoCardProps;

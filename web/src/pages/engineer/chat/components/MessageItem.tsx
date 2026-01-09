@@ -38,7 +38,7 @@ export const MessageItem = ({
     <div
       onClick={onClick}
       className={`flex items-center gap-3 p-4 border-b border-gray-300 dark:border-gray-700 cursor-pointer
-        hover:bg-gray-100 ${active ? "bg-gray-100" : ""}`}
+        hover:bg-gray-100 dark:hover:bg-gray-800 ${active ? "bg-gray-100 dark:bg-gray-800" : ""}`}
     >
       {user.avatar ? (
         <img
@@ -46,15 +46,15 @@ export const MessageItem = ({
           className="h-12 w-12 rounded-full object-cover"
         />
       ) : (
-        <FaUserCircle className="h-12 w-12 text-gray-500" />
+        <FaUserCircle className="h-12 w-12 text-gray-500 dark:text-gray-300" />
       )}
 
       <div className="flex-1">
-        <p className="font-medium">{user.name}</p>
-        <p className="text-sm text-gray-500 truncate">{lastMessage}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-100">{user.name}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{lastMessage}</p>
       </div>
       <div className="flex flex-col items-end gap-2 min-w-[60px]">
-        <p className="text-xs text-gray-500">{timestamp}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{timestamp}</p>
         {unreadCount > 0 ? (
           <div className="bg-green-900 text-white text-sm w-6 h-6 flex items-center justify-center rounded-full">
             {unreadCount}

@@ -3,7 +3,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange } from "../../../Validate";
+import { validateCompany, validateDateRange, validateEndDateRange } from "../../../Validate";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
@@ -119,7 +119,7 @@ const AddExperiences = () => {
           name="startDate"
           label="Start Date"
           isShowLabel={false}
-          placeholder="DD/MM/YYYY"
+          placeholder="Start Date"
           required
           maxDate={new Date()}
           rules={{
@@ -136,14 +136,11 @@ const AddExperiences = () => {
               isShowLabel={false}
               placeholder="End date (required if not current)"
               minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
+              maxDate={new Date()}
               required={!methods.watch("isCurrent")}
               rules={{
-                validate: (value) => {
-                  if (!methods.watch("isCurrent") && !value) {
-                    return "End date is required when not currently working";
-                  }
-                  return true;
-                },
+                validate: (value) =>
+              validateEndDateRange(value, methods.getValues("endDate")),
                 onChange: () => methods.trigger("startDate")
               }}
             />

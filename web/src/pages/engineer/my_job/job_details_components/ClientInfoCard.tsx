@@ -1,21 +1,38 @@
 import React from "react";
 import type { ClientInfoCardProps } from "../types";
 import { icons } from "@/config/icons";
+import { Button } from "@/shared/components/commonUI/Buttons";
+
+type ClientInfoCardUIProps = ClientInfoCardProps & {
+  onOpenReview?: () => void;
+};
 
 /**
- * Displays client profile information including name, location, rating, and verifications.
+ * ClientInfoCard
  *
- * @param props - The component props.
- * @returns Client information sidebar component.
+ * Displays a client's profile information, including name, membership date,
+ * location, rating, reviews, and verifications. Provides a button to open
+ * a review modal or form.
+ *
+ * @param {ClientInfoCardUIProps} props - Component props
+ * @param {string} props.name - Client's name
+ * @param {string} props.memberSince - Date the client joined
+ * @param {string} props.location - Client's location
+ * @param {number} props.rating - Client's average rating
+ * @param {number} props.reviews - Number of reviews
+ * @param {string[]} props.verifications - List of client verifications
+ * @returns {JSX.Element} The client info card UI component
  */
-const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
+const ClientInfoCard: React.FC<ClientInfoCardUIProps> = ({
   name,
   memberSince,
   location,
   rating,
   reviews,
   verifications,
+  onOpenReview,
 }) => {
+
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-6">
       <h2 className="font-semibold text-gray-900 dark:text-white mb-4">
@@ -33,11 +50,12 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
         </div>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-1">
-          <icons.locationDot className="h-4 w-4 flex-shrink-0" />
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4 space-y-2">
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+          <icons.locationDot className="h-4 w-4" />
           <span>{location}</span>
         </div>
+
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <span>⭐</span>
           <span>
@@ -49,7 +67,7 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
       <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
         Client Verification
       </h3>
-      <ul className="space-y-1.5">
+      <ul className="space-y-1.5 mb-5">
         {verifications.map((v, idx) => (
           <li
             key={idx}
@@ -60,6 +78,14 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
           </li>
         ))}
       </ul>
+      <Button
+        fullWidth
+        variant="primary"
+        onClick={onOpenReview}
+        leftIcon={<span>⭐</span>}
+      >
+        Rate this Client
+      </Button>
     </div>
   );
 };

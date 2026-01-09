@@ -1,32 +1,18 @@
-import { useState, useMemo, useRef, useEffect } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { MdOutlineMailOutline, MdCheckCircle } from "react-icons/md";
-import Popup from "../../Popup";
-import OTPPage from "@/shared/components/commonUI/inputs/OTPModal";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
-import type { VerifiedEmailInputFieldProps } from "./type";
+import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 
 /**
- * A reusable and self-contained input field for email addresses that require OTP verification.
- *
- * This component integrates with `react-hook-form` and manages its own verification flow,
- * including displaying an OTP modal and updating its verified status. It can be used in
- * either a controlled manner (by passing `verified` and `setVerified` props) or an
- * uncontrolled manner (managing its own internal state).
- *
- * @param {VerifiedEmailInputFieldProps} props - The props for the component.
- * @param {string} props.name - The name of the field for `react-hook-form`.
- * @param {string} [props.label="Email ID"] - The text label for the input field.
- * @param {string} [props.placeholder] - The placeholder text for the input.
- * @param {boolean} [props.required=false] - Whether the field is mandatory.
- * @param {boolean} [props.disabled=false] - Disables the input field externally.
- * @param {string} [props.inputClassName] - Custom CSS classes to apply to the input element.
- * @param {() => void} [props.onVerifySuccess] - A callback function executed upon successful OTP verification.
- * @param {boolean} [props.verified] - A boolean to control the verified state from a parent component.
- * @param {(isVerified: boolean) => void} [props.setVerified] - A function to update the verified state in the parent component.
+ * Password OTP Verification component
+ * here we are using react-hook-form to validate the email
+ * @returns JSX.Element
  */
-export const VerifiedEmailInputField = ({
+export const PasswordOTPVerification = ({
   name,
   label = "Email ID",
   isShowLabel = true,
@@ -34,21 +20,23 @@ export const VerifiedEmailInputField = ({
   required = false,
   disabled: externalDisabled = false,
   inputClassName = "w-full h-11 rounded-md border border-gray-300 dark:border-gray-600 px-5 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
-  onVerifySuccess,
   verified: parentVerified,
   setVerified: parentSetVerified,
 }: VerifiedEmailInputFieldProps) => {
-  const { control, watch, clearErrors, setValue, trigger } = useFormContext();
-  const [showOTP, setShowOTP] = useState(false);
+  const { trigger, control, watch, clearErrors, setError } = useFormContext();
   const [localVerified, setLocalVerified] = useState(false);
 
-  const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
+  const verified =
+    typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
   const verifiedRef = useRef(verified);
   useEffect(() => {
     verifiedRef.current = verified;
   }, [verified]);
+
+  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } =
+    useSendEmailOTP();
 
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
@@ -67,15 +55,35 @@ export const VerifiedEmailInputField = ({
     return newValue;
   };
 
+  const handleRequestOTP = async () => {
+    if (!isValidEmail) return;
+    try {
+      await sendEmailOTP(emailValue);
+      toast.success("OTP sent successfully to your email.");
+      clearErrors(name); // Clear any previous errors
+      setVerified(true);
+      trigger(name);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Failed to send OTP. Please try again.";
+      toast.error(errorMessage);
+      setError(name, {
+        type: "manual",
+        message: errorMessage,
+      });
+    }
+  };
+
   const getInputClassName = () => {
     let baseClasses = inputClassName;
 
     if (isInputDisabled) {
       baseClasses = baseClasses
-        .replace(/bg-white/g, 'bg-gray-100')
-        .replace(/dark:bg-gray-800/g, 'dark:bg-gray-700')
-        .replace(/text-gray-900/g, 'text-gray-500')
-        .replace(/dark:text-gray-100/g, 'dark:text-gray-400');
+        .replace(/bg-white/g, "bg-gray-100")
+        .replace(/dark:bg-gray-800/g, "dark:bg-gray-700")
+        .replace(/text-gray-900/g, "text-gray-500")
+        .replace(/dark:text-gray-100/g, "dark:text-gray-400");
     }
 
     baseClasses = `${baseClasses} pl-10 ${verified ? "pr-10" : ""}`;
@@ -109,7 +117,7 @@ export const VerifiedEmailInputField = ({
               const emailValid = validateEmail(trimmed);
               if (emailValid !== true) return emailValid;
 
-              // ✅ Use verifiedRef to ensure we have the latest state
+              // ✅ Use verifiedRef to ensure constant access to the latest state
               if (!verifiedRef.current) return "Please verify your email address";
 
               return true;
@@ -146,10 +154,10 @@ export const VerifiedEmailInputField = ({
                   <Button
                     type="button"
                     className="h-11 min-w-[104px] px-5 rounded-lg bg-gradient-to-r from-teal-700 to-teal-900 text-white text-base font-semibold flex items-center justify-center disabled:from-gray-400 disabled:to-gray-500 disabled:text-gray-200 disabled:cursor-not-allowed"
-                    disabled={!isValidEmail}
-                    onClick={() => setShowOTP(true)}
+                    disabled={!isValidEmail || isSendingOtp}
+                    onClick={handleRequestOTP}
                   >
-                    Verify
+                    {isSendingOtp ? "Sending..." : "Verify"}
                   </Button>
                 )}
               </div>
@@ -163,29 +171,8 @@ export const VerifiedEmailInputField = ({
           )}
         />
       </div>
-
-      <Popup open={showOTP} onClose={() => setShowOTP(false)}>
-        <OTPPage
-          header="Verify Email"
-          description="A verification OTP has been sent to your email. Please check your inbox."
-          name="emailOTP"
-          onClose={() => setShowOTP(false)}
-          onVerifySuccess={() => {
-            setVerified(true);
-            onVerifySuccess?.();
-
-            // Re-validate the email field via react-hook-form using the updated verified state
-            const currentValue = watch(name);
-            setValue(name, currentValue, { shouldValidate: true });
-            setValue("emailOTP", ""); // Clear the OTP field
-            clearErrors(name);
-            trigger(name);
-            setShowOTP(false);
-          }}
-        />
-      </Popup>
     </div>
   );
 };
 
-export default VerifiedEmailInputField;
+export default PasswordOTPVerification;
