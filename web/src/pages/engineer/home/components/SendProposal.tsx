@@ -61,9 +61,6 @@ const SendProposal = () => {
     },
   });
 
-  const file = formCtx.watch("attachment");
-  console.log('file :', file);
-
   const { mutateAsync: uploadFile } = useEngineerFileUpload();
   const { mutateAsync: sendProposal } = useSendProposalJob();
 
