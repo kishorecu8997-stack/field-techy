@@ -32,6 +32,7 @@ export interface EngineerDocuments {
 }
 
 export interface EngineerStatusUpdate {
+  id: string;
   status: string;
   remarks: string;
   workScreenShot: FileList | null;
