@@ -423,7 +423,7 @@ export const sectionConfig: Record<
   },
   clientAcc: {
     component: AccountSettingsDrawerMenu,
-    title: "Account Setting",
+    title: "Account Details",
     parent: "clientAccount",
   },
   clientWallet: { component: ClientWalletComponent, title: "My Wallet" },
