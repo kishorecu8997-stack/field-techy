@@ -379,6 +379,26 @@ export const validateFilterDateRange = (
 };
 
 
+export const validateEndDateRange = (
+  startDate: Date | null,
+  endDate: Date | null
+) => {
+  if (!startDate) {
+    return "End date is required";
+  }
+
+  if (startDate > new Date()) {
+    return "End date cannot be in the future";
+  }
+
+  if (endDate && startDate > endDate) {
+    return "End date must be before the end date";
+  }
+
+  return true;
+};
+
+
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "Rate must not start or end with a space";
@@ -548,4 +568,5 @@ export default {
   validateVatNumber,
   validateUniversity,
   validateMajorSubject,
+  validateEndDate,
 };
