@@ -79,7 +79,6 @@ const SendProposal = () => {
           value: "cancel",
           variant: "secondary",
           action: async (close) => {
-            console.log("Cancel button clicked");
             close(true);
           },
         },
@@ -88,9 +87,7 @@ const SendProposal = () => {
           value: "ok",
           variant: "primary",
           action: async (close) => {
-            console.log("OK button clicked");
             try {
-              console.log("data :", data);
               await sendProposal({
                 proposalDescription: data.description,
                 expectedPay: data.expected,

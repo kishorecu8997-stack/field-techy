@@ -62,15 +62,13 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     }
   };
 
-  console.log('type :', type);
   return (
     <>
       <div
-        className={`${
-          isSendProposal
+        className={`${isSendProposal
             ? "text-gray-800 bg-yellow-50"
             : "bg-teal-800 text-white"
-        } p-5 rounded-xl shadow-md`}
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{title || '-'}</h1>

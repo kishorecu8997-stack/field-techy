@@ -49,7 +49,6 @@ const JobList = ({ activeFilter }: JobListProps) => {
       return jobs;
     }
   }, [activeFilter]);
-  console.log('filteredJobs :', filteredJobs);
   return (
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
