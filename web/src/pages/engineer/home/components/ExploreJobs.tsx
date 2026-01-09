@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import React, { useMemo, useState } from "react";
+import type { JobItem } from "../types";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -240,7 +241,7 @@ const ExploreJobs: React.FC = () => {
   // Step 4: Pagination
   const jobsPerPage = 4;
   const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
-  const paginatedJobs = useMemo<Job[]>(() => {
+  const paginatedJobs = useMemo<JobItem[]>(() => {
     const start = (currentPage - 1) * jobsPerPage;
     return sortedJobs.slice(start, start + jobsPerPage);
   }, [sortedJobs, currentPage]);
