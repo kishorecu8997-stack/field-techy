@@ -8,7 +8,6 @@ export interface CreateNotificationParams {
     type: string;
     sendTo: string;
 }
-
 export interface AdminNotification {
     id: string;
     title: string;

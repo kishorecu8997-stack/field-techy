@@ -4,11 +4,7 @@ import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
-import type {
-  AdminNotification,
-  CreateNotificationParams,
-  UpdateNotificationParams,
-} from "./adminTypes";
+import type {  AdminNotification,  CreateNotificationParams,  UpdateNotificationParams } from "./adminTypes";
 
 /*
  * AdminAdapter
