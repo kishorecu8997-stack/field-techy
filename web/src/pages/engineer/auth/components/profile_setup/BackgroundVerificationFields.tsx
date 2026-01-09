@@ -27,6 +27,12 @@ export const BackgroundVerificationFields = () => {
         required
       />
       <FileUpload
+        name="resume"
+        label="Resume"
+        placeholder="Resume"
+        required
+      />
+      <FileUpload
         name="certificate"
         label="Certificate"
         placeholder="Certificate"

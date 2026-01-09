@@ -172,6 +172,25 @@ const BasicDocuments = () => {
       );
     }
 
+    if (data.resume && data.resume.length > 0) {
+      setUploadingDoc("RESUME");
+      uploads.push(
+        uploadFileAsync({
+          engineerId,
+          file: data.resume[0],
+          documentType: "RESUME",
+          onUploadProgress: (progress) => {
+            if (progress.percentage) {
+              setUploadProgress((prev) => ({
+                ...prev,
+                RESUME: progress.percentage!,
+              }));
+            }
+          },
+        })
+      );
+    }
+
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
       uploads.push(

@@ -20,8 +20,8 @@ export const ENGINEER_ROUTER_PATHS = {
 
   // File upload endpoints
   GET_ENGINEER_FILES: (engineerId: string) =>
-    `/engineer/api/v1/engineers/files/${engineerId}`,
-  DELETE_FILE: (fileId: string) => `/engineers/files/${fileId}`,
+    `/eng/api/v1/engineers/files/${engineerId}`,
+  DELETE_FILE: (fileId: string) => `/eng/api/v1/engineers/files/${fileId}`,
   DOWNLOAD_FILE_STREAM: (fileKey: string) =>
-    `/engineer/api/v1/engineers/files/download/stream/${fileKey}`,
+    `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
 } as const;

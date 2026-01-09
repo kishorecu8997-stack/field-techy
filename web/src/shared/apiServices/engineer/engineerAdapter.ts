@@ -98,7 +98,7 @@ export class EngineerAdapter {
     }
   }
 
-  static async downloadFileStream(fileKey: string, fileName?: string): Promise<{ blob: Blob }> {
+  static async downloadFileStream(fileKey: string): Promise<{ blob: Blob }> {
     try {
       const response = await axiosInstance.get(
         ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
@@ -127,14 +127,7 @@ export class EngineerAdapter {
   }
 
   static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
-    try {
-      const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_ENGINEER_FILES(engineerId)
-      );
-      return response.data;
-    } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
-    }
+    return this.getFiles(engineerId);
   }
 
   static async uploadFile(
