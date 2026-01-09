@@ -6,6 +6,7 @@ import { useAdminGetById } from "@/shared/apiServices/admin/adminService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
 import type { getAdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
+import { toast } from "react-toastify";
 
 /**
  * AdminLayout
@@ -41,6 +42,10 @@ export default function AdminLayout() {
         phoneNumber: data.phoneNumber,
         profilePicture: data.profilePicture,
       });
+    },
+    onError: (err) => {
+      const msg = err instanceof Error ? err.message || "Failed to load profile details";
+      toast.error(msg)
     },
   });
 

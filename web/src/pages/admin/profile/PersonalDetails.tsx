@@ -118,7 +118,7 @@ export default function PersonalDetails() {
         shouldValidate: false,
       });
     }
-  }, [adminProfilePic, methods]);
+  }, [adminProfilePic, methods, getAdminById, methods.reset]);
 
   /* ---------- Upload ---------- */
   const { mutateAsync: uploadProfileImage } = useAdminUploadFileMutation();
@@ -131,14 +131,21 @@ export default function PersonalDetails() {
       const file = await getFileFromProfilePicture(data.profilePicture);
       if (!file) return;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const res: any = await uploadProfileImage({
+      await uploadProfileImage({
         adminId: session?.userId || "",
         file,
         fileType: "ADM_PROFILE_PIC",
-      });
+      }, {
+        onSuccess: (res: unknown) => {
+          const resp = (res ?? { fileKey: "" }) as { fileKey: string };
+          toast.success("Profile picture uploaded successfully");
+          finalProfilePicKey = resp.fileKey;
+        },
+        onError: () => {
+          toast.error("Failed to upload profile picture");
+        },
+      })
 
-      finalProfilePicKey = res.fileKey as string;
     }
 
     await showPopup({
@@ -158,7 +165,6 @@ export default function PersonalDetails() {
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 profilePicture: finalProfilePicKey as string,
-                password: "",
               },
               {
                 onSuccess: () => {

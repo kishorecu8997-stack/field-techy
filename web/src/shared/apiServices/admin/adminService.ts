@@ -52,7 +52,6 @@ export function useAdminUpdateProfileMutation(options?: {
       fullName: string;
       email: string;
       profilePicture: string;
-      password: string;
       phoneNumber: string;
     }) => AdminAdapter.updateAdminProfile(data),
     onSuccess: options?.onSuccess,
