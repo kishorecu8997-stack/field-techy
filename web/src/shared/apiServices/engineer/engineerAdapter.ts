@@ -137,7 +137,6 @@ export class EngineerAdapter {
   ): Promise<FileUploadResponse> {
     try {
       const { engineerId, file, documentType, onUploadProgress } = params;
-
       const formData = new FormData();
       formData.append("file", file);
 
