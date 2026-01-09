@@ -9,7 +9,11 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { validateMajorSubject, validatePassingYear, validateUniversity } from "../../Validate";
+import {
+  validateMajorSubject,
+  validatePassingYear,
+  validateUniversity,
+} from "../../Validate";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { toast } from "react-toastify";
@@ -126,9 +130,10 @@ const EditEducation = () => {
           isShowLabel={false}
           name="year"
           placeholder="Passing Year"
-          required
-          allowedCharacters="numbers"
-          rules={{ validate: (v: string) => validatePassingYear(v) }}
+          rules={{
+            required: "Passing year is required",
+            validate: validatePassingYear,
+          }}
         />
       </div>
 
