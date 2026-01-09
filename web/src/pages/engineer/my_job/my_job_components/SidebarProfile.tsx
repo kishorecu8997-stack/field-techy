@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -43,8 +44,8 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
     useDrawerStore();
   // Get the overall profile completion percentage with the each field status
   const profileCompletion = getProfileCompletion(profileData);
+  const engineerProfile = useEngineerProfile();
 
-  const { name, phone, role } = user;
   return (
     <div
       id="completeProfile"
@@ -56,9 +57,13 @@ const ProfileCard = ({ user }: { user: UserProfile }) => {
             <FaUser />
           </div>
           <div>
-            <h3 className="font-bold text-white">{name}</h3>
-            <p className="text-sm opacity-90">{phone}</p>
-            <p className="text-xs opacity-80">{role}</p>
+            <h3 className="font-bold text-white">
+              {engineerProfile?.fullName}
+            </h3>
+            <p className="text-sm opacity-90">{engineerProfile?.phoneNumber}</p>
+            <p className="text-xs opacity-80">
+              {engineerProfile?.serviceCategory}
+            </p>
           </div>
         </div>
         <button

@@ -170,3 +170,9 @@ export interface AssignJobParams {
   jobId: string;
   status: string;
 }
+
+export interface UpdatePasswordParams {
+  phoneOrEmail: string;
+  oldPassword: string;
+  newPassword: string;
+}
