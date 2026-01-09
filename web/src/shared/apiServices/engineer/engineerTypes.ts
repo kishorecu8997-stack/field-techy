@@ -163,9 +163,3 @@ export interface ProposalJobData {
   availability: string;
 }
 
-export interface UpdatePasswordParams {
-  email: string;
-  password: string;
-  otp: string;
-}
-

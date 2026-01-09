@@ -39,7 +39,7 @@ export default SidebarProfile;
  *
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
-const ProfileCard = ({ user }: { user: UserProfile }) => {
+const ProfileCard = () => {
   const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
     useDrawerStore();
   // Get the overall profile completion percentage with the each field status
@@ -183,7 +183,7 @@ const SavedJobsCard = () => {
 
       savedJobs.forEach((job) => {
         if (!job.startDate) {
-          console.warn("Missing startDate for job:", job.title);
+          console.warn("Missing startDate for job:", job.jobTitle);
           return;
         }
 
@@ -193,7 +193,7 @@ const SavedJobsCard = () => {
         if (isNaN(startDate.getTime())) {
           console.warn(
             "Invalid date format for job:",
-            job.title,
+            job.jobTitle,
             job.startDate
           );
           return;

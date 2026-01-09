@@ -1,8 +1,7 @@
 import { bankList } from "@/dummy_data/bankDetails";
-import xss from "xss";
-import { transactions } from "@/dummy_data/bankDetails";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import xss from "xss";
 
 /**
  * Utility function to join multiple class names into a single string,

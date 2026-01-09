@@ -85,7 +85,7 @@ export interface Job {
   companyLogo?: string;
   company?: string;
   employmentType?: string;
-  place: string;
+  place?: string;
   isBookmarked?: boolean;
   allocationType?: "Automatic" | "Manual";
   serviceType?: ServiceType;

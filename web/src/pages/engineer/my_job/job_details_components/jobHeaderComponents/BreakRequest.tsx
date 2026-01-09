@@ -116,7 +116,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
       if (data.breakType === "Long Term Break") {
         if (data.checkboxLong) {
           return (
-            job.status === "inprogress" &&
+            job.status === "IN_PROGRESS" &&
             toDateOnly(breakStartDate) <= toDateOnly(jobEnd) &&
             toDateOnly(breakEndDate) >= toDateOnly(jobStart)
           );
@@ -124,12 +124,12 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
         const bStart = parseTime(data.startTime, breakStartDate);
         const bEnd = parseTime(data.endTime, breakEndDate);
         return (
-          job.status === "inprogress" && bStart < jobEnd && bEnd > jobStart
+          job.status === "IN_PROGRESS" && bStart < jobEnd && bEnd > jobStart
         );
       }
       if (data.breakType === "Short Term Break") {
         const sameDay = toDateOnly(breakStartDate) === toDateOnly(jobStart);
-        if (!sameDay || job.status !== "inprogress") return false;
+        if (!sameDay || job.status !== "IN_PROGRESS") return false;
         if (data.checkboxShort) return true; // full day
         const bStart = parseTime(data.startTime, breakStartDate);
         const bEnd = parseTime(data.endTime, breakStartDate);

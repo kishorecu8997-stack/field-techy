@@ -1,20 +1,18 @@
-import axiosInstance from "@/axiosInstance";
-import { uploadAxiosInstance } from "@/axiosInstance";
+import axiosInstance, { uploadAxiosInstance } from "@/axiosInstance";
+import type { LoginFormData } from "@/pages/admin/auth/types";
+import type { JobItem } from "@/pages/engineer/home/types";
+import type { Country } from "@/shared/components/commonUI/inputs/type";
+import { GlobalApiErrorHandler } from "../utils";
 import { CLIENT_ROUTER_PATHS } from "./clientRouterPaths";
 import type {
   ClientData,
-  ClientPaginationParams,
-  PagedResponse,
   ClientFile,
   ClientFileUploadParams,
-  FileUploadResponse,
+  ClientPaginationParams,
   FileDownloadResponse,
+  FileUploadResponse,
+  PagedResponse,
 } from "./clientTypes";
-import type { LoginFormData } from "@/pages/admin/auth/types";
-import type { Country } from "@/shared/components/commonUI/inputs/type";
-import { GlobalApiErrorHandler } from "../utils";
-import type { JobData } from "@/pages/client/type";
-import type { JobItem } from "@/pages/engineer/home/types";
 
 /*
  * ClientAdapter

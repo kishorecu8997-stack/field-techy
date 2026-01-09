@@ -25,9 +25,6 @@ interface JobListProps {
  */
 const JobList = ({ activeFilter }: JobListProps) => {
 
-  const userId = getUserId()
-  const { data: jobs } = useGetJobsByEngineerId(userId ?? "");
-
   const filteredJobs = useMemo(() => {
     const jobs = sampleJobs.filter(
       (job) =>
