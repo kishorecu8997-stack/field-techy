@@ -10,6 +10,7 @@ import type {
   EngineerFile,
   JobAssignment,
   AssignJobParams,
+  ScreenUploadParams,
 } from "./engineerTypes";
 import { GlobalApiErrorHandler } from "../utils";
 
@@ -111,9 +112,9 @@ export class EngineerAdapter {
         ENGINEER_ROUTER_PATHS.UPLOAD_FILE(engineerId, documentType),
         formData,
         {
-         headers: {
-            'X-USER': 'ENGINEER',
-            "Content-Type": "multipart/form-data"
+          headers: {
+            "X-USER": "ENGINEER",
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
@@ -126,6 +127,35 @@ export class EngineerAdapter {
                 percentage,
               });
             }
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async uploadScreenshot(
+    params: ScreenUploadParams
+  ): Promise<FileUploadResponse> {
+    try {
+      const { engineerId, file, documentType, metadata } = params;
+      debugger;
+      const formData = new FormData();
+
+      formData.append("file", new Blob([file || ""]));
+      const metadataBlob = new Blob([JSON.stringify(metadata)], {
+        type: "application/json",
+      });
+      formData.append("metadata", metadataBlob);
+
+      const response = await uploadAxiosInstance.put(
+        ENGINEER_ROUTER_PATHS.UPLOAD_SCREENSHOT(engineerId, documentType),
+        formData,
+        {
+          headers: {
+            "X-USER": "Engineer",
           },
         }
       );
@@ -166,7 +196,13 @@ export class EngineerAdapter {
   ): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.put(
-        `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`
+        `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`,
+        {},
+        {
+          headers: {
+            "X-USER": "ENGINEER",
+          },
+        }
       );
       return response.data;
     } catch (error) {
@@ -178,7 +214,7 @@ export class EngineerAdapter {
   static async sendEmailOTP(email: string): Promise<{ message: string }> {
     try {
       // TODO: Replace with actual API call when backend is ready
-      console.log('email :', email);
+      console.log("email :", email);
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
