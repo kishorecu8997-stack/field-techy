@@ -36,12 +36,11 @@ const EditExperiences = () => {
   if (!userId) return null;
 
   const { data: engineerData } = useEngineerGetById(userId);
+  const { mutateAsync } = useEngineerUpdateById(userId);
 
   const methods = useForm<ExperiencesFormData>({
     mode: "onSubmit",
   });
-
-  const { mutateAsync } = useEngineerUpdateById(userId);
 
   useEffect(() => {
     if (selectedId && engineerData?.experiences) {
@@ -58,14 +57,8 @@ const EditExperiences = () => {
           startDate: experience.startDate
             ? new Date(experience.startDate)
             : null,
-          endDate:
-            experience.endDate && experience.endDate !== "present"
-              ? new Date(experience.endDate)
-              : null,
-          isCurrent:
-            experience.isCurrent ||
-            !experience.endDate ||
-            experience.endDate === "present",
+          endDate: experience.endDate ? new Date(experience.endDate) : null,
+          isCurrent: experience.isCurrent ?? !experience.endDate,
         });
         return;
       }
@@ -105,21 +98,6 @@ const EditExperiences = () => {
             const formData = methods.getValues();
             const currentExperiences = engineerData.experiences || [];
 
-            const experiencePayload: Partial<Experience> = {
-              designation: formData.designation,
-              employer: formData.employer,
-              workLocationType: formData.workLocationType,
-              employmentType: formData.employmentType,
-              startDate: formData.startDate?.toISOString().split("T")[0] || "",
-              endDate: formData.isCurrent
-                ? null
-                : formData.endDate?.toISOString().split("T")[0] || null,
-            };
-
-            if (selectedId) {
-              experiencePayload.id = String(selectedId);
-            }
-
             let updatedExperiences: Experience[];
 
             if (selectedId) {
@@ -132,13 +110,15 @@ const EditExperiences = () => {
                   exp.startDate =
                     formData.startDate?.toISOString().split("T")[0] || "";
                   exp.endDate = formData.isCurrent
-                    ? null
-                    : formData.endDate?.toISOString().split("T")[0] || null;
+                    ? undefined // ← Fixed: undefined instead of null
+                    : formData.endDate?.toISOString().split("T")[0] ||
+                      undefined;
+                  exp.isCurrent = formData.isCurrent;
                 }
                 return exp;
               });
             } else {
-              const newExperience = {
+              const newExperience: Experience = {
                 designation: String(formData.designation ?? ""),
                 employer: (formData.employer || "").trim(),
                 workLocationType: formData.workLocationType as string,
@@ -146,8 +126,9 @@ const EditExperiences = () => {
                 startDate:
                   formData.startDate?.toISOString().split("T")[0] || "",
                 endDate: formData.isCurrent
-                  ? null
-                  : formData.endDate?.toISOString().split("T")[0] || null,
+                  ? undefined
+                  : formData.endDate?.toISOString().split("T")[0] || undefined,
+                isCurrent: formData.isCurrent,
               };
 
               updatedExperiences = [...currentExperiences, newExperience];
@@ -161,6 +142,7 @@ const EditExperiences = () => {
                     ? updatedExperiences
                     : undefined,
               });
+
               toast.success(
                 selectedId
                   ? "Experience updated successfully"
@@ -180,12 +162,6 @@ const EditExperiences = () => {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("editExperiencesId");
-    };
-  }, []);
-
   return (
     <FormContainer
       methods={methods}
@@ -199,8 +175,8 @@ const EditExperiences = () => {
           name="designation"
           placeholder="Designation"
           options={designationOptions.map((e) => ({
-            value: e.id,
-            label: e.title,
+            value: e.value,
+            label: e.label,
           }))}
           required
         />
@@ -265,14 +241,6 @@ const EditExperiences = () => {
           name="isCurrent"
           label="I currently work here"
           isShowLabel={true}
-          rules={{
-            onChange: (e) => {
-              const checked = e.target.checked;
-              if (checked) {
-                methods.setValue("endDate", null);
-              }
-            },
-          }}
         />
       </div>
 

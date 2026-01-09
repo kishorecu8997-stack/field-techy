@@ -48,7 +48,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <EducationList
         title="Education"
         items={(engineerData?.educations || []).map((edu) => ({
-          id: edu.id || "temp-id", // ← Fallback to avoid undefined
+          id: edu.id || "temp-id",
           educationLevel: edu.educationLevel ?? null,
           course: edu.course ?? null,
           university: edu.university ?? null,
@@ -57,7 +57,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
         }))}
         onAddAction={() => {
           setImmediateParentKey("education");
-          onMenuItemClick("addEducation"); // ← Point to AddEducation screen
+          onMenuItemClick("addEducation");
         }}
         onEditAction={(id) => {
           setSelectedId(id);

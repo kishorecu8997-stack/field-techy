@@ -1,7 +1,11 @@
 import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { employmentTypeOptions, workLocationTypeOptions } from "./constants";
+import {
+  employmentTypeOptions,
+  workLocationTypeOptions,
+  designationOptions,
+} from "./constants";
 import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
@@ -47,6 +51,7 @@ const createLabelMap = (
 };
 const employmentTypeLabelMap = createLabelMap(employmentTypeOptions);
 const workLocationTypeLabelMap = createLabelMap(workLocationTypeOptions);
+const designationLabelMap = createLabelMap(designationOptions);
 
 /**
  * Renders a styled list of work experiences, each with details and action buttons.
@@ -87,7 +92,8 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {item.designation}
+                      {designationLabelMap.get(item.designation || "") ||
+                        "Unknown Designation"}
                     </h3>
                   </div>
 

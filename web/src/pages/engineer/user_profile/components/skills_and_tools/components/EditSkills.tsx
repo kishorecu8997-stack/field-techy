@@ -13,6 +13,7 @@ import {
   useEngineerUpdateById,
 } from "@/shared/apiServices/engineer/engineerService";
 import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 export type EditSkillsFormData = {
   skills: string[];
@@ -117,7 +118,7 @@ const EditSkills = () => {
   };
 
   if (isEngineerLoading) {
-    return <div>Loading profile data...</div>;
+    return <LoaderComponent />;
   }
 
   return (

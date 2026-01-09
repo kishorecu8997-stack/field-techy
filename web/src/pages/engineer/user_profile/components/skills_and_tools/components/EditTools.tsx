@@ -13,6 +13,7 @@ import {
   useEngineerUpdateById,
 } from "@/shared/apiServices/engineer/engineerService";
 import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * Defines the shape of the form data for editing tools.
@@ -116,7 +117,7 @@ const EditTools = () => {
   };
 
   if (isEngineerLoading) {
-    return <div>Loading profile data...</div>;
+    return <LoaderComponent />;
   }
 
   return (

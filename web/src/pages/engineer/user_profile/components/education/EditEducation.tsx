@@ -99,7 +99,6 @@ const EditEducation = () => {
             let updatedEducations: Education[];
 
             if (selectedId) {
-              // EDIT: Modify existing object
               updatedEducations = currentEducations.map((edu) => {
                 if (edu.id === selectedId) {
                   edu.educationLevel = formData.educationLevel || undefined;
@@ -113,7 +112,6 @@ const EditEducation = () => {
                 return edu;
               });
             } else {
-              // ADD NEW
               const newEducation: Partial<Education> = {
                 educationLevel: formData.educationLevel || undefined,
                 course: formData.course || undefined,
@@ -193,7 +191,7 @@ const EditEducation = () => {
           name="university"
           placeholder="Enter university name"
           required
-          rules={{ validate: (value: string) => validateUniversity(value) }} // ← Fixed: removed second param
+          rules={{ validate: (value: string) => validateUniversity(value) }}
         />
 
         <InputField
@@ -202,7 +200,7 @@ const EditEducation = () => {
           name="majorSubject"
           placeholder="Enter major subject"
           required
-          rules={{ validate: (value: string) => validateMajorSubject(value) }} // ← Fixed
+          rules={{ validate: (value: string) => validateMajorSubject(value) }}
         />
 
         <InputField

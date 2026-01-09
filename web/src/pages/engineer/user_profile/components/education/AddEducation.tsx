@@ -16,7 +16,7 @@ import type { EducationFormData } from "./types";
 import {
   educationLevels,
   courses,
-} from "@/dummy_data/engineer_profile/education-data"; // Keep only for dropdown options
+} from "@/dummy_data/engineer_profile/education-data";
 
 import {
   useEngineerGetById,
@@ -66,7 +66,6 @@ const AddEducation = () => {
           action: async (close) => {
             if (!engineerData) return;
 
-            // Create new education object — NO ID (backend generates it)
             const newEducation: Partial<Education> = {
               educationLevel: data.educationLevel || undefined,
               course: data.course || undefined,

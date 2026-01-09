@@ -61,8 +61,9 @@ const AddExperiences = () => {
               employmentType: data.employmentType,
               startDate: data.startDate?.toISOString().split("T")[0] || "",
               endDate: data.isCurrent
-                ? null
-                : data.endDate?.toISOString().split("T")[0] || null,
+                ? undefined
+                : data.endDate?.toISOString().split("T")[0] || undefined,
+              isCurrent: data.isCurrent,
             };
 
             const updatedExperiences = [
@@ -122,8 +123,8 @@ const AddExperiences = () => {
           name="designation"
           placeholder="Designation"
           options={designationOptions.map((e) => ({
-            value: e.id,
-            label: e.title,
+            value: e.value,
+            label: e.label,
           }))}
           required
         />

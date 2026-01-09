@@ -1,14 +1,15 @@
-import { jobSkillsData, toolsData } from "@/dummy_data";
-import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
-import ChipsCard from "@/shared/components/ChipsCard";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React from "react";
+import ChipsCard from "@/shared/components/ChipsCard";
+import { getUserId } from "@/utils";
+import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+
+import { jobSkillsData, toolsData } from "@/dummy_data";
 
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
-  onClose: () => void;
+  onClose?: () => void;
 }
-
 /**
  * The SkillsAndTools component renders a summary of the user's skills and tools.
  * It uses data from a dummy source and provides navigation callbacks for editing.
@@ -20,38 +21,39 @@ const SkillsAndTools: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const engineerId = session?.userId || "";
   const { data: engineerData } = useEngineerGetById(engineerId);
 
-  const engineerSkills = (engineerData?.jobSkills as string[]) || [];
-  const engineerTools = (engineerData?.tools as string[]) || [];
+  const selectedSkillIds = (engineerData?.jobSkills as string[]) || [];
+  const selectedToolIds = (engineerData?.tools as string[]) || [];
+
+  const skillLabels = selectedSkillIds
+    .map((id) => {
+      const skill = jobSkillsData.find((s) => s.id === parseInt(id));
+      return skill?.label;
+    })
+    .filter(Boolean) as string[];
+
+  const toolLabels = selectedToolIds
+    .map((id) => {
+      const tool = toolsData.find((t) => t.id === id);
+      return tool?.label;
+    })
+    .filter(Boolean) as string[];
 
   return (
-    <>
-      <div className="flex flex-col gap-4">
-        <ChipsCard
-          title="Skills"
-          chips={engineerSkills.map((skill) => skill)}
-          onAddAction={() => onMenuItemClick(`addSkills`)}
-          onEditAction={() => {
-            onMenuItemClick(`editSkills`);
-            localStorage.setItem(
-              "editSkillsId",
-              JSON.stringify(jobSkillsData.map((skill) => skill.id))
-            );
-          }}
-        />
-        <ChipsCard
-          title="Tools"
-          chips={engineerTools.map((tool) => tool)}
-          onAddAction={() => onMenuItemClick(`addTools`)}
-          onEditAction={() => {
-            onMenuItemClick(`editTools`);
-            localStorage.setItem(
-              "editToolsId",
-              JSON.stringify(toolsData.map((tool) => tool.id))
-            );
-          }}
-        />
-      </div>
-    </>
+    <div className="flex flex-col gap-4">
+      <ChipsCard
+        title="Skills"
+        chips={skillLabels}
+        onAddAction={() => onMenuItemClick("addSkills")}
+        onEditAction={() => onMenuItemClick("editSkills")}
+      />
+
+      <ChipsCard
+        title="Tools"
+        chips={toolLabels}
+        onAddAction={() => onMenuItemClick("addTools")}
+        onEditAction={() => onMenuItemClick("editTools")}
+      />
+    </div>
   );
 };
 
