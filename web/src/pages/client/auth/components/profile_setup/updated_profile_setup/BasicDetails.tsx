@@ -5,7 +5,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -81,7 +81,9 @@ const BasicDetails = () => {
       cardAddress: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
   // Signup mutation
   const { mutateAsync: signup, isPending: isSubmitting } = useClientSignup({
@@ -285,18 +287,29 @@ const BasicDetails = () => {
               name="termsAndConditions"
               required
               isShowLabel={false}
+              renderError={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer"
-            >
+
+            <label htmlFor="termsAndConditions">
               I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+              <span className="text-blue-600 underline">
                 Terms and Conditions
               </span>
             </label>
           </div>
+
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
+
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600 ">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex-shrink-0 p-4">

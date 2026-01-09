@@ -10,12 +10,10 @@ interface CheckboxInputProps {
   isShowLabel?: boolean;
   required?: boolean;
   secondaryLabel?: string;
-
   rules?: RegisterOptions;
   disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-
   renderError?: boolean;
 }
 
@@ -94,7 +92,6 @@ export const CheckboxInput = ({
               )}
             </div>
 
-            {/* Only render internal error if renderError is true */}
             {renderError && error && (
               <p className="mt-1 ml-6 text-sm text-red-600 dark:text-red-500">
                 {error.message}
