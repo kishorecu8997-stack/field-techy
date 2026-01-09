@@ -12,4 +12,9 @@ export const ADMIN_ROUTER_PATHS = {
   DOWNLOAD_FILE_STREAM: (fileKey: string) =>
     `/admin/api/v1/admin/files/download/stream/${fileKey}`,
   ADMIN_GET: (id: string) => `/admin/api/v1/admin/${id}`,
+
+  /*For admin Notifications */
+  GET_ALL_NOTIFICATIONS: "/admin/api/v1/admin/notification/all",
+  DELETE_NOTIFICATION: (id: string) => `/admin/api/v1/admin/notification/delete/${id}`,
+  GET_PAGED_NOTIFICATIONS: "/admin/api/v1/admin/notification/paged",
 };

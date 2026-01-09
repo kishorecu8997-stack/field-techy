@@ -98,7 +98,7 @@ export default function PersonalDetails() {
       // Fallback if store is empty
       getAdminById(session.userId);
     }
-  }, [adminProfile, session?.userId, getAdminById, methods]);
+  }, [adminProfile, session?.userId, getAdminById]);
 
   /* ---------- Form ---------- */
   const methods = useForm<ProfileFormData>({

@@ -44,7 +44,7 @@ export default function AdminLayout() {
       });
     },
     onError: (err) => {
-      const msg = err instanceof Error ? err.message || "Failed to load profile details";
+      const msg = err instanceof Error ? err.message : "Failed to load profile details"
       toast.error(msg)
     },
   });
