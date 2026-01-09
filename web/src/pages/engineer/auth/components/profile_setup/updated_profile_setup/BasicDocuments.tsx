@@ -52,9 +52,8 @@ const BasicDocuments = () => {
   });
 
   const { showPopup } = usePopupStore();
-  const { clearStore } = useEngineerRegistrationStore();
-  const { updateDocuments } = useEngineerRegistrationStore();
-
+  const { clearStore, updateDocuments } = useEngineerRegistrationStore();
+  
   const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
     // @ts-ignore - The types from react-query/engineerService might be slightly off regarding the second argument 'variables'
     onSuccess: (data: any, variables: any) => {

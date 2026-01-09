@@ -87,10 +87,6 @@ export function useEngineerDownloadFile(options?: {
     });
 }
 
-/**
- * Hook to download a file stream with metadata
- * Returns a mutation that can be called with a fileKey
- */
 export function useDownloadEngineerFileStream(options?: {
     onSuccess?: () => void;
     onError?: (error: unknown) => void;

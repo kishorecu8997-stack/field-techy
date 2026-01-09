@@ -128,6 +128,8 @@ export class EngineerAdapter {
 
   static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
     return this.getFiles(engineerId);
+    } catch (error: unknown) {
+      GlobalApiErrorHandler.handleAndThrow(error);
   }
 
   static async uploadFile(
