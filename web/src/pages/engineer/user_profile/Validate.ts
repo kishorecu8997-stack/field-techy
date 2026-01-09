@@ -383,18 +383,16 @@ export const validateEndDateRange = (
   startDate: Date | null,
   endDate: Date | null
 ) => {
-  if (!startDate) {
+  if (!endDate) {
     return "End date is required";
   }
 
-  if (startDate > new Date()) {
+  if (endDate > new Date()) {
     return "End date cannot be in the future";
   }
-
-  if (endDate && startDate > endDate) {
-    return "End date must be before the end date";
+  if (startDate && endDate < startDate) {
+    return "End date must be after the start date";
   }
-
   return true;
 };
 
@@ -561,6 +559,7 @@ export default {
   validateCompany,
   validatePassingYear,
   validateDateRange,
+  validateEndDateRange,
   validateRate,
   validatePortfolioLink,
   validateIsVerified,
@@ -568,5 +567,4 @@ export default {
   validateVatNumber,
   validateUniversity,
   validateMajorSubject,
-  validateEndDate,
 };
