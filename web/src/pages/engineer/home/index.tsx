@@ -24,7 +24,6 @@ import type { JobItem } from "./types";
 const Home = () => {
   const navigate = useNavigate();
   const { data: jobs } = useGetJobs();
-  console.log('jobs :', jobs);
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -36,26 +35,34 @@ const Home = () => {
     console.log("Page changed to: ", page);
   };
   const findNewJobs = useMemo(() => {
-    return jobs?.filter((job) => job.status === "NEW") || [];
+    return jobs?.filter((job) => job.status === "NEW" && job.featured) || [];
   }, [jobs]);
-  
-  console.log('findNewJobs :', findNewJobs);
+
+  const recommendedJobs = useMemo(() => {
+    return jobs?.filter((job) => job.status === "NEW" && !job.featured) || [];
+  }, [jobs]);
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <JobExplorationBanner />
-            <FeaturedJobs
-              jobs={findNewJobs as JobItem[]}
-              title="Featured Jobs"
-              onViewAll={handleExploreJobs}
-            />
-            <RecommendedJobs
-              jobs={findNewJobs}
-              onViewAll={handleExploreJobs}
-              title="Recommended Jobs"
-            />
+            {findNewJobs.length > 0 && (
+              <FeaturedJobs
+                jobs={findNewJobs as JobItem[]}
+                title="Featured Jobs"
+                onViewAll={handleExploreJobs}
+              />
+            )}
+            
+            {recommendedJobs.length > 0 && (
+              <RecommendedJobs
+                jobs={recommendedJobs}
+                onViewAll={handleExploreJobs}
+                title="Recommended Jobs"
+              />
+            )}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -84,8 +91,12 @@ const Home = () => {
  */
 const PermissionManager = () => {
   const [accessPopup, setAccessPopup] = useState(false);
-  const locationPermission = useDeviceStore((state) => state.locationPermission);
-  const notificationPermission = useDeviceStore((state) => state.notificationPermission);
+  const locationPermission = useDeviceStore(
+    (state) => state.locationPermission
+  );
+  const notificationPermission = useDeviceStore(
+    (state) => state.notificationPermission
+  );
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
 

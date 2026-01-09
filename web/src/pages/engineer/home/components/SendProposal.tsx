@@ -51,13 +51,13 @@ const SendProposal = () => {
   const formCtx = useForm<proposalTypes>({
     mode: "onChange",
     defaultValues: {
-      description: "Here we are using an attachment file. What should be the file type for this attachment",
-      expected: "300",
+      description: "",
+      expected: "",
       type: "",
       attachment: null,
       availability: "",
-      question: "Here we are using an attachment file. What should be the file type for this attachment",
-      describe: "Here we are using an attachment file. What should be the file type for this attachment",
+      question: "",
+      describe: "",
     },
   });
 
