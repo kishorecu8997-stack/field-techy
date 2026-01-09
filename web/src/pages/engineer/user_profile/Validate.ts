@@ -379,6 +379,24 @@ export const validateFilterDateRange = (
 };
 
 
+export const validateEndDateRange = (
+  startDate: Date | null,
+  endDate: Date | null
+) => {
+  if (!endDate) {
+    return "End date is required";
+  }
+
+  if (endDate > new Date()) {
+    return "End date cannot be in the future";
+  }
+  if (startDate && endDate < startDate) {
+    return "End date must be after the start date";
+  }
+  return true;
+};
+
+
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
     return "Rate must not start or end with a space";
@@ -541,6 +559,7 @@ export default {
   validateCompany,
   validatePassingYear,
   validateDateRange,
+  validateEndDateRange,
   validateRate,
   validatePortfolioLink,
   validateIsVerified,
