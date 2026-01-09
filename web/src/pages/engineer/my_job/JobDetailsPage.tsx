@@ -7,6 +7,8 @@ import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
+import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import { toast } from "react-toastify";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -19,13 +21,17 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
-  const filter = () => {
-    return sampleJobs.find((job) => {
-      return job.id === Number(params.jobId);
-    });
+  
+   const selectedJob = sampleJobs.find(
+    (job) => job.id === Number(params.jobId)
+  );
+
+  const handleSubmitReview = () => {
+    toast.success("Review submitted successfully");
+    setIsReviewOpen(false);
   };
-
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
@@ -38,11 +44,11 @@ const JobDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={filter()?.title as string}
-              client={filter()?.client as string}
-              duration={filter()?.duration as string}
-              type={filter()?.type}
-              status={filter()?.status}
+              title={selectedJob?.title as string}
+              client={selectedJob?.client as string}
+              duration={selectedJob?.duration as string}
+              type={selectedJob?.type}
+              status={selectedJob?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
@@ -50,8 +56,9 @@ const JobDetailsPage = () => {
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
             />
+
             <JobTabSection
-              status={filter()?.status as JobStatus}
+              status={selectedJob?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
               activeTab={activeTab}
@@ -60,16 +67,24 @@ const JobDetailsPage = () => {
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={filter()?.client as string}
+              name={selectedJob?.client as string}
               memberSince={client.memberSince}
-              location={filter()?.location as string}
+              location={selectedJob?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
+              onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>
         </div>
       </div>
+
+      <ReviewClientModal
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        clientName={(selectedJob?.client as string) ?? "Client"}
+        onSubmit={handleSubmitReview}
+      />
     </div>
   );
 };
