@@ -22,7 +22,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * It uses `react-hook-form` for form management and validation.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC = ({}): React.ReactElement => {
+const AddEducation: React.FC = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
