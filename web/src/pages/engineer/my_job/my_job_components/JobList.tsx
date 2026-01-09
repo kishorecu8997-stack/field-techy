@@ -1,8 +1,10 @@
-import { sampleJobs } from "@/dummy_data/searchData";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
-import { JOB_STATUSES, WORKING_TYPES, JOB_FILTERS } from "../../search_result/types";
+import { JOB_STATUSES,WORKING_TYPES,JOB_FILTERS } from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 interface JobListProps {
   activeFilter: JobFilter;
@@ -18,8 +20,17 @@ interface JobListProps {
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
 const JobList = ({ activeFilter }: JobListProps) => {
+  const user = useUserSessionStore();
+  const engineerId = user.session?.userId;
+  const {
+    data: jobsAll = [],
+    isLoading,
+    isError,
+  } = useEngineerGetJobs(engineerId ?? "", {
+    enabled: !!engineerId,
+  });
   const filteredJobs = useMemo(() => {
-    const jobs = sampleJobs.filter(
+    const jobs = jobsAll.filter(
       (job) =>
         job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
     );
@@ -42,7 +53,22 @@ const JobList = ({ activeFilter }: JobListProps) => {
       // For other filters like "Today", "Declined", "Cancelled", return all jobs for now as they might not be implemented
       return jobs;
     }
-  }, [activeFilter]);
+  }, [activeFilter, jobsAll]);
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
+        <LoaderComponent />
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="col-span-2 text-center py-10 text-red-500">
+        Unable to load jobs. Please check your internet connection and try
+        again.
+      </div>
+    );
+  }
   return (
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

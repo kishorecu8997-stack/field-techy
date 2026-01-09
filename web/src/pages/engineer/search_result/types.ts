@@ -25,7 +25,7 @@ export const JOB_STATUSES = {
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
 export const WORKING_TYPES = {
-  onsite: "on-site",
+  onsite: "on_site",
   remote: "remote",
   hybrid: "hybrid",
 } as const;

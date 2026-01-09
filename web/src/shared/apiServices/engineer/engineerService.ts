@@ -114,6 +114,14 @@ export function useEngineerGetJobs(engineerId: string | null | undefined, option
     });
 }
 
+export function useEngineerGetJobById(jobId: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        queryKey: [...queryKeys.engineer.detail(jobId), 'job'] as const,
+        queryFn: () => EngineerAdapter.getJobById(jobId),
+        enabled: !!jobId && (options?.enabled ?? true),
+    });
+}
+
 export function useEngineerUpdateJobStatus(options?: {
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: unknown) => void;
