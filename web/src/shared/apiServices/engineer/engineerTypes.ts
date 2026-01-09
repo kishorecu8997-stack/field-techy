@@ -159,10 +159,21 @@ export interface FileUploadResponse {
 }
 
 export interface JobAssignment {
-  id: string;
-  engineerId: string;
-  jobId: string;
-  status: string;
+    id: string;
+    engineerId: string;
+    jobId: string;
+    status: string;
+    type: string;
+    title?: string;
+    client?: string;
+    duration?: string;
+    pay?: string;
+    statusDetail?: string;
+    location?: string;
+    assignedAt?: string;
+    startedAt?: string;
+    completedAt?: string;
+    startDate?: string;
 }
 
 export interface AssignJobParams {

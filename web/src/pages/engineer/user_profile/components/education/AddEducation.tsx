@@ -22,7 +22,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  * It uses `react-hook-form` for form management and validation.
  * @returns {React.ReactElement} The rendered AddEducation form component.
  */
-const AddEducation: React.FC = ({ }) => {
+const AddEducation: React.FC = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
@@ -119,11 +119,12 @@ const AddEducation: React.FC = ({ }) => {
         <InputField
           label="Passing Year"
           isShowLabel={false}
-          name="passingYear"
+          name="year"
           placeholder="Passing Year"
-          required
-          allowedCharacters="numbers"
-          rules={{ validate: (v: string) => validatePassingYear(v) }}
+          rules={{
+            required: "Passing year is required",
+            validate: validatePassingYear,
+          }}
         />
       </div>
 

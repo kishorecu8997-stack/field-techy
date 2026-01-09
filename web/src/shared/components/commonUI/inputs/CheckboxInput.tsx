@@ -10,11 +10,11 @@ interface CheckboxInputProps {
   isShowLabel?: boolean;
   required?: boolean;
   secondaryLabel?: string;
-  /** Optional react-hook-form validation rules */
   rules?: RegisterOptions;
   disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  renderError?: boolean;
 }
 
 /**
@@ -35,6 +35,7 @@ export const CheckboxInput = ({
   disabled = false,
   onChange,
   onBlur,
+  renderError = true,
 }: CheckboxInputProps) => {
   const { control } = useFormContext();
 
@@ -63,18 +64,12 @@ export const CheckboxInput = ({
                 disabled={disabled}
                 onBlur={(e) => {
                   field.onBlur();
-                  if (onBlur) {
-                    onBlur(e);
-                  }
+                  if (onBlur) onBlur(e);
                 }}
                 onChange={(e) => {
                   field.onChange(e);
-                  if (onChange) {
-                    onChange(e);
-                  }
-                  if (rules?.onChange) {
-                    rules.onChange(e);
-                  }
+                  if (onChange) onChange(e);
+                  if (rules?.onChange) rules.onChange(e);
                 }}
               />
 
@@ -86,6 +81,7 @@ export const CheckboxInput = ({
                   {label} {required && <span className="text-red-600">*</span>}
                 </label>
               )}
+
               {secondaryLabel && (
                 <label
                   htmlFor={name}
@@ -95,7 +91,8 @@ export const CheckboxInput = ({
                 </label>
               )}
             </div>
-            {error && (
+
+            {renderError && error && (
               <p className="mt-1 ml-6 text-sm text-red-600 dark:text-red-500">
                 {error.message}
               </p>
