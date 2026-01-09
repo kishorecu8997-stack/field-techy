@@ -1,10 +1,6 @@
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
-import {
-  JOB_STATUSES,
-  WORKING_TYPES,
-  JOB_FILTERS,
-} from "../../search_result/types";
+import { JOB_STATUSES,WORKING_TYPES,JOB_FILTERS } from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerService";
@@ -26,7 +22,6 @@ interface JobListProps {
 const JobList = ({ activeFilter }: JobListProps) => {
   const user = useUserSessionStore();
   const engineerId = user.session?.userId;
-
   const {
     data: jobsAll = [],
     isLoading,

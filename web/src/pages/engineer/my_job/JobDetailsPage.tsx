@@ -56,8 +56,7 @@ const JobDetailsPage = () => {
   if (!job) {
     return (
       <div className="flex justify-center items-center h-[50vh] text-red-500 col-span-2">
-        Job not found. The job may have been removed or you may not have access
-        to it.
+        The job was not found. The job may have been removed, or you may not have access.
       </div>
     );
   }

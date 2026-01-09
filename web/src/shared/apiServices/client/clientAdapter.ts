@@ -626,7 +626,7 @@ export class ClientAdapter {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
-  // -------------------------- Jobs Endpoints -------------------------------
+  
   static async getJobsById(id: string): Promise<JobItem> {
     try {
       const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_JOB_BY_ID(id));
