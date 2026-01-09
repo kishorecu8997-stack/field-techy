@@ -115,7 +115,7 @@ export class AdminAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
   //Edit Notification
@@ -129,7 +129,7 @@ export class AdminAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 
@@ -141,7 +141,7 @@ export class AdminAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 }
