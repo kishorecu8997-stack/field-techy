@@ -79,7 +79,7 @@ export class ClientAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -95,7 +95,7 @@ export class ClientAdapter {
       const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -111,7 +111,7 @@ export class ClientAdapter {
       const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_ALL);
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -141,7 +141,7 @@ export class ClientAdapter {
       });
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -161,7 +161,7 @@ export class ClientAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -176,7 +176,7 @@ export class ClientAdapter {
     try {
       await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE(id));
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -227,7 +227,7 @@ export class ClientAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -440,7 +440,7 @@ export class ClientAdapter {
         }, 500);
       });
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -460,7 +460,7 @@ export class ClientAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -506,7 +506,7 @@ export class ClientAdapter {
       });
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -521,7 +521,7 @@ export class ClientAdapter {
     try {
       await axiosInstance.delete(CLIENT_ROUTER_PATHS.DELETE_FILE(fileId));
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
@@ -560,7 +560,7 @@ export class ClientAdapter {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handle(error);
     }
   }
 
