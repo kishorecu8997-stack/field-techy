@@ -65,10 +65,13 @@ const JobList = ({ activeFilter }: JobListProps) => {
         <LoaderComponent />
       </div>
     );
- }
+  }
   if (isError) {
     return (
-      <div className="col-span-2 text-center py-10 text-red-500">Failed to load jobs.</div>
+      <div className="col-span-2 text-center py-10 text-red-500">
+        Unable to load jobs. Please check your internet connection and try
+        again.
+      </div>
     );
   }
   return (

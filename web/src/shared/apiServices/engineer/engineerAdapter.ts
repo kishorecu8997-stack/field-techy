@@ -160,7 +160,7 @@ export class EngineerAdapter {
     }
   }
 
-  static async getJobById(jobId: string): Promise<JobAssignment[]> {
+  static async getJobById(jobId: string): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
         ENGINEER_ROUTER_PATHS.GET_JOB_BY_ID(jobId)

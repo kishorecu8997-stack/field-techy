@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} Job details page layout.
  */
 const JobDetailsPage = () => {
-  const {jobId} = useParams();
+  const { jobId } = useParams();
   const user = useUserSessionStore();
   const engineerId = user.session?.userId;
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
@@ -31,26 +31,33 @@ const JobDetailsPage = () => {
     setIsReviewOpen(false);
   };
   const {
-    data:job,
+    data: job,
     isLoading,
     isError,
   } = useEngineerGetJobById(jobId!, {
     enabled: !!jobId && !!engineerId,
   });
-  const jobData = job?.[0];
-  const { data: jobs,
-   } = useClientGetJobsById( jobId?? "", );
+  const jobData = job;
+  const { data: clientJob } = useClientGetJobsById( jobId ?? "", );
   if (isLoading) {
-  return (
-    <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
-      <LoaderComponent />
-    </div>
-  );
-}
-   if (isError || !job) {
+    return (
+      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
+        <LoaderComponent />
+      </div>
+    );
+  }
+  if (isError) {
     return (
       <div className="flex justify-center items-center h-[50vh] text-red-500 col-span-2">
-        Failed to load job details
+        Unable to load job details. Please check your connection and try again.
+      </div>
+    );
+  }
+  if (!job) {
+    return (
+      <div className="flex justify-center items-center h-[50vh] text-red-500 col-span-2">
+        Job not found. The job may have been removed or you may not have access
+        to it.
       </div>
     );
   }
@@ -66,10 +73,10 @@ const JobDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={jobs?.jobTitle as string}
-              client={jobs?.client.contactPersonName as string}
-              duration={jobs?.timePeriodOfJob as string}
-              type={jobs?.engagementModel}
+              title={clientJob?.jobTitle as string}
+              client={clientJob?.client.contactPersonName as string}
+              duration={clientJob?.timePeriodOfJob as string}
+              type={clientJob?.engagementModel}
               status={jobData?.status}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
@@ -89,9 +96,9 @@ const JobDetailsPage = () => {
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={jobs?.client.contactPersonName as string}
+              name={clientJob?.client?.contactPersonName as string}
               memberSince={client.memberSince}
-              location={jobs?.location as string}
+              location={clientJob?.location as string}
               rating={client.rating}
               reviews={client.reviews}
               verifications={client.verifications}
@@ -104,7 +111,7 @@ const JobDetailsPage = () => {
       <ReviewClientModal
         isOpen={isReviewOpen}
         onClose={() => setIsReviewOpen(false)}
-        clientName={(jobs?.client.contactPersonName as string) ?? "Client"}
+        clientName={(clientJob?.client?.contactPersonName as string) ?? "Client"}
         onSubmit={handleSubmitReview}
       />
     </div>
