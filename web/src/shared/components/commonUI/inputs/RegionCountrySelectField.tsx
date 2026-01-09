@@ -43,18 +43,23 @@ export const RegionCountrySelectField = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
+  const [expandedRegions, setExpandedRegions] = useState<string[]>([]);
+  const [showGroupedOptions, setShowGroupedOptions] = useState(false);
+  const [overrideDisplayLabel, setOverrideDisplayLabel] = useState<
+    string | null
+  >(null);
+
   const requiredMessage =
     typeof required === "string"
       ? required
       : required
       ? `${label || name} is required`
       : false;
-
   const validationRules: RegisterOptions = {
     required: requiredMessage,
     ...rules,
   };
-  const [expandedRegions, setExpandedRegions] = useState<string[]>([]);
+
   const toggleRegion = (regionValue: string) => {
     setExpandedRegions((prev) =>
       prev.includes(regionValue)
@@ -62,37 +67,24 @@ export const RegionCountrySelectField = ({
         : [...prev, regionValue]
     );
   };
-  const [showGroupedOptions, setShowGroupedOptions] = useState(false);
-  const [overrideDisplayLabel, setOverrideDisplayLabel] = useState<
-    string | null
-  >(null);   
-  const truncateLabel = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + "...";
-  };
+
+  const truncateLabel = (text: string, maxLength: number) =>
+    text.length <= maxLength ? text : text.slice(0, maxLength) + "...";
+
   const groupedOptions = useMemo(() => {
     if (!showGroupedOptions) return {};
     return options.reduce((acc, option) => {
       if (option.type === "region") {
-        acc[option.value] = {
-          region: option,
-          countries: [],
-        };
+        acc[option.value] = { region: option, countries: [] };
       } else if (option.type === "subdivision" && option.region) {
         if (!acc[option.region]) {
           const regionOption = options.find(
             (o) => o.value === option.region && o.type === "region"
           );
-          if (regionOption) {
-            acc[option.region] = {
-              region: regionOption,
-              countries: [],
-            };
-          }
+          if (regionOption)
+            acc[option.region] = { region: regionOption, countries: [] };
         }
-        if (acc[option.region]) {
-          acc[option.region].countries.push(option);
-        }
+        acc[option.region]?.countries.push(option);
       }
       return acc;
     }, {} as Record<string, { region: RegionCountryOption; countries: RegionCountryOption[] }>);
@@ -100,9 +92,9 @@ export const RegionCountrySelectField = ({
 
   const updatePosition = () => {
     if (!buttonRef.current) return;
-    const buttonRect = buttonRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - buttonRect.bottom;
-    const spaceAbove = buttonRect.top;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
     const dropdownHeight = 320;
     setPosition(
       spaceBelow < dropdownHeight && spaceAbove > dropdownHeight
@@ -124,13 +116,10 @@ export const RegionCountrySelectField = ({
       {isShowLabel && (
         <label
           className={`block mb-1 text-md font-semibold ${
-            disabled
-              ? "text-gray-400 dark:text-gray-400"
-              : "text-gray-700 dark:text-gray-300"
+            disabled ? "text-gray-400" : "text-gray-700"
           }`}
         >
-          {label}{" "}
-          {required !== false && <span className="text-red-600">*</span>}
+          {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -139,23 +128,54 @@ export const RegionCountrySelectField = ({
         rules={validationRules}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
           const selectedValues: string[] = Array.isArray(value) ? value : [];
-          const selectedOptions = options.filter((opt) =>
-            selectedValues.includes(opt.value)
+
+          // ===== Updated display label logic =====
+          const selectedCountryLabels = selectedValues.map(
+            (val) => options.find((o) => o.value === val)?.label ?? val
           );
+
+          const fullySelectedRegionLabels = Object.values(groupedOptions)
+            .filter(
+              (group) =>
+                group.countries.length > 0 &&
+                group.countries.every((c) => selectedValues.includes(c.value))
+            )
+            .map((group) => group.region.label);
+
+          const partiallySelectedRegionLabels = Object.values(groupedOptions)
+            .filter(
+              (group) =>
+                selectedValues.includes(group.region.value) &&
+                !group.countries.every((c) => selectedValues.includes(c.value))
+            )
+            .map((group) => group.region.label);
+
+          const finalDisplayLabels = [
+            ...fullySelectedRegionLabels,
+            ...partiallySelectedRegionLabels,
+            ...selectedCountryLabels.filter(
+              (label) =>
+                !fullySelectedRegionLabels.includes(label) &&
+                !partiallySelectedRegionLabels.includes(label)
+            ),
+          ];
+
+          const displayLabel = overrideDisplayLabel
+            ? truncateLabel(overrideDisplayLabel, 200)
+            : finalDisplayLabels.length > 0
+            ? truncateLabel(finalDisplayLabels.join(", "), 200)
+            : placeholder;
+
+          const selectedOptions = options.filter((o) =>
+            selectedValues.includes(o.value)
+          );
+
           const handleSelect = (selected: RegionCountryOption[]) => {
             const values = selected.map((s) => s.value);
             onChange(values);
-            const isCountrySelected = values.includes("Country");
-            if (!isCountrySelected) {
-              setShowGroupedOptions(false);
-            }
+            if (!values.includes("Country")) setShowGroupedOptions(false);
             setOverrideDisplayLabel(null);
           };
-          const displayLabel = overrideDisplayLabel
-            ? truncateLabel(overrideDisplayLabel, 200)
-            : selectedOptions.length > 0
-            ? truncateLabel(selectedOptions.map((o) => o.label).join(", "), 200)
-            : placeholder;
 
           return (
             <Listbox
@@ -168,29 +188,28 @@ export const RegionCountrySelectField = ({
                 if (open && !openRef.current) {
                   openRef.current = true;
                   requestAnimationFrame(updatePosition);
-                } else if (!open && openRef.current) {
-                  openRef.current = false;
-                }
+                } else if (!open && openRef.current) openRef.current = false;
 
                 return (
                   <div className="relative">
                     <Listbox.Button
                       ref={buttonRef}
-                      className={`relative w-full rounded-md border text-base py-3 pl-5 pr-10 flex items-center justify-start text-left ${
-                        disabled
-                          ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 cursor-pointer"
-                      } ${
-                        error && !disabled
-                          ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                          : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-                      }`}
+                      className={`relative w-full rounded-md border text-base py-3 pl-5 pr-10 flex items-center justify-start text-left
+                        ${
+                          disabled
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "bg-white cursor-pointer"
+                        }
+                        ${
+                          error && !disabled
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
+                      onClick={() => (openRef.current = !openRef.current)}
                     >
                       <div className="flex items-center w-full space-x-2">
                         {leftIcon && (
-                          <span className="text-gray-400 dark:text-gray-500">
-                            {leftIcon}
-                          </span>
+                          <span className="text-gray-400">{leftIcon}</span>
                         )}
                         <span
                           className={`block truncate w-full ${
@@ -220,9 +239,10 @@ export const RegionCountrySelectField = ({
                           position === "bottom"
                             ? "top-full mt-1"
                             : "bottom-full mb-1"
-                        } max-h-80 overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/10 focus:outline-none`}
+                        } max-h-80 overflow-auto rounded-md bg-white shadow-lg ring-1 ring-black/10`}
                       >
-                        <Listbox.Options as="div" static>                         
+                        <Listbox.Options as="div" static>
+                          {/* Country Toggle */}
                           {options
                             .filter(
                               (o) =>
@@ -237,142 +257,161 @@ export const RegionCountrySelectField = ({
                                   setShowGroupedOptions((prev) => !prev)
                                 }
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
+                                  if (["Enter", " "].includes(e.key)) {
                                     e.preventDefault();
                                     setShowGroupedOptions((prev) => !prev);
                                   }
                                 }}
-                                className="relative flex items-center justify-between cursor-pointer select-none
-                                py-2 pl-5 pr-4 rounded-md
-                                hover:bg-green-100 dark:hover:bg-green-900
-                                font-medium text-gray-700 dark:text-gray-200
-                                focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                                className="flex justify-between items-center cursor-pointer py-2 pl-5 pr-4 rounded-md hover:bg-green-100 font-medium text-gray-700"
                               >
-                                <span className="truncate">
-                                  {countryOption.label}
-                                </span>
-
+                                <span>{countryOption.label}</span>
                                 <MdOutlineKeyboardArrowDown
-                                  className={`h-6 w-6 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
+                                  className={`h-6 w-6 transition-transform ${
                                     showGroupedOptions ? "rotate-180" : ""
                                   }`}
                                 />
                               </div>
-                            ))}                        
+                            ))}
+
+                          {/* Grouped Regions & Countries */}
                           {showGroupedOptions &&
-                            (Object.values(groupedOptions).length === 0 ? (
-                              <div className="py-2 px-4 text-gray-500 dark:text-gray-400">
+                            Object.values(groupedOptions).length === 0 && (
+                              <div className="py-2 px-4 text-gray-500">
                                 No results found
                               </div>
-                            ) : (
-                              Object.values(groupedOptions).map((group) => {
-                                const allCountriesSelected =
-                                  group.countries.length > 0 &&
-                                  group.countries.every((c) =>
-                                    selectedValues.includes(c.value)
-                                  );
-                                const someCountriesSelected =
-                                  group.countries.some((c) =>
-                                    selectedValues.includes(c.value)
-                                  );
-                                const isIndeterminate =
-                                  !allCountriesSelected &&
-                                  someCountriesSelected;
+                            )}
 
-                                const isExpanded = expandedRegions.includes(
-                                  group.region.value
+                          {showGroupedOptions &&
+                            Object.values(groupedOptions).map((group) => {
+                              const allSelected =
+                                group.countries.length > 0 &&
+                                group.countries.every((c) =>
+                                  selectedValues.includes(c.value)
                                 );
+                              const someSelected = group.countries.some((c) =>
+                                selectedValues.includes(c.value)
+                              );
+                              const indeterminate =
+                                !allSelected && someSelected;
+                              const isExpanded = expandedRegions.includes(
+                                group.region.value
+                              );
 
-                                return (
-                                  <div key={group.region.value}>
+                              return (
+                                <div key={group.region.value}>
+                                  {/* Region Header */}
+                                  <button
+                                    type="button"
+                                    className="w-full px-3 py-2 bg-gray-50 font-semibold text-sm flex justify-between items-center text-left cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                      toggleRegion(group.region.value);
+                                      setOverrideDisplayLabel(
+                                        group.region.label
+                                      );
+                                    }}
+                                    aria-expanded={isExpanded}
+                                  >
+                                    <span className="truncate">
+                                      {group.region.label}
+                                    </span>
+                                    <MdOutlineKeyboardArrowDown
+                                      className={`h-7 w-7 transition-transform ${
+                                        isExpanded ? "rotate-180" : ""
+                                      }`}
+                                    />
+                                  </button>
+
+                                  {/* Select All Button */}
+                                  {isExpanded && (
                                     <button
                                       type="button"
-                                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 font-semibold text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center text-left cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                                      className="flex w-full items-center space-x-2 py-2 pl-6 pr-4 text-left hover:bg-green-100"
                                       onClick={() => {
-                                        toggleRegion(group.region.value);
-                                        setOverrideDisplayLabel(
-                                          group.region.label
-                                        ); 
-                                      }}
-                                      aria-expanded={isExpanded}
-                                    >
-                                      <span className="block truncate font-medium">
-                                        {group.region.label}
-                                      </span>
-                                      <MdOutlineKeyboardArrowDown
-                                        className={`h-7 w-7 text-gray-500 transition-transform duration-200 ${
-                                          isExpanded ? "rotate-180" : ""
-                                        }`}
-                                      />
-                                    </button>                                   
-                                    {isExpanded && (
-                                      <button
-                                        type="button"
-                                        className="relative flex w-full items-center space-x-2 select-none py-2 pl-6 pr-4 rounded-md text-left hover:bg-green-100 dark:hover:bg-green-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
-                                        onClick={() => {
-                                          if (allCountriesSelected) {
-                                            onChange(
-                                              selectedValues.filter(
-                                                (v) =>
-                                                  !group.countries.some(
-                                                    (c) => c.value === v
-                                                  )
-                                              )
-                                            );
-                                          } else {
-                                            onChange([
+                                        const nextValues = allSelected
+                                          ? selectedValues.filter(
+                                              (v) =>
+                                                !group.countries.some(
+                                                  (c) => c.value === v
+                                                )
+                                            )
+                                          : [
                                               ...new Set([
                                                 ...selectedValues,
                                                 ...group.countries.map(
                                                   (c) => c.value
                                                 ),
                                               ]),
-                                            ]);
-                                          }
-                                          setOverrideDisplayLabel(
-                                            group.region.label
-                                          );
+                                            ];
+                                        onChange(nextValues);
+                                        setOverrideDisplayLabel(
+                                          group.region.label
+                                        );
+                                      }}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={allSelected}
+                                        readOnly
+                                        ref={(el) => {
+                                          if (el)
+                                            el.indeterminate = indeterminate;
                                         }}
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          checked={allCountriesSelected}
-                                          readOnly
-                                          ref={(el) => {
-                                            if (el)
-                                              el.indeterminate =
-                                                isIndeterminate;
-                                          }}
-                                          className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500 pointer-events-none"
-                                        />
-                                        <span className="block truncate font-medium">
-                                          {group.region.label} (All States)
-                                        </span>
-                                      </button>
-                                    )}                                  
-                                    {isExpanded &&
-                                      group.countries.map((country) => (
+                                        className="h-4 w-4 text-green-600 border-gray-300 rounded pointer-events-none"
+                                      />
+                                      <span className="truncate">
+                                        {group.region.label} (All States)
+                                      </span>
+                                    </button>
+                                  )}
+
+                                  {/* Individual Countries */}
+                                  {isExpanded && (
+                                    <Listbox.Options
+                                      as="div"
+                                      static
+                                      className="ml-4"
+                                    >
+                                      {group.countries.map((country) => (
                                         <Listbox.Option
                                           key={country.value}
                                           value={country}
                                           className={({ active }) =>
-                                            `relative flex items-center space-x-2 cursor-pointer select-none py-2 pl-9 pr-4 rounded-md ${
-                                              active
-                                                ? "bg-green-100 dark:bg-green-900"
-                                                : ""
+                                            `flex items-center space-x-2 py-2 pl-5 pr-4 cursor-pointer ${
+                                              active ? "bg-green-100" : ""
                                             }`
                                           }
                                         >
                                           {({ selected }) => (
-                                            <>
+                                            <div
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+
+                                                let nextValues: string[];
+                                                if (selected) {
+                                                  nextValues =
+                                                    selectedValues.filter(
+                                                      (v) => v !== country.value
+                                                    );
+                                                } else {
+                                                  nextValues = [
+                                                    ...selectedValues,
+                                                    country.value,
+                                                  ];
+                                                }
+
+                                                onChange(nextValues);
+                                                setOverrideDisplayLabel(null);
+                                              }}
+                                              className="flex items-center space-x-2 w-full"
+                                            >
                                               <input
                                                 type="checkbox"
                                                 checked={selected}
                                                 readOnly
-                                                className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                                                className="h-4 w-4 text-green-600 border-gray-300 rounded"
                                               />
                                               <span
-                                                className={`block truncate ${
+                                                className={`truncate ${
                                                   selected
                                                     ? "font-semibold"
                                                     : "font-normal"
@@ -380,14 +419,15 @@ export const RegionCountrySelectField = ({
                                               >
                                                 {country.label}
                                               </span>
-                                            </>
+                                            </div>
                                           )}
                                         </Listbox.Option>
                                       ))}
-                                  </div>
-                                );
-                              })
-                            ))}
+                                    </Listbox.Options>
+                                  )}
+                                </div>
+                              );
+                            })}
                         </Listbox.Options>
                       </div>
                     </Transition>
