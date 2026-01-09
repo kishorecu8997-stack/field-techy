@@ -148,7 +148,7 @@ const BreakCalendar: React.FC = () => {
 
   return (
     <div className="py-5 px-4">
-      <div className="rounded-2xl overflow-hidden shadow-lg bg-white">
+      <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">
         <div className="p-4">
           <FullCalendar
             plugins={[dayGridPlugin]}
@@ -162,7 +162,7 @@ const BreakCalendar: React.FC = () => {
             events={events}
             dayCellClassNames={(arg) =>
               arg.date.getDay() === 0 || arg.date.getDay() === 6
-                ? "bg-gray-100"
+                ? "bg-gray-100 dark:bg-gray-700"
                 : ""
             }
             eventContent={(arg) => {
@@ -180,7 +180,7 @@ const BreakCalendar: React.FC = () => {
             }}
           />
         </div>
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div className="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap justify-center gap-8 text-sm">
             {statusArray.map((status) => (
               <StatusLegendItem
