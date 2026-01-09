@@ -11,6 +11,7 @@ import type {
   JobAssignment,
   AssignJobParams,
   ScreenUploadParams,
+  ScreenUploadResponse,
 } from "./engineerTypes";
 import { GlobalApiErrorHandler } from "../utils";
 
@@ -138,24 +139,31 @@ export class EngineerAdapter {
 
   static async uploadScreenshot(
     params: ScreenUploadParams
-  ): Promise<FileUploadResponse> {
+  ): Promise<ScreenUploadResponse> {
     try {
       const { engineerId, file, documentType, metadata } = params;
-      debugger;
       const formData = new FormData();
+      formData.append("file", file || "");
+      formData.append(
+        "metadata",
+        new Blob(
+          [
+            JSON.stringify({
+              engineerJobId: metadata.engineerJobId,
+              remarks: metadata.remarks,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
 
-      formData.append("file", new Blob([file || ""]));
-      const metadataBlob = new Blob([JSON.stringify(metadata)], {
-        type: "application/json",
-      });
-      formData.append("metadata", metadataBlob);
-
-      const response = await uploadAxiosInstance.put(
+      const response = await uploadAxiosInstance.post(
         ENGINEER_ROUTER_PATHS.UPLOAD_SCREENSHOT(engineerId, documentType),
         formData,
         {
           headers: {
             "X-USER": "Engineer",
+            "Content-Type": "multipart/form-data",
           },
         }
       );

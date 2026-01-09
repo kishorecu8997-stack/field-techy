@@ -18,7 +18,7 @@ export const ENGINEER_ROUTER_PATHS = {
   UPLOAD_FILE: (engineerId: string, documentType: string) =>
     `/eng/api/v1/engineers/files/${engineerId}/${documentType}/upload`,
   UPLOAD_SCREENSHOT: (engineerId: string, documentType: string) =>
-    `/eng/api/v1/engineers/jobs/history/${engineerId}/${documentType}/update`,
+    `/eng/api/v1/engineers/jobs/history/${engineerId}/${documentType}/save`,
   GET_JOBS: (engineerId: string) =>
     `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   ASSIGN_JOB: (engineerId: string) =>

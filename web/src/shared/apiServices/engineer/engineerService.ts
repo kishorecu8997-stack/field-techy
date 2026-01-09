@@ -10,6 +10,7 @@ import type {
   JobAssignment,
   AssignJobParams,
   ScreenUploadParams,
+  ScreenUploadResponse,
 } from "./engineerTypes";
 import { queryKeys } from "../queryKeys";
 import { queryClient } from "@/main";
@@ -64,7 +65,7 @@ export function useEngineerFileUpload(options?: {
 }
 
 export function useEngineerScreenShotUpload(options?: {
-  onSuccess?: (data: FileUploadResponse) => void;
+  onSuccess?: (data: ScreenUploadResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
@@ -148,21 +149,15 @@ export function useEngineerGetJobs(
 export function useEngineerUpdateJobStatus(options?: {
   onSuccess?: (
     data: JobAssignment,
-    variables: {
-      id: string;
-      status: string;
-      remarks?: string;
-      workScreenShot?: File | null;
-    }
   ) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (args: { id: string; status: string }) =>
       EngineerAdapter.updateJobStatus(args.id, args.status),
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      options?.onSuccess?.(data, variables);
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });

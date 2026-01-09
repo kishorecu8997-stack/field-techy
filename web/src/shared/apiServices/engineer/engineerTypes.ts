@@ -118,11 +118,11 @@ export type DocumentType =
   | "WORK_SCREEN_SHOT";
 
 export interface Metadata {
-  id: string;
-  engineerJobId: string;
-  activityDate: string;
+  id?: string;
+  engineerJobId?: string;
+  activityDate?: string;
   remarks: string | null;
-  workScreenshotId: string;
+  workScreenshotId?: string;
 }
 
 export interface FileUploadParams {
@@ -141,6 +141,14 @@ export interface ScreenUploadParams {
   file: File | null;
   documentType: DocumentType;
   metadata: Metadata;
+}
+
+export interface ScreenUploadResponse {
+  id: string;
+  engineerJobId: string;
+  activityDate: string;
+  remarks: string;
+  workScreenshotId: string;
 }
 
 export interface FileUploadResponse {
