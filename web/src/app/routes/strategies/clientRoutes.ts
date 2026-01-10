@@ -80,10 +80,12 @@ export class ClientRouteStrategy implements RouteStrategy {
         path: BASE.CLIENT,
         element: React.createElement(ProtectedRoute, {
           requiredRole: UserRole.CLIENT,
-          children: [
+          children: React.createElement(
+            React.Fragment,
+            null,
             withSuspense(Components.ClientLayout),
-            withSuspense(Components.LiveChatWidget),
-          ],
+            withSuspense(Components.LiveChatWidget)
+          ),
         }),
         children: [
           { index: true, element: withSuspense(Components.ClientMyJobsPage) },

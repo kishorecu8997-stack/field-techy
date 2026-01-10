@@ -1,5 +1,10 @@
 import React from "react";
 import { ImageUploaderField } from "./inputs/ImageUploaderField";
+import { useFormContext } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
+import { useEffect } from "react";
+import { getUserId } from "@/utils";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -43,7 +48,33 @@ const ProfileCard = ({
   flex?: "row" | "col";
   backgroundcolor?: boolean;
   isLoadingProfilePicture?: boolean;
+  engineerId?: string;
 }) => {
+  const formContext = useFormContext();
+  const watch = formContext?.watch;
+
+  const userId = getUserId();
+  const profileImage = watch ? watch("profileImage") : null;
+  const { mutate: uploadFile } = useEngineerFileUpload(
+    userId || undefined,
+    {
+      onSuccess: () => toast.success("Profile picture updated successfully!"),
+      onError: () => toast.error("Failed to update profile picture."),
+    }
+  );
+
+  console.log("engineerId :", userId);
+  console.log("profileImage :", profileImage);
+  useEffect(() => {
+    if (userId && profileImage instanceof File) {
+      uploadFile({
+        engineerId: userId,
+        file: profileImage,
+        documentType: "PICTURE",
+      });
+    }
+  }, [userId, profileImage, uploadFile]);
+
   return (
     <div
       className={`flex 
@@ -65,9 +96,11 @@ const ProfileCard = ({
         />
       </div>
       <div>
-        <h2 className="font-bold text-lg text-gray-800">{name}</h2>
-        <p className="text-sm text-gray-600">{title}</p>
-        <p className="text-xs text-gray-500">
+        <h2 className="font-bold text-lg text-gray-800 dark:text-gray-200">
+          {name}
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           {rating} Ratings {reviewCount && `| ${reviewCount} Reviews`}
         </p>
       </div>

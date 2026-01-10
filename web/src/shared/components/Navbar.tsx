@@ -10,7 +10,7 @@ import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
 import Tooltip from "@/shared/components/Tooltip";
-import { useEngineerProfile } from "../store/useEngineerStore";
+import { useEngineerProfile, useEngineerStore } from "../store/useEngineerStore";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -30,6 +30,7 @@ import { useEngineerProfile } from "../store/useEngineerStore";
  */
 const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
@@ -222,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             Hi, {engineerProfile?.fullName}
           </span>
           <img
-            src={assetsConfig.images.users.user}
+            src={profileImageUrl || assetsConfig.images.users.user}
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />

@@ -4,12 +4,12 @@ import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
   SORT_OPTIONS,
-  type Filters,
-  type Job,
+  type Filters
 } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useMemo, useState, useEffect } from "react";
 import { getSavedJobs } from "@/utils/bookmarkUtils";
+import { useEffect, useMemo, useState } from "react";
+import type { JobItem } from "../types";
 
 /**
  * explore jobs page component
@@ -35,7 +35,7 @@ const ExploreSavedJobs = () => {
     primaryLanguage: "",
     slaLevel: "",
   });
-  const [savedJobs, setSavedJobs] = useState<Job[]>([]);
+  const [savedJobs, setSavedJobs] = useState<JobItem[]>([]);
 
   useEffect(() => {
     setSavedJobs(getSavedJobs());

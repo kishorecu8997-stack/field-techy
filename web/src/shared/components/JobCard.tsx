@@ -2,14 +2,16 @@ import { absoluteUrls } from "@/config/urls";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
-  type Job,
 } from "@/pages/engineer/search_result/types";
+import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 import { scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
+import { useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
-interface JobCardProps extends Job {
+
+interface JobCardProps {
+  [key: string]: any;
   allocationType?: "Automatic" | "Manual";
 }
 
@@ -19,33 +21,35 @@ interface JobCardProps extends Job {
  *
  * @param {Job} props - Job data including title, client, location, pay, status, etc.
  */
-const JobCard: React.FC<JobCardProps> = ({
-  id,
-  title,
-  client,
-  startDate,
-  duration,
-  location,
-  pay,
-  status,
-  jobId,
-  allocationType = "Automatic",
-  // title,
-  // client,
-  // startDate,
-  // duration,
-  // location,
-  // pay,
-  // type,
-}) => {
-  const { data: jobs, isLoading } = useClientGetJobsById(jobId ?? "");
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
-        <LoaderComponent />
-      </div>
-    );
-  }
+const JobCard: React.FC<JobCardProps> = (props) => {
+  const { allocationType = "Automatic" } = props;
+
+  const normalized = useMemo(() => {
+    const job = props as any;
+    return {
+      id: job.id,
+      title: job.jobTitle || job.title || "Untitled Job",
+      client: job.client?.companyName || job.client || "Hidden Client",
+      startDate: job.startDate || "Not specified",
+      duration: job.jobDuration || job.duration || "Not specified",
+      location: job.location || "Not specified",
+      pay: job.salary || job.pay || "Negotiable",
+      status: job.status || "NEW",
+      type: job.engagementModel || job.type || "ON_SITE",
+    };
+  }, [props]);
+
+  const {
+    id,
+    title,
+    client,
+    startDate,
+    duration,
+    location,
+    pay,
+    status,
+    type,
+  } = normalized;
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}

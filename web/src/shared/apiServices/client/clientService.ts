@@ -276,6 +276,17 @@ export function useDeleteClientFile(options?: {
   });
 }
 
+
+// --- Jobs Hooks ---
+export function useGetJobs() {
+  return useQuery({
+    queryKey: ["client-jobs"],
+    queryFn: () => ClientAdapter.getJobs(),
+    enabled: true,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}
+
 /**
  * Hook to download a file stream as a query (useful for displaying images)
  */
@@ -290,6 +301,7 @@ export function useClientFileStream(
     staleTime: Infinity, // Cache indefinitely since file content for a key shouldn't change
   });
 }
+
 
 export function useClientGetJobsById(id: string) {
   return useQuery({
