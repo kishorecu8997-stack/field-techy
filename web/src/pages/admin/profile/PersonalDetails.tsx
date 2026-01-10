@@ -44,6 +44,7 @@ export default function PersonalDetails() {
   const { showPopup } = usePopupStore();
 
   const session = useUserSessionStore((s) => s.session);
+  const logout = useUserSessionStore((s) => s.logout);
   const adminUpdateProfileMutation = useAdminUpdateProfileMutation();
 
   const { adminProfile, setAdminProfile } = useAdminProfileStore();
@@ -103,7 +104,7 @@ export default function PersonalDetails() {
   /* ---------- Form ---------- */
   const methods = useForm<ProfileFormData>({
     defaultValues: {
-      fullName: session?.name,
+      fullName: "",
       email: session?.email,
       phoneNumber: "",
       profilePicture: null,
@@ -125,6 +126,15 @@ export default function PersonalDetails() {
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
+    const userId = session?.userId;
+
+    if (!userId) {
+      toast.error("Session expired. Please login again.");
+      logout();
+      navigate(absoluteUrls.admin.auth.login);
+      return;
+    }
+
     let finalProfilePicKey = adminProfile?.profilePicture;
 
     if (data.profilePicture) {
@@ -132,7 +142,7 @@ export default function PersonalDetails() {
       if (!file) return;
 
       await uploadProfileImage({
-        adminId: session?.userId || "",
+        adminId: userId,
         file,
         fileType: "ADM_PROFILE_PIC",
       }, {
@@ -160,7 +170,7 @@ export default function PersonalDetails() {
           action: async (close) => {
             await adminUpdateProfileMutation.mutateAsync(
               {
-                id: session?.userId || "",
+                id: userId,
                 fullName: data.fullName,
                 email: data.email,
                 phoneNumber: data.phoneNumber,
@@ -168,7 +178,7 @@ export default function PersonalDetails() {
               },
               {
                 onSuccess: () => {
-                  getAdminById(session?.userId || "");
+                  getAdminById(userId);
 
                   // Invalidate file stream cache to ensure fresh image is fetched
                   queryClient.invalidateQueries({

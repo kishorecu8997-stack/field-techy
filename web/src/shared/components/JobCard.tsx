@@ -22,18 +22,18 @@ interface JobCardProps extends JobAssignment {
  * @param {JobAssignment} props - Job data including title, client, location, pay, status, etc.
  */
 const JobCard: React.FC<JobCardProps> = ({
-  title,
-  jobId,
-  client,
-  startDate,
-  duration,
-  location,
-  pay,
   status,
-  type,
+  jobId,
   allocationType = "Automatic",
+  // title,
+  // client,
+  // startDate,
+  // duration,
+  // location,
+  // pay,
+  // type,
 }) => {
-  const { data: jobs,isLoading } = useClientGetJobsById(jobId ?? "");
+  const { data: jobs, isLoading } = useClientGetJobsById(jobId ?? "");
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -75,7 +75,7 @@ const JobCard: React.FC<JobCardProps> = ({
         </p>
         <p>
           <span className="font-medium">Start:</span>
-          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(", ") ||"N/A"}
+          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(", ") || "N/A"}
         </p>
         <p>
           <span className="font-medium">Duration:</span> {jobs?.timePeriodOfJob}

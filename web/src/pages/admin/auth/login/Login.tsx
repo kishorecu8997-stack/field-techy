@@ -59,7 +59,6 @@ export default function AdminLogin() {
             role: resp.role || UserRole.ADMIN,
             initiatedAt: resp.initiatedAt || Date.now(),
             email: data.email,
-            name: data.email?.split("@")[0],
           };
 
           setUserSession(session);

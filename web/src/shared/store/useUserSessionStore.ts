@@ -8,9 +8,6 @@ export interface UserSession {
   accessToken: string;
   initiatedAt: number; // Timestamp when session was created (in milliseconds)
   // metadata: Record<string, string>;
-  name?: string;
-  phoneNumber?: string;
-  profilePicture?: string;
 }
 
 interface UserSessionStore {
