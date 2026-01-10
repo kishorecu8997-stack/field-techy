@@ -4,6 +4,7 @@ import type { FileDownloadResponse } from "../client/clientTypes";
 import type { AdminByIdResponse } from "./adminTypes";
 import type { PagedNotificationsParams } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
+import { queryClient } from "@/main";
 
 // --- Get All Notifications ---
 export function useGetAllNotifications(options?: { enabled?: boolean }) {
@@ -19,7 +20,6 @@ export function useDeleteNotification(options?: {
   onSuccess?: (data: { message: string }) => void;
   onError?: (error: unknown) => void;
 }) {
-  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => AdminAdapter.DeleteNotification(id),
