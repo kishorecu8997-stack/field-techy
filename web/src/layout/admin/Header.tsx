@@ -43,7 +43,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
   useEffect(() => {
     if (!adminProfileStream?.blob) {
-      setAdminProfilePic("");
+      setAdminProfilePic(assetsConfig.images.profile.defaultProfileImage);
       return;
     }
 
@@ -116,13 +116,13 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
         <Link to={absoluteUrls.admin.home.profile}>
           <div className="flex items-center space-x-2 cursor-pointer">
-            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
                 {adminProfile?.profilePicture && adminProfilePic ? (
                   <img
                     src={adminProfilePic}
                     alt="profile"
-                    className="w-full h-full rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
                   adminProfile?.email?.charAt(0).toLocaleUpperCase()

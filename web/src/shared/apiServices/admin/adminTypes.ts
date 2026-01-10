@@ -56,7 +56,7 @@ export interface UploadPayload {
 }
 
 export interface UploadFile {
-  fileKey: string;
+  // fileKey: string;
   adminId: string;
   file: File;
   fileType: string;

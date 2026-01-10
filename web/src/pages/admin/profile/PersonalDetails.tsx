@@ -93,7 +93,7 @@ export default function PersonalDetails() {
         fullName: adminProfile.fullName,
         email: adminProfile.email,
         phoneNumber: adminProfile.phoneNumber,
-        profilePicture: null,
+        profilePicture: "",
       });
     } else if (session?.userId) {
       // Fallback if store is empty
@@ -107,7 +107,7 @@ export default function PersonalDetails() {
       fullName: "",
       email: session?.email,
       phoneNumber: "",
-      profilePicture: null,
+      profilePicture: "",
     },
   });
 
@@ -141,21 +141,23 @@ export default function PersonalDetails() {
       const file = await getFileFromProfilePicture(data.profilePicture);
       if (!file) return;
 
-      await uploadProfileImage({
-        adminId: userId,
-        file,
-        fileType: "ADM_PROFILE_PIC",
-      }, {
-        onSuccess: (res: unknown) => {
-          const resp = (res ?? { fileKey: "" }) as { fileKey: string };
-          toast.success("Profile picture uploaded successfully");
-          finalProfilePicKey = resp.fileKey;
+      await uploadProfileImage(
+        {
+          adminId: userId,
+          file,
+          fileType: "ADM_PROFILE_PIC",
         },
-        onError: () => {
-          toast.error("Failed to upload profile picture");
-        },
-      })
-
+        {
+          onSuccess: (res: unknown) => {
+            const resp = (res ?? { fileKey: "" }) as { fileKey: string };
+            toast.success("Profile picture uploaded successfully");
+            finalProfilePicKey = resp.fileKey;
+          },
+          onError: () => {
+            toast.error("Failed to upload profile picture");
+          },
+        }
+      );
     }
 
     await showPopup({
@@ -173,7 +175,7 @@ export default function PersonalDetails() {
                 id: userId,
                 fullName: data.fullName,
                 email: data.email,
-                phoneNumber: data.phoneNumber,
+                phoneNumber: data.phoneNumber ?? "",
                 profilePicture: finalProfilePicKey as string,
               },
               {
@@ -222,7 +224,11 @@ export default function PersonalDetails() {
           rules={validateEmailRules}
         />
 
-        <PhoneInputField name="phoneNumber" label="Mobile Number" />
+        <PhoneInputField
+          name="phoneNumber"
+          label="Mobile Number"
+          required={false}
+        />
       </div>
 
       <div className="flex justify-end">

@@ -1,9 +1,8 @@
 export interface ProfileFormData {
   fullName: string;
   email: string;
-  phoneNumber: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  profilePicture: any;
+  phoneNumber?: string;
+  profilePicture: string | File;
 }
 
 export interface ChangePasswordFormData {
