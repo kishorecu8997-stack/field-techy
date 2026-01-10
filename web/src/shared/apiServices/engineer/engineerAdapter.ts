@@ -9,6 +9,7 @@ import type {
   FileUploadParams,
   FileUploadResponse,
   JobAssignment,
+  ProposalJobData,
   UpdatePasswordParams,
 } from "./engineerTypes";
 import { GlobalApiErrorHandler } from "../utils";
@@ -108,6 +109,35 @@ export class EngineerAdapter {
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+    } catch (error) {
+      throw GlobalApiErrorHandler.handle(error);
+    }
+  }
+
+  static async downloadFileStream(
+    fileKey: string
+  ): Promise<{ blob: Blob; fileName?: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        {
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        }
+      );
+
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "download";
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          fileName = match[1];
+        }
+      }
+
+      return { blob: response.data, fileName };
     } catch (error) {
       throw GlobalApiErrorHandler.handle(error);
     }
@@ -253,58 +283,12 @@ export class EngineerAdapter {
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
-
-    // Stubbed response - accepts any 4-digit OTP
-    // console.log(
-    //   `[STUB] Verifying engineer email OTP for: ${email}, OTP: ${otp}`
-    // );
-    // return new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     if (otp.length === 4) {
-    //       resolve({
-    //         message: "Email OTP verified successfully",
-    //         verified: true,
-    //       });
-    //     } else {
-    //       reject(new Error("Invalid OTP"));
-    //     }
-    //   }, 800);
-    // });
   }
 
    static async deleteFile(fileId: string): Promise<boolean> {
     try {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE_FILE(fileId));
       return true;
-    } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
-    }
-  }
-
-  static async downloadFileStream(
-    fileKey: string
-  ): Promise<{ blob: Blob; fileName: string }> {
-    try {
-      const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
-        {
-          responseType: "blob",
-        }
-      );
-
-      const contentDisposition = response.headers["content-disposition"];
-      let fileName = "file";
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
-        if (fileNameMatch?.[1]) {
-          fileName = fileNameMatch[1];
-        }
-      }
-
-      return {
-        blob: response.data,
-        fileName,
-      };
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
@@ -322,6 +306,105 @@ export class EngineerAdapter {
       return response.data;
     } catch (error) {
       throw GlobalApiErrorHandler.handle(error);
+    }
+  }
+
+  // ----------------------------------------proposals endpoints ------------------------------------------
+
+  static async sendProposalJob(data: ProposalJobData): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.post(
+        ENGINEER_ROUTER_PATHS.SEND_PROPOSAL_JOB(),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getProposalJobsById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_JOBS_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getProposalAll(): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_ALL()
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getEngineerProposals(
+    engineerId: string
+  ): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_ENGINEER_PROPOSALS(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async updateProposalById(
+    id: string,
+    data: ProposalJobData
+  ): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.put(
+        ENGINEER_ROUTER_PATHS.UPDATE_PROPOSAL_BY_ID(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async deleteProposalById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.delete(
+        ENGINEER_ROUTER_PATHS.DELETE_PROPOSAL_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  //--------------------------------- Jobs Endpoints ---------------------------------
+
+  static async getJobsById(id: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ID(id)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getJobsByEngineerId(engineerId: string): Promise<JobAssignment> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ENGINEER_ID(engineerId)
+      );
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 }

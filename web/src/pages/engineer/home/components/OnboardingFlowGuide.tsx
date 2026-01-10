@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useTour } from "@reactour/tour";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 

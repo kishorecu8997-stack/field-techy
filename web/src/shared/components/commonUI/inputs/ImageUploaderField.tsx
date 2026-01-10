@@ -79,10 +79,10 @@ export const ImageUploaderField = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
   const initialSetRef = useRef(false);
-  
+
   // Watch the form value to manage object URLs
   const formValue = watch(name);
-  
+
   // Set initial image URL if provided (only once)
   useEffect(() => {
     if (initialImageUrl && !initialSetRef.current) {
@@ -242,21 +242,30 @@ export const ImageUploaderField = ({
             setIsPopupOpen(false);
           };
 
-          const handleAvatarSelectInner = (avatar: {
+          const handleAvatarSelectInner = async (avatar: {
             id: string;
             url: string;
           }) => {
-            onChange(avatar.url);
-            setIsPopupOpen(false);
+            try {
+              const response = await fetch(avatar.url);
+              const blob = await response.blob();
+              const file = new File([blob], `avatar-${avatar.id}.png`, {
+                type: blob.type,
+              });
+              onChange(file);
+              setIsPopupOpen(false);
+            } catch (error) {
+              console.error("Failed to convert avatar to file:", error);
+              toast.error("Failed to select avatar. Please try again.");
+            }
           };
 
           return (
             <>
               <div className="relative inline-block">
                 <div
-                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${
-                    allowUpload ? "cursor-pointer" : "cursor-default"
-                  }`}
+                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${allowUpload ? "cursor-pointer" : "cursor-default"
+                    }`}
                   onClick={handleImageClick}
                 >
                   {isLoading ? (

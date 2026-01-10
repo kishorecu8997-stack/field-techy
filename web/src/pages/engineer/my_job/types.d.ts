@@ -1,3 +1,5 @@
+import type { SortOption } from "../search_result/types";
+
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
  *
@@ -8,7 +10,7 @@
 
 /**
  * Represents the available options for sorting job lists.
-//  */
+ */
 // export type SortOption = "Relevance" | "Date" | "Salary" | "Distance";
 
 /**
@@ -70,9 +72,11 @@ export interface ClientInfoCardProps {
   name: string;
   memberSince: string;
   location: string;
-  rating: string;
-  reviews: number;
+  rating: number | string;
+  reviews: number | string;
   verifications: string[];
+  onOpenReview?: () => void;
+  onClose?: () => void;
 }
 
 export interface JobHeaderCardProps {
@@ -207,14 +211,3 @@ export interface WorkInfoItem {
 }
 
 
-// ../types.ts
-export type ClientInfoCardProps = {
-  name: string;
-  memberSince: string;
-  location: string;
-  rating: number | string;
-  reviews: number | string;
-  verifications: string[];
-  onOpenReview?: () => void;
-};
-type ClientInfoCardUIProps = ClientInfoCardProps;

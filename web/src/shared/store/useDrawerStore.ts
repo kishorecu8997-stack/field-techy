@@ -35,7 +35,7 @@ interface DrawerState {
 /**
  * Zustand store for managing global drawer/sidebar state, including the active menu key and sidebar open/closed status.
  */
-const useDrawerStore = create<DrawerState>((set, get) => ({
+const useDrawerStore = create<DrawerState>((set) => ({
   activeKey: "myAccount",
   setActiveKey: (key, showBackButton) =>
     set((state) => {

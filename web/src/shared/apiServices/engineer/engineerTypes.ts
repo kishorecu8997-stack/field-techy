@@ -117,7 +117,8 @@ export type DocumentType =
   | "RESUME"
   | "GOVERNMENT_ID"
   | "CERTIFICATE"
-  | "PICTURE";
+  | "PICTURE"
+  | "PROPOSAL";
 
 export interface FileUploadParams {
   engineerId: string;
@@ -155,3 +156,13 @@ export interface UpdatePasswordParams {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface ProposalJobData {
+  id?: string;
+  engineerId: string;
+  proposalDescription: string;
+  expectedPay: string;
+  payType: string;
+  availability: string;
+}
+

@@ -1,18 +1,18 @@
-import axiosInstance from "@/axiosInstance";
-import { uploadAxiosInstance } from "@/axiosInstance";
+import axiosInstance, { uploadAxiosInstance } from "@/axiosInstance";
+import type { LoginFormData } from "@/pages/admin/auth/types";
+import type { JobItem } from "@/pages/engineer/home/types";
+import type { Country } from "@/shared/components/commonUI/inputs/type";
+import { GlobalApiErrorHandler } from "../utils";
 import { CLIENT_ROUTER_PATHS } from "./clientRouterPaths";
 import type {
   ClientData,
-  ClientPaginationParams,
-  PagedResponse,
   ClientFile,
   ClientFileUploadParams,
-  FileUploadResponse,
+  ClientPaginationParams,
   FileDownloadResponse,
+  FileUploadResponse,
+  PagedResponse,
 } from "./clientTypes";
-import type { LoginFormData } from "@/pages/admin/auth/types";
-import type { Country } from "@/shared/components/commonUI/inputs/type";
-import { GlobalApiErrorHandler } from "../utils";
 
 /*
  * ClientAdapter
@@ -621,6 +621,26 @@ export class ClientAdapter {
         contentDisposition,
         contentLength,
       };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  // jobs endpoints
+  static async getJobs(): Promise<JobItem[]> {
+    try {
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_JOBS);
+      return response.data;
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+// -------------------------- Jobs Endpoints -------------------------------
+  static async getJobsById(id: string): Promise<JobItem> {
+    try {
+      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_JOB_BY_ID(id));
+      return response.data;
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }

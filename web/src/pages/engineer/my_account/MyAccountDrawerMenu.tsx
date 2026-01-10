@@ -80,12 +80,13 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={engineerProfile?.profilePicture || assetsConfig.images.profile.defaultProfileImage}
             name={engineerProfile?.fullName || ""}
             title={engineerProfile?.serviceCategory || ""}
             rating={engineerProfile?.averageRating || 0}
             reviewCount={10}
             completionPercentage={39}
+            engineerId={engineerProfile?.id}
           />
         </div>
         {menuItems.map((item, index, array) => (

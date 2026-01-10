@@ -35,7 +35,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `expired-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.error(
-            `Saved Job Expired: "${job.title}" has passed its start date.`,
+            `Saved Job Expired: "${job.jobTitle}" has passed its start date.`,
             {
               toastId: key,
             }
@@ -52,7 +52,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `1hour-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.success(
-            `1 Hour to Go: "${job.title}" starts in 1 hour. Apply now!`,
+            `1 Hour to Go: "${job.jobTitle}" starts in 1 hour. Apply now!`,
             {
               toastId: key,
             }
@@ -63,7 +63,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `6hours-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.success(
-            `6 Hours Left: "${job.title}" starts in 6 hours. Apply now!`,
+            `6 Hours Left: "${job.jobTitle}" starts in 6 hours. Apply now!`,
             {
               toastId: key,
             }
@@ -74,7 +74,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `1day-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.success(
-            `Starts Tomorrow: "${job.title}" begins tomorrow. Apply now!`,
+            `Starts Tomorrow: "${job.jobTitle}" begins tomorrow. Apply now!`,
             {
               toastId: key,
             }
@@ -85,7 +85,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `3days-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.success(
-            `3 Days to Go: "${job.title}" is approaching. Apply now!`,
+            `3 Days to Go: "${job.jobTitle}" is approaching. Apply now!`,
             {
               toastId: key,
             }
@@ -95,7 +95,7 @@ export const useJobExpirationNotification = (): void => {
       } else if (diffDays >= 4.5 && diffDays < 5.5) {
         const key = `5days-${job.id}`;
         if (!shownReminders.has(key)) {
-          toast.success(`5 Days Left: "${job.title}" starts soon. Apply now!`, {
+          toast.success(`5 Days Left: "${job.jobTitle}" starts soon. Apply now!`, {
             toastId: key,
           });
           shownReminders.add(key);
@@ -104,7 +104,7 @@ export const useJobExpirationNotification = (): void => {
         const key = `week-${job.id}`;
         if (!shownReminders.has(key)) {
           toast.success(
-            `1 Week Reminder: "${job.title}" starts in 7 days. Apply now!`,
+            `1 Week Reminder: "${job.jobTitle}" starts in 7 days. Apply now!`,
             {
               toastId: key,
             }

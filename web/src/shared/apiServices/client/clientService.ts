@@ -274,3 +274,23 @@ export function useDeleteClientFile(options?: {
     onError: options?.onError,
   });
 }
+
+
+// --- Jobs Hooks ---
+export function useGetJobs() {
+  return useQuery({
+    queryKey: ["client-jobs"],
+    queryFn: () => ClientAdapter.getJobs(),
+    enabled: true,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}
+
+export function useClientGetJobsById(id: string) {
+  return useQuery({
+    queryKey: ["client-jobs", id],
+    queryFn: () => ClientAdapter.getJobsById(id),
+    enabled: !!id,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}

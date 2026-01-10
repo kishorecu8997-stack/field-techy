@@ -20,6 +20,7 @@ export interface Document {
   id: number;
   title: string;
   fileName: string;
+  category?: string;
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
   uploadDate?: string;
@@ -27,6 +28,7 @@ export interface Document {
   metadata?: Record<string, string>;
   expiryDate?: string;
   status?: "Pending" | "Approved" | "Rejected";
+  allowMultiple?: boolean;
 }
 
 interface DocumentsListProps {

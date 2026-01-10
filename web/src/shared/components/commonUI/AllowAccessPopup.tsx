@@ -31,12 +31,10 @@ export default function AllowAccessPopup({
   onDenyLocation,
   onDenyNotification,
 }: AllowAccessPopupProps) {
-  const {
-    locationPermission,
-    notificationPermission,
-    setLocationPermission,
-    setNotificationPermission,
-  } = useDeviceStore();
+  const locationPermission = useDeviceStore((state) => state.locationPermission);
+  const notificationPermission = useDeviceStore((state) => state.notificationPermission);
+  const setLocationPermission = useDeviceStore((state) => state.setLocationPermission);
+  const setNotificationPermission = useDeviceStore((state) => state.setNotificationPermission);
 
   // Determine initial step based on permission states
   // If location is not 'prompt', skip to notification step

@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
       <div className="w-full hidden md:block  md:w-[30%] flex-shrink-0">
         <LeftPanel />
       </div>
-      <div className="flex-1 w-full overflow-y-auto rounded-t-xl md:rounded-none ">
+      <div className="flex-1 w-full overflow-y-auto md:rounded-none ">
         <RightPanel />
       </div>
     </div>
