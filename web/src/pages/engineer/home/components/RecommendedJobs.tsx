@@ -5,6 +5,8 @@ import type { JobItem } from "../types";
 
 interface RecommendedJobsProps {
   jobs: JobItem[];
+  userSkills?: string[];
+  userTools?: string[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -17,6 +19,8 @@ interface RecommendedJobsProps {
  */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   jobs = [],
+  userSkills = [],
+  userTools = [],
   title = "Recommended Jobs",
   onViewAll,
 }) => {
@@ -37,6 +41,8 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
         <JobCard
           key={job.id}
           job={job}
+          userSkills={userSkills}
+          userTools={userTools}
           navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
         />
       ))}

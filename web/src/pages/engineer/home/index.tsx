@@ -8,6 +8,7 @@ import { useDeviceStore } from "@/shared/store/useDeviceStore";
 import { scrollToTop } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import SidebarProfile from "../my_job/my_job_components/SidebarProfile";
 import Pagination from "../search_result/components/Pagination";
 import { FeaturedJobs } from "./components/FeaturedJobs";
@@ -24,6 +25,7 @@ import type { JobItem } from "./types";
 const Home = () => {
   const navigate = useNavigate();
   const { data: jobs } = useGetJobs();
+  const profile = useEngineerProfile();
 
   const handleExploreJobs = () => {
     scrollToTop();
@@ -51,14 +53,18 @@ const Home = () => {
             {findNewJobs.length > 0 && (
               <FeaturedJobs
                 jobs={findNewJobs as JobItem[]}
+                userSkills={profile?.jobSkills || []}
+                userTools={profile?.tools || []}
                 title="Featured Jobs"
                 onViewAll={handleExploreJobs}
               />
             )}
-            
+
             {recommendedJobs.length > 0 && (
               <RecommendedJobs
                 jobs={recommendedJobs}
+                userSkills={profile?.jobSkills || []}
+                userTools={profile?.tools || []}
                 onViewAll={handleExploreJobs}
                 title="Recommended Jobs"
               />

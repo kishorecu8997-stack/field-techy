@@ -1,7 +1,5 @@
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
-import jobSkillsData from "@/dummy_data/jobSkills.json";
-import toolsData from "@/dummy_data/tools.json";
 import { getExperienceLevel } from "@/utils";
 import {
   BOOKMARK_CHANGE_EVENT,
@@ -13,6 +11,7 @@ import { calculateMatchScore } from "@/utils/matchCalculator";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import type { JobItem } from "../types";
 
 /**
@@ -111,6 +110,7 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  */
 const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const job = props as JobItem;
+  console.log("props :", props);
   const [isSelected, setSelected] = useState(false);
   const matchScore = props.matchScore;
 
@@ -146,8 +146,8 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
     }
   };
 
-  const handleSwitchJobs=(jobModel:string)=>{
-    switch(jobModel){
+  const handleSwitchJobs = (jobModel: string) => {
+    switch (jobModel) {
       case "ON_SITE":
         return "On Site";
       case "REMOTE":
@@ -157,101 +157,125 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
       default:
         return "On Site";
     }
-  }
+  };
+
+  const { address: resolvedAddress } = useReverseGeocoding(props.location);
+
+  // Safely extract the first number from experience (handles "1, 2", "3+", etc.)
+  const experienceValue = useMemo(() => {
+    if (!props.experience) return 0;
+    const match = String(props.experience).match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+  }, [props.experience]);
 
   return (
-    <div>
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center space-x-3">
-          <div>
-            <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-              {props.jobTitle}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">
-              {props.client?.companyName}
-            </p>
+    <div className="flex flex-col h-full">
+      <>
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center space-x-3">
+            <div>
+              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+                {props.jobTitle}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                {props.client?.companyName}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
+            <div
+              onClick={handleBookmarkClick}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
+              aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
+            >
+              {isSelected ? (
+                <icons.bookmarkFilled className="h-4 w-4 text-green-600 dark:text-green-400" />
+              ) : (
+                <icons.bookmark className="h-4 w-4" />
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          {matchScore !== undefined && <MatchScoreRing score={matchScore} />}
-          <div
-            onClick={handleBookmarkClick}
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer text-gray-500 dark:text-gray-400"
-            aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
-          >
-            {isSelected ? (
-              <icons.bookmarkFilled className="h-4 w-4 text-green-600 dark:text-green-400" />
-            ) : (
-              <icons.bookmark className="h-4 w-4" />
+        {/* Tags section */}
+        <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
+          {props.category && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {props.category}
+            </span>
+          )}
+          {props.jobType && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {props.jobType}
+            </span>
+          )}
+          {props.engagementModel && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {handleSwitchJobs(props.engagementModel)}
+            </span>
+          )}
+          {props.experience && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {getExperienceLevel(experienceValue)}
+            </span>
+          )}
+          {props.slaLevel && (
+            <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
+              {props.slaLevel}
+            </span>
+          )}
+        </div>
+
+        {Boolean(props.skills?.length || props.tools?.length) && (
+          <div className="flex flex-wrap gap-2">
+            {props.skills?.map((skill) => (
+              <span
+                key={skill}
+                className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
+              >
+                {skill}
+              </span>
+            ))}
+
+            {props.tools?.map((tool) => (
+              <span
+                key={tool}
+                className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* ✅ Bottom pinned section */}
+        <div className="flex justify-between items-end mt-auto pt-4">
+          <span className="font-bold text-lg text-gray-900 dark:text-white">
+            {getCurrencyFromStorage()}
+            {props.salary || "-"}
+          </span>
+          <div className="text-right">
+            {props.slaLevel && (
+              <span className="block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-tight mb-0.5">
+                {props.slaLevel}
+              </span>
             )}
+            <span className="block text-gray-500 dark:text-gray-400 text-xs font-medium">
+              {resolvedAddress || props.location || "-"}
+            </span>
           </div>
         </div>
-      </div>
-
-      {/* Tags section - theme-aware background */}
-      <div className="flex flex-wrap gap-2 mb-3 w-full py-2">
-        <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-          {props.category || "--"}
-        </span>
-        {props.jobType && (
-          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {props.jobType}
-          </span>
-        )}
-        {props.engagementModel && (
-          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {handleSwitchJobs(props.engagementModel)}
-          </span>
-        )}
-        {props.experience && (
-          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {getExperienceLevel(1)}
-          </span>
-        )}
-        {/* {props.slaLevel && (
-          <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-            {props.slaLevel}
-          </span>
-        )} */}
-      </div>
-
-      {Boolean(props.skills?.length || props.tools?.length) && (
-        <div className="flex flex-wrap gap-2">
-          {props.skills?.map((skill) => (
-            <span
-              key={skill}
-              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
-            >
-              {skill}
-            </span>
-          ))}
-
-          {props.tools?.map((tool) => (
-            <span
-              key={tool}
-              className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700/50 rounded-full whitespace-nowrap"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="flex justify-between items-center">
-        <span className="font-bold text-lg text-gray-900 dark:text-white">
-          {getCurrencyFromStorage()}
-          {props.salary || "-"}
-        </span>
-        <span className="text-gray-500 dark:text-gray-400 text-sm">
-          {props.location || "-"}
-        </span>
-      </div>
+      </>
     </div>
   );
 };
 
 interface FeaturedJobsProps {
   jobs: JobItem[];
+  userSkills?: string[];
+  userTools?: string[];
   title?: string;
   onViewAll?: () => void;
 }
@@ -298,16 +322,17 @@ const jobCardGradients = [
  */
 const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
   jobs = [],
+  userSkills = [],
+  userTools = [],
   title = "Featured Jobs",
   onViewAll,
 }) => {
   const navigate = useNavigate();
+
   const userSkillsAndTools = useMemo(() => {
-    return [
-      ...jobSkillsData.jobSkills.map((s) => s.label),
-      ...toolsData.tools.map((t) => t.label),
-    ];
-  }, []);
+    return [...userSkills, ...userTools];
+  }, [userSkills, userTools]);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
@@ -332,8 +357,9 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
-                }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
+                jobCardGradients[index % jobCardGradients.length]
+              }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}
@@ -350,5 +376,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
 const FeaturedJobsMemo = React.memo(FeaturedJobs);
 const FeatureJobCardMemo = React.memo(FeatureJobCard);
 
-export { FeaturedJobsMemo as FeaturedJobs, FeatureJobCardMemo as FeatureJobCard };
-
+export {
+  FeaturedJobsMemo as FeaturedJobs,
+  FeatureJobCardMemo as FeatureJobCard,
+};

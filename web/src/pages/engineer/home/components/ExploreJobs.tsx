@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import React, { useCallback, useMemo, useState } from "react";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import type { JobItem } from "../types";
 
 
@@ -21,6 +22,7 @@ import type { JobItem } from "../types";
  * ExploreJobs Page - Browse and filter open job listings
  */
 const ExploreJobs: React.FC = () => {
+  const profile = useEngineerProfile();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
   const [filters, setFilters] = useState<Filters>({
@@ -364,6 +366,8 @@ const ExploreJobs: React.FC = () => {
                   <JobCard
                     key={job.id}
                     job={job}
+                    userSkills={profile?.jobSkills || []}
+                    userTools={profile?.tools || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
                   />
                 ))

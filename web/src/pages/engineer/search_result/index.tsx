@@ -9,6 +9,7 @@ import FilterPanel from "./components/FilterPanel";
 import JobCard from "./components/JobCard";
 import Pagination from "./components/Pagination";
 import SearchHistory from "./components/SearchHistory";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
 
 /**
@@ -17,7 +18,7 @@ import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
-
+  const profile = useEngineerProfile();
   const { data: jobs } = useGetJobs();
 
   // State management
@@ -262,6 +263,8 @@ const SearchResult = () => {
               <JobCard
                 key={job.id}
                 job={job}
+                userSkills={profile?.jobSkills || []}
+                userTools={profile?.tools || []}
                 navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
               />
             ))}
