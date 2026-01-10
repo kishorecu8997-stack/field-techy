@@ -8,8 +8,7 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
 import { useCurrentClientProfile } from "../apiServices/profiles/client/clientProfileService";
-import { useClientFiles } from "../apiServices/client/clientService";
-import { ClientAdapter } from "../apiServices/client/clientAdapter";
+import { useClientFiles, useClientFileStream } from "../apiServices/client/clientService";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -48,7 +47,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
     useCurrentClientProfile();
 
   // Get client ID
-  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47"; // Fallback to hardcoded ID
+  const clientId = clientProfile?.id;
 
   // Fetch client files to get profile picture
   const { data: clientFiles = [], isLoading: isLoadingFiles } =
@@ -61,63 +60,29 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
     );
   }, [clientFiles]);
 
+  // Download profile picture if available
+  const { data: profilePictureStream, isLoading: isLoadingProfilePicture } =
+    useClientFileStream(profilePictureFile?.fileKey);
+
   // State for profile picture URL
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
     assetsConfig.images.users.user
   );
 
-  // State for loading profile picture
-  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(false);
-
-  // Download profile picture if available
+  // Handle Object URL creation and cleanup
   useEffect(() => {
-    if (!profilePictureFile) {
-      setIsLoadingProfilePicture(false);
+    if (!profilePictureStream?.blob) {
       setProfilePictureUrl(assetsConfig.images.users.user);
       return;
     }
 
-    let blobUrl: string | null = null;
-    let isCancelled = false;
+    const url = URL.createObjectURL(profilePictureStream.blob);
+    setProfilePictureUrl(url);
 
-    const downloadProfilePicture = async () => {
-      setIsLoadingProfilePicture(true);
-
-      try {
-        const downloadResponse = await ClientAdapter.downloadFileStream(
-          profilePictureFile.fileKey
-        );
-
-        // Check if component is still mounted and file hasn't changed
-        if (!isCancelled) {
-          blobUrl = URL.createObjectURL(downloadResponse.blob);
-          setProfilePictureUrl(blobUrl);
-          setIsLoadingProfilePicture(false);
-        } else {
-          // Cleanup if cancelled - revoke the blob URL we just created
-          const tempBlobUrl = URL.createObjectURL(downloadResponse.blob);
-          URL.revokeObjectURL(tempBlobUrl);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error("Failed to download profile picture:", error);
-          setProfilePictureUrl(assetsConfig.images.users.user);
-          setIsLoadingProfilePicture(false);
-        }
-      }
-    };
-
-    downloadProfilePicture();
-
-    // Cleanup on unmount or when profilePictureFile changes
     return () => {
-      isCancelled = true;
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      setIsLoadingProfilePicture(false);
+      URL.revokeObjectURL(url);
     };
-  }, [profilePictureFile]);
+  }, [profilePictureStream]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -164,21 +129,19 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         />
         <NavLink
           to={absoluteUrls.client.home.my_projects}
-          className={`${
-            location.pathname.startsWith(absoluteUrls.client.home.my_projects)
-              ? "text-teal-800 font-semibold"
-              : ""
-          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+            ? "text-teal-800 font-semibold"
+            : ""
+            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           to={absoluteUrls.client.home.my_jobs}
-          className={`${
-            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
-              ? "text-teal-800 font-semibold"
-              : ""
-          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+            ? "text-teal-800 font-semibold"
+            : ""
+            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>

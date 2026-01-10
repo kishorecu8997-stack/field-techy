@@ -25,7 +25,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   const { allocationType = "Automatic" } = props;
 
   const normalized = useMemo(() => {
-    const job = props as any;
+    const job = props;
     return {
       id: job.id,
       title: job.jobTitle || job.title || "Untitled Job",
@@ -43,7 +43,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     id,
     title,
     client,
-    startDate,
     duration,
     location,
     pay,
@@ -82,7 +81,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           <span className="font-medium">Client:</span> {client}
         </p>
         <p>
-          <span className="font-medium">Start:</span> {startDate}
+          <span className="font-medium">Start:</span>
+          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(", ") || "N/A"}
         </p>
         <p>
           <span className="font-medium">Duration:</span> {duration}

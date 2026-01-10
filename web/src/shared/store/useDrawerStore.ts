@@ -35,7 +35,7 @@ interface DrawerState {
 /**
  * Zustand store for managing global drawer/sidebar state, including the active menu key and sidebar open/closed status.
  */
-const useDrawerStore = create<DrawerState>((set) => ({
+const useDrawerStore = create<DrawerState>((set, _) => ({
   activeKey: "myAccount",
   setActiveKey: (key, showBackButton) =>
     set((state) => {
@@ -74,11 +74,11 @@ const useDrawerStore = create<DrawerState>((set) => ({
       profileData: state.profileData.map((section) =>
         section.key === sectionKey
           ? {
-              ...section,
-              fields: section.fields.map((field) =>
-                field.label === fieldLabel ? { ...field, status } : field
-              ),
-            }
+            ...section,
+            fields: section.fields.map((field) =>
+              field.label === fieldLabel ? { ...field, status } : field
+            ),
+          }
           : section
       ),
     })),
