@@ -152,23 +152,17 @@ export const ImageUploaderField = ({
           return "Only .jpeg, .jpg, or .png extensions are allowed.";
         }
 
-        const { valid, type } = await validateImageFile(value);
+        const { valid } = await validateImageFile(value);
         if (!valid) {
           return "Only genuine and uncorrupted JPEG/PNG files are allowed.";
-        }
-
-        const isJPEG = value.type === "image/jpeg";
-        const isPNG = value.type === "image/png";
-        if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
-          return "File type mismatch. Please upload a valid JPEG or PNG.";
         }
 
         return true;
       },
       fileSize: (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
-        if (value.size < 50 * 1024 || value.size > maxSize) {
-          return "File size must be between 50 KB and 350 KB.";
+        if (value.size < 10 * 1024 || value.size > maxSize) {
+          return "File size must be between 10 KB and 350 KB.";
         }
         return true;
       },
@@ -218,23 +212,14 @@ export const ImageUploaderField = ({
               return;
             }
 
-            const { valid, type } = await validateImageFile(file);
+            const { valid } = await validateImageFile(file);
             if (!valid) {
               toast.error("Uploaded file is corrupted or not a valid image.");
               return;
             }
 
-            const isJPEG = file.type === "image/jpeg";
-            const isPNG = file.type === "image/png";
-            if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
-              toast.error(
-                "File type mismatch. Please upload a valid JPEG or PNG."
-              );
-              return;
-            }
-
-            if (file.size < 50 * 1024 || file.size > maxSize) {
-              toast.error("File size must be between 50 KB and 350 KB.");
+            if (file.size < 10 * 1024 || file.size > maxSize) {
+              toast.error("File size must be between 10 KB and 350 KB.");
               return;
             }
 
