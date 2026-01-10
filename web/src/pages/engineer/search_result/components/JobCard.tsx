@@ -273,7 +273,7 @@ const JobCard: React.FC<{
               {/* Job title */}
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
-                  {job.jobTitle}
+                  {jobData.title}
                 </h3>
 
                 {/* Right-aligned: Match score & help button */}
@@ -297,16 +297,16 @@ const JobCard: React.FC<{
 
               {/* Job metadata */}
               <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
-                {job.client && (
+                {jobData.clientName && (
                   <span>
                     Client:{" "}
                     <strong className="text-gray-900 dark:text-white">
-                      {job.client.companyName || "-"}
+                      {jobData.clientName}
                     </strong>
                   </span>
                 )}
-                {job.jobDuration && <span>| {job.jobDuration}</span>}
-                {job.status && (
+                {jobData.duration && <span>| {jobData.duration}</span>}
+                {jobData.status && (
                   <Badge
                     variant={
                       STATUS_VARIANT_MAP[
@@ -325,13 +325,13 @@ const JobCard: React.FC<{
 
           {/* DESCRIPTION */}
           <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-            {job.jobDescription}
+            {jobData.description}
           </p>
 
           {/* SKILLS & TOOLS */}
           {(job.skills?.length || job.tools?.length) && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {job.skills?.slice(0, 5).map((skill, i) => (
+              {jobData.skills?.slice(0, 5).map((skill, i) => (
                 <span
                   key={i}
                   className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
@@ -339,7 +339,7 @@ const JobCard: React.FC<{
                   {skill}
                 </span>
               ))}
-              {job.tools?.slice(0, 3).map((tool, i) => (
+              {jobData.tools?.slice(0, 3).map((tool, i) => (
                 <span
                   key={i}
                   className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
@@ -353,11 +353,11 @@ const JobCard: React.FC<{
           {/* FOOTER BAR */}
           <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
             <div className="flex flex-wrap items-center gap-5">
-              {job.location && (
+              {jobData.location && (
                 <div className="flex items-center gap-1.5">
                   <IoLocationSharp className="h-4 w-4 text-gray-500" />
                   <span className="text-gray-800 dark:text-gray-200">
-                    {resolvedAddress || job.location}
+                    {resolvedAddress || jobData.location}
                   </span>
                 </div>
               )}
@@ -371,11 +371,11 @@ const JobCard: React.FC<{
                 </div>
               )}
 
-              {(job.salary || "-") && (
+              {(jobData.salary || "-") && (
                 <div className="flex items-center gap-1.5">
                   <BiDollar className="h-4 w-4 text-gray-500" />
                   <span className="text-gray-800 dark:text-gray-200">
-                    {job.salary || "-"}
+                    {jobData.salary || "-"}
                   </span>
                 </div>
               )}
@@ -383,7 +383,7 @@ const JobCard: React.FC<{
               <div className="flex items-center gap-2">
                 <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 <span className="font-medium text-gray-800 dark:text-gray-200">
-                  {getExperienceLevel(job.experience ? Number(job.experience) : 0)}
+                  {getExperienceLevel(jobData.experience ? Number(jobData.experience) : 0)}
                 </span>
               </div>
             </div>
@@ -402,7 +402,7 @@ const JobCard: React.FC<{
                     <icons.bookmark className="w-4 h-4" />
                   )}
                 </div>
-                <span>{job.postedTime || "Just now"}</span>
+                <span>{jobData.postedTime || "Just now"}</span>
               </div>
             )}
           </div>

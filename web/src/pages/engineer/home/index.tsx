@@ -31,11 +31,9 @@ const Home = () => {
     scrollToTop();
     navigate(absoluteUrls.engineer.home.explore_jobs);
   };
-  const currentPage = 1;
-  const totalPages = 1;
-  const handlePageChange = (page: number) => {
-    console.log("Page changed to: ", page);
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 5;
+
   const findNewJobs = useMemo(() => {
     return jobs?.filter((job) => job.status === "NEW" && job.featured) || [];
   }, [jobs]);
@@ -44,11 +42,23 @@ const Home = () => {
     return jobs?.filter((job) => job.status === "NEW" && !job.featured) || [];
   }, [jobs]);
 
+  const totalPages = Math.ceil(recommendedJobs.length / jobsPerPage);
+
+  const paginatedRecommendedJobs = useMemo(() => {
+    const start = (currentPage - 1) * jobsPerPage;
+    return recommendedJobs.slice(start, start + jobsPerPage);
+  }, [recommendedJobs, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    scrollToTop();
+  };
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
             <JobExplorationBanner />
             {findNewJobs.length > 0 && (
               <FeaturedJobs
@@ -60,20 +70,23 @@ const Home = () => {
               />
             )}
 
-            {recommendedJobs.length > 0 && (
+            {paginatedRecommendedJobs.length > 0 && (
               <RecommendedJobs
-                jobs={recommendedJobs}
+                jobs={paginatedRecommendedJobs}
                 userSkills={profile?.jobSkills || []}
                 userTools={profile?.tools || []}
                 onViewAll={handleExploreJobs}
                 title="Recommended Jobs"
+                totalJobs={recommendedJobs.length}
               />
             )}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {recommendedJobs.length > 5 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
 
           {/* Sidebar - takes 1 column on large screens */}

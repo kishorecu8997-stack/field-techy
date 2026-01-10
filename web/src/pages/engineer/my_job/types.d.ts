@@ -1,3 +1,5 @@
+import type { SortOption } from "../search_result/types";
+
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
  *
@@ -8,7 +10,7 @@
 
 /**
  * Represents the available options for sorting job lists.
-//  */
+ */
 // export type SortOption = "Relevance" | "Date" | "Salary" | "Distance";
 
 /**

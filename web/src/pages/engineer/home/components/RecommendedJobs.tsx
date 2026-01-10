@@ -9,6 +9,7 @@ interface RecommendedJobsProps {
   userTools?: string[];
   title?: string;
   onViewAll?: () => void;
+  totalJobs?: number;
 }
 
 /**
@@ -23,12 +24,14 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   userTools = [],
   title = "Recommended Jobs",
   onViewAll,
+  totalJobs = 0,
 }) => {
+  const jobsToShowCount = totalJobs || jobs.length;
   return (
-    <div className="mb-8">
+    <div className="mb-0">
       <div className="flex justify-between items-center  p-2">
         <h2 className="text-xl font-bold">{title}</h2>
-        {onViewAll && (
+        {onViewAll && jobsToShowCount > 5 && (
           <div
             onClick={onViewAll}
             className="text-teal-600 hover:text-teal-800 font-medium text-sm cursor-pointer hover:underline dark:text-teal-400 dark:hover:text-teal-300"

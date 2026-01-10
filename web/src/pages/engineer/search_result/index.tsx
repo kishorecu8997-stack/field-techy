@@ -101,6 +101,12 @@ const SearchResult = () => {
         filters.skills.some((skill) => job.skills?.includes(skill))
       );
     }
+    // Apply rating filter
+    if (filters.rating.length > 0) {
+      filtered = filtered.filter(
+        (job) => job.rating && filters.rating.includes(Math.floor(job.rating))
+      );
+    }
     // Apply sorting
     if (sortOption === SORT_OPTIONS.DATE) {
       filtered.sort(

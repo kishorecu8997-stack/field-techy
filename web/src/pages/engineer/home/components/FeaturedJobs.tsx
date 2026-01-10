@@ -333,11 +333,13 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
     return [...userSkills, ...userTools];
   }, [userSkills, userTools]);
 
+  const displayedJobs = useMemo(() => jobs.slice(0, 3), [jobs]);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center p-2">
         <h2 className="text-xl font-bold">{title}</h2>
-        {onViewAll && (
+        {onViewAll && jobs.length > 3 && (
           <div
             onClick={onViewAll}
             className="text-teal-600 hover:text-teal-800 font-medium text-sm hover:underline dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
@@ -347,7 +349,7 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {jobs.map((job, index) => {
+        {displayedJobs.map((job, index) => {
           const jobRequirements = [...(job.skills || []), ...(job.tools || [])];
           const score = calculateMatchScore(
             jobRequirements,
@@ -357,9 +359,8 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
-                jobCardGradients[index % jobCardGradients.length]
-              }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
+                }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}

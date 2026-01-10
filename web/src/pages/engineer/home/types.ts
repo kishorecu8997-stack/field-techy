@@ -46,6 +46,7 @@ export interface JobItem {
   toolAdditionalBudget: string | null;
   postedTime: string;
   jobDuration: string;
+  rating?: number;
   slaLevel?: string;
   client: Client;
 }
