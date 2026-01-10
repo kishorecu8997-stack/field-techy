@@ -2,6 +2,7 @@ import React from "react";
 import type { ClientInfoCardProps } from "../types";
 import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { IoClose } from "react-icons/io5";
 
 /**
  * ClientInfoCard
@@ -30,13 +31,13 @@ const ClientInfoCard: React.FC<ClientInfoCardProps> = ({
           About the Client
         </h2>
         {onClose && (
-          <button
+          <div
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             aria-label="Close"
           >
-            ✕
-          </button>
+            <IoClose className="w-5 h-5" />
+          </div>
         )}
       </div>
       <div className="flex items-center gap-4 mb-5">
