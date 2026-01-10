@@ -1,19 +1,19 @@
 export interface CreateNotificationParams {
-    title: string;
-    message: string;
-    type: string;
-    sendTo: string;
+  title: string;
+  message: string;
+  type: string;
+  sendTo: string;
 }
 
 export interface AdminNotification {
-    id: string;
-    title: string;
-    message: string;
-    type: string;
-    sendTo: string;
-    isRead: boolean;
-    createdAt: string;
-    updatedAt: string;
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  sendTo: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 export interface UpdateNotificationParams {
   id: string;
@@ -41,20 +41,13 @@ export type AdminData = {
   password: string;
 };
 
-export interface getAdminByIdResponse {
+export interface AdminByIdResponse {
   id: string;
   fullName: string;
   email: string;
   phoneNumber: string;
   profilePicture: string;
 }
-
-export interface UploadPayload {
-  adminId: string;
-  file: File;
-  fileType: string;
-}
-
 export interface UploadFile {
   // fileKey: string;
   adminId: string;

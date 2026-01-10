@@ -21,7 +21,7 @@ import {
 } from "@/shared/apiServices/admin/adminService";
 
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
-import type { getAdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
+import type { AdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
 import type { ProfileFormData } from "./types";
 
 /* ---------- Helper ---------- */
@@ -71,7 +71,7 @@ export default function PersonalDetails() {
   /* ---------- Get admin by id ---------- */
   const { mutate: getAdminById } = useAdminGetById({
     onSuccess: (data: unknown) => {
-      const resp = data as getAdminByIdResponse;
+      const resp = data as AdminByIdResponse;
       setAdminProfile({
         id: resp.id,
         fullName: resp.fullName,

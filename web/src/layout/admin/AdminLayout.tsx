@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useAdminGetById } from "@/shared/apiServices/admin/adminService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
-import type { getAdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
+import type { AdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
 import { toast } from "react-toastify";
 
 /**
@@ -34,7 +34,7 @@ export default function AdminLayout() {
   const { session } = useUserSessionStore();
   const { setAdminProfile } = useAdminProfileStore();
   const { mutate: getAdminById } = useAdminGetById({
-    onSuccess: (data: getAdminByIdResponse) => {
+    onSuccess: (data: AdminByIdResponse) => {
       setAdminProfile({
         id: data.id,
         fullName: data.fullName,
@@ -44,8 +44,9 @@ export default function AdminLayout() {
       });
     },
     onError: (err) => {
-      const msg = err instanceof Error ? err.message : "Failed to load profile details"
-      toast.error(msg)
+      const msg =
+        err instanceof Error ? err.message : "Failed to load profile details";
+      toast.error(msg);
     },
   });
 

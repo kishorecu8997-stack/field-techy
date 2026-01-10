@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
 import type { FileDownloadResponse } from "../client/clientTypes";
-import type { getAdminByIdResponse } from "./adminTypes";
+import type { AdminByIdResponse } from "./adminTypes";
 import type { PagedNotificationsParams } from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 
@@ -153,7 +153,7 @@ export function useDownloadAdminFileStream(options?: {
 
 /** Hook to get admin by ID */
 export function useAdminGetById(options?: {
-  onSuccess?: (data: getAdminByIdResponse) => void;
+  onSuccess?: (data: AdminByIdResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation({

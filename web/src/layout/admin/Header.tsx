@@ -125,7 +125,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  adminProfile?.email?.charAt(0).toLocaleUpperCase()
+                  (adminProfile?.email?.charAt(0) || "A").toLocaleUpperCase()
                 )}
               </span>
             </div>
