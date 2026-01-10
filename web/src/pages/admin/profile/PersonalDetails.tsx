@@ -224,11 +224,7 @@ export default function PersonalDetails() {
           rules={validateEmailRules}
         />
 
-        <PhoneInputField
-          name="phoneNumber"
-          label="Mobile Number"
-          required={false}
-        />
+        <PhoneInputField name="phoneNumber" label="Mobile Number" required />
       </div>
 
       <div className="flex justify-end">
