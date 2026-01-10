@@ -15,6 +15,7 @@ export const ADMIN_ROUTER_PATHS = {
 
   /*For admin Notifications */
   GET_ALL_NOTIFICATIONS: "/admin/api/v1/admin/notification/all",
-  DELETE_NOTIFICATION: (id: string) => `/admin/api/v1/admin/notification/delete/${id}`,
+  DELETE_NOTIFICATION: (id: string) =>
+    `/admin/api/v1/admin/notification/delete/${id}`,
   GET_PAGED_NOTIFICATIONS: "/admin/api/v1/admin/notification/paged",
 };

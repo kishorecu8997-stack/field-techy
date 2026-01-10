@@ -1,9 +1,10 @@
-import { workExperienceList } from "@/dummy_data/engineer_profile/work-experience";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
 import { toast } from "react-toastify";
 import { WorkExperienceList } from "./components/WorkExperienceList";
+import { getUserId } from "@/utils";
+import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
 }
@@ -18,9 +19,10 @@ interface DrawerMenuProps {
  */
 const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { showPopup } = usePopupStore();
-  const { setActiveKey, setImmediateParentKey } = useDrawerStore();
+  const { setActiveKey, setImmediateParentKey, setSelectedId } =
+    useDrawerStore();
 
-  const handleDeleteExperience = async (id: number) => {
+  const handleDeleteExperience = async (id: string) => {
     await showPopup({
       title: "Delete Experience",
       body: "Are you sure you want to delete this experience?",
@@ -49,22 +51,24 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
     });
   };
 
+  const userId = getUserId();
+  const { data: engineerData } = useEngineerGetById(userId || "");
+
   return (
     <div className="">
       <WorkExperienceList
         title="Experiences"
-        items={workExperienceList}
+        items={engineerData?.experiences}
         onAddAction={() => {
           setImmediateParentKey("experiences");
           onMenuItemClick(`addExperiences`);
         }}
         onEditAction={(id) => {
-          localStorage.setItem("editExperiencesId", id.toString());
+          setSelectedId(id);
           setImmediateParentKey("experiences");
           onMenuItemClick("editExperiences");
         }}
-        // TODO: Implement a proper confirmation modal for deletion instead of a browser alert.
-        onDeleteAction={(id) => handleDeleteExperience(Number(id))}
+        onDeleteAction={(id) => handleDeleteExperience(id)}
       />
     </div>
   );

@@ -23,7 +23,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   group,
 }) => {
   return (
-    <div className="px-16 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <div className="px-16 py-4 border-b border-gray-200 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <div className="h-12 w-12 rounded-full bg-emerald-800 text-white flex items-center justify-center font-semibold">
           {conversation.name
@@ -34,24 +34,24 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
             .toUpperCase()}
         </div>
         <div>
-          <p className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+          <p className="font-semibold text-lg text-gray-900">
             {conversation.name}
           </p>
           {group ? (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               Members: {group.members.join(", ")}
             </p>
           ) : (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Status : Online</p>
+            <p className="text-xs text-gray-500 mt-1">Status : Online</p>
           )}
         </div>
       </div>
 
       <div className="flex items-center gap-4 text-emerald-800">
-        <button className="p-2 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900" title="Video call">
+        <button className="p-2 rounded-full hover:bg-emerald-50" title="Video call">
           <FaVideo />
         </button>
-        <button className="p-2 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900" title="Voice call">
+        <button className="p-2 rounded-full hover:bg-emerald-50" title="Voice call">
           <FaPhoneAlt  />
         </button>
       </div>

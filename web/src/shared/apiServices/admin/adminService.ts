@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
 import type { FileDownloadResponse } from "../client/clientTypes";
 import type { AdminByIdResponse } from "./adminTypes";

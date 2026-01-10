@@ -2,25 +2,16 @@ import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
-  type EmploymentType,
-  type WorkLocationType,
   employmentTypeOptions,
   workLocationTypeOptions,
+  designationOptions,
 } from "./constants";
+import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
  * Represents a single work experience entry.
- * @interface WorkExperience
  */
-export interface WorkExperience {
-  id: string;
-  designation: string;
-  employer: string;
-  workLocationType: WorkLocationType;
-  employmentType: EmploymentType;
-  startDate: string;
-  endDate: string;
-}
+export type WorkExperience = Experience & { id: string };
 
 /**
  * Props for the WorkExperienceList component.
@@ -28,7 +19,7 @@ export interface WorkExperience {
  */
 interface WorkExperienceListProps {
   title: string;
-  items: WorkExperience[];
+  items?: Experience[];
   onAddAction?: () => void;
   onEditAction?: (id: string) => void;
   onDeleteAction?: (id: string) => void;
@@ -60,6 +51,7 @@ const createLabelMap = (
 };
 const employmentTypeLabelMap = createLabelMap(employmentTypeOptions);
 const workLocationTypeLabelMap = createLabelMap(workLocationTypeOptions);
+const designationLabelMap = createLabelMap(designationOptions);
 
 /**
  * Renders a styled list of work experiences, each with details and action buttons.
@@ -73,6 +65,8 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
   onEditAction,
   onDeleteAction,
 }) => {
+  const experiences = items || [];
+
   return (
     <div className=" rounded-lg p-4 shadow-sm h-fit">
       <div className="flex justify-between items-center mb-2">
@@ -89,29 +83,30 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
 
       {/* Scrollable list wrapper: fixed max height with vertical scrollbar */}
       <div className="overflow-y-auto space-y-2">
-        {items.length === 0 ? (
+        {experiences.length === 0 ? (
           <p className="text-gray-500 text-center py-6">No records yet.</p>
         ) : (
           <div className="space-y-4">
-            {items.map((item, index) => (
-              <div key={item.id} className="bg-white px-4 py-3">
+            {experiences.map((item, index) => (
+              <div key={item.id || index} className="bg-white px-4 py-3">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {item.designation}
-                    </h3>                   
+                      {designationLabelMap.get(item.designation || "") ||
+                        "Unknown Designation"}
+                    </h3>
                   </div>
 
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
-                      onClick={() => onEditAction?.(item.id)}
+                      onClick={() => onEditAction?.(item.id || "")}
                       className="hover:text-blue-600 transition-colors"
                       aria-label="Edit"
                     >
                       <FaRegEdit />
                     </button>
                     <button
-                      onClick={() => onDeleteAction?.(item.id)}
+                      onClick={() => onDeleteAction?.(item.id || "")}
                       className="hover:text-red-600 transition-colors"
                       aria-label="Delete"
                     >
@@ -127,11 +122,14 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Work Location Type:</span>{" "}
-                    {workLocationTypeLabelMap.get(item.workLocationType)}
+                    {workLocationTypeLabelMap.get(
+                      item.workLocationType || ""
+                    ) || "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Employment Type:</span>{" "}
-                    {employmentTypeLabelMap.get(item.employmentType)}
+                    {employmentTypeLabelMap.get(item.employmentType || "") ||
+                      "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Start Date:</span>{" "}
@@ -143,7 +141,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                 </div>
 
-                {index < items.length - 1 && (
+                {index < experiences.length - 1 && (
                   <hr className="border-t my-3 border-gray-100" />
                 )}
               </div>

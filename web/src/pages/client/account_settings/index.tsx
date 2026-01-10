@@ -12,7 +12,9 @@ import type { MenuItem } from "@/pages/engineer/account_settings/types";
  * Main account settings page displaying a list of configurable options including security, bank details,
  * notifications toggle, support links, and logout. Integrates navigation, drawer control, and a logout confirmation modal.
  */
-const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
+const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({
+  onClose,
+}) => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -55,6 +57,15 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         onClose();
       },
     },
+
+    {
+      label: "Logout",
+      icon: icons.signOut,
+      id: "logout",
+      onClick: () => {
+        setIsOpen(true);
+      },
+    },
   ];
 
   return (
@@ -66,11 +77,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         onConfirm={() => {
           logout();
           onClose();
-          navigate(
-            isClient
-              ? absoluteUrls.client.auth.login
-              : absoluteUrls.engineer.auth.login
-          );
+          navigate(isClient ? absoluteUrls.client.auth.login : absoluteUrls.engineer.auth.login);
         }}
         onCancel={() => setIsOpen(false)}
       />
