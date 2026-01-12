@@ -34,7 +34,7 @@ export const AutoCompleteInput: React.FC<AutoCompleteInputProps> = ({
 
   // Filter only if user types something
   const filteredOptions = options.filter((opt) =>
-    search ? opt.label.toLowerCase().includes(search.toLowerCase()) : true
+    search ? opt.label.toLowerCase().includes(search.toLowerCase()) : true,
   );
 
   useEffect(() => {

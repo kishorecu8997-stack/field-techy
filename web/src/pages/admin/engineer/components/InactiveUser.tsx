@@ -165,7 +165,7 @@ export default function InactiveUser() {
   ];
 
   const onSubmit = async (
-    data: SuspendEngineerFormData | BlockEngineerFormData
+    data: SuspendEngineerFormData | BlockEngineerFormData,
   ) => {
     if (isSuspendengineer) {
       await handleSuspendSubmit(data as SuspendEngineerFormData);

@@ -194,19 +194,19 @@ const SavedJobsCard = () => {
           console.warn(
             "Invalid date format for job:",
             job.jobTitle,
-            job.startDate
+            job.startDate,
           );
           return;
         }
         const nowUTC = Date.UTC(
           now.getUTCFullYear(),
           now.getUTCMonth(),
-          now.getUTCDate()
+          now.getUTCDate(),
         );
         const startUTC = Date.UTC(
           startDate.getUTCFullYear(),
           startDate.getUTCMonth(),
-          startDate.getUTCDate()
+          startDate.getUTCDate(),
         );
 
         if (startUTC >= nowUTC) {

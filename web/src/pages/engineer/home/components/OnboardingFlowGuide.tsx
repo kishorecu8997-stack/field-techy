@@ -62,7 +62,7 @@ const OnboardingFlowGuide = () => {
   useEffect(() => {
     const onboarding = localStorage.getItem("onboarding_guide") === "true";
     const engineerpath = location.pathname.endsWith(
-      absoluteUrls.engineer.home.dashboard
+      absoluteUrls.engineer.home.dashboard,
     );
     if (!onboarding && engineerpath) {
       setIsOpen(true);

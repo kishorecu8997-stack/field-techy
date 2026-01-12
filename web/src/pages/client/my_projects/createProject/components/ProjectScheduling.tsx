@@ -21,7 +21,11 @@ import { useFormContext } from "react-hook-form";
  * @param {{ isDisable: boolean }} props
  * @returns {JSX.Element} Scheduling section of the create-project form
  */
-export default function ProjectScheduling({ isDisable }: { isDisable: boolean }) {
+export default function ProjectScheduling({
+  isDisable,
+}: {
+  isDisable: boolean;
+}) {
   const methods = useFormContext();
   const scheduledStartDate = methods.watch("scheduledStartDate");
   const scheduledEndDate = methods.watch("scheduledEndDate");

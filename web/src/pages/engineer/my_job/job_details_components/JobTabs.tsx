@@ -1,5 +1,5 @@
-import React from 'react';
-import type { JobTabsProps } from '../types';
+import React from "react";
+import type { JobTabsProps } from "../types";
 
 /**
  * Renders a horizontal tab navigation bar for job details sections.

@@ -3,7 +3,7 @@ import { useNetworkStatus } from "./useNetworkStatus";
 import { syncOfflineActions } from "./syncEngine";
 
 /**
-  * React hook to automatically sync queued actions whenever the app goes online.
+ * React hook to automatically sync queued actions whenever the app goes online.
  */
 
 export function useOfflineSync() {

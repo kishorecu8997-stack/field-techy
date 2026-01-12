@@ -6,7 +6,6 @@ export interface PermissionListType {
   delete: boolean;
 }
 
-
 export interface RoleListType {
   id: string;
   roleName: string;

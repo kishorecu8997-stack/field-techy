@@ -9,7 +9,6 @@ export interface PaymentProps {
   adminStatus: string;
 }
 
-
 export interface ClientDetailsType {
   name: string;
   email: string;

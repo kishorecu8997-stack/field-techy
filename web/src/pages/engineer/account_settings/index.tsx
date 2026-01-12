@@ -50,7 +50,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       id: "activeSessions",
       label: "Active Sessions",
       icon: icons.sessions,
-      onClick: () => onMenuItemClick("activeSessions")
+      onClick: () => onMenuItemClick("activeSessions"),
     },
     {
       id: "security",

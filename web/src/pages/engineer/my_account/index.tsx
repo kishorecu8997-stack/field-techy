@@ -18,7 +18,10 @@ import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
-import { useEngineerStore, useEngineerProfile } from "@/shared/store/useEngineerStore";
+import {
+  useEngineerStore,
+  useEngineerProfile,
+} from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -53,7 +56,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   const { setValue } = methods;
 
-  /* 
+  /*
    * Sync the profile image URL from the store to the form state.
    * This ensures the image uploader displays the correct image.
    */
@@ -62,7 +65,6 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       setValue("profileImage", profileImageUrl);
     }
   }, [profileImageUrl, setValue]);
-
 
   const menuItems: MenuItem[] = [
     {
@@ -111,14 +113,20 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
     },
   ];
   const logout = useUserSessionStore((state) => state.logout);
-  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
+  const clearEngineerProfile = useEngineerStore(
+    (state) => state.clearEngineerProfile,
+  );
   const navigate = useNavigate();
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={profileImageUrl || engineerProfile?.profilePicture || assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={
+              profileImageUrl ||
+              engineerProfile?.profilePicture ||
+              assetsConfig.images.profile.defaultProfileImage
+            }
             name={engineerProfile?.fullName || ""}
             title={engineerProfile?.serviceCategory || ""}
             rating={engineerProfile?.averageRating || 0}

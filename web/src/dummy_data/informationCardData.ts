@@ -9,8 +9,8 @@ const educationCard: InformationCardProps = {
     { label: "University", value: "Chandigarh University" },
     { label: "Major", value: "Computer Science" },
     { label: "Graduation Year", value: "2018" },
-    { label: "CGPA", value: "8.7/10" }
-  ]
+    { label: "CGPA", value: "8.7/10" },
+  ],
 };
 
 // 2. Work Experience Card
@@ -22,8 +22,11 @@ const workExperienceCard: InformationCardProps = {
     { label: "Company", value: "Tech Innovations Inc." },
     { label: "Location", value: "Remote (San Francisco, CA)" },
     { label: "Start Date", value: "June 2020" },
-    { label: "Previous Role", value: "Frontend Developer at Digital Solutions LLC" }
-  ]
+    {
+      label: "Previous Role",
+      value: "Frontend Developer at Digital Solutions LLC",
+    },
+  ],
 };
 // Array of all cards for easy mapping
 const informationCardsData: InformationCardProps[] = [

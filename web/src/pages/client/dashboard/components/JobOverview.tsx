@@ -54,7 +54,9 @@ const JobOverviewCard: React.FC<JobOverview> = ({
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center space-x-2 mb-2">
-            <span className="text-2xl"><VscBriefcase /></span>
+            <span className="text-2xl">
+              <VscBriefcase />
+            </span>
             <span className="text-3xl font-bold">{count}</span>
           </div>
           <p className="text-sm opacity-80">{title}</p>

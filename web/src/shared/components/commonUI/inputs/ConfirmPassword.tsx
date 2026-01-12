@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Controller, useFormContext, type RegisterOptions } from "react-hook-form";
+import {
+  Controller,
+  useFormContext,
+  type RegisterOptions,
+} from "react-hook-form";
 import { IoMdEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 import type { ConfirmPasswordInputProps } from "./type";
@@ -63,7 +67,8 @@ export const ConfirmPassword = ({
     <div className="flex flex-col py-1">
       {isShowLabel && (
         <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
-          {label} {required !== false && <span className="text-red-600">*</span>}
+          {label}{" "}
+          {required !== false && <span className="text-red-600">*</span>}
         </label>
       )}
       <Controller
@@ -78,10 +83,11 @@ export const ConfirmPassword = ({
                 id={name}
                 type={showPassword ? "text" : "password"}
                 placeholder={placeholder || label}
-                className={`w-full rounded-md border py-3 px-5 pr-12 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition ${error
+                className={`w-full rounded-md border py-3 px-5 pr-12 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition ${
+                  error
                     ? "border-red-500 focus:ring-1 focus:ring-red-400"
                     : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary"
-                  }`}
+                }`}
               />
               <button
                 type="button"

@@ -40,14 +40,15 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <h2 className="text-2xl font-semibold mb-2">Job Not Found</h2>
               <p className="text-gray-600 dark:text-gray-400">
-                The job ID is missing or invalid. Please check the URL and try again.
+                The job ID is missing or invalid. Please check the URL and try
+                again.
               </p>
             </div>
           </div>
@@ -64,13 +65,15 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading job details...</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                Loading job details...
+              </p>
             </div>
           </div>
         </div>
@@ -86,7 +89,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -115,7 +118,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

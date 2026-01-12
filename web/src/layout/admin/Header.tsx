@@ -38,7 +38,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
   // File stream for profile picture
   const { data: adminProfileStream } = useAdminFileStream(
-    adminProfile?.profilePicture
+    adminProfile?.profilePicture,
   );
 
   useEffect(() => {

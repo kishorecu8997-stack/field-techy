@@ -16,7 +16,7 @@ const Tooltip: React.FC<TooltipProps> = ({ text, children }) => {
   return (
     <div className="relative group inline-block">
       <div
-        tabIndex={0} 
+        tabIndex={0}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}

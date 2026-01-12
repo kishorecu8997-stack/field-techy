@@ -1,12 +1,12 @@
 // src/dummy_data/personalChatData.ts
-import user from '../assets/user.png';
+import user from "../assets/user.png";
 
 export interface PersonalChatUser {
   id: number;
   name: string;
   role: string;
   avatar: string; // URL or initials like "AH"
-  status: 'Online' | 'Offline';
+  status: "Online" | "Offline";
 }
 
 export const mockPersonalChatUsers: PersonalChatUser[] = [
@@ -14,7 +14,7 @@ export const mockPersonalChatUsers: PersonalChatUser[] = [
     id: 1,
     name: "Alvin Harris",
     role: "Technician",
-    avatar: user, 
+    avatar: user,
     status: "Online",
   },
   {

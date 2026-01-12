@@ -68,7 +68,7 @@ export default function AdminLogin() {
         onError: (error: unknown) => {
           toast.error((error as Error)?.message || "Login failed");
         },
-      }
+      },
     );
   };
 

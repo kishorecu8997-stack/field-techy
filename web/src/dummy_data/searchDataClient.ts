@@ -27,7 +27,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web Development",
   },
@@ -58,7 +58,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web Development",
   },
@@ -90,7 +90,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web Development",
   },
@@ -119,7 +119,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web Development",
   },
@@ -148,7 +148,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web design",
   },
@@ -177,7 +177,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web design",
   },
@@ -206,7 +206,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Software Testing",
   },
@@ -235,7 +235,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "R&D",
   },
@@ -264,7 +264,7 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "R&D",
   },
@@ -293,9 +293,8 @@ export const sampleJobs: Job[] = [
       "https://randomuser.me/api/portraits/women/65.jpg",
       "https://randomuser.me/api/portraits/men/32.jpg",
       "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/men/75.jpg"
+      "https://randomuser.me/api/portraits/men/75.jpg",
     ],
     serviceType: "Web design",
-
   },
 ];

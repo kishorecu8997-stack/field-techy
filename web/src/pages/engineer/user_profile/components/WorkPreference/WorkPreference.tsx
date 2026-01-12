@@ -22,7 +22,6 @@ import type { WorkPreferenceFormData } from "./types";
  * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
 const WorkPreference = () => {
-
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 

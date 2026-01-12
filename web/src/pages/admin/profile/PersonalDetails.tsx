@@ -26,7 +26,7 @@ import type { ProfileFormData } from "./types";
 
 /* ---------- Helper ---------- */
 const getFileFromProfilePicture = async (
-  profilePicture: File | string
+  profilePicture: File | string,
 ): Promise<File | null> => {
   if (profilePicture instanceof File) return profilePicture;
 
@@ -52,7 +52,7 @@ export default function PersonalDetails() {
 
   /* ---------- Stream image ---------- */
   const { data: adminProfileStream } = useAdminFileStream(
-    adminProfile?.profilePicture
+    adminProfile?.profilePicture,
   );
 
   const [adminProfilePic, setAdminProfilePic] = useState<string>("");
@@ -156,7 +156,7 @@ export default function PersonalDetails() {
           onError: () => {
             toast.error("Failed to upload profile picture");
           },
-        }
+        },
       );
     }
 
@@ -191,7 +191,7 @@ export default function PersonalDetails() {
                   navigate(absoluteUrls.admin.home.dashboard);
                   close(true);
                 },
-              }
+              },
             );
           },
         },

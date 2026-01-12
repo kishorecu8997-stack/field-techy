@@ -6,7 +6,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  *    - Displays a page with point of contact details
  *    - Provides a button to add a point of contact
  * @returns {JSX.Element} The rendered Point of Content Page
- * @constructor 
+ * @constructor
  */
 const PointOfContactPage = () => {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();

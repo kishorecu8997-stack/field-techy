@@ -37,7 +37,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
           <FaChevronUp className="ml-2 h-4 w-4 transition-transform" />
         )}
         {!isOpen && (
-          <FaChevronDown className="ml-2 h-4 w-4 transition-transform" />          
+          <FaChevronDown className="ml-2 h-4 w-4 transition-transform" />
         )}
       </div>
 

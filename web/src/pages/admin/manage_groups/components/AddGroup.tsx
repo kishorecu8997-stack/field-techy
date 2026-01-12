@@ -78,7 +78,7 @@ export default function AddGroup() {
               setSelectedIds((prev) => [...prev, row.engineerID]);
             } else {
               setSelectedIds((prev) =>
-                prev.filter((id) => id !== row.engineerID)
+                prev.filter((id) => id !== row.engineerID),
               );
             }
           }}

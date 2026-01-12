@@ -13,14 +13,14 @@ import type { ChatMode, Conversation } from "./types";
  * It includes a sidebar, a chat window, and a mode toggle.
  *
  * @returns {JSX.Element} The rendered chat layout component.
- * @constructor 
+ * @constructor
  */
 const ChatLayout: React.FC = () => {
   const [mode, setMode] = useState<ChatMode>("personal");
 
   const initialConversation = useMemo(
     () => conversations.find((c) => c.type === mode) ?? null,
-    [mode]
+    [mode],
   );
 
   const [selectedConversationId, setSelectedConversationId] = useState<
@@ -34,14 +34,14 @@ const ChatLayout: React.FC = () => {
   }, [mode]);
 
   const filteredConversations = conversations.filter(
-    (c) => c.type === mode
+    (c) => c.type === mode,
   ) as Conversation[];
 
   const selectedConversation =
     filteredConversations.find((c) => c.id === selectedConversationId) ?? null;
 
   const conversationMessages = messages.filter(
-    (m) => m.conversationId === selectedConversation?.id
+    (m) => m.conversationId === selectedConversation?.id,
   );
 
   const handleSelectConversation = (conversationId: string) => {

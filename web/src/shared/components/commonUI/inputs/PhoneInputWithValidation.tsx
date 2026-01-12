@@ -41,7 +41,7 @@ export const PhoneInputWithValidation = ({
 
   // Extract full phone number (country code + number) for API validation
   const getFullPhoneNumber = (
-    value: string | undefined
+    value: string | undefined,
   ): string | undefined => {
     if (!value?.trim()) return undefined;
     const trimmed = value.trim();
@@ -80,7 +80,7 @@ export const PhoneInputWithValidation = ({
   } = useDebouncedUserExists(
     isValidPhoneFormat && fullPhoneNumber ? fullPhoneNumber : undefined,
     500,
-    { enabled: isValidPhoneFormat && !!fullPhoneNumber }
+    { enabled: isValidPhoneFormat && !!fullPhoneNumber },
   );
 
   // Phone validation function
@@ -207,7 +207,7 @@ export const PhoneInputWithValidation = ({
           const numberValue = rest.join(" ");
 
           const selectedCountry = phoneCountries.find(
-            (c) => c.code === countryCode
+            (c) => c.code === countryCode,
           );
 
           let maxLength = 20;
@@ -267,10 +267,10 @@ export const PhoneInputWithValidation = ({
                     error
                       ? "border-red-500"
                       : isAvailable
-                      ? "border-green-500"
-                      : isUnavailable
-                      ? "border-red-500"
-                      : "border-gray-300 dark:border-gray-600"
+                        ? "border-green-500"
+                        : isUnavailable
+                          ? "border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
                   }`}
                 >
                   <CountrySelect

@@ -23,7 +23,7 @@ interface Props {
  * @param unreadCount - The number of unread messages.
  * @param isRead - Whether the message is read.
  * @param onClick - The function to handle click on the item.
- * @returns The chat message item.  
+ * @returns The chat message item.
  */
 export const MessageItem = ({
   user,

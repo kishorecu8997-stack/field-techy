@@ -45,7 +45,7 @@ const formatDate = (dateStr: string) => {
  * @returns {Map<string, string>} A map where keys are option values and values are option labels.
  */
 const createLabelMap = (
-  options: Readonly<Array<{ value: string; label: string }>>
+  options: Readonly<Array<{ value: string; label: string }>>,
 ) => {
   return new Map(options.map((opt) => [opt.value, opt.label]));
 };
@@ -123,7 +123,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Work Location Type:</span>{" "}
                     {workLocationTypeLabelMap.get(
-                      item.workLocationType || ""
+                      item.workLocationType || "",
                     ) || "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">

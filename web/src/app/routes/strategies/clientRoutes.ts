@@ -23,7 +23,7 @@ export class ClientRouteStrategy implements RouteStrategy {
         element: React.createElement(
           AuthRedirect,
           null,
-          withSuspense(Components.Layout)
+          withSuspense(Components.Layout),
         ),
         children: [
           {
@@ -84,7 +84,7 @@ export class ClientRouteStrategy implements RouteStrategy {
             React.Fragment,
             null,
             withSuspense(Components.ClientLayout),
-            withSuspense(Components.LiveChatWidget)
+            withSuspense(Components.LiveChatWidget),
           ),
         }),
         children: [
@@ -182,4 +182,3 @@ export class ClientRouteStrategy implements RouteStrategy {
     ];
   }
 }
-

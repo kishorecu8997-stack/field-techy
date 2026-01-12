@@ -154,8 +154,8 @@ const CorporateClientForm: React.FC = () => {
               {isSubmitting
                 ? "Saving…"
                 : activeTab === "Documents"
-                ? "Save"
-                : "Next"}
+                  ? "Save"
+                  : "Next"}
             </Button>
           </div>
         </div>
