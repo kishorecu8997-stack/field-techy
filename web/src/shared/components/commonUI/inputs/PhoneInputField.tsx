@@ -172,7 +172,7 @@ export const PhoneInputField = ({
           const numberValue = rest.join(" ");
 
           const selectedCountry = PHONE_COUNTRIES.find(
-            (c) => c.code === countryCode
+            (c) => c.code === countryCode,
           );
 
           let maxLength = 20;
@@ -220,7 +220,10 @@ export const PhoneInputField = ({
                   disabled={typeof disabled !== "undefined" ? disabled : false}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    if (/^\d*$/.test(newValue) && newValue.length <= maxLength) {
+                    if (
+                      /^\d*$/.test(newValue) &&
+                      newValue.length <= maxLength
+                    ) {
                       field.onChange(`${countryCode} ${newValue}`);
                     }
                   }}

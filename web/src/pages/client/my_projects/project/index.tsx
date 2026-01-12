@@ -22,7 +22,7 @@ const MyProjects: React.FC = () => {
       return projectData as Project[];
     }
     return (projectData as Project[]).filter(
-      (project) => project.status === activeFilter
+      (project) => project.status === activeFilter,
     );
   }, [activeFilter]);
   const jobFilters = ["All", "In-Progress", "Completed"];
@@ -56,7 +56,7 @@ const MyProjects: React.FC = () => {
                     className=""
                     onClick={() =>
                       navigate(
-                        `${absoluteUrls.client.home.my_projects}/${project.id}`
+                        `${absoluteUrls.client.home.my_projects}/${project.id}`,
                       )
                     }
                   >

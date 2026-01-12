@@ -4,7 +4,6 @@ import { ApplicationsData } from "@/dummy_data/engineer_profile/applicationData"
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { getStatusColor } from "@/utils/applicationStatus";
 
-
 export type Application = (typeof ApplicationsData)[number];
 
 interface ApplicationCardProps {
@@ -43,10 +42,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           {application.title}
         </h3>
 
-         <div className="relative group">
+        <div className="relative group">
           <span
             className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(
-              application.status
+              application.status,
             )}`}
           >
             {application.status}

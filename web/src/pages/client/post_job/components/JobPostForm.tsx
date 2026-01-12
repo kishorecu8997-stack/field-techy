@@ -66,8 +66,8 @@ const JobPostForm: React.FC = () => {
       methods.setValue(
         "startTime",
         `${String(now.getHours()).padStart(2, "0")}:${String(
-          now.getMinutes()
-        ).padStart(2, "0")}`
+          now.getMinutes(),
+        ).padStart(2, "0")}`,
       );
     }
   }, [methods.watch("startDate"), methods.watch("startTime")]);
@@ -160,7 +160,7 @@ const JobPostForm: React.FC = () => {
                       validateStartDate(
                         value,
                         methods.getValues("projectDeadline"),
-                        normalize
+                        normalize,
                       ),
                   }}
                   required
@@ -349,7 +349,7 @@ const JobPostForm: React.FC = () => {
                       validateProjectDeadline(
                         value,
                         methods.getValues("startDate"),
-                        normalize
+                        normalize,
                       ),
                   }}
                 />

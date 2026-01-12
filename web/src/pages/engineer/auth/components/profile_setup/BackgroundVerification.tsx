@@ -1,5 +1,5 @@
-import FileUpload from '@/shared/components/commonUI/inputs/FileUpload';
-import { DatePickerInput } from '@/shared/components/commonUI/inputs/DatePickerInput';
+import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
+import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 
 /**
  * A component representing the "Background Verification" step in a multi-step form.
@@ -16,13 +16,12 @@ import { DatePickerInput } from '@/shared/components/commonUI/inputs/DatePickerI
 const BackgroundVerification = () => {
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-
       <FileUpload
         name="governmentId"
         label="Government ID"
         placeholder="Government ID"
         // required
-        accept='.pdf'
+        accept=".pdf"
         maxPages={5}
         validatePDF={true}
       />
@@ -30,7 +29,7 @@ const BackgroundVerification = () => {
         name="certificate"
         label="Certificate"
         placeholder="Certificate"
-        accept='.pdf'
+        accept=".pdf"
         maxPages={5}
         validatePDF={true}
       />
@@ -42,6 +41,6 @@ const BackgroundVerification = () => {
       />
     </div>
   );
-}
+};
 
-export default BackgroundVerification
+export default BackgroundVerification;

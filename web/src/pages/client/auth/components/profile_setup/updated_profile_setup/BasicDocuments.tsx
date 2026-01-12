@@ -36,7 +36,7 @@ const BasicDocuments = () => {
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
 
   const formCtx = useForm<DocumentFormData>({
@@ -137,12 +137,12 @@ const BasicDocuments = () => {
           onUploadProgress: (progress) => {
             if (progress.percentage) {
               setUploadProgress((prev) => ({
-                ...prev,  
+                ...prev,
                 PROFILE_PICTURE: progress.percentage!,
               }));
             }
           },
-        })
+        }),
       );
     }
 
@@ -161,7 +161,7 @@ const BasicDocuments = () => {
               }));
             }
           },
-        })
+        }),
       );
     }
 
@@ -180,7 +180,7 @@ const BasicDocuments = () => {
               }));
             }
           },
-        })
+        }),
       );
     }
 

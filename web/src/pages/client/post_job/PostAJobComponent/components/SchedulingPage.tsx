@@ -111,7 +111,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
 
   const addMonthsPreserveEndOfMonth = (
     date: Date,
-    monthsToAdd: number
+    monthsToAdd: number,
   ): Date => {
     const originalDay = date.getDate();
     const startYear = date.getFullYear();
@@ -122,7 +122,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
     const lastDayOfTargetMonth = new Date(
       temp.getFullYear(),
       temp.getMonth() + 1,
-      0
+      0,
     ).getDate();
     temp.setDate(Math.min(originalDay, lastDayOfTargetMonth));
     return temp;
@@ -379,7 +379,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       validate: (value) =>
                         validateDateRange(
                           value,
-                          ctx.getValues("JobOccurrenceEndDate")
+                          ctx.getValues("JobOccurrenceEndDate"),
                         ),
                     }}
                     control={ctx.control}
@@ -420,7 +420,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           validate: (value) =>
                             validateDateRange(
                               value,
-                              ctx.getValues("startDate")
+                              ctx.getValues("startDate"),
                             ),
                         }}
                         control={ctx.control}
@@ -451,7 +451,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       <Controller
                         name="endDate"
                         rules={{
-                          validate: (value) => validateCurrentOrFutureDate(value),
+                          validate: (value) =>
+                            validateCurrentOrFutureDate(value),
                         }}
                         control={ctx.control}
                         render={({ field }) => (

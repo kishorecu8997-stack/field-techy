@@ -83,8 +83,8 @@ const MapSearchBar: React.FC<{
         setLoading(true);
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            query
-          )}&addressdetails=1&limit=5`
+            query,
+          )}&addressdetails=1&limit=5`,
         );
         const data = await res.json();
         setSuggestions(data);
@@ -118,8 +118,8 @@ const MapSearchBar: React.FC<{
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            query
-          )}&addressdetails=1&limit=1`
+            query,
+          )}&addressdetails=1&limit=1`,
         );
         const data = await res.json();
         if (data && data.length > 0) {
@@ -214,7 +214,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => { },
+  onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
   className,

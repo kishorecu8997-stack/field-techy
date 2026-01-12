@@ -128,7 +128,7 @@ Pre-configured messages for common HTTP status codes:
 ```typescript
 GlobalApiErrorHandler.setDefaultStatusMessage(
   409,
-  "This resource already exists. Please use a different value."
+  "This resource already exists. Please use a different value.",
 );
 ```
 
@@ -143,14 +143,15 @@ export class UserAdapter {
   static async exists(emailOrPhone: string) {
     try {
       const response = await axiosInstance.get(
-        `/api/users/exists/${emailOrPhone}`
+        `/api/users/exists/${emailOrPhone}`,
       );
       return response.data;
     } catch (error) {
       // 409 is a valid response for this endpoint (email/phone already exists)
-      const validResponse = GlobalApiErrorHandler.getValidResponse(error, [
-        409,
-      ]);
+      const validResponse = GlobalApiErrorHandler.getValidResponse(
+        error,
+        [409],
+      );
       if (validResponse) {
         return validResponse;
       }
@@ -282,7 +283,7 @@ export class ClientAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -302,7 +303,7 @@ export class ClientAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {

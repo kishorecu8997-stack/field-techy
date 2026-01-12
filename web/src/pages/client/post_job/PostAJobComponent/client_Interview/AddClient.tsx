@@ -17,7 +17,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 const AddClient = () => {
   const FormCtx = useForm<ClientFieldsTypes>();
   const { showPopup } = usePopupStore();
-  const {setISOpenSidebar} = useDrawerStore()
+  const { setISOpenSidebar } = useDrawerStore();
 
   const handleSubmit = async (data: ClientFieldsTypes) => {
     await showPopup({

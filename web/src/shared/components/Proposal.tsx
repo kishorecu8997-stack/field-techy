@@ -14,12 +14,17 @@ const Proposal: React.FC<ProposalTermsProps> = ({
 }) => {
   return (
     <section className="p-4" aria-labelledby="proposal-title">
-      <h2 id="proposal-title" className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-400">
+      <h2
+        id="proposal-title"
+        className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-400"
+      >
         {jobTitle || "Proposal Terms"}
       </h2>
       <div className="bg-gray-100 p-5 rounded-md dark:bg-gray-700">
         {terms.title && (
-          <h3 className="font-semibold text-gray-700 mb-3 dark:text-gray-300">{terms.title}</h3>
+          <h3 className="font-semibold text-gray-700 mb-3 dark:text-gray-300">
+            {terms.title}
+          </h3>
         )}
         <ul className="list-disc pl-5 space-y-2 text-gray-700 dark:text-gray-400">
           {terms.items.map((item, index) => (

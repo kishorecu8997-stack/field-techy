@@ -61,9 +61,11 @@ const VerificationCard = ({
     mode: "onChange",
   });
 
-  const { mutateAsync: sendEmail, isPending: isSendingEmail } = useSendEmailOTP();
+  const { mutateAsync: sendEmail, isPending: isSendingEmail } =
+    useSendEmailOTP();
 
-  const { mutateAsync: sendPhone, isPending: isSendingPhone } = useSendPhoneOTP();
+  const { mutateAsync: sendPhone, isPending: isSendingPhone } =
+    useSendPhoneOTP();
 
   const { mutateAsync: verifyEmail, isPending: isVerifyingEmail } =
     useVerifyEmailOTP();
@@ -89,7 +91,9 @@ const VerificationCard = ({
       setIsOtpSent(true);
       setTimeLeft(60);
     } catch (error) {
-      toast.error(`Failed to send ${type === "email" ? "email" : "mobile"} OTP`);
+      toast.error(
+        `Failed to send ${type === "email" ? "email" : "mobile"} OTP`,
+      );
     }
   };
 
@@ -153,10 +157,11 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
+                    className={`text-green-600 dark:text-green-400 font-medium ${
+                      timeLeft > 0 || isPending
                         ? "opacity-50 cursor-not-allowed"
                         : ""
-                      }`}
+                    }`}
                   >
                     Resend
                   </Button>

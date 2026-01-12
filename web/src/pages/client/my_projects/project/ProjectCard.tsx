@@ -38,7 +38,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       return date.toLocaleDateString("en-GB");
     };
     return `${formatDate(project.duration.start)} – ${formatDate(
-      project.duration.end
+      project.duration.end,
     )}`;
   };
 
@@ -50,7 +50,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </h3>
         <span
           className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
-            project.workMode
+            project.workMode,
           )}`}
         >
           {project.workMode}

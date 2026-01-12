@@ -56,10 +56,7 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
-      <FormContainer
-        methods={methods}
-        onSubmit={handleInviteClick}
-      >
+      <FormContainer methods={methods} onSubmit={handleInviteClick}>
         <div className="px-4 py-6">
           <div className="w-full sticky top-16 z-10 ">
             <MyJobsHeader
@@ -102,7 +99,11 @@ const InviteJob: React.FC<SelectJobCardProps> = ({ onClose }) => {
                             <JobInviteCard
                               key={job.id}
                               job={job}
-                              isSelected={field.value ? field.value.includes(job.id) : false}
+                              isSelected={
+                                field.value
+                                  ? field.value.includes(job.id)
+                                  : false
+                              }
                               onToggle={handleToggle}
                             />
                           ))

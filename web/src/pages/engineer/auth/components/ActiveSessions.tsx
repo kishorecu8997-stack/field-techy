@@ -23,7 +23,7 @@ interface ActiveSessionsProps {
  * ActiveSessions Component
  * Displays a list of active sessions for the user, with the ability to log out of selected sessions.
  * It uses the `react-hook-form` library for form handling and state management.
- * 
+ *
  * @param param0
  * @returns
  */
@@ -123,12 +123,12 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentSessions = useMemo(
     () => sessions.slice(startIndex, startIndex + itemsPerPage),
-    [sessions, startIndex, itemsPerPage]
+    [sessions, startIndex, itemsPerPage],
   );
 
   const toggleSelect = (id: string) => {
     setSelectedSessions((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
     );
   };
 
@@ -145,13 +145,13 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
         await Promise.resolve(onLogout(selectedSessions));
       }
       const updatedSessions = sessions.filter(
-        (s) => !selectedSessions.includes(s.id)
+        (s) => !selectedSessions.includes(s.id),
       );
       setSessions(updatedSessions);
       setSelectedSessions([]);
       const newTotalPages = Math.ceil(updatedSessions.length / itemsPerPage);
       setCurrentPage(
-        newTotalPages === 0 ? 1 : Math.min(currentPage, newTotalPages)
+        newTotalPages === 0 ? 1 : Math.min(currentPage, newTotalPages),
       );
       setShowConfirm(false);
     } catch {

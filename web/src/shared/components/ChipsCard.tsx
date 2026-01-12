@@ -1,13 +1,13 @@
-import React from 'react';
-import { FaRegEdit } from 'react-icons/fa';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import React from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface ChipsCardProps {
   title: string;
   chips: string[];
   onAddAction?: () => void;
-  onEditAction?: () => void;      // No index — edits the whole section
-  onDeleteAction?: () => void;    // Optional: delete entire section or clear
+  onEditAction?: () => void; // No index — edits the whole section
+  onDeleteAction?: () => void; // Optional: delete entire section or clear
 }
 
 const ChipsCard: React.FC<ChipsCardProps> = ({
@@ -15,7 +15,7 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
   chips,
   onAddAction,
   onEditAction,
-  onDeleteAction,  
+  onDeleteAction,
 }) => {
   return (
     <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
@@ -31,40 +31,39 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
             >
               <span>+</span> Add {title.slice(0, -1)}
             </button>
-          )}          
+          )}
         </div>
       </div>
 
       <hr className="border-gray-200 mb-4" />
 
-      <div className="flex justify-end items-center mb-4 gap-2">      
+      <div className="flex justify-end items-center mb-4 gap-2">
         {onEditAction && (
           <button
             onClick={onEditAction}
             className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
-              aria-label={`Edit`}
-            >
-              <FaRegEdit />
-            </button>
-          )}
-          {onDeleteAction && (
-            <button
-              onClick={onDeleteAction}
-              className="text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
-              aria-label={`Delete`}
-            >
-              <RiDeleteBin6Line />
-            </button>
-          )}
-        
+            aria-label={`Edit`}
+          >
+            <FaRegEdit />
+          </button>
+        )}
+        {onDeleteAction && (
+          <button
+            onClick={onDeleteAction}
+            className="text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
+            aria-label={`Delete`}
+          >
+            <RiDeleteBin6Line />
+          </button>
+        )}
       </div>
 
       {chips.length === 0 ? (
-        <p className="text-gray-500 text-center py-6">No {title.toLowerCase()} yet.</p>
+        <p className="text-gray-500 text-center py-6">
+          No {title.toLowerCase()} yet.
+        </p>
       ) : (
         <div className="flex flex-wrap gap-2">
-            
-
           {chips.map((chip, index) => (
             <span
               key={index}

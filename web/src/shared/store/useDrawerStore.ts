@@ -25,7 +25,7 @@ interface DrawerState {
   updateFieldStatus: (
     sectionKey: string,
     fieldLabel: string,
-    status: FieldStatus
+    status: FieldStatus,
   ) => void;
   // New additions for bank navigation back handling
   previousShowBack: boolean;
@@ -74,12 +74,12 @@ const useDrawerStore = create<DrawerState>((set, _) => ({
       profileData: state.profileData.map((section) =>
         section.key === sectionKey
           ? {
-            ...section,
-            fields: section.fields.map((field) =>
-              field.label === fieldLabel ? { ...field, status } : field
-            ),
-          }
-          : section
+              ...section,
+              fields: section.fields.map((field) =>
+                field.label === fieldLabel ? { ...field, status } : field,
+              ),
+            }
+          : section,
       ),
     })),
   reset: () =>

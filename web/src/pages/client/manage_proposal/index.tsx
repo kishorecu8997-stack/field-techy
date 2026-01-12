@@ -26,7 +26,7 @@ const ManageProposal = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const List = filteredProposalList.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
@@ -51,7 +51,7 @@ const ManageProposal = () => {
                     reviews={proposal.reviewCount}
                     onClick={() =>
                       navigate(
-                        `${absoluteUrls.client.home.manage_proposal}/${proposal.id}`
+                        `${absoluteUrls.client.home.manage_proposal}/${proposal.id}`,
                       )
                     }
                   />

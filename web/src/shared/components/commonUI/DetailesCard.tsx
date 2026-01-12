@@ -6,7 +6,9 @@ export type DetailsCardProps = {
   /**
    * Details can be an array of { label, value } entries or a plain object.
    */
-  details?: Array<{ label: string; value: React.ReactNode }> | Record<string, any>;
+  details?:
+    | Array<{ label: string; value: React.ReactNode }>
+    | Record<string, any>;
   onEdit?: () => void;
   onDelete?: () => void;
   className?: string;
@@ -19,7 +21,9 @@ export const EducationCard: React.FC<DetailsCardProps> = ({
   className = "",
 }) => {
   // Normalize details into an array of { label, value }
-  const items: Array<{ label: string; value: React.ReactNode }> = Array.isArray(details)
+  const items: Array<{ label: string; value: React.ReactNode }> = Array.isArray(
+    details,
+  )
     ? (details as Array<{ label: string; value: React.ReactNode }>)
     : Object.entries(details || {}).map(([k, v]) => ({
         label: String(k),
@@ -42,7 +46,9 @@ export const EducationCard: React.FC<DetailsCardProps> = ({
       style={{ maxWidth: 400 }}
     >
       <div className="flex items-start justify-between mb-3">
-        <span className="font-semibold text-base text-gray-800">{headerValue}</span>
+        <span className="font-semibold text-base text-gray-800">
+          {headerValue}
+        </span>
         <div className="flex gap-2">
           {onEdit && (
             <button

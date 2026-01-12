@@ -27,7 +27,9 @@ const BreakDetails: React.FC = () => {
           </div>
         </div>
         <div className="order-1 lg:order-2 flex flex-col">
-          <h3 className="text-xl font-semibold mb-4">Calendar view of Breaks</h3>
+          <h3 className="text-xl font-semibold mb-4">
+            Calendar view of Breaks
+          </h3>
           <div className="bg-white rounded-xl shadow-md overflow-hidden flex-1 min-h-0">
             <div className="h-full">
               <BreakCalendar />

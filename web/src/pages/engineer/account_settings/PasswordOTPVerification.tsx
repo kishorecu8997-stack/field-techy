@@ -118,7 +118,8 @@ export const PasswordOTPVerification = ({
               if (emailValid !== true) return emailValid;
 
               // ✅ Use verifiedRef to ensure constant access to the latest state
-              if (!verifiedRef.current) return "Please verify your email address";
+              if (!verifiedRef.current)
+                return "Please verify your email address";
 
               return true;
             },

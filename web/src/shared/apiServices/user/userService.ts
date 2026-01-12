@@ -23,7 +23,7 @@ export const USER_QUERY_KEYS = {
  */
 export function useUserExists(
   emailOrPhone: string | undefined,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: USER_QUERY_KEYS.exists(emailOrPhone || ""),
