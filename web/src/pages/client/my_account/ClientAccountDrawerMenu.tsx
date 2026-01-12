@@ -17,9 +17,8 @@ import { IoDocumentText } from "react-icons/io5";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useClientFiles } from "@/shared/apiServices/client/clientService";
-import { useCurrentClientProfile } from "@/shared/apiServices/profiles/client/clientProfileService";
 import { ClientFilesProvider } from "./context/ClientFilesProvider";
-import { ClientAdapter } from "@/shared/apiServices/client/clientAdapter";
+import { useClientStore, useClientProfile } from "@/shared/store/useClientStore";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -61,17 +60,17 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // State for profile picture URL
-  const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
-    assetsConfig.images.users.user
-  );
+  const { profileImageUrl } = useClientStore();
 
-  // State for loading profile picture
-  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(false);
+  // Use the custom hook to get/fetch profile
+  const clientProfile = useClientProfile();
+
+  // Get client ID from store or fallback (though store should handle it)
+  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47";
 
   const methods = useForm({
     defaultValues: {
-      profileImage: profilePictureUrl,
+      profileImage: profileImageUrl || assetsConfig.images.users.user,
     },
   });
 
@@ -80,97 +79,41 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   // Update form value when profile picture URL changes
   useEffect(() => {
-    if (!isLoadingProfilePicture) {
-      setValue("profileImage", profilePictureUrl, {
-        shouldValidate: false,
-      });
-    }
-  }, [profilePictureUrl, setValue, isLoadingProfilePicture]);
+    setValue("profileImage", profileImageUrl || assetsConfig.images.users.user, {
+      shouldValidate: false,
+    });
+  }, [profileImageUrl, setValue]);
 
-  // Get client ID from current client profile
-  const { data: clientProfile } = useCurrentClientProfile();
-  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47"; // Fallback to hardcoded ID
-
-  // Fetch client files - single API call for all files
+  // Fetch client files for Document List (Context)
+  // We still keep this separate for the documents list if needed, 
+  // or we could rely on the store if the store kept all files. 
+  // For now, let's keep the document list separate but remove profile pic logic.
   const {
     data: clientFiles = [],
     isLoading: isLoadingFiles,
     refetch: refetchFiles,
   } = useClientFiles(clientId);
 
-  // Separate profile picture from other documents
-  const { profilePictureFile, documentFiles } = useMemo(() => {
-    const profilePic = clientFiles.find(
-      (file) => file.fileType === "PROFILE_PICTURE"
-    );
+  // Filter out non-profile-pic files for the context
+  const { documentFiles } = useMemo(() => {
     const documents = clientFiles.filter(
       (file) => file.fileType !== "PROFILE_PICTURE"
     );
     return {
-      profilePictureFile: profilePic || null,
       documentFiles: documents,
     };
   }, [clientFiles]);
 
-  // Download profile picture if available
-  useEffect(() => {
-    if (!profilePictureFile) {
-      setIsLoadingProfilePicture(false);
-      setProfilePictureUrl(assetsConfig.images.users.user);
-      return;
-    }
-
-    let blobUrl: string | null = null;
-    let isCancelled = false;
-
-    const downloadProfilePicture = async () => {
-      setIsLoadingProfilePicture(true);
-
-      try {
-        const downloadResponse = await ClientAdapter.downloadFileStream(
-          profilePictureFile.fileKey
-        );
-
-        // Check if component is still mounted and file hasn't changed
-        if (!isCancelled) {
-          blobUrl = URL.createObjectURL(downloadResponse.blob);
-          setProfilePictureUrl(blobUrl);
-          setIsLoadingProfilePicture(false);
-        } else {
-          // Cleanup if cancelled - revoke the blob URL we just created
-          const tempBlobUrl = URL.createObjectURL(downloadResponse.blob);
-          URL.revokeObjectURL(tempBlobUrl);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error("Failed to download profile picture:", error);
-          setProfilePictureUrl(assetsConfig.images.users.user);
-          setIsLoadingProfilePicture(false);
-        }
-      }
-    };
-
-    downloadProfilePicture();
-
-    // Cleanup on unmount or when profilePictureFile changes
-    return () => {
-      isCancelled = true;
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      setIsLoadingProfilePicture(false);
-    };
-  }, [profilePictureFile]);
-
+  // Prepare context value
   // Prepare context value
   const filesContextValue = useMemo(
     () => ({
       files: documentFiles,
-      profilePictureFile,
+      profilePictureFile: null, // Managed by store now
       isLoading: isLoadingFiles,
       refetch: refetchFiles,
     }),
-    [documentFiles, profilePictureFile, isLoadingFiles, refetchFiles]
+    [documentFiles, isLoadingFiles, refetchFiles]
   );
 
   const menuItems: ClientMenuItems[] = [
@@ -220,7 +163,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={profilePictureUrl}
+            avatarUrl={profileImageUrl || assetsConfig.images.users.user}
             name={displayName}
             title={
               clientProfile?.clientType === "CORPORATE"
@@ -230,7 +173,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
             rating={4}
             reviewCount={10}
             completionPercentage={39}
-            isLoadingProfilePicture={isLoadingProfilePicture || isLoadingFiles}
+            isLoadingProfilePicture={false} // Store handles internal loading if needed, or we can use loading from store
           />
         </div>
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
