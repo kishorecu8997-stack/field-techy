@@ -61,7 +61,6 @@ export default function AddNotification() {
   });
 
   const handleSaveConfirmation = async (data: AddNotificationProps) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Notification",
       body: "Are you sure you want to save this details?",
