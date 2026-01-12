@@ -143,7 +143,7 @@ export class AdminRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ManageNotificationAdd),
           },
           {
-            path: urls.admin.home.manage_notification_edit,
+            path: `${urls.admin.home.manage_notification_edit}/:id?`,
             element: withSuspense(Components.ManageNotificationEdit),
           },
           {

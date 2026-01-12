@@ -75,7 +75,6 @@ export default function AddNotification() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           action: async (close) => {
             const payload = {
               title: data.title,
