@@ -79,10 +79,10 @@ export const ImageUploaderField = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevFileRef = useRef<File | null>(null);
   const initialSetRef = useRef(false);
-  
+
   // Watch the form value to manage object URLs
   const formValue = watch(name);
-  
+
   // Set initial image URL if provided (only once)
   useEffect(() => {
     if (initialImageUrl && !initialSetRef.current) {
@@ -152,23 +152,17 @@ export const ImageUploaderField = ({
           return "Only .jpeg, .jpg, or .png extensions are allowed.";
         }
 
-        const { valid, type } = await validateImageFile(value);
+        const { valid } = await validateImageFile(value);
         if (!valid) {
           return "Only genuine and uncorrupted JPEG/PNG files are allowed.";
-        }
-
-        const isJPEG = value.type === "image/jpeg";
-        const isPNG = value.type === "image/png";
-        if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
-          return "File type mismatch. Please upload a valid JPEG or PNG.";
         }
 
         return true;
       },
       fileSize: (value: File | string | null) => {
         if (!value || typeof value === "string") return true;
-        if (value.size < 50 * 1024 || value.size > maxSize) {
-          return "File size must be between 50 KB and 350 KB.";
+        if (value.size < 10 * 1024 || value.size > maxSize) {
+          return "File size must be between 10 KB and 350 KB.";
         }
         return true;
       },
@@ -218,23 +212,14 @@ export const ImageUploaderField = ({
               return;
             }
 
-            const { valid, type } = await validateImageFile(file);
+            const { valid } = await validateImageFile(file);
             if (!valid) {
               toast.error("Uploaded file is corrupted or not a valid image.");
               return;
             }
 
-            const isJPEG = file.type === "image/jpeg";
-            const isPNG = file.type === "image/png";
-            if (!(isJPEG && type === "jpeg") && !(isPNG && type === "png")) {
-              toast.error(
-                "File type mismatch. Please upload a valid JPEG or PNG."
-              );
-              return;
-            }
-
-            if (file.size < 50 * 1024 || file.size > maxSize) {
-              toast.error("File size must be between 50 KB and 350 KB.");
+            if (file.size < 10 * 1024 || file.size > maxSize) {
+              toast.error("File size must be between 10 KB and 350 KB.");
               return;
             }
 
@@ -242,21 +227,30 @@ export const ImageUploaderField = ({
             setIsPopupOpen(false);
           };
 
-          const handleAvatarSelectInner = (avatar: {
+          const handleAvatarSelectInner = async (avatar: {
             id: string;
             url: string;
           }) => {
-            onChange(avatar.url);
-            setIsPopupOpen(false);
+            try {
+              const response = await fetch(avatar.url);
+              const blob = await response.blob();
+              const file = new File([blob], `avatar-${avatar.id}.png`, {
+                type: blob.type,
+              });
+              onChange(file);
+              setIsPopupOpen(false);
+            } catch (error) {
+              console.error("Failed to convert avatar to file:", error);
+              toast.error("Failed to select avatar. Please try again.");
+            }
           };
 
           return (
             <>
               <div className="relative inline-block">
                 <div
-                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${
-                    allowUpload ? "cursor-pointer" : "cursor-default"
-                  }`}
+                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${allowUpload ? "cursor-pointer" : "cursor-default"
+                    }`}
                   onClick={handleImageClick}
                 >
                   {isLoading ? (

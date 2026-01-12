@@ -1,14 +1,29 @@
+import { absoluteUrls } from "@/config/urls";
+import {
+  useEngineerFileUpload,
+  useSendProposalJob,
+} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { useForm } from "react-hook-form";
-import { validateDescription, validateNumericInput } from "../validation";
-import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { absoluteUrls } from "@/config/urls";
+import { toast } from "react-toastify";
+import { validateDescription, validateNumericInput } from "../validation";
+import { getUserId } from "@/utils";
+
+export interface proposalTypes {
+  description: string;
+  expected: string;
+  type: string;
+  attachment: FileList | null;
+  availability: string;
+  question: string;
+  describe: string;
+}
 
 /**
  * A form component for submitting a job proposal.
@@ -29,10 +44,31 @@ import { absoluteUrls } from "@/config/urls";
  */
 const SendProposal = () => {
   const { showPopup } = usePopupStore();
-  const navigate = useNavigate();
+  const userId = getUserId();
 
-  const formCtx = useForm();
-  const handleSubmit = async () => {
+  const navigate = useNavigate();
+  const formCtx = useForm<proposalTypes>({
+    mode: "onChange",
+    defaultValues: {
+      description: "",
+      expected: "",
+      type: "",
+      attachment: null,
+      availability: "",
+      question: "",
+      describe: "",
+    },
+  });
+
+  const { mutateAsync: uploadFile } = useEngineerFileUpload();
+  const { mutateAsync: sendProposal } = useSendProposalJob();
+
+  const handleSubmit = async (data: proposalTypes) => {
+    if (!userId) {
+      toast.error("Please login to submit a proposal");
+      return;
+    }
+
     await showPopup({
       title: "Submit Proposal",
       body: "Are you sure you want to submit the proposal?",
@@ -42,7 +78,6 @@ const SendProposal = () => {
           value: "cancel",
           variant: "secondary",
           action: async (close) => {
-            console.log("Cancel button clicked");
             close(true);
           },
         },
@@ -51,10 +86,31 @@ const SendProposal = () => {
           value: "ok",
           variant: "primary",
           action: async (close) => {
-            console.log("OK button clicked");
-            toast.success("Proposal submitted successfully!");
-            navigate(absoluteUrls.engineer.home.my_jobs);
-            close(true);
+            try {
+              await sendProposal({
+                proposalDescription: data.description,
+                expectedPay: data.expected,
+                payType: data.type,
+                engineerId: userId as string,
+                availability: data.availability,
+              });
+
+              if (data.attachment && data.attachment.length > 0) {
+                await uploadFile({
+                  engineerId: userId as string,
+                  file: data.attachment[0],
+                  documentType: "PROPOSAL",
+                });
+              }
+
+              toast.success("Proposal submitted successfully!");
+              navigate(absoluteUrls.engineer.home.my_jobs);
+              close(true);
+            } catch (error) {
+              console.error("Proposal submission failed:", error);
+              toast.error("Failed to submit proposal. Please try again.");
+              throw error;
+            }
           },
         },
       ],

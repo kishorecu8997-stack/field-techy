@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -29,6 +30,10 @@ import {
 import { CiMail } from "react-icons/ci";
 import { UserRole } from "@/shared/enums/users";
 import { AxiosError } from "axios";
+import TwoFASetup from "@/shared/components/TwoFASetup";
+import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
+import { getTwoFaStorage } from "@/utils/TwoFAStorage";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 
 /**
  * Login component
@@ -62,6 +67,16 @@ const Login = ({
       rememberMe: false,
     },
   });
+  const email = methods.watch("email");
+  const {
+    isTwoFaOpen,
+    setIsTwoFaOpen,
+    otpauthUrl,
+    handleSubmit: triggerTwoFA,
+    verify,
+  } = useTwoFactorAuth(email, setUserSession, () => {
+    navigate(absoluteUrls.engineer.home.dashboard);
+  });
 
   /**
    * handleSubmit
@@ -79,11 +94,18 @@ const Login = ({
       },
       {
         onSuccess: async (resp) => {
+          const twoFa = getTwoFaStorage();
+          if (twoFa.enabled) {
+            // 🚀 Trigger TOTP flow
+            triggerTwoFA();
+            return;
+          }
           //second layer of verification
           // setIsOpen(true);
           // toast.success("OTP Requested, kindly check your email for OTP");
           console.log(`Login Response: `, resp);
           setUserSession(resp as UserSession);
+
           navigate(absoluteUrls.engineer.home.dashboard);
           toast.success("Logged in successfully");
         },
@@ -154,10 +176,10 @@ const Login = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
-              className="h-20 w-24"
+             <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
+              className="h-15 w-20"
             />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -244,6 +266,14 @@ const Login = ({
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
             onResend={onResendOtp}
+          />
+        </Popup>
+
+        <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
+          <TwoFASetup
+            otpauthUrl={otpauthUrl}
+            onVerify={verify}
+            onClose={() => setIsTwoFaOpen(false)}
           />
         </Popup>
       </div>

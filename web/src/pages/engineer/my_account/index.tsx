@@ -1,7 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaBookmark,
@@ -16,7 +16,9 @@ import type { MenuItem } from "../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { absoluteUrls } from "@/config/urls";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
+import { useEngineerStore, useEngineerProfile } from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -35,11 +37,32 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  /*
+   * Use the profileImageUrl from the global store.
+   * The fetching logic is now centralized in useEngineerStore.
+   */
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfile = useEngineerProfile();
+
   const methods = useForm({
     defaultValues: {
       profileImage: assetsConfig.images.profile.defaultProfileImage,
     },
   });
+
+  const { setValue } = methods;
+
+  /* 
+   * Sync the profile image URL from the store to the form state.
+   * This ensures the image uploader displays the correct image.
+   */
+  useEffect(() => {
+    if (profileImageUrl) {
+      setValue("profileImage", profileImageUrl);
+    }
+  }, [profileImageUrl, setValue]);
+
 
   const menuItems: MenuItem[] = [
     {
@@ -87,17 +110,18 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
+  const logout = useUserSessionStore((state) => state.logout);
+  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Nick Wilson"
-            title="Software Engineer"
-            rating={4}
-            reviewCount={10}
+            avatarUrl={profileImageUrl || engineerProfile?.profilePicture || assetsConfig.images.profile.defaultProfileImage}
+            name={engineerProfile?.fullName || ""}
+            title={engineerProfile?.serviceCategory || ""}
+            rating={engineerProfile?.averageRating || 0}
             completionPercentage={39}
           />
         </div>
@@ -110,6 +134,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
+            logout();
+            clearEngineerProfile();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}

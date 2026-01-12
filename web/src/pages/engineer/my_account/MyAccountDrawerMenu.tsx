@@ -3,6 +3,8 @@ import { absoluteUrls } from "@/config/urls";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useEngineerProfile, useEngineerStore } from "@/shared/store/useEngineerStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -68,18 +70,23 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
   ];
+
+  const logout = useUserSessionStore((state) => state.logout);
+  const engineerProfile = useEngineerProfile();
+  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
   const navigate = useNavigate();
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
-            name="Michel Brown"
-            title="Software Engineer"
-            rating={4}
+            avatarUrl={engineerProfile?.profilePicture || assetsConfig.images.profile.defaultProfileImage}
+            name={engineerProfile?.fullName || ""}
+            title={engineerProfile?.serviceCategory || ""}
+            rating={engineerProfile?.averageRating || 0}
             reviewCount={10}
             completionPercentage={39}
+            engineerId={engineerProfile?.id}
           />
         </div>
         {menuItems.map((item, index, array) => (
@@ -140,6 +147,8 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={() => {
+            logout();
+            clearEngineerProfile();
             onClose();
             navigate(absoluteUrls.engineer.auth.login);
           }}

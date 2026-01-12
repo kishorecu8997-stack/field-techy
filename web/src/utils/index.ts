@@ -1,14 +1,14 @@
 /**
  * Creates a path builder function that replaces placeholders in a path template with actual values.
- * 
+ *
  * @param {string} pathTemplate - The path template with placeholders (e.g., "/users/:id/posts/:postId")
  * @returns {Function} A function that accepts params and returns the built path
- * 
+ *
  * @example
  * const buildUserPath = createPathBuilder("/users/:id/profile");
  * const path = buildUserPath({ id: "123" });
  * // Returns: "/users/123/profile"
- * 
+ *
  * @example
  * const buildPostPath = createPathBuilder("/users/:userId/posts/:postId");
  * const path = buildPostPath({ userId: "42", postId: "789" });
@@ -27,13 +27,13 @@ export function createPathBuilder(pathTemplate: string) {
 /**
  * Smoothly scrolls the window to the top of the page.
  * Uses smooth scrolling behavior for better user experience.
- * 
+ *
  * @returns {void}
- * 
+ *
  * @example
  * // Scroll to top when user clicks a button
  * <button onClick={scrollToTop}>Back to Top</button>
- * 
+ *
  * @example
  * // Scroll to top after navigation
  * useEffect(() => {
@@ -50,19 +50,19 @@ export function scrollToTop() {
 /**
  * Calculates the duration between two dates and returns a human-readable string.
  * Only shows the most significant time units (years, months, or days).
- * 
+ *
  * @param {string | Date} startDate - The start date
  * @param {string | Date} endDate - The end date
  * @returns {string} A human-readable duration string (e.g., "2 years 3 months")
- * 
+ *
  * @example
  * const duration = getDuration("2020-01-15", "2023-04-20");
  * // Returns: "3 years 3 months"
- * 
+ *
  * @example
  * const duration = getDuration(new Date("2023-01-01"), new Date("2023-02-15"));
  * // Returns: "1 month"
- * 
+ *
  * @example
  * const duration = getDuration("2023-12-01", "2023-12-05");
  * // Returns: "4 days"
@@ -103,18 +103,18 @@ export function getDuration(startDate: string | Date, endDate: string | Date) {
 /**
  * Builds a URL query string from an object of parameters.
  * Filters out undefined, null, and empty string values.
- * 
+ *
  * @param {Record<string, any>} params - Object containing query parameters
  * @returns {string} URL-encoded query string (without leading '?')
- * 
+ *
  * @example
  * const query = buildQuery({ page: 1, limit: 10, search: "engineer" });
  * // Returns: "page=1&limit=10&search=engineer"
- * 
+ *
  * @example
  * const query = buildQuery({ name: "John", age: null, city: "" });
  * // Returns: "name=John" (null and empty values are filtered out)
- * 
+ *
  * @example
  * // Use in API calls
  * const params = { status: "active", role: "admin" };
@@ -134,22 +134,22 @@ export const buildQuery = (params: Record<string, any>) => {
 
 /**
  * Converts 12-hour time format (with AM/PM) to 24-hour format.
- * 
+ *
  * @param {string} time - Time string in 12-hour format (e.g., "2:30 PM")
  * @returns {string} Time string in 24-hour format (e.g., "14:30")
- * 
+ *
  * @example
  * const time24 = to24("2:30 PM");
  * // Returns: "14:30"
- * 
+ *
  * @example
  * const time24 = to24("12:00 AM");
  * // Returns: "00:00"
- * 
+ *
  * @example
  * const time24 = to24("12:00 PM");
  * // Returns: "12:00"
- * 
+ *
  * @example
  * const time24 = to24("11:45 AM");
  * // Returns: "11:45"
@@ -168,20 +168,20 @@ export const to24 = (time: string) => {
 /**
  * Combines hour, minute, and period (AM/PM) into 24-hour format.
  * Convenience wrapper around the to24 function.
- * 
+ *
  * @param {string} h - Hour (1-12)
  * @param {string} m - Minute (0-59)
  * @param {string} p - Period ("AM" or "PM")
  * @returns {string} Time in 24-hour format (e.g., "14:30")
- * 
+ *
  * @example
  * const time = combineTo24("2", "30", "PM");
  * // Returns: "14:30"
- * 
+ *
  * @example
  * const time = combineTo24("9", "15", "AM");
  * // Returns: "09:15"
- * 
+ *
  * @example
  * // Use with form inputs
  * const hour = "3";
@@ -196,22 +196,22 @@ export const combineTo24 = (h: string, m: string, p: string) =>
 /**
  * Converts 24-hour time format to total minutes since midnight.
  * Useful for time comparisons and calculations.
- * 
+ *
  * @param {string | null | undefined} value24 - Time in 24-hour format (e.g., "14:30")
  * @returns {number | null} Total minutes since midnight, or null if invalid
- * 
+ *
  * @example
  * const minutes = time24ToMinutes("14:30");
  * // Returns: 870 (14 * 60 + 30)
- * 
+ *
  * @example
  * const minutes = time24ToMinutes("00:00");
  * // Returns: 0
- * 
+ *
  * @example
  * const minutes = time24ToMinutes("23:59");
  * // Returns: 1439
- * 
+ *
  * @example
  * // Compare two times
  * const start = time24ToMinutes("09:00");
@@ -228,14 +228,14 @@ export const time24ToMinutes = (value24: string | null | undefined) => {
 /**
  * Calculates a detailed duration string between two dates with optional times.
  * Returns a comprehensive breakdown including years, months, days, hours, and minutes.
- * 
+ *
  * @param {Object} params - The date and time parameters
  * @param {string} params.startDateStr - Start date in ISO format (e.g., "2023-01-15")
  * @param {string} params.endDateStr - End date in ISO format (e.g., "2023-04-20")
  * @param {string} [params.startTime] - Optional start time in 24-hour format (e.g., "09:00")
  * @param {string} [params.endTime] - Optional end time in 24-hour format (e.g., "17:30")
  * @returns {string} A detailed duration string
- * 
+ *
  * @example
  * const duration = getDurationString({
  *   startDateStr: "2023-01-01",
@@ -244,14 +244,14 @@ export const time24ToMinutes = (value24: string | null | undefined) => {
  *   endTime: "17:00"
  * });
  * // Returns: "1 day 8 hours"
- * 
+ *
  * @example
  * const duration = getDurationString({
  *   startDateStr: "2020-01-01",
  *   endDateStr: "2023-06-15"
  * });
  * // Returns: "3 years 5 months 14 days"
- * 
+ *
  * @example
  * const duration = getDurationString({
  *   startDateStr: "2023-12-01",
@@ -338,19 +338,19 @@ export function getDurationString({
  * Determines the minimum tentative end date by comparing application end date
  * and tentative start date, returning whichever is later.
  * Useful for job applications or project scheduling.
- * 
+ *
  * @param {string} applicationEndDate - The application end date in ISO format
  * @param {string} tentativeStartDate - The tentative start date in ISO format
  * @returns {Date} The later of the two dates
- * 
+ *
  * @example
  * const minDate = getMinTentativeEndDate("2023-12-31", "2024-01-15");
  * // Returns: Date object for 2024-01-15
- * 
+ *
  * @example
  * const minDate = getMinTentativeEndDate("2024-03-01", "2024-01-01");
  * // Returns: Date object for 2024-03-01
- * 
+ *
  * @example
  * // Use in form validation
  * const applicationEnd = "2024-06-30";
@@ -377,3 +377,16 @@ export const getExperienceLevel = (years?: number) => {
   return "L3"; // 4+ years: Senior/Expert-level
 };
 
+
+/**
+ * Get user id from local storage
+ * @returns 
+ */
+export function getUserId(): string | null {
+  const raw = localStorage.getItem("generic-user-session");
+  if (!raw) return null;
+
+  const parsed = JSON.parse(raw);
+  const userId = parsed?.state?.session?.userId;
+  return userId ? String(userId) : null;
+}
