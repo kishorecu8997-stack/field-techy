@@ -79,7 +79,7 @@ const ReportPage = ({
                 <IoCloseSharp className="w-6 h-6" />
               </button>
             </div>
-            <h1 className="text-xl font-bold text-center  dark:text-white">Report an Issue</h1>
+            <h1 className="text-xl font-bold text-center dark:text-white">Report an Issue</h1>
           </div>
 
           {/* Scrollable Form Content */}
