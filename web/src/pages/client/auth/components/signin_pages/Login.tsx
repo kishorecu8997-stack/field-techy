@@ -32,6 +32,7 @@ import {
 import { CiMail } from "react-icons/ci";
 import { UserRole } from "@/shared/enums/users";
 import { AxiosError } from "axios";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 
 /**
  * Login component
@@ -191,6 +192,7 @@ const Login = ({
             label="Email Address"
             type="email"
             required
+            rules={validateEmailRules}
           />
           <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
