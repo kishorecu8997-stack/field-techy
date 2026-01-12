@@ -259,7 +259,7 @@ const FilterPanel: React.FC<{
                 experience: value,
               });
             }}
-             style={{
+            style={{
               background: `linear-gradient(to right, #059669 0%, #059669 ${
                 (experience / 10) * 100
               }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
