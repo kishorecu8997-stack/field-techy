@@ -39,15 +39,32 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const navigate = useNavigate();
   const params = useParams();
   const { closePopup, showPopup } = usePopupStore();
+  const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
+    "hold"
+  );
   const handleMenuAction = (action: string) => {
-    if (action === "Hold the job") {
-      setIsConfirmOpen(true);
+    let type: "hold" | "clone" | "cancel";
+
+    switch (action) {
+      case "Hold the job":
+        type = "hold";
+        break;
+      case "Clone the job":
+        type = "clone";
+        break;
+      case "Cancel the job":
+        type = "cancel";
+        break;
+      default:
+        return;
     }
+
+    setActionType(type);
+    setIsConfirmOpen(true); // open modal
     setIsMenuOpen(false);
   };
-
-  const handleConfirmAction = (action: string) => {
-    console.log("Confirmed action:", action);
+  const handleConfirmAction = () => {
+    console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
   const handleBreakDetails = async () => {
@@ -139,9 +156,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       </Popup>
       <Popup open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
         <ConfirmationModal
+          actionType={actionType} // pass the selected action
+          onConfirm={handleConfirmAction} // single confirm callback
           onClose={() => setIsConfirmOpen(false)}
-          onHold={() => handleConfirmAction("onHold")}
-          onCancel={() => setIsConfirmOpen(false)}
         />
       </Popup>
     </>
