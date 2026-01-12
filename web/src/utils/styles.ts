@@ -1,4 +1,3 @@
-import type { StylesObj } from "@reactour/tour";
 import type { CSSProperties } from "react";
 
 export const getMdGridColsClass = (cols: number) => {

@@ -4,7 +4,16 @@ import { Button } from "../commonUI/Buttons";
 export interface GenericPopupButton {
   label: string;
   value: unknown;
-  variant?: "primary" | "outline" | "danger" | "secondary" | "link" | "ghost" | "text" | "solid" | undefined;
+  variant?:
+    | "primary"
+    | "outline"
+    | "danger"
+    | "secondary"
+    | "link"
+    | "ghost"
+    | "text"
+    | "solid"
+    | undefined;
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 
@@ -18,7 +27,7 @@ export interface GenericPopupProps {
 /*
  * A reusable modal/popup component for React + TS.
  * Supports async button actions and resolves via onClose().
- */ 
+ */
 export function GenericPopup(props: GenericPopupProps) {
   const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
 

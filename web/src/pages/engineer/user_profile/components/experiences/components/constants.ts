@@ -50,14 +50,14 @@ export const workLocationTypeOptions = [
  * Dummy data for designations. In a real app, this would likely come from an API.
  */
 export const designationOptions = [
-  { id: "1", title: "Angular Developer" },
-  { id: "2", title: "React Developer" },
-  { id: "3", title: "Frontend Engineer" },
-  { id: "4", title: "Backend Developer" },
-  { id: "5", title: "Full Stack Developer" },
-  { id: "6", title: "UI/UX Designer" },
-  { id: "7", title: "DevOps Engineer" },
-  { id: "8", title: "Software Architect" },
-  { id: "9", title: "QA Engineer" },
-  { id: "10", title: "Project Manager" },
-];
+  { value: "1", label: "Angular Developer" },
+  { value: "2", label: "React Developer" },
+  { value: "3", label: "Frontend Engineer" },
+  { value: "4", label: "Backend Developer" },
+  { value: "5", label: "Full Stack Developer" },
+  { value: "6", label: "UI/UX Designer" },
+  { value: "7", label: "DevOps Engineer" },
+  { value: "8", label: "Software Architect" },
+  { value: "9", label: "QA Engineer" },
+  { value: "10", label: "Project Manager" },
+] as const;

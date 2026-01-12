@@ -64,7 +64,7 @@ export function useClientProfileDelete(options?: {
 
 export function useClientProfileGetById(
   id: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: queryKeys.clientProfile.detail(id),
@@ -85,7 +85,7 @@ export function useClientProfileGetById(
  */
 export function useClientProfileGetProfileById(
   clientId: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: [...queryKeys.clientProfile.all, "profile", clientId],
@@ -116,7 +116,7 @@ export function useCurrentClientProfile(options?: { enabled?: boolean }) {
 
 export function useClientProfileGetAll(
   params: ClientProfilePaginationParams = {},
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: queryKeys.clientProfile.list(params),

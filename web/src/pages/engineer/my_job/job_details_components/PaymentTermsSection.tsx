@@ -1,5 +1,5 @@
-import React from 'react';
-import type { PaymentTermsSectionProps } from '../types';
+import React from "react";
+import type { PaymentTermsSectionProps } from "../types";
 
 /**
  * Displays the payment amount and type for the job.

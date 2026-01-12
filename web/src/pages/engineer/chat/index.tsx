@@ -13,14 +13,14 @@ import type { ChatMode, Conversation } from "./types";
  * It includes a sidebar, a chat window, and a mode toggle.
  *
  * @returns {JSX.Element} The rendered chat layout component.
- * @constructor 
+ * @constructor
  */
 const ChatLayout: React.FC = () => {
   const [mode, setMode] = useState<ChatMode>("personal");
 
   const initialConversation = useMemo(
     () => conversations.find((c) => c.type === mode) ?? null,
-    [mode]
+    [mode],
   );
 
   const [selectedConversationId, setSelectedConversationId] = useState<
@@ -34,14 +34,14 @@ const ChatLayout: React.FC = () => {
   }, [mode]);
 
   const filteredConversations = conversations.filter(
-    (c) => c.type === mode
+    (c) => c.type === mode,
   ) as Conversation[];
 
   const selectedConversation =
     filteredConversations.find((c) => c.id === selectedConversationId) ?? null;
 
   const conversationMessages = messages.filter(
-    (m) => m.conversationId === selectedConversation?.id
+    (m) => m.conversationId === selectedConversation?.id,
   );
 
   const handleSelectConversation = (conversationId: string) => {
@@ -60,14 +60,14 @@ const ChatLayout: React.FC = () => {
           </div>
         }
       />
-      <div className="flex max-h-full bg-gray-50 dark:bg-gray-900 overflow-hidden">
-        <div className="w-96 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col">
+      <div className="flex max-h-full bg-gray-50 overflow-hidden">
+        <div className="w-96 border-r border-gray-200 bg-white flex flex-col">
           <div className="px-8 pt-6 pb-4 ">
             <div className="">
               <input
                 type="text"
                 placeholder="Search Jobs.."
-                className="w-full rounded-2xl bg-gray-100 dark:bg-gray-700 px-4 py-2 text-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-400 text-gray-900 dark:text-gray-100"
+                className="w-full rounded-2xl bg-gray-100 px-4 py-2 text-sm outline-none placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -80,7 +80,7 @@ const ChatLayout: React.FC = () => {
           />
         </div>
 
-        <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+        <div className="flex-1 flex flex-col bg-white">
           <ChatWindow
             mode={mode}
             conversation={selectedConversation}

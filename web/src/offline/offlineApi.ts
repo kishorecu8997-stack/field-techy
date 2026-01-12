@@ -1,13 +1,15 @@
 import { addToQueue } from "./offlineQueue";
 import type { OfflineAction } from "./types";
-import { updateJobStatus } from "@/api/fakeApi";
+import { EngineerAdapter } from "@/shared/apiServices/engineer/engineerAdapter";
 
 /**
- * Fallback implementation of updateJobStatus used when the original
- * "@/api/fakeApi" module is not available.
- * In a real application, this should call the backend API.
+ * Fallback implementation of updateJobStatus used when the network is unstable.
+ * This wraps the actual API call with offline queueing support.
  */
-export async function offlineAwareUpdateJobStatus(jobId: string, status: string) {
+export async function offlineAwareUpdateJobStatus(
+  jobId: string,
+  status: string,
+) {
   const isOffline = !navigator.onLine;
 
   const action: OfflineAction = {
@@ -23,7 +25,7 @@ export async function offlineAwareUpdateJobStatus(jobId: string, status: string)
   }
 
   try {
-    return await updateJobStatus(jobId, status);
+    return await EngineerAdapter.updateJobStatus(jobId, status);
   } catch (err) {
     console.log("❌ API failed, saving to offline queue", err);
     addToQueue(action);

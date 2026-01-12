@@ -66,7 +66,7 @@ const PaymentMethod: React.FC<PaymentMethodSelectorProps> = ({
       {isHeader && (
         <div className="p-2 flex flex-col gap-2 items-center justify-center">
           <h2 className="text-3xl font-bold">Set Payment Method</h2>
-          <p className="text-md text-center text-gray-600 mb-6 px-3">
+          <p className="text-md text-center text-gray-600 dark:text-gray-400 mb-6 px-3">
             Complete your profile to unlock opportunities.
           </p>
         </div>

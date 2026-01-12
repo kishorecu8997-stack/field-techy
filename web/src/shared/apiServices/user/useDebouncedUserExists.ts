@@ -17,10 +17,10 @@ import { useUserExists } from "./userService";
 export function useDebouncedUserExists(
   emailOrPhone: string | undefined,
   debounceMs: number = 500,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   const [debouncedValue, setDebouncedValue] = useState<string | undefined>(
-    emailOrPhone
+    emailOrPhone,
   );
   const debounceRef = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -47,7 +47,7 @@ export function useDebouncedUserExists(
   const isValidForQuery = debouncedValue && debouncedValue.trim().length > 0;
   const queryResult = useUserExists(
     isValidForQuery ? debouncedValue : undefined,
-    { enabled: !!(isValidForQuery && (options?.enabled ?? true)) }
+    { enabled: !!(isValidForQuery && (options?.enabled ?? true)) },
   );
 
   // Determine validation state

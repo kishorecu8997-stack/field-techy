@@ -45,10 +45,7 @@ export default function ManageTransactions() {
     <div className="flex flex-col h-full w-full p-4 gap-2">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold">Manage Transactions</h1>
-        <Button
-          variant="solid"
-          onClick={handleCSVExport}
-        >
+        <Button variant="solid" onClick={handleCSVExport}>
           Export CSV
         </Button>
       </div>

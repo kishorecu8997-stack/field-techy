@@ -1,18 +1,18 @@
-import { sampleTransactions } from '@/dummy_data/invoiceData';
-import React, { useState } from 'react';
+import { sampleTransactions } from "@/dummy_data/invoiceData";
+import React, { useState } from "react";
 import { HiFilter } from "react-icons/hi";
 import { IoDownload } from "react-icons/io5";
-import type { TransactionInfo } from '../types';
-import Popup from '@/shared/components/Popup';
-import DownloadInvoice from './DownloadInvoice';
-import Filter from './Filter';
+import type { TransactionInfo } from "../types";
+import Popup from "@/shared/components/Popup";
+import DownloadInvoice from "./DownloadInvoice";
+import Filter from "./Filter";
 
 interface TransactionListProps {
   transactions: TransactionInfo[];
 }
 
-const RecentTransactionsList: React.FC<TransactionListProps> = ({ 
-  transactions = sampleTransactions
+const RecentTransactionsList: React.FC<TransactionListProps> = ({
+  transactions = sampleTransactions,
 }) => {
   // Group transactions by date (Today/Yesterday/Other)
   const groupTransactionsByDate = (transactions: TransactionInfo[] = []) => {
@@ -29,7 +29,7 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
     };
 
     transactions.forEach((transaction) => {
-      const transactionDate = new Date(transaction.date);      
+      const transactionDate = new Date(transaction.date);
       transactionDate.setHours(0, 0, 0, 0);
 
       if (transactionDate.getTime() === today.getTime()) {
@@ -47,9 +47,9 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
   const groupedTransactions = groupTransactionsByDate(transactions);
 
   const formatAmount = (amount: number) => {
-    const formatted = Math.abs(amount).toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    const formatted = Math.abs(amount).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
@@ -58,24 +58,24 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
   };
 
   const getStatusColor = (status?: string) => {
-    if (!status) return '';
+    if (!status) return "";
     switch (status.toLowerCase()) {
-      case 'processing':
-        return 'bg-amber-500 text-white';
-      case 'completed':
-        return 'bg-green-500 text-white';
-      case 'failed':
-        return 'bg-red-500 text-white';
+      case "processing":
+        return "bg-amber-500 text-white";
+      case "completed":
+        return "bg-green-500 text-white";
+      case "failed":
+        return "bg-red-500 text-white";
       default:
-        return 'bg-gray-500 text-white';
+        return "bg-gray-500 text-white";
     }
   };
 
-  const getAmountColor = (type: 'credit' | 'debit') => {
-    return type === 'credit'
-      ? 'text-emerald-600 dark:text-emerald-400'
-      : 'text-red-600 dark:text-red-400';
-  };  
+  const getAmountColor = (type: "credit" | "debit") => {
+    return type === "credit"
+      ? "text-emerald-600 dark:text-emerald-400"
+      : "text-red-600 dark:text-red-400";
+  };
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
@@ -101,7 +101,7 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
                       {transaction.status && (
                         <span
                           className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
-                            transaction.status
+                            transaction.status,
                           )}`}
                         >
                           {transaction.status}
@@ -109,14 +109,16 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
                       )}
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {new Date(transaction.date).toLocaleDateString()} |{' '}
+                      {new Date(transaction.date).toLocaleDateString()} |{" "}
                       {new Date(transaction.date).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </p>
                   </div>
-                  <div className={`font-medium ${getAmountColor(transaction.type)}`}>
+                  <div
+                    className={`font-medium ${getAmountColor(transaction.type)}`}
+                  >
                     {formatAmount(transaction.amount)}
                   </div>
                 </div>
@@ -131,13 +133,12 @@ const RecentTransactionsList: React.FC<TransactionListProps> = ({
 
 export default RecentTransactionsList;
 
-
-export const ActionButtonsForRecentTransactions=()=>{
+export const ActionButtonsForRecentTransactions = () => {
   const [isInvoicePopupOpen, setIsInvoicePopupOpen] = useState<boolean>(false);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState<boolean>(false);
 
-return(
-  <>
+  return (
+    <>
       <div
         onClick={
           isInvoicePopupOpen
@@ -161,7 +162,7 @@ return(
         <HiFilter className="h-6 w-6 cursor-pointer" />
       </div>
 
-       <Popup
+      <Popup
         open={isInvoicePopupOpen}
         onClose={() => setIsInvoicePopupOpen(false)}
       >
@@ -176,9 +177,9 @@ return(
       </Popup>
       <Popup
         open={isFilterPopupOpen}
-        onClose={() => setIsFilterPopupOpen(false)}       
-        inputClassName = "sm:max-w-xl sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto"
-      >        
+        onClose={() => setIsFilterPopupOpen(false)}
+        inputClassName="sm:max-w-xl sm:rounded-lg sm:shadow-xl w-full max-h-screen flex flex-col bg-white dark:bg-gray-800 inset-0 sm:inset-auto fixed sm:relative h-full sm:h-auto"
+      >
         <Filter
           isOpen={isFilterPopupOpen}
           onClose={() => setIsFilterPopupOpen(false)}
@@ -186,9 +187,8 @@ return(
             console.log("Applying filters...");
             setIsFilterPopupOpen(false);
           }}
-        />       
+        />
       </Popup>
     </>
-)
-}
-  
+  );
+};

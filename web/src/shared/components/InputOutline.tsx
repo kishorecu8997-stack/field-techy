@@ -1,7 +1,6 @@
 import React from "react";
 
-interface InputOutlineProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputOutlineProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   placeholder: string;
   className?: string;

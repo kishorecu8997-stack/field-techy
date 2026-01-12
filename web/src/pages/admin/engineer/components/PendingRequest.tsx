@@ -46,8 +46,9 @@ export default function PendingRequest() {
     const status = data.status;
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Engineer`,
-      body: `Are you sure you want to ${status?.charAt(0).toUpperCase() + status?.slice(1)
-        } this Engineer?`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this Engineer?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -61,10 +62,11 @@ export default function PendingRequest() {
             status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
           action: async (close) => {
             toast.success(
-              `Enginner ${status.toLocaleLowerCase() === "approve"
-                ? "approved"
-                : "rejected"
-              } successfully!`
+              `Enginner ${
+                status.toLocaleLowerCase() === "approve"
+                  ? "approved"
+                  : "rejected"
+              } successfully!`,
             );
             close(true);
           },
@@ -213,7 +215,7 @@ export default function PendingRequest() {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`
+                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`,
               )
             }
           >

@@ -27,7 +27,7 @@ export default function JobPostDropdown({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [dropdownPosition, setDropdownPosition] = useState<"left" | "right">(
-    "left"
+    "left",
   );
 
   // Smart positioning

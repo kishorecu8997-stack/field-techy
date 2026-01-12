@@ -26,7 +26,7 @@ const DrawerPaymentSection = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
-    initialPaymentOptions
+    initialPaymentOptions,
   );
 
   const handleSubmit = () => {

@@ -12,6 +12,7 @@ import { useState } from "react";
 import { assetsConfig } from "@/assets";
 import useDrawerStore from "../store/useDrawerStore";
 import { scrollToTop } from "@/utils";
+import IconWithTheme from "./IconWithTheme";
 
 /**
  * Main footer component with company info, quick links, support options,
@@ -30,10 +31,15 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row gap-12">
           <div className="md:w-1/3">
             <div className="mb-6">
-              <img
+              {/* <img
                 src={assetsConfig.logos.ftLogo}
                 alt="Field Techy Logo"
                 className="h-12 w-auto"
+              /> */}
+              <IconWithTheme
+                darkLogo={assetsConfig.logos.ftLogoWhite}
+                lightLogo={assetsConfig.logos.ftLogo}
+                className="h-12 "
               />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
@@ -182,8 +188,8 @@ const Footer = () => {
                       ? absoluteUrls.client.home.privacy_policy
                       : absoluteUrls.engineer.home.video_guidance
                   }
-                    onClick={() => {
-                    scrollToTop()
+                  onClick={() => {
+                    scrollToTop();
                     setActiveKey("videoGuidance");
                   }}
                 >

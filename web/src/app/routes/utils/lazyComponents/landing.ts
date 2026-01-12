@@ -6,4 +6,3 @@ import React from "react";
  */
 
 export const FTLanding = React.lazy(() => import("@/pages/ft_landing/index"));
-

@@ -62,7 +62,7 @@ export class ClientProfileAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_PROFILE_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -82,7 +82,7 @@ export class ClientProfileAdapter {
   static async getById(id: string): Promise<ClientProfileData> {
     try {
       const response = await axiosInstance.get(
-        CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id)
+        CLIENT_PROFILE_ROUTER_PATHS.GET_BY_ID(id),
       );
       return response.data;
     } catch (error) {
@@ -102,7 +102,7 @@ export class ClientProfileAdapter {
   static async getProfileById(clientId: string): Promise<ClientProfileData> {
     try {
       const response = await axiosInstance.get(
-        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(clientId)
+        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(clientId),
       );
       return response.data;
     } catch (error) {
@@ -125,7 +125,7 @@ export class ClientProfileAdapter {
       // Hardcoded client ID for testing: 9f034ed8-2ea5-44b6-a410-973e559e2c47
       const CLIENT_ID = "ce1dece0-78e4-4076-b73c-4060b718c8a9";
       const response = await axiosInstance.get(
-        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(CLIENT_ID)
+        CLIENT_PROFILE_ROUTER_PATHS.GET_PROFILE_BY_ID(CLIENT_ID),
       );
       return response.data;
     } catch (error) {
@@ -147,7 +147,7 @@ export class ClientProfileAdapter {
    * @throws {Error} If the request encounters an error
    */
   static async getAll(
-    params: ClientProfilePaginationParams = {}
+    params: ClientProfilePaginationParams = {},
   ): Promise<unknown> {
     try {
       const {
@@ -160,7 +160,7 @@ export class ClientProfileAdapter {
         CLIENT_PROFILE_ROUTER_PATHS.GET_PAGED,
         {
           params: { page, size, sortBy, direction },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -180,12 +180,12 @@ export class ClientProfileAdapter {
    */
   static async update(
     id: string,
-    data: ClientProfileData
+    data: ClientProfileData,
   ): Promise<ClientProfileData> {
     try {
       const response = await axiosInstance.put(
         CLIENT_PROFILE_ROUTER_PATHS.UPDATE(id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {

@@ -10,7 +10,10 @@ import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
 import Tooltip from "@/shared/components/Tooltip";
-import { useEngineerProfile } from "../store/useEngineerStore";
+import {
+  useEngineerProfile,
+  useEngineerStore,
+} from "../store/useEngineerStore";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -30,6 +33,7 @@ import { useEngineerProfile } from "../store/useEngineerStore";
  */
 const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();
@@ -115,10 +119,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         {isMobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="absolute top-16 right-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg w-64 z-50"
+            className="absolute top-16 right-6 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-50"
           >
             <div className="py-2">
-              <div className="w-full flex items-center px-4 py-3 text-left text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div
                   className="flex items-center space-x-3"
                   onClick={() => {
@@ -130,7 +134,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                 </div>
               </div>
               <div
-                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer dark:text-gray-200"
+                className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
                   onDrawerToggle();
                   setActiveKey("myEarning");
@@ -141,14 +145,12 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               </div>
 
               <div
-                className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="w-full flex items-center cursor-pointer px-4 py-3 text-left hover:bg-gray-100"
                 onClick={onDrawerToggle}
               >
-                <div className="flex items-center space-x-3 dark:text-gray-200">
-                  My Account
-                </div>
+                <div className="flex items-center space-x-3">My Account</div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaBell className="mr-3" size={18} />
                   <div
@@ -167,7 +169,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                 </div>
               </div>
 
-              <div className="w-full flex items-center px-4 py-3 text-left text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <FaComment className="mr-3" size={18} />
                   <div
@@ -224,7 +226,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             Hi, {engineerProfile?.fullName}
           </span>
           <img
-            src={assetsConfig.images.users.user}
+            src={profileImageUrl || assetsConfig.images.users.user}
             alt="User"
             className="h-8 w-8 rounded-full bg-white"
           />

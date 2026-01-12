@@ -23,7 +23,7 @@ export class AdminRouteStrategy implements RouteStrategy {
         element: React.createElement(
           AuthRedirect,
           null,
-          withSuspense(Components.AdminLogin)
+          withSuspense(Components.AdminLogin),
         ),
       },
       {
@@ -50,7 +50,11 @@ export class AdminRouteStrategy implements RouteStrategy {
         path: BASE.ADMIN,
         element: React.createElement(ProtectedRoute, {
           requiredRole: UserRole.ADMIN,
-          children: [withSuspense(Components.AdminLayout)],
+          children: React.createElement(
+            React.Fragment,
+            null,
+            withSuspense(Components.AdminLayout),
+          ),
         }),
         children: [
           { index: true, element: withSuspense(Components.AdminDashboard) },

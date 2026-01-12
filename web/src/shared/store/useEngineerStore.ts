@@ -1,15 +1,20 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { EngineerData } from "../apiServices/engineer/engineerTypes";
+import type {
+  EngineerData,
+  EngineerFile,
+} from "../apiServices/engineer/engineerTypes";
 import { EngineerAdapter } from "../apiServices/engineer/engineerAdapter";
 import { useUserSessionStore } from "./useUserSessionStore";
 
 interface EngineerStore {
   engineerProfile: EngineerData | null;
+  profileImageUrl: string | null;
   loading: boolean;
   setEngineerProfile: (profile: EngineerData | null) => void;
   clearEngineerProfile: () => void;
   fetchEngineerProfile: (id: string) => Promise<void>;
+  setProfileImageUrl: (url: string | null) => void;
 }
 
 /**
@@ -19,15 +24,46 @@ interface EngineerStore {
  */
 export const useEngineerStore = create<EngineerStore>((set, get) => ({
   engineerProfile: null,
+  profileImageUrl: null,
   loading: false,
   setEngineerProfile: (profile) => set({ engineerProfile: profile }),
-  clearEngineerProfile: () => set({ engineerProfile: null }),
+  setProfileImageUrl: (url) => set({ profileImageUrl: url }),
+  clearEngineerProfile: () => {
+    const currentUrl = get().profileImageUrl;
+    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    set({ engineerProfile: null, profileImageUrl: null });
+  },
   fetchEngineerProfile: async (id: string) => {
     if (get().loading) return;
     set({ loading: true });
     try {
-      const profile = await EngineerAdapter.getById(id);
+      const [profile, files] = await Promise.all([
+        EngineerAdapter.getById(id),
+        EngineerAdapter.getFiles(id),
+      ]);
+
       set({ engineerProfile: profile });
+
+      const profilePic = files.find(
+        (f: EngineerFile) => f.fileType === "PICTURE",
+      );
+
+      if (profilePic) {
+        try {
+          const { blob } = await EngineerAdapter.downloadFileStream(
+            profilePic.fileKey,
+          );
+          const oldUrl = get().profileImageUrl;
+          if (oldUrl) URL.revokeObjectURL(oldUrl);
+
+          const url = URL.createObjectURL(blob);
+          set({ profileImageUrl: url });
+        } catch (err) {
+          console.error("Failed to download profile picture", err);
+        }
+      } else {
+        set({ profileImageUrl: null });
+      }
     } catch (error) {
       console.error("Failed to fetch engineer profile:", error);
     } finally {

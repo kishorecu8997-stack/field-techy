@@ -6,7 +6,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
  *    - Displays a card with client interviewer details
  *    - Provides a button to edit the client interviewer
  * @returns {JSX.Element} The rendered Client Interviewer Card
- * @constructor 
+ * @constructor
  */
 export default function ClientInterviewerCard() {
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();

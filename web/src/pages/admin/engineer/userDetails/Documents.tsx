@@ -30,8 +30,8 @@ import type { EngineerFormData } from "../types";
  * @returns {JSX.Element} A form section component with document upload fields
  */
 export default function UserDocuments() {
-    const methods = useFormContext<EngineerFormData>();
-  
+  const methods = useFormContext<EngineerFormData>();
+
   return (
     <div>
       <FormContainer methods={methods} className="flex p-2 gap-4">

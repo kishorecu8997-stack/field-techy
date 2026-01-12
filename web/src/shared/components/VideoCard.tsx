@@ -27,13 +27,19 @@ function isTrustedVideoUrl(url: string): boolean {
  * It renders an iframe for YouTube, Vimeo, and YouTube Shorts videos.
  * If the URL is not from a trusted host, it displays a message.
  */
-const VideoCard: React.FC<VideoCardProps> = ({ title, description, videoUrl }) => {
+const VideoCard: React.FC<VideoCardProps> = ({
+  title,
+  description,
+  videoUrl,
+}) => {
   const isTrusted = isTrustedVideoUrl(videoUrl);
   const safeVideoUrl = isTrusted ? videoUrl : undefined;
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded shadow mb-6">
       <h3 className="font-semibold text-lg mb-2">{title}</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{description}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+        {description}
+      </p>
       <div className="aspect-video">
         {safeVideoUrl ? (
           <iframe
@@ -46,12 +52,13 @@ const VideoCard: React.FC<VideoCardProps> = ({ title, description, videoUrl }) =
           ></iframe>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
-            Video cannot be displayed because the URL is not from a supported provider.
+            Video cannot be displayed because the URL is not from a supported
+            provider.
           </div>
         )}
       </div>
-      </div>
+    </div>
   );
-}
+};
 
 export default VideoCard;

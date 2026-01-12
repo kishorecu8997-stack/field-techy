@@ -28,9 +28,7 @@ export default function WalletOverview() {
     <div className="flex flex-col h-full w-full p-4 gap-2">
       <div className="flex justify-between items-center">
         <h1 className="font-semibold">Wallet Management</h1>
-        <Button variant="solid">
-          Export CSV
-        </Button>
+        <Button variant="solid">Export CSV</Button>
       </div>
       <div className="w-full h-full bg-white dark:bg-gray-700 rounded-lg p-2">
         <div className="flex p-2 w-full h-full">

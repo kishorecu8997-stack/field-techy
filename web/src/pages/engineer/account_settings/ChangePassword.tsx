@@ -35,7 +35,7 @@ const ChangePassword = () => {
   const session = useUserSessionStore((state) => state.session);
   const userId = session?.userId;
 
-  const { data: sessionData } = useEngineerGetById(userId, {
+  const { data: sessionData } = useEngineerGetById(userId ?? "", {
     enabled: !!userId,
   });
   const { mutateAsync: updatePassword } = useUpdatePassword();
@@ -46,7 +46,9 @@ const ChangePassword = () => {
   }) => {
     const email = sessionData?.email;
     if (!email) {
-      toast.error("User information is not fully loaded. Please wait a moment and try again.");
+      toast.error(
+        "User information is not fully loaded. Please wait a moment and try again.",
+      );
       return;
     }
     await showPopup({

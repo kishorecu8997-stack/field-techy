@@ -11,15 +11,15 @@ interface EngineerCardProps {
 }
 
 interface EngineerCardListProps {
-    name: string;
-    rating: number;
-    bidAmount:string;
-    payType:string;
-    reviewCount: number;
-    title: string;
-    availability:string;    
-    imageUrl: string;
-    status:string;    
+  name: string;
+  rating: number;
+  bidAmount: string;
+  payType: string;
+  reviewCount: number;
+  title: string;
+  availability: string;
+  imageUrl: string;
+  status: string;
 }
 
 export interface ProposalListType {

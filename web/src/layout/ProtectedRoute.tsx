@@ -46,7 +46,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
   useEffect(() => {
     if (hasInsufficientPermissions && session && requiredRole) {
       console.error(
-        `Access denied: User with role "${session.role}" does not have required permission "${requiredRole}"`
+        `Access denied: User with role "${session.role}" does not have required permission "${requiredRole}"`,
       );
       toast.error("Something went wrong. Please log in again.");
       logout();
