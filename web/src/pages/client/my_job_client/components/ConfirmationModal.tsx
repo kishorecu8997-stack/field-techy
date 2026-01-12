@@ -63,9 +63,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="flex flex-row gap-4">
             <Button
               onClick={onConfirm}
-              className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
-            >
-              {buttonTexts[actionType]}
+             className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      actionType === "cancel"
+        ? "bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white"
+        : "bg-emerald-800 hover:bg-emerald-700 focus:ring-emerald-500 text-white"
+    }
+  `}
+>       {buttonTexts[actionType]}
             </Button>
             <Button
               onClick={onClose}
