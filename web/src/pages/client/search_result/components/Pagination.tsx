@@ -56,7 +56,7 @@ const Pagination: React.FC<{
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex justify-center items-center mt-6 space-x-2">
+     <div className="flex justify-center items-center mt-6 space-x-2">
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
