@@ -111,10 +111,10 @@ const Home = () => {
 const PermissionManager = () => {
   const [accessPopup, setAccessPopup] = useState(false);
   const locationPermission = useDeviceStore(
-    (state) => state.locationPermission
+    (state) => state.locationPermission,
   );
   const notificationPermission = useDeviceStore(
-    (state) => state.notificationPermission
+    (state) => state.notificationPermission,
   );
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();

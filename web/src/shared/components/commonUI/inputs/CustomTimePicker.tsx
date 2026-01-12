@@ -61,10 +61,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   const hours = Array.from({ length: 12 }, (_, i) =>
-    String(i + 1).padStart(2, "0")
+    String(i + 1).padStart(2, "0"),
   );
   const minutes = Array.from({ length: 60 }, (_, i) =>
-    String(i).padStart(2, "0")
+    String(i).padStart(2, "0"),
   );
   const periods = ["AM", "PM"] as const;
 
@@ -135,7 +135,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   const isMinuteDisabled = (
     minute: string,
     hourDisplay: string,
-    period: "AM" | "PM"
+    period: "AM" | "PM",
   ) => {
     const effectiveHour = hourDisplay !== "--" ? hourDisplay : "12";
     const candidate = combineTo24(effectiveHour, minute, period);
@@ -261,15 +261,15 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                           setValue(
                             h,
                             displayMinute !== "--" ? displayMinute : "00",
-                            displayPeriod
+                            displayPeriod,
                           );
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledHour
                             ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
                             : isActive
-                            ? "bg-blue-600 text-white cursor-pointer"
-                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              ? "bg-blue-600 text-white cursor-pointer"
+                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {h}
@@ -284,7 +284,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                     const disabledMinute = isMinuteDisabled(
                       m,
                       displayHour,
-                      displayPeriod
+                      displayPeriod,
                     );
                     const isActive = m === displayMinute && !disabledMinute;
 
@@ -296,15 +296,15 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                           setValue(
                             displayHour !== "--" ? displayHour : "12",
                             m,
-                            displayPeriod
+                            displayPeriod,
                           );
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledMinute
                             ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
                             : isActive
-                            ? "bg-blue-600 text-white cursor-pointer"
-                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              ? "bg-blue-600 text-white cursor-pointer"
+                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {m}
@@ -327,15 +327,15 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                           setValue(
                             displayHour !== "--" ? displayHour : "12",
                             displayMinute !== "--" ? displayMinute : "00",
-                            p
+                            p,
                           );
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledPeriod
                             ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
                             : isActive
-                            ? "bg-blue-600 text-white cursor-pointer"
-                            : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              ? "bg-blue-600 text-white cursor-pointer"
+                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
                         }`}
                       >
                         {p}

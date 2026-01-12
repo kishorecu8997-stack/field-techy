@@ -12,7 +12,7 @@ import { Button } from "./commonUI/Buttons";
  *
  * @component
  * @example
- * <JobSearchBar /> 
+ * <JobSearchBar />
  *
  */
 export const JobSearchBar = () => {
@@ -38,7 +38,7 @@ export const JobSearchBar = () => {
     "Creative Solutions",
     "DesignPro Studios",
     "Tech Innovators",
-    "Senior Product Designer"
+    "Senior Product Designer",
   ];
 
   // State for filtered suggestions and dropdown visibility
@@ -66,8 +66,8 @@ export const JobSearchBar = () => {
   const handleSearchChange = (value: string) => {
     handleNavigate(value); // Keep existing navigation
     if (value.trim()) {
-      const filtered = suggestions.filter(suggestion =>
-        suggestion.toLowerCase().includes(value.toLowerCase())
+      const filtered = suggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredSuggestions(filtered);
       setShowDropdown(true);
@@ -103,17 +103,19 @@ export const JobSearchBar = () => {
 
           <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
 
-         {/* Analytics Button/Icon */}
-        <Button
-          type="button"
-          onClick={() => navigate(absoluteUrls.engineer.home.search_analytics)}
-          className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
-          title="View Search Analytics"
-          aria-label="View Search Analytics"
-        >
-          <FaChartBar size={20} />
-        </Button>
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
+          {/* Analytics Button/Icon */}
+          <Button
+            type="button"
+            onClick={() =>
+              navigate(absoluteUrls.engineer.home.search_analytics)
+            }
+            className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
+            title="View Search Analytics"
+            aria-label="View Search Analytics"
+          >
+            <FaChartBar size={20} />
+          </Button>
+          <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
           {/* Location */}
           <InputField
             name="location"

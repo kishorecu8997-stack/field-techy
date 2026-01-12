@@ -75,7 +75,7 @@ interface EngineerRegistrationState {
       password: string;
       confirmPassword: string;
       isEnableNotifications: boolean;
-    }>
+    }>,
   ) => void;
 
   updateDocuments: (
@@ -84,7 +84,7 @@ interface EngineerRegistrationState {
       governmentIdUrl: string;
       certificateUrl: string;
       profileImageUrl: string;
-    }>
+    }>,
   ) => void;
 
   setCurrentStep: (step: number) => void;
@@ -261,6 +261,6 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
         completedSteps: state.completedSteps,
         isEnableNotifications: state.isEnableNotifications,
       }),
-    }
-  )
+    },
+  ),
 );

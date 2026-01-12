@@ -2,7 +2,7 @@ export interface Document {
   id: number;
   title: string;
   fileName: string;
-  fileType: 'PDF' | 'PNG' | 'JPEG' | 'JPG' | 'GIF' | 'DOCX' | 'XLSX';
+  fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
   uploadDate?: string;
   description?: string;

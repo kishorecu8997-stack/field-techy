@@ -28,7 +28,7 @@ import { getTwoFaStorage, setTwoFaStorage } from "@/utils/TwoFAStorage";
 export const useTwoFactorAuth = (
   email: string,
   setUserSession: any,
-  onSuccess?: () => void
+  onSuccess?: () => void,
 ) => {
   const [isTwoFaOpen, setIsTwoFaOpen] = useState(false);
   const [base32, setBase32] = useState<string | null>(null);
@@ -123,7 +123,7 @@ export const useTwoFactorAuth = (
         toast.error("Code Invalid");
       }
     },
-    [base32, email, onSuccess]
+    [base32, email, onSuccess],
   );
 
   return {

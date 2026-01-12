@@ -82,4 +82,3 @@ const RootLayout = (): JSX.Element => {
 };
 
 export default RootLayout;
-

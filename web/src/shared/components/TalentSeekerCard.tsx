@@ -17,16 +17,15 @@ export const TalentSeekerCard = () => {
       <div className="relative z-10">
         <h2 className="text-lg font-bold mb-2">Looking for Talent?</h2>
         <p className="text-sm opacity-90 mb-4">
-          Post your job opportunity and effortlessly engage with skilled professionals!
+          Post your job opportunity and effortlessly engage with skilled
+          professionals!
         </p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           <NavLink
             to={absoluteUrls.client.home.post_JobPage}
             className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
           >
-            <Button
-              className="bg-emerald-100 text-emerald-900 hover:bg-emerald-200 font-medium py-2 px-4 rounded-2xl text-sm transition-colors duration-200"
-            >
+            <Button className="bg-emerald-100 text-emerald-900 hover:bg-emerald-200 font-medium py-2 px-4 rounded-2xl text-sm transition-colors duration-200">
               Post A Job
             </Button>
           </NavLink>

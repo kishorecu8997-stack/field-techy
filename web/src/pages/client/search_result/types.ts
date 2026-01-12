@@ -4,7 +4,7 @@ export const BUDGET_TYPES = {
   Fixed: "fixed",
 } as const;
 
-export type JobStatus = "completed" | "posted" | "inprogress"|"hold";
+export type JobStatus = "completed" | "posted" | "inprogress" | "hold";
 export const JOB_STATUSES = {
   completed: "completed",
   posted: "posted",
@@ -17,7 +17,6 @@ export const WORKING_TYPES = {
   onsite: "on-site",
   remote: "remote",
 } as const;
-
 
 export const WORKING_TYPES_PROPERTY = {
   onsite: "On Site",
@@ -58,7 +57,7 @@ export interface Job {
   company?: string;
   employmentType?: string;
   engineers?: string;
-  engineerAvatars?: string[];  
+  engineerAvatars?: string[];
   serviceType?: string;
 }
 
@@ -88,10 +87,13 @@ export interface Options {
 
 const jobFilters = ["All Jobs", "In-Progress", "Completed", "Posted", "Hold"];
 
-const jobFilterObj = jobFilters.reduce<Record<number, string>>((acc, filter, index) => {
-  acc[index] = filter;
-  return acc;
-}, {});
+const jobFilterObj = jobFilters.reduce<Record<number, string>>(
+  (acc, filter, index) => {
+    acc[index] = filter;
+    return acc;
+  },
+  {},
+);
 
 export const JOB_FILTERS = jobFilterObj;
 export default jobFilters;

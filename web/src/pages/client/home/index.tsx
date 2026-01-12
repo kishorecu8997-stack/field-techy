@@ -1,4 +1,3 @@
-
 /**
  * Home page component.
  *
@@ -6,9 +5,7 @@
  * @returns {JSX.Element} The home page UI.
  */
 const Home = () => {
-  return (
-    <div>home</div>
-  )
-}
+  return <div>home</div>;
+};
 
-export default Home
+export default Home;

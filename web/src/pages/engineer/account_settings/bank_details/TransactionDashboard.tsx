@@ -98,10 +98,11 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
               </div>
               <div
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`px-4 py-2 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${isFilterOpen
-                  ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
-                  : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                  }`}
+                className={`px-4 py-2 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
+                  isFilterOpen
+                    ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
+                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
               >
                 <HiFilter className="w-5 h-5" />
                 Filters
@@ -191,7 +192,7 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
                     <td className="px-8 py-4 whitespace-nowrap text-sm">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                          status
+                          status,
                         )}`}
                       >
                         {status}

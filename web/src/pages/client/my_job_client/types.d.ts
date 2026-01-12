@@ -128,6 +128,6 @@ export interface Engineer {
 export interface EngineerInviteCardProps {
   engineer: Engineer;
   onSelectionToggle: (id: number) => void; // for checkbox
-  onInviteClick?: (id?: number) => void;                // for invite button
+  onInviteClick?: (id?: number) => void; // for invite button
   selected?: boolean;
 }

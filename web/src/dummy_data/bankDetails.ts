@@ -61,7 +61,7 @@ export const transactions: Transaction[] = [
   {
     id: 7,
     description: "Server Maintenance",
-    amount: 150.50,
+    amount: 150.5,
     date: "2024-02-23T14:00:00",
     status: "Completed",
   },
@@ -90,21 +90,21 @@ export const transactions: Transaction[] = [
     id: "tx-101",
     description: "Freelance Project - Alpha",
     date: new Date("2023-11-15"),
-    amount: 1250.00,
+    amount: 1250.0,
     status: "Completed",
   },
   {
     id: "tx-102",
     description: "Equipment Purchase",
     date: new Date("2023-11-12"),
-    amount: -450.00,
+    amount: -450.0,
     status: "Completed",
   },
   {
     id: "tx-103",
     description: "Consulting Fee",
     date: new Date("2023-11-10"),
-    amount: 800.00,
+    amount: 800.0,
     status: "Pending",
   },
   {
@@ -118,30 +118,30 @@ export const transactions: Transaction[] = [
     id: "tx-105",
     description: "Emergency Repair",
     date: new Date("2023-11-01"),
-    amount: 300.00,
+    amount: 300.0,
     status: "Completed",
   },
   {
     id: "w-101",
     description: "Withdrawal to Bank of America",
-    amount: -200.00,
+    amount: -200.0,
     date: "2024-02-20T10:00:00",
     status: "Approved",
   },
   {
     id: "w-102",
     description: "Withdrawal to Chase",
-    amount: -150.00,
+    amount: -150.0,
     date: "2024-02-15T14:30:00",
     status: "Completed",
   },
   {
     id: "w-103",
     description: "Withdrawal to Wells Fargo",
-    amount: -500.00,
+    amount: -500.0,
     date: "2024-02-10T09:15:00",
     status: "Failed",
-  }
+  },
 ];
 
 // Define your bank list (for name lookup)

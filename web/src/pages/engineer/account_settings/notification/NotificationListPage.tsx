@@ -88,7 +88,7 @@ const NotificationListPage = () => {
     const handleclick = () => {
       const targetpath =
         pathname(type) ?? absoluteUrls.engineer.home.notifications;
-      navigate(targetpath), scrollTo(0, 0), closePopup();
+      (navigate(targetpath), scrollTo(0, 0), closePopup());
     };
 
     return (
@@ -133,11 +133,11 @@ const NotificationListPage = () => {
   function Notificationfilter(
     type: string,
     data: NotificationProps[],
-    name: string
+    name: string,
   ) {
     if (name.length > 0) {
       const searchfilter = data.filter((filter: NotificationProps) =>
-        filter.title.toLowerCase().includes(name.toLowerCase())
+        filter.title.toLowerCase().includes(name.toLowerCase()),
       );
       return searchfilter;
     }
@@ -145,12 +145,12 @@ const NotificationListPage = () => {
       return data;
     } else if (type === "unread") {
       const unread = data.filter(
-        (filter: NotificationProps) => filter.read === false
+        (filter: NotificationProps) => filter.read === false,
       );
       return unread;
     }
     const filter = data.filter(
-      (filter: NotificationProps) => filter.type === type
+      (filter: NotificationProps) => filter.type === type,
     );
     return filter;
   }
@@ -260,8 +260,8 @@ const NotificationListPage = () => {
       <div
         className="flex cursor-pointer mt-2 flex-row items-center justify-center gap-x-5"
         onClick={() => {
-          filter > 4 ? setFilter(4) : setFilter(mockNotifications.length),
-            scrollTo(0, 0);
+          (filter > 4 ? setFilter(4) : setFilter(mockNotifications.length),
+            scrollTo(0, 0));
         }}
       >
         <span className="text-gray-600 font-semibold">

@@ -56,7 +56,8 @@ export const JOB_STATUS_VALUES = {
 /**
  * Type alias for job statuses, derived from `JOB_STATUS_VALUES`.
  */
-export type JobStatus = (typeof JOB_STATUS_VALUES)[keyof typeof JOB_STATUS_VALUES];
+export type JobStatus =
+  (typeof JOB_STATUS_VALUES)[keyof typeof JOB_STATUS_VALUES];
 
 /** Options for the Job Status select field, including display labels. */
 export const jobStatusOptions = [
@@ -64,5 +65,3 @@ export const jobStatusOptions = [
   { label: "Completed", value: JOB_STATUS_VALUES.COMPLETED },
   { label: "Posted", value: JOB_STATUS_VALUES.POSTED },
 ];
-
-

@@ -181,7 +181,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
             validate: (value: string) =>
               validateZipcode(
                 value,
-                typeof country === "string" ? country : (country as any)?.value
+                typeof country === "string" ? country : (country as any)?.value,
               ),
           }}
         />

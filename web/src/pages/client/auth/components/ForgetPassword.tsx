@@ -29,7 +29,7 @@ const ForgetPassword = () => {
     },
   });
 
-  const handleSubmit = () => {    
+  const handleSubmit = () => {
     setIsOpen(true);
   };
 
@@ -38,7 +38,11 @@ const ForgetPassword = () => {
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img src={assetsConfig.logos.companyLogo} alt="logo" className="h-20 w-24" />
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24"
+            />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-md font-extralight ">
@@ -50,7 +54,12 @@ const ForgetPassword = () => {
           onSubmit={handleSubmit}
           className="flex flex-col  p-2 gap-10"
         >
-          <InputField name="email" label="Email Address" type="email" required />
+          <InputField
+            name="email"
+            label="Email Address"
+            type="email"
+            required
+          />
 
           <Button
             type="submit"
@@ -65,7 +74,9 @@ const ForgetPassword = () => {
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            handleNavigate={() => navigate(absoluteUrls.client.auth.reset_password)}
+            handleNavigate={() =>
+              navigate(absoluteUrls.client.auth.reset_password)
+            }
           />
         </Popup>
       </div>

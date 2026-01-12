@@ -12,15 +12,15 @@ import { toast } from "react-toastify";
 
 /**
  * Multi-step Registration Form
- * 
+ *
  * This component is a multi-step registration form that guides the user through the registration process.
  * It consists of three steps: Profile Setting, Background Verification, and Password Setting.
- * 
+ *
  * The form is divided into two parts: the first part (Profile Setting) is where the user sets up their profile information,
  * such as name, email, phone number, address, skills, portfolio, service category, amount, designation, company, and experience.
- * 
+ *
  * The second part (Background Verification) is where the user verifies their identity by providing government ID and certificate.
- * 
+ *
  * The third part (Password Setting) is where the user sets up their password and confirms it.
  */
 const MultiStepRegistrationForm = () => {
@@ -35,7 +35,7 @@ const MultiStepRegistrationForm = () => {
     onError: (error: any) => {
       console.error("Submit error:", error);
       toast.error("Registration failed. Please try again.");
-    }
+    },
   });
 
   const methods = useForm<CompleteRegistrationData>({
@@ -76,7 +76,7 @@ const MultiStepRegistrationForm = () => {
 
   // Handle step validation & navigation
   const handleStepSubmit: SubmitHandler<CompleteRegistrationData> = async (
-    data
+    data,
   ) => {
     let isValid = false;
 

@@ -7,7 +7,10 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
-import { useClientStore, useClientProfile } from "@/shared/store/useClientStore";
+import {
+  useClientStore,
+  useClientProfile,
+} from "@/shared/store/useClientStore";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -91,19 +94,21 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         />
         <NavLink
           to={absoluteUrls.client.home.my_projects}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           to={absoluteUrls.client.home.my_jobs}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>

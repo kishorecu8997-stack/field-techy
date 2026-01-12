@@ -22,7 +22,7 @@ const ProposalListPage: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEngineers = filteredEngineers.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   return (

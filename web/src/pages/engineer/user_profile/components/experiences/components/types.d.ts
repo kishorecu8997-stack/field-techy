@@ -4,7 +4,7 @@ export type ExperiencesFormData = {
   employer: string;
   workLocationType: string;
   employmentType: string;
-  startDate: Date | null ;
-  endDate: Date | null ;
-  isCurrent:boolean;
+  startDate: Date | null;
+  endDate: Date | null;
+  isCurrent: boolean;
 };

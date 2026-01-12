@@ -23,9 +23,9 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const { allocationType = "Automatic" } = props;
+  const job = props;
 
   const normalized = useMemo(() => {
-    const job = props;
     return {
       id: job.id,
       title: job.jobTitle || job.title || "Untitled Job",
@@ -39,16 +39,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     };
   }, [props]);
 
-  const {
-    id,
-    title,
-    client,
-    duration,
-    location,
-    pay,
-    status,
-    type,
-  } = normalized;
+  const { id, title, client, duration, location, pay, status, type } =
+    normalized;
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
@@ -82,7 +74,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         </p>
         <p>
           <span className="font-medium">Start:</span>
-          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(", ") || "N/A"}
+          {[job?.startDate, job?.startTime].filter(Boolean).join(" - ")}
         </p>
         <p>
           <span className="font-medium">Duration:</span> {duration}

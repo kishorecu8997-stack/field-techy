@@ -1,5 +1,5 @@
-import type { NotificationProps } from '@/pages/engineer/account_settings/types';
-import React from 'react';
+import type { NotificationProps } from "@/pages/engineer/account_settings/types";
+import React from "react";
 
 interface NotificationItemProps {
   notification: NotificationProps;
@@ -11,7 +11,9 @@ interface NotificationItemProps {
  * @param {NotificationProps} notification - The notification object.
  * @returns {JSX.Element} The NotificationItem component.
  */
-const NotificationItem: React.FC<NotificationItemProps> = ({ notification }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+}) => {
   const { title, message, timestamp, icon } = notification;
 
   return (
@@ -25,7 +27,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification }) => 
             <h3 className="font-semibold text-gray-900">{title}</h3>
             <p className="mt-1 text-sm text-gray-700">{message}</p>
           </div>
-          <span className="text-xs text-gray-500 ml-4 whitespace-nowrap">{timestamp}</span>
+          <span className="text-xs text-gray-500 ml-4 whitespace-nowrap">
+            {timestamp}
+          </span>
         </div>
       </div>
     </div>

@@ -102,7 +102,7 @@ const Login = ({
             error instanceof Error ? error.message : "Login failed";
           toast.error(errorMessage);
         },
-      }
+      },
     );
   };
 
@@ -137,7 +137,7 @@ const Login = ({
           console.error(error);
           toast.error("");
         },
-      }
+      },
     );
   };
 

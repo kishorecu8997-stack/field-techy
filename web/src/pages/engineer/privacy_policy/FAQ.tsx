@@ -35,7 +35,7 @@ const FAQ = () => {
     }).filter(
       (section) =>
         section.items.length > 0 ||
-        section.title.toLowerCase().includes(searchText)
+        section.title.toLowerCase().includes(searchText),
     );
   }, [search]);
   return (

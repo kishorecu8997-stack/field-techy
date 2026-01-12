@@ -14,11 +14,14 @@ import {
   FaGraduationCap,
   FaSignOutAlt,
   FaUser,
-  FaWrench
+  FaWrench,
 } from "react-icons/fa";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
-import { useEngineerStore, useEngineerProfile } from "@/shared/store/useEngineerStore";
+import {
+  useEngineerStore,
+  useEngineerProfile,
+} from "@/shared/store/useEngineerStore";
 import type { MenuItem } from "./types";
 
 /**
@@ -100,7 +103,9 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
 
   const logout = useUserSessionStore((state) => state.logout);
   const engineerProfile = useEngineerProfile();
-  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
+  const clearEngineerProfile = useEngineerStore(
+    (state) => state.clearEngineerProfile,
+  );
   const navigate = useNavigate();
 
   return (

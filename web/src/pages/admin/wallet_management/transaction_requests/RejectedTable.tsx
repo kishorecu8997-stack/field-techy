@@ -8,13 +8,15 @@ import { StatusTypes, type TransactionRequest } from "../wallet_overview/types";
 
 /**
  * RejectedTable Component
- *  
+ *
  * Renders a table of transaction requests with client info, job details, and actions.
  *  @returns {JSX.Element} The transaction requests management view.
  */
 const RejectedTable: React.FC = () => {
   const getRejectedData = () => {
-    return transactionRequest.filter((item) => item.status === StatusTypes.Reject);
+    return transactionRequest.filter(
+      (item) => item.status === StatusTypes.Reject,
+    );
   };
 
   const columns: Column<TransactionRequest>[] = [

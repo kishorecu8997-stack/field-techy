@@ -44,13 +44,13 @@ export const useClientStore = create<ClientStore>((set, get) => ({
 
       // Find profile picture
       const profilePic = files.find(
-        (f: ClientFile) => f.fileType === "PROFILE_PICTURE"
+        (f: ClientFile) => f.fileType === "PROFILE_PICTURE",
       );
 
       if (profilePic) {
         try {
           const { blob } = await ClientAdapter.downloadFileStream(
-            profilePic.fileKey
+            profilePic.fileKey,
           );
           const oldUrl = get().profileImageUrl;
           if (oldUrl) URL.revokeObjectURL(oldUrl);
@@ -88,7 +88,7 @@ export const useClientProfile = () => {
     // Verify user role is CLIENT to avoid incorrect fetches
     if (userId && session?.role === "CLIENT") {
       if (!profile || (profile.id === userId && !profile.contactPersonName)) {
-         fetchProfile(userId);
+        fetchProfile(userId);
       }
     }
   }, [session?.userId, session?.role, profile, fetchProfile]);

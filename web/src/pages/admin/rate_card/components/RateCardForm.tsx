@@ -1,4 +1,10 @@
-import { ClientNameList, countryList, projectNameList, rateCardTypes, regionList } from "@/dummy_data/admin";
+import {
+  ClientNameList,
+  countryList,
+  projectNameList,
+  rateCardTypes,
+  regionList,
+} from "@/dummy_data/admin";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { useFormContext } from "react-hook-form";
 
@@ -48,11 +54,7 @@ const RateCardForm = () => {
               required
               options={ClientNameList}
             />
-            <SelectField
-              name="region"
-              label="Region"
-              options={regionList}
-            />
+            <SelectField name="region" label="Region" options={regionList} />
           </>
         )}
         <SelectField

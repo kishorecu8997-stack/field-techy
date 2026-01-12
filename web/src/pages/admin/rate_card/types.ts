@@ -50,4 +50,4 @@ export type PricingRelations = {
   monthly?: number;
 };
 
-export type PricingField = keyof PricingRelations; 
+export type PricingField = keyof PricingRelations;

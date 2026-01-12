@@ -10,10 +10,9 @@ export interface SelectFieldProps {
   placeholder?: string;
   required?: boolean | string;
   options: SelectOption[];
-  isShowLabel?:boolean;
+  isShowLabel?: boolean;
   rules?: RegisterOptions;
 }
-
 
 interface CheckboxInputProps {
   name: string;
@@ -101,7 +100,7 @@ export interface SelectFieldProps {
   options: SelectOption[];
   rules?: RegisterOptions;
   leftIcon?: React.ReactNode;
-  disabled ?: boolean;
+  disabled?: boolean;
 }
 
 interface CountrySelectProps {
@@ -228,7 +227,6 @@ export interface VerifyEmailModalProps {
   name?: string;
 }
 
-
 export interface InputFieldProps {
   name: string;
   label?: string;
@@ -245,7 +243,6 @@ export interface InputFieldProps {
   onChange?: (value: string) => void;
 }
 
-
 export interface DatePickerInputProps {
   name: string;
   label?: string;
@@ -257,6 +254,6 @@ export interface DatePickerInputProps {
   required?: boolean | string;
   rules?: RegisterOptions;
   containerClassName?: string;
-  disabled?:boolean;
-  hidden?:boolean;
+  disabled?: boolean;
+  hidden?: boolean;
 }

@@ -39,14 +39,14 @@ export default function AdminVerifyOTP() {
       {
         onSuccess: () => {
           toast.success(
-            "Password reset successfully! You can now log in with your new password."
+            "Password reset successfully! You can now log in with your new password.",
           );
           navigate(`${absoluteUrls.admin.auth.login}`);
         },
         onError: (error: unknown) => {
           toast.error((error as Error)?.message || "Request failed");
         },
-      }
+      },
     );
   };
 

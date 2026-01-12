@@ -9,7 +9,10 @@ import {
   validateExperience,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import { validatePortfolioLink } from "@/shared/libs/utils";
-import { validateEmail, validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import {
+  validateEmail,
+  validateEmailRules,
+} from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -97,14 +100,15 @@ const EmailFieldWithValidation = () => {
                   }, 600);
                 }}
                 className={`w-full rounded-md border py-3 px-5 pl-10 pr-10 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition bg-white dark:bg-gray-800
-                                    ${error
-                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                    : isAvailable
-                      ? "border-green-500 focus:ring-1 focus:ring-green-400"
-                      : isUnavailable
-                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                        : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-                  }
+                                    ${
+                                      error
+                                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                                        : isAvailable
+                                          ? "border-green-500 focus:ring-1 focus:ring-green-400"
+                                          : isUnavailable
+                                            ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                                            : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                                    }
                                 `}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -147,10 +151,10 @@ const BasicDetailsFields = () => {
 
   // Fetch dropdown data - assuming these hooks are shared or available
   const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value || country
+    country?.value || country,
   );
   const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState
+    selectedState?.value || selectedState,
   );
 
   return (
@@ -221,7 +225,7 @@ const BasicDetailsFields = () => {
           validate: (value: string) =>
             validateZipcode(
               value,
-              typeof country === "string" ? country : country?.value
+              typeof country === "string" ? country : country?.value,
             ),
         }}
       />
