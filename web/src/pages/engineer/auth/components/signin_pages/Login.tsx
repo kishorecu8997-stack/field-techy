@@ -119,7 +119,7 @@ const Login = ({
             error instanceof Error ? error.message : "Login failed";
           toast.error(errorMessage);
         },
-      }
+      },
     );
   };
 
@@ -152,7 +152,7 @@ const Login = ({
           console.error(error);
           toast.error("");
         },
-      }
+      },
     );
   };
 
@@ -176,7 +176,7 @@ const Login = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-             <IconWithTheme
+            <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
               darkLogo={logo_light}
               className="h-15 w-20"

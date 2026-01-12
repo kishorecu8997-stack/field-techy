@@ -105,7 +105,7 @@ export default function ExperienceDetails() {
               if (methods.getValues("isCurrent")) {
                 methods.setValue("endDate", null);
               }
-            }
+            },
           }}
         />
       </div>

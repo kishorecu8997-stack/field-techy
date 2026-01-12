@@ -63,7 +63,7 @@ export const FileUpload = ({
   // ✅ PDF validation (signature + page count)
   const validatePdfPages = useCallback(
     async (
-      file: File
+      file: File,
     ): Promise<{ error: string | null; pages: number | null }> => {
       if (!validatePDF) return { error: null, pages: null };
 
@@ -116,7 +116,7 @@ export const FileUpload = ({
         return { error: message, pages: null };
       }
     },
-    [validatePDF, minPages, maxPages]
+    [validatePDF, minPages, maxPages],
   );
 
   // ✅ Load existing form value if present
@@ -163,7 +163,7 @@ export const FileUpload = ({
   const isFileTypeAllowed = (file: File): boolean => {
     const allowedExts = getAcceptExtensions();
     return allowedExts.some((ext) =>
-      file.name.toLowerCase().endsWith(`.${ext}`)
+      file.name.toLowerCase().endsWith(`.${ext}`),
     );
   };
 
@@ -184,7 +184,7 @@ export const FileUpload = ({
   // ✅ Main validation and upload handler
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps
+    field: ControllerRenderProps,
   ) => {
     const files = e.target.files;
     if (!files?.[0]) return;
@@ -228,7 +228,7 @@ export const FileUpload = ({
 
     if (file.size > maxSize) {
       const errorMsg = `File size must not exceed ${(maxSize / 1024).toFixed(
-        0
+        0,
       )} KB.`;
       setFileError(errorMsg);
       toast.error(errorMsg);
@@ -317,9 +317,10 @@ export const FileUpload = ({
       {isShowLabel && (
         <label
           className={`block mb-1 text-md font-semibold 
-            ${disabled
-              ? "text-gray-400 dark:text-gray-400"
-              : "text-gray-700 dark:text-gray-300"
+            ${
+              disabled
+                ? "text-gray-400 dark:text-gray-400"
+                : "text-gray-700 dark:text-gray-300"
             }`}
         >
           {label}{" "}
@@ -336,12 +337,13 @@ export const FileUpload = ({
           return (
             <>
               <div
-                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${disabled
-                  ? "border-gray-400  cursor-not-allowed opacity-50"
-                  : displayError
-                    ? "border-red-500  cursor-pointer"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500  cursor-pointer"
-                  }`}
+                className={`relative border-2 border-dashed rounded-md p-6 text-center transition ${
+                  disabled
+                    ? "border-gray-400  cursor-not-allowed opacity-50"
+                    : displayError
+                      ? "border-red-500  cursor-pointer"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500  cursor-pointer"
+                }`}
                 onClick={() =>
                   !fileName && document.getElementById(name)?.click()
                 }

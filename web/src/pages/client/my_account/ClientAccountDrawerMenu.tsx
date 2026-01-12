@@ -18,7 +18,10 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { useClientFiles } from "@/shared/apiServices/client/clientService";
 import { ClientFilesProvider } from "./context/ClientFilesProvider";
-import { useClientStore, useClientProfile } from "@/shared/store/useClientStore";
+import {
+  useClientStore,
+  useClientProfile,
+} from "@/shared/store/useClientStore";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -79,14 +82,18 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   // Update form value when profile picture URL changes
   useEffect(() => {
-    setValue("profileImage", profileImageUrl || assetsConfig.images.users.user, {
-      shouldValidate: false,
-    });
+    setValue(
+      "profileImage",
+      profileImageUrl || assetsConfig.images.users.user,
+      {
+        shouldValidate: false,
+      },
+    );
   }, [profileImageUrl, setValue]);
 
   // Fetch client files for Document List (Context)
-  // We still keep this separate for the documents list if needed, 
-  // or we could rely on the store if the store kept all files. 
+  // We still keep this separate for the documents list if needed,
+  // or we could rely on the store if the store kept all files.
   // For now, let's keep the document list separate but remove profile pic logic.
   const {
     data: clientFiles = [],
@@ -97,7 +104,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   // Filter out non-profile-pic files for the context
   const { documentFiles } = useMemo(() => {
     const documents = clientFiles.filter(
-      (file) => file.fileType !== "PROFILE_PICTURE"
+      (file) => file.fileType !== "PROFILE_PICTURE",
     );
     return {
       documentFiles: documents,
@@ -113,7 +120,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       isLoading: isLoadingFiles,
       refetch: refetchFiles,
     }),
-    [documentFiles, isLoadingFiles, refetchFiles]
+    [documentFiles, isLoadingFiles, refetchFiles],
   );
 
   const menuItems: ClientMenuItems[] = [
@@ -195,28 +202,31 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${item.isLogout
-                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                    : ""
-                  }
+              ${
+                item.isLogout
+                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                  : ""
+              }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${item.isLogout
-                        ? "text-red-600 dark:text-red-400 "
-                        : "text-gray-600 dark:text-gray-300 "
-                      }
+                  ${
+                    item.isLogout
+                      ? "text-red-600 dark:text-red-400 "
+                      : "text-gray-600 dark:text-gray-300 "
+                  }
                 `}
                   />
                   <span
                     className={`
-                ${item.isLogout
-                        ? "text-red-600 dark:text-red-400"
-                        : "text-gray-700 dark:text-gray-200"
-                      }
+                ${
+                  item.isLogout
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-gray-700 dark:text-gray-200"
+                }
                 `}
                   >
                     {item.label}

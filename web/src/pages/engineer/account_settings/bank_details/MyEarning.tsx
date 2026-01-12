@@ -21,7 +21,8 @@ const MyEarning = () => {
           Current Balance
         </p>
         <h1 className="text-4xl font-bold mt-1">
-          {getCurrencyFromStorage()}{currentBalance.toFixed(2)}
+          {getCurrencyFromStorage()}
+          {currentBalance.toFixed(2)}
         </h1>
         <div className="mt-4 flex gap-3 justify-center">
           <Button

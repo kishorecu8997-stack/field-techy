@@ -60,11 +60,11 @@ const ClientHeader: React.FC<HeaderProps> = ({
           {showSearchBar && <SortDropdown />}
           {showButton && (
             <Button
-             onClick={onClick} 
-             variant="primary" 
-             type="submit"
-             className="bg-teal-800 dark:bg-teal text-white"
-             >
+              onClick={onClick}
+              variant="primary"
+              type="submit"
+              className="bg-teal-800 dark:bg-teal text-white"
+            >
               {buttonText}
             </Button>
           )}

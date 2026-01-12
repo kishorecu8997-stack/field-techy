@@ -16,7 +16,9 @@ import { useNavigate } from "react-router-dom";
  * Includes a header with sorting controls and uses dummy data for user and earnings.
  */
 const MyJobsPage = () => {
-  const [activeFilter, setActiveFilter] = useState<JobFilter>(JOB_FILTERS.ALL_JOBS);
+  const [activeFilter, setActiveFilter] = useState<JobFilter>(
+    JOB_FILTERS.ALL_JOBS,
+  );
   const navigate = useNavigate();
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,

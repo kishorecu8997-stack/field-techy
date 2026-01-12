@@ -179,16 +179,17 @@ const AddExperiences = () => {
               required={!methods.watch("isCurrent")}
               rules={{
                 validate: (value) => {
-  if (!methods.watch("isCurrent")) {
-    if (!value) return "End date is required when not currently working";
-    
-    const start = methods.getValues("startDate");
-    if (start && value && start > value) {
-      return "End date must be after start date";
-    }
-  }
-  return true;
-},
+                  if (!methods.watch("isCurrent")) {
+                    if (!value)
+                      return "End date is required when not currently working";
+
+                    const start = methods.getValues("startDate");
+                    if (start && value && start > value) {
+                      return "End date must be after start date";
+                    }
+                  }
+                  return true;
+                },
                 onChange: () => methods.trigger("startDate"),
               }}
             />

@@ -27,7 +27,10 @@ export function configureErrorHandling() {
         return error.message;
       }
       // Fallback to detail or default message
-      return error.detail || "Invalid credentials. Please check your email/phone and password.";
+      return (
+        error.detail ||
+        "Invalid credentials. Please check your email/phone and password."
+      );
     },
     statusCodes: [401],
   });
@@ -42,7 +45,10 @@ export function configureErrorHandling() {
         return error.message;
       }
       // Fallback to detail or default message
-      return error.detail || "Invalid credentials. Please check your email/phone and password.";
+      return (
+        error.detail ||
+        "Invalid credentials. Please check your email/phone and password."
+      );
     },
     statusCodes: [401],
   });
@@ -51,7 +57,11 @@ export function configureErrorHandling() {
   GlobalApiErrorHandler.registerPathOverride({
     pathKeyword: "signin/req/otp",
     message: (error) => {
-      return error.message || error.detail || "Failed to request OTP. Please try again.";
+      return (
+        error.message ||
+        error.detail ||
+        "Failed to request OTP. Please try again."
+      );
     },
   });
 
@@ -59,11 +69,14 @@ export function configureErrorHandling() {
   GlobalApiErrorHandler.registerPathOverride({
     pathKeyword: "signin/by-otp",
     message: (error) => {
-      return error.message || error.detail || "OTP verification failed. Please try again.";
+      return (
+        error.message ||
+        error.detail ||
+        "OTP verification failed. Please try again."
+      );
     },
   });
 }
 
 // Auto-configure when this module is imported
 configureErrorHandling();
-

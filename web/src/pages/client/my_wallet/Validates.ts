@@ -23,4 +23,3 @@ export const validatePaymentMethod = (value: string | null | undefined) => {
   if (!value) return "Please select a payment method";
   return true;
 };
-

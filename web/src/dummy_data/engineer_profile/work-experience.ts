@@ -1,5 +1,5 @@
-type WorkLocationType = 'on-site' | 'remote' | 'hybrid';
-type EmploymentType = 'full-time' | 'part-time' | 'contract' | 'internship'; // extend if needed
+type WorkLocationType = "on-site" | "remote" | "hybrid";
+type EmploymentType = "full-time" | "part-time" | "contract" | "internship"; // extend if needed
 
 export interface WorkExperienceEntry {
   id: string;
@@ -8,7 +8,7 @@ export interface WorkExperienceEntry {
   workLocationType: WorkLocationType;
   employmentType: EmploymentType;
   startDate: string; // ISO 8601 date string (e.g., "2021-06-10")
-  endDate: string;   // ISO 8601 date string or "present" if current
+  endDate: string; // ISO 8601 date string or "present" if current
 }
 
 export const workExperienceList: WorkExperienceEntry[] = [
@@ -19,7 +19,7 @@ export const workExperienceList: WorkExperienceEntry[] = [
     workLocationType: "on-site",
     employmentType: "full-time",
     startDate: "2021-06-10",
-    endDate: "2023-06-10"
+    endDate: "2023-06-10",
   },
   {
     id: "2",
@@ -28,7 +28,7 @@ export const workExperienceList: WorkExperienceEntry[] = [
     workLocationType: "hybrid",
     employmentType: "full-time",
     startDate: "2022-08-01",
-    endDate: "2024-08-01"
+    endDate: "2024-08-01",
   },
   {
     id: "3",
@@ -37,7 +37,7 @@ export const workExperienceList: WorkExperienceEntry[] = [
     workLocationType: "remote",
     employmentType: "full-time",
     startDate: "2023-09-15",
-    endDate: "2025-09-15"
+    endDate: "2025-09-15",
   },
   {
     id: "4",
@@ -46,10 +46,9 @@ export const workExperienceList: WorkExperienceEntry[] = [
     workLocationType: "remote",
     employmentType: "full-time",
     startDate: "2023-09-15",
-    endDate: "2025-09-15"
-  }
+    endDate: "2025-09-15",
+  },
 ];
-
 
 export type ExperiencesFormData = {
   id: string;
@@ -57,8 +56,8 @@ export type ExperiencesFormData = {
   employer: string;
   workLocationType: string;
   employmentType: string;
-  startDate: Date | null ;
-  endDate: Date | null ;
+  startDate: Date | null;
+  endDate: Date | null;
 };
 
 export const experianceEdit: ExperiencesFormData[] = [
@@ -69,7 +68,7 @@ export const experianceEdit: ExperiencesFormData[] = [
     workLocationType: "on-site",
     employmentType: "full-time",
     startDate: new Date("2021-06-10"),
-    endDate: new Date("2023-06-10")
+    endDate: new Date("2023-06-10"),
   },
   {
     id: "2",
@@ -78,7 +77,7 @@ export const experianceEdit: ExperiencesFormData[] = [
     workLocationType: "hybrid",
     employmentType: "full-time",
     startDate: new Date("2022-08-01"),
-    endDate: new Date("2024-08-01")
+    endDate: new Date("2024-08-01"),
   },
   {
     id: "3",
@@ -87,7 +86,7 @@ export const experianceEdit: ExperiencesFormData[] = [
     workLocationType: "remote",
     employmentType: "full-time",
     startDate: new Date("2023-09-15"),
-    endDate: new Date("2025-09-15")
+    endDate: new Date("2025-09-15"),
   },
   {
     id: "4",
@@ -96,8 +95,8 @@ export const experianceEdit: ExperiencesFormData[] = [
     workLocationType: "remote",
     employmentType: "full-time",
     startDate: new Date("2023-09-15"),
-    endDate: new Date("2025-09-15")
-  }
+    endDate: new Date("2025-09-15"),
+  },
 ];
 
 export const EMPLOYMENT_TYPE_VALUES = {
@@ -119,7 +118,6 @@ export const employmentTypeOptions = [
   { label: "Contract", value: EMPLOYMENT_TYPE_VALUES.CONTRACT },
   { label: "Internship", value: EMPLOYMENT_TYPE_VALUES.INTERNSHIP },
 ] as const;
-
 
 export const workLocationTypeOptions = [
   { label: "On-site", value: WORK_LOCATION_TYPE_VALUES.ON_SITE },

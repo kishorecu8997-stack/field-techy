@@ -166,7 +166,7 @@ export const InputField = ({
 
                     const cleaned = value.replace(
                       sanitizeMap[allowedCharacters],
-                      ""
+                      "",
                     );
                     setAttemptedInvalid(cleaned !== value);
                     value = cleaned;

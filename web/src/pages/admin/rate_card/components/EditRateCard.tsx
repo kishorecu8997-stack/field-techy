@@ -119,8 +119,8 @@ const EditRateCard = () => {
           {isEdit
             ? "Edit Rate Card"
             : isView
-            ? "View Rate Card"
-            : "Add Rate Card"}
+              ? "View Rate Card"
+              : "Add Rate Card"}
         </h2>
         <Button
           type="button"

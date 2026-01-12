@@ -30,7 +30,7 @@ const AdminTabComponent: React.FC<TabComponentProps> = ({
 
   // Local state (only used in uncontrolled mode)
   const [uncontrolledActiveTab, setUncontrolledActiveTab] = useState(
-    defaultActiveTab || tabs.find((tab) => !tab.hide)?.label || ""
+    defaultActiveTab || tabs.find((tab) => !tab.hide)?.label || "",
   );
 
   const visibleTabs = tabs.filter((tab) => !tab.hide);

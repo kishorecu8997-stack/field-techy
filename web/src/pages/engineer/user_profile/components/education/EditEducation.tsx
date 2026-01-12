@@ -47,7 +47,7 @@ const EditEducation = () => {
   useEffect(() => {
     if (selectedId && engineerData?.educations) {
       const education = engineerData.educations.find(
-        (edu) => edu.id === selectedId
+        (edu) => edu.id === selectedId,
       );
 
       if (education) {
@@ -138,7 +138,7 @@ const EditEducation = () => {
               toast.success(
                 selectedId
                   ? "Education updated successfully"
-                  : "Education added successfully"
+                  : "Education added successfully",
               );
 
               close(true);

@@ -6,7 +6,10 @@ import {
   validateVatNumber,
   validateZipcode,
 } from "@/pages/engineer/user_profile/Validate";
-import { validateEmail, validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import {
+  validateEmail,
+  validateEmailRules,
+} from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
@@ -91,13 +94,14 @@ const EmailFieldWithValidation = () => {
                   }, 600);
                 }}
                 className={`w-full rounded-md border py-3 px-5 pl-10 pr-10 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition bg-white dark:bg-gray-800
-                  ${error
-                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                    : isAvailable
-                      ? "border-green-500 focus:ring-1 focus:ring-green-400"
-                      : isUnavailable
-                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                        : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                  ${
+                    error
+                      ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                      : isAvailable
+                        ? "border-green-500 focus:ring-1 focus:ring-green-400"
+                        : isUnavailable
+                          ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                          : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
                   }
                 `}
               />
@@ -149,10 +153,10 @@ const BasicDetailsFields = () => {
 
   // Fetch dropdown data from API
   const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value
+    country?.value,
   );
   const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState
+    selectedState?.value || selectedState,
   );
   const { data: industries = [], isLoading: industriesLoading } =
     useIndustries();
@@ -164,10 +168,11 @@ const BasicDetailsFields = () => {
         <div className="flex gap-2 text-center justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
-      ${role === "HOME"
-                ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
-                : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
-              }`}
+      ${
+        role === "HOME"
+          ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
+          : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
+      }`}
             onClick={() => setValue("businessType", "HOME")}
           >
             Home Client
@@ -175,10 +180,11 @@ const BasicDetailsFields = () => {
 
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
-      ${role === "CORPORATE"
-                ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
-                : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
-              }`}
+      ${
+        role === "CORPORATE"
+          ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
+          : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
+      }`}
             onClick={() => setValue("businessType", "CORPORATE")}
           >
             Corporate Client
@@ -259,7 +265,7 @@ const BasicDetailsFields = () => {
           validate: (value: string) =>
             validateZipcode(
               value,
-              typeof country === "string" ? country : country?.value
+              typeof country === "string" ? country : country?.value,
             ),
         }}
       />

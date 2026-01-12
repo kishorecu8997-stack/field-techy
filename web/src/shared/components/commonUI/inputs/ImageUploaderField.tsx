@@ -27,7 +27,7 @@ const validateImageDecodable = (file: File): Promise<boolean> => {
 
 // Full image validation: signature + decodability
 const validateImageFile = async (
-  file: File
+  file: File,
 ): Promise<{ valid: boolean; type: "jpeg" | "png" | null }> => {
   // Step 1: Validate magic bytes
   const buffer = await file.slice(0, 8).arrayBuffer();
@@ -88,7 +88,10 @@ export const ImageUploaderField = ({
     if (initialImageUrl && !initialSetRef.current) {
       const currentValue = getValues(name);
       // Only update if form value is empty or is a different URL
-      if (!currentValue || (typeof currentValue === "string" && currentValue !== initialImageUrl)) {
+      if (
+        !currentValue ||
+        (typeof currentValue === "string" && currentValue !== initialImageUrl)
+      ) {
         setValue(name, initialImageUrl, { shouldValidate: false });
         initialSetRef.current = true;
       }
@@ -197,7 +200,7 @@ export const ImageUploaderField = ({
           }
 
           const handleFileChangeInner = async (
-            event: React.ChangeEvent<HTMLInputElement>
+            event: React.ChangeEvent<HTMLInputElement>,
           ) => {
             const file = event.target.files?.[0];
             if (!file) return;
@@ -249,8 +252,9 @@ export const ImageUploaderField = ({
             <>
               <div className="relative inline-block">
                 <div
-                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${allowUpload ? "cursor-pointer" : "cursor-default"
-                    }`}
+                  className={`w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${
+                    allowUpload ? "cursor-pointer" : "cursor-default"
+                  }`}
                   onClick={handleImageClick}
                 >
                   {isLoading ? (

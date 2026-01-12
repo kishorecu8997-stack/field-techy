@@ -278,7 +278,7 @@ export const validatePassingYear = (value: string) => {
  */
 export const validateDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ) => {
   if (!startDate) {
     return "Start date is required";
@@ -661,7 +661,7 @@ export const validatePricePerHour = (value: string) => {
 export const validatePricingModel = (
   value: string,
   field: PricingField,
-  relatedValues?: PricingRelations
+  relatedValues?: PricingRelations,
 ): true | string => {
   const v = (value || "").trim();
 
@@ -864,7 +864,7 @@ export interface TextValidationOptions {
 
 export const validateAlphabeticTextArea = (
   value: string,
-  options: TextValidationOptions = {}
+  options: TextValidationOptions = {},
 ): string | true => {
   const { minLength = 1, maxLength = Infinity, required = true } = options;
 
@@ -918,7 +918,7 @@ export interface CheckboxValidationOptions {
 
 export const validateCheckboxGroup = (
   values: (string | number | boolean)[],
-  options: CheckboxValidationOptions = {}
+  options: CheckboxValidationOptions = {},
 ): string | true => {
   const { required = true, minSelected = 1, maxSelected = Infinity } = options;
 

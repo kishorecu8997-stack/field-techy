@@ -4,7 +4,6 @@ import { mockEngineers } from "@/dummy_data/engineers";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import Pagination from "../../search_result/components/Pagination";
 
-
 /**
  * `EngineerListPage` is a component that displays a paginated list of engineers.
  * It includes functionality for filtering engineers by category and supports both
@@ -33,15 +32,12 @@ const EngineerListPage: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEngineers = filteredEngineers.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
-
- 
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6 ">
-        
         {/* Category Filters */}
         <div className="flex flex-wrap gap-2">
           <FilterButton
@@ -64,7 +60,6 @@ const EngineerListPage: React.FC = () => {
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-       
       </div>
     </div>
   );
