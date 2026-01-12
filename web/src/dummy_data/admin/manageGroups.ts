@@ -119,7 +119,12 @@ export interface DetailsTypes {
   phone: string;
   email: string;
 }
+
 export interface SelectEngineerProps {
+  skills: string[];
+  level: string;
+  role: string;
+  tenancy: string;
   id: number;
   engineerID: number | string;
   details: DetailsTypes;
@@ -137,11 +142,7 @@ export const SelectEngineer: SelectEngineerProps[] = [
   {
     id: 1,
     engineerID: "ENG-1001",
-    details: {
-      name: "Alice Johnson",
-      phone: "+91 98765 43210",
-      email: "alice.johnson@example.com",
-    },
+    details: { name: "Alice Johnson", phone: "+91 98765 43210", email: "alice.johnson@example.com" },
     documents: "View",
     location: "Mumbai, India",
     registrationDate: "2024-02-15",
@@ -150,15 +151,15 @@ export const SelectEngineer: SelectEngineerProps[] = [
     employmentStatus: "Active",
     avgRating: 4.7,
     approvalStatus: "Approved",
+    skills: ["React", "Node.js"],
+    level: "Senior",
+    role: "Software Engineer",
+    tenancy: "Client A",
   },
   {
     id: 2,
     engineerID: "ENG-1002",
-    details: {
-      name: "Brian Lee",
-      phone: "+91 98765 43210",
-      email: "alice.johnson@example.com",
-    },
+    details: { name: "Brian Lee", phone: "+91 98765 43211", email: "brian.lee@example.com" },
     documents: "View",
     location: "Pune, India",
     registrationDate: "2024-03-10",
@@ -167,15 +168,15 @@ export const SelectEngineer: SelectEngineerProps[] = [
     employmentStatus: "Inactive",
     avgRating: 3.9,
     approvalStatus: "Under Review",
+    skills: ["Python", "Django"],
+    level: "Junior",
+    role: "Backend Engineer",
+    tenancy: "Client B",
   },
   {
     id: 3,
     engineerID: "ENG-1003",
-    details: {
-      name: "Chloe Smith",
-      phone: "+91 95765 43210",
-      email: "chloe.smith@example.com",
-    },
+    details: { name: "Chloe Smith", phone: "+91 95765 43210", email: "chloe.smith@example.com" },
     documents: "View",
     location: "Bangalore, India",
     registrationDate: "2024-05-21",
@@ -184,15 +185,15 @@ export const SelectEngineer: SelectEngineerProps[] = [
     employmentStatus: "Active",
     avgRating: 4.5,
     approvalStatus: "Approved",
+    skills: ["React", "DevOps"],
+    level: "Lead",
+    role: "Full Stack Engineer",
+    tenancy: "Client C",
   },
   {
     id: 4,
     engineerID: "ENG-1004",
-    details: {
-      name: "Arjun Mehta",
-      phone: "+91 98765 43210",
-      email: "alice.johnson@example.com",
-    },
+    details: { name: "Arjun Mehta", phone: "+91 98765 43212", email: "arjun.mehta@example.com" },
     documents: "View",
     location: "Delhi, India",
     registrationDate: "2024-06-30",
@@ -201,15 +202,15 @@ export const SelectEngineer: SelectEngineerProps[] = [
     employmentStatus: "Suspended",
     avgRating: 3.4,
     approvalStatus: "Rejected",
+    skills: ["Angular", "Node.js"],
+    level: "Mid",
+    role: "Frontend Engineer",
+    tenancy: "Client A",
   },
   {
     id: 5,
     engineerID: "ENG-1005",
-    details: {
-      name: "Arjun Mehta",
-      phone: "+91 98765 43210",
-      email: "alice.johnson@example.com",
-    },
+    details: { name: "Emily Davis", phone: "+91 98765 43213", email: "emily.davis@example.com" },
     documents: "View",
     location: "Hyderabad, India",
     registrationDate: "2024-07-14",
@@ -218,5 +219,43 @@ export const SelectEngineer: SelectEngineerProps[] = [
     employmentStatus: "Active",
     avgRating: 4.9,
     approvalStatus: "Approved",
+    skills: ["React", "Python"],
+    level: "Senior",
+    role: "Full Stack Engineer",
+    tenancy: "Client B",
+  },
+  {
+    id: 6,
+    engineerID: "ENG-1006",
+    details: { name: "David Kumar", phone: "+91 98765 43214", email: "david.kumar@example.com" },
+    documents: "View",
+    location: "Chennai, India",
+    registrationDate: "2024-08-01",
+    walletBalance: "₹2,900",
+    kycStatus: "Verified",
+    employmentStatus: "Active",
+    avgRating: 4.2,
+    approvalStatus: "Approved",
+    skills: ["Node.js", "DevOps"],
+    level: "Mid",
+    role: "Backend Engineer",
+    tenancy: "Client C",
+  },
+  {
+    id: 7,
+    engineerID: "ENG-1007",
+    details: { name: "Fiona Patel", phone: "+91 98765 43215", email: "fiona.patel@example.com" },
+    documents: "View",
+    location: "Kolkata, India",
+    registrationDate: "2024-09-12",
+    walletBalance: "₹5,500",
+    kycStatus: "Verified",
+    employmentStatus: "Active",
+    avgRating: 4.6,
+    approvalStatus: "Approved",
+    skills: ["React", "Angular"],
+    level: "Senior",
+    role: "Frontend Engineer",
+    tenancy: "Client A",
   },
 ];
