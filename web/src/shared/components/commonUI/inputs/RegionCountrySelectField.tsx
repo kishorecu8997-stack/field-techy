@@ -83,8 +83,8 @@ export const RegionCountrySelectField = ({
     typeof required === "string"
       ? required
       : required
-      ? `${label || name} is required`
-      : false;
+        ? `${label || name} is required`
+        : false;
   const validationRules: RegisterOptions = {
     required: requiredMessage,
     ...rules,
@@ -94,7 +94,7 @@ export const RegionCountrySelectField = ({
     setExpandedRegions((prev) =>
       prev.includes(regionValue)
         ? prev.filter((v) => v !== regionValue)
-        : [...prev, regionValue]
+        : [...prev, regionValue],
     );
   };
 
@@ -103,21 +103,27 @@ export const RegionCountrySelectField = ({
 
   const groupedOptions = useMemo(() => {
     if (!showGroupedOptions) return {};
-    return options.reduce((acc, option) => {
-      if (option.type === "region") {
-        acc[option.value] = { region: option, countries: [] };
-      } else if (option.type === "subdivision" && option.region) {
-        if (!acc[option.region]) {
-          const regionOption = options.find(
-            (o) => o.value === option.region && o.type === "region"
-          );
-          if (regionOption)
-            acc[option.region] = { region: regionOption, countries: [] };
+    return options.reduce(
+      (acc, option) => {
+        if (option.type === "region") {
+          acc[option.value] = { region: option, countries: [] };
+        } else if (option.type === "subdivision" && option.region) {
+          if (!acc[option.region]) {
+            const regionOption = options.find(
+              (o) => o.value === option.region && o.type === "region",
+            );
+            if (regionOption)
+              acc[option.region] = { region: regionOption, countries: [] };
+          }
+          acc[option.region]?.countries.push(option);
         }
-        acc[option.region]?.countries.push(option);
-      }
-      return acc;
-    }, {} as Record<string, { region: RegionCountryOption; countries: RegionCountryOption[] }>);
+        return acc;
+      },
+      {} as Record<
+        string,
+        { region: RegionCountryOption; countries: RegionCountryOption[] }
+      >,
+    );
   }, [options, showGroupedOptions]);
 
   const updatePosition = () => {
@@ -129,7 +135,7 @@ export const RegionCountrySelectField = ({
     setPosition(
       spaceBelow < dropdownHeight && spaceAbove > dropdownHeight
         ? "top"
-        : "bottom"
+        : "bottom",
     );
   };
 
@@ -161,14 +167,14 @@ export const RegionCountrySelectField = ({
 
           // ===== Updated display label logic =====
           const selectedCountryLabels = selectedValues.map(
-            (val) => options.find((o) => o.value === val)?.label ?? val
+            (val) => options.find((o) => o.value === val)?.label ?? val,
           );
 
           const fullySelectedRegionLabels = Object.values(groupedOptions)
             .filter(
               (group) =>
                 group.countries.length > 0 &&
-                group.countries.every((c) => selectedValues.includes(c.value))
+                group.countries.every((c) => selectedValues.includes(c.value)),
             )
             .map((group) => group.region.label);
 
@@ -176,7 +182,7 @@ export const RegionCountrySelectField = ({
             .filter(
               (group) =>
                 selectedValues.includes(group.region.value) &&
-                !group.countries.every((c) => selectedValues.includes(c.value))
+                !group.countries.every((c) => selectedValues.includes(c.value)),
             )
             .map((group) => group.region.label);
 
@@ -186,18 +192,18 @@ export const RegionCountrySelectField = ({
             ...selectedCountryLabels.filter(
               (label) =>
                 !fullySelectedRegionLabels.includes(label) &&
-                !partiallySelectedRegionLabels.includes(label)
+                !partiallySelectedRegionLabels.includes(label),
             ),
           ];
 
           const displayLabel = overrideDisplayLabel
             ? truncateLabel(overrideDisplayLabel, 200)
             : finalDisplayLabels.length > 0
-            ? truncateLabel(finalDisplayLabels.join(", "), 200)
-            : placeholder;
+              ? truncateLabel(finalDisplayLabels.join(", "), 200)
+              : placeholder;
 
           const selectedOptions = options.filter((o) =>
-            selectedValues.includes(o.value)
+            selectedValues.includes(o.value),
           );
 
           const handleSelect = (selected: RegionCountryOption[]) => {
@@ -276,7 +282,7 @@ export const RegionCountrySelectField = ({
                           {options
                             .filter(
                               (o) =>
-                                o.type === "option" && o.value === "Country"
+                                o.type === "option" && o.value === "Country",
                             )
                             .map((countryOption) => (
                               <div
@@ -316,15 +322,15 @@ export const RegionCountrySelectField = ({
                               const allSelected =
                                 group.countries.length > 0 &&
                                 group.countries.every((c) =>
-                                  selectedValues.includes(c.value)
+                                  selectedValues.includes(c.value),
                                 );
                               const someSelected = group.countries.some((c) =>
-                                selectedValues.includes(c.value)
+                                selectedValues.includes(c.value),
                               );
                               const indeterminate =
                                 !allSelected && someSelected;
                               const isExpanded = expandedRegions.includes(
-                                group.region.value
+                                group.region.value,
                               );
 
                               return (
@@ -336,7 +342,7 @@ export const RegionCountrySelectField = ({
                                     onClick={() => {
                                       toggleRegion(group.region.value);
                                       setOverrideDisplayLabel(
-                                        group.region.label
+                                        group.region.label,
                                       );
                                     }}
                                     aria-expanded={isExpanded}
@@ -361,20 +367,20 @@ export const RegionCountrySelectField = ({
                                           ? selectedValues.filter(
                                               (v) =>
                                                 !group.countries.some(
-                                                  (c) => c.value === v
-                                                )
+                                                  (c) => c.value === v,
+                                                ),
                                             )
                                           : [
                                               ...new Set([
                                                 ...selectedValues,
                                                 ...group.countries.map(
-                                                  (c) => c.value
+                                                  (c) => c.value,
                                                 ),
                                               ]),
                                             ];
                                         onChange(nextValues);
                                         setOverrideDisplayLabel(
-                                          group.region.label
+                                          group.region.label,
                                         );
                                       }}
                                     >
@@ -420,7 +426,8 @@ export const RegionCountrySelectField = ({
                                                 if (selected) {
                                                   nextValues =
                                                     selectedValues.filter(
-                                                      (v) => v !== country.value
+                                                      (v) =>
+                                                        v !== country.value,
                                                     );
                                                 } else {
                                                   nextValues = [

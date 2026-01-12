@@ -2,7 +2,6 @@ import { absoluteUrls } from "@/config/urls";
 import {
   NotificationSendTo,
   NotificationTypes,
-  NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
