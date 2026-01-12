@@ -192,7 +192,6 @@ export class EngineerAdapter {
       if (file) {
         formData.append("file", file);
       }
-
       formData.append(
         "metadata",
         new Blob(
