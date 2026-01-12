@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
+import type { FileUploadResponse } from "@/shared/apiServices/engineer/engineerTypes";
 import { useState } from "react";
 
 interface DocumentFormData {
@@ -55,10 +56,7 @@ const BasicDocuments = () => {
   const { clearStore, updateDocuments } = useEngineerRegistrationStore();
   
   const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
-    // @ts-ignore - The types from react-query/engineerService might be slightly off regarding the second argument 'variables'
-    onSuccess: (data: any, variables: any) => {
-      console.log("File uploaded:", data);
-
+    onSuccess: (data, variables) => {
       // Map document type to store key
       switch (variables.documentType) {
         case "PROFILE_PICTURE":
@@ -131,7 +129,7 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<any>[] = [];
+    const uploads: Promise<FileUploadResponse>[] = [];
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");

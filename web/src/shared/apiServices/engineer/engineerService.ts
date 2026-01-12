@@ -47,7 +47,7 @@ export function useEngineerDelete(options?: {
 }
 
 export function useEngineerFileUpload(options?: {
-    onSuccess?: (data: FileUploadResponse) => void;
+    onSuccess?: (data: FileUploadResponse, variables: FileUploadParams) => void;
     onError?: (error: unknown) => void;
     onProgress?: (progress: { loaded: number; total?: number; percentage?: number }) => void;
 }) {
