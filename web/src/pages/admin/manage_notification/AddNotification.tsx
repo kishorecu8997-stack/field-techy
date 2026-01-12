@@ -76,13 +76,13 @@ export default function AddNotification() {
           value: "save",
           variant: "primary",
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             const payload = {
-              title: methods.getValues("title"),
-              type: methods.getValues("notificationType"),
-              sendTo: methods.getValues("sendTo"),
-              message: methods.getValues("notificationMessage"),
-              users: methods.getValues("users"), // need to changed based on API later
+              title: data.title,
+              type: data.notificationType,
+              sendTo: data.sendTo,
+              message: data.notificationMessage,
+              users: data.users, // need to changed based on API later
             };
             await createNotificationMutation.mutateAsync(payload);
             close(true);
