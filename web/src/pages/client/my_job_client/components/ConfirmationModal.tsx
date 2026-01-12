@@ -26,7 +26,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   };
 
   const descriptions = {
-    hold: "Are you absolutely certain you want to keep the position?",
+    hold: "This will temporarily pause the job until you decide to resume it",
     clone: "This will create a duplicate of the current item.",
     cancel: "This action will remove or cancel the item permanently.",
   };
@@ -71,7 +71,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               onClick={onClose}
               className="w-full py-3 px-6 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-700 dark:hover:bg-emerald-600"
             >
-              Cancel
+              Go back
             </Button>
           </div>
         </div>
