@@ -35,7 +35,7 @@ const InProgressJobCard: React.FC<{ job: Job; navigateToJob?: string }> = ({
           </h3>
           <span
             className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
-              job.type || ""
+              job.type || "",
             )}`}
           >
             {job.type}

@@ -94,7 +94,7 @@ export default function CancelJopOffer() {
           <Button
             variant="secondary"
             className="flex-1  py-3 rounded-lg font-medium"
-            onClick={()=> setISOpenSidebar(false)}  
+            onClick={() => setISOpenSidebar(false)}
           >
             Cancel
           </Button>

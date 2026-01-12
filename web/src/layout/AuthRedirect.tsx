@@ -54,4 +54,3 @@ const AuthRedirect: FC<AuthRedirectProps> = ({ children }) => {
 };
 
 export default AuthRedirect;
-

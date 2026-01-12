@@ -25,7 +25,6 @@ import type {
  * parameters into the expected format for the API.
  */
 export class ClientAdapter {
-
   /**
    * Registers a new client.
    *
@@ -38,7 +37,7 @@ export class ClientAdapter {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
         CLIENT_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -75,7 +74,7 @@ export class ClientAdapter {
       };
       const response = await axiosInstance.post(
         CLIENT_ROUTER_PATHS.SIGNIN,
-        payload
+        payload,
       );
       return response.data;
     } catch (error) {
@@ -92,7 +91,9 @@ export class ClientAdapter {
    */
   static async getById(id: string): Promise<ClientData> {
     try {
-      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_BY_ID(id));
+      const response = await axiosInstance.get(
+        CLIENT_ROUTER_PATHS.GET_BY_ID(id),
+      );
       return response.data;
     } catch (error) {
       throw GlobalApiErrorHandler.handle(error);
@@ -127,7 +128,7 @@ export class ClientAdapter {
    * @throws {Error} If the request encounters an error
    */
   static async getAll(
-    params: ClientPaginationParams = {}
+    params: ClientPaginationParams = {},
   ): Promise<PagedResponse<ClientData>> {
     try {
       const {
@@ -157,7 +158,7 @@ export class ClientAdapter {
     try {
       const response = await axiosInstance.put(
         CLIENT_ROUTER_PATHS.UPDATE(id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -194,7 +195,7 @@ export class ClientAdapter {
       // TODO: Replace with actual API call when backend is ready
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
-        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail)
+        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(urlEncodedEmail),
       );
       return response.data;
     } catch (error) {
@@ -218,12 +219,12 @@ export class ClientAdapter {
    * @throws {Error} If OTP sending fails or request encounters an error
    */
   static async sendEmailMobileOtp(
-    emailOrPhone: string
+    emailOrPhone: string,
   ): Promise<{ message: string }> {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone)
+        CLIENT_ROUTER_PATHS.SEND_EMAIL_OTP(emailOrPhone),
       );
       return response.data;
     } catch (error) {
@@ -242,7 +243,7 @@ export class ClientAdapter {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber)
+        CLIENT_ROUTER_PATHS.SEND_PHONE_OTP(phoneNumber),
       );
       return response.data;
     } catch (error) {
@@ -268,12 +269,12 @@ export class ClientAdapter {
    */
   static async verifyOtp(
     emailOrPhone: string,
-    otp: string
+    otp: string,
   ): Promise<{ message: string; verified: boolean }> {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp)
+        CLIENT_ROUTER_PATHS.VERIFY_OTP(emailOrPhone, otp),
       );
       return response.data;
     } catch (error) {
@@ -295,7 +296,7 @@ export class ClientAdapter {
 
   static async verifyPhoneOTP(
     phoneNumber: string,
-    otp: string
+    otp: string,
   ): Promise<{ message: string; verified: boolean }> {
     // TODO: Replace with actual API call when backend is ready
     // const response = await axiosInstance.post(CLIENT_ROUTER_PATHS.VERIFY_PHONE_OTP, { phoneNumber, otp });
@@ -323,7 +324,7 @@ export class ClientAdapter {
    * Get list of states for a country
    */
   static async getStates(
-    countryId?: string
+    countryId?: string,
   ): Promise<{ value: string; label: string }[]> {
     console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
     return new Promise((resolve) => {
@@ -344,7 +345,7 @@ export class ClientAdapter {
    * Get list of cities for a state
    */
   static async getCities(
-    stateId: string
+    stateId: string,
   ): Promise<{ value: string; label: string }[]> {
     console.log(`[STUB] Fetching cities for state: ${stateId}`);
     return new Promise((resolve) => {
@@ -456,7 +457,7 @@ export class ClientAdapter {
   static async getFiles(clientId: string): Promise<ClientFile[]> {
     try {
       const response = await axiosInstance.get(
-        CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId)
+        CLIENT_ROUTER_PATHS.GET_CLIENT_FILES(clientId),
       );
       return response.data;
     } catch (error) {
@@ -476,7 +477,7 @@ export class ClientAdapter {
    * @throws {Error} If the upload fails or request encounters an error
    */
   static async uploadFile(
-    params: ClientFileUploadParams
+    params: ClientFileUploadParams,
   ): Promise<FileUploadResponse> {
     try {
       const { clientId, file, documentType, onUploadProgress } = params;
@@ -494,7 +495,7 @@ export class ClientAdapter {
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
             const percentage = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
+              (progressEvent.loaded * 100) / progressEvent.total,
             );
             onUploadProgress({
               loaded: progressEvent.loaded,
@@ -542,7 +543,7 @@ export class ClientAdapter {
           headers: {
             "Content-Type": "application/octet-stream",
           },
-        }
+        },
       );
 
       // Create blob URL
@@ -569,7 +570,7 @@ export class ClientAdapter {
    * Returns blob with associated metadata (fileName, mimeType, size, etc.)
    */
   static async downloadFileStream(
-    fileKey: string
+    fileKey: string,
   ): Promise<FileDownloadResponse> {
     try {
       const response = await axiosInstance.get(
@@ -579,7 +580,7 @@ export class ClientAdapter {
           headers: {
             accept: "*/*",
           },
-        }
+        },
       );
 
       // Extract metadata from response headers
@@ -594,7 +595,7 @@ export class ClientAdapter {
       let fileName = "download";
       if (contentDisposition) {
         const fileNameMatch = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         );
         if (fileNameMatch && fileNameMatch[1]) {
           fileName = fileNameMatch[1].replace(/['"]/g, "");
@@ -605,7 +606,7 @@ export class ClientAdapter {
             console.error("Failed to decode file name:", e);
             // If decoding fails, use the original filename
             throw new Error(
-              "Failed to decode file name. Please try again later."
+              "Failed to decode file name. Please try again later.",
             );
           }
         }
@@ -636,10 +637,12 @@ export class ClientAdapter {
     }
   }
 
-// -------------------------- Jobs Endpoints -------------------------------
+  // -------------------------- Jobs Endpoints -------------------------------
   static async getJobsById(id: string): Promise<JobItem> {
     try {
-      const response = await axiosInstance.get(CLIENT_ROUTER_PATHS.GET_JOB_BY_ID(id));
+      const response = await axiosInstance.get(
+        CLIENT_ROUTER_PATHS.GET_JOB_BY_ID(id),
+      );
       return response.data;
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);

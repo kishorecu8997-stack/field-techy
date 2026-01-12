@@ -1,4 +1,3 @@
-
 export const AUTH_ROUTER_PATHS = {
   CLIENT_SIGNUP: "/client-signup",
   CLIENT_LOGIN: "/client-login",

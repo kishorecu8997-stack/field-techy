@@ -101,7 +101,7 @@ const BasicDetails = () => {
     onError: (error: unknown) => {
       console.error("Signup failed:", error);
       toast.error(
-        (error as Error)?.message || "Registration failed. Please try again."
+        (error as Error)?.message || "Registration failed. Please try again.",
       );
     },
   });

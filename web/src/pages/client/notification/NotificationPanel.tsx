@@ -1,14 +1,14 @@
-import React from 'react';
-import NotificationItem from './NotificationItem';
-import { mockNotifications } from '@/dummy_data/clientNotificationData';
-import type { NotificationProps } from '@/pages/engineer/account_settings/types';
+import React from "react";
+import NotificationItem from "./NotificationItem";
+import { mockNotifications } from "@/dummy_data/clientNotificationData";
+import type { NotificationProps } from "@/pages/engineer/account_settings/types";
 
 const groupNotificationsByDate = (
-  notifications: NotificationProps[]
+  notifications: NotificationProps[],
 ): { Today: NotificationProps[]; Yesterday: NotificationProps[] } => {
   return {
-    Today: notifications.filter(notif => notif.id <= 2),
-    Yesterday: notifications.filter(notif => notif.id > 2),
+    Today: notifications.filter((notif) => notif.id <= 2),
+    Yesterday: notifications.filter((notif) => notif.id > 2),
   };
 };
 
@@ -16,7 +16,7 @@ const groupNotificationsByDate = (
  * NotificationPanel component displays a list of notifications grouped by date.
  * It includes a search bar and a button to create a new notification.
  *
- * @returns {JSX.Element} The NotificationPanel component.    
+ * @returns {JSX.Element} The NotificationPanel component.
  */
 const NotificationPanel: React.FC = () => {
   const grouped = groupNotificationsByDate(mockNotifications);

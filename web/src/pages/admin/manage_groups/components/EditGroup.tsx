@@ -239,7 +239,7 @@ export default function EditGroup() {
                 className="w-fit bg-gradient-to-r bg-teal-900 text-white py-1 rounded-md hover:opacity-90 transition"
                 onClick={() =>
                   navigate(
-                    `${absoluteUrls.admin.home.manage_groups_addEngineer}/${id}`
+                    `${absoluteUrls.admin.home.manage_groups_addEngineer}/${id}`,
                   )
                 }
               >

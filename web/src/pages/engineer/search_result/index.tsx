@@ -45,7 +45,7 @@ const SearchResult = () => {
   });
 
   const [sortOption, setSortOption] = useState<SortOption>(
-    SORT_OPTIONS.RELEVANCE
+    SORT_OPTIONS.RELEVANCE,
   );
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
@@ -56,11 +56,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-        (item: { id: string; filters: Filters; timestamp: string }) => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        })
-      )
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }),
+        )
       : [];
   });
 
@@ -74,37 +74,37 @@ const SearchResult = () => {
     // Apply location filter
     if (filters.location.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.location.some((loc) => job.location?.includes(loc))
+        filters.location.some((loc) => job.location?.includes(loc)),
       );
     }
     // Apply category filter
     if (filters.category.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.category.some((cat) => job.category?.includes(cat))
+        filters.category.some((cat) => job.category?.includes(cat)),
       );
     }
     // Apply experience filter
     if (filters.experience > 0) {
       filtered = filtered.filter(
-        (job) => job.experience && Number(job.experience) >= filters.experience
+        (job) => job.experience && Number(job.experience) >= filters.experience,
       );
     }
     // Apply budget type filter
     if (filters.budgetType) {
       filtered = filtered.filter(
-        (job) => job.budgetType === filters.budgetType
+        (job) => job.budgetType === filters.budgetType,
       );
     }
     // Apply skills filter
     if (filters.skills.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.skills.some((skill) => job.skills?.includes(skill))
+        filters.skills.some((skill) => job.skills?.includes(skill)),
       );
     }
     // Apply rating filter
     if (filters.rating.length > 0) {
       filtered = filtered.filter(
-        (job) => job.rating && filters.rating.includes(Math.floor(job.rating))
+        (job) => job.rating && filters.rating.includes(Math.floor(job.rating)),
       );
     }
     // Apply sorting
@@ -112,16 +112,16 @@ const SearchResult = () => {
       filtered.sort(
         (a, b) =>
           new Date(b.postedTime || "").getTime() -
-          new Date(a.postedTime || "").getTime()
+          new Date(a.postedTime || "").getTime(),
       );
     } else if (sortOption === SORT_OPTIONS.SALARY) {
       filtered.sort(
-        (a, b) => parseFloat(b.salary || "0") - parseFloat(a.salary || "0")
+        (a, b) => parseFloat(b.salary || "0") - parseFloat(a.salary || "0"),
       );
     } else if (sortOption === SORT_OPTIONS.DISTANCE) {
       // Distance-based sorting is not yet implemented; fall back to default (relevance) order.
       filtered.sort(
-        (a, b) => (a.location || "").length - (b.location || "").length
+        (a, b) => (a.location || "").length - (b.location || "").length,
       );
     }
     // Relevance is default, no sorting needed
@@ -201,7 +201,7 @@ const SearchResult = () => {
       const updated = [
         newHistoryItem,
         ...prev.filter(
-          (item) => JSON.stringify(item.filters) !== JSON.stringify(filters)
+          (item) => JSON.stringify(item.filters) !== JSON.stringify(filters),
         ),
       ].slice(0, 10);
       localStorage.setItem("searchHistory", JSON.stringify(updated));
@@ -232,8 +232,9 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

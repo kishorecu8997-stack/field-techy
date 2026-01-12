@@ -55,7 +55,6 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
     return actions;
   };
 
-
   return (
     <div className="flex items-center gap-3">
       {showBack ? (

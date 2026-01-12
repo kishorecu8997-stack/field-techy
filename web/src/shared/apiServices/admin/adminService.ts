@@ -20,12 +20,13 @@ export function useDeleteNotification(options?: {
   onSuccess?: (data: { message: string }) => void;
   onError?: (error: unknown) => void;
 }) {
-
   return useMutation({
     mutationFn: (id: string) => AdminAdapter.DeleteNotification(id),
     onSuccess: (data) => {
       // Refresh the list after deletion
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.notifications.all });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.notifications.all,
+      });
       options?.onSuccess?.(data);
     },
     onError: (error) => {
@@ -60,7 +61,7 @@ export function useAdminForgotPasswordOtpRequestMutation(options?: {
 
 export function useGetPagedNotifications(
   params: PagedNotificationsParams,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: [
@@ -168,7 +169,7 @@ export function useAdminGetById(options?: {
  */
 export function useAdminFileStream(
   fileKey?: string | null,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: ["admin-file-stream", fileKey],

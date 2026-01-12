@@ -4,7 +4,7 @@ import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
   SORT_OPTIONS,
-  type Filters
+  type Filters,
 } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getSavedJobs } from "@/utils/bookmarkUtils";
@@ -90,8 +90,9 @@ const ExploreSavedJobs = () => {
           title="Saved Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           isShowBreadcrumb={false}
-          description={`${allSavedJobs.length} saved job${allSavedJobs.length !== 1 ? "s" : ""
-            }`}
+          description={`${allSavedJobs.length} saved job${
+            allSavedJobs.length !== 1 ? "s" : ""
+          }`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">

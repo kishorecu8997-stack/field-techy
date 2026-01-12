@@ -3,8 +3,7 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {assetsConfig} from "@/assets";
-
+import { assetsConfig } from "@/assets";
 
 /**
  * A UI component for the left panel of authentication pages, featuring a carousel.
@@ -49,8 +48,8 @@ const LeftPanel: React.FC = () => {
     fade: true,
   };
 
- return (
-  <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">   
+  return (
+    <div className="h-full flex flex-col items-center justify-center  md:p-6 lg:p-8 text-white overflow-y-auto">
       <Slider {...settings} className="w-full">
         {sections.map((section, index) => (
           <div
@@ -76,9 +75,9 @@ const LeftPanel: React.FC = () => {
             </div>
           </div>
         ))}
-      </Slider>    
-  </div>
-);
-}
+      </Slider>
+    </div>
+  );
+};
 
 export default LeftPanel;

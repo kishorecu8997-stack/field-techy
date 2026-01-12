@@ -13,7 +13,7 @@ const DEFAULT_CURRENCY: CurrencySymbol = "$";
  * @returns The currency symbol for the detected country or default "$"
  */
 export function detectCurrencyFromPhone(
-  phoneNumber: string | null | undefined
+  phoneNumber: string | null | undefined,
 ): CurrencySymbol {
   // Explicit input validation
   if (
@@ -75,7 +75,7 @@ export function initializeDefaultCurrency(): void {
  * @param phoneNumber - The phone number to detect currency from
  */
 export function detectAndStoreCurrency(
-  phoneNumber: string | null | undefined
+  phoneNumber: string | null | undefined,
 ): void {
   const currency = detectCurrencyFromPhone(phoneNumber);
   setCurrencyInStorage(currency);
@@ -86,7 +86,7 @@ export type CurrencySymbol = "$" | "₹" | "£";
 
 // Debug function to test currency detection
 export function testCurrencyDetection(
-  phoneNumber: string | null | undefined
+  phoneNumber: string | null | undefined,
 ): void {
   detectCurrencyFromPhone(phoneNumber);
 }

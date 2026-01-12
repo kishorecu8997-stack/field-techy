@@ -31,7 +31,7 @@ export class EngineerAdapter {
     try {
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -42,7 +42,7 @@ export class EngineerAdapter {
   static async getById(id: string): Promise<EngineerData> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_BY_ID(id)
+        ENGINEER_ROUTER_PATHS.GET_BY_ID(id),
       );
       return response.data;
     } catch (error) {
@@ -52,12 +52,12 @@ export class EngineerAdapter {
 
   static async updateById(
     id: string,
-    data: EngineerData
+    data: EngineerData,
   ): Promise<EngineerData> {
     try {
       const response = await axiosInstance.put<EngineerData>(
         ENGINEER_ROUTER_PATHS.UPDATE_ENGINEER(id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -77,7 +77,7 @@ export class EngineerAdapter {
   static async getFiles(engineerId: string): Promise<EngineerFile[]> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_FILES(engineerId)
+        ENGINEER_ROUTER_PATHS.GET_FILES(engineerId),
       );
       return response.data;
     } catch (error) {
@@ -94,7 +94,7 @@ export class EngineerAdapter {
           headers: {
             "Content-Type": "application/octet-stream",
           },
-        }
+        },
       );
 
       // Create blob URL
@@ -117,7 +117,7 @@ export class EngineerAdapter {
   }
 
   static async downloadFileStream(
-    fileKey: string
+    fileKey: string,
   ): Promise<{ blob: Blob; fileName?: string }> {
     try {
       const response = await axiosInstance.get(
@@ -127,7 +127,7 @@ export class EngineerAdapter {
           headers: {
             "Content-Type": "application/octet-stream",
           },
-        }
+        },
       );
 
       const contentDisposition = response.headers["content-disposition"];
@@ -146,7 +146,7 @@ export class EngineerAdapter {
   }
 
   static async uploadFile(
-    params: FileUploadParams
+    params: FileUploadParams,
   ): Promise<FileUploadResponse> {
     try {
       const { engineerId, file, documentType, onUploadProgress } = params;
@@ -165,7 +165,7 @@ export class EngineerAdapter {
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
               const percentage = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
+                (progressEvent.loaded * 100) / progressEvent.total,
               );
               onUploadProgress({
                 loaded: progressEvent.loaded,
@@ -174,7 +174,7 @@ export class EngineerAdapter {
               });
             }
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -227,8 +227,8 @@ export class EngineerAdapter {
       const { engineerId, jobId, status } = params;
       const response = await axiosInstance.post(
         `${ENGINEER_ROUTER_PATHS.ASSIGN_JOB(
-          engineerId
-        )}?jobId=${jobId}&status=${status}`
+          engineerId,
+        )}?jobId=${jobId}&status=${status}`,
       );
       return response.data;
     } catch (error) {
@@ -239,7 +239,7 @@ export class EngineerAdapter {
   static async getJobs(engineerId: string): Promise<JobAssignment[]> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_JOBS(engineerId)
+        ENGINEER_ROUTER_PATHS.GET_JOBS(engineerId),
       );
       return response.data;
     } catch (error) {
@@ -249,7 +249,7 @@ export class EngineerAdapter {
 
   static async updateJobStatus(
     jobId: string,
-    status: string
+    status: string,
   ): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.put(
@@ -274,7 +274,7 @@ export class EngineerAdapter {
       console.log("email :", email);
       const urlEncodedEmail = encodeURIComponent(email);
       const response = await axiosInstance.post(
-        ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail)
+        ENGINEER_ROUTER_PATHS.REQ_OTP(urlEncodedEmail),
       );
       return response.data;
     } catch (error) {
@@ -290,7 +290,7 @@ export class EngineerAdapter {
           phoneOrEmail: params.phoneOrEmail,
           oldPassword: params.oldPassword,
           newPassword: params.newPassword,
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -302,7 +302,7 @@ export class EngineerAdapter {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        ENGINEER_ROUTER_PATHS.REQ_OTP(phoneNumber)
+        ENGINEER_ROUTER_PATHS.REQ_OTP(phoneNumber),
       );
       return response.data;
     } catch (error) {
@@ -320,12 +320,12 @@ export class EngineerAdapter {
 
   static async verifyEmailOTP(
     email: string,
-    otp: string
+    otp: string,
   ): Promise<{ message: string; verified: boolean }> {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp)
+        ENGINEER_ROUTER_PATHS.VERIFY_OTP(email, otp),
       );
       return response.data;
     } catch (error) {
@@ -333,7 +333,7 @@ export class EngineerAdapter {
     }
   }
 
-   static async deleteFile(fileId: string): Promise<boolean> {
+  static async deleteFile(fileId: string): Promise<boolean> {
     try {
       await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE_FILE(fileId));
       return true;
@@ -344,12 +344,12 @@ export class EngineerAdapter {
 
   static async verifyPhoneOTP(
     phoneNumber: string,
-    otp: string
+    otp: string,
   ): Promise<{ message: string; verified: boolean }> {
     try {
       // TODO: Replace with actual API call when backend is ready
       const response = await axiosInstance.post(
-        ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp)
+        ENGINEER_ROUTER_PATHS.VERIFY_OTP(phoneNumber, otp),
       );
       return response.data;
     } catch (error) {
@@ -363,7 +363,7 @@ export class EngineerAdapter {
     try {
       const response = await axiosInstance.post(
         ENGINEER_ROUTER_PATHS.SEND_PROPOSAL_JOB(),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -374,7 +374,7 @@ export class EngineerAdapter {
   static async getProposalJobsById(id: string): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_JOBS_BY_ID(id)
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_JOBS_BY_ID(id),
       );
       return response.data;
     } catch (error) {
@@ -385,7 +385,7 @@ export class EngineerAdapter {
   static async getProposalAll(): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_ALL()
+        ENGINEER_ROUTER_PATHS.GET_PROPOSAL_ALL(),
       );
       return response.data;
     } catch (error) {
@@ -394,11 +394,11 @@ export class EngineerAdapter {
   }
 
   static async getEngineerProposals(
-    engineerId: string
+    engineerId: string,
   ): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_ENGINEER_PROPOSALS(engineerId)
+        ENGINEER_ROUTER_PATHS.GET_ENGINEER_PROPOSALS(engineerId),
       );
       return response.data;
     } catch (error) {
@@ -408,12 +408,12 @@ export class EngineerAdapter {
 
   static async updateProposalById(
     id: string,
-    data: ProposalJobData
+    data: ProposalJobData,
   ): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.put(
         ENGINEER_ROUTER_PATHS.UPDATE_PROPOSAL_BY_ID(id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -424,7 +424,7 @@ export class EngineerAdapter {
   static async deleteProposalById(id: string): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.delete(
-        ENGINEER_ROUTER_PATHS.DELETE_PROPOSAL_BY_ID(id)
+        ENGINEER_ROUTER_PATHS.DELETE_PROPOSAL_BY_ID(id),
       );
       return response.data;
     } catch (error) {
@@ -437,7 +437,7 @@ export class EngineerAdapter {
   static async getJobsById(id: string): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ID(id)
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ID(id),
       );
       return response.data;
     } catch (error) {
@@ -448,7 +448,7 @@ export class EngineerAdapter {
   static async getJobsByEngineerId(engineerId: string): Promise<JobAssignment> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ENGINEER_ID(engineerId)
+        ENGINEER_ROUTER_PATHS.GET_JOBS_BY_ENGINEER_ID(engineerId),
       );
       return response.data;
     } catch (error) {

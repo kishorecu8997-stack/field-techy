@@ -5,7 +5,6 @@ import type { HeaderProps } from "@/shared/components/type";
 import SortDropdown from "@/shared/components/SortDropdownClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
-
 /**
  * A reusable header component for client-facing pages.
  * It displays a title, breadcrumb navigation, and optional search/sort and action button.
@@ -61,11 +60,11 @@ const ClientHeader: React.FC<HeaderProps> = ({
           {showSearchBar && <SortDropdown />}
           {showButton && (
             <Button
-             onClick={onClick} 
-             variant="primary" 
-             type="submit"
-             className="bg-teal-800 dark:bg-teal text-white"
-             >
+              onClick={onClick}
+              variant="primary"
+              type="submit"
+              className="bg-teal-800 dark:bg-teal text-white"
+            >
               {buttonText}
             </Button>
           )}

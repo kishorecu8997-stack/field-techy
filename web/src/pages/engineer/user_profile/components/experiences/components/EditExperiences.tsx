@@ -45,7 +45,7 @@ const EditExperiences = () => {
   useEffect(() => {
     if (selectedId && engineerData?.experiences) {
       const experience = engineerData.experiences.find(
-        (exp) => exp.id === selectedId
+        (exp) => exp.id === selectedId,
       );
 
       if (experience) {
@@ -146,7 +146,7 @@ const EditExperiences = () => {
               toast.success(
                 selectedId
                   ? "Experience updated successfully"
-                  : "Experience added successfully"
+                  : "Experience added successfully",
               );
 
               close(true);
@@ -228,16 +228,17 @@ const EditExperiences = () => {
             required={!methods.watch("isCurrent")}
             rules={{
               validate: (value) => {
-  if (!methods.watch("isCurrent")) {
-    if (!value) return "End date is required when not currently working";
-    
-    const start = methods.getValues("startDate");
-    if (start && value && start > value) {
-      return "End date must be after start date";
-    }
-  }
-  return true;
-},
+                if (!methods.watch("isCurrent")) {
+                  if (!value)
+                    return "End date is required when not currently working";
+
+                  const start = methods.getValues("startDate");
+                  if (start && value && start > value) {
+                    return "End date must be after start date";
+                  }
+                }
+                return true;
+              },
               onChange: () => methods.trigger("startDate"),
             }}
           />

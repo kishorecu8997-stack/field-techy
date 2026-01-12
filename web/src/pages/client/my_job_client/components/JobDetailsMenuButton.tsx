@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 /**
  * JobDetailsMenuButton Component
  * Renders a button that opens a dropdown menu for job details actions.
- * @returns {JSX.Element} The rendered button component.    
+ * @returns {JSX.Element} The rendered button component.
  */
 export default function JobDetailsMenuButton() {
   const [open, setOpen] = useState(false);

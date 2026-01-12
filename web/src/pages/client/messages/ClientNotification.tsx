@@ -4,7 +4,7 @@ import type { NotificationProps } from "@/pages/engineer/account_settings/types"
 import type { GroupedNotifications } from "../type";
 
 const groupNotificationsByDate = (
-  notifications: NotificationProps[]
+  notifications: NotificationProps[],
 ): GroupedNotifications => {
   const grouped: GroupedNotifications = {
     Today: [],
@@ -27,7 +27,7 @@ const groupNotificationsByDate = (
  * @returns {JSX.Element} The rendered ClientNotification component.
  */
 function ClientNotification() {
-const grouped = groupNotificationsByDate(mockClientNotificationsData);
+  const grouped = groupNotificationsByDate(mockClientNotificationsData);
 
   return (
     <div className=" flex justify-center items-start">
