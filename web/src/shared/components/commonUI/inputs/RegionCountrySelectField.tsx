@@ -27,7 +27,37 @@ interface RegionCountrySelectFieldProps {
   disabled?: boolean;
   options: RegionCountryOption[];
 }
-
+/**
+ * RegionCountrySelectField
+ *
+ * A multi-select dropdown field built with Headless UI's Listbox and integrated
+ * with react-hook-form via Controller. It supports hierarchical selection of
+ * regions and their associated countries (subdivisions), including:
+ *
+ * - Expandable regions with nested country checkboxes
+ * - "Select all" behavior per region with indeterminate state support
+ * - Dynamic dropdown positioning (top or bottom) based on viewport space
+ * - Truncated display labels for long selections
+ * - Optional grouped view toggled via a top-level "Country" option
+ *
+ * The selected value stored in the form state is an array of option `value` strings.
+ *
+ * @component
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.name - Field name used by react-hook-form
+ * @param {string} [props.label] - Label text displayed above the field
+ * @param {boolean} [props.isShowLabel=true] - Whether to render the label
+ * @param {string} [props.placeholder="Select regions and countries"] - Placeholder text when no value is selected
+ * @param {boolean|string} [props.required=false] - Whether the field is required; string value will be used as the error message
+ * @param {RegisterOptions} [props.rules] - Additional react-hook-form validation rules
+ * @param {React.ReactNode} [props.leftIcon] - Optional icon displayed inside the select button
+ * @param {boolean} [props.disabled=false] - Disables the select field and interactions
+ * @param {RegionCountryOption[]} props.options - Available options including regions, countries, and control options
+ *
+ * @returns {JSX.Element} A controlled region/country multi-select field
+ *
+ */
 export const RegionCountrySelectField = ({
   name,
   label,
