@@ -91,7 +91,7 @@ const SelectEngineer = () => {
           isShowBreadcrumb={false}
           isShowSort={false}
           description={`${10}+ jobs found`}
-          action={<Button onClick={handleInvite}>Invite to Job</Button>}
+          action={<Button onClick={handleInvite}disabled={selectedIds.length === 0}>Invite to Job</Button>}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
           <div className="lg:col-span-2 space-y-6">
