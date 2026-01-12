@@ -38,8 +38,9 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
       >
         Sort by: {options.find((option) => option.value === sort)?.label}
         <svg
-          className={`ml-2 h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""
-            }`}
+          className={`ml-2 h-4 w-4 transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,10 +65,11 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
                 onSortChange?.(option.value);
                 setIsOpen(false);
               }}
-              className={`block w-full text-left px-4 py-2 text-sm ${currentSort === option.value
+              className={`block w-full text-left px-4 py-2 text-sm ${
+                currentSort === option.value
                   ? "bg-emerald-100 text-emerald-800"
                   : "text-gray-700 hover:bg-gray-100"
-                }`}
+              }`}
             >
               {option.label}
             </button>

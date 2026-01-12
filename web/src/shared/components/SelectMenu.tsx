@@ -163,8 +163,8 @@ const SelectMenu = ({
                 badge
                   ? `${option?.bg ?? "bg-gray-100"}`
                   : option.value === selectedValue
-                  ? "bg-emerald-100 text-gray-900 font-medium"
-                  : "hover:bg-gray-100 dark:hover:bg-blue-400"
+                    ? "bg-emerald-100 text-gray-900 font-medium"
+                    : "hover:bg-gray-100 dark:hover:bg-blue-400"
               }`}
             >
               {badge && option.icon && (

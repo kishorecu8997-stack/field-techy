@@ -17,5 +17,5 @@ const loginData: LoginInfo[] = [
 ];
 
 // Export types and data
-export type { PersonalInfo};
+export type { PersonalInfo };
 export { loginData };

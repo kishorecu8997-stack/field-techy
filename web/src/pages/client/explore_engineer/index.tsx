@@ -1,8 +1,5 @@
 import FilterPanel from "@/pages/client/search_result/components/FilterPanel";
-import {
-  SORT_OPTIONS,
-  type Filters
-} from "@/pages/client/search_result/types";
+import { SORT_OPTIONS, type Filters } from "@/pages/client/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import EngineerListPage from "./components/EngineerListPage";
@@ -13,7 +10,6 @@ import EngineerListPage from "./components/EngineerListPage";
  * and a set of filters (`Filters`) in a sidebar.
  */
 const ExploreEngineer = () => {
-
   const [filters, setFilters] = useState<Filters>({
     location: [],
     category: [],
@@ -40,7 +36,7 @@ const ExploreEngineer = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto px-4 ">
-          <div className="w-full sticky top-16 z-10 ">
+        <div className="w-full sticky top-16 z-10 ">
           <MyJobsHeader
             title="Explore Engineers"
             currentSort={SORT_OPTIONS.NEWEST}

@@ -1,5 +1,5 @@
-import formatKeyToLabel from '@/utils/formatKeyToLabel';
-import React from 'react';
+import formatKeyToLabel from "@/utils/formatKeyToLabel";
+import React from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -33,7 +33,7 @@ interface DrawerCardProps {
  * Keys that should not be displayed in the details area.
  * Currently hides `id` which is used for actions but not shown to users.
  */
-const EXCLUDE_KEYS = ['id'];
+const EXCLUDE_KEYS = ["id"];
 
 /**
  * DrawerCard
@@ -57,9 +57,10 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
   onDeleteAction,
 }) => {
   // Get display keys from the first item (if available)
-  const displayKeys = items.length > 0
-    ? Object.keys(items[0]).filter(key => !EXCLUDE_KEYS.includes(key))
-    : [];
+  const displayKeys =
+    items.length > 0
+      ? Object.keys(items[0]).filter((key) => !EXCLUDE_KEYS.includes(key))
+      : [];
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
@@ -80,9 +81,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
       ) : (
         <div className="space-y-4">
           {items.map((item) => (
-            <div
-              key={item.id as number}              
-            >
+            <div key={item.id as number}>
               <div className="flex justify-between items-start mb-2">
                 {/* Use the first display field as the title (e.g., level, position, name) */}
                 <h3 className="font-medium text-gray-800">
@@ -94,7 +93,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
                     className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
                     aria-label="Edit"
                   >
-                   <FaRegEdit />
+                    <FaRegEdit />
                   </button>
                   <button
                     onClick={() => onDeleteAction?.(item.id as number)}
@@ -109,7 +108,8 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
               <div className="space-y-1 text-sm text-gray-700">
                 {displayKeys.map((key) => (
                   <p key={key}>
-                    <strong>{formatKeyToLabel(key)}:</strong> {String(item[key])}
+                    <strong>{formatKeyToLabel(key)}:</strong>{" "}
+                    {String(item[key])}
                   </p>
                 ))}
               </div>

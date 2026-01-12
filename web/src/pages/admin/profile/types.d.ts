@@ -1,8 +1,8 @@
 export interface ProfileFormData {
-  name: string;
+  fullName: string;
   email: string;
-  phoneNumber: string;
-  profileImage: File | null;
+  phoneNumber?: string;
+  profilePicture: string | File;
 }
 
 export interface ChangePasswordFormData {

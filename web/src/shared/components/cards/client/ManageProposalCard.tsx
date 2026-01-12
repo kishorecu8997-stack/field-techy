@@ -34,17 +34,17 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
       className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-300 hover:shadow-md transition-shadow w-full max-w-xl"
       onClick={onClick}
     >
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-20 h-20 rounded-lg object-cover"
-          />
-        ) : (
-          <div className="h-30 w-30 rounded-lg bg-gray-100 flex items-center justify-center">
-            <FaUserCircle className="w-16 h-16 text-gray-400" />
-          </div>
-        )}
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={name}
+          className="w-20 h-20 rounded-lg object-cover"
+        />
+      ) : (
+        <div className="h-30 w-30 rounded-lg bg-gray-100 flex items-center justify-center">
+          <FaUserCircle className="w-16 h-16 text-gray-400" />
+        </div>
+      )}
       <div className="flex flex-col flex-1">
         <h2 className="text-lg font-semibold text-emerald-900">{name}</h2>
 

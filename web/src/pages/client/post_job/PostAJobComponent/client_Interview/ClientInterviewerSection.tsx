@@ -7,7 +7,7 @@ import type { MultiCardProps } from "../../types";
  *    - Displays a section with client interviewer details
  *    - Provides a button to edit the client interviewer
  * @returns {JSX.Element} The rendered Client Interviewer Section
- * @constructor 
+ * @constructor
  */
 const ClientInterviewerSection: React.FC<MultiCardProps> = ({
   sections,
@@ -33,12 +33,18 @@ const ClientInterviewerSection: React.FC<MultiCardProps> = ({
             {!disabled && (
               <div className="flex gap-1 cursor-pointer">
                 {section.onEdit && (
-                  <div onClick={section.onEdit} className="dark:hover:bg-teal-300 hover:text-teal-700 p-2 rounded-md">
+                  <div
+                    onClick={section.onEdit}
+                    className="dark:hover:bg-teal-300 hover:text-teal-700 p-2 rounded-md"
+                  >
                     <FiEdit2 className="text-lg hover:text-teal-700" />
                   </div>
                 )}
                 {section.onDelete && (
-                  <div onClick={section.onDelete} className="dark:hover:bg-red-300 hover:text-red-700 p-2 rounded-md">
+                  <div
+                    onClick={section.onDelete}
+                    className="dark:hover:bg-red-300 hover:text-red-700 p-2 rounded-md"
+                  >
                     <FiTrash2 className="text-lg hover:text-red-600" />
                   </div>
                 )}
@@ -50,14 +56,20 @@ const ClientInterviewerSection: React.FC<MultiCardProps> = ({
           <div className="space-y-2">
             {section.items.map((item, i) => (
               <div key={i} className="grid grid-cols-2 gap-2">
-                <p className="text-gray-500 text-sm dark:text-gray-300">{item.label}</p>
-                <p className="text-gray-800 font-medium dark:text-gray-300">{item.value}</p>
+                <p className="text-gray-500 text-sm dark:text-gray-300">
+                  {item.label}
+                </p>
+                <p className="text-gray-800 font-medium dark:text-gray-300">
+                  {item.value}
+                </p>
               </div>
             ))}
           </div>
         </div>
       ))}
-      {!disabled && addAction && <div className="flex justify-end">{addAction}</div>}
+      {!disabled && addAction && (
+        <div className="flex justify-end">{addAction}</div>
+      )}
     </div>
   );
 };

@@ -2,18 +2,22 @@ import { icons } from "@/config/icons";
 import Accordion from "./Accordion";
 import ContactCard from "./ContactCard";
 
-
 /**
  * Contact page featuring a header with a message icon and two expandable sections (Contact Us & Support)
  * using an Accordion. Each section displays contact details via the ContactCard component.
  */
 const contactDetails = [
-  { id: "1", label: "Call", value: "+91 12345 67890", icon: <icons.phone className="text-white"/> },
+  {
+    id: "1",
+    label: "Call",
+    value: "+91 12345 67890",
+    icon: <icons.phone className="text-white" />,
+  },
   {
     id: "2",
     label: "Email",
     value: "support@field-techy.com",
-    icon: <icons.email className="text-white"/>,
+    icon: <icons.email className="text-white" />,
   },
 ];
 const supportDetails = [
@@ -21,13 +25,13 @@ const supportDetails = [
     id: "1",
     label: "Support",
     value: "+91 12345 67890",
-    icon: <icons.phone className="text-white"/>,
+    icon: <icons.phone className="text-white" />,
   },
   {
     id: "2",
     label: "Email",
     value: "support@field-techy.com",
-    icon: <icons.email className="text-white"/>,
+    icon: <icons.email className="text-white" />,
   },
 ];
 
@@ -50,8 +54,8 @@ const ContactUs = () => {
   return (
     <div className="max-w-2xl mx-auto ">
       <div className="flex flex-col justify-center items-center py-5 gap-4">
-        <div className="p-4 bg-teal-900 rounded-full" > 
-        <icons.message className="h-8 w-8 text-gray-100" />
+        <div className="p-4 bg-teal-900 rounded-full">
+          <icons.message className="h-8 w-8 text-gray-100" />
         </div>
         <h1 className="text-2xl font-bold">Contact Us</h1>
         <div className="text-center">

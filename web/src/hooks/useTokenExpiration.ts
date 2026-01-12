@@ -29,7 +29,6 @@ export const TOKEN_EXPIRATION_DURATION = config.tokenExpirationDuration;
  */
 export function useTokenExpiration() {
   const session = useUserSessionStore((state) => state.session);
-  const logout = useUserSessionStore((state) => state.logout);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {

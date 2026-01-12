@@ -1,6 +1,5 @@
 import xss from "xss";
 
-
 export const validateTime = (selectedDate: any, selectedTime: string) => {
   if (!selectedDate || !selectedTime) return true;
 
@@ -22,8 +21,7 @@ export const validateTime = (selectedDate: any, selectedTime: string) => {
   return true;
 };
 
-
-export  const normalize = (d: any) => {
+export const normalize = (d: any) => {
   if (!d) return null;
   const date = d instanceof Date ? d : new Date(d);
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -32,7 +30,7 @@ export  const normalize = (d: any) => {
 export const validateStartDate = (
   startRaw: Date | null,
   endRaw: Date | null,
-  normalize: (d: any) => Date | null
+  normalize: (d: any) => Date | null,
 ) => {
   const start = normalize(startRaw);
   const end = normalize(endRaw);
@@ -43,8 +41,7 @@ export const validateStartDate = (
   if (start < today)
     return "Past dates are not allowed—please choose today or a future date";
 
-  if (end && start > end)
-    return "Start date must be before project deadline";
+  if (end && start > end) return "Start date must be before project deadline";
 
   return true;
 };
@@ -52,7 +49,7 @@ export const validateStartDate = (
 export const validateProjectDeadline = (
   endDateRaw: Date | null,
   startDateRaw: Date | null,
-  normalize: (d: any) => Date | null
+  normalize: (d: any) => Date | null,
 ) => {
   const start = normalize(startDateRaw);
   const end = normalize(endDateRaw);
@@ -95,7 +92,9 @@ export const validateName = (value: string) => {
  * @param date The date to validate.
  * @returns {true | string} True if valid, otherwise an error message.
  */
-export const validateCurrentOrFutureDate = (date: Date | null): true | string => {
+export const validateCurrentOrFutureDate = (
+  date: Date | null,
+): true | string => {
   if (!date) {
     return "Date must be selected";
   }
@@ -107,25 +106,26 @@ export const validateCurrentOrFutureDate = (date: Date | null): true | string =>
   return true;
 };
 
-export const validateEndDate = (endDate: Date | null, startDate: Date | null): true | string => {
-   if (!endDate) {
-     return "Project deadline must be selected.";
-   }
+export const validateEndDate = (
+  endDate: Date | null,
+  startDate: Date | null,
+): true | string => {
+  if (!endDate) {
+    return "Project deadline must be selected.";
+  }
 
-   const today = new Date();
-   today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-   if (endDate < today) {
-     return "Project deadline cannot be in the past.";
-   }
+  if (endDate < today) {
+    return "Project deadline cannot be in the past.";
+  }
 
-   if (startDate && endDate < startDate) {
-     return "Project deadline cannot be earlier than the start date.";
-   }
-   return true;
- };
-
-
+  if (startDate && endDate < startDate) {
+    return "Project deadline cannot be earlier than the start date.";
+  }
+  return true;
+};
 
 /**
  * Validate a date range.
@@ -136,7 +136,7 @@ export const validateEndDate = (endDate: Date | null, startDate: Date | null): t
  */
 export const validateDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ) => {
   if (!startDate) {
     return "Start date is required";
@@ -152,7 +152,6 @@ export const validateDateRange = (
 
   return true;
 };
-
 
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
@@ -215,22 +214,22 @@ export const validateJobTitile = (value: string) => {
 
 export const validateJobTimePeriod = (value: string) => {
   const v = value || "";
-  
+
   if (!v) return "Time period is required";
-  
+
   // Disallow any whitespace (including leading/trailing)
   if (/\s/.test(v)) return "Time period must not contain spaces";
-  
+
   // Must be exactly 1 character
   if (v.length !== 1) return "Time period must be exactly 1 character";
-  
+
   // Must be a digit
   if (!/^\d$/.test(v)) return "Time period must be a single digit (1–8)";
-  
+
   const num = parseInt(v, 10);
   if (num < 1) return "Time period must be at least 1 hour";
   if (num > 8) return "Time period must not exceed 8 hours";
-  
+
   return true;
 };
 
@@ -238,13 +237,13 @@ export interface TextValidationOptions {
   minLength?: number;
   maxLength?: number;
   maxSpaces?: number; // total spaces allowed (default: 10)
-  regex?: RegExp;     // optional custom base regex
+  regex?: RegExp; // optional custom base regex
   required?: boolean; // default: true
 }
 
 export const validateAlphabeticText = (
   value: string,
-  options: TextValidationOptions = {}
+  options: TextValidationOptions = {},
 ): string | true => {
   const {
     minLength = 1,
@@ -312,7 +311,7 @@ export const validateCurrencyText = (
     maxLength?: number;
     maxSpaces?: number;
     required?: boolean;
-  } = {}
+  } = {},
 ): string | true => {
   const v = value || "";
 
@@ -354,21 +353,16 @@ export const validatePaymentMethods = (value: string | null | undefined) => {
 };
 
 export const validateConsent = (value: boolean) => {
-  console.log("Consent value:", value); 
+  console.log("Consent value:", value);
   if (!value) return "You must agree to the terms and conditions";
   return true;
 };
 
-
 export const validateAlphabeticTextArea = (
   value: string,
-  options: TextValidationOptions = {}
+  options: TextValidationOptions = {},
 ): string | true => {
-  const {
-    minLength = 1,
-    maxLength = Infinity,
-    required = true,
-  } = options;
+  const { minLength = 1, maxLength = Infinity, required = true } = options;
 
   const v = value || "";
 
@@ -389,16 +383,15 @@ export const validateAlphabeticTextArea = (
   // ❌ No consecutive spaces (e.g., "a  b")
   if (/ {2,}/.test(v)) {
     return "Consecutive spaces are not allowed";
-  }  
+  }
 
-   // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
+  // Allowed characters: letters, spaces, numbers and special characters such as /( ) , .
   const defaultPattern = /^[a-zA-Z0-9 /().,#]+$/;
   const pattern = defaultPattern;
 
   if (!pattern.test(v)) {
     return "Only letters, spaces, numbers, and special characters such as / ( ) , . # are allowed";
   }
-
 
   // Cross-Site Scripting (XSS) check
   if (v !== xss(v)) {

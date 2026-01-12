@@ -8,6 +8,13 @@ export const CLIENT_ROUTER_PATHS = {
   UPDATE: (id: string) => `/client/api/v1/clients/update/${id}`,
   DELETE: (id: string) => `/client/api/v1/clients/delete/${id}`,
 
+  //JOB
+  GET_JOBS: "/client/api/v1/jobs",
+  GET_JOB_BY_ID: (id: string) => `/client/api/v1/jobs/${id}`,
+  CREATE_JOB: () => `/client/api/v1/jobs/save`,
+  UPDATE_JOB: (id: string) => `/client/api/v1/jobs/update/${id}`,
+  DELETE_JOB: (id: string) => `/client/api/v1/jobs/delete/${id}`,
+
   // OTP endpoints
   SEND_EMAIL_OTP: (email: string) => `/user/api/v1/users/otp/request/${email}`,
   SEND_PHONE_OTP: (phone: string) => `/user/api/v1/users/otp/request/${phone}`,

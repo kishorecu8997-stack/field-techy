@@ -48,7 +48,7 @@ const JobStatusCard: React.FC<JobStatusCardProps> = ({
   const colorClass =
     STATUS_COLOR_MAP[
       Object.keys(JOB_STATUSES).find(
-        (key) => JOB_STATUSES[key as keyof typeof JOB_STATUSES] === status
+        (key) => JOB_STATUSES[key as keyof typeof JOB_STATUSES] === status,
       ) || ""
     ] || "bg-gray-600";
 

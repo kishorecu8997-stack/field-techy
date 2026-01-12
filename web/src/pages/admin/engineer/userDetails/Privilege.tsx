@@ -21,7 +21,9 @@ const ToggleStatus: React.FC<ToggleStatusProps> = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-semibold dark:text-white text-gray-700">{label}</label>
+      <label className="text-sm font-semibold dark:text-white text-gray-700">
+        {label}
+      </label>
       <div
         className={`${baseClasses} ${
           isActive ? activeClasses : inactiveClasses

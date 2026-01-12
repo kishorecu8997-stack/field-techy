@@ -28,7 +28,7 @@ const AddProject = () => {
     console.log("Submitted:", data);
     localStorage.setItem(
       "projectSiteCoordinates",
-      JSON.stringify(data.coordinates)
+      JSON.stringify(data.coordinates),
     );
     toast.success("Project site added successfully");
     setISOpenSidebar(false);

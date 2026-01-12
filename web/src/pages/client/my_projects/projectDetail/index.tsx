@@ -207,7 +207,10 @@ export default function ProjectDetails() {
                           <BiEdit
                             className="text-lg cursor-pointer"
                             onClick={() => {
-                              localStorage.setItem("editSiteId", site.id.toString());
+                              localStorage.setItem(
+                                "editSiteId",
+                                site.id.toString(),
+                              );
                               setActiveKey("editclientProject");
                               setISOpenSidebar(true);
                             }}
@@ -279,7 +282,7 @@ export default function ProjectDetails() {
                   <p className="mb-1">Actual Start Date</p>
                   <p className="text-sm font-semibold">
                     {dayjs(projectDetails?.actualStartDate).format(
-                      "DD-MM-YYYY"
+                      "DD-MM-YYYY",
                     )}
                   </p>
                 </div>

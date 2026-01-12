@@ -6,9 +6,9 @@ import type { DownloadInvoiceModalProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
-import companyLogo from '@/assets/company-logo.png';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import companyLogo from "@/assets/company-logo.png";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 /**
  * DownloadInvoice Component
@@ -69,61 +69,77 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
     try {
       const today = new Date();
       // Use user's locale for formatting
-      const locale = (navigator && navigator.language) || 'en-US';
-      const currency = 'USD'; // sample currency - replace with real currency when available
+      const locale = (navigator && navigator.language) || "en-US";
+      const currency = "USD"; // sample currency - replace with real currency when available
       // Sample transaction data (use your real transaction object when available)
       const sampleTransaction = {
         transactionId: `TX-${String(100000 + Math.floor(Math.random() * 899999))}`,
-        invoiceNumber: `INV-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+        invoiceNumber: `INV-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`,
         date: today,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
         // Use the requested transaction description as the invoice line
         items: [
-          { description: 'Installation Of CCTV', qty: 1, unitPrice: 150.0 },
+          { description: "Installation Of CCTV", qty: 1, unitPrice: 150.0 },
         ],
         currency: currency,
-        payer: 'Client Name',
-        payee: 'Field Techy Services',
-        paymentMethod: 'Card (**** 4242)',
+        payer: "Client Name",
+        payee: "Field Techy Services",
+        paymentMethod: "Card (**** 4242)",
         balanceBefore: 1000.0,
-        supportContact: 'support@fieldtechy.com',
+        supportContact: "support@fieldtechy.com",
       };
       // compute totals dynamically so amounts always reflect items
-      const itemsTotal = sampleTransaction.items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
+      const itemsTotal = sampleTransaction.items.reduce(
+        (s, it) => s + it.qty * it.unitPrice,
+        0,
+      );
       const taxRate = 0; // set if you need tax (e.g., 0.1 for 10%)
       const taxAmount = itemsTotal * taxRate;
       const totalAmount = itemsTotal + taxAmount;
       // compute balance after
       const balanceAfter = sampleTransaction.balanceBefore - totalAmount;
- 
+
       // Sample client details
-      const clientName = 'Acme Corporation';
-      const clientEmail = 'billing@acmecorp.com';
-      const clientPhone = '+1 (555) 987-6543';
-      const payerName = 'John Smith';
-      const payeeName = 'Field Techy Services';
- 
+      const clientName = "Acme Corporation";
+      const clientEmail = "billing@acmecorp.com";
+      const clientPhone = "+1 (555) 987-6543";
+      const payerName = "John Smith";
+      const payeeName = "Field Techy Services";
+
       // Filename per AC-4
-      const yyyyMMdd = today.toISOString().slice(0, 10).replace(/-/g, '');
+      const yyyyMMdd = today.toISOString().slice(0, 10).replace(/-/g, "");
       const filename = `fieldtechy_wallet_invoice_${sampleTransaction.transactionId}_${yyyyMMdd}.pdf`;
- 
+
       // Build invoice HTML inside a container element (no new window)
-      const container = document.createElement('div');
-      container.style.background = 'white';
-      container.style.padding = '20mm';
+      const container = document.createElement("div");
+      container.style.background = "white";
+      container.style.padding = "20mm";
       // Build invoice HTML using localized formatting
-      const nf = new Intl.NumberFormat(locale, { style: 'currency', currency: sampleTransaction.currency });
-      const df = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' });
- 
+      const nf = new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: sampleTransaction.currency,
+      });
+      const df = new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short",
+      });
+
       // Use actual company logo image
       const logoImgTag = `<img src="${companyLogo}" alt="Company logo" style="width:60px;height:60px;object-fit:contain;" />`;
- 
+
       // Compose items rows
-      const itemsHtml = sampleTransaction.items.map(item => {
-        const total = item.qty * item.unitPrice;
-        return `<tr><td style="padding:12px; border:1px solid #ddd;">${item.description}</td><td style="padding:12px; text-align:center; border:1px solid #ddd;">${item.qty}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(item.unitPrice)}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(total)}</td></tr>`;
-      }).join('');
-    //  Here I used custom CSS, not Tailwind, because I’m using jsPDF and html2canvas. These tools work with raw HTML and CSS, so that’s why.
+      const itemsHtml = sampleTransaction.items
+        .map((item) => {
+          const total = item.qty * item.unitPrice;
+          return `<tr><td style="padding:12px; border:1px solid #ddd;">${item.description}</td><td style="padding:12px; text-align:center; border:1px solid #ddd;">${item.qty}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(item.unitPrice)}</td><td style="padding:12px; text-align:right; border:1px solid #ddd;">${nf.format(total)}</td></tr>`;
+        })
+        .join("");
+      //  Here I used custom CSS, not Tailwind, because I’m using jsPDF and html2canvas. These tools work with raw HTML and CSS, so that’s why.
       container.innerHTML = `
         <div style="font-family: Arial, sans-serif; max-width: 210mm; background: white; color: #333;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
@@ -199,56 +215,70 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
             <div style="margin-top:6px; color:#999;">Generated on ${df.format(new Date())}</div>
           </div>
         </div>
-      `; 
- 
+      `;
+
       // Append hidden container to DOM to allow html2canvas to render styles
-      container.style.position = 'fixed';
-      container.style.left = '-9999px';
+      container.style.position = "fixed";
+      container.style.left = "-9999px";
       document.body.appendChild(container);
- 
+
       // Create canvas from the container
       // @ts-ignore
       const canvas = await html2canvas(container, { scale: 2, useCORS: true });
       // Remove temporary container
       document.body.removeChild(container);
       // Create PDF using jsPDF
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      const pdf = new jsPDF({
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+      });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
- 
-      const imgData = canvas.toDataURL('image/png');
+
+      const imgData = canvas.toDataURL("image/png");
       const imgProps = { width: canvas.width, height: canvas.height };
- 
+
       // Calculate the rendered height in mm for the given pdfWidth
       const renderedImgHeight = (imgProps.height * pdfWidth) / imgProps.width;
- 
+
       if (renderedImgHeight <= pdfHeight) {
         // Single page
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, renderedImgHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, renderedImgHeight);
       } else {
         // Multi-page: draw slices
-        const pageCanvas = document.createElement('canvas');
-        const pageCtx = pageCanvas.getContext('2d');
+        const pageCanvas = document.createElement("canvas");
+        const pageCtx = pageCanvas.getContext("2d");
         const pxPerMm = imgProps.width / pdfWidth;
- 
+
         const pageHeightPx = Math.floor(pdfHeight * pxPerMm);
         pageCanvas.width = imgProps.width;
         pageCanvas.height = pageHeightPx;
- 
+
         let yOffset = 0;
         while (yOffset < imgProps.height) {
           // Clear and draw slice
           pageCtx!.clearRect(0, 0, pageCanvas.width, pageCanvas.height);
-          pageCtx!.drawImage(canvas, 0, yOffset, pageCanvas.width, pageCanvas.height, 0, 0, pageCanvas.width, pageCanvas.height);
- 
-          const pageData = pageCanvas.toDataURL('image/png');
+          pageCtx!.drawImage(
+            canvas,
+            0,
+            yOffset,
+            pageCanvas.width,
+            pageCanvas.height,
+            0,
+            0,
+            pageCanvas.width,
+            pageCanvas.height,
+          );
+
+          const pageData = pageCanvas.toDataURL("image/png");
           if (yOffset === 0) {
-            pdf.addImage(pageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.addImage(pageData, "PNG", 0, 0, pdfWidth, pdfHeight);
           } else {
             pdf.addPage();
-            pdf.addImage(pageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.addImage(pageData, "PNG", 0, 0, pdfWidth, pdfHeight);
           }
- 
+
           yOffset += pageHeightPx;
         }
       }
@@ -257,8 +287,8 @@ const DownloadInvoice: React.FC<DownloadInvoiceModalProps> = ({
       // Close modal
       onClose();
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      console.error("Error generating PDF:", error);
+      alert("Failed to generate PDF. Please try again.");
     }
   };
 

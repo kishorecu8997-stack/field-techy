@@ -33,7 +33,7 @@ interface InputFieldProps {
   /** Custom icon to show when the field is invalid */
   invalidIcon?: React.ReactNode;
   /** Disable input */
-  disabled?: boolean;  // Added disabled prop here
+  disabled?: boolean; // Added disabled prop here
 }
 
 /**
@@ -134,7 +134,7 @@ interface PasswordInputProps {
   name: string;
   label?: string;
   placeholder?: string;
-  required?: boolean;  
+  required?: boolean;
   isShowLabel?: boolean;
   rules?: RegisterOptions;
   disabled?: boolean;

@@ -158,7 +158,7 @@ const ProfileSetup = () => {
           validate: (value: string) =>
             validateZipcode(
               value,
-              typeof country === "string" ? country : country?.value
+              typeof country === "string" ? country : country?.value,
             ),
         }}
       />

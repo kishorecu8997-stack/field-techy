@@ -80,7 +80,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
       if (verificationType === "email") {
         await verifyEmailOTP({ email: contact, otp: data.otp });
       } else {
-         await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
+        await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
       }
       handleNavigate?.();
     } catch (error: any) {
@@ -128,8 +128,9 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${
+                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Resend
               </Button>

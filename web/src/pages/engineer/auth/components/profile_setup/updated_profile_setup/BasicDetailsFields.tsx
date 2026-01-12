@@ -9,6 +9,10 @@ import {
   validateExperience,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import { validatePortfolioLink } from "@/shared/libs/utils";
+import {
+  validateEmail,
+  validateEmailRules,
+} from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -53,14 +57,13 @@ const EmailFieldWithValidation = () => {
         name="email"
         control={control}
         rules={{
-          required: "Email address is required",
-          pattern: {
-            value: emailRegex,
-            message: "Invalid email address",
-          },
+          ...validateEmailRules,
           validate: (value: string) => {
-            if (!value) return "Email address is required";
-            if (!emailRegex.test(value)) return "Invalid email address";
+            // First run the shared email validation
+            const emailValidationResult = validateEmail(value);
+            if (emailValidationResult !== true) {
+              return emailValidationResult;
+            }
 
             // Only check availability if email format is valid and we have a result
             if (isValidating) {
@@ -101,10 +104,10 @@ const EmailFieldWithValidation = () => {
                                       error
                                         ? "border-red-500 focus:ring-1 focus:ring-red-400"
                                         : isAvailable
-                                        ? "border-green-500 focus:ring-1 focus:ring-green-400"
-                                        : isUnavailable
-                                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                                        : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                                          ? "border-green-500 focus:ring-1 focus:ring-green-400"
+                                          : isUnavailable
+                                            ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                                            : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
                                     }
                                 `}
               />
@@ -148,10 +151,10 @@ const BasicDetailsFields = () => {
 
   // Fetch dropdown data - assuming these hooks are shared or available
   const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value || country
+    country?.value || country,
   );
   const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState
+    selectedState?.value || selectedState,
   );
 
   return (
@@ -222,7 +225,7 @@ const BasicDetailsFields = () => {
           validate: (value: string) =>
             validateZipcode(
               value,
-              typeof country === "string" ? country : country?.value
+              typeof country === "string" ? country : country?.value,
             ),
         }}
       />

@@ -43,7 +43,7 @@ const JobsDetails: React.FC = () => {
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
             isReport
-            onSortChange={() => { }}
+            onSortChange={() => {}}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -18,7 +18,7 @@ const SignInPage = () => {
   const [isNumberLogin, setIsNumberLogin] = useState(false);
 
   return (
-   <div className="flex w-full justify-center">
+    <div className="flex w-full justify-center">
       {isNumberLogin ? (
         <LoginWithNumber setIsNumberLogin={setIsNumberLogin} />
       ) : (

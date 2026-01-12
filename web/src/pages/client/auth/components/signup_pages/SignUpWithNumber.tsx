@@ -41,12 +41,13 @@ const SignUpWithNumber = ({
   const [isOpen, setIsOpen] = useState(false);
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
 
-  const { signupPhone, mobileVerified, setSignupData, clearStore } = useClientRegistrationStore();
+  const { signupPhone, mobileVerified, setSignupData, clearStore } =
+    useClientRegistrationStore();
   const { showPopup } = usePopupStore();
 
   const method = useForm<LoginFormData>({
     defaultValues: {
-      phone: "",  // Start empty, will be filled based on user choice
+      phone: "", // Start empty, will be filled based on user choice
       terms: false,
     },
   });
@@ -71,7 +72,9 @@ const SignUpWithNumber = ({
       setHasAskedToContinue(true);
 
       showPopup({
-        title: mobileVerified ? "Resume Registration?" : "Continue Registration?",
+        title: mobileVerified
+          ? "Resume Registration?"
+          : "Continue Registration?",
         body: mobileVerified
           ? `You have a verified phone: ${signupPhone}. Would you like to continue your registration or start fresh?`
           : `You previously started registration with: ${signupPhone}. Would you like to continue or start fresh?`,
@@ -101,7 +104,15 @@ const SignUpWithNumber = ({
         ],
       });
     }
-  }, [signupPhone, mobileVerified, hasAskedToContinue, method, clearStore, navigate, showPopup]);
+  }, [
+    signupPhone,
+    mobileVerified,
+    hasAskedToContinue,
+    method,
+    clearStore,
+    navigate,
+    showPopup,
+  ]);
 
   const handleOTPVerified = () => {
     setIsOpen(false);
@@ -171,10 +182,11 @@ const SignUpWithNumber = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:opacity-90"
-              }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted || isSendingOTP
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
+            }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
