@@ -30,17 +30,19 @@ const EditDocument = () => {
 
   const userId = useMemo(() => getUserId(), []);
 
-  const uploadMutation = useEngineerFileUpload({
-    engineerId: userId || undefined,
-    onSuccess: () => {
-      toast.success("Document Uploaded Successfully");
-      setActiveKey("documents");
-    },
-    onError: (error) => {
-      console.error("Upload error:", error);
-      toast.error("Failed to upload document");
-    },
-  });
+  const uploadMutation = useEngineerFileUpload(
+    userId || undefined,
+    {
+      onSuccess: () => {
+        toast.success("Document Uploaded Successfully");
+        setActiveKey("documents");
+      },
+      onError: (error) => {
+        console.error("Upload error:", error);
+        toast.error("Failed to upload document");
+      },
+    }
+  );
 
   const onSubmit = async (data: EditDocumentFormData) => {
     if (!userId) {

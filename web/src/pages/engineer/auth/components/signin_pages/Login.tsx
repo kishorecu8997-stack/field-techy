@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -32,6 +33,7 @@ import { AxiosError } from "axios";
 import TwoFASetup from "@/shared/components/TwoFASetup";
 import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 
 /**
  * Login component
@@ -174,10 +176,10 @@ const Login = ({
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
-              className="h-20 w-24"
+             <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
+              className="h-15 w-20"
             />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">

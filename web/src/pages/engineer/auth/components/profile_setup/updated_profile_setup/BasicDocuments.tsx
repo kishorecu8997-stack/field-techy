@@ -53,23 +53,26 @@ const BasicDocuments = () => {
   const { showPopup } = usePopupStore();
   const { clearStore, updateDocuments } = useEngineerRegistrationStore();
 
-  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
-    onSuccess: () => {
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
-    },
-    onError: (error: any) => {
-      console.error("Upload failed:", error);
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-     onProgress: (progress) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
-    },
-  });
+  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload(
+    engineerId || undefined,
+    {
+      onSuccess: () => {
+        setUploadingDoc(null);
+        toast.success("File uploaded successfully!");
+      },
+      onError: (error) => {
+        console.error("Upload failed:", error);
+        setUploadingDoc(null);
+        toast.error("Failed to upload file");
+      },
+      onProgress: (progress) => {
+        setUploadProgress((prev) => ({
+          ...prev,
+          [uploadingDoc!]: progress.percentage!,
+        }));
+      },
+    }
+  );
 
   const handleSkip = () => {
     showPopup({
@@ -210,7 +213,7 @@ const BasicDocuments = () => {
       className="flex flex-col h-screen w-full"
     >
       {/* header - sticky */}
-      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
+      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-transparent ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
           Please upload at least one document for background verification{" "}

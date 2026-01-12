@@ -214,7 +214,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => {},
+  onMapClick = () => { },
   viewOnly = false,
   onPositionChange,
   className,
@@ -244,19 +244,20 @@ const MapSearch: React.FC<MapComponentProps> = ({
   };
 
   return (
-    <div className={`relative w-full z-40 ${className}`}>
+    <div className={`relative w-full z-0 ${className}`}>
       {/* Hide search bar in viewOnly */}
       {!viewOnly && <MapSearchBar onSelect={handleSearchSelect} />}
 
       <MapContainer
         center={initialPosition}
         zoom={initialZoom}
-        zoomControl={!viewOnly} 
+        zoomControl={!viewOnly}
         dragging={!viewOnly}
         scrollWheelZoom={!viewOnly}
         doubleClickZoom={!viewOnly}
         attributionControl={!viewOnly}
         style={{
+          zIndex: 1,
           height: "400px",
           width: "100%",
           borderRadius: "8px",

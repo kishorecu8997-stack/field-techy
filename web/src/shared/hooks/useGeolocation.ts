@@ -13,7 +13,8 @@ import { useDeviceStore } from '@/shared/store/useDeviceStore';
 export const useGeolocation = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setLocation, setLocationPermission } = useDeviceStore();
+    const setLocation = useDeviceStore((state) => state.setLocation);
+    const setLocationPermission = useDeviceStore((state) => state.setLocationPermission);
 
     /**
      * Requests the current position from the browser.

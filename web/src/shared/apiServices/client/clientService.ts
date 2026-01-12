@@ -257,6 +257,7 @@ export function useDownloadClientFileStream(options?: {
   });
 }
 
+
 /**
  * Hook to delete a client file
  */
@@ -272,5 +273,41 @@ export function useDeleteClientFile(options?: {
       options?.onSuccess?.();
     },
     onError: options?.onError,
+  });
+}
+
+
+// --- Jobs Hooks ---
+export function useGetJobs() {
+  return useQuery({
+    queryKey: ["client-jobs"],
+    queryFn: () => ClientAdapter.getJobs(),
+    enabled: true,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+}
+
+/**
+ * Hook to download a file stream as a query (useful for displaying images)
+ */
+export function useClientFileStream(
+  fileKey?: string,
+  options?: { enabled?: boolean }
+) {
+  return useQuery({
+    queryKey: ["client-file-stream", fileKey],
+    queryFn: () => ClientAdapter.downloadFileStream(fileKey!),
+    enabled: !!fileKey && (options?.enabled ?? true),
+    staleTime: Infinity, // Cache indefinitely since file content for a key shouldn't change
+  });
+}
+
+
+export function useClientGetJobsById(id: string) {
+  return useQuery({
+    queryKey: ["client-jobs", id],
+    queryFn: () => ClientAdapter.getJobsById(id),
+    enabled: !!id,
+    notifyOnChangeProps: ['data', 'error'],
   });
 }

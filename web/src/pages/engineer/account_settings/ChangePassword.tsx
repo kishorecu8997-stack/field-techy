@@ -35,7 +35,7 @@ const ChangePassword = () => {
   const session = useUserSessionStore((state) => state.session);
   const userId = session?.userId;
 
-  const { data: sessionData } = useEngineerGetById(userId, {
+  const { data: sessionData } = useEngineerGetById(userId ?? "", {
     enabled: !!userId,
   });
   const { mutateAsync: updatePassword } = useUpdatePassword();

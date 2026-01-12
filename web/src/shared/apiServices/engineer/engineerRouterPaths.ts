@@ -29,6 +29,22 @@ export const ENGINEER_ROUTER_PATHS = {
   UPDATE_JOB_STATUS: (jobId: string) =>
     `/eng/api/v1/engineers/jobs/${jobId}/status`,
 
+  // proposal endpoints
+  SEND_PROPOSAL_JOB: () => `/eng/api/v1/engineers/proposals/save`,
+  GET_PROPOSAL_JOBS_BY_ID: (id: string) =>
+    `/eng/api/v1/engineers/proposals/${id}`,
+  GET_PROPOSAL_ALL: () => `/eng/api/v1/engineers/proposals/all`,
+  GET_ENGINEER_PROPOSALS: (engineerId: string) =>
+    `/eng/api/v1/engineers/proposals/ALL/${engineerId}`,
+  UPDATE_PROPOSAL_BY_ID: (id: string) =>
+    `/eng/api/v1/engineers/proposals/update/${id}`,
+  DELETE_PROPOSAL_BY_ID: (id: string) =>
+    `/eng/api/v1/engineers/proposals/delete/${id}`,
+
+  // Jobs endpoints
+  GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/${id}`,
+  GET_JOBS_BY_ENGINEER_ID: (engineerId: string) =>
+    `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   RESET_PASSWORD: (otp: string) =>
     `/user/api/v1/users/password/reset/by-otp/${otp}`,
   CHANGE_PASSWORD: `/user/api/v1/users/password/change`,

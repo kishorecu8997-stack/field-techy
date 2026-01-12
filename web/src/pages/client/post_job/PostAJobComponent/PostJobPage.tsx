@@ -150,7 +150,7 @@ const PostJobPage = () => {
 
   const { currentLocation } = usePostAJobStore();
   return (
-    <div className="p-4 bg-white">
+    <div className="p-4 bg-white dark:bg-gray-800">
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <MyJobsHeader
           title={

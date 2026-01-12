@@ -1,7 +1,3 @@
-import { LuHandshake } from "react-icons/lu";
-import { MdBarChart, MdOutlineDone } from "react-icons/md";
-import { PiLightbulbFilamentFill } from "react-icons/pi";
-import { TfiLocationArrow } from "react-icons/tfi";
 
 export interface Engineer {
   id: number;

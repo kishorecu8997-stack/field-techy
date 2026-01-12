@@ -1,8 +1,11 @@
 import { queryClient } from "@/main";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
+  AssignJobParams,
   EngineerData,
   // EngineerPaginationParams,
   // PagedResponse,
@@ -10,7 +13,7 @@ import type {
   FileUploadResponse,
   // EngineerFile,
   JobAssignment,
-  AssignJobParams,
+  ProposalJobData,
   ScreenUploadParams,
   ScreenUploadResponse,
   UpdatePasswordParams,
@@ -56,6 +59,38 @@ export function useEngineerScreenShotUpload(options?: {
     mutationFn: (params: ScreenUploadParams) =>
       EngineerAdapter.uploadScreenshot(params),
     onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerFileUpload(
+  engineerId?: string,
+  options?: {
+    onSuccess?: (data: FileUploadResponse) => void;
+    onError?: (error: unknown) => void;
+    onProgress?: (progress: {
+      loaded: number;
+      total?: number;
+      percentage?: number;
+    }) => void;
+  }
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: FileUploadParams) =>
+      EngineerAdapter.uploadFile(params),
+    onSuccess: (data, variables) => {
+      if (engineerId) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.engineer.detail(variables.engineerId),
+        });
+        // Refresh the store to get the updated profile image
+        useEngineerStore.getState().fetchEngineerProfile(variables.engineerId);
+      } else {
+        queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      }
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }
@@ -243,30 +278,158 @@ export function useDeleteEngineerFile(options?: {
   });
 }
 
-export function useEngineerFileUpload(options?: {
-  engineerId?: string;
-  onSuccess?: (data: FileUploadResponse) => void;
-  onError?: (error: unknown) => void;
-  onProgress?: (progress: {
-    loaded: number;
-    total?: number;
-    percentage?: number;
-  }) => void;
+export function useSendProposalJob(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
 }) {
-  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (params: FileUploadParams) =>
-      EngineerAdapter.uploadFile(params),
-    onSuccess: (data) => {
-      if (options?.engineerId) {
-        queryClient.invalidateQueries({
-          queryKey: [...queryKeys.engineer.detail(options.engineerId), "files"],
-        });
-      } else {
-        queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      }
-      options?.onSuccess?.(data);
-    },
+    mutationFn: (data: ProposalJobData) =>
+      EngineerAdapter.sendProposalJob(data),
+    onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
 }
+
+export function useGetProposalJobsById(
+  id: string,
+  options?: {
+    onSuccess?: (data: JobAssignment) => void;
+    onError?: (error: any) => void;
+    enabled?: boolean;
+  }
+) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
+    queryFn: () => EngineerAdapter.getProposalJobsById(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useGetProposalAll(
+  id: string,
+  options?: {
+    onSuccess?: (data: JobAssignment) => void;
+    onError?: (error: any) => void;
+    enabled?: boolean;
+  }
+) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
+    queryFn: () => EngineerAdapter.getProposalAll(),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useGetEngineerProposals(
+  id: string,
+  options?: {
+    onSuccess?: (data: JobAssignment) => void;
+    onError?: (error: any) => void;
+    enabled?: boolean;
+  }
+) {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
+    queryFn: () => EngineerAdapter.getEngineerProposals(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
+
+export function useUpdateProposalById(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+}) {
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: ProposalJobData }) =>
+      EngineerAdapter.updateProposalById(id, data),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useDeleteProposalById(options?: {
+  onSuccess?: (data: JobAssignment) => void;
+  onError?: (error: any) => void;
+}) {
+  return useMutation({
+    mutationFn: (id: string) => EngineerAdapter.deleteProposalById(id),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+// --------------------------------- Jobs Endpoints ---------------------------------
+export function useGetJobsById(
+  id: string,
+  options?: {
+    onSuccess?: (data: JobAssignment) => void;
+    onError?: (error: any) => void;
+    enabled?: boolean;
+  }
+) {
+  const query = useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
+    queryFn: () => EngineerAdapter.getJobsById(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+
+  const onSuccessRef = useRef(options?.onSuccess);
+  const onErrorRef = useRef(options?.onError);
+
+  useEffect(() => {
+    onSuccessRef.current = options?.onSuccess;
+    onErrorRef.current = options?.onError;
+  }, [options?.onSuccess, options?.onError]);
+
+  useEffect(() => {
+    if (query.isSuccess && onSuccessRef.current) {
+      onSuccessRef.current(query.data);
+    }
+  }, [query.isSuccess, query.data]);
+
+  useEffect(() => {
+    if (query.isError && onErrorRef.current) {
+      onErrorRef.current(query.error);
+    }
+  }, [query.isError, query.error]);
+
+  return query;
+}
+
+export function useGetJobsByEngineerId(
+  id: string,
+  options?: {
+    onSuccess?: (data: JobAssignment) => void;
+    onError?: (error: any) => void;
+    enabled?: boolean;
+  }
+) {
+  const query = useQuery({
+    queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
+    queryFn: () => EngineerAdapter.getJobsByEngineerId(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+
+  const onSuccessRef = useRef(options?.onSuccess);
+  const onErrorRef = useRef(options?.onError);
+
+  useEffect(() => {
+    onSuccessRef.current = options?.onSuccess;
+    onErrorRef.current = options?.onError;
+  }, [options?.onSuccess, options?.onError]);
+
+  useEffect(() => {
+    if (query.isSuccess && onSuccessRef.current) {
+      onSuccessRef.current(query.data);
+    }
+  }, [query.isSuccess, query.data]);
+
+  useEffect(() => {
+    if (query.isError && onErrorRef.current) {
+      onErrorRef.current(query.error);
+    }
+  }, [query.isError, query.error]);
+
+  return query;
+}
+

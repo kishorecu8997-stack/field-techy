@@ -118,7 +118,8 @@ export type DocumentType =
   | "GOVERNMENT_ID"
   | "CERTIFICATE"
   | "PICTURE"
-  | "WORK_SCREEN_SHOT";
+  | "WORK_SCREEN_SHOT"
+  | "PROPOSAL"
 
 export interface Metadata {
   id?: string;
@@ -179,3 +180,13 @@ export interface UpdatePasswordParams {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface ProposalJobData {
+  id?: string;
+  engineerId: string;
+  proposalDescription: string;
+  expectedPay: string;
+  payType: string;
+  availability: string;
+}
+

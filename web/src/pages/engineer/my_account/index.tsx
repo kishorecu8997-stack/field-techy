@@ -1,7 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaBookmark,
@@ -37,13 +37,32 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   onClose,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  /*
+   * Use the profileImageUrl from the global store.
+   * The fetching logic is now centralized in useEngineerStore.
+   */
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfile = useEngineerProfile();
+
   const methods = useForm({
     defaultValues: {
       profileImage: assetsConfig.images.profile.defaultProfileImage,
     },
   });
 
-  const engineerProfile = useEngineerProfile();
+  const { setValue } = methods;
+
+  /* 
+   * Sync the profile image URL from the store to the form state.
+   * This ensures the image uploader displays the correct image.
+   */
+  useEffect(() => {
+    if (profileImageUrl) {
+      setValue("profileImage", profileImageUrl);
+    }
+  }, [profileImageUrl, setValue]);
+
 
   const menuItems: MenuItem[] = [
     {
@@ -99,7 +118,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={profileImageUrl || engineerProfile?.profilePicture || assetsConfig.images.profile.defaultProfileImage}
             name={engineerProfile?.fullName || ""}
             title={engineerProfile?.serviceCategory || ""}
             rating={engineerProfile?.averageRating || 0}

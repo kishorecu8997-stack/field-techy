@@ -377,6 +377,7 @@ export const getExperienceLevel = (years?: number) => {
   return "L3"; // 4+ years: Senior/Expert-level
 };
 
+
 /**
  * Get user id from local storage
  * @returns {string | null} The user ID string if found in session, null otherwise.
