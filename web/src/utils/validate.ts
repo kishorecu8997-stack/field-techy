@@ -162,16 +162,24 @@ export const validatePortfolio = async (value: string) => {
  * - no letters or special characters allowed
  */
 export const validateAmount = (value: string) => {
-  const v = (value || "").trim();
-  if (!v) return "Amount is required";
-  if (/\s/.test(v)) return "Amount must not contain spaces";
-  if (!/^\d+$/.test(v))
-    return "Amount must contain digits only (no letters or special characters)";
-  if (v.length < 2) return "Amount must be at least 2 digits";
-  if (v.length > 5) return "Amount must not exceed 5 digits";
+  const v = value?.trim();
+  if (!v) return "Amount is required"; 
+  if (!/^\d+$/.test(v)) {
+    return "Amount must contain digits only";
+  }
+  if (v.length > 0 && v.startsWith("0")) {
+    return "Amount must not have leading zeros";
+  }
+  const amount = Number(v);
+  if (!Number.isSafeInteger(amount)) {
+    return "Invalid amount";
+  }
+  if (amount > 99999) {
+    return "Amount must not exceed 99999";
+  }
+
   return true;
 };
-
 export const validateDesignation = (value: string) => {
   if (!value) return "Current Designation must be at least 2 characters";
 

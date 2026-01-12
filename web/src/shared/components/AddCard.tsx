@@ -98,8 +98,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               name="cardNumber"
               placeholder="9999 9999 9999 9999"
               rules={{ validate: (v: string) => cardNumberValidation(v) }}
-              required
-              allowedCharacters="numbers"
+              required              
             />
           </div>
 
@@ -110,8 +109,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 name="expDate"
                 placeholder="MM/YY"
                 rules={{ validate: (v: string) => expiryDateValidation(v) }}
-                required
-                allowedCharacters="digits-slash"
+                required                
               />
             </div>
             <div>
@@ -120,8 +118,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 name="cvv"
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
-                required
-                allowedCharacters="numbers"
+                required               
               />
             </div>
           </div>
