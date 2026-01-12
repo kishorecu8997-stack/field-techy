@@ -12,7 +12,7 @@ import ManageJobDetails from "./ManageJobDetails";
  * @component
  * @example
  * <JobDetails />
- */ 
+ */
 const JobDetails = () => {
   // const id = useParams();
   const id = "#Ride001";

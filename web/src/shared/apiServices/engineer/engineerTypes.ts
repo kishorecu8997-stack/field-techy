@@ -10,20 +10,22 @@ export interface Tool {
 
 export interface Experience {
   id?: string;
-  company: string;
-  position: string;
+  designation: string;
+  employer: string;
+  workLocationType: string;
+  employmentType: string;
   startDate: string;
   endDate?: string;
-  description?: string;
+  isCurrent: boolean;
 }
 
 export interface Education {
-  id?: string;
-  institution: string;
-  degree: string;
-  fieldOfStudy: string;
-  startDate: string;
-  endDate?: string;
+  id: string;
+  educationLevel?: string;
+  course?: string;
+  university?: string;
+  majorSubject?: string;
+  passingYear?: number;
 }
 
 export interface EngineerData {
@@ -53,8 +55,8 @@ export interface EngineerData {
   updatedBy?: string | null;
   deletedBy?: string | null;
   isDeleted?: boolean;
-  jobSkills?: JobSkill[];
-  tools?: Tool[];
+  jobSkills?: string[];
+  tools?: string[];
   experiences?: Experience[];
   educations?: Education[];
   files?: any;
@@ -108,9 +110,16 @@ export interface EngineerFile {
   mimeType: string;
   size: number;
   proposalId: string | null;
+  createdAt: string;
 }
 
-export type DocumentType = "RESUME" | "GOVERNMENT_ID" | "CERTIFICATE" | "PROFILE_PICTURE";
+export type DocumentType =
+  | "RESUME"
+  | "GOVERNMENT_ID"
+  | "CERTIFICATE"
+  | "PICTURE"
+  | "PROPOSAL"
+  |"PROFILE_PICTURE";
 
 export interface FileUploadParams {
   engineerId: string;
@@ -147,4 +156,13 @@ export interface UpdatePasswordParams {
   phoneOrEmail: string;
   oldPassword: string;
   newPassword: string;
+}
+
+export interface ProposalJobData {
+  id?: string;
+  engineerId: string;
+  proposalDescription: string;
+  expectedPay: string;
+  payType: string;
+  availability: string;
 }

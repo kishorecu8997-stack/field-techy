@@ -54,8 +54,9 @@ const AllJob: React.FC = () => {
     const status = data.status;
     await showPopup({
       title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Job`,
-      body: `Are you sure you want to ${status?.charAt(0).toUpperCase() + status?.slice(1)
-        } this job?`,
+      body: `Are you sure you want to ${
+        status?.charAt(0).toUpperCase() + status?.slice(1)
+      } this job?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -65,8 +66,9 @@ const AllJob: React.FC = () => {
         {
           label: "Yes",
           value: "yes",
-          variant: `${status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
-            }`,
+          variant: `${
+            status.toLocaleLowerCase() === "approve" ? "primary" : "danger"
+          }`,
           action: async (close: any) => {
             console.log("close :", close);
             // await handlePostAJob(data);

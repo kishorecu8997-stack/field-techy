@@ -189,12 +189,12 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                                 ? "bg-yellow-600 text-white"
                                 : "bg-yellow-100 text-yellow-800"
                               : transaction.status === "completed"
-                              ? isDarkMode
-                                ? "bg-green-600 text-white"
-                                : "bg-green-100 text-green-800"
-                              : isDarkMode
-                              ? "bg-red-600 text-white"
-                              : "bg-red-100 text-red-800"
+                                ? isDarkMode
+                                  ? "bg-green-600 text-white"
+                                  : "bg-green-100 text-green-800"
+                                : isDarkMode
+                                  ? "bg-red-600 text-white"
+                                  : "bg-red-100 text-red-800"
                           }`}
                         >
                           {transaction.status.charAt(0).toUpperCase() +
@@ -217,14 +217,14 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                           ? "text-green-400"
                           : "text-green-600"
                         : isDarkMode
-                        ? "text-red-400"
-                        : "text-red-600"
+                          ? "text-red-400"
+                          : "text-red-600"
                     }`}
                   >
                     {transaction.type === "credit" ? "+" : "-"}
                     {formatCurrency(Math.abs(transaction.amount)).replace(
                       "$",
-                      ""
+                      "",
                     )}
                   </div>
                 </div>

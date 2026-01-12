@@ -15,9 +15,15 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
 import { toast } from "react-toastify";
-import { loginData, type PersonalInfo } from "@/dummy_data/personalInfoData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -28,58 +34,30 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 const PersonalInformation = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+
   const { showPopup } = usePopupStore();
-  const { navigationSource, returnToKey, setActiveKey, setISOpenSidebar, resetNavigationSource } = useDrawerStore();
-  /**
-   * Handles the form submission.
-   * This is currently a placeholder. In a real application, this would
-   * involve making an API call to save the user's data.
-   * @param {EditProfileFormData} data - The validated form data.
-   */
-  
-  const handleSubmit = async (data: EditProfileFormData) => {
-    await showPopup({
-      title: "Update Profile",
-      body: "Are you sure you want to update your profile?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: "no",
-          variant: "secondary",
-          action: async (close) => {
-            console.log("No button clicked");
-            close(true);
-          },
-        },
-        {
-          label: "Yes, update",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            toast.success("Profile Updated Successfully");
-            console.log("Form submitted with data:", data);
-            close(true);
 
-            //  Conditional redirect if the navigation source is from profile completion card
-          if (navigationSource === "profilecompletion" && returnToKey) {
-            setActiveKey(returnToKey); 
-            setISOpenSidebar(true);
-            resetNavigationSource();
-          } else {
-            setActiveKey("profile");
-          }
-          },
-        },
-      ],
-    });
-  };
+  const {
+    navigationSource,
+    returnToKey,
+    setActiveKey,
+    setISOpenSidebar,
+    resetNavigationSource,
+  } = useDrawerStore();
 
-  const methods = useForm<PersonalInfo>({
+  const { session } = useUserSessionStore();
+  const engineerId = session?.userId || "";
+
+  const { data: engineerData, isLoading: isEngineerLoading } =
+    useEngineerGetById(engineerId);
+  const { mutate } = useEngineerUpdateById(engineerId);
+
+  const methods = useForm<EditProfileFormData>({
     defaultValues: {
-      fullName: loginData[0].fullName,
-      phoneNumber: loginData[0].phoneNumber,
-      emailId: loginData[0].emailId,
-      addressLocation: loginData[0].addressLocation,
+      fullName: engineerData?.fullName || "",
+      phoneNumber: engineerData?.phoneNumber || "",
+      emailId: engineerData?.email || "",
+      addressLocation: engineerData?.address || "",
     },
     mode: "onSubmit",
   });
@@ -97,6 +75,72 @@ const PersonalInformation = () => {
       trigger("emailId");
     }
   }, [isEmailVerified, trigger]);
+
+  const handleSubmit = async (formData: EditProfileFormData) => {
+    // Safety check
+    if (!engineerData) {
+      toast.error("Unable to load current profile data. Please try again.");
+      return;
+    }
+
+    const updatedEngineer: EngineerData = {
+      ...engineerData,
+      fullName: formData.fullName,
+      phoneNumber: formData.phoneNumber,
+      email: formData.emailId,
+      address: formData.addressLocation,
+    };
+
+    await showPopup({
+      title: "Update Profile",
+      body: "Are you sure you want to update your profile?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: "no",
+          variant: "secondary",
+          action: async (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, update",
+          value: "yes",
+          variant: "primary",
+          action: async (close) => {
+            mutate(updatedEngineer, {
+              onSuccess: () => {
+                toast.success("Profile Updated Successfully");
+                close(true);
+
+                // Handle navigation
+                if (navigationSource === "profilecompletion" && returnToKey) {
+                  setActiveKey(returnToKey);
+                  setISOpenSidebar(true);
+                  resetNavigationSource();
+                } else {
+                  setActiveKey("profile");
+                }
+              },
+              onError: (error) => {
+                console.error("Failed to update profile:", error);
+                toast.error("Failed to update profile. Please try again.");
+                close(true);
+              },
+            });
+          },
+        },
+      ],
+    });
+  };
+
+  if (isEngineerLoading) {
+    return (
+      <div className="flex justify-center items-center h-[80vh] w-full">
+        <LoaderComponent />
+      </div>
+    );
+  }
 
   return (
     <FormContainer
@@ -140,6 +184,7 @@ const PersonalInformation = () => {
           verified={isEmailVerified}
           setVerified={setIsEmailVerified}
         />
+
         <InputField
           label="Address Location"
           isShowLabel={false}
@@ -151,7 +196,8 @@ const PersonalInformation = () => {
           rules={{ validate: (v: string) => validateAddress(v) }}
         />
       </div>
-      <div className="bg-white ">
+
+      <div className="bg-white">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"

@@ -3,7 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import { steps } from "@/dummy_data/onBoardingData";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useTour } from "@reactour/tour";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
@@ -62,7 +62,7 @@ const OnboardingFlowGuide = () => {
   useEffect(() => {
     const onboarding = localStorage.getItem("onboarding_guide") === "true";
     const engineerpath = location.pathname.endsWith(
-      absoluteUrls.engineer.home.dashboard
+      absoluteUrls.engineer.home.dashboard,
     );
     if (!onboarding && engineerpath) {
       setIsOpen(true);

@@ -83,8 +83,8 @@ const MapSearchBar: React.FC<{
         setLoading(true);
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            query
-          )}&addressdetails=1&limit=5`
+            query,
+          )}&addressdetails=1&limit=5`,
         );
         const data = await res.json();
         setSuggestions(data);
@@ -118,8 +118,8 @@ const MapSearchBar: React.FC<{
       try {
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            query
-          )}&addressdetails=1&limit=1`
+            query,
+          )}&addressdetails=1&limit=1`,
         );
         const data = await res.json();
         if (data && data.length > 0) {
@@ -244,19 +244,20 @@ const MapSearch: React.FC<MapComponentProps> = ({
   };
 
   return (
-    <div className={`relative w-full z-40 ${className}`}>
+    <div className={`relative w-full z-0 ${className}`}>
       {/* Hide search bar in viewOnly */}
       {!viewOnly && <MapSearchBar onSelect={handleSearchSelect} />}
 
       <MapContainer
         center={initialPosition}
         zoom={initialZoom}
-        zoomControl={!viewOnly} 
+        zoomControl={!viewOnly}
         dragging={!viewOnly}
         scrollWheelZoom={!viewOnly}
         doubleClickZoom={!viewOnly}
         attributionControl={!viewOnly}
         style={{
+          zIndex: 1,
           height: "400px",
           width: "100%",
           borderRadius: "8px",

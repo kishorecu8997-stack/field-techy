@@ -1,9 +1,4 @@
-import {
-  ACCOUNT_RULES,
-  getBankName,
-  IBAN_RULES
-} from "@/shared/libs/utils";
-
+import { ACCOUNT_RULES, getBankName, IBAN_RULES } from "@/shared/libs/utils";
 
 /**
  * Validates an IBAN for a given country code.
@@ -11,7 +6,7 @@ import {
  */
 export function validateIBANForCountry(
   iban: string,
-  countryCode: string
+  countryCode: string,
 ): true | string {
   if (!iban) {
     return "IBAN is required";
@@ -26,7 +21,7 @@ export function validateIBANForCountry(
   }
 
   // ✅ Safe type assertion after check
-const rule = IBAN_RULES[upperCountryCode as keyof typeof IBAN_RULES];
+  const rule = IBAN_RULES[upperCountryCode as keyof typeof IBAN_RULES];
 
   // 1. Must start with country code
   if (!normalizedIBAN.startsWith(upperCountryCode)) {
@@ -74,7 +69,6 @@ const rule = IBAN_RULES[upperCountryCode as keyof typeof IBAN_RULES];
   return true;
 }
 
-
 export function validateIBANForCountrywise(iban: string): true | string {
   if (!iban) {
     return "IBAN is required";
@@ -108,9 +102,6 @@ export function validateIBANForCountrywise(iban: string): true | string {
   // ✅ Valid
   return true;
 }
-
-
-
 
 // Your password validation function
 export const validatePassword = (value: string) => {
@@ -154,7 +145,7 @@ const BANK_SWIFT_PREFIXES: Record<string, string> = {
  */
 export function validateSWIFTForBank(
   swift: string,
-  bankValue: string
+  bankValue: string,
 ): true | string {
   // 1. Required check
   if (!swift) {
@@ -199,7 +190,6 @@ export function validateSWIFTForBank(
   return true;
 }
 
-
 export function validateSWIFTBank(swift: string): true | string {
   // 1. Required check
   if (!swift) {
@@ -234,12 +224,10 @@ export function validateSWIFTBank(swift: string): true | string {
   return true;
 }
 
-
-
 // ✅ Your requested function signature
 export function validateAccountNumber(
   value: string,
-  bankValue: string
+  bankValue: string,
 ): true | string {
   // 1. Required check
   if (!value) {
@@ -288,7 +276,6 @@ export function validateAccountNumber(
   return true;
 }
 
-
 export function validateAccNumber(value: string): true | string {
   // 1. Required check
   if (!value) {
@@ -319,40 +306,38 @@ export function validateAccNumber(value: string): true | string {
   return true;
 }
 
-
-
 export const validateAddress = (value: string) => {
-  if (!value) return 'Address must be at least 6 characters';
+  if (!value) return "Address must be at least 6 characters";
 
   // Disallow leading or trailing spaces
-  if (/^\s|\s$/.test(value)) return 'Address must not start or end with a space';
+  if (/^\s|\s$/.test(value))
+    return "Address must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 6) return 'Address must be at least 6 characters';
-  if (v.length > 50) return 'Address must not exceed 50 characters';
+  if (v.length < 6) return "Address must be at least 6 characters";
+  if (v.length > 50) return "Address must not exceed 50 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
-    return 'Address may contain only letters, numbers, spaces, and / , . - #';
+    return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
 
   return true;
 };
 
-export const validateName = (value: string, fieldLabel = 'Name') => {
+export const validateName = (value: string, fieldLabel = "Name") => {
   // length requirement: 2 to 50 characters
   const raw = value || "";
 
-    // Reject any whitespace (leading/trailing/internal)
-    if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
+  // Reject any whitespace (leading/trailing/internal)
+  if (/\s/.test(raw)) return `${fieldLabel} must not contain spaces`;
 
-    // Only letters allowed (A-Z)
-    if (!/^[A-Za-z]+$/.test(raw))
-      return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
+  // Only letters allowed (A-Z)
+  if (!/^[A-Za-z]+$/.test(raw))
+    return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
 
-    // length requirement: 2 to 50 characters
-    if (raw.length < 2) return `${fieldLabel} must be at least 2 characters`;
-    if (raw.length > 50) return `${fieldLabel} must not exceed 50 characters`;
-
+  // length requirement: 2 to 50 characters
+  if (raw.length < 2) return `${fieldLabel} must be at least 2 characters`;
+  if (raw.length > 50) return `${fieldLabel} must not exceed 50 characters`;
 
   return true;
 };

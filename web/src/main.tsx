@@ -33,12 +33,21 @@ export const queryClient = new QueryClient({
   },
 });
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root")!;
+
+// Prevent multiple createRoot calls during hot module reloading
+let root = (window as any).__react_root__;
+if (!root) {
+  root = createRoot(rootElement);
+  (window as any).__react_root__ = root;
+}
+
+root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <GlobalPopup />
       <ToastContainer />
       <App />
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

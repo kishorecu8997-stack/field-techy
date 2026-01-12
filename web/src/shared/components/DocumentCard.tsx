@@ -67,7 +67,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   showAddMoreButton = false,
 }) => {
   const [isEditing, setIsEditing] = React.useState(false);
-  const [expiryDate, setExpiryDate] = React.useState(document.expiryDate || '');
+  const [expiryDate, setExpiryDate] = React.useState(document.expiryDate || "");
   const renderPreview = (doc: Document) => {
     if (doc.fileType === "PDF" && doc.previewUrl) {
       return (
@@ -94,7 +94,9 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
     }
 
     return (
-      <div className={`w-full h-56 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed ${doc.status === "Rejected" ? "border-red-500" : "border-gray-200"}`}>
+      <div
+        className={`w-full h-56 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed ${doc.status === "Rejected" ? "border-red-500" : "border-gray-200"}`}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-12 w-12 text-gray-300"
@@ -119,7 +121,9 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
       Rejected: "bg-red-100 text-red-800",
     };
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800"}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[status as keyof typeof statusStyles] || "bg-gray-100 text-gray-800"}`}
+      >
         {status}
       </span>
     );
@@ -131,7 +135,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   };
 
   const handleCancelEdit = () => {
-    setExpiryDate(document.expiryDate || '');
+    setExpiryDate(document.expiryDate || "");
     setIsEditing(false);
   };
 
@@ -215,7 +219,10 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 
       {isEditing && (
         <div className="mt-2 p-2 bg-gray-50 rounded">
-          <label htmlFor={`expiry-date-input-${id}`} className="block text-xs font-medium text-gray-700 mb-1">
+          <label
+            htmlFor={`expiry-date-input-${id}`}
+            className="block text-xs font-medium text-gray-700 mb-1"
+          >
             Expiry Date
           </label>
           <input

@@ -8,6 +8,8 @@ import { absoluteUrls } from "@/config/urls";
 import { countries } from "@/dummy_data/adminDashboard";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
+import { useAdminFileStream } from "@/shared/apiServices/admin/adminService";
+import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
 
 /**
  * Header
@@ -30,6 +32,28 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { adminProfile } = useAdminProfileStore();
+  const [adminProfilePic, setAdminProfilePic] = useState<string>("");
+
+  // File stream for profile picture
+  const { data: adminProfileStream } = useAdminFileStream(
+    adminProfile?.profilePicture,
+  );
+
+  useEffect(() => {
+    if (!adminProfileStream?.blob) {
+      setAdminProfilePic(assetsConfig.images.profile.defaultProfileImage);
+      return;
+    }
+
+    const url = URL.createObjectURL(adminProfileStream.blob);
+    setAdminProfilePic(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [adminProfileStream]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,14 +116,26 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
         <Link to={absoluteUrls.admin.home.profile}>
           <div className="flex items-center space-x-2 cursor-pointer">
-            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-              <span className="font-bold text-gray-800">K</span>
-              {/* <img src="" /> */}
+            <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+              <span className="font-bold text-gray-800">
+                {adminProfile?.profilePicture && adminProfilePic ? (
+                  <img
+                    src={adminProfilePic}
+                    alt="profile"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  (adminProfile?.email?.charAt(0) || "A").toLocaleUpperCase()
+                )}
+              </span>
             </div>
 
             <div className="hidden sm:block">
-              <div className="font-semibold text-md">Kevin Smith</div>
-              <div className="text-xs text-gray-300">Admin</div>
+              <div className="font-semibold text-md">
+                {adminProfile?.fullName
+                  ? adminProfile.fullName
+                  : adminProfile?.email?.split("@")[0]}
+              </div>
             </div>
           </div>
         </Link>

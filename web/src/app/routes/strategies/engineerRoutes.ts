@@ -24,7 +24,7 @@ export class EngineerRouteStrategy implements RouteStrategy {
         element: React.createElement(
           AuthRedirect,
           null,
-          withSuspense(Components.Layout)
+          withSuspense(Components.Layout),
         ),
         children: [
           {
@@ -88,10 +88,12 @@ export class EngineerRouteStrategy implements RouteStrategy {
         path: BASE.ENGINEER,
         element: React.createElement(ProtectedRoute, {
           requiredRole: UserRole.ENGINEER,
-          children: [
-            React.createElement(Components.LiveChatWidget, null),
-            withSuspense(Components.RootLayout),
-          ],
+          children: React.createElement(
+            React.Fragment,
+            null,
+            React.createElement(Components.RootLayout),
+            withSuspense(Components.LiveChatWidget),
+          ),
         }),
         children: [
           { index: true, element: withSuspense(Components.EngineerHome) },

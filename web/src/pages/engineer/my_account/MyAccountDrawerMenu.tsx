@@ -4,7 +4,10 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useEngineerProfile, useEngineerStore } from "@/shared/store/useEngineerStore";
+import {
+  useEngineerProfile,
+  useEngineerStore,
+} from "@/shared/store/useEngineerStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -73,19 +76,25 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   const logout = useUserSessionStore((state) => state.logout);
   const engineerProfile = useEngineerProfile();
-  const clearEngineerProfile = useEngineerStore((state) => state.clearEngineerProfile);
+  const clearEngineerProfile = useEngineerStore(
+    (state) => state.clearEngineerProfile,
+  );
   const navigate = useNavigate();
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={
+              engineerProfile?.profilePicture ||
+              assetsConfig.images.profile.defaultProfileImage
+            }
             name={engineerProfile?.fullName || ""}
             title={engineerProfile?.serviceCategory || ""}
             rating={engineerProfile?.averageRating || 0}
             reviewCount={10}
             completionPercentage={39}
+            engineerId={engineerProfile?.id}
           />
         </div>
         {menuItems.map((item, index, array) => (
@@ -103,28 +112,31 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${item.isLogout
+              ${
+                item.isLogout
                   ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                   : ""
-                }
+              }
             `}
             >
               <div className="flex items-center space-x-3">
                 <item.icon
                   className={`
                   h-5 w-5 transition-colors 
-                  ${item.isLogout
+                  ${
+                    item.isLogout
                       ? "text-red-600 dark:text-red-400 "
                       : "text-gray-600 dark:text-gray-300 "
-                    }
+                  }
                 `}
                 />
                 <span
                   className={`
-                ${item.isLogout
-                      ? "text-red-600 dark:text-red-400"
-                      : "text-gray-700 dark:text-gray-200"
-                    }
+                ${
+                  item.isLogout
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-gray-700 dark:text-gray-200"
+                }
                 `}
                 >
                   {item.label}

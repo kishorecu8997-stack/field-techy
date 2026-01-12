@@ -265,7 +265,7 @@ export const validatePassingYear = (value: string) => {
  */
 export const validateDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ) => {
   if (!startDate) {
     return "Start date is required";
@@ -282,11 +282,9 @@ export const validateDateRange = (
   return true;
 };
 
-
-
 export const validateFilterDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ): true | string => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Optional: normalize to start of day for comparison
@@ -320,7 +318,6 @@ export const validateFilterDateRange = (
 
   return true;
 };
-
 
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
@@ -458,7 +455,7 @@ export const validateIsPhoneVerified = (verified: boolean) => {
 export const validateFormat = (
   value: string,
   regex: RegExp,
-  message: string
+  message: string,
 ): true | string => {
   if (!value) return true; // Optional: let 'required' handle emptiness
   return regex.test(value.trim()) ? true : message;
@@ -468,7 +465,7 @@ export const validateVatNumber = (vatNumber: string): true | string => {
   return validateFormat(
     vatNumber,
     /^[A-Za-z0-9\-/ ]{2,16}$/,
-    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces."
+    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces.",
   );
 };
 

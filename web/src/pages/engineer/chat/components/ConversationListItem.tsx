@@ -34,8 +34,8 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
 }) => {
   return (
     <li
-      className={`flex items-center px-6 py-4 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0 ${
-        active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-700"
+      className={`flex items-center px-6 py-4 cursor-pointer border-b border-gray-200 last:border-b-0 ${
+        active ? "bg-gray-100" : "hover:bg-gray-50"
       }`}
       onClick={onClick}
     >
@@ -46,7 +46,7 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
 
         <div className="flex flex-col flex-1">
           <div className="flex items-center justify-between">
-            <p className="font-medium text-sm text-gray-900 dark:text-gray-100">
+            <p className="font-medium text-sm text-gray-900">
               {conversation.name}
             </p>
             <span className="text-xs text-gray-400">
@@ -54,7 +54,7 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
             </span>
           </div>
           <div className="flex items-center justify-between mt-1">
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[160px]">
+            <p className="text-xs text-gray-500 truncate max-w-[160px]">
               {conversation.lastMessage}
             </p>
             {conversation.unreadCount ? (

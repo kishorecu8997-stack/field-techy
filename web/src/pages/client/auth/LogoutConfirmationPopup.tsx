@@ -7,7 +7,7 @@ interface LogoutProps {
   onConfirm: () => void;
   onCancel: () => void;
   isOpen: boolean;
-  onClose: () => void;  
+  onClose: () => void;
 }
 
 /**
@@ -20,7 +20,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  return (    
+  return (
     <Popup open={isOpen} onClose={onClose}>
       <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
         {/* Header with close button */}

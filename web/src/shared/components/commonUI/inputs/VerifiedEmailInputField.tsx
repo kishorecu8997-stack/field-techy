@@ -42,7 +42,8 @@ export const VerifiedEmailInputField = ({
   const [showOTP, setShowOTP] = useState(false);
   const [localVerified, setLocalVerified] = useState(false);
 
-  const verified = typeof parentVerified === "boolean" ? parentVerified : localVerified;
+  const verified =
+    typeof parentVerified === "boolean" ? parentVerified : localVerified;
   const setVerified = parentSetVerified || setLocalVerified;
 
   const verifiedRef = useRef(verified);
@@ -72,10 +73,10 @@ export const VerifiedEmailInputField = ({
 
     if (isInputDisabled) {
       baseClasses = baseClasses
-        .replace(/bg-white/g, 'bg-gray-100')
-        .replace(/dark:bg-gray-800/g, 'dark:bg-gray-700')
-        .replace(/text-gray-900/g, 'text-gray-500')
-        .replace(/dark:text-gray-100/g, 'dark:text-gray-400');
+        .replace(/bg-white/g, "bg-gray-100")
+        .replace(/dark:bg-gray-800/g, "dark:bg-gray-700")
+        .replace(/text-gray-900/g, "text-gray-500")
+        .replace(/dark:text-gray-100/g, "dark:text-gray-400");
     }
 
     baseClasses = `${baseClasses} pl-10 ${verified ? "pr-10" : ""}`;
@@ -110,7 +111,8 @@ export const VerifiedEmailInputField = ({
               if (emailValid !== true) return emailValid;
 
               // ✅ Use verifiedRef to ensure we have the latest state
-              if (!verifiedRef.current) return "Please verify your email address";
+              if (!verifiedRef.current)
+                return "Please verify your email address";
 
               return true;
             },
