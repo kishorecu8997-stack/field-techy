@@ -14,10 +14,23 @@ import { useNavigate } from "react-router-dom";
 import type { AddGroup } from "../type";
 import { validateGroupName } from "@/utils/validate";
 import { toast } from "react-toastify";
+/**
+ * AddGroup
+ *
+ * Page component for creating a new engineer group in the admin panel.
+ * Allows the user to enter group name/description and select engineers to add to the group.
+ * Utilizes a form with validation and a table for selecting engineers.
+ * @component
+ * @returns {JSX.Element} The add group form page with engineer selection
+ */
 
-// Example dropdown options (replace with actual values from your system)
 const tenancyOptions = ["Client A", "Client B", "Client C"];
-const roleOptions = ["Junior Engineer", "Senior Engineer", "Lead Engineer"];
+const roleOptions = [
+  "Software Engineer",
+  "Backend Engineer",
+  "Full Stack Engineer",
+  "Frontend Engineer",
+];
 const levelOptions = ["Junior", "Mid", "Senior", "Lead"];
 const skillsOptions = ["React", "Node.js", "Python", "DevOps"];
 
@@ -36,7 +49,6 @@ export default function AddGroup() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
-  // Filters state
   const [filters, setFilters] = useState({
     tenancy: "",
     role: "",
@@ -45,7 +57,6 @@ export default function AddGroup() {
     skills: "",
   });
 
-  // Columns definition
   const columns: Column<SelectEngineerProps>[] = [
     {
       key: "select",
