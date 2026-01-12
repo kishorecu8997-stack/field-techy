@@ -226,7 +226,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
               {/* DROPDOWN WITH AUTO-POSITION */}
               {isOpen && (
                 <div
-                  className={`absolute z-10 w-full bg-white dark:bg-gray-800 border 
+                  className={`absolute z-50 w-full bg-white dark:bg-gray-800 border 
                     border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4
                     ${position === "bottom" ? "top-full mt-1" : "bottom-full mb-1"}
                 `}
