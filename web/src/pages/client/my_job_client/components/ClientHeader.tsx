@@ -40,7 +40,7 @@ const ClientHeader: React.FC<HeaderProps> = ({
                 className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
               >
                 <span>Home/</span>
-              </NavLink>              
+              </NavLink>
               <span className="font-medium">{currentPath}</span>
             </nav>
           </div>

@@ -7,7 +7,10 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { bankDetails } from "./types";
-import { useTransactionStore, type TransactionStore } from "@/dummy_data/transactionStore";
+import {
+  useTransactionStore,
+  type TransactionStore,
+} from "@/dummy_data/transactionStore";
 import { useState, useMemo } from "react";
 import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { HiArrowLeft, HiClock, HiChartBar } from "react-icons/hi";
@@ -21,7 +24,8 @@ type ViewType = "form" | "history" | "chart";
  */
 const Withdraw = () => {
   const { showPopup } = usePopupStore();
-  const { addTransaction , transactions }: TransactionStore = useTransactionStore();
+  const { addTransaction, transactions }: TransactionStore =
+    useTransactionStore();
   const [view, setView] = useState<"form" | "history" | "chart">("form");
 
   const { setISOpenSidebar } = useDrawerStore();
@@ -33,12 +37,12 @@ const Withdraw = () => {
   const minRetainedBalance = 10;
 
   const withdrawalHistory = transactions.filter(
-    (t) => t.amount < 0 && t.description.toLowerCase().includes("withdraw")
+    (t) => t.amount < 0 && t.description.toLowerCase().includes("withdraw"),
   );
 
   const chartData = useMemo(() => {
     const sorted = [...transactions].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
     let current = 0;
     return sorted.map((t) => {
@@ -84,10 +88,7 @@ const Withdraw = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="h-28 flex-shrink-0">
-        <AvailableBalance
-          currentView={view}
-          onViewChange={setView}
-        />
+        <AvailableBalance currentView={view} onViewChange={setView} />
       </div>
       <div className="flex flex-col flex-grow justify-between">
         {view === "history" ? (
@@ -112,7 +113,7 @@ const Withdraw = () => {
                     <td className="p-3">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(
-                          tx.status
+                          tx.status,
                         )}`}
                       >
                         {tx.status || "Unknown"}
@@ -211,14 +212,14 @@ const AvailableBalance = ({
               className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
               title="View History"
             >
-            <HiClock className="w-4 h-4" /> History
+              <HiClock className="w-4 h-4" /> History
             </Button>
           </>
         ) : (
           <Button
             onClick={() => onViewChange("form")}
             className="text-white hover:text-teal-200 flex items-center gap-1 text-sm transition-colors"
-             aria-label="Back to withdrawal form"
+            aria-label="Back to withdrawal form"
           >
             <HiArrowLeft className="w-4 h-4" /> Back
           </Button>
@@ -259,15 +260,45 @@ const BalanceChart = ({ data }: { data: { date: Date; value: number }[] }) => {
 
   return (
     <div className="flex-grow flex flex-col mt-4 overflow-hidden">
-      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2 px-2">Earnings Trend</h3>
+      <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2 px-2">
+        Earnings Trend
+      </h3>
       <div className="flex-grow overflow-x-auto">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full min-w-[500px] min-h-[250px]">
-          <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#ccc" />
-          <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#ccc" />
-          <polyline fill="none" stroke="#0f766e" strokeWidth="2" points={points} />
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="w-full h-full min-w-[500px] min-h-[250px]"
+        >
+          <line
+            x1={padding}
+            y1={height - padding}
+            x2={width - padding}
+            y2={height - padding}
+            stroke="#ccc"
+          />
+          <line
+            x1={padding}
+            y1={padding}
+            x2={padding}
+            y2={height - padding}
+            stroke="#ccc"
+          />
+          <polyline
+            fill="none"
+            stroke="#0f766e"
+            strokeWidth="2"
+            points={points}
+          />
           {data.map((d, i) => (
-            <circle key={i} cx={getX(d.date)} cy={getY(d.value)} r="3" fill="#0f766e">
-              <title>{d.date.toLocaleDateString()}: {formatCurrency(d.value)}</title>
+            <circle
+              key={i}
+              cx={getX(d.date)}
+              cy={getY(d.value)}
+              r="3"
+              fill="#0f766e"
+            >
+              <title>
+                {d.date.toLocaleDateString()}: {formatCurrency(d.value)}
+              </title>
             </circle>
           ))}
         </svg>

@@ -61,7 +61,7 @@ const PostAJobFields = ({
     isValid = await trigger(currentValidatedFields);
 
     if (isValid) {
-      console.log('isValid :', isValid);
+      console.log("isValid :", isValid);
       setIsDisable(true);
     } else {
       toast.error("Please fill all the required fields");

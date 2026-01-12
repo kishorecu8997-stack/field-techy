@@ -3,7 +3,6 @@ import { formatCurrency } from "@/shared/libs/utils";
 import React, { useState } from "react";
 import { BiBriefcase, BiChevronDown, BiChevronUp } from "react-icons/bi";
 
-
 interface JobEarning {
   client: string;
   totalEarnings: number;
@@ -122,10 +121,10 @@ const BestPayingJobs: React.FC = () => {
                         index === 0
                           ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-white"
                           : index === 1
-                          ? "bg-gradient-to-br from-gray-300 to-gray-500 text-white"
-                          : index === 2
-                          ? "bg-gradient-to-br from-orange-400 to-red-500 text-white"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                            ? "bg-gradient-to-br from-gray-300 to-gray-500 text-white"
+                            : index === 2
+                              ? "bg-gradient-to-br from-orange-400 to-red-500 text-white"
+                              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {index + 1}

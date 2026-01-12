@@ -8,7 +8,7 @@ export const JobInviteData: JobInvite[] = [
     location: "New York, NY",
     duration: "3 weeks",
     serviceType: "Infrastructure Setup",
-    price: "$4500"    
+    price: "$4500",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ export const JobInviteData: JobInvite[] = [
     location: "San Francisco, CA",
     duration: "10 days",
     serviceType: "Design",
-    price: "$2800"
+    price: "$2800",
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ export const JobInviteData: JobInvite[] = [
     location: "Austin, TX",
     duration: "2 weeks",
     serviceType: "DevOps",
-    price: "$6200"
+    price: "$6200",
   },
   {
     id: 4,
@@ -35,7 +35,7 @@ export const JobInviteData: JobInvite[] = [
     location: "Chicago, IL",
     duration: "1 month",
     serviceType: "Digital Marketing",
-    price: "$3000"
+    price: "$3000",
   },
   {
     id: 5,
@@ -44,6 +44,6 @@ export const JobInviteData: JobInvite[] = [
     location: "Seattle, WA",
     duration: "4 weeks",
     serviceType: "Software Development",
-    price: "$8500"
-  }
+    price: "$8500",
+  },
 ];

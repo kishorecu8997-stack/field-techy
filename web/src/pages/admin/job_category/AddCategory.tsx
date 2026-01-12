@@ -56,7 +56,6 @@ export default function AddCategory() {
     });
   };
 
-  
   return (
     <div className="w-full h-full p-4">
       <div className="flex justify-between items-center">

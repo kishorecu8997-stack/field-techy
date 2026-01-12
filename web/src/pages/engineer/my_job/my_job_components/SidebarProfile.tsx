@@ -1,15 +1,15 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { getCurrencyFromStorage } from "@/utils/currency";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import { FaUser } from "react-icons/fa";
-import type { EarningsData, SidebarProfileProps, UserProfile } from "../types";
-import { getProfileCompletion } from "@/utils/profileCompletion";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getSavedJobs, BOOKMARK_CHANGE_EVENT } from "@/utils/bookmarkUtils";
 import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
+import { BOOKMARK_CHANGE_EVENT, getSavedJobs } from "@/utils/bookmarkUtils";
+import { getCurrencyFromStorage } from "@/utils/currency";
+import { getProfileCompletion } from "@/utils/profileCompletion";
+import React, { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import type { EarningsData, SidebarProfileProps } from "../types";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -21,10 +21,10 @@ import { useEngineerProfile } from "@/shared/store/useEngineerStore";
  * @example
  * <SidebarProfile user={user} earnings={earnings} />
  */
-const SidebarProfile: React.FC<SidebarProfileProps> = ({ user, earnings }) => {
+const SidebarProfile: React.FC<SidebarProfileProps> = ({ earnings }) => {
   return (
     <div className="space-y-6">
-      <ProfileCard user={user} />
+      <ProfileCard />
       <EarningsCard earnings={earnings} />
       <SavedJobsCard />
     </div>
@@ -39,7 +39,7 @@ export default SidebarProfile;
  *
  * Includes a "Complete Profile" call-to-action button (currently static).
  */
-const ProfileCard = ({ user }: { user: UserProfile }) => {
+const ProfileCard = () => {
   const { profileData, setActiveKey, setISOpenSidebar, setNavigationSource } =
     useDrawerStore();
   // Get the overall profile completion percentage with the each field status
@@ -183,7 +183,7 @@ const SavedJobsCard = () => {
 
       savedJobs.forEach((job) => {
         if (!job.startDate) {
-          console.warn("Missing startDate for job:", job.title);
+          console.warn("Missing startDate for job:", job.jobTitle);
           return;
         }
 
@@ -193,20 +193,20 @@ const SavedJobsCard = () => {
         if (isNaN(startDate.getTime())) {
           console.warn(
             "Invalid date format for job:",
-            job.title,
-            job.startDate
+            job.jobTitle,
+            job.startDate,
           );
           return;
         }
         const nowUTC = Date.UTC(
           now.getUTCFullYear(),
           now.getUTCMonth(),
-          now.getUTCDate()
+          now.getUTCDate(),
         );
         const startUTC = Date.UTC(
           startDate.getUTCFullYear(),
           startDate.getUTCMonth(),
-          startDate.getUTCDate()
+          startDate.getUTCDate(),
         );
 
         if (startUTC >= nowUTC) {

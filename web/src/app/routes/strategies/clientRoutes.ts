@@ -23,7 +23,7 @@ export class ClientRouteStrategy implements RouteStrategy {
         element: React.createElement(
           AuthRedirect,
           null,
-          withSuspense(Components.Layout)
+          withSuspense(Components.Layout),
         ),
         children: [
           {
@@ -80,10 +80,12 @@ export class ClientRouteStrategy implements RouteStrategy {
         path: BASE.CLIENT,
         element: React.createElement(ProtectedRoute, {
           requiredRole: UserRole.CLIENT,
-          children: [
+          children: React.createElement(
+            React.Fragment,
+            null,
             withSuspense(Components.ClientLayout),
             withSuspense(Components.LiveChatWidget),
-          ],
+          ),
         }),
         children: [
           { index: true, element: withSuspense(Components.ClientMyJobsPage) },
@@ -180,4 +182,3 @@ export class ClientRouteStrategy implements RouteStrategy {
     ];
   }
 }
-

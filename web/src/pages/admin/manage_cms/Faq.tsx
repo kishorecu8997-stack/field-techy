@@ -119,7 +119,7 @@ export default function Faq() {
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success(
-              `${faqMode === "Add" ? "Added" : "Edited"} Successfully!`
+              `${faqMode === "Add" ? "Added" : "Edited"} Successfully!`,
             );
             close(true);
             setIsModalOpen(false);

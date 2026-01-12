@@ -111,7 +111,7 @@ const ManageJobCategory: React.FC = () => {
               className="text-blue-600"
               onClick={() =>
                 navigate(
-                  `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`
+                  `${absoluteUrls.admin.home.manage_categories_edit}/${row.id}`,
                 )
               }
             />

@@ -1,5 +1,3 @@
-
-
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -12,7 +10,6 @@ import BackgroundVerification from "@/pages/engineer/auth/components/profile_set
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
 import { useState } from "react";
-
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -39,7 +36,7 @@ const BasicDocuments = () => {
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
 
   const formCtx = useForm<DocumentFormData>({
@@ -53,23 +50,26 @@ const BasicDocuments = () => {
   const { showPopup } = usePopupStore();
   const { clearStore, updateDocuments } = useEngineerRegistrationStore();
 
-  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
-    onSuccess: () => {
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
+  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload(
+    engineerId || undefined,
+    {
+      onSuccess: () => {
+        setUploadingDoc(null);
+        toast.success("File uploaded successfully!");
+      },
+      onError: (error) => {
+        console.error("Upload failed:", error);
+        setUploadingDoc(null);
+        toast.error("Failed to upload file");
+      },
+      onProgress: (progress) => {
+        setUploadProgress((prev) => ({
+          ...prev,
+          [uploadingDoc!]: progress.percentage!,
+        }));
+      },
     },
-    onError: (error: any) => {
-      console.error("Upload failed:", error);
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-     onProgress: (progress) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
-    },
-  });
+  );
 
   const handleSkip = () => {
     showPopup({
@@ -130,7 +130,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ profileImageUrl: res.fileId });
-        })
+        }),
       );
     }
 
@@ -151,7 +151,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ governmentIdUrl: res.fileId });
-        })
+        }),
       );
     }
 
@@ -172,7 +172,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ certificateUrl: res.fileId });
-        })
+        }),
       );
     }
 
@@ -210,7 +210,7 @@ const BasicDocuments = () => {
       className="flex flex-col h-screen w-full"
     >
       {/* header - sticky */}
-      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
+      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-transparent ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
           Please upload at least one document for background verification{" "}

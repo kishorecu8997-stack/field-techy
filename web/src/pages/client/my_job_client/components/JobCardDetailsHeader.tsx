@@ -96,7 +96,7 @@ const JobCardDetailsHeader = () => {
                             {item}
                           </div>
                         </li>
-                      )
+                      ),
                     )}
                   </ul>
                 </div>

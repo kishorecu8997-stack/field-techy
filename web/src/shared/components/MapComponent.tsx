@@ -24,8 +24,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-
-
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
   onMapClick: (latlng: { lat: number; lng: number }) => void;

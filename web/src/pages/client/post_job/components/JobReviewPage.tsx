@@ -29,7 +29,7 @@ const JobReviewPage = ({
    * @description State to manage the list of available payment options.
    */
   const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
-    initialPaymentOptions
+    initialPaymentOptions,
   );
 
   /**
@@ -111,10 +111,7 @@ const JobReviewPage = ({
         />
       </div>
 
-      <TaxInformationCard
-        tax={jobData.tax}
-        total={jobData.total}
-      />
+      <TaxInformationCard tax={jobData.tax} total={jobData.total} />
 
       {/* Consent Checkbox */}
       <div className="mb-6">
@@ -124,8 +121,8 @@ const JobReviewPage = ({
             secondaryLabel="I consent to share data with another region if this job is posted
             outside my current location."
             rules={{ validate: validateConsent }}
-          />          
-        </div>       
+          />
+        </div>
       </div>
 
       {/* Job Approval Process */}

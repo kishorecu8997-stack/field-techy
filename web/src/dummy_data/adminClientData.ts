@@ -13,12 +13,15 @@ export const industries = [
   { value: "retail", label: "Retail" },
 ];
 
-export const countries = [  
+export const countries = [
   { value: "in", label: "India" },
   { value: "uk", label: "United Kingdom" },
 ];
 
-export const citiesByCountry: Record<string, { value: string; label: string }[]> = { 
+export const citiesByCountry: Record<
+  string,
+  { value: string; label: string }[]
+> = {
   in: [
     { value: "mumbai", label: "Mumbai" },
     { value: "delhi", label: "Delhi" },
@@ -45,7 +48,10 @@ export const taxDocuments = [
   { value: "other", label: "Other" },
 ];
 
-export const statesByCountry: Record<string, { value: string; label: string }[]> = {
+export const statesByCountry: Record<
+  string,
+  { value: string; label: string }[]
+> = {
   in: [
     { value: "maharashtra", label: "Maharashtra" },
     { value: "delhi", label: "Delhi" },

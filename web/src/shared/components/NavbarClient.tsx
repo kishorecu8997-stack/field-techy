@@ -7,9 +7,10 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
-import { useCurrentClientProfile } from "../apiServices/profiles/client/clientProfileService";
-import { useClientFiles } from "../apiServices/client/clientService";
-import { ClientAdapter } from "../apiServices/client/clientAdapter";
+import {
+  useClientStore,
+  useClientProfile,
+} from "@/shared/store/useClientStore";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -43,81 +44,10 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const { setActiveKey } = useDrawerStore();
   const notificationCount = 3;
 
-  // Fetch current client profile
-  const { data: clientProfile, isLoading: isLoadingProfile } =
-    useCurrentClientProfile();
+  const { profileImageUrl, loading: isLoadingProfile } = useClientStore();
 
-  // Get client ID
-  const clientId = clientProfile?.id || "9f034ed8-2ea5-44b6-a410-973e559e2c47"; // Fallback to hardcoded ID
-
-  // Fetch client files to get profile picture
-  const { data: clientFiles = [], isLoading: isLoadingFiles } =
-    useClientFiles(clientId);
-
-  // Find profile picture file
-  const profilePictureFile = useMemo(() => {
-    return (
-      clientFiles.find((file) => file.fileType === "PROFILE_PICTURE") || null
-    );
-  }, [clientFiles]);
-
-  // State for profile picture URL
-  const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
-    assetsConfig.images.users.user
-  );
-
-  // State for loading profile picture
-  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(false);
-
-  // Download profile picture if available
-  useEffect(() => {
-    if (!profilePictureFile) {
-      setIsLoadingProfilePicture(false);
-      setProfilePictureUrl(assetsConfig.images.users.user);
-      return;
-    }
-
-    let blobUrl: string | null = null;
-    let isCancelled = false;
-
-    const downloadProfilePicture = async () => {
-      setIsLoadingProfilePicture(true);
-
-      try {
-        const downloadResponse = await ClientAdapter.downloadFileStream(
-          profilePictureFile.fileKey
-        );
-
-        // Check if component is still mounted and file hasn't changed
-        if (!isCancelled) {
-          blobUrl = URL.createObjectURL(downloadResponse.blob);
-          setProfilePictureUrl(blobUrl);
-          setIsLoadingProfilePicture(false);
-        } else {
-          // Cleanup if cancelled - revoke the blob URL we just created
-          const tempBlobUrl = URL.createObjectURL(downloadResponse.blob);
-          URL.revokeObjectURL(tempBlobUrl);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error("Failed to download profile picture:", error);
-          setProfilePictureUrl(assetsConfig.images.users.user);
-          setIsLoadingProfilePicture(false);
-        }
-      }
-    };
-
-    downloadProfilePicture();
-
-    // Cleanup on unmount or when profilePictureFile changes
-    return () => {
-      isCancelled = true;
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-      setIsLoadingProfilePicture(false);
-    };
-  }, [profilePictureFile]);
+  // Use custom hook to ensure profile is fetched
+  const clientProfile = useClientProfile();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -297,13 +227,13 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           <span className="max-w-24 truncate text-left">
             {isLoadingProfile ? "Loading..." : `Hi, ${displayName}`}
           </span>
-          {isLoadingProfilePicture || isLoadingFiles ? (
+          {isLoadingProfile ? (
             <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
               <div className="h-4 w-4 border-2 border-teal-800 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
             <img
-              src={profilePictureUrl}
+              src={profileImageUrl || assetsConfig.images.users.user}
               alt={clientProfile?.contactPersonName || "User"}
               className="h-8 w-8 rounded-full bg-white object-cover"
               onError={(e) => {

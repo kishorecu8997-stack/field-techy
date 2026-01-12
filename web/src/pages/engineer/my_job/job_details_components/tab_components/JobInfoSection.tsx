@@ -12,28 +12,26 @@ const JobInfoSection: React.FC<{
 
   return (
     <div className="">
-        <Proposal
-          jobTitle={jobTitle}
-          terms={terms}
-          element={
-            <div className="mt-5">
-              <div className="flex flex-wrap gap-2">
-                {files.map((file, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-md text-sm border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200"
-                  >
-                    {file}
-                  </div>
-                ))}
-              </div>
+      <Proposal
+        jobTitle={jobTitle}
+        terms={terms}
+        element={
+          <div className="mt-5">
+            <div className="flex flex-wrap gap-2">
+              {files.map((file, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-md text-sm border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200"
+                >
+                  {file}
+                </div>
+              ))}
             </div>
-          }
-        />
-    
+          </div>
+        }
+      />
     </div>
   );
 };
 
 export default JobInfoSection;
-

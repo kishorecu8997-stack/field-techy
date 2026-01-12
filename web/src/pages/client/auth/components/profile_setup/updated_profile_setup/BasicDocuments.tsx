@@ -36,7 +36,7 @@ const BasicDocuments = () => {
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
 
   const formCtx = useForm<DocumentFormData>({
@@ -137,12 +137,12 @@ const BasicDocuments = () => {
           onUploadProgress: (progress) => {
             if (progress.percentage) {
               setUploadProgress((prev) => ({
-                ...prev,  
+                ...prev,
                 PROFILE_PICTURE: progress.percentage!,
               }));
             }
           },
-        })
+        }),
       );
     }
 
@@ -161,7 +161,7 @@ const BasicDocuments = () => {
               }));
             }
           },
-        })
+        }),
       );
     }
 
@@ -180,7 +180,7 @@ const BasicDocuments = () => {
               }));
             }
           },
-        })
+        }),
       );
     }
 
@@ -217,7 +217,7 @@ const BasicDocuments = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-screen w-full"
     >
-      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-white ">
+      <div className="shrink-0 p-4 flex mt-8 flex-col gap-2 items-center justify-center bg-transparent ">
         <h2 className="text-3xl font-bold">Background Verification</h2>
         <h2 className="text-md font-extralight">
           Please upload at least one document for background verification{" "}

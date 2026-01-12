@@ -66,10 +66,7 @@ const RequestRevision: React.FC<RequestRevisionProps> = ({
             />
           </div>
           {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="primary"          
-          >
+          <Button type="submit" variant="primary">
             Send
           </Button>
         </FormContainer>

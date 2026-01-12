@@ -58,6 +58,7 @@ export default function AdminLogin() {
             userId: resp.userId,
             role: resp.role || UserRole.ADMIN,
             initiatedAt: resp.initiatedAt || Date.now(),
+            email: data.email,
           };
 
           setUserSession(session);
@@ -67,7 +68,7 @@ export default function AdminLogin() {
         onError: (error: unknown) => {
           toast.error((error as Error)?.message || "Login failed");
         },
-      }
+      },
     );
   };
 

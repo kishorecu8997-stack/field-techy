@@ -25,7 +25,7 @@ interface DrawerState {
   updateFieldStatus: (
     sectionKey: string,
     fieldLabel: string,
-    status: FieldStatus
+    status: FieldStatus,
   ) => void;
   // New additions for bank navigation back handling
   previousShowBack: boolean;
@@ -35,7 +35,7 @@ interface DrawerState {
 /**
  * Zustand store for managing global drawer/sidebar state, including the active menu key and sidebar open/closed status.
  */
-const useDrawerStore = create<DrawerState>((set, get) => ({
+const useDrawerStore = create<DrawerState>((set, _) => ({
   activeKey: "myAccount",
   setActiveKey: (key, showBackButton) =>
     set((state) => {
@@ -76,10 +76,10 @@ const useDrawerStore = create<DrawerState>((set, get) => ({
           ? {
               ...section,
               fields: section.fields.map((field) =>
-                field.label === fieldLabel ? { ...field, status } : field
+                field.label === fieldLabel ? { ...field, status } : field,
               ),
             }
-          : section
+          : section,
       ),
     })),
   reset: () =>

@@ -1,12 +1,15 @@
 import { absoluteUrls } from "@/config/urls";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
-import type { Job } from "@/pages/engineer/search_result/types";
 import React from "react";
+import type { JobItem } from "../types";
 
 interface RecommendedJobsProps {
-  jobs: Job[];
+  jobs: JobItem[];
+  userSkills?: string[];
+  userTools?: string[];
   title?: string;
   onViewAll?: () => void;
+  totalJobs?: number;
 }
 
 /**
@@ -16,18 +19,19 @@ interface RecommendedJobsProps {
  * @returns {JSX.Element} The rendered RecommendedJobs component.
  */
 const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
-  jobs,
+  jobs = [],
+  userSkills = [],
+  userTools = [],
   title = "Recommended Jobs",
   onViewAll,
+  totalJobs = 0,
 }) => {
-  const filteredJobs = jobs.filter((job) => {
-    return job.place === "recommended";
-  });
+  const jobsToShowCount = totalJobs || jobs.length;
   return (
-    <div className="mb-8">
+    <div className="mb-0">
       <div className="flex justify-between items-center  p-2">
         <h2 className="text-xl font-bold">{title}</h2>
-        {onViewAll && (
+        {onViewAll && jobsToShowCount > 5 && (
           <div
             onClick={onViewAll}
             className="text-teal-600 hover:text-teal-800 font-medium text-sm cursor-pointer hover:underline dark:text-teal-400 dark:hover:text-teal-300"
@@ -36,10 +40,12 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
           </div>
         )}
       </div>
-      {filteredJobs.map((job: Job) => (
+      {jobs.map((job) => (
         <JobCard
           key={job.id}
           job={job}
+          userSkills={userSkills}
+          userTools={userTools}
           navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
         />
       ))}
@@ -47,4 +53,6 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
   );
 };
 
-export { RecommendedJobs };
+const RecommendedJobsMemo = React.memo(RecommendedJobs);
+
+export { RecommendedJobsMemo as RecommendedJobs };

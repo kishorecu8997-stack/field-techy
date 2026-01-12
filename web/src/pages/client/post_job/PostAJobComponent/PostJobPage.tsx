@@ -27,7 +27,7 @@ import JobPostDropdown from "./JobPostDropdown";
  * PostJobPage Component
  * The main page for posting a job.
  * It includes a form for entering job details, a dropdown for selecting job posting options, and a button to submit the form.
- * @returns {JSX.Element} The rendered PostJobPage component.   
+ * @returns {JSX.Element} The rendered PostJobPage component.
  */
 const PostJobPage = () => {
   const [isDisable, setIsDisable] = useState(false);
@@ -46,7 +46,7 @@ const PostJobPage = () => {
       skills: [],
       tools: [],
       safetyWears: [],
-      task: '',
+      task: "",
       description: "",
       backFills: backFillsType.required,
       budget: "",
@@ -75,8 +75,6 @@ const PostJobPage = () => {
     },
     mode: "onSubmit",
   });
-
-
 
   const getTemplateData = () => {
     return TemplateData.map((item) => ({
@@ -150,7 +148,7 @@ const PostJobPage = () => {
 
   const { currentLocation } = usePostAJobStore();
   return (
-    <div className="p-4 bg-white">
+    <div className="p-4 bg-white dark:bg-gray-800">
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <MyJobsHeader
           title={

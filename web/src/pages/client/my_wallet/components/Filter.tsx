@@ -30,9 +30,11 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
 
   return (
     <div className="inset-0 z-50 items-center justify-center p-4 w-full">
-
-      <div className="bg-white dark:bg-gray-900 p-6 relative w-full">        
-          <IoCloseSharp onClick={onClose} className="h-6 w-6 cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />        
+      <div className="bg-white dark:bg-gray-900 p-6 relative w-full">
+        <IoCloseSharp
+          onClick={onClose}
+          className="h-6 w-6 cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        />
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
           Filters
         </h2>
@@ -52,7 +54,7 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
                   validate: (value) =>
                     validateFilterDateRange(
                       methods.getValues("startDate"),
-                      value
+                      value,
                     ),
                 }}
               />
@@ -70,7 +72,7 @@ const Filter: React.FC<FilterProps> = ({ isOpen, onClose, onFilter }) => {
                   validate: (value) =>
                     validateFilterDateRange(
                       methods.getValues("startDate"),
-                      value
+                      value,
                     ),
                 }}
               />

@@ -113,7 +113,6 @@ export const manageGroups: ManageGroups[] = [
   },
 ];
 
-
 export interface DetailsTypes {
   name: string;
   phone: string;

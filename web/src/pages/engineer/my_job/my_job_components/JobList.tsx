@@ -1,8 +1,8 @@
-import { sampleJobs } from "@/dummy_data/searchData";
+import { useGetJobs } from "@/shared/apiServices/client/clientService";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
-import { JOB_STATUSES, WORKING_TYPES, JOB_FILTERS } from "../../search_result/types";
 import type { JobFilter } from "../../search_result/types";
+import { JOB_FILTERS } from "../../search_result/types";
 
 interface JobListProps {
   activeFilter: JobFilter;
@@ -18,26 +18,27 @@ interface JobListProps {
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
 const JobList = ({ activeFilter }: JobListProps) => {
+  const { data: apiJobs } = useGetJobs();
+
   const filteredJobs = useMemo(() => {
-    const jobs = sampleJobs.filter(
-      (job) =>
-        job.status !== JOB_STATUSES.new && job.status !== JOB_STATUSES.offer
+    const jobs = (apiJobs || []).filter(
+      (job) => job.status !== "NEW" && job.status !== "OFFER",
     );
 
     if (activeFilter === JOB_FILTERS.ALL_JOBS) {
       return jobs;
     } else if (activeFilter === JOB_FILTERS.APPLIED) {
-      return jobs.filter((job) => job.status === JOB_STATUSES.applied);
+      return jobs.filter((job) => job.status === "APPLIED");
     } else if (activeFilter === JOB_FILTERS.IN_PROGRESS) {
-      return jobs.filter((job) => job.status === JOB_STATUSES.inprogress);
+      return jobs.filter((job) => job.status === "IN_PROGRESS");
     } else if (activeFilter === JOB_FILTERS.COMPLETED) {
-      return jobs.filter((job) => job.status === JOB_STATUSES.completed);
+      return jobs.filter((job) => job.status === "COMPLETED");
     } else if (activeFilter === JOB_FILTERS.REMOTE) {
-      return jobs.filter((job) => job.type === WORKING_TYPES.remote);
+      return jobs.filter((job) => job.engagementModel === "REMOTE");
     } else if (activeFilter === JOB_FILTERS.ON_SITE) {
-      return jobs.filter((job) => job.type === WORKING_TYPES.onsite);
+      return jobs.filter((job) => job.engagementModel === "ON_SITE");
     } else if (activeFilter === JOB_FILTERS.HYBRID) {
-      return jobs.filter((job) => job.type === WORKING_TYPES.hybrid);
+      return jobs.filter((job) => job.engagementModel === "HYBRID");
     } else {
       // For other filters like "Today", "Declined", "Cancelled", return all jobs for now as they might not be implemented
       return jobs;

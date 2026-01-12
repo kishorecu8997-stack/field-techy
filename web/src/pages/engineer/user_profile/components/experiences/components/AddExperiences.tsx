@@ -3,7 +3,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
-import { validateCompany, validateDateRange, validateEndDateRange } from "../../../Validate";
+import { validateCompany, validateDateRange } from "../../../Validate";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
@@ -15,7 +15,11 @@ import {
 } from "./constants";
 import { toast } from "react-toastify";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
-
+import {
+  useEngineerGetById,
+  useEngineerUpdateById,
+} from "@/shared/apiServices/engineer/engineerService";
+import { getUserId } from "@/utils";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
@@ -26,8 +30,11 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput
 const AddExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+  const userId = getUserId();
+  const { data: engineerData } = useEngineerGetById(userId || "");
+  const { mutateAsync } = useEngineerUpdateById(userId || "");
 
-  const handleSubmit = async (_: ExperiencesFormData) => {
+  const handleSubmit = async (data: ExperiencesFormData) => {
     await showPopup({
       title: "Add Experience",
       body: "Are you sure you want to add this experience?",
@@ -36,7 +43,7 @@ const AddExperiences = () => {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
+          action: async (close: (v: boolean) => void) => {
             close(true);
           },
         },
@@ -44,10 +51,42 @@ const AddExperiences = () => {
           label: "Yes, add",
           value: "yes",
           variant: "primary",
-          action: async (close) => {
-            toast.success("Experience Added Successfully");
-            close(true);
-            setActiveKey("experiences");
+          action: async (close: (v: boolean) => void) => {
+            if (!engineerData || !userId) return;
+
+            const newExperience = {
+              designation: String(data.designation ?? ""),
+              employer: (data.employer || "").trim(),
+              workLocationType: data.workLocationType,
+              employmentType: data.employmentType,
+              startDate: data.startDate?.toISOString().split("T")[0] || "",
+              endDate: data.isCurrent
+                ? undefined
+                : data.endDate?.toISOString().split("T")[0] || undefined,
+              isCurrent: data.isCurrent,
+            };
+
+            const updatedExperiences = [
+              ...(engineerData.experiences || []),
+              newExperience,
+            ];
+
+            try {
+              await mutateAsync({
+                ...engineerData,
+                experiences:
+                  updatedExperiences.length > 0
+                    ? updatedExperiences
+                    : undefined,
+              });
+              toast.success("Experience Added Successfully");
+              close(true);
+              setActiveKey("experiences");
+            } catch (error) {
+              console.error("Failed to add experience:", error);
+              toast.error("Failed to add experience. Please try again.");
+              close(true);
+            }
           },
         },
       ],
@@ -66,7 +105,7 @@ const AddExperiences = () => {
       employmentType: "",
       startDate: null,
       endDate: null,
-      isCurrent: false
+      isCurrent: false,
     },
     mode: "onSubmit",
   });
@@ -84,8 +123,8 @@ const AddExperiences = () => {
           name="designation"
           placeholder="Designation"
           options={designationOptions.map((e) => ({
-            value: e.id,
-            label: e.title,
+            value: e.value,
+            label: e.label,
           }))}
           required
         />
@@ -139,9 +178,19 @@ const AddExperiences = () => {
               maxDate={new Date()}
               required={!methods.watch("isCurrent")}
               rules={{
-                validate: (value) =>
-              validateEndDateRange(value, methods.getValues("endDate")),
-                onChange: () => methods.trigger("startDate")
+                validate: (value) => {
+                  if (!methods.watch("isCurrent")) {
+                    if (!value)
+                      return "End date is required when not currently working";
+
+                    const start = methods.getValues("startDate");
+                    if (start && value && start > value) {
+                      return "End date must be after start date";
+                    }
+                  }
+                  return true;
+                },
+                onChange: () => methods.trigger("startDate"),
               }}
             />
           )}
@@ -155,11 +204,11 @@ const AddExperiences = () => {
           rules={{
             onChange: (e) => {
               const checked = e.target.checked;
-              methods.setValue("isCurrent", checked)
+              methods.setValue("isCurrent", checked);
               if (checked) {
                 methods.setValue("endDate", null); // Remove end date
               }
-            }
+            },
           }}
         />
       </div>

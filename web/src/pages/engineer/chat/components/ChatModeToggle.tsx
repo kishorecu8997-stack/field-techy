@@ -24,19 +24,21 @@ export const ChatModeToggle: React.FC<ChatModeToggleProps> = ({
   return (
     <div className="inline-flex rounded-full border bg-white overflow-hidden">
       <div
-        className={`px-4 py-2 text-sm cursor-pointer ${mode === "personal"
+        className={`px-4 py-2 text-sm cursor-pointer ${
+          mode === "personal"
             ? "bg-emerald-800 text-white"
             : "text-gray-700 hover:bg-gray-100"
-          }`}
+        }`}
         onClick={() => onChange("personal")}
       >
         Personal Chat
       </div>
       <div
-        className={`px-4 py-2 text-sm cursor-pointer ${mode === "group"
+        className={`px-4 py-2 text-sm cursor-pointer ${
+          mode === "group"
             ? "bg-emerald-800 text-white"
             : "text-gray-700 hover:bg-gray-100"
-          }`}
+        }`}
         onClick={() => onChange("group")}
       >
         Group Chat

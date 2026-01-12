@@ -38,42 +38,42 @@ const SearchResult = () => {
     // Apply location filter
     if (filters.location.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.location.some((loc) => job.location?.includes(loc))
+        filters.location.some((loc) => job.location?.includes(loc)),
       );
     }
 
     // Apply category filter
     if (filters.category.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.category.some((cat) => job.category?.includes(cat))
+        filters.category.some((cat) => job.category?.includes(cat)),
       );
     }
 
     // Apply rating filter
     if (filters.rating.length > 0) {
       filtered = filtered.filter(
-        (job) => job.rating && filters.rating.includes(job.rating)
+        (job) => job.rating && filters.rating.includes(job.rating),
       );
     }
 
     // Apply experience filter
     if (filters.experience > 0) {
       filtered = filtered.filter(
-        (job) => job.experience && job.experience >= filters.experience
+        (job) => job.experience && job.experience >= filters.experience,
       );
     }
 
     // Apply budget type filter
     if (filters.budgetType) {
       filtered = filtered.filter(
-        (job) => job.budgetType === filters.budgetType
+        (job) => job.budgetType === filters.budgetType,
       );
     }
 
     // Apply skills filter
     if (filters.skills.length > 0) {
       filtered = filtered.filter((job) =>
-        filters.skills.some((skill) => job.skills?.includes(skill))
+        filters.skills.some((skill) => job.skills?.includes(skill)),
       );
     }
 

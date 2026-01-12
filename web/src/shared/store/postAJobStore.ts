@@ -23,14 +23,13 @@ const usePostAJobStore = create<PostAJobStoreStore>()(
       currentLocation: null,
       setCurrentLocation: (location: currentLocationType) =>
         set({ currentLocation: location }),
-      setIsPostAJobOpen: (isOpen: boolean) =>
-        set({ isPostAJobOpen: isOpen }),
+      setIsPostAJobOpen: (isOpen: boolean) => set({ isPostAJobOpen: isOpen }),
     }),
     {
       name: "post-a-job-store",
       storage: createJSONStorage(() => localStorage), // ✅ THIS FIXES YOUR ERROR
-    }
-  )
+    },
+  ),
 );
 
 export default usePostAJobStore;

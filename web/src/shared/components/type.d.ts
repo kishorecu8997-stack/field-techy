@@ -114,7 +114,7 @@ export interface LegendConfig {
 }
 
 export interface GeneralChartProps<
-  T extends Record<string, unknown> = Record<string, unknown>
+  T extends Record<string, unknown> = Record<string, unknown>,
 > {
   data: T[];
   chartType: ChartType;
@@ -126,7 +126,7 @@ export interface GeneralChartProps<
   aspectRatio?: number;
   yAxisDomain?: [
     number | "auto" | "dataMin" | "dataMax",
-    number | "auto" | "dataMin" | "dataMax"
+    number | "auto" | "dataMin" | "dataMax",
   ];
   customTooltip?: React.ComponentType<TooltipProps<number, string>>;
   className?: string;
@@ -186,7 +186,6 @@ export interface CategoryTagProps {
   isShowLabel?: boolean;
   required?: boolean;
 }
-
 
 export interface PaymentCardOption {
   id: string;

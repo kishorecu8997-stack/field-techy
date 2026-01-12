@@ -224,13 +224,10 @@ export const validateExperience = (value: string) => {
 // following two validations created by Mithun for validate university and major subject text fields
 
 // validate university text field
-export const validateUniversity = (
-  value: string,
-  required: boolean = true
-) => {
+export const validateUniversity = (value: string, required: boolean = true) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null it will give error message 
+  //  Check the field is Required or null it will give error message
   if (required && !trimmed) {
     return "Please enter a university name.";
   }
@@ -242,27 +239,24 @@ export const validateUniversity = (
   return true;
 };
 
-
-//  validate Major Subject 
+//  validate Major Subject
 export const validateMajorSubject = (
   value: string,
-  required: boolean = true
+  required: boolean = true,
 ) => {
   const trimmed = value?.trim() ?? "";
 
-  //  Check the field is Required or null  it will  give error message 
+  //  Check the field is Required or null  it will  give error message
   if (required && !trimmed) {
     return "Please enter a major subject name.";
   }
 
-  // Length check above 200 characters 
+  // Length check above 200 characters
   if (trimmed.length > 200) {
     return "Major Subject must not exceed 200 characters";
   }
   return true;
 };
-
-
 
 /**
  * Validate passing year.
@@ -308,7 +302,7 @@ export const validatePassingYear = (value: string) => {
  */
 export const validateDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ) => {
   if (!startDate) {
     return "Start date is required";
@@ -343,7 +337,7 @@ export const validateEndDate = (value: Date | null) => {
 
 export const validateFilterDateRange = (
   startDate: Date | null,
-  endDate: Date | null
+  endDate: Date | null,
 ): true | string => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Optional: normalize to start of day for comparison
@@ -377,25 +371,6 @@ export const validateFilterDateRange = (
 
   return true;
 };
-
-
-export const validateEndDateRange = (
-  startDate: Date | null,
-  endDate: Date | null
-) => {
-  if (!endDate) {
-    return "End date is required";
-  }
-
-  if (endDate > new Date()) {
-    return "End date cannot be in the future";
-  }
-  if (startDate && endDate < startDate) {
-    return "End date must be after the start date";
-  }
-  return true;
-};
-
 
 export const validateRate = (value: string) => {
   if (/^\s|\s$/.test(value || ""))
@@ -533,7 +508,7 @@ export const validateIsPhoneVerified = (verified: boolean) => {
 export const validateFormat = (
   value: string,
   regex: RegExp,
-  message: string
+  message: string,
 ): true | string => {
   if (!value) return true; // Optional: let 'required' handle emptiness
   return regex.test(value.trim()) ? true : message;
@@ -543,7 +518,7 @@ export const validateVatNumber = (vatNumber: string): true | string => {
   return validateFormat(
     vatNumber,
     /^[A-Za-z0-9\-/ ]{2,16}$/,
-    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces."
+    "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces.",
   );
 };
 
@@ -559,7 +534,6 @@ export default {
   validateCompany,
   validatePassingYear,
   validateDateRange,
-  validateEndDateRange,
   validateRate,
   validatePortfolioLink,
   validateIsVerified,

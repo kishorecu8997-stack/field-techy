@@ -31,7 +31,7 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
   name = "otp",
   isClose,
   footer,
-  loading
+  loading,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const inputRefs = useRef<HTMLInputElement[]>([]);
@@ -85,8 +85,9 @@ const OTPModal: React.FC<VerifyEmailModalProps> = ({
               <button
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${
+                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Resend
               </button>
