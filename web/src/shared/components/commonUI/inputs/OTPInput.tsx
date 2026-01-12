@@ -139,36 +139,35 @@ export const OTPInput = ({
         const otp = field.value?.toString().padEnd(length, "") || "";
 
         return (
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 justify-center">
-              {Array.from({ length }).map((_, idx) => (
-                <input
-                  key={idx}
-                  ref={(el) => {
-                    inputRefs.current[idx] = el;
-                  }}
-                  id={`${name}-${idx}`}
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  maxLength={1}
-                  value={otp[idx] || ""}
-                  onChange={(e) => handleChange(e, idx)}
-                  onKeyDown={(e) => handleKeyDown(e, idx)}
-                  onPaste={handlePaste}
-                  className="w-12 h-12 text-center text-lg rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                  aria-label={`OTP digit ${idx + 1} of ${length}`}
-                />
-              ))}
-            </div>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-xs sm:max-w-sm md:max-w-md">
+            {Array.from({ length }).map((_, idx) => (
+              <input
+                key={idx}
+                ref={(el) => {
+                  inputRefs.current[idx] = el;
+                }}
+                id={`${name}-${idx}`}
+                type="tel"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={1}
+                value={otp[idx] || ""}
+                onChange={(e) => handleChange(e, idx)}
+                onKeyDown={(e) => handleKeyDown(e, idx)}
+                onPaste={handlePaste}
+                className="w-12 h-12 text-center text-lg rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                aria-label={`OTP digit ${idx + 1} of ${length}`}
+              />
+            ))}
             {error && (
               <p
-                className={`text-sm text-red-600 dark:text-red-500 ${errorAlign === "left"
+                className={`text-sm text-red-600 dark:text-red-500 ${
+                  errorAlign === "left"
                     ? "text-left"
                     : errorAlign === "right"
-                      ? "text-right"
-                      : "text-center"
-                  }`}
+                    ? "text-right"
+                    : "text-center"
+                }`}
               >
                 {error.message?.toString()}
               </p>

@@ -1,24 +1,27 @@
 import { absoluteUrls } from "@/config/urls";
-import { loginData } from "@/dummy_data/personalInfoData";
-import { sampleJobs } from "@/dummy_data/searchData";
 import FilterPanel from "@/pages/engineer/search_result/components/FilterPanel";
 import JobCard from "@/pages/engineer/search_result/components/JobCard";
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
-  JOB_STATUSES,
   SORT_OPTIONS,
   type Filters,
-  type Job,
-  type SortOption,
+  type SortOption
 } from "@/pages/engineer/search_result/types";
+import { useGetJobs } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
+import type { JobItem } from "../types";
+
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
  */
 const ExploreJobs: React.FC = () => {
+  const profile = useEngineerProfile();
+  const { data: apiJobs } = useGetJobs();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
   const [filters, setFilters] = useState<Filters>({
@@ -39,17 +42,17 @@ const ExploreJobs: React.FC = () => {
     slaLevel: "",
   });
 
-  // Keep only jobs that are NOT new or offer
+  // Filter jobs by status NEW
   const allNewJobs = useMemo(() => {
-    return sampleJobs.filter((job) => job.status === JOB_STATUSES.new);
-  }, []);
+    return (apiJobs || []).filter((job) => job.status === "NEW");
+  }, [apiJobs]);
 
   // Step 2: Apply filters
-  const filteredJobs = useMemo<Job[]>(() => {
+  const filteredJobs = useMemo<JobItem[]>(() => {
     return allNewJobs.filter((job) => {
       // Location filter
       if (filters.location.length > 0 && job.location) {
-        if (!filters.location.includes(job.location)) return false;
+        if (!filters.location.some(loc => job.location?.includes(loc))) return false;
       }
 
       // Category filter
@@ -67,24 +70,24 @@ const ExploreJobs: React.FC = () => {
 
       // Experience filter
       if (filters.experience > 0 && job.experience !== undefined) {
-        if (job.experience < filters.experience) return false;
+        if (Number(job.experience) < filters.experience) return false;
       }
 
       // Budget type filter
-      if (filters.budgetType && job.budgetType !== filters.budgetType) {
-        return false;
+      if (filters.budgetType && job.budgetType) {
+        if (job.budgetType.toLowerCase() !== filters.budgetType.toLowerCase()) return false;
       }
 
-      // Rating filter (minimum selected rating)
+      // Rating filter (checks if job rating matches any selected rating)
       if (filters.rating.length > 0 && job.rating !== undefined) {
-        const minRequiredRating = Math.max(...filters.rating);
-        if (job.rating < minRequiredRating) return false;
+        if (!filters.rating.includes(Math.floor(job.rating))) return false;
       }
 
       return true;
     });
   }, [allNewJobs, filters]);
-  const sortedJobs = useMemo<Job[]>(() => {
+
+  const sortedJobs = useMemo<JobItem[]>(() => {
     const jobsCopy = [...filteredJobs];
 
     // Parse relative time string like "2 hours ago", "5 days ago", etc.
@@ -119,9 +122,9 @@ const ExploreJobs: React.FC = () => {
       return 0; // fallback to "now"
     };
 
-    // Extract numeric value from salary string, fallback to "pay"
-    const extractSalaryNumber = (job: Job): number => {
-      const salaryStr = job.salary || job.pay; // use salary first, fallback to pay
+    // Extract numeric value from salary string
+    const extractSalaryNumber = (job: JobItem): number => {
+      const salaryStr = job.salary;
       if (!salaryStr) return 0;
       const num = parseFloat(salaryStr.replace(/[^0-9.]/g, ""));
       return isNaN(num) ? 0 : num;
@@ -149,9 +152,9 @@ const ExploreJobs: React.FC = () => {
         );
 
       case SORT_OPTIONS.DISTANCE:
-        const isRemote = (job: Job) => {
+        const isRemote = (job: JobItem) => {
           const loc = (job.location || "").toLowerCase();
-          const type = (job.type || "").toLowerCase();
+          const type = (job.engagementModel || "").toLowerCase();
           return (
             type === "remote" ||
             loc.includes("remote") ||
@@ -169,7 +172,7 @@ const ExploreJobs: React.FC = () => {
           if (!aRemote && bRemote) return 1;
           if (aRemote && bRemote) return 0;
 
-          const USER_CITY = loginData[0]?.addressLocation;
+          const USER_CITY = profile?.location || profile?.address;
 
           const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
             chennai: { lat: 13.0827, lng: 80.2707 },
@@ -206,7 +209,7 @@ const ExploreJobs: React.FC = () => {
           if (!cityA) return 1;
           if (!cityB) return -1;
 
-          const userCoords = CITY_COORDS[USER_CITY];
+          const userCoords = USER_CITY ? CITY_COORDS[USER_CITY.toLowerCase()] : null;
           if (!userCoords) return 0;
 
           const haversine = (
@@ -220,8 +223,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-                Math.cos(toRad(c2.lat)) *
-                Math.sin(dLng / 2) ** 2;
+              Math.cos(toRad(c2.lat)) *
+              Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -235,12 +238,12 @@ const ExploreJobs: React.FC = () => {
       default:
         return jobsCopy;
     }
-  }, [filteredJobs, sortBy, loginData]);
+  }, [filteredJobs, sortBy, profile]);
 
   // Step 4: Pagination
   const jobsPerPage = 4;
   const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
-  const paginatedJobs = useMemo<Job[]>(() => {
+  const paginatedJobs = useMemo<JobItem[]>(() => {
     const start = (currentPage - 1) * jobsPerPage;
     return sortedJobs.slice(start, start + jobsPerPage);
   }, [sortedJobs, currentPage]);
@@ -282,9 +285,8 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${
-            sortedJobs.length !== 1 ? "s" : ""
-          } found`}
+          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
+            } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}
@@ -301,6 +303,8 @@ const ExploreJobs: React.FC = () => {
                   <JobCard
                     key={job.id}
                     job={job}
+                    userSkills={profile?.jobSkills || []}
+                    userTools={profile?.tools || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
                   />
                 ))
@@ -311,7 +315,7 @@ const ExploreJobs: React.FC = () => {
                   </p>
                   <Button
                     onClick={handleClearAllFilters}
-                    className="mt-6 text-lg font-medium text-teal-600 hover:text-teal-700 dark:text-teal-400"
+                    className="mt-6 text-lg font-medium  hover:text-teal-700 dark:text-teal-400"
                   >
                     Clear all filters
                   </Button>

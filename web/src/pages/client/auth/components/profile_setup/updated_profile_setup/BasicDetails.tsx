@@ -272,7 +272,7 @@ const BasicDetails = () => {
     >
       <div className="shrink-0 p-2 mt-8 flex flex-col gap-2 items-center justify-center sticky top-0 z-10">
         <h2 className="text-3xl font-bold">Profile Setup</h2>
-        <p className="text-md text-center text-gray-600 mb-4 px-3">
+        <p className="text-md text-center text-gray-600 dark:text-gray-400 mb-4 px-3">
           Complete your profile to unlock opportunities.
         </p>
       </div>
@@ -289,7 +289,7 @@ const BasicDetails = () => {
             />
             <label
               htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer"
+              className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
             >
               I agree to the{" "}
               <span className="text-blue-600 underline cursor-pointer">

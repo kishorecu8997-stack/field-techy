@@ -23,7 +23,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   client,
   duration,
   type,
-  status = "new",
+  status = "NEW",
   setIsWorkSubmitted,
   setSendProposal,
   isSendProposal,
@@ -65,17 +65,16 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   return (
     <>
       <div
-        className={`${
-          isSendProposal
+        className={`${isSendProposal
             ? "text-gray-800 bg-yellow-50"
             : "bg-teal-800 text-white"
-        } p-5 rounded-xl shadow-md`}
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
+          <h1 className="text-xl md:text-2xl font-bold">{title || '-'}</h1>
           <div className="flex gap-2 items-center">
             <div
-              className="flex flex-row-reverse gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
+              className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
               onClick={handleBreakDetails}
             >
               <span>Break Details</span>
@@ -116,8 +115,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           </div>
         </div>
         <div className="mt-3 flex flex-wrap gap-4 text-sm justify-start items-start">
-          <span className="flex items-center gap-1">🕒 {duration}</span>
-          <span>Client: {client}</span>
+          <span className="flex items-center gap-1">🕒 {duration || '-'}</span>
+          <span>Client: {client || '-'}</span>
         </div>
         {isClient ? (
           <ClientActions />

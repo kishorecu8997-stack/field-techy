@@ -1,4 +1,3 @@
-
 export interface Message {
   id: number;
   sender: string;
@@ -18,7 +17,6 @@ export interface ChatItem {
   status?: string;
 }
 
-
 // export interface NotificationProps {
 //   id: number;
 //   type:
@@ -37,7 +35,6 @@ export interface ChatItem {
 //   timestamp: string; // e.g., "1h", "2d"
 //   icon: string; // emoji or icon identifier
 // }
-
 
 export interface GroupedNotifications {
   [dateGroup: string]: NotificationProps[];
@@ -72,4 +69,39 @@ export interface Section {
   title: string;
   items?: Feature[];
   content?: string; // optional
+}
+
+export interface JobData {
+  id: sting;
+  clientId: sting;
+  jobTitle: string;
+  jobDescription: string;
+  jobType: string;
+  country: string;
+  state: string;
+  city: string;
+  startDate: Date;
+  startTime: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
+  numberOfVacancy: number;
+  timePeriodOfJob: string;
+  requirementDeliverable: string;
+  otherDetails: string;
+  toolName: string;
+  toolImage: string;
+  toolAdditionalBudget: string;
+  rateCardRequiredSkill: string;
+  rateCardExperienceLevel: string;
+  engagementModel: string;
+  projectDeadline: string | Date;
+  milestoneStructure: string;
+  jobVisibility: string;
+  category: string;
+  featured: true;
+  skills: [string];
+  attachments: [string];
 }

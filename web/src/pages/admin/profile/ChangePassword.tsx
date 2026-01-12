@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminChangePasswordMutation } from "@/shared/apiServices/admin/adminService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -20,6 +22,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
 export default function ChangePassword() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const logout = useUserSessionStore((s) => s.logout);
+  const adminChangePasswordMutation = useAdminChangePasswordMutation();
+  const session = useUserSessionStore((s) => s.session);
 
   const methods = useForm<ChangePasswordFormData>({
     defaultValues: {
@@ -32,7 +37,7 @@ export default function ChangePassword() {
   const watch = methods.watch;
   const currentPassword = watch("currentPassword");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (data: ChangePasswordFormData) => {
     await showPopup({
       title: "Password Change",
       body: "Are you sure you want to change your password?",
@@ -47,9 +52,26 @@ export default function ChangePassword() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Password Changed Successfully!");
-            close(true);
-            navigate(absoluteUrls.admin.home.dashboard);
+            await adminChangePasswordMutation.mutateAsync(
+              {
+                phoneOrEmail: session?.email || "",
+                oldPassword: data.currentPassword,
+                newPassword: data.password,
+              },
+              {
+                onSuccess: () => {
+                  close(true);
+                  toast.success("Password Changed Successfully!");
+                  logout();
+                  navigate(absoluteUrls.admin.auth.login);
+                },
+                onError: (error: unknown) => {
+                  toast.error(
+                    (error as Error)?.message || "Password change failed"
+                  );
+                },
+              }
+            );
           },
         },
       ],

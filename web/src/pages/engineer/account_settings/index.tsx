@@ -3,6 +3,7 @@ import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "./types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
@@ -37,7 +38,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
       onClick: () => {
         setNavigationSource("settings", "settings");
         onMenuItemClick("manageBankAccounts");
-     },
+      },
     },
     {
       id: "notifications",
@@ -96,7 +97,17 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
         onClose();
       },
     },
+    {
+      label: "Logout",
+      icon: icons.signOut,
+      id: "logout",
+      onClick: () => {
+        setIsOpen(true);
+      },
+    },
   ];
+
+  const logout = useUserSessionStore((state) => state.logout);
 
   return (
     <div>
@@ -105,6 +116,7 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
+          logout();
           onClose();
           navigate(absoluteUrls.engineer.auth.login);
         }}

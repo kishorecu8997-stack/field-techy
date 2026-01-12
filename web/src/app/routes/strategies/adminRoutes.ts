@@ -50,7 +50,11 @@ export class AdminRouteStrategy implements RouteStrategy {
         path: BASE.ADMIN,
         element: React.createElement(ProtectedRoute, {
           requiredRole: UserRole.ADMIN,
-          children: [withSuspense(Components.AdminLayout)],
+          children: React.createElement(
+            React.Fragment,
+            null,
+            withSuspense(Components.AdminLayout)
+          ),
         }),
         children: [
           { index: true, element: withSuspense(Components.AdminDashboard) },
@@ -137,6 +141,10 @@ export class AdminRouteStrategy implements RouteStrategy {
           {
             path: urls.admin.home.manage_notification_add,
             element: withSuspense(Components.ManageNotificationAdd),
+          },
+          {
+            path: urls.admin.home.manage_notification_edit,
+            element: withSuspense(Components.ManageNotificationEdit),
           },
           {
             path: urls.admin.home.manage_sub_admin,
