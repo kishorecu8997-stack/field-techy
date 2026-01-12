@@ -18,22 +18,22 @@ const FilterPanel: React.FC<{
 }> = ({ onFilterChange, onClearAll, currentFilters }) => {
   const { showPopup } = usePopupStore();
   const [selectedLocation, setSelectedLocation] = useState<string[]>(
-    currentFilters.location || []
+    currentFilters.location || [],
   );
   const [selectedCategory, setSelectedCategory] = useState<string[]>(
-    currentFilters.category || []
+    currentFilters.category || [],
   );
   const [selectedRating, setSelectedRating] = useState<number[]>(
-    currentFilters.rating || []
+    currentFilters.rating || [],
   );
   const [experience, setExperience] = useState<number>(
-    currentFilters.experience || 0
+    currentFilters.experience || 0,
   );
   const [budgetType, setBudgetType] = useState<"hourly" | "fixed" | "">(
-    currentFilters.budgetType || ""
+    currentFilters.budgetType || "",
   );
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
-    currentFilters.skills || []
+    currentFilters.skills || [],
   );
 
   // Available filter options
@@ -70,7 +70,7 @@ const FilterPanel: React.FC<{
   const toggleFilter = (
     currentSelection: string[],
     value: string,
-    setter: React.Dispatch<React.SetStateAction<string[]>>
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
   ) => {
     const newSelection = [...currentSelection];
     const index = newSelection.indexOf(value);
@@ -85,10 +85,10 @@ const FilterPanel: React.FC<{
       [setter === setSelectedLocation
         ? "location"
         : setter === setSelectedCategory
-        ? "category"
-        : setter === setSelectedSkills
-        ? "skills"
-        : ""]: newSelection,
+          ? "category"
+          : setter === setSelectedSkills
+            ? "skills"
+            : ""]: newSelection,
     });
   };
 

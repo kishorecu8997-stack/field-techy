@@ -17,7 +17,7 @@ const LiveChatWidget = () => {
     mockChat.map((msg, index) => ({
       ...msg,
       id: `msg-${index}`,
-    }))
+    })),
   );
 
   const [input, setInput] = useState("");

@@ -31,7 +31,7 @@ export default function ForgotPassword() {
     requestPasswordOTPMutation.mutate(data.email, {
       onSuccess: () => {
         toast.success(
-          "OTP sent successfully! Please check your email for further instructions."
+          "OTP sent successfully! Please check your email for further instructions.",
         );
         navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}`);
       },

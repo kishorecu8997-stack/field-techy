@@ -67,7 +67,6 @@ export type ProfileSetupData = {
   resume: string;
 };
 
-
 // Types (without Zod)
 export type CompleteRegistrationData = {
   // Profile Setup

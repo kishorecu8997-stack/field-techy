@@ -41,7 +41,7 @@ export default function EditNotificationUIOnly() {
   });
 
   const onSubmit = async (formData: EditNotificationForm) => {
-    // Only UI 
+    // Only UI
     await showPopup({
       title: "Update Notification",
       body: "Are you sure you want to save the changes?",

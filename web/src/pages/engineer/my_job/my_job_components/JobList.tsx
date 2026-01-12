@@ -2,10 +2,7 @@ import { useGetJobs } from "@/shared/apiServices/client/clientService";
 import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
 import type { JobFilter } from "../../search_result/types";
-import {
-  JOB_FILTERS
-} from "../../search_result/types";
-
+import { JOB_FILTERS } from "../../search_result/types";
 
 interface JobListProps {
   activeFilter: JobFilter;
@@ -25,8 +22,7 @@ const JobList = ({ activeFilter }: JobListProps) => {
 
   const filteredJobs = useMemo(() => {
     const jobs = (apiJobs || []).filter(
-      (job) =>
-        job.status !== "NEW" && job.status !== "OFFER"
+      (job) => job.status !== "NEW" && job.status !== "OFFER",
     );
 
     if (activeFilter === JOB_FILTERS.ALL_JOBS) {

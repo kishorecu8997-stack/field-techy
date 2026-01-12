@@ -7,10 +7,10 @@ export const ENGINEER_ROUTER_PATHS = {
 
   // signin otp endpoints
   ENG_SIGNIN: (otp: string) => `/eng/api/v1/engineers/eng/signin/by-otp/${otp}`,
-  REQ_OTP: (emailorPhone: string) => `/user/api/v1/users/otp/request/${emailorPhone}`,
+  REQ_OTP: (emailorPhone: string) =>
+    `/user/api/v1/users/otp/request/${emailorPhone}`,
   DELETE_FILE: (fileId: string) =>
     `/eng/api/v1/engineers/files/${fileId}/delete`,
-
 
   // verify email and phone otp endpoints
   VERIFY_OTP: (emailorPhone: string, otp: string) =>

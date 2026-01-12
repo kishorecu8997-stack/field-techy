@@ -10,7 +10,6 @@ import DocumentView from "./DocumentView";
 import JobHistory from "./job_history/JobHistory";
 import { toast } from "react-toastify";
 
-
 /**
  * HomeClientViewForm component displays detailed information about a home client.
  * It uses a tabbed interface to organize client data into several sections:
@@ -28,9 +27,7 @@ const HomeClientViewForm: React.FC = () => {
   const tabs = [
     {
       label: "Basic Information",
-      content: (
-        <BasicInformation {...ClientViewData} />
-      ),
+      content: <BasicInformation {...ClientViewData} />,
     },
     {
       label: "Job History",

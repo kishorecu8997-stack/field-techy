@@ -72,14 +72,14 @@ export const SignatureUpload = ({
   const isFileTypeAllowed = (file: File): boolean => {
     const allowedExts = getAcceptExtensions();
     return allowedExts.some((ext) =>
-      file.name.toLowerCase().endsWith(`.${ext}`)
+      file.name.toLowerCase().endsWith(`.${ext}`),
     );
   };
 
   // ✅ Handle file change with full validation
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps
+    field: ControllerRenderProps,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;

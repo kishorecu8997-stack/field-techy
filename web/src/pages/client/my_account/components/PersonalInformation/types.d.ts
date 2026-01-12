@@ -10,6 +10,5 @@ interface PersonalInfo {
   city: string;
   postalCode: string;
   taxDocument: string;
-  vatRegistrationNumber: string;    
+  vatRegistrationNumber: string;
 }
-

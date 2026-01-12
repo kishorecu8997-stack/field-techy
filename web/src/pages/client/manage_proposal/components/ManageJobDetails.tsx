@@ -3,7 +3,10 @@ import { sampleJobs } from "@/dummy_data/searchData";
 import ClientInfoCard from "@/pages/engineer/my_job/job_details_components/ClientInfoCard";
 import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTabSection";
-import { SORT_OPTIONS, type JobStatus } from "@/pages/engineer/search_result/types";
+import {
+  SORT_OPTIONS,
+  type JobStatus,
+} from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -18,7 +21,9 @@ const ManageJobDetails = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  const [OfferJobStatus, setOfferJobStatus] = useState<"initial" | "accepted" | "declined" | "started" | "checked-in" | undefined>("initial");
+  const [OfferJobStatus, setOfferJobStatus] = useState<
+    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
+  >("initial");
 
   const filter = () => {
     return sampleJobs.find((job) => {

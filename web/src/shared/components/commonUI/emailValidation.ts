@@ -25,23 +25,30 @@ export const validateEmail = (value: string): true | string => {
   if (trimmed.length < 10) return "Email must be at least 10 characters";
   if (trimmed.length > 100) return "Email must not exceed 100 characters";
 
-  const parts = trimmed.split('@');
+  const parts = trimmed.split("@");
   if (parts.length !== 2) return "Please enter a valid email with a single @";
 
   const [localPart, domainPart] = parts;
 
   // Validate local part
-  if (!localPart || localPart.length === 0) return "Email local part cannot be empty";
-  if (localPart.startsWith('.') || localPart.endsWith('.')) return "Email local part cannot start or end with a dot";
-  if (localPart.includes('..')) return "Email local part cannot contain consecutive dots";
-  if (!/^[a-zA-Z0-9._-]+$/.test(localPart)) return "Email local part contains invalid characters";
+  if (!localPart || localPart.length === 0)
+    return "Email local part cannot be empty";
+  if (localPart.startsWith(".") || localPart.endsWith("."))
+    return "Email local part cannot start or end with a dot";
+  if (localPart.includes(".."))
+    return "Email local part cannot contain consecutive dots";
+  if (!/^[a-zA-Z0-9._-]+$/.test(localPart))
+    return "Email local part contains invalid characters";
 
   // Validate domain
-  if (!domainPart || domainPart.length === 0) return "Email domain cannot be empty";
-  if (domainPart.startsWith('-') || domainPart.endsWith('-')) return "Domain labels cannot start or end with a hyphen";
-  if (domainPart.includes('..')) return "Domain cannot contain consecutive dots";
+  if (!domainPart || domainPart.length === 0)
+    return "Email domain cannot be empty";
+  if (domainPart.startsWith("-") || domainPart.endsWith("-"))
+    return "Domain labels cannot start or end with a hyphen";
+  if (domainPart.includes(".."))
+    return "Domain cannot contain consecutive dots";
 
-  const domainLabels = domainPart.split('.');
+  const domainLabels = domainPart.split(".");
   if (domainLabels.length < 2) return "Domain must contain at least one dot";
 
   // Only allow 2 or 3 label domains (e.g., example.com or example.co.in)
@@ -55,7 +62,7 @@ export const validateEmail = (value: string): true | string => {
 
   // Try 2-part TLD (only possible if domain has 3 labels)
   if (domainLabels.length === 3) {
-    const lastTwo = domainLabels.slice(-2).join('.');
+    const lastTwo = domainLabels.slice(-2).join(".");
     if (validTLDs.includes(lastTwo)) {
       tldMatched = true;
     }
@@ -77,7 +84,7 @@ export const validateEmail = (value: string): true | string => {
   // Example: user@host.com.in → 3 labels, ends with .in → but .com.in is not in list → should reject
   if (domainLabels.length === 3) {
     const lastOne = domainLabels[2];
-    const lastTwo = domainLabels.slice(1).join('.');
+    const lastTwo = domainLabels.slice(1).join(".");
     // If only 1-part TLD matched, but 2-part version is NOT in list → likely invalid
     if (validTLDs.includes(lastOne) && !validTLDs.includes(lastTwo)) {
       return "Email domain format is not supported. Use example.com or example.co.in";
@@ -94,7 +101,6 @@ export const validateEmail = (value: string): true | string => {
 
   return true;
 };
-
 
 /**
  * A pre-configured rules object for `react-hook-form` that uses `validateEmail`.

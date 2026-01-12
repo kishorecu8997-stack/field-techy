@@ -1,12 +1,12 @@
 // src/dummy_data/groupChatData.ts
-import user from '../assets/user.png';
+import user from "../assets/user.png";
 
 export interface GroupChatUser {
   id: number;
   name: string;
   role: string;
   avatar: string; // URL or initials like "AH"
-  status: 'Online' | 'Offline';
+  status: "Online" | "Offline";
 }
 
 export const mockGroupChatUsers: GroupChatUser[] = [
@@ -44,5 +44,5 @@ export const mockGroupChatUsers: GroupChatUser[] = [
     role: "Technician",
     avatar: user,
     status: "Online",
-  }
+  },
 ];

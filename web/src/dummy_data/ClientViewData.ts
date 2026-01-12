@@ -1,31 +1,35 @@
-import type { BankCardData, CompanyInfo, PostedJobsProps, walletViewData } from "@/pages/admin/client/types";
-
+import type {
+  BankCardData,
+  CompanyInfo,
+  PostedJobsProps,
+  walletViewData,
+} from "@/pages/admin/client/types";
 
 export const ClientViewData: CompanyInfo = {
-  profileImage: 'https://via.placeholder.com/100',
-  companyName: 'ABC Pvt Ltd',
-  businessType: 'Retail',
-  country: 'India',
-  postalCode: '110001',
-  contactPersonName: 'John Doe',
-  industry: 'E-commerce',
-  state: 'Delhi',
-  taxDocument: 'VAT Type A',
-  phoneNumber: '+91 9876543210',
-  address: '123 Business Street, Sector 45',
-  city: 'New Delhi',
-  vatRegistrationNumber: 'VAT12345678',
-
+  profileImage: "https://via.placeholder.com/100",
+  companyName: "ABC Pvt Ltd",
+  businessType: "Retail",
+  country: "India",
+  postalCode: "110001",
+  contactPersonName: "John Doe",
+  industry: "E-commerce",
+  state: "Delhi",
+  taxDocument: "VAT Type A",
+  phoneNumber: "+91 9876543210",
+  address: "123 Business Street, Sector 45",
+  city: "New Delhi",
+  vatRegistrationNumber: "VAT12345678",
 };
 
 export const bankCardData: BankCardData = {
-  bankName: 'ENDB Bank',
-  cardNumber: '9876541320',
-  bankAddress: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut, modi animi et distinctio ipsum corrupti.',
-  ibanNumber: '456789',
-  cardHolderName: 'kishore',
-  swiftCode: 'AHGFH456',
-  walletBalance: 'ADE 500',
+  bankName: "ENDB Bank",
+  cardNumber: "9876541320",
+  bankAddress:
+    "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut, modi animi et distinctio ipsum corrupti.",
+  ibanNumber: "456789",
+  cardHolderName: "kishore",
+  swiftCode: "AHGFH456",
+  walletBalance: "ADE 500",
 };
 
 export const walletData: walletViewData[] = [
@@ -35,7 +39,7 @@ export const walletData: walletViewData[] = [
     transactionId: "TXN1001",
     transactionType: "Deposit",
     amount: "2500.00",
-    status: "Completed"
+    status: "Completed",
   },
   {
     id: 2,
@@ -43,7 +47,7 @@ export const walletData: walletViewData[] = [
     transactionId: "TXN1002",
     transactionType: "Withdrawal",
     amount: "800.50",
-    status: "Completed"
+    status: "Completed",
   },
   {
     id: 3,
@@ -51,7 +55,7 @@ export const walletData: walletViewData[] = [
     transactionId: "TXN1003",
     transactionType: "Transfer",
     amount: "1200.00",
-    status: "Pending"
+    status: "Pending",
   },
   {
     id: 4,
@@ -59,7 +63,7 @@ export const walletData: walletViewData[] = [
     transactionId: "TXN1004",
     transactionType: "Deposit",
     amount: "3000.75",
-    status: "Failed"
+    status: "Failed",
   },
   {
     id: 5,
@@ -67,25 +71,23 @@ export const walletData: walletViewData[] = [
     transactionId: "TXN1005",
     transactionType: "Withdrawal",
     amount: "450.25",
-    status: "Completed"
-  }
+    status: "Completed",
+  },
 ];
-
-
 
 export const postedJobsData: PostedJobsProps[] = [
   {
-   jObID: "JB001",
-  postedBy: "Company A",
-  jObTitle: "Plumbing Work",
-  jobDescription: "Fix leaking pipes and faucets",
-  jobType: "Full-time",
-  country: "USA",
-  state: "California",
-  city: "Los Angeles",
-  startDateTime: "2023-10-01T09:00:00",
-  createdDate: "2023-09-25",
-  status: true,
+    jObID: "JB001",
+    postedBy: "Company A",
+    jObTitle: "Plumbing Work",
+    jobDescription: "Fix leaking pipes and faucets",
+    jobType: "Full-time",
+    country: "USA",
+    state: "California",
+    city: "Los Angeles",
+    startDateTime: "2023-10-01T09:00:00",
+    createdDate: "2023-09-25",
+    status: true,
   },
   {
     jObID: "JB002",
@@ -138,5 +140,5 @@ export const postedJobsData: PostedJobsProps[] = [
     startDateTime: "2023-10-20T13:00:00",
     createdDate: "2023-10-03",
     status: true,
-    },
+  },
 ];

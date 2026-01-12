@@ -15,7 +15,6 @@ export type VerifyEmailModalProps = {
   handleNavigate?: () => void;
 };
 
-
 export type BackgroundVerificationData = {
   governmentId: string;
   certificate: string;

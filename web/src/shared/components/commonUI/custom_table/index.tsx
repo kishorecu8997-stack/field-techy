@@ -66,7 +66,7 @@ export function CustomTable<T>({
   }, [api, currentPage, pageSize, externalFilters]);
 
   // ---------- Data Helpers ----------
-  const allData = api ? serverData : data ?? [];
+  const allData = api ? serverData : (data ?? []);
   const totalCount = api ? total : allData.length;
 
   const paginatedData = useMemo(() => {
@@ -119,7 +119,7 @@ export function CustomTable<T>({
                         <th
                           key={String(col.key)}
                           className={`py-2 px-4 text-sm whitespace-nowrap ${getAlignClass(
-                            col.align
+                            col.align,
                           )} text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-800`}
                         >
                           {col.label}
@@ -138,7 +138,7 @@ export function CustomTable<T>({
                             <td
                               key={String(col.key)}
                               className={`py-2 px-4 text-sm ${getAlignClass(
-                                col.dataCellAlign
+                                col.dataCellAlign,
                               )} text-gray-800 dark:text-gray-100`}
                             >
                               {col.renderCell

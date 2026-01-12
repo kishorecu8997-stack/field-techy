@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
-import type {  AdminNotification,  CreateNotificationParams,  UpdateNotificationParams,PagedNotificationsParams, PagedNotificationsResponse, UploadFile } from "./adminTypes";
+import type {  AdminNotification,  CreateNotificationParams,  UpdateNotificationParams, PagedNotificationsParams, PagedNotificationsResponse, UploadFile } from "./adminTypes";
 import type {
   FileDownloadResponse,
   FileUploadResponse,
@@ -25,7 +25,7 @@ export class AdminAdapter {
   static async DeleteNotification(id: string): Promise<{ message: string }> {
     try {
       const response = await axiosInstance.delete(
-        ADMIN_ROUTER_PATHS.DELETE_NOTIFICATION(id)
+        ADMIN_ROUTER_PATHS.DELETE_NOTIFICATION(id),
       );
       return response.data;
     } catch (error: unknown) {
@@ -37,7 +37,7 @@ export class AdminAdapter {
   static async GetAllNotifications(): Promise<AdminNotification[]> {
     try {
       const response = await axiosInstance.get(
-        ADMIN_ROUTER_PATHS.GET_ALL_NOTIFICATIONS
+        ADMIN_ROUTER_PATHS.GET_ALL_NOTIFICATIONS,
       );
       return response.data;
     } catch (error: unknown) {
@@ -47,13 +47,13 @@ export class AdminAdapter {
 
   /** Get Paged Notifications */
   static async GetPagedNotifications(
-    params: PagedNotificationsParams
+    params: PagedNotificationsParams,
   ): Promise<PagedNotificationsResponse> {
     const { page, size, sortBy = "createdAt", direction = "DESC" } = params;
     try {
       const response = await axiosInstance.get(
         ADMIN_ROUTER_PATHS.GET_PAGED_NOTIFICATIONS,
-        { params: { page, size, sortBy, direction } }
+        { params: { page, size, sortBy, direction } },
       );
       return response.data;
     } catch (error: unknown) {
@@ -71,7 +71,7 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.SIGNIN,
-        args
+        args,
       );
 
       const authorization = response.headers["authorization"];
@@ -81,7 +81,7 @@ export class AdminAdapter {
       if (!authorization || !userId || !role) {
         console.error(
           "Authentication failed, missing headers:",
-          response.headers
+          response.headers,
         );
         throw new AxiosError(
           "Authentication failed",
@@ -92,7 +92,7 @@ export class AdminAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -106,7 +106,7 @@ export class AdminAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -128,7 +128,7 @@ export class AdminAdapter {
     try {
       const encodedPhoneOrEmail = encodeURIComponent(phoneOrEmail);
       const response = await axiosInstance.post(
-        ADMIN_ROUTER_PATHS.FORGOTPASSWORD_OTP_REQUEST(encodedPhoneOrEmail)
+        ADMIN_ROUTER_PATHS.FORGOTPASSWORD_OTP_REQUEST(encodedPhoneOrEmail),
       );
       return response.data;
     } catch (error) {
@@ -146,7 +146,7 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.RESET_PASSWORD_USING_OTP(otp),
-        restData
+        restData,
       );
       return response.data;
     } catch (error) {
@@ -179,7 +179,7 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.put(
         ADMIN_ROUTER_PATHS.ADMIN_PROFILE_UPDATE(data.id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -220,7 +220,7 @@ export class AdminAdapter {
           onUploadProgress: (progressEvent) => {
             if (onUploadProgress && progressEvent.total) {
               const percentage = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
+                (progressEvent.loaded * 100) / progressEvent.total,
               );
               onUploadProgress({
                 loaded: progressEvent.loaded,
@@ -229,7 +229,7 @@ export class AdminAdapter {
               });
             }
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -246,7 +246,7 @@ export class AdminAdapter {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.ADMIN_CHANGE_PASSWORD,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -268,7 +268,7 @@ export class AdminAdapter {
 
   /** Download Admin File Stream */
   static async downloadFileStream(
-    fileKey: string
+    fileKey: string,
   ): Promise<FileDownloadResponse> {
     try {
       const response = await axiosInstance.get(
@@ -278,7 +278,7 @@ export class AdminAdapter {
           headers: {
             "Content-Type": "application/octet-stream",
           },
-        }
+        },
       );
 
       // Extract metadata from response headers
@@ -293,7 +293,7 @@ export class AdminAdapter {
       let fileName = "download";
       if (contentDisposition) {
         const fileNameMatch = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         );
         if (fileNameMatch && fileNameMatch[1]) {
           fileName = fileNameMatch[1].replace(/['"]/g, "");
@@ -304,7 +304,7 @@ export class AdminAdapter {
             console.error("Failed to decode file name:", e);
             // If decoding fails, use the original filename
             throw new Error(
-              "Failed to decode file name. Please try again later."
+              "Failed to decode file name. Please try again later.",
             );
           }
         }
@@ -329,7 +329,7 @@ export class AdminAdapter {
   static async getAdminById(id: string) {
     try {
       const response = await axiosInstance.get(
-        ADMIN_ROUTER_PATHS.ADMIN_GET(id)
+        ADMIN_ROUTER_PATHS.ADMIN_GET(id),
       );
       return response.data;
     } catch (error) {

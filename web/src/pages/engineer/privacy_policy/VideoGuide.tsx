@@ -9,7 +9,7 @@ import VideoCard from "@/shared/components/VideoCard";
 const VideoGuidance = () => {
   return (
     <div className="min-h-[60rem] w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-     <div className="container mx-auto px-4 py-6 md:px-6">
+      <div className="container mx-auto px-4 py-6 md:px-6">
         <MyJobsHeader
           title="Video Guidance"
           onSortChange={() => {}}

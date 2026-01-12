@@ -8,8 +8,7 @@ export const steps: StepsProps[] = [
   {
     selector: "#welcome",
     title: "Welcome ",
-    content:
-      "✨Every great story starts with a single visit.",
+    content: "✨Every great story starts with a single visit.",
   },
   {
     selector: "#exploreJobs",

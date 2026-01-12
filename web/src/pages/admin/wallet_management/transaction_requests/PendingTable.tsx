@@ -95,7 +95,6 @@ const PendingTable: React.FC = () => {
               }}
               options={JobStatus}
               badge
-              
             />
           </div>
         );

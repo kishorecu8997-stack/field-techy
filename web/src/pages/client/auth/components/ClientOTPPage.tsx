@@ -134,8 +134,9 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${
+                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Resend
               </button>

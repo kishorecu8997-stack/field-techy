@@ -81,7 +81,7 @@ const HomeClientForm: React.FC = () => {
           value: "save",
           variant: "primary",
           action: async (close) => {
-             console.log("data :", data);
+            console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
             toast.success("Client information saved successfully!");
@@ -153,8 +153,8 @@ const HomeClientForm: React.FC = () => {
               {isSubmitting
                 ? "Saving…"
                 : activeTab === "Documents"
-                ? "Save"
-                : "Next"}
+                  ? "Save"
+                  : "Next"}
             </Button>
           </div>
         </div>

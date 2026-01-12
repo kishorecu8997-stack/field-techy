@@ -6,9 +6,8 @@ export interface JobOverview {
   title: string;
   count: number;
   status: JobOverViewStatus;
-  buttonShow?:boolean;
+  buttonShow?: boolean;
 }
-
 
 export interface ServiceCategory {
   id: number;
@@ -54,6 +53,6 @@ export interface Job {
   company?: string;
   employmentType?: string;
   engineers?: string;
-  engineerAvatars?: string[];  
+  engineerAvatars?: string[];
   serviceType?: string;
 }

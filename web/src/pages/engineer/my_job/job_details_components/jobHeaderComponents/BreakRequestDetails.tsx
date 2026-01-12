@@ -36,7 +36,7 @@ interface Break {
 const BreakRequestDetails = ({ onClose }: { onClose: () => void }) => {
   const { showPopup } = usePopupStore();
   const pendingBreaks = (breakData as Break[]).filter(
-    (brk) => brk.status === "Pending"
+    (brk) => brk.status === "Pending",
   );
 
   const handleReject = async (brk: Break) => {

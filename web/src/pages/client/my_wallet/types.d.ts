@@ -2,8 +2,8 @@ export interface Transaction {
   id: string;
   description: string;
   amount: number;
-  type: 'credit' | 'debit';
-  status?: 'processing' | 'completed' | 'failed';
+  type: "credit" | "debit";
+  status?: "processing" | "completed" | "failed";
   date: Date;
 }
 
@@ -12,8 +12,7 @@ export interface WalletData {
   transactions: Transaction[];
 }
 
-export type TransactionType = 'credit' | 'debit';
-
+export type TransactionType = "credit" | "debit";
 
 export interface TransactionInfo {
   id: number;
@@ -30,8 +29,7 @@ export interface DownloadInvoiceModalProps {
   onDownload: () => void;
 }
 
-
-export type FilterData = {  
+export type FilterData = {
   startDate: Date | null;
   endDate: Date | null;
 };

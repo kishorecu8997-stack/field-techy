@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 /**
- * UpdateStatus Component   
+ * UpdateStatus Component
  * Renders the Update Status form for the Manage Proposal page.
  * @param {UpdateStatusProps} props - Configuration props including the engineer object
  * @returns {JSX.Element} The rendered Update Status form

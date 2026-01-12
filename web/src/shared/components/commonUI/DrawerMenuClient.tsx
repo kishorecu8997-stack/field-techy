@@ -14,7 +14,6 @@ import LogoutConfirmationPopup from "../LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import type { DrawerMenuProps } from "../drawer/Drawer";
 
-
 export type MenuItems = {
   label: string;
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -35,7 +34,10 @@ export type MenuItems = {
  * @example
  * <DrawerMenu onMenuItemClick={(key) => console.log(key)} />
  */
-const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose }) => {
+const DrawerMenuClient: React.FC<DrawerMenuProps> = ({
+  onMenuItemClick,
+  onClose,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuItems: MenuItems[] = [
     { label: "Manage Proposal", icon: IoDocumentText, key: "proposal" },
@@ -56,7 +58,7 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose 
   ];
 
   const logout = useUserSessionStore((state) => state.logout);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
@@ -74,9 +76,10 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose 
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${item.isLogout
-                ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                : ""
+              ${
+                item.isLogout
+                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                  : ""
               }
             `}
           >
@@ -84,18 +87,20 @@ const DrawerMenuClient: React.FC<DrawerMenuProps> = ({ onMenuItemClick, onClose 
               <item.icon
                 className={`
                   h-5 w-5 transition-colors 
-                  ${item.isLogout
-                    ? "text-red-600 dark:text-red-400 "
-                    : "text-gray-600 dark:text-gray-300 "
+                  ${
+                    item.isLogout
+                      ? "text-red-600 dark:text-red-400 "
+                      : "text-gray-600 dark:text-gray-300 "
                   }
                 `}
               />
               <span
                 className={`
-                ${item.isLogout
+                ${
+                  item.isLogout
                     ? "text-red-600 dark:text-red-400"
                     : "text-gray-700 dark:text-gray-200"
-                  }
+                }
               `}
               >
                 {item.label}
