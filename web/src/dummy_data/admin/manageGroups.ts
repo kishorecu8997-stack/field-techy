@@ -1,5 +1,29 @@
 import type { ManageGroups } from "@/pages/admin/manage_groups/type";
 
+export interface DetailsTypes {
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export interface SelectEngineerProps {
+  id: number;
+  engineerID: number | string;
+  details: DetailsTypes;    
+  tenancy: string;
+  role: string;
+  level: string;
+  skills: string[];
+  documents: string;
+  location: string;
+  registrationDate: string;
+  walletBalance: string;
+  kycStatus: string;
+  employmentStatus: string;
+  avgRating: number;
+  approvalStatus: string;
+}
+
 export const manageGroups: ManageGroups[] = [
   {
     srNo: 1,
@@ -112,30 +136,6 @@ export const manageGroups: ManageGroups[] = [
     status: true,
   },
 ];
-
-export interface DetailsTypes {
-  name: string;
-  phone: string;
-  email: string;
-}
-
-export interface SelectEngineerProps {
-  skills: string[];
-  level: string;
-  role: string;
-  tenancy: string;
-  id: number;
-  engineerID: number | string;
-  details: DetailsTypes;
-  documents: string;
-  location: string;
-  registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  employmentStatus: string;
-  avgRating: number;
-  approvalStatus: string;
-}
 
 export const SelectEngineer: SelectEngineerProps[] = [
   {

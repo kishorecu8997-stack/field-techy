@@ -1,12 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  SelectEngineer,
-  type SelectEngineerProps,
-} from "@/dummy_data/admin/manageGroups";
+import { SelectEngineer, type SelectEngineerProps } from "@/dummy_data/admin/manageGroups";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import CustomTable, {
-  type Column,
-} from "@/shared/components/commonUI/custom_table";
+import CustomTable, { type Column } from "@/shared/components/commonUI/custom_table";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
@@ -37,7 +32,6 @@ export default function AddGroup() {
 
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
-
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
@@ -63,8 +57,7 @@ export default function AddGroup() {
           ref={(input) => {
             if (input) {
               input.indeterminate =
-                selectedIds.length > 0 &&
-                selectedIds.length < SelectEngineer.length;
+                selectedIds.length > 0 && selectedIds.length < SelectEngineer.length;
             }
           }}
           onChange={(e) => {
@@ -84,11 +77,10 @@ export default function AddGroup() {
             if (e.target.checked) {
               setSelectedIds((prev) => [...prev, row.engineerID]);
             } else {
-              setSelectedIds((prev) =>
-                prev.filter((id) => id !== row.engineerID),
-              );
+              setSelectedIds((prev) => prev.filter((id) => id !== row.engineerID));
             }
           }}
+          aria-label={`Select ${row.details.name}`}
         />
       ),
     },
@@ -137,22 +129,22 @@ export default function AddGroup() {
     { key: "role", label: "Role" },
     { key: "location", label: "Location" },
     { key: "level", label: "Level" },
-{
-  key: "skills",
-  label: "Skills",
-  renderCell: (row: SelectEngineerProps) => (
-    <div className="flex flex-wrap gap-1">
-      {row.skills.map((skill) => (
-        <span
-          key={skill}
-          className="bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-medium"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  ),
-},
+    {
+      key: "skills",
+      label: "Skills",
+      renderCell: (row: SelectEngineerProps) => (
+        <div className="flex flex-wrap gap-1">
+          {row.skills.map((skill) => (
+            <span
+              key={skill}
+              className="bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-medium"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      ),
+    },
     { key: "registrationDate", label: "Registration Date" },
     { key: "walletBalance", label: "Wallet Balance" },
     { key: "kycStatus", label: "KYC Status" },
@@ -160,28 +152,25 @@ export default function AddGroup() {
     { key: "avgRating", label: "Avg Rating" },
   ];
 
-  // Filtered engineers based on search/filter
-  const filteredEngineers = SelectEngineer.filter((eng) => {
+  // Always include selected engineers even if they don't match filters
+const getFilteredEngineers = () => {
+  const filtered = SelectEngineer.filter((eng) => {
     return (
-      (filters.tenancy
-        ? eng.tenancy?.toLowerCase() === filters.tenancy.toLowerCase()
-        : true) &&
-      (filters.role
-        ? eng.role?.toLowerCase() === filters.role.toLowerCase()
-        : true) &&
-      (filters.location
-        ? eng.location?.toLowerCase().includes(filters.location.toLowerCase())
-        : true) &&
-      (filters.level
-        ? eng.level?.toLowerCase() === filters.level.toLowerCase()
-        : true) &&
-      (filters.skills
-        ? eng.skills?.some(
-            (s: string) => s.toLowerCase() === filters.skills.toLowerCase()
-          )
-        : true)
+      (filters.tenancy ? eng.tenancy.toLowerCase() === filters.tenancy.toLowerCase() : true) &&
+      (filters.role ? eng.role.toLowerCase() === filters.role.toLowerCase() : true) &&
+      (filters.location ? eng.location.toLowerCase().includes(filters.location.toLowerCase()) : true) &&
+      (filters.level ? eng.level.toLowerCase() === filters.level.toLowerCase() : true) &&
+      (filters.skills ? eng.skills.some((s) => s.toLowerCase() === filters.skills.toLowerCase()) : true)
     );
   });
+
+  // Include selected engineers that might have been filtered out
+  const selectedEngineers = SelectEngineer.filter(
+    (eng) => selectedIds.includes(eng.engineerID) && !filtered.includes(eng)
+  );
+
+  return [...selectedEngineers, ...filtered];
+};
 
   const handleSubmit = async (data: AddGroup) => {
     const payload = { data, selectedIds };
@@ -205,6 +194,13 @@ export default function AddGroup() {
             toast.success("Group created successfully!");
             methods.reset();
             setSelectedIds([]);
+            setFilters({
+              tenancy: "",
+              role: "",
+              location: "",
+              level: "",
+              skills: "",
+            });
             navigate(absoluteUrls.admin.home.manage_groups);
             close(true);
           },
@@ -242,111 +238,93 @@ export default function AddGroup() {
               label="Group Description"
               placeholder="Enter Group Description"
               rules={{
-                maxLength: {
-                  value: 200,
-                  message: "Description must be at most 200 characters",
-                },
+                maxLength: { value: 200, message: "Description must be at most 200 characters" },
               }}
             />
           </div>
 
-          {/* Filters with Create Group button in same row */}
+          {/* Filters + Create Group */}
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mt-2 mb-2 items-end">
-            {/* Tenancy dropdown */}
+            {/* Tenancy */}
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Tenancy</label>
+              <label htmlFor="filter-tenancy" className="text-sm font-semibold mb-1">Tenancy</label>
               <select
+                id="filter-tenancy"
                 value={filters.tenancy}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, tenancy: e.target.value }))
-                }
+                onChange={(e) => setFilters(prev => ({ ...prev, tenancy: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Filter by Tenancy"
               >
                 <option value="">Select Tenancy</option>
-                {tenancyOptions.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
+                {tenancyOptions.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
 
-            {/* Role dropdown */}
+            {/* Role */}
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Role</label>
+              <label htmlFor="filter-role" className="text-sm font-semibold mb-1">Role</label>
               <select
+                id="filter-role"
                 value={filters.role}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, role: e.target.value }))
-                }
+                onChange={(e) => setFilters(prev => ({ ...prev, role: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Filter by Role"
               >
                 <option value="">Select Role</option>
-                {roleOptions.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
+                {roleOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
 
-            {/* Location input */}
+            {/* Location */}
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Location</label>
+              <label htmlFor="filter-location" className="text-sm font-semibold mb-1">Location</label>
               <input
+                id="filter-location"
                 type="text"
                 value={filters.location}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, location: e.target.value }))
-                }
+                onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
                 placeholder="Enter location"
                 className="w-full border border-gray-300 rounded-md p-2 bg-white dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Filter by Location"
               />
             </div>
 
-            {/* Level dropdown */}
+            {/* Level */}
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Level</label>
+              <label htmlFor="filter-level" className="text-sm font-semibold mb-1">Level</label>
               <select
+                id="filter-level"
                 value={filters.level}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, level: e.target.value }))
-                }
+                onChange={(e) => setFilters(prev => ({ ...prev, level: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Filter by Level"
               >
                 <option value="">Select Level</option>
-                {levelOptions.map((l) => (
-                  <option key={l} value={l}>
-                    {l}
-                  </option>
-                ))}
+                {levelOptions.map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
 
-            {/* Skills dropdown */}
+            {/* Skills */}
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Skills</label>
+              <label htmlFor="filter-skills" className="text-sm font-semibold mb-1">Skills</label>
               <select
+                id="filter-skills"
                 value={filters.skills}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, skills: e.target.value }))
-                }
+                onChange={(e) => setFilters(prev => ({ ...prev, skills: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md p-2 bg-white dark:bg-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label="Filter by Skills"
               >
                 <option value="">Select Skill</option>
-                {skillsOptions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
+                {skillsOptions.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
 
-            {/* Create Group button */}
+            {/* Create Group */}
             <div className="flex flex-col justify-end">
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r bg-teal-900 text-white"
+                aria-label="Create Group"
               >
                 Create Group
               </Button>
@@ -354,30 +332,25 @@ export default function AddGroup() {
           </div>
 
           {/* Selected count */}
-          <div className="text-sm text-neutral-500 mb-1">
-            {selectedIds.length} engineer(s) selected
-          </div>
+          <div className="text-sm text-neutral-500 mb-1">{selectedIds.length} engineer(s) selected</div>
 
           {/* Engineers Table */}
           <div className="flex-1 overflow-y-auto">
             <CustomTable<SelectEngineerProps>
               columns={columns}
-              data={filteredEngineers}
+              data={getFilteredEngineers()}
               initialPageSize={10}
             />
           </div>
         </FormContainer>
       </div>
 
-      {/* Popup for Viewing Documents */}
+      {/* Popup for Documents */}
       <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="p-4">
           <div className="flex justify-between items-center">
             <span className="font-bold">View File {selectedRowId}</span>
-            <div
-              className="text-xl font-semibold cursor-pointer"
-              onClick={() => setIsModalOpen(false)}
-            >
+            <div className="text-xl font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>
               <IoCloseSharp />
             </div>
           </div>
