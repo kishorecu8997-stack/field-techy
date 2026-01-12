@@ -223,15 +223,60 @@ const BasicDetails = () => {
               isShowLabel={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
-            >
-              I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+            <div className="text-sm text-gray-700 dark:text-gray-300 flex flex-wrap items-center gap-1">
+              <label htmlFor="termsAndConditions" className="cursor-pointer">
+                I agree to the
+              </label>
+              <span
+                className="text-blue-600 underline cursor-pointer"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const { showPopup } = usePopupStore.getState();
+                  await showPopup({
+                    title: "Terms and Conditions",
+                    body: (
+                      <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
+                        <p>
+                          <strong>What is Field Techy:</strong> A smart solution
+                          to hire verified engineers on demand, for home IT
+                          issues or business technical projects.
+                        </p>
+                        <p>
+                          <strong>Features:</strong> Post jobs quickly, hire
+                          verified engineers, track progress, communicate
+                          in-app, and pay securely via escrow.
+                        </p>
+                        <p>
+                          <strong>Who It’s For:</strong> Home clients needing
+                          one-time support and corporate clients managing
+                          multi-location projects.
+                        </p>
+                        <p>
+                          <strong>Security & Privacy:</strong> Chats and
+                          payments are encrypted. Engineers are verified. We
+                          comply with GDPR & PCI-DSS. We respect your privacy
+                          and do not collect data from children under 13.
+                        </p>
+                        <p>
+                          By using our service, you agree to all applicable
+                          terms and conditions.
+                        </p>
+                      </div>
+                    ),
+
+                    actionButtons: [
+                      {
+                        label: "Close",
+                        value: null,
+                        variant: "primary",
+                      },
+                    ],
+                  });
+                }}
+              >
                 Terms and Conditions
               </span>
-            </label>
+            </div>
           </div>
         </div>
       </div>
