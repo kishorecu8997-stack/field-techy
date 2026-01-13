@@ -12,6 +12,7 @@ import JobTabSection from "./job_details_components/JobTabSection";
 import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import { toast } from "react-toastify";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -77,12 +78,7 @@ const JobDetailsPage = () => {
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">
-                Loading job details...
-              </p>
-            </div>
+            <LoaderComponent />
           </div>
         </div>
       </div>
