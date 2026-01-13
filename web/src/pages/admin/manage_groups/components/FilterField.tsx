@@ -16,6 +16,17 @@ interface FilterFieldProps {
   ariaLabel: string;
 }
 
+/**
+ * FilterField
+ *
+ * A reusable form field component for filters. Supports both text input and select dropdowns.
+ * Provides accessible labels with `htmlFor` and `aria-label`.
+ *
+ * @component
+ * @param {FilterFieldProps} props - The props for the filter field
+ * @returns {JSX.Element} The rendered input or select element with label
+ *
+ */
 const FilterField: React.FC<FilterFieldProps> = ({
   id,
   label,
