@@ -218,7 +218,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <DatePickerInput
                       disabled={isDisable}
                       label="Tentative End Date"
-                      placeholder="Select Tentative End date"
+                      placeholder={
+                        tentativeStartDate && minEndDate && maxEndDate
+                          ? `Select between ${minEndDate.toDateString()} - ${maxEndDate.toDateString()}`
+                          : "Select Tentative End Date"
+                      }
                       {...field}
                       minDate={minEndDate}
                       maxDate={maxEndDate}
