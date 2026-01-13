@@ -37,7 +37,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }, [props]);
 
   const { jobId, status } = normalized;
-  const { data: jobs,isLoading:isJobsLoading } = useClientGetJobsById(jobId ?? "");
+  const { data: jobs, isLoading:isJobsLoading, isError: isJobsError } = useClientGetJobsById(jobId ?? "");
   const { data: client } = useClientGetById(jobs?.clientId || "");
   const getDuration =
     jobs?.startDate && jobs?.projectDeadline
@@ -50,6 +50,13 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
         <LoaderComponent />
+      </div>
+    );
+  }
+  if (isJobsError || !jobs) {
+    return (
+      <div className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-red-200 dark:border-red-700 text-sm text-red-700 dark:text-red-300">
+        Failed to load job information.
       </div>
     );
   }
