@@ -26,11 +26,10 @@ export const queryKeys = {
     byEngineer: (engineerId: string) =>
       [...queryKeys.engineerFile.all, engineerId] as const,
   },
-    admin: {
+  admin: {
     notifications: {
       all: ["admin", "notifications"] as const,
       detail: (id: string) => ["admin", "notifications", id] as const,
     },
   },
 } as const;
-

@@ -4,7 +4,14 @@ import { AxiosError } from "axios";
 import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
-import type {  AdminNotification,  CreateNotificationParams,  UpdateNotificationParams, PagedNotificationsParams, PagedNotificationsResponse, UploadFile } from "./adminTypes";
+import type {
+  AdminNotification,
+  CreateNotificationParams,
+  UpdateNotificationParams,
+  PagedNotificationsParams,
+  PagedNotificationsResponse,
+  UploadFile,
+} from "./adminTypes";
 import type {
   FileDownloadResponse,
   FileUploadResponse,
@@ -156,12 +163,12 @@ export class AdminAdapter {
 
   // Create Notification
   static async createNotification(
-    data: CreateNotificationParams
+    data: CreateNotificationParams,
   ): Promise<AdminNotification> {
     try {
       const response = await axiosInstance.post(
         ADMIN_ROUTER_PATHS.CREATE_NOTIFICATION,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -188,12 +195,12 @@ export class AdminAdapter {
   }
   //Edit Notification
   static async editNotification(
-    data: UpdateNotificationParams
+    data: UpdateNotificationParams,
   ): Promise<AdminNotification> {
     try {
       const response = await axiosInstance.put(
         ADMIN_ROUTER_PATHS.EDIT_NOTIFICATION(data.id),
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -258,7 +265,7 @@ export class AdminAdapter {
   static async getNotificationById(id: string): Promise<AdminNotification> {
     try {
       const response = await axiosInstance.get(
-        ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id)
+        ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id),
       );
       return response.data;
     } catch (error) {

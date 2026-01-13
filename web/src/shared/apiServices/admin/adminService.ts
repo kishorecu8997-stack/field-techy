@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
 import type {
-  CreateNotificationParams,  AdminNotification,  UpdateNotificationParams, PagedNotificationsParams, AdminByIdResponse } from "./adminTypes";
+  CreateNotificationParams,
+  AdminNotification,
+  UpdateNotificationParams,
+  PagedNotificationsParams,
+  AdminByIdResponse,
+} from "./adminTypes";
 import { queryKeys } from "../queryKeys";
 import type { FileDownloadResponse } from "../client/clientTypes";
 import { queryClient } from "@/main";
@@ -132,7 +137,7 @@ export function useEditNotification(options?: {
 // --- Get Notification By ID ---
 export function useGetNotificationById(
   id: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: queryKeys.admin.notifications.detail(id),

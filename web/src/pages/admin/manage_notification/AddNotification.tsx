@@ -46,7 +46,7 @@ export default function AddNotification() {
     onError: (error) => {
       console.error("Error adding notification:", error);
       toast.error("Failed to add notification. Please try again.");
-    }
+    },
   });
   const { showPopup } = usePopupStore();
 
