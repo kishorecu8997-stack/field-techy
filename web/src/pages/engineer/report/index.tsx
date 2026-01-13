@@ -52,6 +52,7 @@ const ReportPage = ({
           variant: "primary",
           action: async (close) => {
             toast.success("Report submitted successfully!");
+            formCtx.reset(); 
             close(true);
             onClose();
           },
@@ -78,11 +79,11 @@ const ReportPage = ({
                 <IoCloseSharp className="w-6 h-6" />
               </button>
             </div>
-            <h1 className="text-xl font-bold text-center">Report an Issue</h1>
+            <h1 className="text-xl font-bold text-center dark:text-white">Report an Issue</h1>
           </div>
 
           {/* Scrollable Form Content */}
-          <div className="flex-1 overflow-y-auto p-6 pt-0">
+          <div className="flex-1 overflow-y-auto p-6 pt-0 dark:text-white">
             <SelectField
               label="Issue Category"
               name="issue"
