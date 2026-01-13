@@ -2,17 +2,18 @@ import { absoluteUrls } from "@/config/urls";
 import {
   NotificationSendTo,
   NotificationTypes,
-  NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import RegionCountrySelectField from "@/shared/components/commonUI/inputs/RegionCountrySelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   validateNotificationMessage,
   validateNotificationTitle,
 } from "@/utils/validate";
+import { regionsAndCountries } from "@/dummy_data/regionsAndCountries";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -22,7 +23,7 @@ interface AddNotificationProps {
   title: string;
   notificationType: string;
   sendTo: string;
-  users: string;
+  targetRegionsCountries: string[];
   notificationMessage: string;
 }
 
@@ -55,7 +56,7 @@ export default function AddNotification() {
       title: "",
       notificationType: "",
       sendTo: "",
-      users: "",
+      targetRegionsCountries: [],
       notificationMessage: "",
     },
   });
@@ -145,11 +146,11 @@ export default function AddNotification() {
               />
             </div>
             <div className="md:w-1/2">
-              <SelectField
-                label="Select Users"
-                name="users"
-                placeholder="Select Users"
-                options={NotificationUsers}
+              <RegionCountrySelectField
+                label="Select options"
+                name="targetRegionsCountries"
+                placeholder="Select options"
+                options={regionsAndCountries}
                 required
               />
             </div>
