@@ -167,7 +167,7 @@ export const validateAmount = (value: string) => {
   if (!/^\d+$/.test(v)) {
     return "Amount must contain digits only";
   }
-  if (v.length > 0 && v.startsWith("0")) {
+  if (v.startsWith("0")) {
     return "Amount must not have leading zeros";
   }
   const amount = Number(v);
