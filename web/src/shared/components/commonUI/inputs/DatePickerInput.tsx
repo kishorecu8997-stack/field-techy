@@ -64,7 +64,6 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   );
 };
 
-
 const formatDate = (date: Date | null): string => {
   if (!date) return "";
   const day = String(date.getDate()).padStart(2, "0");
@@ -283,8 +282,7 @@ const DatePickerRender: FC<{
                 type="button"
                 onClick={() =>
                   setCurrentMonth(
-                    (p: Date) =>
-                      new Date(p.getFullYear(), p.getMonth() - 1, 1),
+                    (p: Date) => new Date(p.getFullYear(), p.getMonth() - 1, 1),
                   )
                 }
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -311,8 +309,7 @@ const DatePickerRender: FC<{
                 type="button"
                 onClick={() =>
                   setCurrentMonth(
-                    (p: Date) =>
-                      new Date(p.getFullYear(), p.getMonth() + 1, 1),
+                    (p: Date) => new Date(p.getFullYear(), p.getMonth() + 1, 1),
                   )
                 }
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -335,18 +332,14 @@ const DatePickerRender: FC<{
 
                 {/* Previous month */}
                 {getPreviousMonthDays(currentMonth).map((d, i) => (
-                  <div
-                    key={i}
-                    className="text-xs text-center text-gray-400"
-                  >
+                  <div key={i} className="text-xs text-center text-gray-400">
                     {d.getDate()}
                   </div>
                 ))}
 
                 {/* Current month */}
                 {getDaysInMonth(currentMonth).map((d, i) => {
-                  const isSelected =
-                    value?.toDateString() === d.toDateString();
+                  const isSelected = value?.toDateString() === d.toDateString();
                   const isToday =
                     new Date().toDateString() === d.toDateString();
                   const invalid = !isDateValid(d, minDate, maxDate);
@@ -372,10 +365,7 @@ const DatePickerRender: FC<{
 
                 {/* Next month */}
                 {getNextMonthDays(currentMonth).map((d, i) => (
-                  <div
-                    key={i}
-                    className="text-xs text-center text-gray-400"
-                  >
+                  <div key={i} className="text-xs text-center text-gray-400">
                     {d.getDate()}
                   </div>
                 ))}
