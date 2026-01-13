@@ -1,4 +1,3 @@
-
 export const JOB_STATUSES = {
   COMPLETED: "completed",
   PENDING: "pending",
@@ -16,5 +15,4 @@ export const JOB_STATUSES = {
   CLOSED: "Closed",
 } as const;
 
-export type JobStatus = typeof JOB_STATUSES[keyof typeof JOB_STATUSES];
-
+export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];

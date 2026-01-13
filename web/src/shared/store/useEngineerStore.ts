@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { EngineerData, EngineerFile } from "../apiServices/engineer/engineerTypes";
+import type {
+  EngineerData,
+  EngineerFile,
+} from "../apiServices/engineer/engineerTypes";
 import { EngineerAdapter } from "../apiServices/engineer/engineerAdapter";
 import { useUserSessionStore } from "./useUserSessionStore";
 
@@ -42,13 +45,13 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
       set({ engineerProfile: profile });
 
       const profilePic = files.find(
-        (f: EngineerFile) => f.fileType === "PICTURE"
+        (f: EngineerFile) => f.fileType === "PICTURE",
       );
 
       if (profilePic) {
         try {
           const { blob } = await EngineerAdapter.downloadFileStream(
-            profilePic.fileKey
+            profilePic.fileKey,
           );
           const oldUrl = get().profileImageUrl;
           if (oldUrl) URL.revokeObjectURL(oldUrl);

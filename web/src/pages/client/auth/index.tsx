@@ -7,13 +7,13 @@ import RightPanel from "./components/RightPannel";
  * On desktop, displays a left panel with 30% width and a right panel with 70% width.
  * On mobile, both panels stack vertically with full width.
  * Provides a responsive split-screen layout for authentication flows.
- * 
+ *
  * @component
  * @example
  * return (
  *   <Layout />
  * )
- * 
+ *
  * @returns {JSX.Element} The rendered Layout component with left and right panels
  */
 const Layout: React.FC = () => {

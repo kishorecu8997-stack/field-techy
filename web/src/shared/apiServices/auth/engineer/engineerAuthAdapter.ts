@@ -28,7 +28,7 @@ export class EngineerAuthAdapter {
     try {
       const response = await axiosInstance.post(
         ENGINEER_USER_AUTH_ROUTER_PATHS.LOGIN,
-        args
+        args,
       );
 
       // Axios normalizes all response header names to lowercase, so accessing
@@ -41,7 +41,7 @@ export class EngineerAuthAdapter {
       if (!authorization || !userId || !role) {
         console.error(
           "Authentication failed, missing headers:",
-          response.headers
+          response.headers,
         );
         throw new AxiosError(
           "Authentication failed",
@@ -52,7 +52,7 @@ export class EngineerAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -66,7 +66,7 @@ export class EngineerAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -96,7 +96,7 @@ export class EngineerAuthAdapter {
     try {
       const response = await axiosInstance.post(
         ENGINEER_USER_AUTH_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -116,7 +116,7 @@ export class EngineerAuthAdapter {
   static async requestVerificationOtp(phoneOrEmail: string) {
     try {
       const response = await axiosInstance.post(
-        ENGINEER_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail)
+        ENGINEER_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail),
       );
       return response.data;
     } catch (error) {
@@ -141,7 +141,7 @@ export class EngineerAuthAdapter {
     try {
       const response = await axiosInstance.post(
         ENGINEER_USER_AUTH_ROUTER_PATHS.VERIFYOTPENGINEER(otp),
-        { phoneOrEmail, password: "" }
+        { phoneOrEmail, password: "" },
       );
 
       const authorization = response.headers["authorization"];
@@ -151,7 +151,7 @@ export class EngineerAuthAdapter {
       if (!authorization || !userId || !role) {
         console.error(
           "Authentication failed, missing headers:",
-          response.headers
+          response.headers,
         );
         throw new AxiosError(
           "Authentication failed",
@@ -162,7 +162,7 @@ export class EngineerAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -176,7 +176,7 @@ export class EngineerAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -202,7 +202,7 @@ export class EngineerAuthAdapter {
    */
   static async requestEmailVerificationOtp(email: string) {
     console.log(
-      `[Fake] Requesting OTP for email: ${email}, Fake delay of 2 seconds`
+      `[Fake] Requesting OTP for email: ${email}, Fake delay of 2 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -222,7 +222,7 @@ export class EngineerAuthAdapter {
    */
   static async verifyEmailVerificationOtp(email: string, otp: string) {
     console.log(
-      `[Fake] Verifying OTP for email: ${email} and otp: ${otp}, Fake delay of 2 seconds`
+      `[Fake] Verifying OTP for email: ${email} and otp: ${otp}, Fake delay of 2 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -242,7 +242,7 @@ export class EngineerAuthAdapter {
    */
   static async requestMobileVerificationOtp(mobile: string) {
     console.log(
-      `[Fake] Requesting OTP for mobile: ${mobile}, Fake delay of 1 seconds`
+      `[Fake] Requesting OTP for mobile: ${mobile}, Fake delay of 1 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -262,7 +262,7 @@ export class EngineerAuthAdapter {
    */
   static async verifyMobileVerificationOtp(mobile: string, otp: string) {
     console.log(
-      `[Fake] Verifying OTP for mobile: ${mobile} and otp: ${otp}, Fake delay of 1 seconds`
+      `[Fake] Verifying OTP for mobile: ${mobile} and otp: ${otp}, Fake delay of 1 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {

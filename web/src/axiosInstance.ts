@@ -64,7 +64,7 @@ axiosInstance.interceptors.response.use(responseLoggerInterceptor, (error) => {
 
   if (status === 403) {
     console.error(
-      "Access forbidden. You do not have permission to perform this action."
+      "Access forbidden. You do not have permission to perform this action.",
     );
   }
 

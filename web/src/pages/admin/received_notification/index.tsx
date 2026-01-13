@@ -22,7 +22,7 @@ const ReceivedNotification: React.FC = () => {
 
   //Delete confirmation
   const handleDeleteNotification = async (
-    notification: ReceivedNotificationProps
+    notification: ReceivedNotificationProps,
   ) => {
     await showPopup({
       title: "Delete Notification",

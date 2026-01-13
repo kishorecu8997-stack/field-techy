@@ -29,13 +29,13 @@ const MonthlyComparison: React.FC = () => {
   const thisMonthEarnings = getMonthEarnings(
     transactions,
     currentMonth,
-    currentYear
+    currentYear,
   );
 
   const lastMonthEarnings = getMonthEarnings(
     transactions,
     lastMonth,
-    lastMonthYear
+    lastMonthYear,
   );
 
   const percentageChange =
@@ -55,14 +55,14 @@ const MonthlyComparison: React.FC = () => {
     {
       month: "short",
       year: "numeric",
-    }
+    },
   );
   // Preview text
   const changeText = isSame
     ? "Same as last month"
     : isIncrease
-    ? `+${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`
-    : `-${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`;
+      ? `+${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`
+      : `-${Math.abs(percentageChange).toFixed(0)}% vs ${lastMonthName}`;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">

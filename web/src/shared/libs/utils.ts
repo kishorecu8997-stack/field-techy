@@ -303,7 +303,7 @@ export const cvvValidation = (value: string) => {
 export const generatePageRange = (
   currentPage: number,
   totalPages: number,
-  delta: number = 2
+  delta: number = 2,
 ): (number | "...")[] => {
   if (totalPages <= 1) return [1];
 
@@ -360,7 +360,6 @@ export const formatDate = (dateStr: string) => {
   });
 };
 
-
 /**
  * Represents monthly earnings data used for chart visualization.
  */
@@ -376,7 +375,7 @@ export interface MonthlyData {
  * @returns Array of monthly earnings sorted chronologically (oldest → newest)
  */
 export const getMonthlyEarnings = (
-  transactions: { date: string; amount: number }[]
+  transactions: { date: string; amount: number }[],
 ): MonthlyData[] => {
   const monthlyMap = new Map<string, number>();
 
@@ -399,8 +398,6 @@ export const getMonthlyEarnings = (
       return dateA.getTime() - dateB.getTime();
     });
 };
-
-
 
 export const getLatestEarnings = (data: MonthlyData[]) => {
   if (!data || data.length === 0) {

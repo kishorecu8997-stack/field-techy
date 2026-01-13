@@ -19,7 +19,10 @@ const ReportPage = ({
     <Popup onClose={onClose} open={open}>
       <div className="flex flex-col p-6">
         <div className="flex justify-end">
-          <button className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300" onClick={onClose}>
+          <button
+            className="cursor-pointer text-gray-500 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+            onClick={onClose}
+          >
             <IoCloseSharp className="w-6 h-6" />
           </button>
         </div>

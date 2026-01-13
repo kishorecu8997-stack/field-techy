@@ -27,7 +27,7 @@ export const urls = {
     privacy_policy: `${BASE.ENGINEER}/policy`,
     terms_and_conditions: `${BASE.ENGINEER}/terms-and-conditions`,
     video_guidance: `${BASE.ENGINEER}/video-guidance`,
-    
+
     home: {
       dashboard: "dashboard",
       my_jobs: "my-jobs",
@@ -42,7 +42,7 @@ export const urls = {
       saved_jobs: "saved-jobs",
       break_details: "break-details",
       notifications: "notifications",
-      application_history: "my-jobs/application-history", 
+      application_history: "my-jobs/application-history",
     },
     auth: {
       login: "login",
@@ -57,7 +57,6 @@ export const urls = {
       updated_basic_details: "updated-basic-details",
       updated_documents: "updated-documents",
       verification: "verification",
-
     },
   },
   client: {

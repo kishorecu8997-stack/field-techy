@@ -1,9 +1,9 @@
 /**
  * Firebase Configuration
- * 
+ *
  * This file initializes the Firebase application and exports the messaging instance
  * used for Firebase Cloud Messaging (FCM).
- * 
+ *
  * @module FirebaseConfig
  */
 

@@ -1,4 +1,7 @@
-import { client as dummyClient, jobHeaderData as dummyJobHeader } from "@/dummy_data/jobDetails";
+import {
+  client as dummyClient,
+  jobHeaderData as dummyJobHeader,
+} from "@/dummy_data/jobDetails";
 import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState, useMemo } from "react";
@@ -39,7 +42,7 @@ const OfferPages = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">

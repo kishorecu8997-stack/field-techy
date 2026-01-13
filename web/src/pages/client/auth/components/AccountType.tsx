@@ -15,14 +15,13 @@ import { useClientRegistrationStore } from "@/shared/store/useClientRegistration
  */
 export default function ClientAccountType(): JSX.Element {
   const navigate = useNavigate();
-  const { setAccountType, } = useClientRegistrationStore();
-
+  const { setAccountType } = useClientRegistrationStore();
 
   /**
    * Handle account type selection
    * Saves to store and navigates to profile setup
    */
-  const handleSelectType = (type: 'corporate' | 'home') => {
+  const handleSelectType = (type: "corporate" | "home") => {
     setAccountType(type);
     navigate(`${absoluteUrls.client.auth.profile_setup}/${type}`);
   };
@@ -44,7 +43,7 @@ export default function ClientAccountType(): JSX.Element {
           </div>
           <div className="flex gap-8 mt-8 justify-center">
             <div
-              onClick={() => handleSelectType('corporate')}
+              onClick={() => handleSelectType("corporate")}
               className="border font-semibold cursor-pointer rounded-xl w-36 h-36 p-4 border-teal-700 flex flex-col items-center justify-center"
             >
               <img
@@ -56,7 +55,7 @@ export default function ClientAccountType(): JSX.Element {
             </div>
 
             <div
-              onClick={() => handleSelectType('home')}
+              onClick={() => handleSelectType("home")}
               className="border font-semibold cursor-pointer rounded-xl w-36 h-36 p-4 border-teal-700 flex flex-col items-center justify-center text-center"
             >
               <img

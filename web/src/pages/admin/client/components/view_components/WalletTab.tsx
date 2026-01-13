@@ -1,8 +1,11 @@
 import React from "react";
-import { CustomTable, type Column } from "@/shared/components/commonUI/custom_table";
+import {
+  CustomTable,
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
 import type { walletViewData } from "../../types";
 import BankCardDetail from "./BankCardDetail";
-import { bankCardData, walletData} from "@/dummy_data/ClientViewData";
+import { bankCardData, walletData } from "@/dummy_data/ClientViewData";
 
 /**
  * WalletTab component displays the client's financial information.
@@ -26,13 +29,13 @@ const WalletTab: React.FC = () => {
       <div className="mb-2 flex justify-between items-center gap-2">
         <BankCardDetail {...bankCardData} />
       </div>
-            <div className="h-full flex-1 overflow-y-auto ">
-              <CustomTable<walletViewData>
-                columns={columns}
-                data={walletData}
-                initialPageSize={10}
-              />
-            </div>
+      <div className="h-full flex-1 overflow-y-auto ">
+        <CustomTable<walletViewData>
+          columns={columns}
+          data={walletData}
+          initialPageSize={10}
+        />
+      </div>
     </div>
   );
 };

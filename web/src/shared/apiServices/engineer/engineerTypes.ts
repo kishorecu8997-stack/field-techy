@@ -165,4 +165,3 @@ export interface ProposalJobData {
   payType: string;
   availability: string;
 }
-

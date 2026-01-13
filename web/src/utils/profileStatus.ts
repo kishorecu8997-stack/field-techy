@@ -48,8 +48,7 @@ export const getComparisonUI = (percentage: number): ComparisonUI => {
   }
   return {
     title: "You’re doing great!",
-    description:
-      "Your profile is strong and stands out among other engineers.",
+    description: "Your profile is strong and stands out among other engineers.",
     comparisonText: "Better than 65% of engineers",
     containerClass: "bg-teal-50 border-teal-200 text-teal-700",
   };
@@ -57,7 +56,19 @@ export const getComparisonUI = (percentage: number): ComparisonUI => {
 
 /** ProfilePriorityGuideItem represents an item in the profile priority guide */
 export const profilePriorityGuide = [
-  { label: "High impact", description: "Basic details & identity", color: "text-red-600" },
-  { label: "Medium impact", description: "Skills & experience", color: "text-orange-500" },
-  { label: "Low impact", description: "Optional information", color: "text-green-600" },
+  {
+    label: "High impact",
+    description: "Basic details & identity",
+    color: "text-red-600",
+  },
+  {
+    label: "Medium impact",
+    description: "Skills & experience",
+    color: "text-orange-500",
+  },
+  {
+    label: "Low impact",
+    description: "Optional information",
+    color: "text-green-600",
+  },
 ];

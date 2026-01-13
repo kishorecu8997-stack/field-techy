@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
-    []
+    [],
   );
 
   const monthlyEarningsData: MonthlyData[] = useMemo(() => {
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
 
   const totalEarnings = useMemo(
     () => monthlyEarningsData.reduce((sum, item) => sum + item.earnings, 0),
-    [monthlyEarningsData]
+    [monthlyEarningsData],
   );
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {

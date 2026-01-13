@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface JobFilterProps {
   activeFilter: string;
@@ -15,7 +15,11 @@ interface JobFilterProps {
  * @param {(filter: string) => void} props.onFilterChange A callback function that is triggered when a filter button is clicked. It receives the selected filter string.
  * @param {string[]} props.filters An array of strings representing the filter options to display.
  */
-const JobFilter: React.FC<JobFilterProps> = ({ activeFilter, onFilterChange, filters }) => {
+const JobFilter: React.FC<JobFilterProps> = ({
+  activeFilter,
+  onFilterChange,
+  filters,
+}) => {
   return (
     <div className="mb-6 overflow-x-auto">
       <div className="flex space-x-2 pb-2 pt-4">
@@ -25,8 +29,8 @@ const JobFilter: React.FC<JobFilterProps> = ({ activeFilter, onFilterChange, fil
             onClick={() => onFilterChange(filter)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeFilter === filter
-                ? 'bg-teal-800 dark:bg-teal text-white'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? "bg-teal-800 dark:bg-teal text-white"
+                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {filter}

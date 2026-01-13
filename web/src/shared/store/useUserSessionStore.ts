@@ -23,6 +23,6 @@ export const useUserSessionStore = create<UserSessionStore>()(
       setSession: (session) => set({ session }),
       logout: () => set({ session: null }),
     }),
-    { name: "generic-user-session" }
-  )
+    { name: "generic-user-session" },
+  ),
 );

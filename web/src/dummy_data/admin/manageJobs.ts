@@ -1,5 +1,8 @@
 import { icons } from "@/config/icons";
-import type { ManageFlaggedJobProps, ManageJobProps } from "@/pages/admin/jobs/types";
+import type {
+  ManageFlaggedJobProps,
+  ManageJobProps,
+} from "@/pages/admin/jobs/types";
 
 export const manageJobs: ManageJobProps[] = [
   {
@@ -146,7 +149,6 @@ export const AllJobType = [
   { value: "fullTime", label: "Full Time" },
   { value: "onSite", label: "On Site" },
 ];
-
 
 export const manageFlaggedJobs: ManageFlaggedJobProps[] = [
   {

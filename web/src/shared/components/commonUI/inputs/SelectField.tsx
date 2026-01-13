@@ -61,8 +61,8 @@ export const SelectField = ({
     typeof required === "string"
       ? required
       : required
-      ? `${label || name} is required`
-      : false;
+        ? `${label || name} is required`
+        : false;
 
   const validationRules: RegisterOptions = {
     required: requiredMessage,
@@ -71,7 +71,7 @@ export const SelectField = ({
 
   const filteredOptions = multiple
     ? options.filter((opt) =>
-        opt.label.toLowerCase().includes(search.toLowerCase())
+        opt.label.toLowerCase().includes(search.toLowerCase()),
       )
     : options;
 
@@ -126,7 +126,7 @@ export const SelectField = ({
 
   return (
     <div className="flex flex-col">
-    {isShowLabel && (
+      {isShowLabel && (
         <label
           className={` block mb-1 text-md font-semibold
             ${
@@ -146,12 +146,12 @@ export const SelectField = ({
         render={({ field: { onChange, value }, fieldState: { error } }) => {
           const selectedOptions: SelectOption[] | SelectOption | null = multiple
             ? options.filter(
-                (opt) => Array.isArray(value) && value.includes(opt.value)
+                (opt) => Array.isArray(value) && value.includes(opt.value),
               )
-            : options.find((opt) => opt.value === value) ?? null;
+            : (options.find((opt) => opt.value === value) ?? null);
 
           const handleSelect = (
-            selected: SelectOption | SelectOption[] | null
+            selected: SelectOption | SelectOption[] | null,
           ) => {
             if (multiple) {
               if (Array.isArray(selected)) {

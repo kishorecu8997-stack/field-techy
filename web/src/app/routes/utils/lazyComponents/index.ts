@@ -1,9 +1,9 @@
 /**
  * Centralized lazy component exports
- * 
+ *
  * This file re-exports all lazy-loaded components from their respective modules
  * for convenient importing. Components are organized by domain/role.
- * 
+ *
  * Usage:
  * ```ts
  * import * as Components from './lazyComponents';
@@ -26,4 +26,3 @@ export * from "./admin";
 
 // Landing pages
 export * from "./landing";
-
