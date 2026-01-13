@@ -8,7 +8,7 @@ import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistra
 import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -145,8 +145,6 @@ const BasicDetails = () => {
       budget: data.amount,
       rate: parseFloat(data.amount.replace(/[^0-9.]/g, "")) || 0,
       experienceYears: parseFloat(data.experienceYears) || 0,
-
-      // Hardcoded values matching the provided CURL/API requirements
       preferredWorkType: "REMOTE HYBRID",
       enableNotifications: data.isEnableNotifications,
       location: [
@@ -158,16 +156,10 @@ const BasicDetails = () => {
         .join(", "),
       averageRating: 4.7,
       status: "PENDING",
-
-      // Loosely typed skills - Stubbed to empty to match working CURL payload
-      // jobSkills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({ skillName: s.value || s })) : [],
       jobSkills: [],
-
-      // Stubbing complex arrays as empty to match working CURL payload
       tools: [],
       experiences: [],
       educations: [],
-
       files: null,
     };
 
@@ -228,9 +220,9 @@ const BasicDetails = () => {
               className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
             >
               I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+              <NavLink to={absoluteUrls.engineer.auth.terms_and_conditions} className="text-blue-600 underline cursor-pointer">
                 Terms and Conditions
-              </span>
+              </NavLink>
             </label>
           </div>
         </div>

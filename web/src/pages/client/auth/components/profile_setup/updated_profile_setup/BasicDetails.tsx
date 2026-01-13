@@ -6,12 +6,13 @@ import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
 import { buildQuery } from "@/utils";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -292,9 +293,9 @@ const BasicDetails = () => {
               className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
             >
               I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+              <NavLink to={absoluteUrls.client.auth.terms_and_conditions} className="text-blue-600 underline cursor-pointer">
                 Terms and Conditions
-              </span>
+              </NavLink>
             </label>
           </div>
         </div>

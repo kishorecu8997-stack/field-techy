@@ -1,13 +1,13 @@
+import { absoluteUrls, BASE, urls } from "@/config/urls";
+import AuthRedirect from "@/layout/AuthRedirect";
+import ProtectedRoute from "@/layout/ProtectedRoute";
+import { UserRole } from "@/shared/enums/users";
+import React from "react";
 import type { RouteObject } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import React from "react";
-import { BASE, urls, absoluteUrls } from "@/config/urls";
-import { UserRole } from "@/shared/enums/users";
-import { withSuspense } from "../WithSuspense";
-import ProtectedRoute from "@/layout/ProtectedRoute";
-import AuthRedirect from "@/layout/AuthRedirect";
 import type { RouteStrategy } from "../types/routeTypes";
 import * as Components from "../utils/lazyComponents";
+import { withSuspense } from "../WithSuspense";
 
 /**
  * Engineer Route Strategy
@@ -71,6 +71,11 @@ export class EngineerRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.EngineerBackgroundVerification),
           },
         ],
+      },
+      // Public static pages (accessible without authentication)
+      {
+        path: absoluteUrls.engineer.auth.terms_and_conditions,
+        element: withSuspense(Components.EngineerTermsAndConditions),
       },
       {
         path: absoluteUrls.engineer.auth.privacy_policy,
@@ -156,6 +161,10 @@ export class EngineerRouteStrategy implements RouteStrategy {
           {
             path: urls.engineer.home.about_app,
             element: withSuspense(Components.EngineerAboutApp),
+          },
+          {
+            path: urls.engineer.video_guidance,
+            element: withSuspense(Components.EngineerVideoGuidance),
           },
           {
             path: urls.engineer.home.chat,
