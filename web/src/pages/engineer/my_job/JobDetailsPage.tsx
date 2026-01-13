@@ -1,4 +1,4 @@
-import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
+import { useClientGetById, useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -27,10 +27,13 @@ const JobDetailsPage = () => {
 
   // Always call hooks - pass empty string if jobId is missing
   const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
+  const { data: client } = useClientGetById(jobs?.clientId || "");
+  const location =[client?.city, client?.country].filter(Boolean).join(", ") || "-";
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
+  console.log(jobs?.status);
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -105,7 +108,7 @@ const JobDetailsPage = () => {
     );
   }
 
-  const client = jobs.client;
+  
 
   const getDuration = getDurationString({
     startDateStr: jobs.startDate as string,
@@ -148,11 +151,11 @@ const JobDetailsPage = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={client?.companyName as string}
-              memberSince={"-" as string}
-              location={"-" as string}
-              rating={"-"}
-              reviews={0}
-              verifications={[]}
+              memberSince={client?.memberSince as string}
+              location={location as string}
+              rating={client?.rating || 0}
+              reviews={client?.reviewCount ?? 0}
+              verifications={client?.verifications ?? []}
               onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>

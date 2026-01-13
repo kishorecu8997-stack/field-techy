@@ -143,6 +143,7 @@ export interface JobAssignment {
   engineerId: string;
   jobId: string;
   status: string;
+  engagementModel: string;
 }
 
 export interface AssignJobParams {
