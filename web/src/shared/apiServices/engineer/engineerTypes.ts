@@ -118,7 +118,16 @@ export type DocumentType =
   | "GOVERNMENT_ID"
   | "CERTIFICATE"
   | "PICTURE"
+  | "WORK_SCREEN_SHOT"
   | "PROPOSAL";
+
+export interface Metadata {
+  id?: string;
+  engineerJobId?: string;
+  activityDate?: string;
+  remarks: string | null;
+  workScreenshotId?: string;
+}
 
 export interface FileUploadParams {
   engineerId: string;
@@ -129,6 +138,21 @@ export interface FileUploadParams {
     total?: number;
     percentage?: number;
   }) => void;
+}
+
+export interface ScreenUploadParams {
+  engineerId: string;
+  file: File | null;
+  documentType: DocumentType;
+  metadata: Metadata;
+}
+
+export interface ScreenUploadResponse {
+  id: string;
+  engineerJobId: string;
+  activityDate: string;
+  remarks: string;
+  workScreenshotId: string;
 }
 
 export interface FileUploadResponse {
