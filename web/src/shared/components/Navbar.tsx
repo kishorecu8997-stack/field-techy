@@ -10,7 +10,10 @@ import Drawer from "./drawer/Drawer";
 import type { NavbarProps } from "./type";
 import { scrollToTop } from "@/utils";
 import Tooltip from "@/shared/components/Tooltip";
-import { useEngineerProfile, useEngineerStore } from "../store/useEngineerStore";
+import {
+  useEngineerProfile,
+  useEngineerStore,
+} from "../store/useEngineerStore";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -30,7 +33,7 @@ import { useEngineerProfile, useEngineerStore } from "../store/useEngineerStore"
  */
 const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { setActiveKey } = useDrawerStore();
   const navigate = useNavigate();

@@ -1,9 +1,7 @@
 import { mockEngineers } from "@/dummy_data/engineers";
 import FilterPanel from "@/pages/client/search_result/components/FilterPanel";
 import Pagination from "@/pages/client/search_result/components/Pagination";
-import {
-  type Filters
-} from "@/pages/client/search_result/types";
+import { type Filters } from "@/pages/client/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
@@ -34,7 +32,7 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = ({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEngineers = filteredEngineers.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   const [filters, setFilters] = useState<Filters>({
@@ -50,7 +48,7 @@ const EngineerInviteListPage: React.FC<SelectInviteJobCardProps> = ({
     setInvitedEngineers((prevInvited) =>
       prevInvited.includes(engineerId)
         ? prevInvited.filter((id) => id !== engineerId)
-        : [...prevInvited, engineerId]
+        : [...prevInvited, engineerId],
     );
   };
   const handleFilterChange = (newFilters: Filters) => {

@@ -7,8 +7,6 @@ import { useState } from "react";
 import type { KeyboardEvent } from "react";
 import type { TagInputFieldProps } from "./type";
 
-
-
 /**
  * A reusable tag/chip input component for react-hook-form.
  * It allows users to type a value and press Enter to create a tag.
@@ -47,7 +45,7 @@ export const TagInputField = ({
   const handleKeyDown = (
     e: KeyboardEvent<HTMLInputElement>,
     onChange: (value: string[]) => void,
-    value: string[]
+    value: string[],
   ) => {
     if (e.key === "Enter" && inputValue.trim()) {
       e.preventDefault();
@@ -63,7 +61,7 @@ export const TagInputField = ({
   const removeTag = (
     index: number,
     onChange: (value: string[]) => void,
-    value: string[]
+    value: string[],
   ) => {
     const newValue = value.filter((_, i) => i !== index);
     onChange(newValue);

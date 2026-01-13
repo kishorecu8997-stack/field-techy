@@ -47,7 +47,7 @@ const AddFund = () => {
   });
 
   const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
-    initialPaymentOptions
+    initialPaymentOptions,
   );
 
   /**

@@ -79,7 +79,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
         </h3>
         <span
           className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
-            type
+            type,
           )}`}
         >
           {isOnsite

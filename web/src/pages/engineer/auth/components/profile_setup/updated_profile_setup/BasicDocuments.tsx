@@ -1,5 +1,3 @@
-
-
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -12,7 +10,6 @@ import BackgroundVerification from "@/pages/engineer/auth/components/profile_set
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
 import { useState } from "react";
-
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -39,7 +36,7 @@ const BasicDocuments = () => {
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
 
   const formCtx = useForm<DocumentFormData>({
@@ -71,7 +68,7 @@ const BasicDocuments = () => {
           [uploadingDoc!]: progress.percentage!,
         }));
       },
-    }
+    },
   );
 
   const handleSkip = () => {
@@ -133,7 +130,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ profileImageUrl: res.fileId });
-        })
+        }),
       );
     }
 
@@ -154,7 +151,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ governmentIdUrl: res.fileId });
-        })
+        }),
       );
     }
 
@@ -175,7 +172,7 @@ const BasicDocuments = () => {
           },
         }).then((res) => {
           updateDocuments({ certificateUrl: res.fileId });
-        })
+        }),
       );
     }
 

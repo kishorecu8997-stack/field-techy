@@ -48,11 +48,17 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-4 text-emerald-800">
-        <button className="p-2 rounded-full hover:bg-emerald-50" title="Video call">
+        <button
+          className="p-2 rounded-full hover:bg-emerald-50"
+          title="Video call"
+        >
           <FaVideo />
         </button>
-        <button className="p-2 rounded-full hover:bg-emerald-50" title="Voice call">
-          <FaPhoneAlt  />
+        <button
+          className="p-2 rounded-full hover:bg-emerald-50"
+          title="Voice call"
+        >
+          <FaPhoneAlt />
         </button>
       </div>
     </div>

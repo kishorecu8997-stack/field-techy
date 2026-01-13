@@ -34,7 +34,7 @@ const NotificationDropdown = forwardRef<
 >(
   (
     { title = "Notifications", seeAllLink, onClose, children, className = "" },
-    ref
+    ref,
   ) => {
     return (
       <div
@@ -63,7 +63,7 @@ const NotificationDropdown = forwardRef<
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default NotificationDropdown;

@@ -19,7 +19,7 @@ const HomeClientEditForm: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  
+
   const methods = useForm<ClientFormData>({
     defaultValues: {
       profileImage: null,
@@ -162,8 +162,8 @@ const HomeClientEditForm: React.FC = () => {
               {isSubmitting
                 ? "Saving…"
                 : activeTab === "Documents"
-                ? "Save"
-                : "Next"}
+                  ? "Save"
+                  : "Next"}
             </Button>
           </div>
         </div>

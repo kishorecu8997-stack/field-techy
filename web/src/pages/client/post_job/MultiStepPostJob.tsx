@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import ClientHeader from "./components/ClientHeader";
 import { GoChevronLeft } from "react-icons/go";
 
-
 /**
  * A multi-step form component for clients to post a new job.
  * It guides the user through different sections of the job post creation process.
@@ -161,10 +160,7 @@ const MultiStepPostJobForm = () => {
                   </div>
                 )}
                 <div>
-                  <div
-                    key={currentStep}
-                    className="p-2 relative gap-3 w-full "
-                  >
+                  <div key={currentStep} className="p-2 relative gap-3 w-full ">
                     {renderStep()}
                   </div>
 
@@ -182,7 +178,7 @@ const MultiStepPostJobForm = () => {
                     </Button>
                   </div>
                 </div>
-              </FormContainer>              
+              </FormContainer>
               <AddPaymentMethod isOpen={isOpen} setIsOpen={setIsOpen} />
             </div>
             <div className="lg:col-span-1">

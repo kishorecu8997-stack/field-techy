@@ -9,7 +9,7 @@ interface ActionReasonPopupProps {
   label: string;
   submitLabel: string;
   onSubmit: (data: { reason: string }) => Promise<void>;
-  onClose: () => void; 
+  onClose: () => void;
 }
 /**
  * ActionReasonPopup

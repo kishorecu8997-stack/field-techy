@@ -9,7 +9,7 @@ import type { EngineerInviteCardProps } from "../../types";
  * EngineerInviteCard Component
  * Renders a card for displaying details about an engineer.
  * @param {EngineerInviteCardProps} props - The props for the component.
- * @returns {JSX.Element} The rendered EngineerInviteCard component.   
+ * @returns {JSX.Element} The rendered EngineerInviteCard component.
  */
 const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
   engineer,
@@ -46,9 +46,9 @@ const EngineerInviteCard: React.FC<EngineerInviteCardProps> = ({
             variant="primary"
             className="bg-green-700 hover:bg-green-800 text-white"
             onClick={(e) => {
-                e.stopPropagation();
-                onInviteClick && onInviteClick(id);
-              }}
+              e.stopPropagation();
+              onInviteClick && onInviteClick(id);
+            }}
           >
             Invite to Job
           </Button>

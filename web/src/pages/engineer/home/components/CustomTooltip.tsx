@@ -18,11 +18,17 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<CustomTooltipProps> = ({
+  active,
+  payload,
+  label,
+}) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
-        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{label}</p>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          {label}
+        </p>
         <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
           {formatCurrency(payload[0].value)}
         </p>

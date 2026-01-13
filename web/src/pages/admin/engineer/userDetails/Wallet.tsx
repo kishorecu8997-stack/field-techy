@@ -37,8 +37,8 @@ export default function Wallet() {
           row.status === TRANSACTION_STATUS.success
             ? "text-green-600 bg-green-100"
             : row.status === TRANSACTION_STATUS.failed
-            ? "text-red-600 bg-red-100"
-            : "text-yellow-600 bg-yellow-100";
+              ? "text-red-600 bg-red-100"
+              : "text-yellow-600 bg-yellow-100";
 
         return (
           <span

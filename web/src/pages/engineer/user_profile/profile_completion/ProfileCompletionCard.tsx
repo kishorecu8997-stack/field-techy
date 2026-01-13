@@ -53,8 +53,9 @@ const ProfileCompletionCard = () => {
       {/* Profile Sections */}
       {profileData.map((section) => {
         const total = section.fields.length;
-        const completed = section.fields.filter((f) => f.status === "complete")
-          .length;
+        const completed = section.fields.filter(
+          (f) => f.status === "complete",
+        ).length;
         const percentage = Math.round((completed / total) * 100);
         const remaining = total - completed;
         const estimatedTime = remaining * section.estimatedMinutesPerField;
@@ -96,7 +97,10 @@ const ProfileCompletionCard = () => {
               <div className="flex justify-between items-center mt-4 text-sm">
                 <button
                   onClick={() => {
-                    setNavigationSource("profilecompletion", "profileCompletion");
+                    setNavigationSource(
+                      "profilecompletion",
+                      "profileCompletion",
+                    );
                     setImmediateParentKey("profileCompletion");
                     setActiveKey(section.navigateTo);
                     setISOpenSidebar(true);
@@ -105,7 +109,9 @@ const ProfileCompletionCard = () => {
                 >
                   Complete This Section
                 </button>
-                <span className="text-gray-500">{estimatedTime} minutes remaining</span>
+                <span className="text-gray-500">
+                  {estimatedTime} minutes remaining
+                </span>
               </div>
             )}
           </div>

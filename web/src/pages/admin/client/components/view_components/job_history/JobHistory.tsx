@@ -50,8 +50,8 @@ const JobHistory: React.FC = () => {
     },
   ];
   return (
-   <div className="bg-white dark:bg-gray-700 rounded-lg p-2">      
-        <AdminTabComponent tabs={tabs} defaultActiveTab="Posted Jobs" />      
+    <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
+      <AdminTabComponent tabs={tabs} defaultActiveTab="Posted Jobs" />
     </div>
   );
 };

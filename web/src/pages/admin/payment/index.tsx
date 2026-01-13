@@ -128,10 +128,10 @@ const ManagePayment: React.FC = () => {
               placeholder="Select"
               value={rowStatuses[row.id] || ""}
               onChange={(
-                value: string | null | { value: string; label: string }
+                value: string | null | { value: string; label: string },
               ) => {
                 const statusValue =
-                  typeof value === "string" ? value : value?.value ?? "";
+                  typeof value === "string" ? value : (value?.value ?? "");
 
                 setRowStatuses((prev) => ({
                   ...prev,

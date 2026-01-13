@@ -10,7 +10,7 @@ export const jobData: Job[] = [
     serviceType: "Web Development",
     price: "$4,500",
     workMode: "Remote",
-    status: "Completed"
+    status: "Completed",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ export const jobData: Job[] = [
     serviceType: "Design",
     price: "$2,800",
     workMode: "Hybrid",
-    status: "In-Progress"
+    status: "In-Progress",
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ export const jobData: Job[] = [
     serviceType: "DevOps",
     price: "$6,200",
     workMode: "Remote",
-    status: "Posted"
+    status: "Posted",
   },
   {
     id: 4,
@@ -43,7 +43,7 @@ export const jobData: Job[] = [
     serviceType: "Digital Marketing",
     price: "$3,000",
     workMode: "Remote",
-    status: "Hold"
+    status: "Hold",
   },
   {
     id: 5,
@@ -54,6 +54,6 @@ export const jobData: Job[] = [
     serviceType: "Software Development",
     price: "$8,500",
     workMode: "On-site",
-    status: "In-Progress"
-  }
+    status: "In-Progress",
+  },
 ];

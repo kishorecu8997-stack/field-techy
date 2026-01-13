@@ -97,8 +97,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     const startDate = job.startDate;
     const duration = job.jobDuration || job.duration;
 
-    if (!startDate || !duration)
-      return new Date(startDate || Date.now());
+    if (!startDate || !duration) return new Date(startDate || Date.now());
     const start = new Date(startDate);
     const durMatch = String(duration).match(/(\d+)\s*Hours?/i);
     if (durMatch) {
@@ -171,7 +170,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
                 `Conflict detected with existing jobs: ${jobConflicts
                   .map((j: any) => j.jobTitle || j.title)
                   .join(", ")}`,
-                { autoClose: 10000 }
+                { autoClose: 10000 },
               );
             } else {
               toast.success("Break request submitted successfully!");

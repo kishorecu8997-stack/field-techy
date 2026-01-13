@@ -14,7 +14,6 @@ import { transactions } from "@/dummy_data/bankDetails";
 import CustomTooltip from "@/pages/engineer/home/components/CustomTooltip";
 import type { MonthlyData } from "@/shared/libs/utils";
 
-
 /**
  * EarningHistoryChart Component
  * Displays a line chart of the user's monthly earnings history with an expandable view.
@@ -36,7 +35,7 @@ const EarningHistoryChart: React.FC = () => {
           ? tx.date
           : (tx.date as Date).toISOString().split("T")[0],
       amount: tx.amount,
-    }))
+    })),
   );
 
   const latest = data.length

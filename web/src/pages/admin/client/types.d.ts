@@ -120,7 +120,6 @@ export interface FlaggedJobsProps {
   status: boolean;
 }
 
-
 export interface InProgressJobsProps {
   jObID: string;
   postedBy: string;

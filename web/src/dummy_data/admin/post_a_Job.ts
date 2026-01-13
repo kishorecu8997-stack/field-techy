@@ -21,9 +21,8 @@ export const interviewerData: ClientFieldsTypes[] = [
   },
 ];
 
-
 export const pointOfContactData = [
-   {
+  {
     id: 1,
     firstName: "Ram",
     lastName: "Risi",

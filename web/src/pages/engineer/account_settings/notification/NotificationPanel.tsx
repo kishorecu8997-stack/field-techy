@@ -20,7 +20,7 @@ const NotificationPanel = ({ grouped, onDismiss }: NotificationPanelProps) => {
     Object.entries(grouped).map(([group, notifs]) => [
       group,
       notifs.slice(0, 20),
-    ])
+    ]),
   );
 
   return (
@@ -53,7 +53,11 @@ const NotificationPanel = ({ grouped, onDismiss }: NotificationPanelProps) => {
                   {!notif.read && (
                     <div className="relative bg-blue-400 shadow-sm top-3 size-2 rounded-full left-1"></div>
                   )}
-                  <NotificationItem key={notif.id} notification={notif} onDismiss={onDismiss} />
+                  <NotificationItem
+                    key={notif.id}
+                    notification={notif}
+                    onDismiss={onDismiss}
+                  />
                 </div>
               );
             })}

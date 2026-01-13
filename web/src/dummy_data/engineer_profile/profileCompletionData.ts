@@ -1,12 +1,12 @@
 /** FieldStatus represents the completion state of each field: complete, pending, or rejected. */
 export type FieldStatus = "complete" | "pending" | "rejected";
- 
+
 /** Defines the types and interfaces for profile fields and sections. */
 export interface ProfileField {
   label: string;
   status: FieldStatus;
 }
- /** ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field. */
+/** ProfileSection represents a section in the profile with its fields, navigation key, and estimated time per field. */
 export interface ProfileSection {
   key: string;
   title: string;
@@ -26,7 +26,7 @@ export const profileCompletionData: ProfileSection[] = [
       { label: "Full Name", status: "complete" },
       { label: "Phone Number", status: "complete" },
       { label: "Address", status: "pending" },
-      { label: "Email Verification", status: "pending" }
+      { label: "Email Verification", status: "pending" },
     ],
   },
   {
@@ -48,7 +48,7 @@ export const profileCompletionData: ProfileSection[] = [
       { label: "Work Experience1", status: "complete" },
       { label: "Work Experience2", status: "pending" },
       { label: "Work Experience3", status: "pending" },
-      { label: "Work Experience", status: "rejected" }
+      { label: "Work Experience", status: "rejected" },
     ],
   },
   {
@@ -68,7 +68,7 @@ export const profileCompletionData: ProfileSection[] = [
     estimatedMinutesPerField: 10,
     fields: [
       { label: "Password", status: "complete" },
-      { label: "Bank Account", status: "complete" }
+      { label: "Bank Account", status: "complete" },
     ],
   },
 ];

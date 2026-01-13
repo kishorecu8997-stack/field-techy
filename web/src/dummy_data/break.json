@@ -8,8 +8,8 @@
     "duration": "5 days",
     "type": "Long",
     "status": "Pending",
-    "purpose":"hospital",
-    "Applied on":"2025-12-18"
+    "purpose": "hospital",
+    "Applied on": "2025-12-18"
   },
   {
     "id": "2",
@@ -20,9 +20,9 @@
     "duration": "8 days",
     "type": "Long",
     "status": "Approved",
-    "purpose":"hospital",
-    "Applied on":"2025-12-18",
-     "reason":"Complete you work and you may take leave"
+    "purpose": "hospital",
+    "Applied on": "2025-12-18",
+    "reason": "Complete you work and you may take leave"
   },
   {
     "id": "3",
@@ -33,8 +33,8 @@
     "duration": "3 hours",
     "type": "Short",
     "status": "Active",
-    "purpose":"lunch",
-    "Applied on":"2025-12-18"
+    "purpose": "lunch",
+    "Applied on": "2025-12-18"
   },
   {
     "id": "4",
@@ -45,9 +45,9 @@
     "duration": "1 days",
     "type": "Long",
     "status": "Rejected",
-    "purpose":"hospital",
-    "Applied on":"2026-12-18",
-    "reason":"Important client submission is scheduled so we need to complete the work"
+    "purpose": "hospital",
+    "Applied on": "2026-12-18",
+    "reason": "Important client submission is scheduled so we need to complete the work"
   },
   {
     "id": "5",
@@ -58,9 +58,7 @@
     "duration": "1 days",
     "type": "Short",
     "status": "Pending",
-    "purpose":"hospital",
-    "Applied on":"2025-12-23"
+    "purpose": "hospital",
+    "Applied on": "2025-12-23"
   }
-  
-  
 ]

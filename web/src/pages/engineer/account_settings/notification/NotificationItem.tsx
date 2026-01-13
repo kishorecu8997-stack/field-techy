@@ -113,18 +113,18 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <span className="text-xl">{icon}</span>
       </div>
       <div className="flex-1">
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-200">
-              {title}
-            </h3>
-            <p className="mt-1 text-sm text-gray-700 dark:text-gray-200">
-              {message}
-            </p>
-            {renderJobDetails()}
-            {renderActionButtons(id)}
-          </div>
+        <div>
+          <h3 className="font-semibold text-gray-900 dark:text-gray-200">
+            {title}
+          </h3>
+          <p className="mt-1 text-sm text-gray-700 dark:text-gray-200">
+            {message}
+          </p>
+          {renderJobDetails()}
+          {renderActionButtons(id)}
         </div>
       </div>
+    </div>
   );
 };
 

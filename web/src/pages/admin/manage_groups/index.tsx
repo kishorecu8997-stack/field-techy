@@ -39,12 +39,12 @@ export default function ManageGroupList() {
   const [remarks, setRemarks] = useState<boolean>(false);
 
   const initialStatus = React.useMemo(() => {
-      const initial: Record<string, boolean> = {};
-      manageGroups.forEach((group) => {
-        initial[group.srNo] = Boolean(group.status);
-      });
-      return initial;
-    }, []);
+    const initial: Record<string, boolean> = {};
+    manageGroups.forEach((group) => {
+      initial[group.srNo] = Boolean(group.status);
+    });
+    return initial;
+  }, []);
   const { get, toggle } = useToggleStatus(initialStatus);
 
   //Delete confirmation handler
@@ -107,7 +107,7 @@ export default function ManageGroupList() {
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.manage_groups_view}/${row.srNo}`
+                `${absoluteUrls.admin.home.manage_groups_view}/${row.srNo}`,
               )
             }
           >
@@ -117,7 +117,7 @@ export default function ManageGroupList() {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.manage_groups_edit}/${row.srNo}`
+                `${absoluteUrls.admin.home.manage_groups_edit}/${row.srNo}`,
               )
             }
           >

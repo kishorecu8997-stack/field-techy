@@ -15,7 +15,7 @@ const EditBankDetails = () => {
   const { setActiveKey } = useDrawerStore();
 
   const bankData = bankDetailsData.find(
-    (bank) => bank.bankName === "Bank of America"
+    (bank) => bank.bankName === "Bank of America",
   );
 
   const formCtx = useForm<bankDetails>({
@@ -59,7 +59,6 @@ const EditBankDetails = () => {
       ],
     });
   };
-
 
   return (
     <FormContainer

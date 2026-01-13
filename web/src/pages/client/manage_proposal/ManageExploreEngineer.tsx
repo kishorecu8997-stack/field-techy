@@ -41,7 +41,7 @@ const ManageExploreEngineer = () => {
           value: "accept",
           action: (close) => {
             navigate(
-              `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`
+              `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
             );
             close(true);
           },
@@ -90,9 +90,7 @@ const ManageExploreEngineer = () => {
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
                   proposal:
                 </p>
-                <span className=" ">
-                  {getProposal()?.proposal}
-                </span>
+                <span className=" ">{getProposal()?.proposal}</span>
               </span>
               <span>
                 <p className="text-gray-700 dark:text-gray-200 text-xl font-semibold">
@@ -108,7 +106,7 @@ const ManageExploreEngineer = () => {
           </div>
           <div className="lg:col-span-1">
             <div className="sticky top-6">
-            <SidebarJobPostWallet earnings={earningsData} />
+              <SidebarJobPostWallet earnings={earningsData} />
             </div>
           </div>
         </div>

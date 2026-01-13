@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { Star } from "lucide-react"; 
+import { Star } from "lucide-react";
 
 type StarRatingProps = {
   value: number;
@@ -31,7 +31,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
 }) => {
   const handleKeyDown = (
     idx: number,
-    e: React.KeyboardEvent<HTMLButtonElement>
+    e: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
     if (readOnly) return;
     if (e.key === "Enter" || e.key === " ") {
@@ -51,7 +51,9 @@ export const StarRating: React.FC<StarRatingProps> = ({
   return (
     <div className="flex items-center gap-2">
       {label && (
-        <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
+        <span className="text-sm text-gray-700 dark:text-gray-300">
+          {label}
+        </span>
       )}
       <div
         className="flex items-center gap-1"
@@ -82,7 +84,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
                     ? "text-yellow-400"
                     : "text-gray-300 dark:text-gray-600"
                 }`}
-                fill={filled ? "currentColor" : "none"} 
+                fill={filled ? "currentColor" : "none"}
               />
             </Button>
           );
