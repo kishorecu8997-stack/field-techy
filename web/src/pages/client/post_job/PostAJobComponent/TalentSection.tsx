@@ -20,7 +20,7 @@ export default function TalentSection() {
     {
       label: "Dedicated Job Service",
       value: CurrentLocation.dedicated,
-      tooltip:"Long-term job for your projects, lasting 6–24 months.",
+      tooltip: "Long-term job for your projects, lasting 6–24 months.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.dedicated);
