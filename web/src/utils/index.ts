@@ -379,12 +379,11 @@ export const getExperienceLevel = (years?: number) => {
 
 /**
  * Get user id from local storage
- * @returns
+ * @returns {string | null} The user ID string if found in session, null otherwise.
  */
 export function getUserId(): string | null {
   const raw = localStorage.getItem("generic-user-session");
   if (!raw) return null;
-
   const parsed = JSON.parse(raw);
   const userId = parsed?.state?.session?.userId;
   return userId ? String(userId) : null;
