@@ -25,6 +25,7 @@ interface AddNotificationProps {
   sendTo: string;
   targetRegionsCountries: string[];
   notificationMessage: string;
+  users?: string[]; // to be updated based on API requirements
 }
 
 /**
