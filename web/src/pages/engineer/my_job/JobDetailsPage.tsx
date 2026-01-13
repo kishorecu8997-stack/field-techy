@@ -30,14 +30,15 @@ const JobDetailsPage = () => {
 
   // Always call hooks - pass empty string if jobId is missing
   const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
-  const { data: client } = useClientGetById(jobs?.clientId || "");
+  const { data: client } = useClientGetById(jobs?.clientId ?? "", {
+    enabled: !!jobs?.clientId,
+  });
   const location =
     [client?.city, client?.country].filter(Boolean).join(", ") || "-";
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
-  console.log(jobs?.status);
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {

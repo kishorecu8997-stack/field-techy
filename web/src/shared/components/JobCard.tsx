@@ -13,6 +13,7 @@ import {
   useClientGetById,
   useClientGetJobsById,
 } from "../apiServices/client/clientService";
+import LoaderComponent from "./commonUI/LoaderComponent";
 
 interface JobCardProps {
   [key: string]: any;
@@ -30,21 +31,31 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   const job = props;
   const normalized = useMemo(() => {
     return {
-      id: job.jobId,
+      jobId: job.jobId,
       status: job.status || "NEW",
     };
   }, [props]);
 
-  const { id, status } = normalized;
-  const { data: jobs } = useClientGetJobsById(id ?? "");
+  const { jobId, status } = normalized;
+  const { data: jobs,isLoading:isJobsLoading } = useClientGetJobsById(jobId ?? "");
   const { data: client } = useClientGetById(jobs?.clientId || "");
-  const getDuration = getDurationString({
-    startDateStr: jobs?.startDate as string,
-    endDateStr: jobs?.projectDeadline as string,
-  });
+  const getDuration =
+    jobs?.startDate && jobs?.projectDeadline
+      ? getDurationString({
+          startDateStr: jobs.startDate,
+          endDateStr: jobs.projectDeadline,
+        })
+      : undefined;
+  if (isJobsLoading) {
+    return (
+      <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
+        <LoaderComponent />
+      </div>
+    );
+  }
   return (
     <Link
-      to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
+      to={`${absoluteUrls.engineer.home.my_jobs}/${jobId}`}
       onClick={() => scrollToTop()}
       className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
     >
