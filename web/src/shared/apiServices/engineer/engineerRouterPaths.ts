@@ -9,8 +9,6 @@ export const ENGINEER_ROUTER_PATHS = {
   ENG_SIGNIN: (otp: string) => `/eng/api/v1/engineers/eng/signin/by-otp/${otp}`,
   REQ_OTP: (emailorPhone: string) =>
     `/user/api/v1/users/otp/request/${emailorPhone}`,
-  DELETE_FILE: (fileId: string) =>
-    `/eng/api/v1/engineers/files/${fileId}/delete`,
 
   // verify email and phone otp endpoints
   VERIFY_OTP: (emailorPhone: string, otp: string) =>
@@ -23,7 +21,9 @@ export const ENGINEER_ROUTER_PATHS = {
   // File upload endpoints
   GET_ENGINEER_FILES: (engineerId: string) =>
     `/eng/api/v1/engineers/files/${engineerId}`,
-  DELETE_FILE: (fileId: string) => `/eng/api/v1/engineers/files/${fileId}`,
+  DELETE_FILE: (fileId: string) =>
+    `/eng/api/v1/engineers/files/${fileId}/delete`,
+
   DOWNLOAD_FILE_STREAM: (fileKey: string) =>
     `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
   GET_JOBS: (engineerId: string) =>

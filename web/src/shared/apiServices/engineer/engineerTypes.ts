@@ -119,7 +119,7 @@ export type DocumentType =
   | "CERTIFICATE"
   | "PICTURE"
   | "PROPOSAL"
-  |"PROFILE_PICTURE";
+  | "PROFILE_PICTURE";
 
 export interface FileUploadParams {
   engineerId: string;

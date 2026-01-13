@@ -60,10 +60,11 @@ const ProfileCard = ({
 
   const userId = getUserId();
   const profileImage = watch ? watch("profileImage") : null;
-  const { mutate: uploadFile } = useEngineerFileUpload(userId || undefined, {
+  const { mutate: uploadFile } = useEngineerFileUpload({
     onSuccess: () => toast.success("Profile picture updated successfully!"),
     onError: () => toast.error("Failed to update profile picture."),
   });
+
   const queryClient = useQueryClient();
   const fetchClientProfile = useClientStore(
     (state) => state.fetchClientProfile,

@@ -1,5 +1,3 @@
-
-
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -40,7 +38,7 @@ const BasicDocuments = () => {
 
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
 
   const formCtx = useForm<DocumentFormData>({
@@ -54,7 +52,7 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore, updateDocuments } = useEngineerRegistrationStore();
-  
+
   const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
     onSuccess: () => {
       setUploadingDoc(null);
@@ -133,7 +131,7 @@ const BasicDocuments = () => {
         }).then((res) => {
           updateDocuments({ profileImageUrl: res.fileId });
           return res;
-        })
+        }),
       );
     }
 
@@ -155,7 +153,7 @@ const BasicDocuments = () => {
         }).then((res) => {
           updateDocuments({ governmentIdUrl: res.fileId });
           return res;
-        })
+        }),
       );
     }
 
@@ -177,7 +175,7 @@ const BasicDocuments = () => {
         }).then((res) => {
           updateDocuments({ resumeUrl: res.fileId });
           return res;
-        })
+        }),
       );
     }
 
@@ -199,7 +197,7 @@ const BasicDocuments = () => {
         }).then((res) => {
           updateDocuments({ certificateUrl: res.fileId });
           return res;
-        })
+        }),
       );
     }
 

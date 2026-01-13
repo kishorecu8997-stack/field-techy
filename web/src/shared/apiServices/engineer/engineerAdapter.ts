@@ -123,7 +123,7 @@ export class EngineerAdapter {
           headers: {
             "Content-Type": "application/octet-stream",
           },
-        }
+        },
       );
 
       const blob = new Blob([response.data]);
@@ -133,31 +133,29 @@ export class EngineerAdapter {
     }
   }
 
-  static async deleteFile(fileId: string): Promise<boolean> {
+  static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
     try {
-      await axiosInstance.delete(ENGINEER_ROUTER_PATHS.DELETE_FILE(fileId));
-      return true;
+      return this.getFiles(engineerId);
     } catch (error) {
       GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 
-  static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
-    return this.getFiles(engineerId);
-    } catch (error: unknown) {
-      GlobalApiErrorHandler.handleAndThrow(error);
-  }
-
-        },
+  static async downloadFileWithName(
+    fileKey: string,
+  ): Promise<{ blob: Blob; fileName: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        { responseType: "blob" },
       );
 
       const contentDisposition = response.headers["content-disposition"];
       let fileName = "download";
+
       if (contentDisposition) {
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (match && match[1]) {
-          fileName = match[1];
-        }
+        if (match?.[1]) fileName = match[1];
       }
 
       return { blob: response.data, fileName };
