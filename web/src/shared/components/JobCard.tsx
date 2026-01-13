@@ -9,7 +9,10 @@ import { getCurrencyFromStorage } from "@/utils/currency";
 import { useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useClientGetById, useClientGetJobsById } from "../apiServices/client/clientService";
+import {
+  useClientGetById,
+  useClientGetJobsById,
+} from "../apiServices/client/clientService";
 
 interface JobCardProps {
   [key: string]: any;
@@ -32,14 +35,13 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     };
   }, [props]);
 
-  const { id, status } =
-    normalized;
-    const { data:jobs} = useClientGetJobsById(id ?? "")
-    const {data:client}=useClientGetById(jobs?.clientId||"");
-    const getDuration = getDurationString({
-        startDateStr: jobs?.startDate as string,
-        endDateStr: jobs?.projectDeadline as string,
-      });
+  const { id, status } = normalized;
+  const { data: jobs } = useClientGetJobsById(id ?? "");
+  const { data: client } = useClientGetById(jobs?.clientId || "");
+  const getDuration = getDurationString({
+    startDateStr: jobs?.startDate as string,
+    endDateStr: jobs?.projectDeadline as string,
+  });
   return (
     <Link
       to={`${absoluteUrls.engineer.home.my_jobs}/${id}`}
@@ -69,7 +71,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
-          <span className="font-medium">Client:</span> {client?.companyName || "N/A"}
+          <span className="font-medium">Client:</span>{" "}
+          {client?.companyName || "N/A"}
         </p>
         <p>
           <span className="font-medium">Start: </span>
@@ -83,7 +86,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <MdLocationPin className="h-4 w-4 flex-shrink-0" />
           <span className="truncate">
-             {[jobs?.city, jobs?.country].filter(Boolean).join(", ") || "N/A"}
+            {[jobs?.city, jobs?.country].filter(Boolean).join(", ") || "N/A"}
           </span>
         </div>
 

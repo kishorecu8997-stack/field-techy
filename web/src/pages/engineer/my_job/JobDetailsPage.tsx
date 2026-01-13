@@ -1,4 +1,7 @@
-import { useClientGetById, useClientGetJobsById } from "@/shared/apiServices/client/clientService";
+import {
+  useClientGetById,
+  useClientGetJobsById,
+} from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -28,7 +31,8 @@ const JobDetailsPage = () => {
   // Always call hooks - pass empty string if jobId is missing
   const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
   const { data: client } = useClientGetById(jobs?.clientId || "");
-  const location =[client?.city, client?.country].filter(Boolean).join(", ") || "-";
+  const location =
+    [client?.city, client?.country].filter(Boolean).join(", ") || "-";
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -107,8 +111,6 @@ const JobDetailsPage = () => {
       </div>
     );
   }
-
-  
 
   const getDuration = getDurationString({
     startDateStr: jobs.startDate as string,
