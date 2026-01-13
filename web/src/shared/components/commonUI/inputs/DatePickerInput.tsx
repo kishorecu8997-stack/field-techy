@@ -13,7 +13,7 @@ import type { DatePickerInputProps } from "./types";
  *
  * Wraps internal logic with Controller. Accepts `name` instead of `value`/`onChange`.
  * Displays error messages and required indicator.
- */ 
+ */
 export const DatePickerInput: FC<DatePickerInputProps> = ({
   name,
   label,
@@ -114,7 +114,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           const text = e.target.value;
           setInputValue(text);
           const parsed = parseDate(text);
-         if (parsed ) {
+          if (parsed) {
             onChange(parsed);
           } else if (text === "") {
             onChange(null);
@@ -135,7 +135,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           const month = date.getMonth();
           return Array.from(
             { length: new Date(year, month + 1, 0).getDate() },
-            (_, i) => new Date(year, month, i + 1)
+            (_, i) => new Date(year, month, i + 1),
           );
         };
 
@@ -145,20 +145,21 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
             const prevMonthLastDay = new Date(
               date.getFullYear(),
               date.getMonth(),
-              0
+              0,
             ).getDate();
             return new Date(
               date.getFullYear(),
               date.getMonth() - 1,
-              prevMonthLastDay - (firstDay.getDay() - 1 - i)
+              prevMonthLastDay - (firstDay.getDay() - 1 - i),
             );
           });
         };
 
         const getNextMonthDays = (date: Date): Date[] => {
           const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-          return Array.from({ length: 6 - lastDay.getDay() }, (_, i) =>
-            new Date(date.getFullYear(), date.getMonth() + 1, i + 1)
+          return Array.from(
+            { length: 6 - lastDay.getDay() },
+            (_, i) => new Date(date.getFullYear(), date.getMonth() + 1, i + 1),
           );
         };
 
@@ -194,7 +195,8 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           <div className={containerClassName}>
             {isShowLabel && (
               <label className="block mb-1 text-md font-semibold text-gray-700 dark:text-gray-300">
-                {label} {required !== false && <span className="text-red-600">*</span>}
+                {label}{" "}
+                {required !== false && <span className="text-red-600">*</span>}
               </label>
             )}
 
@@ -202,11 +204,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
               <div
                 className={`flex items-center h-[50px] px-3 border rounded-lg shadow-sm 
                 bg-white dark:bg-gray-800 cursor-pointer
-                ${
-                  disabled
-                    ? "opacity-60 cursor-not-allowed"
-                    : "cursor-text"
-                }
+                ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-text"}
                 ${error ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
                 `}
                 onClick={() => !disabled && setIsOpen(!isOpen)}
@@ -237,7 +235,8 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                       type="button"
                       onClick={() =>
                         setCurrentMonth(
-                          (p:any) => new Date(p.getFullYear(), p.getMonth() - 1, 1)
+                          (p: any) =>
+                            new Date(p.getFullYear(), p.getMonth() - 1, 1),
                         )
                       }
                       className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -264,7 +263,8 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                       type="button"
                       onClick={() =>
                         setCurrentMonth(
-                          (p:any) => new Date(p.getFullYear(), p.getMonth() + 1, 1)
+                          (p: any) =>
+                            new Date(p.getFullYear(), p.getMonth() + 1, 1),
                         )
                       }
                       className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -287,15 +287,20 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
                       {/* Previous month */}
                       {getPreviousMonthDays(currentMonth).map((d, i) => (
-                        <div key={i} className="text-xs text-center text-gray-400">
+                        <div
+                          key={i}
+                          className="text-xs text-center text-gray-400"
+                        >
                           {d.getDate()}
                         </div>
                       ))}
 
                       {/* Current month */}
                       {getDaysInMonth(currentMonth).map((d, i) => {
-                        const isSelected = value?.toDateString() === d.toDateString();
-                        const isToday = new Date().toDateString() === d.toDateString();
+                        const isSelected =
+                          value?.toDateString() === d.toDateString();
+                        const isToday =
+                          new Date().toDateString() === d.toDateString();
                         const invalid = !isDateValid(d);
 
                         return (
@@ -319,7 +324,10 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
 
                       {/* Next month */}
                       {getNextMonthDays(currentMonth).map((d, i) => (
-                        <div key={i} className="text-xs text-center text-gray-400">
+                        <div
+                          key={i}
+                          className="text-xs text-center text-gray-400"
+                        >
                           {d.getDate()}
                         </div>
                       ))}
@@ -333,7 +341,9 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                         <div
                           key={m}
                           onClick={() => {
-                            setCurrentMonth((p:any) => new Date(p.getFullYear(), m, 1));
+                            setCurrentMonth(
+                              (p: any) => new Date(p.getFullYear(), m, 1),
+                            );
                             setView("day");
                           }}
                           className="text-sm text-center py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-800 dark:text-gray-200"
@@ -351,7 +361,9 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
                         <div
                           key={y}
                           onClick={() => {
-                            setCurrentMonth((p:any) => new Date(y, p.getMonth(), 1));
+                            setCurrentMonth(
+                              (p: any) => new Date(y, p.getMonth(), 1),
+                            );
                             setView("month");
                           }}
                           className="text-sm text-center py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
@@ -365,7 +377,9 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
               )}
 
               {error && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-500">{error.message}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                  {error.message}
+                </p>
               )}
             </div>
           </div>
