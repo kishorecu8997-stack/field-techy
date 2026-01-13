@@ -119,7 +119,7 @@ export type DocumentType =
   | "CERTIFICATE"
   | "PICTURE"
   | "WORK_SCREEN_SHOT"
-  | "PROPOSAL"
+  | "PROPOSAL";
 
 export interface Metadata {
   id?: string;

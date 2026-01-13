@@ -183,7 +183,7 @@ export class EngineerAdapter {
   }
 
   static async uploadScreenshot(
-    params: ScreenUploadParams
+    params: ScreenUploadParams,
   ): Promise<ScreenUploadResponse> {
     try {
       const { engineerId, file, documentType, metadata } = params;
@@ -201,8 +201,8 @@ export class EngineerAdapter {
               remarks: metadata.remarks,
             }),
           ],
-          { type: "application/json" }
-        )
+          { type: "application/json" },
+        ),
       );
 
       const response = await uploadAxiosInstance.post(
@@ -213,7 +213,7 @@ export class EngineerAdapter {
             "X-USER": "Engineer",
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
@@ -258,7 +258,7 @@ export class EngineerAdapter {
           headers: {
             "X-USER": "Engineer",
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
