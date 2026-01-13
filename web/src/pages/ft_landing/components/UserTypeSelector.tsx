@@ -17,7 +17,7 @@ const UserTypeDropdown = forwardRef<HTMLDivElement, UserTypeDropdownProps>(
       options,
       className = "",
     },
-    ref
+    ref,
   ) => {
     const handleLogin = (id: string) => {
       if (id === "engineer") {
@@ -96,7 +96,7 @@ const UserTypeDropdown = forwardRef<HTMLDivElement, UserTypeDropdownProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default UserTypeDropdown;

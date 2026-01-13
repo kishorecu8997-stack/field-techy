@@ -4,7 +4,7 @@ import type { NotificationProps, GroupedNotifications } from "../types";
 import NotificationPanel from "./NotificationPanel";
 
 const groupNotificationsByDate = (
-  notifications: NotificationProps[]
+  notifications: NotificationProps[],
 ): GroupedNotifications => {
   const grouped: GroupedNotifications = {
     Today: [],

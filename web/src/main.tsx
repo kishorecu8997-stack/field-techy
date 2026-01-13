@@ -49,5 +49,5 @@ root.render(
       <ToastContainer />
       <App />
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

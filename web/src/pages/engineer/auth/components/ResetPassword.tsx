@@ -41,7 +41,6 @@ const ResetPassword = () => {
     }
   };
 
-
   return (
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
       <div className="p-10 w-full max-w-lg">
@@ -53,8 +52,10 @@ const ResetPassword = () => {
               className="h-20 w-24"
             />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Reset Password</h2>
-          <h2 className="font-light text-gray-600 dark:text-gray-300" >
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            Reset Password
+          </h2>
+          <h2 className="font-light text-gray-600 dark:text-gray-300">
             Set your new password below.
           </h2>
         </div>

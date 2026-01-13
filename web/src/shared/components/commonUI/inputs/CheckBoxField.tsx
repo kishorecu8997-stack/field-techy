@@ -111,8 +111,8 @@ export const CheckboxField = ({
                           disabled && value.includes(option.value)
                             ? "!bg-blue-600 !border-blue-600 opacity-100"
                             : disabled
-                            ? "opacity-40"
-                            : ""
+                              ? "opacity-40"
+                              : ""
                         }
                       `}
                       disabled={disabled}

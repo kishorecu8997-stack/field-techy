@@ -1,21 +1,21 @@
 /**
  * Calculates a match score percentage between job requirements and a user's profile items.
- * 
+ *
  * The function performs a case-insensitive exact match comparison:
  * - Each job requirement is checked against the user's profile items.
  * - If a job requirement (normalized to lowercase) exactly matches any user profile item (also normalized),
  *   it is counted as a match.
  * - The final score is the percentage of job requirements that have a matching item in the user's profile,
  *   rounded to the nearest integer.
- * 
+ *
  * @param jobRequirements - An array of strings representing the required skills, qualifications, or items for the job.
  *                          Defaults to an empty array.
  * @param userProfileItems - An array of strings representing the user's skills, qualifications, or items.
  *                           Defaults to an empty array.
- * 
+ *
  * @returns A number between 0 and 100 representing the match percentage.
  *          Returns 0 if there are no job requirements.
- * 
+ *
  * @example
  * ```ts
  * const score = calculateMatchScore(
@@ -50,14 +50,14 @@
  */
 export const calculateMatchScore = (
   jobRequirements: string[] = [],
-  userProfileItems: string[] = []
+  userProfileItems: string[] = [],
 ): number => {
   if (jobRequirements.length === 0) return 0;
 
   // Convert user items to lowercase for case-insensitive comparison
   const userItemsSet = new Set(userProfileItems.map((i) => i.toLowerCase()));
   const matchedItems = jobRequirements.filter((item) =>
-    userItemsSet.has(item.toLowerCase())
+    userItemsSet.has(item.toLowerCase()),
   );
   const score = (matchedItems.length / jobRequirements.length) * 100;
   return Math.round(score);

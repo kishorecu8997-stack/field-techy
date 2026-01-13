@@ -23,7 +23,9 @@ export type EditDocumentFormData = {
  * @returns {React.ReactElement} The rendered EditDocument form component.
  */
 
-  const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({ onMenuItemClick }) => {
+const ClientEditDocument: React.FC<ClientEditDocumentProps> = ({
+  onMenuItemClick,
+}) => {
   /**
    * Handles the form submission.
    * This is currently a placeholder. In a real application, this would

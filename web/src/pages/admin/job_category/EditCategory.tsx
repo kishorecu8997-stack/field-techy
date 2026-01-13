@@ -26,7 +26,7 @@ export default function EditCategory() {
 
   // Find the category by ID (replace with real API call if needed)
   const category = serviceCategoriesData.find(
-    (cat: ServerCategoryProps) => cat.id === id
+    (cat: ServerCategoryProps) => cat.id === id,
   );
 
   const methods = useForm<CategoryFormData>({

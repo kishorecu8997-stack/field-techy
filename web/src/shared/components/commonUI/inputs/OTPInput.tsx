@@ -78,7 +78,7 @@ export const OTPInput = ({
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     const val = e.target.value.replace(/\D/g, "").slice(0, 1);
 
@@ -106,7 +106,7 @@ export const OTPInput = ({
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     if (e.key === "Backspace" && !e.currentTarget.value && idx > 0) {
       // Move to previous input on backspace if current is empty
@@ -165,8 +165,8 @@ export const OTPInput = ({
                   errorAlign === "left"
                     ? "text-left"
                     : errorAlign === "right"
-                    ? "text-right"
-                    : "text-center"
+                      ? "text-right"
+                      : "text-center"
                 }`}
               >
                 {error.message?.toString()}

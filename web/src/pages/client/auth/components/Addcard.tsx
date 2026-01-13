@@ -52,7 +52,6 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
       PaymentCountry: "",
       cardAddress: "",
     },
-
   });
 
   // form submission
@@ -62,7 +61,13 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
    */
 
   const handleAddCard = async () => {
-    const isValid = await methods.trigger(["cardAddress", "cvv", "expDate", "cardNumber", "PaymentCountry"]);
+    const isValid = await methods.trigger([
+      "cardAddress",
+      "cvv",
+      "expDate",
+      "cardNumber",
+      "PaymentCountry",
+    ]);
     if (isValid) {
       const data = methods.getValues();
       console.log("Valid card data:", data);

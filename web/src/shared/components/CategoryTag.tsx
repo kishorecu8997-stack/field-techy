@@ -1,5 +1,5 @@
-import React from 'react';
-import type { CategoryTagProps } from './type';
+import React from "react";
+import type { CategoryTagProps } from "./type";
 
 /**
  * A component to display a list of categories as tags, with an optional label.
@@ -11,8 +11,13 @@ import type { CategoryTagProps } from './type';
  * @param {boolean} [props.required] - If not explicitly false, displays a red asterisk next to the label to indicate it's a required field.
  * @returns {React.ReactElement} A React functional component that renders a set of category tags.
  */
-const CategoryTag: React.FC<CategoryTagProps> = ({  category, label, isShowLabel=true, required }) => {
-  return (    
+const CategoryTag: React.FC<CategoryTagProps> = ({
+  category,
+  label,
+  isShowLabel = true,
+  required,
+}) => {
+  return (
     <div className="mb-6">
       {isShowLabel && (
         <label className="block mb-1 text-md font-bold text-gray-700 dark:text-gray-300">
@@ -21,16 +26,16 @@ const CategoryTag: React.FC<CategoryTagProps> = ({  category, label, isShowLabel
         </label>
       )}
       <div className="flex flex-wrap gap-2 pt-2">
-        {category.map((item, index) => (  
-          <span 
-            key={index} 
+        {category.map((item, index) => (
+          <span
+            key={index}
             className="px-4 py-2 bg-teal-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-full border border-gray-300 dark:border-gray-700"
           >
             {item}
           </span>
         ))}
       </div>
-    </div>    
+    </div>
   );
 };
 

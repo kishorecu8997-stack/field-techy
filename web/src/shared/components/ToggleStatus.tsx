@@ -20,7 +20,7 @@ const useToggleStatus = (initialState: Record<string, boolean> = {}) => {
     (id: string | number): boolean => {
       return !!status[id]; // returns false if undefined
     },
-    [status]
+    [status],
   );
 
   return {

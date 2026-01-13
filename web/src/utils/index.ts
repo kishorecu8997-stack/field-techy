@@ -360,7 +360,7 @@ export function getDurationString({
  */
 export function getMinTentativeEndDate(
   applicationEndDate: string,
-  tentativeStartDate: string
+  tentativeStartDate: string,
 ): Date {
   const appEnd = new Date(applicationEndDate);
   const tentStart = new Date(tentativeStartDate);
@@ -377,10 +377,9 @@ export const getExperienceLevel = (years?: number) => {
   return "L3"; // 4+ years: Senior/Expert-level
 };
 
-
 /**
  * Get user id from local storage
- * @returns 
+ * @returns
  */
 export function getUserId(): string | null {
   const raw = localStorage.getItem("generic-user-session");

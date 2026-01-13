@@ -5,4 +5,3 @@ export type EducationFormData = {
   majorSubject: string;
   passingYear: string;
 };
-

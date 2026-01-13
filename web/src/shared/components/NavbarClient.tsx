@@ -7,8 +7,10 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
-import { useCurrentClientProfile } from "../apiServices/profiles/client/clientProfileService";
-import { useClientFiles, useClientFileStream } from "../apiServices/client/clientService";
+import {
+  useClientStore,
+  useClientProfile,
+} from "@/shared/store/useClientStore";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -42,47 +44,10 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const { setActiveKey } = useDrawerStore();
   const notificationCount = 3;
 
-  // Fetch current client profile
-  const { data: clientProfile, isLoading: isLoadingProfile } =
-    useCurrentClientProfile();
+  const { profileImageUrl, loading: isLoadingProfile } = useClientStore();
 
-  // Get client ID
-  const clientId = clientProfile?.id;
-
-  // Fetch client files to get profile picture
-  const { data: clientFiles = [], isLoading: isLoadingFiles } =
-    useClientFiles(clientId);
-
-  // Find profile picture file
-  const profilePictureFile = useMemo(() => {
-    return (
-      clientFiles.find((file) => file.fileType === "PROFILE_PICTURE") || null
-    );
-  }, [clientFiles]);
-
-  // Download profile picture if available
-  const { data: profilePictureStream, isLoading: isLoadingProfilePicture } =
-    useClientFileStream(profilePictureFile?.fileKey);
-
-  // State for profile picture URL
-  const [profilePictureUrl, setProfilePictureUrl] = useState<string>(
-    assetsConfig.images.users.user
-  );
-
-  // Handle Object URL creation and cleanup
-  useEffect(() => {
-    if (!profilePictureStream?.blob) {
-      setProfilePictureUrl(assetsConfig.images.users.user);
-      return;
-    }
-
-    const url = URL.createObjectURL(profilePictureStream.blob);
-    setProfilePictureUrl(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [profilePictureStream]);
+  // Use custom hook to ensure profile is fetched
+  const clientProfile = useClientProfile();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -129,19 +94,21 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         />
         <NavLink
           to={absoluteUrls.client.home.my_projects}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           to={absoluteUrls.client.home.my_jobs}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>
@@ -260,13 +227,13 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           <span className="max-w-24 truncate text-left">
             {isLoadingProfile ? "Loading..." : `Hi, ${displayName}`}
           </span>
-          {isLoadingProfilePicture || isLoadingFiles ? (
+          {isLoadingProfile ? (
             <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
               <div className="h-4 w-4 border-2 border-teal-800 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
             <img
-              src={profilePictureUrl}
+              src={profileImageUrl || assetsConfig.images.users.user}
               alt={clientProfile?.contactPersonName || "User"}
               className="h-8 w-8 rounded-full bg-white object-cover"
               onError={(e) => {

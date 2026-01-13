@@ -89,7 +89,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
   }, [timeLeft]);
 
   const handleSubmit = (data: OTPValues) => {
-      onSubmit?.(data);
+    onSubmit?.(data);
   };
 
   const handleResend = () => {
@@ -118,16 +118,16 @@ const OTPPage: React.FC<OTPPageProps> = ({
             onClick={onClose}
           />
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{header}</h2>
-            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">{description}</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {header}
+            </h2>
+            <p className="text-md text-center text-gray-600 dark:text-gray-300 mb-6 px-3">
+              {description}
+            </p>
           </div>
           {!isSuccess && (
             <div className="p-1">
-              <OTPInput
-                name="otp"
-                length={6}
-                errorAlign="center"
-              />
+              <OTPInput name="otp" length={6} errorAlign="center" />
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
                 <span>
                   {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
@@ -136,8 +136,11 @@ const OTPPage: React.FC<OTPPageProps> = ({
                   type="button"
                   onClick={handleResend}
                   disabled={timeLeft > 0 || resendCount >= maxResendAttempts}
-                  className={`text-green-600 dark:text-green-400 font-medium ${(timeLeft > 0 || resendCount >= maxResendAttempts) ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  className={`text-green-600 dark:text-green-400 font-medium ${
+                    timeLeft > 0 || resendCount >= maxResendAttempts
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
                 >
                   Resend
                 </button>

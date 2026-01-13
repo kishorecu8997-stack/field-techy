@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode ,} from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../libs/utils";
 import Loader2 from "../Loader2";
 import { scrollToTop } from "@/utils";
@@ -70,10 +70,10 @@ export const Button: React.FC<ButtonProps> = ({
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
     no_style: "",
-    };
+  };
 
   const sizeStyles: Record<string, string> = {
-     sm: "h-11 px-3 text-sm",
+    sm: "h-11 px-3 text-sm",
     md: "h-11 px-4 text-sm",
     lg: "h-12 px-6 text-base",
     icon: "h-11 w-11",
@@ -93,7 +93,7 @@ export const Button: React.FC<ButtonProps> = ({
         variantStyles[variant],
         sizeStyles[size],
         fullWidth && "w-full",
-        className
+        className,
       )}
       disabled={disabled || loading}
       {...rest}

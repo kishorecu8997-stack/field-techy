@@ -84,7 +84,10 @@ const EngineerPayout: React.FC = () => {
       key: "action",
       label: "Download Invoice",
       renderCell: (_: TransactionProps) => (
-        <div className="flex items-center gap-2 justify-center cursor-pointer" onClick={() => console.log('download invoice')}>
+        <div
+          className="flex items-center gap-2 justify-center cursor-pointer"
+          onClick={() => console.log("download invoice")}
+        >
           <FiDownload className="text-emerald-600 hover:text-emerald-700" />
         </div>
       ),

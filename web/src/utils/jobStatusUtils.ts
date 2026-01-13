@@ -15,7 +15,10 @@ export const JOB_STATUS_INFO: Record<string, JobStatusInfo> = {
   Hold: { label: "Hold", color: "Orange" },
   Draft: { label: "Draft", color: "Light Gray" },
   Canceled: { label: "Canceled", color: "Red" },
-  "Escalation In Progress": { label: "Escalation In Progress", color: "Red/Warning" },
+  "Escalation In Progress": {
+    label: "Escalation In Progress",
+    color: "Red/Warning",
+  },
   "Work In Progress": { label: "Work In Progress", color: "Blue (active)" },
   Closed: { label: "Closed", color: "Gray (inactive)" },
 };

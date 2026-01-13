@@ -46,7 +46,9 @@ const ChangePassword = () => {
   }) => {
     const email = sessionData?.email;
     if (!email) {
-      toast.error("User information is not fully loaded. Please wait a moment and try again.");
+      toast.error(
+        "User information is not fully loaded. Please wait a moment and try again.",
+      );
       return;
     }
     await showPopup({

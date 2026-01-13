@@ -26,24 +26,23 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
   const strengthPercentage = (metCriteriaCount / totalCriteriaCount) * 100;
 
   // Determine the color/strength level
-let strengthBg = "bg-gray-300";
-let strengthTextColor = "text-gray-500";
-let strengthText = "Too Weak";
+  let strengthBg = "bg-gray-300";
+  let strengthTextColor = "text-gray-500";
+  let strengthText = "Too Weak";
 
-if (metCriteriaCount === totalCriteriaCount) {
-  strengthBg = "bg-green-500";
-  strengthTextColor = "text-green-600";
-  strengthText = "Strong";
-} else if (metCriteriaCount >= totalCriteriaCount / 2) {
-  strengthBg = "bg-orange-500";
-  strengthTextColor = "text-orange-600";
-  strengthText = "Medium";
-} else if (password.length > 0) {
-  strengthBg = "bg-red-500";
-  strengthTextColor = "text-red-600";
-  strengthText = "Weak";
-}
-
+  if (metCriteriaCount === totalCriteriaCount) {
+    strengthBg = "bg-green-500";
+    strengthTextColor = "text-green-600";
+    strengthText = "Strong";
+  } else if (metCriteriaCount >= totalCriteriaCount / 2) {
+    strengthBg = "bg-orange-500";
+    strengthTextColor = "text-orange-600";
+    strengthText = "Medium";
+  } else if (password.length > 0) {
+    strengthBg = "bg-red-500";
+    strengthTextColor = "text-red-600";
+    strengthText = "Weak";
+  }
 
   if (password.length === 0) {
     return null; // Hide the meter if the input is empty
@@ -54,9 +53,7 @@ if (metCriteriaCount === totalCriteriaCount) {
       <div className="flex justify-between items-center mb-1">
         <span className="text-sm font-medium text-gray-700">
           Strength:{" "}
-          <strong className={strengthTextColor}>
-            {strengthText}
-          </strong>
+          <strong className={strengthTextColor}>{strengthText}</strong>
         </span>
       </div>
 
@@ -76,9 +73,9 @@ if (metCriteriaCount === totalCriteriaCount) {
               criterion.isValid ? "text-green-600" : "text-red-500"
             }`}
           >
-            <span className="mr-2">{criterion.isValid ? 
-            <icons.checkmark /> 
-            : <icons.close />}</span>
+            <span className="mr-2">
+              {criterion.isValid ? <icons.checkmark /> : <icons.close />}
+            </span>
             {criterion.name}
           </li>
         ))}

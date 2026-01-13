@@ -153,7 +153,7 @@ export class GlobalApiErrorHandler {
    */
   private static extractErrorMessage(
     errorResponse: ApiErrorResponse,
-    instancePath?: string
+    instancePath?: string,
   ): string {
     const status = errorResponse.status;
 
@@ -234,13 +234,13 @@ export class GlobalApiErrorHandler {
       // Handle network errors
       if (error.code === "ECONNABORTED" || error.message.includes("timeout")) {
         return new Error(
-          "Request timeout. Please check your connection and try again."
+          "Request timeout. Please check your connection and try again.",
         );
       }
 
       if (error.code === "ERR_NETWORK" || !error.response) {
         return new Error(
-          "Network error. Please check your connection and try again."
+          "Network error. Please check your connection and try again.",
         );
       }
 
@@ -258,7 +258,7 @@ export class GlobalApiErrorHandler {
 
     // Handle unknown error types
     return new Error(
-      customFallback || "An unknown error occurred. Please try again later."
+      customFallback || "An unknown error occurred. Please try again later.",
     );
   }
 
@@ -306,7 +306,7 @@ export class GlobalApiErrorHandler {
    */
   static getValidResponse<T = unknown>(
     error: unknown,
-    allowedStatusCodes: number[]
+    allowedStatusCodes: number[],
   ): T | null {
     if (error instanceof AxiosError) {
       const status = error.response?.status;
