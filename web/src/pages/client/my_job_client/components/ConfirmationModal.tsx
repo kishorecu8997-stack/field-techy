@@ -53,7 +53,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
           {/* Title */}
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-               {titles[actionType]}
+            {titles[actionType]}
           </h2>
 
           {/* Description */}
@@ -63,7 +63,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="flex flex-row gap-4">
             <Button
               onClick={onConfirm}
-             className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300
+              className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300
     focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       actionType === "cancel"
@@ -71,7 +71,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         : "bg-emerald-800 hover:bg-emerald-700 focus:ring-emerald-500 text-white"
     }
   `}
->       {buttonTexts[actionType]}
+            >
+              {" "}
+              {buttonTexts[actionType]}
             </Button>
             <Button
               onClick={onClose}
