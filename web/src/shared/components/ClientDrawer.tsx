@@ -19,7 +19,6 @@ import EditDocument from "@/pages/engineer/user_profile/components/documents/com
 import DrawerHeader from "./DrawerHeader";
 import ClientNotification from "@/pages/client/notification/NotificationPage";
 
-
 /**
  * Props for the Drawer component.
  * @typedef {Object} DrawerProps

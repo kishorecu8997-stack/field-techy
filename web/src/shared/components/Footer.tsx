@@ -36,7 +36,11 @@ const Footer = () => {
                 alt="Field Techy Logo"
                 className="h-12 w-auto"
               /> */}
-              <IconWithTheme darkLogo={assetsConfig.logos.ftLogoWhite} lightLogo={assetsConfig.logos.ftLogo} className="h-12 " />
+              <IconWithTheme
+                darkLogo={assetsConfig.logos.ftLogoWhite}
+                lightLogo={assetsConfig.logos.ftLogo}
+                className="h-12 "
+              />
             </div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               OUR ADDRESS
@@ -185,7 +189,7 @@ const Footer = () => {
                       : absoluteUrls.engineer.home.video_guidance
                   }
                   onClick={() => {
-                    scrollToTop()
+                    scrollToTop();
                     setActiveKey("videoGuidance");
                   }}
                 >

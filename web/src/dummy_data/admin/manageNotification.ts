@@ -83,7 +83,7 @@ export const NotificationSendTo = [
   { value: "client", label: "Client" },
   { value: "engineer", label: "Engineer" },
   { value: "both", label: "Both" },
-  { value: "users", label: "Users" }, 
+  { value: "users", label: "Users" },
 ];
 
 export const NotificationUsers = [

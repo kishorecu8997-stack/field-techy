@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
 
-
 export const CountrySelect = ({
   countries,
   value,
@@ -74,7 +73,9 @@ export const CountrySelect = ({
                 alt={country.name}
                 className="w-5 h-5 object-contain"
               />
-              <span>{country.name} ({country.code})</span>
+              <span>
+                {country.name} ({country.code})
+              </span>
             </div>
           ))}
         </div>

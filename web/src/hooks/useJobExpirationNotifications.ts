@@ -38,7 +38,7 @@ export const useJobExpirationNotification = (): void => {
             `Saved Job Expired: "${job.jobTitle}" has passed its start date.`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }
@@ -55,7 +55,7 @@ export const useJobExpirationNotification = (): void => {
             `1 Hour to Go: "${job.jobTitle}" starts in 1 hour. Apply now!`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }
@@ -66,7 +66,7 @@ export const useJobExpirationNotification = (): void => {
             `6 Hours Left: "${job.jobTitle}" starts in 6 hours. Apply now!`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }
@@ -77,7 +77,7 @@ export const useJobExpirationNotification = (): void => {
             `Starts Tomorrow: "${job.jobTitle}" begins tomorrow. Apply now!`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }
@@ -88,16 +88,19 @@ export const useJobExpirationNotification = (): void => {
             `3 Days to Go: "${job.jobTitle}" is approaching. Apply now!`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }
       } else if (diffDays >= 4.5 && diffDays < 5.5) {
         const key = `5days-${job.id}`;
         if (!shownReminders.has(key)) {
-          toast.success(`5 Days Left: "${job.jobTitle}" starts soon. Apply now!`, {
-            toastId: key,
-          });
+          toast.success(
+            `5 Days Left: "${job.jobTitle}" starts soon. Apply now!`,
+            {
+              toastId: key,
+            },
+          );
           shownReminders.add(key);
         }
       } else if (diffDays >= 6.5 && diffDays < 7.5) {
@@ -107,7 +110,7 @@ export const useJobExpirationNotification = (): void => {
             `1 Week Reminder: "${job.jobTitle}" starts in 7 days. Apply now!`,
             {
               toastId: key,
-            }
+            },
           );
           shownReminders.add(key);
         }

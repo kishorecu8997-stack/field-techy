@@ -1,5 +1,8 @@
 import { icons } from "@/config/icons";
-import { JOB_STATUSES, type JobStatus } from "@/pages/engineer/search_result/types";
+import {
+  JOB_STATUSES,
+  type JobStatus,
+} from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";

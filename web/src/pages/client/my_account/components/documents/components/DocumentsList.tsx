@@ -40,7 +40,7 @@ interface DocumentsListProps {
  */
 const mapFileType = (
   fileType: ClientFile["fileType"],
-  mimeType: string
+  mimeType: string,
 ): Document["fileType"] => {
   // Check mime type first for more accurate detection
   if (mimeType.includes("pdf")) return "PDF";
@@ -90,7 +90,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     }
     // Filter out PROFILE_PICTURE if fetching directly
     return (filesQuery.data || []).filter(
-      (file) => file.fileType !== "PROFILE_PICTURE"
+      (file) => file.fileType !== "PROFILE_PICTURE",
     );
   }, [contextData, filesQuery.data]);
 
@@ -115,11 +115,11 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   // State to store blob URLs for previews
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>(
-    {}
+    {},
   );
   const [isLoadingPreviews, setIsLoadingPreviews] = useState(false);
   const [downloadedFileIds, setDownloadedFileIds] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   // Download files and create preview URLs using Promise.allSettled
@@ -133,7 +133,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
     // Check if we need to download any new files
     const filesToDownload = clientFiles.filter(
-      (file) => !downloadedFileIds.has(file.id)
+      (file) => !downloadedFileIds.has(file.id),
     );
 
     if (filesToDownload.length === 0) {
@@ -149,7 +149,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       const downloadPromises = filesToDownload.map(async (file) => {
         try {
           const downloadResponse = await ClientAdapter.downloadFileStream(
-            file.fileKey
+            file.fileKey,
           );
           const blobUrl = URL.createObjectURL(downloadResponse.blob);
           return {
@@ -213,7 +213,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         toast.warning(
           `Failed to load ${errorCount} preview${
             errorCount > 1 ? "s" : ""
-          }. Please try again later.`
+          }. Please try again later.`,
         );
       }
     };

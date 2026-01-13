@@ -88,7 +88,7 @@ export function useClientGetById(id: string, options?: { enabled?: boolean }) {
 
 export function useClientGetAll(
   params: ClientPaginationParams = {},
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: CLIENT_QUERY_KEYS.list(params),
@@ -257,7 +257,6 @@ export function useDownloadClientFileStream(options?: {
   });
 }
 
-
 /**
  * Hook to delete a client file
  */
@@ -276,14 +275,13 @@ export function useDeleteClientFile(options?: {
   });
 }
 
-
 // --- Jobs Hooks ---
 export function useGetJobs() {
   return useQuery({
     queryKey: ["client-jobs"],
     queryFn: () => ClientAdapter.getJobs(),
     enabled: true,
-    notifyOnChangeProps: ['data', 'error'],
+    notifyOnChangeProps: ["data", "error"],
   });
 }
 
@@ -292,7 +290,7 @@ export function useGetJobs() {
  */
 export function useClientFileStream(
   fileKey?: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: ["client-file-stream", fileKey],
@@ -302,12 +300,11 @@ export function useClientFileStream(
   });
 }
 
-
 export function useClientGetJobsById(id: string) {
   return useQuery({
     queryKey: ["client-jobs", id],
     queryFn: () => ClientAdapter.getJobsById(id),
     enabled: !!id,
-    notifyOnChangeProps: ['data', 'error'],
+    notifyOnChangeProps: ["data", "error"],
   });
 }

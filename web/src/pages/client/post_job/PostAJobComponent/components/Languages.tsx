@@ -19,10 +19,10 @@ const Languages = ({ isDisable }: { isDisable: boolean }) => {
   const watchSecondaryLanguage = ctx.watch("secondaryLanguage");
 
   const filteredPrimaryLanguageOptions = primaryLanguageOptions.filter(
-    (opt) => opt.value !== watchSecondaryLanguage
+    (opt) => opt.value !== watchSecondaryLanguage,
   );
   const filteredSecondaryLanguageOptions = secondaryLanguageOptions.filter(
-    (opt) => opt.value !== watchPrimaryLanguage
+    (opt) => opt.value !== watchPrimaryLanguage,
   );
 
   return (

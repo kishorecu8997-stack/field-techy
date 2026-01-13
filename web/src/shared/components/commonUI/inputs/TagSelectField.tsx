@@ -57,7 +57,7 @@ export const TagSelectField = ({
   const handleAddTag = (
     tagValue: string,
     onChange: (value: string[]) => void,
-    value: string[]
+    value: string[],
   ) => {
     if (!tagValue) return;
 
@@ -79,7 +79,7 @@ export const TagSelectField = ({
   const removeTag = (
     index: number,
     onChange: (value: string[]) => void,
-    value: string[]
+    value: string[],
   ) => {
     const newValue = value.filter((_, i) => i !== index);
     onChange(newValue);
@@ -103,7 +103,7 @@ export const TagSelectField = ({
 
           // ✅ Filter out already selected tags
           const availableOptions = options.filter(
-            (opt) => !value.includes(opt.value)
+            (opt) => !value.includes(opt.value),
           );
 
           return (
@@ -132,11 +132,13 @@ export const TagSelectField = ({
                         handleAddTag(selectedOption, onChange, value);
                       }
                     }}
-                    className={`${inputClassName} ${leftIcon ? "pl-10" : ""
-                      } pr-10 appearance-none ${error
+                    className={`${inputClassName} ${
+                      leftIcon ? "pl-10" : ""
+                    } pr-10 appearance-none ${
+                      error
                         ? "!border-red-500 focus:!ring-red-400 focus:!ring-1"
                         : ""
-                      }`}
+                    }`}
                   >
                     <option value="" disabled hidden>
                       {placeholder}

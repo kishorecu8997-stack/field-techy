@@ -67,10 +67,10 @@ export default function ChangePassword() {
                 },
                 onError: (error: unknown) => {
                   toast.error(
-                    (error as Error)?.message || "Password change failed"
+                    (error as Error)?.message || "Password change failed",
                   );
                 },
-              }
+              },
             );
           },
         },

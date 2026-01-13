@@ -8,13 +8,16 @@ import {
   getKeywordFrequency,
   getSearchTrends,
   getCTR,
-  getSearchHistory
+  getSearchHistory,
 } from "@/utils/searchServiceAnalytics";
 import AnalyticsCard from "@/shared/components/search-analytics/AnalyticsCard";
 import Section from "@/shared/components/search-analytics/Section";
 import KeywordRow from "@/shared/components/search-analytics/KeywordRow";
 import TrendRow from "@/shared/components/search-analytics/TrendRow";
-import { CustomTable, type Column } from "@/shared/components/commonUI/custom_table";
+import {
+  CustomTable,
+  type Column,
+} from "@/shared/components/commonUI/custom_table";
 
 interface SearchHistoryItem {
   id: string;
@@ -39,7 +42,7 @@ interface SearchHistoryItem {
  * @example
  * <SearchAnalyticsPage />
  */
-  const SearchAnalyticsPage: React.FC = () => {
+const SearchAnalyticsPage: React.FC = () => {
   const totalSearches = getTotalSearches(searchEvents);
   const keywordFrequency = getKeywordFrequency(searchEvents);
   const searchTrends = getSearchTrends(searchEvents);
@@ -47,10 +50,10 @@ interface SearchHistoryItem {
   const searchHistory = getSearchHistory(searchEvents, clickEvents);
 
   const sortedKeywords = Object.entries(keywordFrequency).sort(
-    (a, b) => b[1] - a[1]
+    (a, b) => b[1] - a[1],
   );
   const sortedTrends = Object.entries(searchTrends).sort(([a], [b]) =>
-    a.localeCompare(b)
+    a.localeCompare(b),
   );
 
   /**  Columns definition for CustomTable */

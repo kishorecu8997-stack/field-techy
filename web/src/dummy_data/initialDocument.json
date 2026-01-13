@@ -1,53 +1,53 @@
 {
   "documents": [
-  {
-    "id": 1,
-    "title": "Certificate",
-    "fileName": "Certificate.jpg",
-    "fileType": "JPEG",
-    "previewUrl": "@/assets/document/Certificate.jpg",
-    "uploadDate": "2022-11-01",
-    "description": "Scanned document image stored locally in assets/document",
-    "metadata": {
-      "Source": "Local assets/document",
-      "Note": "Image for preview/testing"
+    {
+      "id": 1,
+      "title": "Certificate",
+      "fileName": "Certificate.jpg",
+      "fileType": "JPEG",
+      "previewUrl": "@/assets/document/Certificate.jpg",
+      "uploadDate": "2022-11-01",
+      "description": "Scanned document image stored locally in assets/document",
+      "metadata": {
+        "Source": "Local assets/document",
+        "Note": "Image for preview/testing"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Government-ID",
+      "fileName": "Government-ID.jpg",
+      "fileType": "JPEG",
+      "previewUrl": "@/assets/document/Government-ID.jpg",
+      "uploadDate": "2022-11-02",
+      "description": "Scanned document image stored locally in assets/document",
+      "metadata": {
+        "Source": "Local assets/document"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Government-ID1",
+      "fileName": "Government-ID1.jpg",
+      "fileType": "JPEG",
+      "previewUrl": "@/assets/document/Government-ID1.jpg",
+      "uploadDate": "2021-06-15",
+      "description": "Example JPEG file included in project assets",
+      "metadata": {
+        "Size": "~100KB"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Resume",
+      "fileName": "Resume.pdf",
+      "fileType": "PDF",
+      "previewUrl": "@/assets/document/Resume.pdf",
+      "uploadDate": "2021-06-16",
+      "description": "Sample local PDF stored in assets/document",
+      "metadata": {
+        "Pages": "2"
+      }
     }
-  },
-  {
-    "id": 2,
-    "title": "Government-ID",
-    "fileName": "Government-ID.jpg",
-    "fileType": "JPEG",
-    "previewUrl": "@/assets/document/Government-ID.jpg",
-    "uploadDate": "2022-11-02",
-    "description": "Scanned document image stored locally in assets/document",
-    "metadata": {
-      "Source": "Local assets/document"
-    }
-  },
-  {
-    "id": 3,
-    "title": "Government-ID1",
-    "fileName": "Government-ID1.jpg",
-    "fileType": "JPEG",
-    "previewUrl": "@/assets/document/Government-ID1.jpg",
-    "uploadDate": "2021-06-15",
-    "description": "Example JPEG file included in project assets",
-    "metadata": {
-      "Size": "~100KB"
-    }
-  },
-  {
-    "id": 4,
-    "title": "Resume",
-    "fileName": "Resume.pdf",
-    "fileType": "PDF",
-    "previewUrl": "@/assets/document/Resume.pdf",
-    "uploadDate": "2021-06-16",
-    "description": "Sample local PDF stored in assets/document",
-    "metadata": {
-      "Pages": "2"
-    }
-  }
-]
+  ]
 }

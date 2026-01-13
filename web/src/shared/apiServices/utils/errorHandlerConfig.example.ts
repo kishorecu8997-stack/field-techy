@@ -1,10 +1,10 @@
 /**
  * Example configuration for GlobalApiErrorHandler
- * 
+ *
  * This file demonstrates how to set up path-based error message overrides.
  * You can create a similar file (errorHandlerConfig.ts) and import it in your
  * main application entry point to register custom error messages.
- * 
+ *
  * @example
  * ```ts
  * // In main.tsx or App.tsx
@@ -16,7 +16,7 @@ import { GlobalApiErrorHandler } from "./GlobalApiErrorHandler";
 
 /**
  * Register path-based error message overrides
- * 
+ *
  * These overrides will be checked when an error occurs, and if the error's
  * instance path contains the specified keyword, the custom message will be used.
  */
@@ -65,7 +65,7 @@ export function configureErrorHandling() {
   // Example 5: Override default status message
   GlobalApiErrorHandler.setDefaultStatusMessage(
     409,
-    "This resource already exists. Please use a different value."
+    "This resource already exists. Please use a different value.",
   );
 
   // Example 6: Register multiple overrides at once
@@ -77,7 +77,8 @@ export function configureErrorHandling() {
     },
     {
       pathKeyword: "profile",
-      message: (error) => `Profile update failed: ${error.detail || "Please check your input."}`,
+      message: (error) =>
+        `Profile update failed: ${error.detail || "Please check your input."}`,
     },
   ]);
 }
@@ -85,4 +86,3 @@ export function configureErrorHandling() {
 // Auto-configure when this module is imported
 // Uncomment the line below if you want automatic configuration
 // configureErrorHandling();
-

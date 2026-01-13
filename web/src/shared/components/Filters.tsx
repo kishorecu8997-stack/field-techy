@@ -33,8 +33,8 @@ const Filters: React.FC = () => {
   const toggleSkill = (index: number) => {
     setSkills((prev) =>
       prev.map((skill, i) =>
-        i === index ? { ...skill, selected: !skill.selected } : skill
-      )
+        i === index ? { ...skill, selected: !skill.selected } : skill,
+      ),
     );
   };
 
@@ -47,8 +47,8 @@ const Filters: React.FC = () => {
       initialSkills.map((skill) =>
         skill.name === "Figma"
           ? { ...skill, selected: true }
-          : { ...skill, selected: false }
-      )
+          : { ...skill, selected: false },
+      ),
     );
   };
 
@@ -79,7 +79,6 @@ const Filters: React.FC = () => {
     });
   };
 
-
   return (
     <div className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300">
       {/* Header */}
@@ -103,8 +102,8 @@ const Filters: React.FC = () => {
               onClick={() => setLocation(option.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 location === option.value
-                  ? 'bg-teal-800 dark:bg-teal text-white'
-                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : " dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
               }`}
             >
               {option.label}
@@ -123,8 +122,8 @@ const Filters: React.FC = () => {
               onClick={() => setBudget(option.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 budget === option.value
-                  ? 'bg-teal-800 dark:bg-teal text-white'
-                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : " dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
               }`}
             >
               {option.label}
@@ -143,10 +142,9 @@ const Filters: React.FC = () => {
               onClick={() => setRating(option.value)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 rating === option.value
-                  ? 'bg-teal-800 dark:bg-teal text-white'
-                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
-              }`
-              }
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : " dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {option.label}
             </Button>
@@ -197,8 +195,8 @@ const Filters: React.FC = () => {
               onClick={() => toggleSkill(index)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
                 skill.selected
-                  ? 'bg-teal-800 dark:bg-teal text-white'
-                : ' dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700'
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : " dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
               }`}
             >
               {skill.name}

@@ -24,7 +24,7 @@ export class EngineerRouteStrategy implements RouteStrategy {
         element: React.createElement(
           AuthRedirect,
           null,
-          withSuspense(Components.Layout)
+          withSuspense(Components.Layout),
         ),
         children: [
           {
@@ -92,7 +92,7 @@ export class EngineerRouteStrategy implements RouteStrategy {
             React.Fragment,
             null,
             React.createElement(Components.RootLayout),
-            withSuspense(Components.LiveChatWidget)
+            withSuspense(Components.LiveChatWidget),
           ),
         }),
         children: [

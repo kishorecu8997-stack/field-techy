@@ -28,7 +28,7 @@ export class ClientAuthAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_USER_AUTH_ROUTER_PATHS.LOGIN,
-        args
+        args,
       );
 
       const authorization = response.headers["authorization"];
@@ -38,7 +38,7 @@ export class ClientAuthAdapter {
       if (!authorization || !userId || !role) {
         console.error(
           "Authentication failed, missing headers:",
-          response.headers
+          response.headers,
         );
         throw new AxiosError(
           "Authentication failed",
@@ -49,7 +49,7 @@ export class ClientAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -63,7 +63,7 @@ export class ClientAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -93,7 +93,7 @@ export class ClientAuthAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_USER_AUTH_ROUTER_PATHS.SIGNUP,
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -113,7 +113,7 @@ export class ClientAuthAdapter {
   static async requestVerificationOtp(phoneOrEmail: string) {
     try {
       const response = await axiosInstance.post(
-        CLIENT_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail)
+        CLIENT_USER_AUTH_ROUTER_PATHS.OTPREQUEST(phoneOrEmail),
       );
       return response.data;
     } catch (error) {
@@ -145,7 +145,7 @@ export class ClientAuthAdapter {
     try {
       const response = await axiosInstance.post(
         CLIENT_USER_AUTH_ROUTER_PATHS.VERIFYOTPCLIENT(otp),
-        { phoneOrEmail, password: "" }
+        { phoneOrEmail, password: "" },
       );
 
       const authorization = response.headers["authorization"];
@@ -155,7 +155,7 @@ export class ClientAuthAdapter {
       if (!authorization || !userId || !role) {
         console.error(
           "Authentication failed, missing headers:",
-          response.headers
+          response.headers,
         );
         throw new AxiosError(
           "Authentication failed",
@@ -166,7 +166,7 @@ export class ClientAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -180,7 +180,7 @@ export class ClientAuthAdapter {
             ...response,
             status: 401,
             statusText: "Unauthorized",
-          }
+          },
         );
       }
 
@@ -206,7 +206,7 @@ export class ClientAuthAdapter {
    */
   static async requestEmailVerificationOtp(email: string) {
     console.log(
-      `[Fake] Requesting OTP for email: ${email}, Fake delay of 2 seconds`
+      `[Fake] Requesting OTP for email: ${email}, Fake delay of 2 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -226,7 +226,7 @@ export class ClientAuthAdapter {
    */
   static async verifyEmailVerificationOtp(email: string, otp: string) {
     console.log(
-      `[Fake] Verifying OTP for email: ${email} and otp: ${otp}, Fake delay of 2 seconds`
+      `[Fake] Verifying OTP for email: ${email} and otp: ${otp}, Fake delay of 2 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -246,7 +246,7 @@ export class ClientAuthAdapter {
    */
   static async requestMobileVerificationOtp(mobile: string) {
     console.log(
-      `[Fake] Requesting OTP for mobile: ${mobile}, Fake delay of 1 seconds`
+      `[Fake] Requesting OTP for mobile: ${mobile}, Fake delay of 1 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {
@@ -266,7 +266,7 @@ export class ClientAuthAdapter {
    */
   static async verifyMobileVerificationOtp(mobile: string, otp: string) {
     console.log(
-      `[Fake] Verifying OTP for mobile: ${mobile} and otp: ${otp}, Fake delay of 1 seconds`
+      `[Fake] Verifying OTP for mobile: ${mobile} and otp: ${otp}, Fake delay of 1 seconds`,
     );
     const response = new Promise((res) => {
       setTimeout(() => {

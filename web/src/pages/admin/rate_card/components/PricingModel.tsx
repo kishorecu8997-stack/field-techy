@@ -36,8 +36,8 @@ const PricingModel: React.FC = () => {
     append(
       createDefaultSkill(
         `Skill ${skills.length + 1}`,
-        Math.random().toString(36).substring(2, 15)
-      )
+        Math.random().toString(36).substring(2, 15),
+      ),
     );
   };
 

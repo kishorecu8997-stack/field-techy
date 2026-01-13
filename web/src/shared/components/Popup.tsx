@@ -68,13 +68,9 @@ const Popup = ({
       onClick={handleBackdropClick}
     >
       {/* Modal */}
-      <div
-        className={`${inputClassName}`}
-      >
-        {children}
-      </div>
+      <div className={`${inputClassName}`}>{children}</div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

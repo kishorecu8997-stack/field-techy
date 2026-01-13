@@ -50,14 +50,19 @@ const LogItem: React.FC<LogEntry> = ({
   const { border, badge, icon } = getStatusStyles();
 
   return (
-    
-      <div className={`p-4 bg-gray-100 dark:bg-gray-800 rounded-lg ${border}`}>
+    <div className={`p-4 bg-gray-100 dark:bg-gray-800 rounded-lg ${border}`}>
       <div className="flex justify-between items-start">
         <div>
-          <h4 className="font-semibold text-gray-800 dark:text-gray-100">{title}</h4>
-          <p className="text-sm text-gray-600 mt-1 dark:text-gray-400">{date}</p>
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100">
+            {title}
+          </h4>
+          <p className="text-sm text-gray-600 mt-1 dark:text-gray-400">
+            {date}
+          </p>
           {children && (
-            <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">{children}</div>
+            <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+              {children}
+            </div>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -70,7 +75,7 @@ const LogItem: React.FC<LogEntry> = ({
           </span>
         </div>
       </div>
-    </div>    
+    </div>
   );
 };
 
@@ -91,11 +96,11 @@ const LogComponent: React.FC<LogComponentProps> = ({ logs }) => {
       <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-200">
         Logs
       </div>
-    <div className="space-y-4">
-      {logs.map((log, index) => (
-        <LogItem key={index} {...log} />
-      ))}
-    </div>
+      <div className="space-y-4">
+        {logs.map((log, index) => (
+          <LogItem key={index} {...log} />
+        ))}
+      </div>
     </>
   );
 };

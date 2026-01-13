@@ -120,7 +120,7 @@ export default function ManageSubAdmin() {
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.manage_sub_admin_edit}/${row.id}`
+                `${absoluteUrls.admin.home.manage_sub_admin_edit}/${row.id}`,
               )
             }
           >

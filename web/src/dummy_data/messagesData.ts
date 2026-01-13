@@ -1,5 +1,4 @@
-
-import user from '../assets/user.png';
+import user from "../assets/user.png";
 import type { Chat, Message } from "@/pages/client/type";
 
 // Mock data for personal chats

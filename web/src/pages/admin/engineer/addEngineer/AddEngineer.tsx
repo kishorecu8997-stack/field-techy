@@ -160,11 +160,7 @@ export default function AddEngineer() {
     <div className="w-full px-4 h-full mt-6">
       <div className="flex justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Add Engineer</h2>
-        <Button
-          variant="solid"
-          className=""
-          onClick={() => navigate(-1)}
-        >
+        <Button variant="solid" className="" onClick={() => navigate(-1)}>
           Back
         </Button>
       </div>

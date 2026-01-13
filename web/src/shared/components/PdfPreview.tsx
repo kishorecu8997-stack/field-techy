@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
-import type { RenderTask } from 'pdfjs-dist';
-import 'pdfjs-dist/build/pdf.worker.entry';
+import React, { useEffect, useRef, useState } from "react";
+import * as pdfjsLib from "pdfjs-dist";
+import type { RenderTask } from "pdfjs-dist";
+import "pdfjs-dist/build/pdf.worker.entry";
 
 interface PDFPreviewProps {
   url: string;
@@ -43,7 +43,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
       }
 
       // Wait a bit to ensure any previous render is fully cancelled
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // Check again after delay
       if (!isMountedRef.current || currentUrlRef.current !== url) {
@@ -54,12 +54,12 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
       const canvas = canvasRef.current;
       if (!canvas || !isMountedRef.current) return;
 
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext("2d");
       if (!context) return;
 
       // Clear the canvas completely
       context.clearRect(0, 0, canvas.width || 0, canvas.height || 0);
-      
+
       // Reset canvas dimensions
       canvas.width = 0;
       canvas.height = 0;
@@ -71,8 +71,8 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
         }
 
         // Load the PDF document
-        const pdf = await pdfjsLib.getDocument({ 
-          url, 
+        const pdf = await pdfjsLib.getDocument({
+          url,
           withCredentials: false,
           // Add stopAtErrors to prevent hanging on corrupted PDFs
           stopAtErrors: false,
@@ -85,9 +85,13 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
 
         const page = await pdf.getPage(1);
         const viewport = page.getViewport({ scale: 1.5 });
-        
+
         // Final check before rendering
-        if (!isMountedRef.current || currentUrlRef.current !== url || !canvasRef.current) {
+        if (
+          !isMountedRef.current ||
+          currentUrlRef.current !== url ||
+          !canvasRef.current
+        ) {
           return;
         }
 
@@ -96,9 +100,9 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
         canvas.width = viewport.width;
 
         // Create render task and store reference immediately
-        const renderTask = page.render({ 
-          canvasContext: context, 
-          viewport 
+        const renderTask = page.render({
+          canvasContext: context,
+          viewport,
         });
         renderTaskRef.current = renderTask;
 
@@ -118,15 +122,15 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
 
         // Check for cancellation errors
         if (
-          err?.name === 'RenderingCancelledException' ||
-          err?.message?.includes('cancelled') ||
-          err?.message?.includes('cancel')
+          err?.name === "RenderingCancelledException" ||
+          err?.message?.includes("cancelled") ||
+          err?.message?.includes("cancel")
         ) {
           // Silently ignore cancellation errors
           return;
         }
 
-        console.error('PDF render error:', err);
+        console.error("PDF render error:", err);
         if (isMountedRef.current && currentUrlRef.current === url) {
           setError(true);
           setLoading(false);

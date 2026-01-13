@@ -49,7 +49,6 @@ export function useEngineerDelete(options?: {
   });
 }
 
-
 export function useEngineerFileUpload(
   engineerId?: string,
   options?: {
@@ -60,7 +59,7 @@ export function useEngineerFileUpload(
       total?: number;
       percentage?: number;
     }) => void;
-  }
+  },
 ) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -86,7 +85,7 @@ export function useEngineerFileUpload(
 
 export function useEngineerGetById(
   id: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: queryKeys.engineer.detail(id),
@@ -110,7 +109,7 @@ export function useEngineerUpdateById(userId: string) {
 
 export function useEngineerGetFiles(
   engineerId: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: [...queryKeys.engineer.detail(engineerId), "files"] as const,
@@ -155,7 +154,7 @@ export function useEngineerAssignJob(options?: {
 
 export function useEngineerGetJobs(
   engineerId: string | null | undefined,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: [...queryKeys.engineer.detail(engineerId || ""), "jobs"] as const,
@@ -283,7 +282,7 @@ export function useGetProposalJobsById(
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: any) => void;
     enabled?: boolean;
-  }
+  },
 ) {
   return useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
@@ -298,7 +297,7 @@ export function useGetProposalAll(
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: any) => void;
     enabled?: boolean;
-  }
+  },
 ) {
   return useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
@@ -313,7 +312,7 @@ export function useGetEngineerProposals(
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: any) => void;
     enabled?: boolean;
-  }
+  },
 ) {
   return useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
@@ -352,7 +351,7 @@ export function useGetJobsById(
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: any) => void;
     enabled?: boolean;
-  }
+  },
 ) {
   const query = useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
@@ -389,7 +388,7 @@ export function useGetJobsByEngineerId(
     onSuccess?: (data: JobAssignment) => void;
     onError?: (error: any) => void;
     enabled?: boolean;
-  }
+  },
 ) {
   const query = useQuery({
     queryKey: [...queryKeys.engineer.detail(id), "jobs"] as const,
@@ -419,4 +418,3 @@ export function useGetJobsByEngineerId(
 
   return query;
 }
-

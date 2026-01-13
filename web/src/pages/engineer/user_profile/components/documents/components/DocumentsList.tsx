@@ -41,7 +41,7 @@ interface DocumentsListProps {
  */
 const mapFileType = (
   fileType: EngineerFile["fileType"],
-  mimeType: string
+  mimeType: string,
 ): Document["fileType"] => {
   // Check mime type first for more accurate detection
   if (mimeType.includes("pdf")) return "PDF";
@@ -101,9 +101,9 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     if (contextData) {
       return contextData.files;
     }
-    
+
     return (filesQuery.data || []).filter(
-      (file) => file.fileType !== "PICTURE"
+      (file) => file.fileType !== "PICTURE",
     );
   }, [contextData, filesQuery.data]);
 
@@ -128,11 +128,11 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   // State to store blob URLs for previews
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>(
-    {}
+    {},
   );
   const [isLoadingPreviews, setIsLoadingPreviews] = useState(false);
   const [downloadedFileIds, setDownloadedFileIds] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   // Download files and create preview URLs using Promise.allSettled
@@ -146,7 +146,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
     // Check if we need to download any new files
     const filesToDownload = engineerFiles.filter(
-      (file: EngineerFile) => !downloadedFileIds.has(file.id)
+      (file: EngineerFile) => !downloadedFileIds.has(file.id),
     );
 
     if (filesToDownload.length === 0) {
@@ -163,7 +163,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         async (file: EngineerFile) => {
           try {
             const downloadResponse = await EngineerAdapter.downloadFileStream(
-              file.fileKey
+              file.fileKey,
             );
             const blobUrl = URL.createObjectURL(downloadResponse.blob);
             return {
@@ -185,7 +185,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
               error: errorMessage,
             };
           }
-        }
+        },
       );
 
       // Wait for all downloads to complete (successful or failed)
@@ -228,7 +228,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         toast.warning(
           `Failed to load ${errorCount} preview${
             errorCount > 1 ? "s" : ""
-          }. Please try again later.`
+          }. Please try again later.`,
         );
       }
     };
@@ -288,7 +288,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     return engineerFiles
       .filter(
         (file: EngineerFile) =>
-          downloadedFileIds.has(file.id) || !isLoadingPreviews
+          downloadedFileIds.has(file.id) || !isLoadingPreviews,
       )
       .map((file: EngineerFile, index: number) => {
         const fileType = mapFileType(file.fileType, file.mimeType);

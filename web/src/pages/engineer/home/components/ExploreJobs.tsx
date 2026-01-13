@@ -5,7 +5,7 @@ import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import {
   SORT_OPTIONS,
   type Filters,
-  type SortOption
+  type SortOption,
 } from "@/pages/engineer/search_result/types";
 import { useGetJobs } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -13,7 +13,6 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
-
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -52,7 +51,8 @@ const ExploreJobs: React.FC = () => {
     return allNewJobs.filter((job) => {
       // Location filter
       if (filters.location.length > 0 && job.location) {
-        if (!filters.location.some(loc => job.location?.includes(loc))) return false;
+        if (!filters.location.some((loc) => job.location?.includes(loc)))
+          return false;
       }
 
       // Category filter
@@ -63,7 +63,7 @@ const ExploreJobs: React.FC = () => {
       // Skills filter (at least one match required)
       if (filters.skills.length > 0 && job.skills) {
         const hasMatchingSkill = job.skills.some((skill) =>
-          filters.skills.includes(skill)
+          filters.skills.includes(skill),
         );
         if (!hasMatchingSkill) return false;
       }
@@ -75,7 +75,8 @@ const ExploreJobs: React.FC = () => {
 
       // Budget type filter
       if (filters.budgetType && job.budgetType) {
-        if (job.budgetType.toLowerCase() !== filters.budgetType.toLowerCase()) return false;
+        if (job.budgetType.toLowerCase() !== filters.budgetType.toLowerCase())
+          return false;
       }
 
       // Rating filter (checks if job rating matches any selected rating)
@@ -143,12 +144,12 @@ const ExploreJobs: React.FC = () => {
       case SORT_OPTIONS.DATE:
         return jobsCopy.sort(
           (a, b) =>
-            parseRelativeTime(a.postedTime) - parseRelativeTime(b.postedTime)
+            parseRelativeTime(a.postedTime) - parseRelativeTime(b.postedTime),
         );
 
       case SORT_OPTIONS.SALARY:
         return jobsCopy.sort(
-          (a, b) => extractSalaryNumber(b) - extractSalaryNumber(a)
+          (a, b) => extractSalaryNumber(b) - extractSalaryNumber(a),
         );
 
       case SORT_OPTIONS.DISTANCE:
@@ -209,12 +210,14 @@ const ExploreJobs: React.FC = () => {
           if (!cityA) return 1;
           if (!cityB) return -1;
 
-          const userCoords = USER_CITY ? CITY_COORDS[USER_CITY.toLowerCase()] : null;
+          const userCoords = USER_CITY
+            ? CITY_COORDS[USER_CITY.toLowerCase()]
+            : null;
           if (!userCoords) return 0;
 
           const haversine = (
             c1: { lat: number; lng: number },
-            c2: { lat: number; lng: number }
+            c2: { lat: number; lng: number },
           ) => {
             const toRad = (x: number) => (x * Math.PI) / 180;
             const R = 6371;
@@ -223,8 +226,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-              Math.cos(toRad(c2.lat)) *
-              Math.sin(dLng / 2) ** 2;
+                Math.cos(toRad(c2.lat)) *
+                Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -285,8 +288,9 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
-            } found`}
+          description={`${sortedJobs.length} job${
+            sortedJobs.length !== 1 ? "s" : ""
+          } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}

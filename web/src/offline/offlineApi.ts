@@ -6,7 +6,10 @@ import { EngineerAdapter } from "@/shared/apiServices/engineer/engineerAdapter";
  * Fallback implementation of updateJobStatus used when the network is unstable.
  * This wraps the actual API call with offline queueing support.
  */
-export async function offlineAwareUpdateJobStatus(jobId: string, status: string) {
+export async function offlineAwareUpdateJobStatus(
+  jobId: string,
+  status: string,
+) {
   const isOffline = !navigator.onLine;
 
   const action: OfflineAction = {

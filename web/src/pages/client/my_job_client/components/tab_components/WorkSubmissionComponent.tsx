@@ -36,8 +36,8 @@ const WorkSubmissionComponent: React.FC<{
     location,
     fileName,
     notes,
-    signatureUrl,    
-  } = workSubmissions;  
+    signatureUrl,
+  } = workSubmissions;
 
   const infoItems: WorkInfoItem[] = [
     { label: "Name", value: name },
@@ -110,9 +110,22 @@ const WorkSubmissionComponent: React.FC<{
               accept=".pdf"
               validatePDF
             />
-            <TextareaInput name="notes" label="Technician notes (if any)" required rules={validateDescription(50, 2000, "Technician notes")} />
-            <SignatureField name="signature" label="Technician Signature" required accept=".png,.jpg,.jpeg"  />
-            <Button type="submit" className="px-4 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5">
+            <TextareaInput
+              name="notes"
+              label="Technician notes (if any)"
+              required
+              rules={validateDescription(50, 2000, "Technician notes")}
+            />
+            <SignatureField
+              name="signature"
+              label="Technician Signature"
+              required
+              accept=".png,.jpg,.jpeg"
+            />
+            <Button
+              type="submit"
+              className="px-4 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
+            >
               Submit Work
             </Button>
           </>
@@ -151,7 +164,6 @@ const WorkSubmissionComponent: React.FC<{
                     signature not found
                   </div>
                 )}
-
               </div>
             </div>
           </>

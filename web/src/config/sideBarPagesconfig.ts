@@ -6,222 +6,188 @@ import SecurityPage from "@/pages/engineer/auth/components/SecurityPage";
 import React from "react";
 
 const ClientAccountDrawerMenu = React.lazy(
-  () => import("@/pages/client/my_account/ClientAccountDrawerMenu")
+  () => import("@/pages/client/my_account/ClientAccountDrawerMenu"),
 );
 const ClientAddFund = React.lazy(
-  () => import("@/pages/client/my_wallet/components/AddFund")
+  () => import("@/pages/client/my_wallet/components/AddFund"),
 );
 const ClientRecentTransactions = React.lazy(
-  () => import("@/pages/client/my_wallet/components/RecentTransactionsList")
+  () => import("@/pages/client/my_wallet/components/RecentTransactionsList"),
 );
 const ClientWalletComponent = React.lazy(
-  () => import("@/pages/client/my_wallet/components/WalletComponent")
+  () => import("@/pages/client/my_wallet/components/WalletComponent"),
 );
 const AddClient = React.lazy(
   () =>
-    import(
-      "@/pages/client/post_job/PostAJobComponent/client_Interview/AddClient"
-    )
+    import("@/pages/client/post_job/PostAJobComponent/client_Interview/AddClient"),
 );
 const AddPOC = React.lazy(
   () =>
-    import("@/pages/client/post_job/PostAJobComponent/client_Interview/AddPOC")
+    import("@/pages/client/post_job/PostAJobComponent/client_Interview/AddPOC"),
 );
 const EditClient = React.lazy(
   () =>
-    import(
-      "@/pages/client/post_job/PostAJobComponent/client_Interview/EditClient"
-    )
+    import("@/pages/client/post_job/PostAJobComponent/client_Interview/EditClient"),
 );
 const EditPOC = React.lazy(
   () =>
-    import("@/pages/client/post_job/PostAJobComponent/client_Interview/EditPOC")
+    import("@/pages/client/post_job/PostAJobComponent/client_Interview/EditPOC"),
 );
 const AccountSettings = React.lazy(
-  () => import("@/pages/engineer/account_settings")
+  () => import("@/pages/engineer/account_settings"),
 );
 const AddBankDetails = React.lazy(
-  () => import("@/pages/engineer/account_settings/bank_details/AddBankDetails")
+  () => import("@/pages/engineer/account_settings/bank_details/AddBankDetails"),
 );
 const BankAccountList = React.lazy(
-  () => import("@/pages/engineer/account_settings/bank_details/BankAccountList")
+  () =>
+    import("@/pages/engineer/account_settings/bank_details/BankAccountList"),
 );
 const EditBankDetails = React.lazy(
-  () => import("@/pages/engineer/account_settings/bank_details/EditBankDetails")
+  () =>
+    import("@/pages/engineer/account_settings/bank_details/EditBankDetails"),
 );
 const MyEarning = React.lazy(
-  () => import("@/pages/engineer/account_settings/bank_details/MyEarning")
+  () => import("@/pages/engineer/account_settings/bank_details/MyEarning"),
 );
 const Withdraw = React.lazy(
-  () => import("@/pages/engineer/account_settings/bank_details/Withdraw")
+  () => import("@/pages/engineer/account_settings/bank_details/Withdraw"),
 );
 const ChangePassword = React.lazy(
-  () => import("@/pages/engineer/account_settings/ChangePassword")
+  () => import("@/pages/engineer/account_settings/ChangePassword"),
 );
 const ContactUs = React.lazy(
-  () => import("@/pages/engineer/account_settings/contact_us/ContactUs")
+  () => import("@/pages/engineer/account_settings/contact_us/ContactUs"),
 );
 const NotificationPage = React.lazy(
   () =>
-    import("@/pages/engineer/account_settings/notification/NotificationPage")
+    import("@/pages/engineer/account_settings/notification/NotificationPage"),
 );
 const MyAccountDrawerMenu = React.lazy(
-  () => import("@/pages/engineer/my_account")
+  () => import("@/pages/engineer/my_account"),
 );
 const CancelJopOffer = React.lazy(
-  () => import("@/pages/engineer/my_job/job_details_components/CancelJopOffer")
+  () => import("@/pages/engineer/my_job/job_details_components/CancelJopOffer"),
 );
 const EditDocument = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/documents/components/EditDocument"
-    )
+    import("@/pages/engineer/user_profile/components/documents/components/EditDocument"),
 );
 const Documents = React.lazy(
-  () => import("@/pages/engineer/user_profile/components/documents/Documents")
+  () => import("@/pages/engineer/user_profile/components/documents/Documents"),
 );
 const AddEducation = React.lazy(
   () =>
-    import("@/pages/engineer/user_profile/components/education/AddEducation")
+    import("@/pages/engineer/user_profile/components/education/AddEducation"),
 );
 const EditEducation = React.lazy(
   () =>
-    import("@/pages/engineer/user_profile/components/education/EditEducation")
+    import("@/pages/engineer/user_profile/components/education/EditEducation"),
 );
 const Education = React.lazy(
-  () => import("@/pages/engineer/user_profile/components/education/Education")
+  () => import("@/pages/engineer/user_profile/components/education/Education"),
 );
 const AddExperiences = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/experiences/components/AddExperiences"
-    )
+    import("@/pages/engineer/user_profile/components/experiences/components/AddExperiences"),
 );
 const EditExperiences = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/experiences/components/EditExperiences"
-    )
+    import("@/pages/engineer/user_profile/components/experiences/components/EditExperiences"),
 );
 const Experiences = React.lazy(
   () =>
-    import("@/pages/engineer/user_profile/components/experiences/Experiences")
+    import("@/pages/engineer/user_profile/components/experiences/Experiences"),
 );
 const PersonalInformation = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/PersonalInformation/PersonalInformation"
-    )
+    import("@/pages/engineer/user_profile/components/PersonalInformation/PersonalInformation"),
 );
 const AddSkills = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/skills_and_tools/components/AddSkills"
-    )
+    import("@/pages/engineer/user_profile/components/skills_and_tools/components/AddSkills"),
 );
 const AddTools = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/skills_and_tools/components/AddTools"
-    )
+    import("@/pages/engineer/user_profile/components/skills_and_tools/components/AddTools"),
 );
 const EditSkills = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/skills_and_tools/components/EditSkills"
-    )
+    import("@/pages/engineer/user_profile/components/skills_and_tools/components/EditSkills"),
 );
 const EditTools = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/skills_and_tools/components/EditTools"
-    )
+    import("@/pages/engineer/user_profile/components/skills_and_tools/components/EditTools"),
 );
 const SkillsAndTools = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools"
-    )
+    import("@/pages/engineer/user_profile/components/skills_and_tools/SkillsAndTools"),
 );
 const WorkPreference = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/components/WorkPreference/WorkPreference"
-    )
+    import("@/pages/engineer/user_profile/components/WorkPreference/WorkPreference"),
 );
 const UserProfileSidebar = React.lazy(
-  () => import("@/pages/engineer/user_profile/UserProfileSidebar")
+  () => import("@/pages/engineer/user_profile/UserProfileSidebar"),
 );
 const AccountSettingsDrawerMenu = React.lazy(
-  () => import("@/pages/client/account_settings")
+  () => import("@/pages/client/account_settings"),
 );
 const ClientDocuments = React.lazy(
-  () => import("@/pages/client/my_account/components/documents/ClientDocuments")
+  () =>
+    import("@/pages/client/my_account/components/documents/ClientDocuments"),
 );
 const ClientEditDocument = React.lazy(
   () =>
-    import(
-      "@/pages/client/my_account/components/documents/components/ClientEditDocument"
-    )
+    import("@/pages/client/my_account/components/documents/components/ClientEditDocument"),
 );
 const ClientPersonalInformation = React.lazy(
   () =>
-    import(
-      "@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation"
-    )
+    import("@/pages/client/my_account/components/PersonalInformation/ClientPersonalInformation"),
 );
 const DrawerPaymentSection = React.lazy(
-  () => import("@/pages/client/my_account/DrawerPaymentSection")
+  () => import("@/pages/client/my_account/DrawerPaymentSection"),
 );
 const AddProject = React.lazy(
-  () => import("@/pages/client/my_projects/projectDetail/AddProject")
+  () => import("@/pages/client/my_projects/projectDetail/AddProject"),
 );
 const EditProject = React.lazy(
-  () => import("@/pages/client/my_projects/projectDetail/EditProject")
+  () => import("@/pages/client/my_projects/projectDetail/EditProject"),
 );
 const AddProjectMember = React.lazy(
   () =>
-    import(
-      "@/pages/client/my_projects/createProject/components/AddProjectMember"
-    )
+    import("@/pages/client/my_projects/createProject/components/AddProjectMember"),
 );
 const AddExistingFTMember = React.lazy(
   () =>
-    import(
-      "@/pages/client/my_projects/createProject/components/AddExistingFTMember"
-    )
+    import("@/pages/client/my_projects/createProject/components/AddExistingFTMember"),
 );
 const EditProjectMember = React.lazy(
   () =>
-    import(
-      "@/pages/client/my_projects/createProject/components/EditProjectMember"
-    )
+    import("@/pages/client/my_projects/createProject/components/EditProjectMember"),
 );
 const Feedback = React.lazy(
-  () => import("@/pages/client/my_job_client/components/FeedbackForm")
+  () => import("@/pages/client/my_job_client/components/FeedbackForm"),
 );
 const ClientNotification = React.lazy(
-  () => import("@/pages/client/messages/ClientNotification")
+  () => import("@/pages/client/messages/ClientNotification"),
 );
 
-const RecentTransactionsModule = import(
-  "@/pages/client/my_wallet/components/RecentTransactionsList"
-);
+const RecentTransactionsModule =
+  import("@/pages/client/my_wallet/components/RecentTransactionsList");
 
 const ActionButtonsForRecentTransactions = React.lazy(() =>
   RecentTransactionsModule.then((module) => ({
     default: module.ActionButtonsForRecentTransactions,
-  }))
+  })),
 );
 const ProfileCompletionCard = React.lazy(
   () =>
-    import(
-      "@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard"
-    )
+    import("@/pages/engineer/user_profile/profile_completion/ProfileCompletionCard"),
 );
 const AllTransactionsPage = React.lazy(
   () =>
-    import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage")
+    import("@/pages/engineer/account_settings/bank_details/AllTransactionsPage"),
 );
 
 /**

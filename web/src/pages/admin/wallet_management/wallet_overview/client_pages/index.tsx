@@ -82,7 +82,7 @@ const ClientWallet: React.FC = () => {
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(
-                `${absoluteUrls.admin.home.wallet_overview_view}/${row.sno}`
+                `${absoluteUrls.admin.home.wallet_overview_view}/${row.sno}`,
               )
             }
           >

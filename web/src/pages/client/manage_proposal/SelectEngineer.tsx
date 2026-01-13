@@ -33,7 +33,7 @@ const SelectEngineer = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEngineers = filteredEngineers.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   const { showPopup } = usePopupStore();
@@ -51,7 +51,7 @@ const SelectEngineer = () => {
       (prev) =>
         prev.includes(id)
           ? prev.filter((item) => item !== id) // unselect
-          : [...prev, id] // select
+          : [...prev, id], // select
     );
   };
   const handlePageChange = (page: number) => {

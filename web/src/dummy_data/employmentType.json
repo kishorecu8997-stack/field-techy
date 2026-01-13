@@ -1,8 +1,24 @@
 {
   "employmentTypes": [
-    { "id": "1", "type": "Full-Time", "description": "Standard full working hours, typically 35–40 hours per week." },
-    { "id": "2", "type": "Part-Time", "description": "Fewer hours than full-time, often flexible or scheduled shifts." },
-    { "id": "3", "type": "Contract", "description": "Fixed-term employment based on a contract agreement." },    
-    { "id": "5", "type": "Freelance", "description": "Independent work arrangement, typically project-based." }
+    {
+      "id": "1",
+      "type": "Full-Time",
+      "description": "Standard full working hours, typically 35–40 hours per week."
+    },
+    {
+      "id": "2",
+      "type": "Part-Time",
+      "description": "Fewer hours than full-time, often flexible or scheduled shifts."
+    },
+    {
+      "id": "3",
+      "type": "Contract",
+      "description": "Fixed-term employment based on a contract agreement."
+    },
+    {
+      "id": "5",
+      "type": "Freelance",
+      "description": "Independent work arrangement, typically project-based."
+    }
   ]
 }

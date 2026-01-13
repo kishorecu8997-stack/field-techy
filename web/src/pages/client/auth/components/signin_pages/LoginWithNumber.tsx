@@ -103,7 +103,7 @@ const LoginWithNumber = ({
             error instanceof Error ? error.message : "OTP Verification failed";
           toast.error(errorMessage);
         },
-      }
+      },
     );
   };
 
