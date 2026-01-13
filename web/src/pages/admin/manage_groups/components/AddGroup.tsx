@@ -96,7 +96,7 @@ export default function AddGroup() {
               setSelectedIds((prev) => [...prev, row.engineerID]);
             } else {
               setSelectedIds((prev) =>
-                prev.filter((id) => id !== row.engineerID)
+                prev.filter((id) => id !== row.engineerID),
               );
             }
           }}
@@ -190,7 +190,7 @@ export default function AddGroup() {
           : true) &&
         (filters.skills
           ? eng.skills.some(
-              (s) => s.toLowerCase() === filters.skills.toLowerCase()
+              (s) => s.toLowerCase() === filters.skills.toLowerCase(),
             )
           : true)
       );
@@ -198,7 +198,7 @@ export default function AddGroup() {
 
     // Include selected engineers that might have been filtered out
     const selectedEngineers = SelectEngineer.filter(
-      (eng) => selectedIds.includes(eng.engineerID) && !filtered.includes(eng)
+      (eng) => selectedIds.includes(eng.engineerID) && !filtered.includes(eng),
     );
 
     return [...selectedEngineers, ...filtered];

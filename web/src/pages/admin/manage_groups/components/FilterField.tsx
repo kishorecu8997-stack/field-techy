@@ -39,10 +39,7 @@ const FilterField: React.FC<FilterFieldProps> = ({
 }) => {
   return (
     <div className="flex flex-col">
-      <label
-        htmlFor={id}
-        className="text-sm font-semibold mb-1"
-      >
+      <label htmlFor={id} className="text-sm font-semibold mb-1">
         {label}
       </label>
 
