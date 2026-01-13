@@ -163,7 +163,7 @@ export const validatePortfolio = async (value: string) => {
  */
 export const validateAmount = (value: string) => {
   const v = value?.trim();
-  if (!v) return "Amount is required"; 
+  if (!v) return "Amount is required";
   if (!/^\d+$/.test(v)) {
     return "Amount must contain digits only";
   }
@@ -461,6 +461,13 @@ export const cardNumberValidation = (value: string) => {
   }
 
   return true; // Validation successful
+};
+export const formatCardNumber = (value: string) => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+
+  // Group digits in sets of 4
+  return digits.replace(/(.{4})/g, "$1 ").trim();
 };
 
 // Luhn Algorithm for checksum validation

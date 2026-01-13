@@ -5,9 +5,10 @@ import {
   cvvValidation,
   expiryDateValidation,
   validateAddress,
+  formatCardNumber,
 } from "@/utils/validate";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlinePlusSmall } from "react-icons/hi2";
 import { toast } from "react-toastify";
@@ -93,12 +94,22 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
         <div className="flex-1 overflow-y-auto p-6 pt-0">
           <div>
-            <InputField
-              label="Card Number"
+            <Controller
               name="cardNumber"
-              placeholder="9999 9999 9999 9999"
-              rules={{ validate: (v: string) => cardNumberValidation(v) }}
-              required              
+              control={methods.control}
+              rules={{ validate: cardNumberValidation }}
+              render={({ field }) => (
+                <InputField
+                  {...field}
+                  label="Card Number"
+                  placeholder="9999 9999 9999 9999"
+                  maxLength={19}
+                  onChange={(val: string) => {
+                    const formatted = formatCardNumber(val);
+                    field.onChange(formatted);
+                  }}
+                />
+              )}
             />
           </div>
 
@@ -108,8 +119,9 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 label="Expiry Date"
                 name="expDate"
                 placeholder="MM/YY"
+                maxLength={5}
                 rules={{ validate: (v: string) => expiryDateValidation(v) }}
-                required                
+                required
               />
             </div>
             <div>
@@ -118,7 +130,8 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 name="cvv"
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
-                required               
+                required
+                maxLength={4}
               />
             </div>
           </div>
