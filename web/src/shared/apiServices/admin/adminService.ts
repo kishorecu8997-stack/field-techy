@@ -1,9 +1,14 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminAdapter } from "./adminAdapter";
-import type { FileDownloadResponse } from "../client/clientTypes";
-import type { AdminByIdResponse } from "./adminTypes";
-import type { PagedNotificationsParams } from "./adminTypes";
+import type {
+  CreateNotificationParams,
+  AdminNotification,
+  UpdateNotificationParams,
+  PagedNotificationsParams,
+  AdminByIdResponse,
+} from "./adminTypes";
 import { queryKeys } from "../queryKeys";
+import type { FileDownloadResponse } from "../client/clientTypes";
 import { queryClient } from "@/main";
 
 // --- Get All Notifications ---
@@ -88,10 +93,58 @@ export function useUserPasswordResetByOtpMutation(options?: {
       password: string;
     }) => AdminAdapter.resetPasswordByOtp(data),
     onSuccess: options?.onSuccess,
+  });
+}
+
+// --- Create Notification ---
+export function useCreateNotification(options?: {
+  onSuccess?: (data: AdminNotification) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateNotificationParams) =>
+      AdminAdapter.createNotification(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.notifications.all,
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+// --- Edit Notification ---
+export function useEditNotification(options?: {
+  onSuccess?: (data: AdminNotification) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateNotificationParams) =>
+      AdminAdapter.editNotification(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.notifications.all,
+      });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }
 
+// --- Get Notification By ID ---
+export function useGetNotificationById(
+  id: string,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: queryKeys.admin.notifications.detail(id),
+    queryFn: () => AdminAdapter.getNotificationById(id),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+}
 export function useAdminUpdateProfileMutation(options?: {
   onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;

@@ -5,15 +5,17 @@ import type { UserSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 import { GlobalApiErrorHandler } from "../utils";
 import type {
-  FileDownloadResponse,
-  FileUploadResponse,
-} from "../client/clientTypes";
-import type {
   AdminNotification,
+  CreateNotificationParams,
+  UpdateNotificationParams,
   PagedNotificationsParams,
   PagedNotificationsResponse,
   UploadFile,
 } from "./adminTypes";
+import type {
+  FileDownloadResponse,
+  FileUploadResponse,
+} from "../client/clientTypes";
 
 /*
  * AdminAdapter
@@ -159,6 +161,20 @@ export class AdminAdapter {
     }
   }
 
+  // Create Notification
+  static async createNotification(
+    data: CreateNotificationParams,
+  ): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.post(
+        ADMIN_ROUTER_PATHS.CREATE_NOTIFICATION,
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
   /** Update Admin Profile */
   static async updateAdminProfile(data: {
     id: string;
@@ -174,7 +190,21 @@ export class AdminAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+  //Edit Notification
+  static async editNotification(
+    data: UpdateNotificationParams,
+  ): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.put(
+        ADMIN_ROUTER_PATHS.EDIT_NOTIFICATION(data.id),
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 
@@ -227,7 +257,19 @@ export class AdminAdapter {
       );
       return response.data;
     } catch (error) {
-      GlobalApiErrorHandler.handleAndThrow(error);
+      throw GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  // Get Notification By ID
+  static async getNotificationById(id: string): Promise<AdminNotification> {
+    try {
+      const response = await axiosInstance.get(
+        ADMIN_ROUTER_PATHS.GET_NOTIFICATION_BY_ID(id),
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handleAndThrow(error);
     }
   }
 
