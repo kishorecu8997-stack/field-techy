@@ -10,12 +10,10 @@ interface CheckboxInputProps {
   isShowLabel?: boolean;
   required?: boolean;
   secondaryLabel?: string;
-
   rules?: RegisterOptions;
   disabled?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-
   renderError?: boolean;
 }
 

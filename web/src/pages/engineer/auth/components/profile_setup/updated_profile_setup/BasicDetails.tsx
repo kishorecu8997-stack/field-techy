@@ -71,7 +71,6 @@ const BasicDetails = () => {
     control: formCtx.control,
   });
   const { showPopup } = usePopupStore();
-
   const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
     onSuccess: (data) => {
       console.log("Signup successful:", data);
@@ -85,7 +84,6 @@ const BasicDetails = () => {
       toast.error(error.message || "Registration failed. Please try again.");
     },
   });
-
   // Check for existing registration session
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
   useEffect(() => {
@@ -160,7 +158,7 @@ const BasicDetails = () => {
         .join(", "),
       averageRating: 4.7,
       status: "PENDING",
-
+      
       // Loosely typed skills - Stubbed to empty to match working CURL payload
       // jobSkills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({ skillName: s.value || s })) : [],
       jobSkills: [],
@@ -169,7 +167,6 @@ const BasicDetails = () => {
       tools: [],
       experiences: [],
       educations: [],
-
       files: null,
     };
 
@@ -235,7 +232,6 @@ const BasicDetails = () => {
                 className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
                 onClick={async (e) => {
                   e.stopPropagation();
-
                   try {
                     await showPopup({
                       title: "Engineer Terms & Conditions",
@@ -246,19 +242,16 @@ const BasicDetails = () => {
                             solution to hire verified engineers on demand, for
                             home IT issues or business technical projects.
                           </p>
-
                           <p>
                             <strong>Features:</strong> Post jobs quickly, hire
                             verified engineers, track progress, communicate
                             in-app, and pay securely via escrow.
                           </p>
-
                           <p>
                             <strong>Who It’s For:</strong> Home clients needing
                             one-time support and corporate clients managing
                             multi-location projects.
                           </p>
-
                           <p>
                             By using our service, you agree to all applicable
                             terms and conditions.
@@ -292,7 +285,6 @@ const BasicDetails = () => {
           )}
         </div>
       </div>
-
       <div className="flex-shrink-0 p-4">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <Button
