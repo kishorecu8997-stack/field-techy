@@ -355,8 +355,16 @@ export default function AddGroup() {
                 value: s,
               }))}
             />
+          {/* Create Group button */}
+            <div className="flex flex-col justify-end">
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r bg-teal-900 text-white"
+              >
+                Create Group
+              </Button>
+            </div>
           </div>
-
           {/* Selected count */}
           <div className="text-sm text-neutral-500 mb-1">
             {selectedIds.length} engineer(s) selected
