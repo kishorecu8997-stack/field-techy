@@ -220,7 +220,10 @@ const BasicDetails = () => {
               className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
             >
               I agree to the{" "}
-              <NavLink to={absoluteUrls.engineer.auth.terms_and_conditions} className="text-blue-600 underline cursor-pointer">
+              <NavLink
+                to={absoluteUrls.engineer.auth.terms_and_conditions}
+                className="text-blue-600 underline cursor-pointer"
+              >
                 Terms and Conditions
               </NavLink>
             </label>
