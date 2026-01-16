@@ -35,6 +35,9 @@ const JobCardDetailsHeader = () => {
   const [isPaymentReleased, setIsPaymentReleased] = useState(false);
   const [isSendProposal, setSendProposal] = useState(false);
   const [isRatingUpdated, setIsRatingUpdated] = useState(false);
+  const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
+    "hold",
+  );
 
   if (!job) {
     return (
@@ -45,14 +48,29 @@ const JobCardDetailsHeader = () => {
   }
 
   const handleMenuAction = (action: string) => {
-    if (action === "Hold the job") {
-      setIsConfirmOpen(true);
+    let type: "hold" | "clone" | "cancel";
+
+    switch (action) {
+      case "Hold the job":
+        type = "hold";
+        break;
+      case "Cancel the job":
+        type = "cancel";
+        break;
+      case "Clone the job":
+        type = "clone";
+        break;
+      default:
+        return;
     }
+
+    setActionType(type);
+    setIsConfirmOpen(true);
     setIsMenuOpen(false);
   };
 
-  const handleConfirmAction = (action: string) => {
-    console.log("Confirmed action:", action);
+  const handleConfirmAction = () => {
+    console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
 
@@ -201,9 +219,9 @@ const JobCardDetailsHeader = () => {
 
       <Popup open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
         <ConfirmationModal
+          actionType={actionType}
+          onConfirm={handleConfirmAction}
           onClose={() => setIsConfirmOpen(false)}
-          onHold={() => handleConfirmAction("onHold")}
-          onCancel={() => setIsConfirmOpen(false)}
         />
       </Popup>
     </>
