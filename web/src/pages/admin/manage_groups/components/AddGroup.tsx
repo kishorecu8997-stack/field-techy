@@ -133,7 +133,7 @@ export default function AddGroup() {
         return (
           <div className="mx-auto text-center">
             <Button
-              className="w-fit bg-gradient-to-r p-4 bg-teal-900 text-white"
+              className="w-fit p-4 bg-teal-900 text-white"
               onClick={() => {
                 setIsModalOpen(true);
                 setSelectedRowId(row.id);
