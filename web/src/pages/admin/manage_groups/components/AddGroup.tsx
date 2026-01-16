@@ -355,7 +355,7 @@ export default function AddGroup() {
                 value: s,
               }))}
             />
-          {/* Create Group button */}
+            {/* Create Group button */}
             <div className="flex flex-col justify-end">
               <Button
                 type="submit"

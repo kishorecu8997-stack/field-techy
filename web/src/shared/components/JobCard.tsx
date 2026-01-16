@@ -37,7 +37,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }, [props]);
 
   const { jobId, status } = normalized;
-  const { data: jobs, isLoading:isJobsLoading, isError: isJobsError } = useClientGetJobsById(jobId ?? "");
+  const {
+    data: jobs,
+    isLoading: isJobsLoading,
+    isError: isJobsError,
+  } = useClientGetJobsById(jobId ?? "");
   const { data: client } = useClientGetById(jobs?.clientId || "");
   const getDuration =
     jobs?.startDate && jobs?.projectDeadline
