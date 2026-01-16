@@ -45,7 +45,7 @@ const MyJobsClient: React.FC = () => {
   };
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -68,7 +68,7 @@ const MyJobsClient: React.FC = () => {
             <div className="">
               <FilterButton
                 activeFilter={activeFilter}
-                onFilterChange={handleFilterChange} 
+                onFilterChange={handleFilterChange}
                 filters={jobFilters}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
