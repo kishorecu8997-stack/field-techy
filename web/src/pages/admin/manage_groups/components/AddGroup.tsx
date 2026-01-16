@@ -378,6 +378,14 @@ export default function AddGroup() {
               initialPageSize={10}
             />
           </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              type="submit"
+              className="mr-0 w-fit bg-gradient-to-r bg-teal-900 text-white"
+            >
+              Save
+            </Button>
+          </div>
         </FormContainer>
       </div>
 
