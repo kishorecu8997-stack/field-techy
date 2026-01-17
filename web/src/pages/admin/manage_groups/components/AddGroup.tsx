@@ -133,7 +133,7 @@ export default function AddGroup() {
         return (
           <div className="mx-auto text-center">
             <Button
-              className="w-fit bg-gradient-to-r p-4 bg-teal-900 text-white"
+              className="w-fit p-4 bg-teal-900 text-white"
               onClick={() => {
                 setIsModalOpen(true);
                 setSelectedRowId(row.id);
@@ -355,8 +355,16 @@ export default function AddGroup() {
                 value: s,
               }))}
             />
+            {/* Create Group button */}
+            <div className="flex flex-col justify-end">
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r bg-teal-900 text-white"
+              >
+                Create Group
+              </Button>
+            </div>
           </div>
-
           {/* Selected count */}
           <div className="text-sm text-neutral-500 mb-1">
             {selectedIds.length} engineer(s) selected
@@ -369,6 +377,14 @@ export default function AddGroup() {
               data={getFilteredEngineers()}
               initialPageSize={10}
             />
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              type="submit"
+              className="mr-0 w-fit bg-gradient-to-r bg-teal-900 text-white"
+            >
+              Save
+            </Button>
           </div>
         </FormContainer>
       </div>
