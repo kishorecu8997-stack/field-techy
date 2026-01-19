@@ -1,10 +1,11 @@
-import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryClient } from "@/main";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
+  AssignJobParams,
   EngineerData,
   // EngineerPaginationParams,
   // PagedResponse,
@@ -12,8 +13,9 @@ import type {
   FileUploadResponse,
   // EngineerFile,
   JobAssignment,
-  AssignJobParams,
   ProposalJobData,
+  ScreenUploadParams,
+  ScreenUploadResponse,
   UpdatePasswordParams,
 } from "./engineerTypes";
 
@@ -49,15 +51,30 @@ export function useEngineerDelete(options?: {
   });
 }
 
-export function useEngineerFileUpload(options?: {
-  onSuccess?: (data: FileUploadResponse, variables: FileUploadParams) => void;
+export function useEngineerScreenShotUpload(options?: {
+  onSuccess?: (data: ScreenUploadResponse) => void;
   onError?: (error: unknown) => void;
-  onProgress?: (progress: {
-    loaded: number;
-    total?: number;
-    percentage?: number;
-  }) => void;
 }) {
+  return useMutation({
+    mutationFn: (params: ScreenUploadParams) =>
+      EngineerAdapter.uploadScreenshot(params),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerFileUpload(
+  engineerId?: string,
+  options?: {
+    onSuccess?: (data: FileUploadResponse) => void;
+    onError?: (error: unknown) => void;
+    onProgress?: (progress: {
+      loaded: number;
+      total?: number;
+      percentage?: number;
+    }) => void;
+  },
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: FileUploadParams) =>

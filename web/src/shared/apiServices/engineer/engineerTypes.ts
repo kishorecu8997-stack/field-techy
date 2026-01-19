@@ -119,7 +119,16 @@ export type DocumentType =
   | "CERTIFICATE"
   | "PICTURE"
   | "PROPOSAL"
+  | "WORK_SCREEN_SHOT"
   | "PROFILE_PICTURE";
+
+export interface Metadata {
+  id?: string;
+  engineerJobId?: string;
+  activityDate?: string;
+  remarks: string | null;
+  workScreenshotId?: string;
+}
 
 export interface FileUploadParams {
   engineerId: string;
@@ -130,6 +139,21 @@ export interface FileUploadParams {
     total?: number;
     percentage?: number;
   }) => void;
+}
+
+export interface ScreenUploadParams {
+  engineerId: string;
+  file: File | null;
+  documentType: DocumentType;
+  metadata: Metadata;
+}
+
+export interface ScreenUploadResponse {
+  id: string;
+  engineerJobId: string;
+  activityDate: string;
+  remarks: string;
+  workScreenshotId: string;
 }
 
 export interface FileUploadResponse {
@@ -144,6 +168,7 @@ export interface JobAssignment {
   engineerId: string;
   jobId: string;
   status: string;
+  engagementModel: string;
 }
 
 export interface AssignJobParams {
