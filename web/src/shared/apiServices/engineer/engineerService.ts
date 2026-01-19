@@ -64,7 +64,6 @@ export function useEngineerScreenShotUpload(options?: {
 }
 
 export function useEngineerFileUpload(
-  engineerId?: string,
   options?: {
     onSuccess?: (data: FileUploadResponse) => void;
     onError?: (error: unknown) => void;
@@ -75,20 +74,23 @@ export function useEngineerFileUpload(
     }) => void;
   },
 ) {
+
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: FileUploadParams) =>
       EngineerAdapter.uploadFile(params),
-    onSuccess: (data, variables) => {
+        onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.engineer.detail(variables.engineerId),
       });
 
-      // Refresh the store to get the updated profile image
-      useEngineerStore.getState().fetchEngineerProfile(variables.engineerId);
+      useEngineerStore
+        .getState()
+        .fetchEngineerProfile(variables.engineerId);
 
-      options?.onSuccess?.(data, variables);
+      options?.onSuccess?.(data);
     },
+
 
     onError: options?.onError,
   });
