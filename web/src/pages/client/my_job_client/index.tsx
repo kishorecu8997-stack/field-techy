@@ -7,6 +7,7 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useMemo, useState } from "react";
 import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
 import JobCard from "./components/JobCard";
+import { scrollToTop } from "@/utils";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -41,12 +42,13 @@ const MyJobsClient: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   };
+
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
     setCurrentPage(1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   };
 
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
