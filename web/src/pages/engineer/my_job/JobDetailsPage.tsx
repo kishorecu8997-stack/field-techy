@@ -1,4 +1,7 @@
-import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
+import {
+  useClientGetById,
+  useClientGetJobsById,
+} from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,6 +12,7 @@ import JobTabSection from "./job_details_components/JobTabSection";
 import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import { toast } from "react-toastify";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -27,6 +31,11 @@ const JobDetailsPage = () => {
 
   // Always call hooks - pass empty string if jobId is missing
   const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
+  const { data: client } = useClientGetById(jobs?.clientId ?? "", {
+    enabled: !!jobs?.clientId,
+  });
+  const location =
+    [client?.city, client?.country].filter(Boolean).join(", ") || "-";
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -69,12 +78,7 @@ const JobDetailsPage = () => {
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">
-                Loading job details...
-              </p>
-            </div>
+            <LoaderComponent />
           </div>
         </div>
       </div>
@@ -104,8 +108,6 @@ const JobDetailsPage = () => {
       </div>
     );
   }
-
-  const client = jobs.client;
 
   const getDuration = getDurationString({
     startDateStr: jobs.startDate as string,
@@ -148,11 +150,11 @@ const JobDetailsPage = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={client?.companyName as string}
-              memberSince={"-" as string}
-              location={"-" as string}
-              rating={"-"}
-              reviews={0}
-              verifications={[]}
+              memberSince={client?.memberSince as string}
+              location={location as string}
+              rating={client?.rating || 0}
+              reviews={client?.reviewCount ?? 0}
+              verifications={client?.verifications ?? []}
               onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>

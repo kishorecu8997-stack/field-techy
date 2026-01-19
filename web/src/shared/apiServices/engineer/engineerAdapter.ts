@@ -9,6 +9,8 @@ import type {
   FileUploadParams,
   FileUploadResponse,
   JobAssignment,
+  ScreenUploadParams,
+  ScreenUploadResponse,
   ProposalJobData,
   UpdatePasswordParams,
 } from "./engineerTypes";
@@ -180,6 +182,45 @@ export class EngineerAdapter {
     }
   }
 
+  static async uploadScreenshot(
+    params: ScreenUploadParams,
+  ): Promise<ScreenUploadResponse> {
+    try {
+      const { engineerId, file, documentType, metadata } = params;
+      const formData = new FormData();
+
+      if (file) {
+        formData.append("file", file);
+      }
+      formData.append(
+        "metadata",
+        new Blob(
+          [
+            JSON.stringify({
+              engineerJobId: metadata.engineerJobId,
+              remarks: metadata.remarks,
+            }),
+          ],
+          { type: "application/json" },
+        ),
+      );
+
+      const response = await uploadAxiosInstance.post(
+        ENGINEER_ROUTER_PATHS.UPLOAD_SCREENSHOT(engineerId, documentType),
+        formData,
+        {
+          headers: {
+            "X-USER": "Engineer",
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handle(error);
+    }
+  }
+
   static async assignJob(params: AssignJobParams): Promise<JobAssignment> {
     try {
       const { engineerId, jobId, status } = params;
@@ -212,6 +253,12 @@ export class EngineerAdapter {
     try {
       const response = await axiosInstance.put(
         `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`,
+        {},
+        {
+          headers: {
+            "X-USER": "Engineer",
+          },
+        },
       );
       return response.data;
     } catch (error) {
