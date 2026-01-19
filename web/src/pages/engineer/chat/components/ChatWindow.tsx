@@ -47,8 +47,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     <div className="flex flex-col flex-1 min-h-[70vh] max-h-80vh] overflow-y-auto">
       <ChatHeader conversation={conversation} group={groupConv} />
 
-      <div className="flex-1 overflow-y-auto px-16 py-8 space-y-6 bg-gray-50">
-        <div className="text-center text-sm text-gray-500">Today</div>
+      <div className="flex-1 overflow-y-auto px-16 py-8 space-y-6 bg-gray-50 dark:bg-gray-900">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400">Today</div>
 
         {messages.map((m) => (
           <MessageBubble key={m.id} message={m} />
