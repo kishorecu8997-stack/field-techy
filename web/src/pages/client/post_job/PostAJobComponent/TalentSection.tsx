@@ -16,7 +16,7 @@ export default function TalentSection() {
   const navigate = useNavigate();
   const { setCurrentLocation } = usePostAJobStore();
 
-    const options: PostOption[] = [
+  const options: PostOption[] = [
     {
       label: "Dedicated Job Service",
       value: CurrentLocation.dedicated,
@@ -38,7 +38,8 @@ export default function TalentSection() {
     {
       label: "Scheduled Job Service",
       value: CurrentLocation.scheduled,
-      tooltip: "Plan jobs in advance for future dates, with repeatable scheduling.",
+      tooltip:
+        "Plan jobs in advance for future dates, with repeatable scheduling.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.scheduled);

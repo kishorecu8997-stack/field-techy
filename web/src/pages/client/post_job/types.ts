@@ -156,7 +156,7 @@ export type PostOption = {
   label: string;
   action?: () => void;
   value: string | number;
-  tooltip?: string; 
+  tooltip?: string;
 };
 
 export interface SectionData {

@@ -64,7 +64,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   }, [applicationEndDate]);
 
   const minStartTime = useMemo(() => {
-    if (!startDate) return undefined; 
+    if (!startDate) return undefined;
     if (startDate) {
       const selectedDate = new Date(startDate);
       const today = new Date();
@@ -82,12 +82,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   }, [startDate]);
 
   const getMaxDate = (startDate?: Date) => {
-  const baseDate = startDate || new Date(); 
-  const maxDate = new Date(baseDate);
-  maxDate.setMonth(maxDate.getMonth() + 24); 
-  return maxDate;
-};
-
+    const baseDate = startDate || new Date();
+    const maxDate = new Date(baseDate);
+    maxDate.setMonth(maxDate.getMonth() + 24);
+    return maxDate;
+  };
 
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
@@ -553,8 +552,14 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select End date"
                             {...field}
                             required
-                            minDate={startDate || undefined} 
-                            maxDate={startDate ? new Date(startDate.getTime() + 24*60*60*1000) : undefined} // max 24 hours
+                            minDate={startDate || undefined}
+                            maxDate={
+                              startDate
+                                ? new Date(
+                                    startDate.getTime() + 24 * 60 * 60 * 1000,
+                                  )
+                                : undefined
+                            } // max 24 hours
                             disabled={isDisable}
                           />
                         </>
