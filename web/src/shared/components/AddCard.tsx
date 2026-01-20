@@ -90,7 +90,10 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               <AiOutlineClose className="w-6 h-6" />
             </button>
           </div>
-          <h1 className="text-xl font-bold text-center"> Add Card</h1>
+          <h1 className="text-xl font-bold text-center text-gray-900 dark:text-white">
+            {" "}
+            Add Card
+          </h1>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pt-0">
