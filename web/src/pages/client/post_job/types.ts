@@ -53,16 +53,8 @@ export interface ClientFieldsTypes {
   lastName: string;
   email: string;
   mobile: string;
-  startDate?: any;
+  startDate?: Date;
   startTime?: string;
-}
-
-export interface ClientInterviewerSectionProps {
-  interviewers: DetailItem[];
-  onEdit?: (id: number) => void;
-  onDelete?: (id: number) => void;
-  onAdd: () => void;
-  composeDetails: (client: any) => DetailsType;
 }
 
 // Each label/value pair
@@ -92,7 +84,7 @@ export interface DetailSection {
 
 export interface InfoItem {
   label: string;
-  value: any;
+  value: string | number | null | undefined;
 }
 
 export interface CardProps {
@@ -152,7 +144,7 @@ export interface PostAJobFieldsProps {
   saveAsTemplate: boolean;
 }
 
-export type PostOption = {
+export interface PostOption  {
   label: string;
   action?: () => void;
   value: string | number;
