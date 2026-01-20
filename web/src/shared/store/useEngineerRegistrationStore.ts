@@ -46,6 +46,7 @@ interface EngineerRegistrationState {
   isEnableNotifications: boolean;
   engineerId: string | null; // Registered engineer ID
   registrationComplete: boolean;
+  token: string | null; // JWT token from registration
 
   // ===== Actions =====
   setSignupData: (data: {
@@ -91,6 +92,7 @@ interface EngineerRegistrationState {
   markStepCompleted: (step: number) => void;
   clearStore: () => void;
   setEngineerId: (id: string) => void;
+  setToken: (token: string) => void;
   markRegistrationComplete: () => void;
   getApiData: () => EngineerData;
 }
@@ -131,6 +133,7 @@ const initialState = {
   isEnableNotifications: true,
   engineerId: null,
   registrationComplete: false,
+  token: null,
 };
 
 export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
@@ -181,6 +184,10 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
 
       setEngineerId: (id) => {
         set({ engineerId: id });
+      },
+
+      setToken: (token) => {
+        set({ token });
       },
 
       markRegistrationComplete: () => {
@@ -260,6 +267,7 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
         currentStep: state.currentStep,
         completedSteps: state.completedSteps,
         isEnableNotifications: state.isEnableNotifications,
+        token: state.token,
       }),
     },
   ),

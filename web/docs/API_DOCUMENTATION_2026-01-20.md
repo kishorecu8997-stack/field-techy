@@ -1,6 +1,6 @@
 # API Documentation - January 20, 2026
 
-This document provides detailed information about the newly added API hooks for **Client Registration** and **Engineer Registration** using TanStack Query with OpenAPI generated SDK functions.
+This document provides detailed information about the newly added API hooks for **Client Registration**, **Engineer Registration**, and **OTP Verification** using TanStack Query with OpenAPI generated SDK functions.
 
 ---
 
@@ -17,8 +17,13 @@ This document provides detailed information about the newly added API hooks for 
    - [Request Body Schema](#engineer-request-body-schema)
    - [Response Schema](#engineer-response-schema)
    - [Usage Example](#engineer-usage-example)
-4. [Error Handling](#error-handling)
-5. [Type Definitions](#type-definitions)
+4. [OTP Verification APIs](#otp-verification-apis)
+   - [useSendOtp Hook](#usesendotp-hook)
+   - [useVerifyOtp Hook](#useverifyotp-hook)
+   - [OTP Request/Response Schemas](#otp-requestresponse-schemas)
+   - [OTP Usage Example](#otp-usage-example)
+5. [Error Handling](#error-handling)
+6. [Type Definitions](#type-definitions)
 
 ---
 
@@ -127,32 +132,30 @@ interface AppRegisterClientResponse {
 
 ```tsx
 import { useRegisterClient, type RegisterClientBody } from '@/shared/apiServices/client/clientService';
-import { useToast } from '@/shared/hooks/useToast';
+import { useClientRegistrationStore } from '@/shared/store/useClientRegistrationStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function ClientRegistrationForm() {
   const navigate = useNavigate();
-  const { showToast } = useToast();
+  const { setToken, markStepCompleted } = useClientRegistrationStore();
   
   const registerClientMutation = useRegisterClient({
-    onSuccess: (data) => {
-      // Store the JWT token
-      localStorage.setItem('token', data.token);
+    onSuccess: (result) => {
+      console.log("Signup successful:", result);
       
-      // Show success message
-      showToast({
-        type: 'success',
-        message: 'Registration successful!',
-      });
+      // Store the JWT token for OTP verification
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+        setToken(result.token);  // Store in registration store for OTP APIs
+      }
       
-      // Navigate to dashboard
-      navigate('/client/dashboard');
+      toast.success("Registration successful!");
+      markStepCompleted(4);
+      navigate('/client/auth/verification');  // Navigate to OTP verification
     },
     onError: (error) => {
-      showToast({
-        type: 'error',
-        message: 'Registration failed. Please try again.',
-      });
+      toast.error("Registration failed. Please try again.");
       console.error('Registration error:', error);
     },
   });
@@ -258,32 +261,30 @@ interface AppRegisterEngineerResponse {
 
 ```tsx
 import { useRegisterEngineer, type RegisterEngineerBody } from '@/shared/apiServices/engineer/engineerService';
-import { useToast } from '@/shared/hooks/useToast';
+import { useEngineerRegistrationStore } from '@/shared/store/useEngineerRegistrationStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function EngineerRegistrationForm() {
   const navigate = useNavigate();
-  const { showToast } = useToast();
+  const { setToken, markStepCompleted } = useEngineerRegistrationStore();
   
   const registerEngineerMutation = useRegisterEngineer({
-    onSuccess: (data) => {
-      // Store the JWT token
-      localStorage.setItem('token', data.token);
+    onSuccess: (result) => {
+      console.log("Signup successful:", result);
       
-      // Show success message
-      showToast({
-        type: 'success',
-        message: 'Engineer registration successful!',
-      });
+      // Store the JWT token for OTP verification
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+        setToken(result.token);  // Store in registration store for OTP APIs
+      }
       
-      // Navigate to engineer dashboard
-      navigate('/engineer/dashboard');
+      toast.success("Registration successful!");
+      markStepCompleted(3);
+      navigate('/engineer/auth/verification');  // Navigate to OTP verification
     },
     onError: (error) => {
-      showToast({
-        type: 'error',
-        message: 'Registration failed. Please try again.',
-      });
+      toast.error("Registration failed. Please try again.");
       console.error('Registration error:', error);
     },
   });
@@ -327,14 +328,279 @@ function EngineerRegistrationForm() {
 
 ---
 
+## OTP Verification APIs
+
+These APIs are used to send and verify OTP codes for email and phone number verification after registration.
+
+### `useSendOtp` Hook
+
+A TanStack Query mutation hook for sending OTP codes to the user's email or phone.
+
+**Location:** `web/src/shared/apiServices/engineer/engineerService.ts`
+
+**API Endpoint:** `POST /auth/otp/send`
+
+#### Function Signature
+
+```typescript
+export function useSendOtp(options?: {
+  onSuccess?: (data: AppSendOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}): UseMutationResult<AppSendOtpResponse, unknown, { type: SendOtpType; token: string }>
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `options` | `object` | No | Configuration options for the mutation |
+| `options.onSuccess` | `(data: AppSendOtpResponse) => void` | No | Callback function executed when OTP is sent successfully |
+| `options.onError` | `(error: unknown) => void` | No | Callback function executed on failure |
+
+#### Mutation Input
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `'email' \| 'phone'` | Yes | Type of OTP to send |
+| `token` | `string` | Yes | JWT token from registration response |
+
+---
+
+### `useVerifyOtp` Hook
+
+A TanStack Query mutation hook for verifying OTP codes entered by the user.
+
+**Location:** `web/src/shared/apiServices/engineer/engineerService.ts`
+
+**API Endpoint:** `POST /auth/otp/verify`
+
+#### Function Signature
+
+```typescript
+export function useVerifyOtp(options?: {
+  onSuccess?: (data: AppVerifyOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}): UseMutationResult<AppVerifyOtpResponse, unknown, { type: SendOtpType; code: string; token: string }>
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `options` | `object` | No | Configuration options for the mutation |
+| `options.onSuccess` | `(data: AppVerifyOtpResponse) => void` | No | Callback function executed when OTP is verified successfully |
+| `options.onError` | `(error: unknown) => void` | No | Callback function executed on failure |
+
+#### Mutation Input
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | `'email' \| 'phone'` | Yes | Type of OTP being verified |
+| `code` | `string` | Yes | OTP code entered by the user |
+| `token` | `string` | Yes | JWT token from registration response |
+
+---
+
+### OTP Request/Response Schemas
+
+#### Send OTP Request Body
+
+```typescript
+interface SendOtpRequest {
+  type: 'email' | 'phone';  // Type of verification
+}
+
+// Headers (required)
+{
+  authorization: `Bearer ${token}`  // JWT from registration
+}
+```
+
+#### Verify OTP Request Body
+
+```typescript
+interface VerifyOtpRequest {
+  type: 'email' | 'phone';  // Type of verification
+  code: string;             // OTP code entered by user
+}
+
+// Headers (required)
+{
+  authorization: `Bearer ${token}`  // JWT from registration
+}
+```
+
+#### OTP Response Schemas
+
+```typescript
+// Send OTP Response
+interface AppSendOtpResponse {
+  message: string;  // Success message (e.g., "OTP sent successfully")
+}
+
+// Verify OTP Response
+interface AppVerifyOtpResponse {
+  message: string;  // Success message (e.g., "OTP verified successfully")
+}
+```
+
+---
+
+### OTP Usage Example
+
+```tsx
+import { useState, useEffect } from 'react';
+import { 
+  useSendOtp, 
+  useVerifyOtp, 
+  type SendOtpType 
+} from '@/shared/apiServices/engineer/engineerService';
+import { useEngineerRegistrationStore } from '@/shared/store/useEngineerRegistrationStore';
+import { toast } from 'react-toastify';
+
+interface VerificationCardProps {
+  type: 'email' | 'phone';
+  contact: string;
+  isVerified: boolean;
+  onVerifySuccess: () => void;
+  token: string | null;
+}
+
+function VerificationCard({ 
+  type, 
+  contact, 
+  isVerified, 
+  onVerifySuccess, 
+  token 
+}: VerificationCardProps) {
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+
+  // Initialize OTP hooks
+  const { mutateAsync: sendOtp, isPending: isSending } = useSendOtp();
+  const { mutateAsync: verifyOtp, isPending: isVerifying } = useVerifyOtp();
+
+  // Countdown timer for resend
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [timeLeft]);
+
+  const handleSendOtp = async () => {
+    if (!token) {
+      toast.error('Authorization token not found. Please register again.');
+      return;
+    }
+
+    try {
+      const otpType: SendOtpType = type;
+      await sendOtp({ type: otpType, token });
+      toast.success(`OTP sent to ${type === 'email' ? 'email' : 'mobile'}`);
+      setIsOtpSent(true);
+      setTimeLeft(60);  // 60 second cooldown
+    } catch (error) {
+      toast.error(`Failed to send ${type === 'email' ? 'email' : 'mobile'} OTP`);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!token) {
+      toast.error('Authorization token not found. Please register again.');
+      return;
+    }
+
+    try {
+      const otpType: SendOtpType = type;
+      await verifyOtp({ type: otpType, code: otpCode, token });
+      toast.success(`${type === 'email' ? 'Email' : 'Mobile number'} verified successfully`);
+      onVerifySuccess();
+    } catch (error) {
+      toast.error(`Invalid ${type === 'email' ? 'Email' : 'Mobile'} OTP`);
+    }
+  };
+
+  const isPending = isSending || isVerifying;
+
+  if (isVerified) {
+    return <div className="text-green-500">✓ Verified</div>;
+  }
+
+  return (
+    <div className="verification-card">
+      <h3>{type === 'email' ? 'Email' : 'Mobile'} Verification</h3>
+      <p>{contact}</p>
+      
+      {!isOtpSent ? (
+        <button onClick={handleSendOtp} disabled={isPending}>
+          {isSending ? 'Sending...' : 'Send OTP'}
+        </button>
+      ) : (
+        <>
+          <input
+            type="text"
+            value={otpCode}
+            onChange={(e) => setOtpCode(e.target.value)}
+            placeholder="Enter OTP"
+            maxLength={6}
+          />
+          
+          <div className="timer">
+            {timeLeft > 0 ? `Resend in ${timeLeft}s` : (
+              <button onClick={handleSendOtp} disabled={isPending}>
+                Resend
+              </button>
+            )}
+          </div>
+          
+          <button onClick={handleVerifyOtp} disabled={isPending || !otpCode}>
+            {isVerifying ? 'Verifying...' : 'Verify'}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Usage in parent component
+function ContactVerification() {
+  const { email, phone, token } = useEngineerRegistrationStore();
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+
+  return (
+    <div>
+      <VerificationCard
+        type="email"
+        contact={email}
+        isVerified={isEmailVerified}
+        onVerifySuccess={() => setIsEmailVerified(true)}
+        token={token}
+      />
+      
+      <VerificationCard
+        type="phone"
+        contact={phone}
+        isVerified={isPhoneVerified}
+        onVerifySuccess={() => setIsPhoneVerified(true)}
+        token={token}
+      />
+    </div>
+  );
+}
+```
+
+---
+
 ## Error Handling
 
-Both registration APIs return consistent error responses:
+All APIs return consistent error responses:
 
 ### Error Response Schema
 
 ```typescript
-interface RegistrationError {
+interface ApiError {
   error: string;  // Error message describing the failure
 }
 ```
@@ -343,9 +609,9 @@ interface RegistrationError {
 
 | Status Code | Description |
 |-------------|-------------|
-| `200` | Successful registration |
+| `200` | Successful operation |
 | `400` | Bad Request - Invalid input data |
-| `401` | Unauthorized - Authentication failed |
+| `401` | Unauthorized - Invalid or missing JWT token |
 | `500` | Internal Server Error - Server-side failure |
 
 ### Error Handling Example
@@ -400,16 +666,32 @@ import type {
   AppRegisterEngineerResponse, 
   AppRegisterEngineerErrors 
 } from '@/api';
+
+// OTP Types
+import {
+  useSendOtp,
+  useVerifyOtp,
+  type SendOtpType
+} from '@/shared/apiServices/engineer/engineerService';
+
+import type {
+  AppSendOtpData,
+  AppSendOtpResponse,
+  AppSendOtpErrors,
+  AppVerifyOtpData,
+  AppVerifyOtpResponse,
+  AppVerifyOtpErrors
+} from '@/api';
 ```
 
 ### Mutation Return Type Reference
 
-Both hooks return a `UseMutationResult` with the following properties:
+All hooks return a `UseMutationResult` with the following properties:
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `mutate` | `(body: RegisterBody) => void` | Function to trigger the mutation |
-| `mutateAsync` | `(body: RegisterBody) => Promise<Response>` | Async version returning a promise |
+| `mutate` | `(body: InputBody) => void` | Function to trigger the mutation |
+| `mutateAsync` | `(body: InputBody) => Promise<Response>` | Async version returning a promise |
 | `isPending` | `boolean` | `true` while mutation is in progress |
 | `isSuccess` | `boolean` | `true` if mutation completed successfully |
 | `isError` | `boolean` | `true` if mutation failed |
@@ -424,20 +706,25 @@ Both hooks return a `UseMutationResult` with the following properties:
 | File | Description |
 |------|-------------|
 | `web/src/shared/apiServices/client/clientService.ts` | Client API service hooks |
-| `web/src/shared/apiServices/engineer/engineerService.ts` | Engineer API service hooks |
+| `web/src/shared/apiServices/engineer/engineerService.ts` | Engineer API service hooks (includes OTP hooks) |
 | `web/src/api/sdk.gen.ts` | Auto-generated OpenAPI SDK functions |
 | `web/src/api/types.gen.ts` | Auto-generated TypeScript types |
 | `web/src/api/client.ts` | API client configuration |
+| `web/src/shared/store/useEngineerRegistrationStore.ts` | Engineer registration state (includes JWT token) |
+| `web/src/pages/engineer/auth/components/profile_setup/updated_profile_setup/ContactVerification.tsx` | OTP verification UI component |
 
 ---
 
 ## Notes
 
-1. **Cache Invalidation**: Both mutations automatically invalidate their respective query caches on success.
-2. **Token Storage**: The returned JWT token should be stored securely (e.g., localStorage, httpOnly cookie) for subsequent authenticated requests.
-3. **Field Validation**: Ensure all required fields are validated on the frontend before calling the mutation.
-4. **Lookup IDs**: The `countryId`, `stateId`, `cityId`, `skills`, `serviceCategoryId`, and `industryId` fields reference lookup tables accessible via the `/lookup` endpoint.
+1. **Cache Invalidation**: Registration mutations automatically invalidate their respective query caches on success.
+2. **Token Storage**: The JWT token from registration should be stored in the registration store (for OTP verification) and/or localStorage (for authenticated requests).
+3. **OTP Flow**: Send OTP → User enters code → Verify OTP. The JWT token from registration is required for both operations.
+4. **Token Persistence**: The engineer registration store persists the JWT token to localStorage for use during the verification flow.
+5. **Field Validation**: Ensure all required fields are validated on the frontend before calling mutations.
+6. **Lookup IDs**: The `countryId`, `stateId`, `cityId`, `skills`, `serviceCategoryId`, and `industryId` fields reference lookup tables accessible via the `/lookup` endpoint.
 
 ---
 
 *Documentation generated on: January 20, 2026*
+

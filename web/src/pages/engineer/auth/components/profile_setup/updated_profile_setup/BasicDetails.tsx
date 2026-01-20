@@ -40,6 +40,7 @@ const BasicDetails = () => {
     experienceYears,
     updateProfileData,
     markStepCompleted,
+    setToken,
   } = useEngineerRegistrationStore();
 
   const formCtx = useForm<EngineerBasicDetails>({
@@ -72,6 +73,13 @@ const BasicDetails = () => {
   const registerMutation = useRegisterEngineer({
     onSuccess: (result) => {
       console.log("Signup successful:", result);
+
+      // Store the JWT token for OTP verification
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+        setToken(result.token);
+      }
+
       toast.success("Profile details submitted successfully!");
       markStepCompleted(3);
       navigate(absoluteUrls.engineer.auth.verification);

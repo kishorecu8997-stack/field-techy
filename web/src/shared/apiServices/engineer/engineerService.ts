@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
-import { appRegisterEngineer, type AppRegisterEngineerData, type AppRegisterEngineerResponse } from "@/api";
+import { appRegisterEngineer, appSendOtp, appVerifyOtp, type AppRegisterEngineerData, type AppRegisterEngineerResponse, type AppSendOtpResponse, type AppVerifyOtpResponse } from "@/api";
 import { createClient } from "@/api/client";
 import type {
   AssignJobParams,
@@ -67,6 +67,58 @@ export function useRegisterEngineer(options?: {
       queryClientInstance.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+// --- OTP Mutations (OpenAPI-based) ---
+
+/**
+ * TanStack Query mutation hook using OpenAPI generated appSendOtp
+ * This wraps the auto-generated SDK function with React Query for state management
+ * Requires JWT authorization token from registration response
+ */
+export type SendOtpType = 'email' | 'phone';
+
+export function useSendOtp(options?: {
+  onSuccess?: (data: AppSendOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async ({ type, token }: { type: SendOtpType; token: string }) => {
+      const response = await appSendOtp({
+        client: apiClient,
+        body: { type },
+        headers: { authorization: `Bearer ${token}` },
+        throwOnError: true,
+      });
+      return response.data as AppSendOtpResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook using OpenAPI generated appVerifyOtp
+ * This wraps the auto-generated SDK function with React Query for state management
+ * Requires JWT authorization token from registration response
+ */
+export function useVerifyOtp(options?: {
+  onSuccess?: (data: AppVerifyOtpResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async ({ type, code, token }: { type: SendOtpType; code: string; token: string }) => {
+      const response = await appVerifyOtp({
+        client: apiClient,
+        body: { type, code },
+        headers: { authorization: `Bearer ${token}` },
+        throwOnError: true,
+      });
+      return response.data as AppVerifyOtpResponse;
+    },
+    onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
 }
@@ -242,7 +294,7 @@ export function useUpdatePassword(options?: {
   });
 }
 
-// --- OTP Mutations ---
+// --- OTP Mutations (Legacy Adapter-based) ---
 
 export function useSendEmailOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
@@ -290,6 +342,8 @@ export function useVerifyPhoneOTP(options?: {
     onError: options?.onError,
   });
 }
+
+
 
 export function useDeleteEngineerFile(options?: {
   engineerId?: string;

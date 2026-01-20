@@ -42,6 +42,7 @@ const BasicDetails = () => {
     vatRegistrationNumber,
     markStepCompleted,
     updateProfileData,
+    setToken,
   } = useClientRegistrationStore();
 
   const formCtx = useForm<ClientBasicDetails>({
@@ -82,6 +83,13 @@ const BasicDetails = () => {
   const registerMutation = useRegisterClient({
     onSuccess: (result) => {
       console.log("Signup successful:", result);
+
+      // Store the JWT token for OTP verification
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+        setToken(result.token);
+      }
+
       toast.success("Profile registered successfully!");
       markStepCompleted(4);
       navigate("/client/auth/verification");
