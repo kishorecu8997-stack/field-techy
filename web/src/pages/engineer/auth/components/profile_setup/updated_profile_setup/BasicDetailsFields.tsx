@@ -1,35 +1,31 @@
-import countries from "@/dummy_data/countries";
+// lookup data fetched from API
 import {
-  validateName,
   validateAddress,
-  validateZipcode,
   validateAmount,
   validateCompany,
   validateDesignation,
   validateExperience,
+  validateName,
+  validateZipcode,
 } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
-import { validatePortfolioLink } from "@/shared/libs/utils";
+import { useDebouncedUserExists } from "@/shared/apiServices/user";
 import {
   validateEmail,
   validateEmailRules,
 } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
+import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
-import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
-import { useFormContext, Controller } from "react-hook-form";
-import { FaRegUser } from "react-icons/fa";
+import { useCities, useCountries, useServiceCategories, useSkills, useStates, type LookupItem } from "@/shared/hooks/useLookup";
+import { validatePortfolioLink } from "@/shared/libs/utils";
+import { useMemo } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
+import { FaRegUser } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
-import { MdCheckCircle, MdCancel, MdOutlineMailOutline } from "react-icons/md";
-import { serviceCategories } from "@/dummy_data/serviceCategories";
-import skills from "@/dummy_data/skills";
-import {
-  useStates,
-  useCities,
-} from "@/shared/apiServices/client/clientService";
-import { useDebouncedUserExists } from "@/shared/apiServices/user";
+import { MdCancel, MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
 
 /**
  * Email field component with real-time availability validation
@@ -100,15 +96,14 @@ const EmailFieldWithValidation = () => {
                   }, 600);
                 }}
                 className={`w-full rounded-md border py-3 px-5 pl-10 pr-10 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition bg-white dark:bg-gray-800
-                                    ${
-                                      error
-                                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                                        : isAvailable
-                                          ? "border-green-500 focus:ring-1 focus:ring-green-400"
-                                          : isUnavailable
-                                            ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                                            : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
-                                    }
+                                    ${error
+                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                    : isAvailable
+                      ? "border-green-500 focus:ring-1 focus:ring-green-400"
+                      : isUnavailable
+                        ? "border-red-500 focus:ring-1 focus:ring-red-400"
+                        : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
+                  }
                                 `}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -149,16 +144,31 @@ const BasicDetailsFields = () => {
   const country = watch("country");
   const selectedState = watch("state");
 
-  // Fetch dropdown data - assuming these hooks are shared or available
-  const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value || country,
-  );
-  const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState,
-  );
+  const countriesQuery = useCountries();
+
+  const parentCountryId = country?.value ?? country;
+  const statesQuery = useStates(parentCountryId);
+
+  const parentStateId = selectedState?.value ?? selectedState;
+  const citiesQuery = useCities(parentStateId);
+
+  // Skills and Service Categories from API
+  const skillsQuery = useSkills();
+  const serviceCategoriesQuery = useServiceCategories();
+
+  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
+  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
+  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
+  const skills = useMemo(() => (skillsQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [skillsQuery.data]);
+  const serviceCategories = useMemo(() => (serviceCategoriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [serviceCategoriesQuery.data]);
+
+  const statesLoading = statesQuery.isLoading;
+  const citiesLoading = citiesQuery.isLoading;
+  const skillsLoading = skillsQuery.isLoading;
+  const serviceCategoriesLoading = serviceCategoriesQuery.isLoading;
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+    <div className="flex flex-col gap-3 w-full max-w-md mx-auto">
       <InputField
         name="fullName"
         type="text"
@@ -174,7 +184,7 @@ const BasicDetailsFields = () => {
       <EmailFieldWithValidation />
 
       {/* Location Section */}
-      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 mt-2">
+      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 ">
         Location Details
       </div>
 
@@ -231,25 +241,27 @@ const BasicDetailsFields = () => {
       />
 
       {/* Professional Details Section */}
-      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 mt-2">
+      <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 ">
         Professional Details
       </div>
 
       <TagSelectField
         name="skills"
         label="Skills"
-        placeholder="Add your skills"
+        placeholder={skillsLoading ? "Loading skills..." : "Add your skills"}
         required
         options={skills}
         maxTags={15}
+        disabled={skillsLoading}
       />
 
       <SelectField
         name="serviceCategory"
         label="Service Category"
-        placeholder="Select Category"
+        placeholder={serviceCategoriesLoading ? "Loading categories..." : "Select Category"}
         options={serviceCategories}
         required
+        disabled={serviceCategoriesLoading}
       />
 
       <InputField

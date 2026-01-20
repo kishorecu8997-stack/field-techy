@@ -23,9 +23,9 @@ interface EngineerRegistrationState {
   address: string;
 
   // Professional Details
-  skills: string[]; // IDs or Names
+  skills: (string | number)[]; // IDs or Names
   portfolioLink: string;
-  serviceCategory: string; // ID or Name
+  serviceCategory: string | number; // ID or Name
   amount: string; // Rate/Budget
   designation: string;
   company: string;
@@ -65,9 +65,9 @@ interface EngineerRegistrationState {
       city: string;
       postalCode: string;
       address: string;
-      skills: string[];
+      skills: (string | number)[];
       portfolioLink: string;
-      serviceCategory: string;
+      serviceCategory: string | number;
       amount: string;
       designation: string;
       company: string;

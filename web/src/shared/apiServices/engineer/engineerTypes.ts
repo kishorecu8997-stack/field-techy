@@ -36,7 +36,7 @@ export interface EngineerData {
   fullName?: string;
   address?: string;
   portfolioLink?: string;
-  serviceCategory?: string;
+  serviceCategory?: string | number;
   budget?: string;
   rate?: number;
   experienceYears?: number;
@@ -55,7 +55,7 @@ export interface EngineerData {
   updatedBy?: string | null;
   deletedBy?: string | null;
   isDeleted?: boolean;
-  jobSkills?: string[];
+  jobSkills?: (string | number)[];
   tools?: string[];
   experiences?: Experience[];
   educations?: Education[];

@@ -9,7 +9,7 @@ import { FaChevronDown } from "react-icons/fa";
 import React from "react";
 
 interface TagOption {
-  value: string;
+  value: string | number;
   label: string;
 }
 
@@ -165,13 +165,11 @@ export const TagSelectField = ({
               )}
 
               {/* Render selected tags */}
-              <div className="flex flex-wrap gap-2 ">
+              <div className="flex flex-wrap gap-2 mt-2 ">
                 {value &&
                   value.map((tagValue: string, index: number) => {
-                    // Find the label for display
                     const tagLabel =
-                      options.find((opt) => opt.value === tagValue)?.label ||
-                      tagValue;
+                    options.find((opt) => opt.value === Number(tagValue))?.label
 
                     return (
                       <span

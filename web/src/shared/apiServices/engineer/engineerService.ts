@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
+import { appRegisterEngineer, type AppRegisterEngineerData, type AppRegisterEngineerResponse } from "@/api";
+import { createClient } from "@/api/client";
 import type {
   AssignJobParams,
   EngineerData,
@@ -19,6 +21,11 @@ import type {
   UpdatePasswordParams,
 } from "./engineerTypes";
 
+// Create API client for OpenAPI calls
+const apiClient = createClient({
+  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+});
+
 // --- Mutations ---
 
 export function useEngineerSignup(options?: {
@@ -30,6 +37,34 @@ export function useEngineerSignup(options?: {
     mutationFn: (data: EngineerData) => EngineerAdapter.signup(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook using OpenAPI generated appRegisterEngineer
+ * This wraps the auto-generated SDK function with React Query for caching and state management
+ */
+export type RegisterEngineerBody = NonNullable<AppRegisterEngineerData["body"]>;
+
+export function useRegisterEngineer(options?: {
+  onSuccess?: (data: AppRegisterEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClientInstance = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: RegisterEngineerBody) => {
+      const response = await appRegisterEngineer({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as AppRegisterEngineerResponse;
+    },
+    onSuccess: (data) => {
+      queryClientInstance.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
