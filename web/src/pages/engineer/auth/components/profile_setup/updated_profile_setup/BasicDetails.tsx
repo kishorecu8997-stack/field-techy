@@ -158,7 +158,7 @@ const BasicDetails = () => {
         .join(", "),
       averageRating: 4.7,
       status: "PENDING",
-      
+
       // Loosely typed skills - Stubbed to empty to match working CURL payload
       // jobSkills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({ skillName: s.value || s })) : [],
       jobSkills: [],
@@ -269,7 +269,7 @@ const BasicDetails = () => {
                   } catch (error) {
                     console.error(
                       "Failed to open Engineer Terms & Conditions popup:",
-                      error
+                      error,
                     );
                   }
                 }}

@@ -356,7 +356,7 @@ const BasicDetails = () => {
                   } catch (error) {
                     console.error(
                       "Failed to open Terms and Conditions popup:",
-                      error
+                      error,
                     );
                   }
                 }}
