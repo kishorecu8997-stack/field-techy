@@ -1174,6 +1174,16 @@ export const validateGroupName = (value: string) => {
   return true;
 };
 
+export const formatExpiryDate = (val: string) => {
+  const digits = val.replace(/\D/g, '');
+  const limited = digits.slice(0, 4);
+  let formatted = limited;
+  if (limited.length > 2) {
+    formatted = limited.slice(0, 2) + '/' + limited.slice(2);
+  }
+  return formatted;
+};
+
 export default {
   validateName,
   validateEmail,

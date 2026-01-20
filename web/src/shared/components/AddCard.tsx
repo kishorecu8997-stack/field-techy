@@ -6,6 +6,7 @@ import {
   expiryDateValidation,
   validateAddress,
   formatCardNumber,
+  formatExpiryDate,
 } from "@/utils/validate";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -127,12 +128,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                     maxLength={5}
                     rules={{ validate: expiryDateValidation }}
                     onChange={(val: string) => {
-                      const digits = val.replace(/\D/g, '');
-                      const limited = digits.slice(0, 4);
-                      let formatted = limited;
-                      if (limited.length > 2) {
-                        formatted = limited.slice(0, 2) + '/' + limited.slice(2);
-                      }
+                      const formatted = formatExpiryDate(val);
                       field.onChange(formatted);
                     }}
                     required
