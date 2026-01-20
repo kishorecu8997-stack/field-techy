@@ -7,6 +7,7 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useMemo, useState } from "react";
 import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
 import JobCard from "./components/JobCard";
+import { scrollToTop } from "@/utils";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -39,6 +40,17 @@ const MyJobsClient: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    scrollToTop();
+  };
+
+  const handleFilterChange = (filter: string) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+    scrollToTop();
+  };
+
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentJobs = filteredJobs.slice(startIndex, startIndex + itemsPerPage);
@@ -58,7 +70,7 @@ const MyJobsClient: React.FC = () => {
             <div className="">
               <FilterButton
                 activeFilter={activeFilter}
-                onFilterChange={setActiveFilter}
+                onFilterChange={handleFilterChange}
                 filters={jobFilters}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -72,7 +84,7 @@ const MyJobsClient: React.FC = () => {
               </div>
               <Pagination
                 totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                onPageChange={handlePageChange}
                 currentPage={currentPage}
               />
             </div>
