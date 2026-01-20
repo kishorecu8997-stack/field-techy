@@ -115,13 +115,29 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <InputField
-                label="Expiry Date"
+              <Controller
                 name="expDate"
-                placeholder="MM/YY"
-                maxLength={5}
+                control={methods.control}
                 rules={{ validate: (v: string) => expiryDateValidation(v) }}
-                required
+                render={({ field }) => (
+                  <InputField
+                    {...field}
+                    label="Expiry Date"
+                    placeholder="MM/YY"
+                    maxLength={5}
+                    rules={{ validate: expiryDateValidation }}
+                    onChange={(val: string) => {
+                      const digits = val.replace(/\D/g, '');
+                      const limited = digits.slice(0, 4);
+                      let formatted = limited;
+                      if (limited.length > 2) {
+                        formatted = limited.slice(0, 2) + '/' + limited.slice(2);
+                      }
+                      field.onChange(formatted);
+                    }}
+                    required
+                  />
+                )}
               />
             </div>
             <div>
