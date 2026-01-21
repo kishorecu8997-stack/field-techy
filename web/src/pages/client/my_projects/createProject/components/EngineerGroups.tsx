@@ -25,10 +25,10 @@ import { useFormContext, useWatch } from "react-hook-form";
 export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
   const { control } = useFormContext(); // get the form context
   const engineersNeededFrom = useWatch({
-  control,
-  name: "engineersNeededFrom", // watch the radio field
-  defaultValue: "all",
-});
+    control,
+    name: "engineersNeededFrom", // watch the radio field
+    defaultValue: "all",
+  });
 
   return (
     <div>
@@ -46,15 +46,15 @@ export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
         ]}
       />
       {engineersNeededFrom === "specificGroup" && (
-      <TagSelectField
-        disabled={isDisable}
-        name="group"
-        label="Select Group"
-        placeholder="Select Group"
-        required
-        options={projectGroups}
-      />
-    )}
+        <TagSelectField
+          disabled={isDisable}
+          name="group"
+          label="Select Group"
+          placeholder="Select Group"
+          required
+          options={projectGroups}
+        />
+      )}
     </div>
   );
 }

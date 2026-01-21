@@ -127,7 +127,8 @@ export default function CreateProject() {
               <Button variant="outline" className="rounded-full"
                 onClick={() => {
                   methods.reset();
-                  navigate(-1);
+                  navigate(absoluteUrls.client.home.my_projects);
+                  window.scrollTo(0, 0);
                 }}
               >
                 Cancel

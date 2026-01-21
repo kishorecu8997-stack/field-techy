@@ -26,6 +26,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const options = [
     { value: SORT_OPTIONS.RELEVANCE, label: "Relevance" },
@@ -42,9 +43,24 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
         });
       }
     }, [isOpen]);
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          isOpen &&
+          !buttonRef.current?.contains(event.target as Node) &&
+          !dropdownRef.current?.contains(event.target as Node)
+        ) {
+          setIsOpen(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
     const dropdown = isOpen ? (
     <div
+      ref={dropdownRef}
       className="absolute bg-white border border-gray-200 rounded-md shadow-xl z-50 w-48"
       style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
     >
@@ -70,7 +86,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   return (
     <div className="relative inline-block">
       <button
-        ref={buttonRef} 
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >

@@ -21,9 +21,9 @@ const MyProjects: React.FC = () => {
   const filteredJobs = useMemo(() => {
   let base: Project[];
     if (activeFilter === "All") {
-      base= projectData as Project[];
-    }else{
-      base=(projectData as Project[]).filter(
+      base = projectData as Project[];
+    } else {
+      base = (projectData as Project[]).filter(
       (project) => project.status === activeFilter,
     );
   }
@@ -53,8 +53,7 @@ const MyProjects: React.FC = () => {
 
     case SORT_OPTIONS.RELEVANCE:
     default:
-      // base order = relevance
-      data = [...base];
+      // base order = relevance; no additional sorting needed
       break;
   }
 
