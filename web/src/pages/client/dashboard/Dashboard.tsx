@@ -70,7 +70,6 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
             
-          
             {/* Rest of your dashboard sections (unchanged) */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
