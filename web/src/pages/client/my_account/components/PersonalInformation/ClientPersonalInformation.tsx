@@ -6,7 +6,12 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import type { LookupItem } from "@/shared/hooks/useLookup";
-import { useCities, useCountries, useIndustries, useStates } from "@/shared/hooks/useLookup";
+import {
+  useCities,
+  useCountries,
+  useIndustries,
+  useStates,
+} from "@/shared/hooks/useLookup";
 import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -34,7 +39,6 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
-
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
   const token = localStorage.getItem("auth_token") || undefined;
 
@@ -47,17 +51,30 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           ...companyInfo,
           name: data.contactPersonName,
           phoneNumber: data.phoneNumber,
-          ...("companyName" in companyInfo ? { companyName: data.companyName } : {}),
-          ...("personName" in companyInfo ? { personName: data.contactPersonName } : {}),
+          ...("companyName" in companyInfo
+            ? { companyName: data.companyName }
+            : {}),
+          ...("personName" in companyInfo
+            ? { personName: data.contactPersonName }
+            : {}),
           ...("address" in companyInfo ? { address: data.address } : {}),
-          ...("postalCode" in companyInfo ? { postalCode: data.postalCode } : {}),
+          ...("postalCode" in companyInfo
+            ? { postalCode: data.postalCode }
+            : {}),
+          ...("industryId" in companyInfo ? { industryId: data.industry } : {}),
+          ...("documentType" in companyInfo
+            ? { documentType: data.taxDocument }
+            : {}),
+          ...("documentNumber" in companyInfo
+            ? { documentNumber: data.vatRegistrationNumber }
+            : {}),
         } as any);
       }
       onMenuItemClick("clientAccount");
     },
     onError: (error: any) => {
       toast.error(error?.message || "Failed to update profile");
-    }
+    },
   });
 
   const methods = useForm<PersonalInfo>({
@@ -84,16 +101,52 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   // Fetch dropdown data from API
   const countriesQuery = useCountries();
-  const parentCountryId = (typeof country === 'object' && country !== null && 'value' in country) ? (country as any).value : country;
+  const parentCountryId =
+    typeof country === "object" && country !== null && "value" in country
+      ? (country as any).value
+      : country;
   const statesQuery = useStates(parentCountryId);
-  const parentStateId = (typeof selectedState === 'object' && selectedState !== null && 'value' in selectedState) ? (selectedState as any).value : selectedState;
+  const parentStateId =
+    typeof selectedState === "object" &&
+    selectedState !== null &&
+    "value" in selectedState
+      ? (selectedState as any).value
+      : selectedState;
   const citiesQuery = useCities(parentStateId);
   const industryQuery = useIndustries();
 
-  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
-  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
-  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
-  const industries = useMemo(() => (industryQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [industryQuery.data]);
+  const countries = useMemo(
+    () =>
+      (countriesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [countriesQuery.data],
+  );
+  const states = useMemo(
+    () =>
+      (statesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [statesQuery.data],
+  );
+  const cities = useMemo(
+    () =>
+      (citiesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [citiesQuery.data],
+  );
+  const industries = useMemo(
+    () =>
+      (industryQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [industryQuery.data],
+  );
 
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   // Sync form with store data
@@ -102,18 +155,32 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       const isCorporate = companyInfo.clientType === "corporate";
 
       reset({
-        companyName: (companyInfo.clientType === "corporate" && companyInfo.companyName) || "",
-        contactPersonName: (companyInfo.clientType === "corporate" ? companyInfo.personName : companyInfo.name) || "",
+        companyName:
+          (companyInfo.clientType === "corporate" && companyInfo.companyName) ||
+          "",
+        contactPersonName:
+          (companyInfo.clientType === "corporate"
+            ? companyInfo.personName
+            : companyInfo.name) || "",
         phoneNumber: companyInfo.phoneNumber || "",
         businessType: isCorporate ? "1" : "2",
-        industry: (companyInfo.clientType === "corporate" && companyInfo.industryId) ? String(companyInfo.industryId) : "",
-        address: (companyInfo.clientType === "corporate" ? companyInfo.address : "") || "",
-        country: companyInfo.countryId ? String(companyInfo.countryId) : "",
-        state: companyInfo.stateId ? String(companyInfo.stateId) : "",
-        city: companyInfo.cityId ? String(companyInfo.cityId) : "",
+        industry:
+          companyInfo.clientType === "corporate" ? companyInfo.industryId : "",
+        address:
+          (companyInfo.clientType === "corporate" ? companyInfo.address : "") ||
+          "",
+        country: companyInfo.countryId,
+        state: companyInfo.stateId,
+        city: companyInfo.cityId,
         postalCode: companyInfo.postalCode || "",
-        taxDocument: (companyInfo.clientType === "corporate" && companyInfo.documentType) || "",
-        vatRegistrationNumber: (companyInfo.clientType === "corporate" && companyInfo.documentNumber) || "",
+        taxDocument:
+          (companyInfo.clientType === "corporate" &&
+            companyInfo.documentType) ||
+          "",
+        vatRegistrationNumber:
+          (companyInfo.clientType === "corporate" &&
+            companyInfo.documentNumber) ||
+          "",
       });
 
       if (companyInfo.phoneNumber) {
@@ -147,7 +214,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
         industryId: isCorporate ? getId(data.industry) : undefined,
         documentType: isCorporate ? data.taxDocument : undefined,
         documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
-      }
+      },
     });
   };
 
@@ -201,8 +268,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           placeholder="Business Type"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
           options={[
-            { value: "1", label: "Corporate" },
-            { value: "2", label: "Home" },
+            { value: "PRIVATE", label: "Private" },
+            { value: "GOVERNMENT", label: "Government" },
+            { value: "NGO", label: "NGO" },
+            { value: "OTHER", label: "Other" },
           ]}
           required
         />

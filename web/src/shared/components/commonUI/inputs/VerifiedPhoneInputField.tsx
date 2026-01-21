@@ -137,13 +137,12 @@ export const VerifiedPhoneInputField = ({
   };
 
   const getInputClassName = () => {
-    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark: placeholder-gray-500 outline-none ${
-      inputClassName || ""
-    } ${verified ? "p-0" : ""} `;
+    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark:placeholder-gray-500 outline-none ${inputClassName || ""
+      } ${verified ? "p-0" : ""} `;
     if (isInputDisabled) {
-      return `${baseClasses} bg-gray-100 dark: bg-gray-700 text-gray-500 dark: text-gray-400 cursor-not-allowed rounded-md`;
+      return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-r-md`;
     }
-    return `${baseClasses} bg-white dark: bg-gray-800 text-gray-900 dark: text-gray-100 rounded-md`;
+    return `${baseClasses} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-r-md`;
   };
 
   return (
@@ -170,7 +169,7 @@ export const VerifiedPhoneInputField = ({
             );
             const maxDigits =
               selectedCountry?.validationKey === "india" ||
-              selectedCountry?.validationKey === "uk"
+                selectedCountry?.validationKey === "uk"
                 ? 10
                 : undefined;
 
@@ -180,11 +179,10 @@ export const VerifiedPhoneInputField = ({
                   <div className="flex flex-1 min-w-0">
                     <div className="relative w-full">
                       <div
-                        className={`flex w-full rounded-md border ${
-                          error
-                            ? "border-red-500 ring-1 ring-red-400"
-                            : "border-gray-300 dark:border-gray-600"
-                        } `}
+                        className={`flex w-full rounded-md border ${error
+                          ? "border-red-500 ring-1 ring-red-400"
+                          : "border-gray-300 dark:border-gray-600"
+                          } `}
                       >
                         <div className="shrink-0">
                           <CountrySelect

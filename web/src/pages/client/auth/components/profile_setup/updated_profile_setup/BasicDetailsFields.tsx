@@ -16,10 +16,8 @@ import {
 } from "@/shared/apiServices/client/clientService";
 import { useCities, useCountries, useIndustries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
 import { useMemo } from "react";
-
-// TODO: Uncomment when user availability check API is ready for production
-// import { useDebouncedUserExists } from "@/shared/apiServices/user";
-// import { MdCheckCircle, MdCancel } from "react-icons/md";
+import { ClientTypeEnum } from "./types";
+import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
 
 /**
  * Email field component with real-time availability validation
@@ -27,11 +25,6 @@ import { useMemo } from "react";
  * NOTE: User availability API is currently commented out.
  * When ready, uncomment the useDebouncedUserExists hook and related UI elements.
  */
-import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
-
-
-import { ClientTypeEnum } from "./types";
-
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
