@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
-import type { ClientBasicDetails } from "./types";
+import { type ClientBasicDetails, ClientTypeEnum } from "./types";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 
 /**
@@ -45,6 +45,11 @@ const BasicDetails = () => {
     setToken,
   } = useClientRegistrationStore();
 
+  const getClientTypeFromRole = (role?: string): ClientTypeEnum => {
+    if (role?.toLowerCase() === "corporate") return ClientTypeEnum.CORPORATE;
+    return ClientTypeEnum.HOME;
+  };
+
   const formCtx = useForm<ClientBasicDetails>({
     defaultValues: {
       // Common fields - restored from store
@@ -56,10 +61,11 @@ const BasicDetails = () => {
       city: city || "",
       postalCode: postalCode || "",
       address: address || "",
+      clientType: getClientTypeFromRole(params.role),
+      businessType: "",
 
       companyName: companyName || "",
       contactPersonName: contactPersonName || "",
-      businessType: params.role || "HOME",
       industry: industry || "",
       vat: vat || "",
       vatRegistrationNumber: vatRegistrationNumber || "",
@@ -170,7 +176,7 @@ const BasicDetails = () => {
 
   // Build API data based on client type (discriminated union)
   const buildApiData = (data: ClientBasicDetails) => {
-    const clientType = (data.businessType?.toLowerCase() || "home") as "home" | "corporate";
+    const clientType = data.clientType || ClientTypeEnum.HOME;
 
     const baseFields = {
       name: data.contactPersonName || data.fullName || "",
@@ -183,20 +189,21 @@ const BasicDetails = () => {
       postalCode: data.postalCode || "",
     };
 
-    return clientType === "corporate"
+    return clientType === ClientTypeEnum.CORPORATE
       ? {
         ...baseFields,
-        clientType: "corporate" as const,
+        clientType: "corporate" as const, // API expects string literal "corporate"
         companyName: data.companyName || "",
         personName: data.contactPersonName || data.fullName || "",
         address: data.address || "",
         industryId: getIdValue(data.industry),
         documentType: getStringValue(data.vat) || undefined,
         documentNumber: data.vatRegistrationNumber || undefined,
+        businessType: getStringValue(data.businessType) || undefined,
       }
       : {
         ...baseFields,
-        clientType: "home" as const,
+        clientType: "home" as const, // API expects string literal "home"
       };
   };
 

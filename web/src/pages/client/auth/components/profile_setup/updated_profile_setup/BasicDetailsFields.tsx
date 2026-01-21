@@ -12,10 +12,9 @@ import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import {
-  useIndustries,
   useVatOptions,
 } from "@/shared/apiServices/client/clientService";
-import { useCities, useCountries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
+import { useCities, useCountries, useIndustries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
 import { useMemo } from "react";
 
 // TODO: Uncomment when user availability check API is ready for production
@@ -31,15 +30,16 @@ import { useMemo } from "react";
 import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
 
 
+import { ClientTypeEnum } from "./types";
+
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
-  const watchedRole = watch("businessType");
-  // Default to URL role if set, otherwise fallback to watched value or "home"
-  const urlRole = window.location.pathname.includes("corporate")
-    ? "CORPORATE"
+  const watchedRole = watch("clientType");
+  const urlRole = window.location.pathname.includes(ClientTypeEnum.CORPORATE)
+    ? ClientTypeEnum.CORPORATE
     : undefined;
-  const role = urlRole || watchedRole || "HOME";
+  const role = urlRole || watchedRole || ClientTypeEnum.HOME;
 
   const country = watch("country");
   const selectedState = watch("state");
@@ -50,16 +50,16 @@ const BasicDetailsFields = () => {
   const statesQuery = useStates(parentCountryId);
   const parentStateId = selectedState?.value ?? selectedState;
   const citiesQuery = useCities(parentStateId);
+  const industryQuery = useIndustries();
 
   const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
   const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
   const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
+  const industries = useMemo(() => (industryQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [industryQuery.data]);
 
   const statesLoading = statesQuery.isLoading;
   const citiesLoading = citiesQuery.isLoading;
 
-  const { data: industries = [], isLoading: industriesLoading } =
-    useIndustries();
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
@@ -68,29 +68,29 @@ const BasicDetailsFields = () => {
         <div className="flex gap-2 text-center justify-center mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
-      ${role === "HOME"
+      ${role === ClientTypeEnum.HOME
                 ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
                 : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
               }`}
-            onClick={() => setValue("businessType", "HOME")}
+            onClick={() => setValue("clientType", ClientTypeEnum.HOME)}
           >
             Home Client
           </div>
 
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
-      ${role === "CORPORATE"
+      ${role === ClientTypeEnum.CORPORATE
                 ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
                 : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
               }`}
-            onClick={() => setValue("businessType", "CORPORATE")}
+            onClick={() => setValue("clientType", ClientTypeEnum.CORPORATE)}
           >
             Corporate Client
           </div>
         </div>
       )}
 
-      {role === "CORPORATE" ? (
+      {role === ClientTypeEnum.CORPORATE ? (
         <>
           <InputField
             required
@@ -169,7 +169,7 @@ const BasicDetailsFields = () => {
       />
 
       {/* Corporate-only fields */}
-      {role === "CORPORATE" && (
+      {role === ClientTypeEnum.CORPORATE && (
         <>
           <SelectField
             name="businessType"
@@ -177,8 +177,10 @@ const BasicDetailsFields = () => {
             label="Business Type"
             disabled={!!urlRole} // Disable if fixed by URL
             options={[
-              { value: "CORPORATE", label: "Corporate" },
-              { value: "HOME", label: "Home" },
+              { value: "PRIVATE", label: "Private" },
+              { value: "GOVERNMENT", label: "Government" },
+              { value: "NGO", label: "NGO" },
+              { value: "OTHER", label: "Other" },
             ]}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
@@ -186,13 +188,13 @@ const BasicDetailsFields = () => {
           <SelectField
             name="industry"
             placeholder={
-              industriesLoading ? "Loading industries..." : "Select Industry"
+              industryQuery.isLoading ? "Loading industries..." : "Select Industry"
             }
             options={industries}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
             label="Industry"
-            disabled={industriesLoading}
+            disabled={industryQuery.isLoading}
           />
 
           <InputField
@@ -206,20 +208,18 @@ const BasicDetailsFields = () => {
 
           <SelectField
             name="vat"
-            placeholder={
-              vatLoading ? "Loading VAT options..." : "Select VAT Document"
-            }
+            placeholder={"Tax Document"}
             options={vatOptions}
             required
-            label="VAT"
+            label="Tax Document"
             disabled={vatLoading}
           />
           <InputField
-            name="vatRegistrationNumber"
+            name="RegistrationNumber"
             type="text"
-            placeholder="VAT Registration Number"
+            placeholder="Registration Number"
             required
-            label="VAT Registration Number"
+            label="Registration Number"
             rules={{ validate: (v: string) => validateVatNumber(v) }}
           />
         </>
