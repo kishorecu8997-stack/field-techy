@@ -1,6 +1,8 @@
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import useDrawerStore from "../store/useDrawerStore";
 import { Button } from "./commonUI/Buttons";
 import Drawer from "./drawer/Drawer";
+import { useState } from "react";
 
 interface EarningsData {
   balance: number;
@@ -20,6 +22,7 @@ interface WalletCardProps {
  */
 export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
   const { setActiveKey, setISOpenSidebar, isOpenSidebar } = useDrawerStore();
+  const [showBalance, setShowBalance] = useState<boolean>(false);
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -39,17 +42,36 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
         </Button>
       </div>
 
-      <div className="text-center mb-4">
+      <div className="mb-4">
         <p className="text-xs text-gray-500 dark:text-gray-400">
           Current Balance
         </p>
-        <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-          $
-          {earnings.balance.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
+            {showBalance ? (
+              <>
+                $
+                {earnings.balance.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </>
+            ) : (
+              <>******</>
+            )}
+          </p>
+          {!showBalance ? (
+            <BsEyeSlashFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(true)}
+            />
+          ) : (
+            <BsEyeFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(false)}
+            />
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
