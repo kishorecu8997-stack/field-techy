@@ -19,6 +19,12 @@ interface DocumentFormData {
   certificate: FileList | null;
 }
 
+interface UploadProgress {
+  percentage?: number;
+  loaded?: number;
+  total?: number;
+}
+
 /**
  * Document upload component for engineer registration.
  *
@@ -35,7 +41,6 @@ const BasicDocuments = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const engineerId = searchParams.get("id");
-
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
     {},
@@ -58,17 +63,20 @@ const BasicDocuments = () => {
       setUploadingDoc(null);
       toast.success("File uploaded successfully!");
     },
-    onError: (error: any) => {
-      console.error("Upload failed:", error);
+    onError: () => {
       setUploadingDoc(null);
       toast.error("Failed to upload file");
     },
-    onProgress: (progress: any) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
-    },
+
+    onProgress: (progress: UploadProgress) => {
+  if (!uploadingDoc || !progress.percentage) return;
+
+  setUploadProgress((prev) => ({
+    ...prev,
+    [uploadingDoc]: progress.percentage!,
+  }));
+},
+
   });
 
   const handleSkip = () => {
