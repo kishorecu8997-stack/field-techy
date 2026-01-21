@@ -46,7 +46,7 @@ export const TagSelectField = ({
   options = [],
   disabled = false,
 }: TagSelectFieldProps) => {
-  const { control } = useFormContext();
+  const { control,clearErrors } = useFormContext();
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
@@ -73,6 +73,9 @@ export const TagSelectField = ({
 
     const newValue = [...value, tagValue];
     onChange(newValue);
+    if (newValue.length > 0) {
+    clearErrors(name);
+  }
     setSelectedOption("");
   };
 

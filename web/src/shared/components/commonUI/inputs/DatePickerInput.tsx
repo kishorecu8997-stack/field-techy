@@ -28,7 +28,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   rules,
   containerClassName = "flex flex-col py-1 w-full",
 }) => {
-  const { control} = useFormContext();
+  const { control } = useFormContext();
 
   let requiredMessage: string | false = false;
   if (typeof required === "string") requiredMessage = required;
@@ -59,7 +59,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           label={label}
           isShowLabel={isShowLabel}
           required={required}
-          />
+        />
       )}
     />
   );
@@ -167,10 +167,10 @@ const DatePickerRender: FC<{
     const parsed = parseDate(text);
     if (parsed && isDateValid(parsed, minDate, maxDate)) {
       onChange(parsed);
-      trigger(name); 
+      trigger(name);
     } else if (text === "") {
       onChange(null);
-      trigger(name); 
+      trigger(name);
     }
   };
 
@@ -180,7 +180,7 @@ const DatePickerRender: FC<{
     if (isDateValid(date, minDate, maxDate)) {
       onChange(date);
       setIsOpen(false);
-       trigger(name);
+      trigger(name);
     }
   };
 

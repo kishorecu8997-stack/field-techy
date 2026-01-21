@@ -6,7 +6,7 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
-
+import { useMemo } from "react";
 /*
  *  Client Fields
  *    - Displays a form to add client details
@@ -17,6 +17,25 @@ import SectionHeader from "../SectionHeader";
  *  */
 const ClientFields = () => {
   const ctx = useFormContext();
+  const startDate = ctx.watch("startDate");
+
+  const minStartTime = useMemo(() => {
+      if (!startDate) return undefined; //updated one
+      if (startDate) {
+        const selectedDate = new Date(startDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+        if (selectedDate.getTime() === today.getTime()) {
+          const now = new Date();
+          now.setMinutes(now.getMinutes() + 1);
+          const hours = now.getHours().toString().padStart(2, "0");
+          const minutes = now.getMinutes().toString().padStart(2, "0");
+          return `${hours}:${minutes}`;
+        }
+      }
+      return undefined;
+    }, [startDate]);
 
   return (
     <div className="flex flex-col h-full gap-2">
@@ -55,6 +74,7 @@ const ClientFields = () => {
                     label="Start Date"
                     placeholder="Select start date"
                     {...field}
+                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                     required
                   />
                 </>
@@ -62,7 +82,12 @@ const ClientFields = () => {
             />
           </div>
           <div className="w-full">
-            <CustomTimePicker label="Start Time" name="startTime" required />
+            <CustomTimePicker 
+            label="Start Time" 
+            name="startTime" 
+            required
+            minTime={minStartTime}
+            />
           </div>
         </div>
       </div>

@@ -9,7 +9,6 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
-import { validateDateRange } from "@/utils/validate";
 import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -376,10 +375,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     name="JobOccurrenceEndDate"
                     rules={{
                       validate: (value) =>
-                        validateDateRange(
-                          value,
-                          ctx.getValues("JobOccurrenceEndDate"),
-                        ),
+                            validateCurrentOrFutureDate(value),
                     }}
                     control={ctx.control}
                     render={({ field }) => (
@@ -417,10 +413,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         name="startDate"
                         rules={{
                           validate: (value) =>
-                            validateDateRange(
-                              value,
-                              ctx.getValues("startDate"),
-                            ),
+                            validateCurrentOrFutureDate(value),
                         }}
                         control={ctx.control}
                         render={({ field }) => (
@@ -492,7 +485,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       name="startDate"
                       rules={{
                         validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                            validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -528,7 +521,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       name="endDate"
                       rules={{
                         validate: (value) =>
-                          validateDateRange(value, ctx.getValues("endDate")),
+                            validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       render={({ field }) => (

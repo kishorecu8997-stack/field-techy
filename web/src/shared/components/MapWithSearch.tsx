@@ -15,6 +15,7 @@ import type { MapComponentProps } from "./type";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { Button } from "../components/commonUI/Buttons";
 
 // Fix default icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -42,7 +43,7 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.touchZoom.disable();
 
       // Remove zoom control visually
-      //@ts-ignore
+
       map.zoomControl?.remove();
     } else {
       map.dragging.enable();
@@ -53,7 +54,7 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.touchZoom.enable();
 
       // Re-enable zoom control
-      //@ts-ignore
+
       map.zoomControl?.addTo(map);
     }
   }, [viewOnly, map]);
@@ -135,7 +136,7 @@ const MapSearchBar: React.FC<{
 
   return (
     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] md:w-72 xl:w-full max-w-md">
-      <div className="relative w-9/12 mx-auto">
+      <div className="relative w-full">
         <input
           type="text"
           value={query}
@@ -147,7 +148,19 @@ const MapSearchBar: React.FC<{
           placeholder="Search location..."
           className="w-full py-2 px-4 border bg-white dark:bg-gray-800 rounded-lg shadow-md text-sm"
         />
-
+        {query && (
+          <Button
+            type="button"
+            onClick={() => {
+              setQuery("");
+              setSuggestions([]);
+              setUserTyping(false);
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-5 h-5 flex items-center justify-center p-0"
+          >
+            ×
+          </Button>
+        )}
         {suggestions.length > 0 && (
           <ul className="absolute mt-1 w-full bg-white dark:bg-gray-800 dark:text-white shadow-lg rounded-md border max-h-56 overflow-y-auto">
             {suggestions.map((item, index) => (
