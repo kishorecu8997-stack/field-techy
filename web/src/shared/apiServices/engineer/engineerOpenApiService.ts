@@ -83,11 +83,11 @@ export function useSendOtp(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async ({ type, token }: { type: SendOtpType; token: string }) => {
+    mutationFn: async ({ type, token }: { type: SendOtpType; token?: string }) => {
       const response = await appSendOtp({
         client: apiClient,
         body: { type },
-        headers: { authorization: `Bearer ${token}` },
+        headers: { authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppSendOtpResponse;
@@ -107,11 +107,11 @@ export function useVerifyOtp(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async ({ type, code, token }: { type: SendOtpType; code: string; token: string }) => {
+    mutationFn: async ({ type, code, token }: { type: SendOtpType; code: string; token?: string }) => {
       const response = await appVerifyOtp({
         client: apiClient,
         body: { type, code },
-        headers: { authorization: `Bearer ${token}` },
+        headers: { authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppVerifyOtpResponse;
