@@ -72,15 +72,6 @@ export class EngineerRouteStrategy implements RouteStrategy {
           },
         ],
       },
-      // Public static pages (accessible without authentication)
-      {
-        path: absoluteUrls.engineer.auth.terms_and_conditions,
-        element: withSuspense(Components.EngineerTermsAndConditions),
-      },
-      {
-        path: absoluteUrls.engineer.auth.privacy_policy,
-        element: withSuspense(Components.EngineerPrivacyPolicy),
-      },
     ];
   }
 

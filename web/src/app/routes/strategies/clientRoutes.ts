@@ -68,19 +68,6 @@ export class ClientRouteStrategy implements RouteStrategy {
           },
         ],
       },
-      // Public static pages (accessible without authentication)
-      {
-        path: absoluteUrls.client.auth.terms_and_conditions,
-        element: withSuspense(Components.ClientTermsAndConditions),
-      },
-      {
-        path: absoluteUrls.client.home.privacy_policy,
-        element: withSuspense(Components.ClientPrivacyPolicy),
-      },
-      {
-        path: absoluteUrls.client.home.faq,
-        element: withSuspense(Components.ClientFAQ),
-      },
     ];
   }
 
