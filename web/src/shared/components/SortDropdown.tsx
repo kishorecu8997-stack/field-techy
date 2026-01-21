@@ -34,31 +34,30 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     { value: SORT_OPTIONS.SALARY, label: "Salary" },
     { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
-    useEffect(() => {
-      if (isOpen && buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
-        });
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    }
+  }, [isOpen]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        !buttonRef.current?.contains(event.target as Node) &&
+        !dropdownRef.current?.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
       }
-    }, [isOpen]);
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          isOpen &&
-          !buttonRef.current?.contains(event.target as Node) &&
-          !dropdownRef.current?.contains(event.target as Node)
-        ) {
-          setIsOpen(false);
-        }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-    const dropdown = isOpen ? (
+  const dropdown = isOpen ? (
     <div
       ref={dropdownRef}
       className="absolute bg-white border border-gray-200 rounded-md shadow-xl z-50 w-48"

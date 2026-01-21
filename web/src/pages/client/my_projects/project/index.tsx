@@ -4,7 +4,10 @@ import ProjectCard from "./ProjectCard";
 import { projectData } from "@/dummy_data/client/myProject";
 import type { Project } from "../types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS,type SortOption } from "@/pages/engineer/search_result/types";
+import {
+  SORT_OPTIONS,
+  type SortOption,
+} from "@/pages/engineer/search_result/types";
 import { NavLink, useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
@@ -15,50 +18,49 @@ import { absoluteUrls } from "@/config/urls";
  */
 const MyProjects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [currentSort, setCurrentSort] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
+  const [currentSort, setCurrentSort] = useState<SortOption>(
+    SORT_OPTIONS.RELEVANCE,
+  );
   const navigate = useNavigate();
 
   const filteredJobs = useMemo(() => {
-  let base: Project[];
+    let base: Project[];
     if (activeFilter === "All") {
       base = projectData as Project[];
     } else {
       base = (projectData as Project[]).filter(
-      (project) => project.status === activeFilter,
-    );
-  }
-
-  let data = [...base]; // always clone fresh
-
-  switch (currentSort) {
-    case SORT_OPTIONS.DATE:
-      data.sort(
-        (a, b) =>
-          new Date(b.duration.start).getTime() -
-          new Date(a.duration.start).getTime(),
+        (project) => project.status === activeFilter,
       );
-      break;
+    }
 
-    case SORT_OPTIONS.SALARY:
-      data.sort((a, b) => {
-        const getNum = (v: string) =>
-          Number(v.replace(/[^0-9]/g, ""));
-        return getNum(b.budget) - getNum(a.budget);
-      });
-      break;
+    let data = [...base];
 
-    case SORT_OPTIONS.DISTANCE:
-      data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
-      break;
+    switch (currentSort) {
+      case SORT_OPTIONS.DATE:
+        data.sort(
+          (a, b) =>
+            new Date(b.duration.start).getTime() -
+            new Date(a.duration.start).getTime(),
+        );
+        break;
 
-    case SORT_OPTIONS.RELEVANCE:
-    default:
-      // base order = relevance; no additional sorting needed
-      break;
-  }
+      case SORT_OPTIONS.SALARY:
+        data.sort((a, b) => {
+          const getNum = (v: string) => Number(v.replace(/[^0-9]/g, ""));
+          return getNum(b.budget) - getNum(a.budget);
+        });
+        break;
 
-  return data;
-}, [activeFilter, currentSort]);
+      case SORT_OPTIONS.DISTANCE:
+        data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+        break;
+
+      default:
+        break;// relevance = base order, nothing to sort
+    }
+
+    return data;
+  }, [activeFilter, currentSort]);
 
   const jobFilters = ["All", "In-Progress", "Completed"];
 

@@ -23,10 +23,10 @@ import { useFormContext, useWatch } from "react-hook-form";
  * @returns {JSX.Element} Engineer selection and group picker section
  */
 export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
-  const { control } = useFormContext(); // get the form context
+  const { control } = useFormContext(); 
   const engineersNeededFrom = useWatch({
     control,
-    name: "engineersNeededFrom", // watch the radio field
+    name: "engineersNeededFrom", 
     defaultValue: "all",
   });
 

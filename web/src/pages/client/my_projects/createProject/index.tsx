@@ -45,7 +45,6 @@ export default function CreateProject() {
     console.log("reviewProject", data);
     setIsDisable(true);
 
-    // Scroll to top smoothly
     window.scrollTo({
       top: 0,
       behavior: "smooth",
