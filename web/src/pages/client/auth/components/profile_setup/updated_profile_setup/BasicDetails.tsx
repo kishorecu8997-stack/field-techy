@@ -1,5 +1,5 @@
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
-import { useRegisterClient } from "@/shared/apiServices/client/clientService";
+import { useRegisterClient } from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
@@ -59,7 +59,7 @@ const BasicDetails = () => {
 
       companyName: companyName || "",
       contactPersonName: contactPersonName || "",
-      businessType: params.role || "home",
+      businessType: params.role || "HOME",
       industry: industry || "",
       vat: vat || "",
       vatRegistrationNumber: vatRegistrationNumber || "",

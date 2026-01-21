@@ -1,4 +1,3 @@
-import countries from "@/dummy_data/countries";
 import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import {
   validateAddress,
@@ -13,11 +12,11 @@ import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import {
-  useStates,
-  useCities,
   useIndustries,
   useVatOptions,
 } from "@/shared/apiServices/client/clientService";
+import { useCities, useCountries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
+import { useMemo } from "react";
 
 // TODO: Uncomment when user availability check API is ready for production
 // import { useDebouncedUserExists } from "@/shared/apiServices/user";
@@ -46,12 +45,19 @@ const BasicDetailsFields = () => {
   const selectedState = watch("state");
 
   // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value,
-  );
-  const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState,
-  );
+  const countriesQuery = useCountries();
+  const parentCountryId = country?.value ?? country;
+  const statesQuery = useStates(parentCountryId);
+  const parentStateId = selectedState?.value ?? selectedState;
+  const citiesQuery = useCities(parentStateId);
+
+  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
+  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
+  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
+
+  const statesLoading = statesQuery.isLoading;
+  const citiesLoading = citiesQuery.isLoading;
+
   const { data: industries = [], isLoading: industriesLoading } =
     useIndustries();
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
@@ -137,7 +143,7 @@ const BasicDetailsFields = () => {
         options={states}
         required
         label="State"
-        disabled={statesLoading}
+        disabled={statesLoading || !country}
       />
       <SelectField
         name="city"

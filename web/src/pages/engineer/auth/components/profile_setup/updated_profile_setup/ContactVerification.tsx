@@ -1,21 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 
 // TODO: Uncomment when OTP API is ready for production
 import {
   useSendOtp,
-  useVerifyOtp,
-  type SendOtpType,
+  useVerifyOtp
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import { absoluteUrls } from "@/config/urls";
-import { buildQuery } from "@/utils";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
+import { buildQuery } from "@/utils";
 
 interface VerificationCardProps {
   type: "email" | "phone";

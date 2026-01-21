@@ -57,15 +57,15 @@ const LoginWithNumber = ({
   });
   const otpfor = method.watch("otp");
   // const setUserSession = useUserSessionStore((s) => s.setSession);
-  const [requestData, setRequestData] = useState<string | undefined>();
+  // const [requestData, setRequestData] = useState<string | undefined>(); // Unused
 
   const { mutateAsync: sendOtp, isPending: isSending } = useSendOtp();
-  const { mutateAsync: verifyOtp, isPending: isVerifying } = useVerifyOtp();
+  const { mutateAsync: verifyOtp } = useVerifyOtp();
 
   const handleSubmit = async (data: LoginFormData) => {
     const value = data.email ? data.email : data.phone;
     console.log("value :", value);
-    setRequestData(value);
+    // setRequestData(value);
 
     // Determine type based on input (simplified check, ideal would be based on which field was filled)
     // Here we use otpfor but 'value' holds the actual contact string
@@ -101,6 +101,12 @@ const LoginWithNumber = ({
       // Assuming successful verification leads to dashboard for now.
       // setUserSession(response); 
 
+      const phoneNumber = method.getValues("phone");
+      if (phoneNumber) {
+        detectAndStoreCurrency(phoneNumber);
+        getCurrencyFromStorage();
+      }
+
       navigate(absoluteUrls.engineer.home.dashboard);
       toast.success("Logged in successfully");
     } catch (error) {
@@ -109,6 +115,18 @@ const LoginWithNumber = ({
       toast.error(errorMessage);
     }
   };
+
+  const onResendOtp = async () => {
+    const type = otpfor === 'email' ? 'email' : 'phone';
+    try {
+      await sendOtp({ type });
+      toast.success("OTP Requested, kindly check your phone for OTP");
+    } catch (error) {
+      console.error(error);
+      toast.error("OTP Request failed");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center w-full">
       <div className="p-10 w-full max-w-lg">
@@ -156,6 +174,7 @@ const LoginWithNumber = ({
 
           <Button
             type="submit"
+            loading={isSending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Send OTP
@@ -177,13 +196,8 @@ const LoginWithNumber = ({
               }. Please check your ${otpfor === "phoneNumber" ? "phone" : "email"
               }.`}
             onClose={() => setIsOpen(false)}
-            onSubmit={(data) => {
-              handleOtpSubmission(data.otp);
-              const phoneNumber = method.getValues("phone");
-              detectAndStoreCurrency(phoneNumber);
-              getCurrencyFromStorage();
-              toast.success("Logged in successfully");
-            }}
+            onSubmit={(data) => handleOtpSubmission(data.otp)}
+            onResend={onResendOtp}
           />
         </Popup>
       </div>

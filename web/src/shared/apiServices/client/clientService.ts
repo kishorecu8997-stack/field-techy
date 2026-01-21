@@ -1,8 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ClientAdapter } from "./clientAdapter";
 import type { LoginFormData } from "@/pages/engineer/auth/components/types";
-import { appRegisterClient, type AppRegisterClientData, type AppRegisterClientResponse } from "@/api";
-import { createClient } from "@/api/client";
 import type {
   ClientData,
   ClientFileUploadParams,
@@ -12,9 +10,9 @@ import type {
 } from "./clientTypes";
 
 // Create API client for OpenAPI calls
-const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
-});
+// const apiClient = createClient({
+//   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+// });
 
 export const CLIENT_QUERY_KEYS = {
   all: ["clients"] as const,
@@ -40,29 +38,7 @@ export function useClientSignup(options?: {
  * TanStack Query mutation hook using OpenAPI generated appRegisterClient
  * This wraps the auto-generated SDK function with React Query for caching and state management
  */
-export type RegisterClientBody = NonNullable<AppRegisterClientData["body"]>;
-
-export function useRegisterClient(options?: {
-  onSuccess?: (data: AppRegisterClientResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  const queryClientInstance = useQueryClient();
-  return useMutation({
-    mutationFn: async (body: RegisterClientBody) => {
-      const response = await appRegisterClient({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppRegisterClientResponse;
-    },
-    onSuccess: (data) => {
-      queryClientInstance.invalidateQueries({ queryKey: CLIENT_QUERY_KEYS.all });
-      options?.onSuccess?.(data);
-    },
-    onError: options?.onError,
-  });
-}
+// useRegisterClient moved to clientOpenApiService.ts
 
 export function useClientSignin(options?: {
   onSuccess?: (data: any) => void;
