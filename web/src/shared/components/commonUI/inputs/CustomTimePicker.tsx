@@ -224,7 +224,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                      : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
                  }`}
               >
-                <span className="text-gray-900 text-base">
+                <span className="text-gray-900 dark:text-gray-100 text-base">
                   {rawValue
                     ? `${displayHour}:${displayMinute} ${displayPeriod}`
                     : "--:--"}

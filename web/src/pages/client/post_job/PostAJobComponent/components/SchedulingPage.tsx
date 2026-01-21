@@ -233,7 +233,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
           <InputField
             disabled={true}
             name={"jobDuration"}
-            required
             label={"Job Duration"}
             placeholder={"Enter Job Duration"}
           />

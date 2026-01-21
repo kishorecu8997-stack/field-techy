@@ -51,7 +51,7 @@ export const SelectField = ({
   multiple = false,
   disabled = false,
 }: SelectFieldProps & { multiple?: boolean }) => {
-  const { control } = useFormContext();
+  const { control, clearErrors } = useFormContext();
   const [search, setSearch] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef(false);
@@ -166,6 +166,9 @@ export const SelectField = ({
                 onChange("");
               }
             }
+            
+    clearErrors?.(name);
+  
           };
 
           const displayLabel = multiple

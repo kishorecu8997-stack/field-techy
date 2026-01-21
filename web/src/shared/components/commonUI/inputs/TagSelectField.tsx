@@ -105,7 +105,8 @@ export const TagSelectField = ({
           const availableOptions = options.filter(
             (opt) => !value.includes(opt.value),
           );
-
+          const allSelected = availableOptions.length === 0;
+          
           return (
             <>
               {/* Select wrapper */}
@@ -119,7 +120,7 @@ export const TagSelectField = ({
                 {/* Wrapper for custom arrow */}
                 <div className="relative">
                   <select
-                    disabled={disabled}
+                    disabled={disabled || allSelected}
                     value={selectedOption}
                     onChange={(e) => {
                       const selected = e.target.value;
