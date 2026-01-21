@@ -2,9 +2,6 @@ import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
-import { transactions } from "@/dummy_data/bankDetails";
-import { getMonthlyEarnings } from "@/shared/libs/utils";
-import type { MonthlyData } from "@/shared/libs/utils";
 import React, { useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
@@ -17,15 +14,6 @@ import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
 import type { Job } from "../search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -43,21 +31,6 @@ const Dashboard: React.FC = () => {
     [],
   );
 
-  const monthlyEarningsData: MonthlyData[] = useMemo(() => {
-    const formatted = transactions.map((tx) => ({
-      date:
-        typeof tx.date === "string"
-          ? tx.date
-          : (tx.date as Date).toISOString().split("T")[0],
-      amount: tx.amount,
-    }));
-    return getMonthlyEarnings(formatted);
-  }, []);
-
-  const totalEarnings = useMemo(
-    () => monthlyEarningsData.reduce((sum, item) => sum + item.earnings, 0),
-    [monthlyEarningsData],
-  );
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();
@@ -84,7 +57,6 @@ const Dashboard: React.FC = () => {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold">Job Overview</h1>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {jobOverviewData.map((job) => (
                 <JobOverviewCard
@@ -97,81 +69,8 @@ const Dashboard: React.FC = () => {
                 />
               ))}
             </div>
-
-            {/* Monthly Earnings Chart */}
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Monthly Earnings</h2>
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div className="flex justify-between items-end mb-6">
-                  <div>
-                    <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">
-                      ${totalEarnings.toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Total earnings
-                    </p>
-                  </div>
-                  {monthlyEarningsData.length > 0 && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Up to{" "}
-                      {
-                        monthlyEarningsData[monthlyEarningsData.length - 1]
-                          .month
-                      }
-                    </p>
-                  )}
-                </div>
-
-                {monthlyEarningsData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={monthlyEarningsData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fontSize: 12 }}
-                        stroke="#888"
-                      />
-                      <YAxis
-                        tick={{ fontSize: 12 }}
-                        stroke="#888"
-                        tickFormatter={(value: number) =>
-                          value >= 1000
-                            ? `$${(value / 1000).toFixed(0)}k`
-                            : `$${value}`
-                        }
-                      />
-                      {/* FIXED TOOLTIP */}
-                      <Tooltip
-                        formatter={(value: any) => {
-                          if (typeof value === "number") {
-                            return `$${value.toLocaleString()}`;
-                          }
-                          return "$0";
-                        }}
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.95)",
-                          border: "1px solid #ccc",
-                          borderRadius: "8px",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="earnings"
-                        stroke="#10b981"
-                        strokeWidth={3}
-                        dot={{ fill: "#10b981", r: 6 }}
-                        activeDot={{ r: 8 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-72 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                    No earnings data available yet.
-                  </div>
-                )}
-              </div>
-            </div>
-
+            
+          
             {/* Rest of your dashboard sections (unchanged) */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
@@ -200,7 +99,6 @@ const Dashboard: React.FC = () => {
                 ))}
               </NavLink>
             </div>
-
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
