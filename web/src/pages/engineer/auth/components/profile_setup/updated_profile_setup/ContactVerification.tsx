@@ -9,7 +9,7 @@ import {
   useSendOtp,
   useVerifyOtp,
   type SendOtpType,
-} from "@/shared/apiServices/engineer/engineerService";
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";

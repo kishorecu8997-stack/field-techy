@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { useRegisterEngineer } from "@/shared/apiServices/engineer/engineerService";
+import { useRegisterEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
