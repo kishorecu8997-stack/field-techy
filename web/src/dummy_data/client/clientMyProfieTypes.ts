@@ -4,45 +4,7 @@ export interface BusinessType {
   description: string;
 }
 
-export const BUSINESS_TYPES: BusinessType[] = [
-  {
-    id: "retail",
-    name: "Retail",
-    description: "Businesses that sell goods directly to consumers.",
-  },
-  {
-    id: "hospitality",
-    name: "Hospitality",
-    description: "Hotels, restaurants, and other service-oriented businesses.",
-  },
-  {
-    id: "manufacturing",
-    name: "Manufacturing",
-    description: "Companies that produce goods from raw materials.",
-  },
-  {
-    id: "tech",
-    name: "Technology",
-    description: "Software, hardware, and IT services companies.",
-  },
-  {
-    id: "healthcare",
-    name: "Healthcare",
-    description: "Medical and health-related service providers.",
-  },
-  {
-    id: "service",
-    name: "Service",
-    description:
-      "Businesses offering professional or personal services (e.g., consulting, cleaning, legal, etc.).",
-  },
-  {
-    id: "maintenance",
-    name: "Maintenance",
-    description:
-      "Companies providing repair, upkeep, or servicing of equipment, facilities, or systems.",
-  },
-];
+export const BUSINESS_TYPES: BusinessType[] = [];
 
 export interface Industry {
   id: string;

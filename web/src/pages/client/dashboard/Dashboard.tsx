@@ -26,6 +26,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -37,6 +39,15 @@ const Dashboard: React.FC = () => {
   const { locationPermission, notificationPermission } = useDeviceStore();
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
+  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
+  const token = localStorage.getItem("auth_token") || undefined;
+  const { data: clientInfo } = useClientGetCompanyInfo(token, !companyInfo);
+
+  useEffect(() => {
+    if (clientInfo && !companyInfo) {
+      setCompanyInfo(clientInfo);
+    }
+  }, [clientInfo, companyInfo, setCompanyInfo]);
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
@@ -65,9 +76,6 @@ const Dashboard: React.FC = () => {
   }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
-    // Show popup if either permission is in 'prompt' state (or not granted/denied explicitly yet)
-    // We can also check for 'denied' if we want to re-prompt, but usually we respect 'denied' until user resets.
-    // Here we check if it's 'prompt' or 'default'.
     if (
       locationPermission === "prompt" ||
       notificationPermission === "default"

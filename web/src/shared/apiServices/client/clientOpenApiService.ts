@@ -1,15 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   appLogin,
   appRegisterClient,
   appSendOtp,
   appVerifyOtp,
+  clientGetCompanyInfo,
+  clientUpdateCompanyInfo,
   type AppLoginData,
   type AppLoginResponse,
   type AppRegisterClientData,
   type AppRegisterClientResponse,
   type AppSendOtpResponse,
-  type AppVerifyOtpResponse
+  type AppVerifyOtpResponse,
+  type ClientGetCompanyInfoResponse,
+  type ClientUpdateCompanyInfoResponse,
+  type ClientUpdateCompanyInfoData,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { queryKeys } from "../queryKeys";
@@ -102,6 +107,55 @@ export function useVerifyOtp(options?: {
       return response.data as AppVerifyOtpResponse;
     },
     onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+
+export function useClientGetCompanyInfo(token?: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: queryKeys.client.companyInfo,
+    queryFn: async () => {
+      const response = await clientGetCompanyInfo({
+        client: apiClient,
+        headers: { authorization: `Bearer ${token || ""}` },
+        throwOnError: true,
+      });
+      return response.data as ClientGetCompanyInfoResponse;
+    },
+    enabled: enabled && !!token,
+  });
+}
+
+export type UpdateCompanyInfoBody = NonNullable<
+  ClientUpdateCompanyInfoData["body"]
+>;
+
+export function useClientUpdateCompanyInfo(options?: {
+  onSuccess?: (data: ClientUpdateCompanyInfoResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      body,
+      token,
+    }: {
+      body: UpdateCompanyInfoBody;
+      token?: string;
+    }) => {
+      const response = await clientUpdateCompanyInfo({
+        client: apiClient,
+        body,
+        headers: { authorization: `Bearer ${token || ""}` },
+        throwOnError: true,
+      });
+      return response.data as ClientUpdateCompanyInfoResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.companyInfo });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }

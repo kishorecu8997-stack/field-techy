@@ -22,8 +22,8 @@ export interface ClientBasicDetails {
   contactPersonName?: string;
   businessType?: string;
   industry?: string;
-  vat?: string | { value: string; label: string };
-  vatRegistrationNumber?: string;
+  documentType?: string | { value: string; label: string };
+  registrationNumber?: string;
 
   // Verification flags
   isEnableNotifications?: boolean;

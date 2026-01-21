@@ -67,8 +67,8 @@ const BasicDetails = () => {
       companyName: companyName || "",
       contactPersonName: contactPersonName || "",
       industry: industry || "",
-      vat: vat || "",
-      vatRegistrationNumber: vatRegistrationNumber || "",
+      documentType: vat || "",
+      registrationNumber: vatRegistrationNumber || "",
 
       password: "",
       confirmPassword: "",
@@ -197,8 +197,8 @@ const BasicDetails = () => {
         personName: data.contactPersonName || data.fullName || "",
         address: data.address || "",
         industryId: getIdValue(data.industry),
-        documentType: getStringValue(data.vat) || undefined,
-        documentNumber: data.vatRegistrationNumber || undefined,
+        documentType: getStringValue(data.documentType) || undefined,
+        documentNumber: data.registrationNumber || undefined,
         businessType: getStringValue(data.businessType) || undefined,
       }
       : {
@@ -222,8 +222,8 @@ const BasicDetails = () => {
         companyName: data.companyName,
         contactPersonName: data.contactPersonName,
         industry: getStringValue(data.industry),
-        vat: getStringValue(data.vat),
-        vatRegistrationNumber: data.vatRegistrationNumber,
+        vat: getStringValue(data.documentType),
+        vatRegistrationNumber: data.registrationNumber,
       });
     });
     return () => subscription.unsubscribe();

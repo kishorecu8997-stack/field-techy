@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from "react";
+import {
+  BUSINESS_TYPES,
+} from "@/dummy_data/client/clientMyProfieTypes";
+import { useClientUpdateCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import type { LookupItem } from "@/shared/hooks/useLookup";
+import { useCities, useCountries, useIndustries, useStates } from "@/shared/hooks/useLookup";
+import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
+import { TbFileText } from "react-icons/tb";
+import { toast } from "react-toastify";
 import {
   validateAddress,
   validateIsPhoneVerified,
@@ -11,14 +23,7 @@ import {
   validateVatNumber,
   validateZipcode,
 } from "../../Validate";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
-import { toast } from "react-toastify";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import countries, {
-  BUSINESS_TYPES,
-} from "@/dummy_data/client/clientMyProfieTypes";
-import { TbFileText } from "react-icons/tb";
+import { useVatOptions } from "@/shared/apiServices/client/clientService";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
@@ -32,9 +37,32 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
-  /**
-   * Initializes `react-hook-form` with default values for the personal information form.
-   */
+
+  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
+  const token = localStorage.getItem("auth_token") || undefined;
+
+  const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
+    onSuccess: () => {
+      toast.success("Profile Updated Successfully");
+      const data = methods.getValues();
+      if (companyInfo) {
+        setCompanyInfo({
+          ...companyInfo,
+          name: data.contactPersonName,
+          phoneNumber: data.phoneNumber,
+          ...("companyName" in companyInfo ? { companyName: data.companyName } : {}),
+          ...("personName" in companyInfo ? { personName: data.contactPersonName } : {}),
+          ...("address" in companyInfo ? { address: data.address } : {}),
+          ...("postalCode" in companyInfo ? { postalCode: data.postalCode } : {}),
+        } as any);
+      }
+      onMenuItemClick("clientAccount");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "Failed to update profile");
+    }
+  });
+
   const methods = useForm<PersonalInfo>({
     defaultValues: {
       companyName: "",
@@ -52,16 +80,80 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
     mode: "onSubmit",
   });
-  const { control, trigger } = methods;
+  const { control, trigger, reset } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const country = useWatch({ control, name: "country" });
+  const selectedState = useWatch({ control, name: "state" });
 
-  const handleSubmit = (data: PersonalInfo) => {
-    console.log("Form submitted with data:", data);
-    toast.success("Profile Updated Successfully");
-    onMenuItemClick("clientAccount");
+  // Fetch dropdown data from API
+  const countriesQuery = useCountries();
+  const parentCountryId = (typeof country === 'object' && country !== null && 'value' in country) ? (country as any).value : country;
+  const statesQuery = useStates(parentCountryId);
+  const parentStateId = (typeof selectedState === 'object' && selectedState !== null && 'value' in selectedState) ? (selectedState as any).value : selectedState;
+  const citiesQuery = useCities(parentStateId);
+  const industryQuery = useIndustries();
 
-    // TODO: Replace with actual submission logic (e.g., API call)
+  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
+  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
+  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
+  const industries = useMemo(() => (industryQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [industryQuery.data]);
+
+    const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
+  // Sync form with store data
+  useEffect(() => {
+    if (companyInfo) {
+      const isCorporate = companyInfo.clientType === 'corporate';
+      const info = companyInfo as any; // Cast for easier access to corporate fields
+      console.log('info :', info);
+
+      reset({
+        companyName: info.companyName || "",
+        contactPersonName: info.personName || info.name || "",
+        phoneNumber: info.phoneNumber || "",
+        businessType: isCorporate ? "1" : "2", // 1=Corporate, 2=Home based on options below
+        industry: info.industryId || "",
+        address: info.address || "",
+        country: info.countryId || "",
+        state: info.stateId || "",
+        city: info.cityId || "",
+        postalCode: info.postalCode || "",
+        taxDocument: info.documentType || "",
+        vatRegistrationNumber: info.documentNumber || "",
+      });
+
+      if (info.phoneNumber) {
+        setIsPhoneVerified(true);
+      }
+    }
+  }, [companyInfo, reset]);
+
+  const handleSubmit = async (data: PersonalInfo) => {
+    const isCorporate = data.businessType === "1"; // "1" is Corporate
+
+    // Helper to get ID
+    const getId = (val: any) => {
+      if (!val) return undefined;
+      const num = Number(val);
+      return isNaN(num) ? undefined : num;
+    };
+
+    await updateClient({
+      token,
+      body: {
+        clientType: isCorporate ? "corporate" : "home",
+        name: data.contactPersonName, // Login name update?
+        companyName: isCorporate ? data.companyName : undefined,
+        personName: data.contactPersonName,
+        address: data.address,
+        countryId: getId(data.country),
+        stateId: getId(data.state),
+        cityId: getId(data.city),
+        postalCode: data.postalCode,
+        industryId: isCorporate ? getId(data.industry) : undefined,
+        documentType: isCorporate ? data.taxDocument : undefined,
+        documentNumber: isCorporate ? data.vatRegistrationNumber : undefined,
+      }
+    });
   };
 
   useEffect(() => {
@@ -125,10 +217,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           name="industry"
           placeholder="Industry"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={[
-            { value: "1", label: "Information Technology" },
-            { value: "2", label: "Construction" },
-          ]}
+          options={industries}
           required
         />
         <InputField
@@ -144,29 +233,20 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           label="Country"
           name="country"
           placeholder="Country"
-          options={countries.map((e) => ({
-            value: e.value,
-            label: e.label,
-          }))}
+          options={countries}
           required
         />
         <SelectField
           name="state"
           placeholder="State"
-          options={[
-            { value: "1", label: "Maharashtra" },
-            { value: "2", label: "Manchester" },
-          ]}
+          options={states}
           required
           label="State"
         />
         <SelectField
           name="city"
           placeholder="City"
-          options={[
-            { value: "1", label: "Mumbai" },
-            { value: "2", label: "London" },
-          ]}
+          options={cities}
           required
           label="City"
         />
@@ -189,11 +269,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           label="Tax Document"
           name="taxDocument"
           placeholder="Tax Document(VAT)"
-          options={BUSINESS_TYPES.map((e) => ({
-            value: e.id,
-            label: e.name,
-          }))}
+          options={vatOptions}
           required
+          disabled={vatLoading}
         />
         <InputField
           name="vatRegistrationNumber"

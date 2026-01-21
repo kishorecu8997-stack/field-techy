@@ -207,7 +207,7 @@ const BasicDetailsFields = () => {
           />
 
           <SelectField
-            name="vat"
+            name="documentType"
             placeholder={"Tax Document"}
             options={vatOptions}
             required
@@ -215,7 +215,7 @@ const BasicDetailsFields = () => {
             disabled={vatLoading}
           />
           <InputField
-            name="RegistrationNumber"
+            name="registrationNumber"
             type="text"
             placeholder="Registration Number"
             required
