@@ -88,6 +88,7 @@ export default function JobPostDropdown({
             <Button
               variant="text"
               key={opt.value}
+              title={opt.tooltip}
               onClick={() => {
                 setSelected(opt);
                 setOpen(false);
