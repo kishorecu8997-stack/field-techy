@@ -1,18 +1,17 @@
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useForm, useFormState } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
-import { buildQuery } from "@/utils";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import { absoluteUrls } from "@/config/urls";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -82,7 +81,9 @@ const BasicDetails = () => {
       cardAddress: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
   // Signup mutation
   const { mutateAsync: signup, isPending: isSubmitting } = useClientSignup({
@@ -286,21 +287,89 @@ const BasicDetails = () => {
               name="termsAndConditions"
               required
               isShowLabel={false}
+              renderError={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
-            >
-              I agree to the{" "}
-              <NavLink
-                to={absoluteUrls.client.auth.terms_and_conditions}
-                className="text-blue-600 underline cursor-pointer"
+            <div className="text-sm text-gray-700 dark:text-gray-300 flex flex-wrap items-center gap-1">
+              <label htmlFor="termsAndConditions" className="cursor-pointer">
+                I agree to the
+              </label>
+              <button
+                type="button"
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                onClick={async (e) => {
+                  e.stopPropagation();
+
+                  try {
+                    await showPopup({
+                      title: "Terms and Conditions",
+                      body: (
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
+                          <p>
+                            At Job Portal (https://fieldtechy.com/), we respect
+                            your privacy. This policy explains what information
+                            we collect, how we use it, and how we protect it. It
+                            applies to visitors of our website and does not
+                            cover offline or other channels.
+                          </p>
+
+                          <p>
+                            <strong>Terms of Agreement:</strong> By using our
+                            site, you agree to our Privacy Policy and its terms.
+                          </p>
+
+                          <p>
+                            <strong>Protection of Minors:</strong> We do not
+                            knowingly collect personal data from children under
+                            13. Parents should supervise their children online.
+                            Contact us immediately if such data is submitted.
+                          </p>
+
+                          <p>
+                            <strong>Job Posting and Hiring:</strong> Clients
+                            must provide accurate job information. Field Techy
+                            may remove posts violating our rules. Once assigned,
+                            engineers and clients must communicate
+                            professionally and follow milestone payments.
+                          </p>
+
+                          <p>
+                            <strong>Cancellations & Privacy:</strong> We advise
+                            parents to monitor children's use. Personal data of
+                            children under 13 is removed upon request.
+                          </p>
+
+                          <p>
+                            By using our service, you agree to all applicable
+                            terms and conditions.
+                          </p>
+                        </div>
+                      ),
+                      actionButtons: [
+                        {
+                          label: "Close",
+                          value: null,
+                          variant: "primary",
+                        },
+                      ],
+                    });
+                  } catch (error) {
+                    console.error(
+                      "Failed to open Terms and Conditions popup:",
+                      error,
+                    );
+                  }
+                }}
               >
                 Terms and Conditions
-              </NavLink>
-            </label>
+              </button>
+            </div>
           </div>
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex-shrink-0 p-4">

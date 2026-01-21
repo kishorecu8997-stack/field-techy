@@ -20,6 +20,7 @@ export default function TalentSection() {
     {
       label: "Dedicated Job Service",
       value: CurrentLocation.dedicated,
+      tooltip: "Long-term job for your projects, lasting 6–24 months.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.dedicated);
@@ -28,6 +29,7 @@ export default function TalentSection() {
     {
       label: "Dispatch Job Service",
       value: CurrentLocation.dispatch,
+      tooltip: "Immediate job for urgent tasks, typically for one day.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.dispatch);
@@ -36,6 +38,8 @@ export default function TalentSection() {
     {
       label: "Scheduled Job Service",
       value: CurrentLocation.scheduled,
+      tooltip:
+        "Plan jobs in advance for future dates, with repeatable scheduling.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.scheduled);

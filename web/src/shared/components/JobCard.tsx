@@ -16,8 +16,10 @@ import {
 import LoaderComponent from "./commonUI/LoaderComponent";
 
 interface JobCardProps {
-  [key: string]: any;
+  jobId?: string;
+  status?: string;
   allocationType?: "Automatic" | "Manual";
+  [key: string]: unknown;
 }
 
 /**
