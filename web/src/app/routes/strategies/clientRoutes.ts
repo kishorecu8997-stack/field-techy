@@ -1,12 +1,12 @@
-import type { RouteObject } from "react-router-dom";
-import React from "react";
-import { absoluteUrls, BASE, urls } from "@/config/urls";
-import { UserRole } from "@/shared/enums/users";
-import { withSuspense } from "../WithSuspense";
-import ProtectedRoute from "@/layout/ProtectedRoute";
+import { BASE, urls } from "@/config/urls";
 import AuthRedirect from "@/layout/AuthRedirect";
+import ProtectedRoute from "@/layout/ProtectedRoute";
+import { UserRole } from "@/shared/enums/users";
+import React from "react";
+import type { RouteObject } from "react-router-dom";
 import type { RouteStrategy } from "../types/routeTypes";
 import * as Components from "../utils/lazyComponents";
+import { withSuspense } from "../WithSuspense";
 
 /**
  * Client Route Strategy

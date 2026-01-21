@@ -115,7 +115,7 @@ const PostAJobFields = ({
       { label: "Last Name", value: item.lastName },
       { label: "Email ID", value: item.email },
       { label: "Mobile Number", value: item.mobile },
-      { label: "Available Date", value: item.startDate },
+      { label: "Available Date", value: item.startDate?.toDateString() },
       { label: "Available Time", value: item.startTime },
     ],
     onEdit: () => {

@@ -1,4 +1,4 @@
-import { absoluteUrls, BASE, urls } from "@/config/urls";
+import { BASE, urls } from "@/config/urls";
 import AuthRedirect from "@/layout/AuthRedirect";
 import ProtectedRoute from "@/layout/ProtectedRoute";
 import { UserRole } from "@/shared/enums/users";
