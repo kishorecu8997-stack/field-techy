@@ -4,7 +4,7 @@ import ProjectCard from "./ProjectCard";
 import { projectData } from "@/dummy_data/client/myProject";
 import type { Project } from "../types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { SORT_OPTIONS } from "@/pages/engineer/search_result/types";
+import { SORT_OPTIONS,type SortOption } from "@/pages/engineer/search_result/types";
 import { NavLink, useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 
@@ -15,16 +15,52 @@ import { absoluteUrls } from "@/config/urls";
  */
 const MyProjects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [currentSort, setCurrentSort] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
   const navigate = useNavigate();
 
   const filteredJobs = useMemo(() => {
+  let base: Project[];
     if (activeFilter === "All") {
-      return projectData as Project[];
-    }
-    return (projectData as Project[]).filter(
+      base= projectData as Project[];
+    }else{
+      base=(projectData as Project[]).filter(
       (project) => project.status === activeFilter,
     );
-  }, [activeFilter]);
+  }
+
+  let data = [...base]; // always clone fresh
+
+  switch (currentSort) {
+    case SORT_OPTIONS.DATE:
+      data.sort(
+        (a, b) =>
+          new Date(b.duration.start).getTime() -
+          new Date(a.duration.start).getTime(),
+      );
+      break;
+
+    case SORT_OPTIONS.SALARY:
+      data.sort((a, b) => {
+        const getNum = (v: string) =>
+          Number(v.replace(/[^0-9]/g, ""));
+        return getNum(b.budget) - getNum(a.budget);
+      });
+      break;
+
+    case SORT_OPTIONS.DISTANCE:
+      data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+      break;
+
+    case SORT_OPTIONS.RELEVANCE:
+    default:
+      // base order = relevance
+      data = [...base];
+      break;
+  }
+
+  return data;
+}, [activeFilter, currentSort]);
+
   const jobFilters = ["All", "In-Progress", "Completed"];
 
   return (
@@ -32,8 +68,8 @@ const MyProjects: React.FC = () => {
       <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
         <MyJobsHeader
           title="My Projects"
-          currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          currentSort={currentSort}
+          onSortChange={setCurrentSort}
           isReport={false}
         />
       </div>

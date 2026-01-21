@@ -2,7 +2,8 @@ import {
   SORT_OPTIONS,
   type SortOption,
 } from "@/pages/engineer/search_result/types";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface SortDropdownProps {
   currentSort?: SortOption;
@@ -24,15 +25,52 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState<SortOption>(currentSort as SortOption);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const options = [
     { value: SORT_OPTIONS.RELEVANCE, label: "Relevance" },
     { value: SORT_OPTIONS.DATE, label: "Date" },
     { value: SORT_OPTIONS.SALARY, label: "Salary" },
     { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
+    useEffect(() => {
+      if (isOpen && buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY,
+          left: rect.left + window.scrollX,
+        });
+      }
+    }, [isOpen]);
+
+    const dropdown = isOpen ? (
+    <div
+      className="absolute bg-white border border-gray-200 rounded-md shadow-xl z-50 w-48"
+      style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
+    >
+      {options.map((option) => (
+        <button
+          key={option.value}
+          onClick={() => {
+            setSort(option.value);
+            onSortChange?.(option.value);
+            setIsOpen(false);
+          }}
+          className={`block w-full text-left px-4 py-2 text-sm ${
+            sort === option.value
+              ? "bg-emerald-100 text-emerald-800"
+              : "text-gray-900 hover:bg-gray-100"
+          }`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  ) : null;
   return (
     <div className="relative inline-block">
       <button
+        ref={buttonRef} 
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >
@@ -54,28 +92,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
           />
         </svg>
       </button>
-
-      {isOpen && (
-        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => {
-                setSort(option.value);
-                onSortChange?.(option.value);
-                setIsOpen(false);
-              }}
-              className={`block w-full text-left px-4 py-2 text-sm ${
-                currentSort === option.value
-                  ? "bg-emerald-100 text-emerald-800"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {createPortal(dropdown, document.body)}
     </div>
   );
 };

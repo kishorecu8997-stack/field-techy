@@ -2,6 +2,7 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import SectionHeader from "./SectionHeader";
 import { RadioField } from "@/shared/components/commonUI/inputs/RadioField";
 import { projectGroups } from "@/dummy_data/client";
+import { useFormContext, useWatch } from "react-hook-form";
 
 /**
  * EngineerGroups
@@ -22,6 +23,13 @@ import { projectGroups } from "@/dummy_data/client";
  * @returns {JSX.Element} Engineer selection and group picker section
  */
 export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
+  const { control } = useFormContext(); // get the form context
+  const engineersNeededFrom = useWatch({
+  control,
+  name: "engineersNeededFrom", // watch the radio field
+  defaultValue: "all",
+});
+
   return (
     <div>
       <SectionHeader title="Engineer & Groups" />
@@ -37,6 +45,7 @@ export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
           { label: "Specific Group", value: "specificGroup" },
         ]}
       />
+      {engineersNeededFrom === "specificGroup" && (
       <TagSelectField
         disabled={isDisable}
         name="group"
@@ -45,6 +54,7 @@ export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
         required
         options={projectGroups}
       />
+    )}
     </div>
   );
 }

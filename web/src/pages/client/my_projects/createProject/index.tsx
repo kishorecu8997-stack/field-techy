@@ -44,6 +44,12 @@ export default function CreateProject() {
   const reviewProject = (data: CreateProjectFormValues) => {
     console.log("reviewProject", data);
     setIsDisable(true);
+
+    // Scroll to top smoothly
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   //Save project
@@ -118,7 +124,12 @@ export default function CreateProject() {
           <CreateProjectForm isDisable={isDisable} />
           {!isDisable && (
             <div className="flex justify-end w-9/12 items-center gap-4 pr-8">
-              <Button variant="outline" className="rounded-full">
+              <Button variant="outline" className="rounded-full"
+                onClick={() => {
+                  methods.reset();
+                  navigate(-1);
+                }}
+              >
                 Cancel
               </Button>
               <Button

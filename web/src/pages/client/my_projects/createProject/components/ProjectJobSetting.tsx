@@ -2,7 +2,7 @@ import SectionHeader from "./SectionHeader";
 import CheckboxSelector from "@/shared/components/CheckboxSelector";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
-import { validateDescription } from "@/utils/validate";
+import { validateDescription,validateBusinessHours } from "@/utils/validate";
 import { useFormContext } from "react-hook-form";
 
 /**
@@ -54,6 +54,7 @@ export default function ProjectJobSetting({
           label="Business Hours (From)"
           maxTime={businessHourTo}
           disabled={isDisable}
+          rules={{ validate: (v) => validateBusinessHours(v, methods.getValues("businessHourTo"), 30) }}
         />
 
         <CustomTimePicker
@@ -62,6 +63,7 @@ export default function ProjectJobSetting({
           label="Business Hours (To)"
           minTime={businessHourFrom}
           disabled={isDisable}
+          rules={{ validate: (v) => validateBusinessHours(methods.getValues("businessHourFrom"), v, 30) }}
         />
       </div>
       <TextareaInput

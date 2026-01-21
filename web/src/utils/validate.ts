@@ -1037,6 +1037,25 @@ export const validateBudget = (value: string) => {
     return "Budget must be greater than 0";
   }
 
+  // Max limit (e.g., 1,000,000)
+  const MAX_BUDGET = 1000000;
+  if (num > MAX_BUDGET) {
+    return `Budget cannot exceed ${MAX_BUDGET.toLocaleString()}`;
+  }
+
+  return true;
+};
+
+export const validateBusinessHours = (from: string, to: string, minMinutes = 30) => {
+  const [fh, fm] = from.split(":").map(Number);
+  const [th, tm] = to.split(":").map(Number);
+
+  const fromMinutes = fh * 60 + fm;
+  const toMinutes = th * 60 + tm;
+
+  if (fromMinutes >= toMinutes) return "End time must be after start time";
+  if (toMinutes - fromMinutes < minMinutes) return `Duration must be at least ${minMinutes} minutes`;
+
   return true;
 };
 
@@ -1195,4 +1214,5 @@ export default {
   validatePurchaseOrderNumber,
   validateSiteId,
   validateSiteName,
+  validateBusinessHours,
 };
