@@ -172,7 +172,16 @@ const PostAJobFields = ({
               <ClientInterviewerSection
                 disabled={isDisable}
                 title="Client Interviewer"
-                sections={interviewerValue}
+                sections={interviewerValue.map((section) => ({
+                  ...section,
+                  items: section.items.map((item) => ({
+                    ...item,
+                    value:
+                      item.value instanceof Date
+                        ? item.value.toISOString()
+                        : item.value,
+                  })),
+                }))}
                 addAction={
                   <Button
                     onClick={() => {
