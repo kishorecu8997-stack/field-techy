@@ -1,7 +1,5 @@
-import {
-  BUSINESS_TYPES,
-} from "@/dummy_data/client/clientMyProfieTypes";
 import { useClientUpdateCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
+import { useVatOptions } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -23,7 +21,6 @@ import {
   validateVatNumber,
   validateZipcode,
 } from "../../Validate";
-import { useVatOptions } from "@/shared/apiServices/client/clientService";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
@@ -98,30 +95,28 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
   const industries = useMemo(() => (industryQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [industryQuery.data]);
 
-    const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
+  const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
   // Sync form with store data
   useEffect(() => {
     if (companyInfo) {
-      const isCorporate = companyInfo.clientType === 'corporate';
-      const info = companyInfo as any; // Cast for easier access to corporate fields
-      console.log('info :', info);
+      const isCorporate = companyInfo.clientType === "corporate";
 
       reset({
-        companyName: info.companyName || "",
-        contactPersonName: info.personName || info.name || "",
-        phoneNumber: info.phoneNumber || "",
-        businessType: isCorporate ? "1" : "2", // 1=Corporate, 2=Home based on options below
-        industry: info.industryId || "",
-        address: info.address || "",
-        country: info.countryId || "",
-        state: info.stateId || "",
-        city: info.cityId || "",
-        postalCode: info.postalCode || "",
-        taxDocument: info.documentType || "",
-        vatRegistrationNumber: info.documentNumber || "",
+        companyName: (companyInfo.clientType === "corporate" && companyInfo.companyName) || "",
+        contactPersonName: (companyInfo.clientType === "corporate" ? companyInfo.personName : companyInfo.name) || "",
+        phoneNumber: companyInfo.phoneNumber || "",
+        businessType: isCorporate ? "1" : "2",
+        industry: (companyInfo.clientType === "corporate" && companyInfo.industryId) ? String(companyInfo.industryId) : "",
+        address: (companyInfo.clientType === "corporate" ? companyInfo.address : "") || "",
+        country: companyInfo.countryId ? String(companyInfo.countryId) : "",
+        state: companyInfo.stateId ? String(companyInfo.stateId) : "",
+        city: companyInfo.cityId ? String(companyInfo.cityId) : "",
+        postalCode: companyInfo.postalCode || "",
+        taxDocument: (companyInfo.clientType === "corporate" && companyInfo.documentType) || "",
+        vatRegistrationNumber: (companyInfo.clientType === "corporate" && companyInfo.documentNumber) || "",
       });
 
-      if (info.phoneNumber) {
+      if (companyInfo.phoneNumber) {
         setIsPhoneVerified(true);
       }
     }
