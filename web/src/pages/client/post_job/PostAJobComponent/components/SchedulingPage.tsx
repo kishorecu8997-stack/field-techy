@@ -64,7 +64,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
   }, [applicationEndDate]);
 
   const minStartTime = useMemo(() => {
-    if (!startDate) return undefined; //updated one
+    if (!startDate) return undefined;
     if (startDate) {
       const selectedDate = new Date(startDate);
       const today = new Date();
@@ -80,6 +80,13 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
     }
     return undefined;
   }, [startDate]);
+
+  const getMaxDate = (startDate?: Date) => {
+    const baseDate = startDate || new Date();
+    const maxDate = new Date(baseDate);
+    maxDate.setMonth(maxDate.getMonth() + 24);
+    return maxDate;
+  };
 
   useEffect(() => {
     if (tentativeStartDate && tentativeEndDate) {
@@ -218,7 +225,11 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <DatePickerInput
                       disabled={isDisable}
                       label="Tentative End Date"
-                      placeholder="Select Tentative End date"
+                      placeholder={
+                        tentativeStartDate && minEndDate && maxEndDate
+                          ? `Select between ${minEndDate.toDateString()} - ${maxEndDate.toDateString()}`
+                          : "Select Tentative End Date"
+                      }
                       {...field}
                       minDate={minEndDate}
                       maxDate={maxEndDate}
@@ -391,6 +402,8 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                           placeholder="Select Job Occurrence end date"
                           {...field}
                           required
+                          maxDate={getMaxDate()}
+                          minDate={startDate}
                         />
                       </>
                     )}
@@ -539,7 +552,14 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                             placeholder="Select End date"
                             {...field}
                             required
-                            minDate={startDate ? startDate : null}
+                            minDate={startDate || undefined}
+                            maxDate={
+                              startDate
+                                ? new Date(
+                                    startDate.getTime() + 24 * 60 * 60 * 1000,
+                                  )
+                                : undefined
+                            } // max 24 hours
                             disabled={isDisable}
                           />
                         </>
@@ -551,7 +571,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       label="End Time"
                       name="endTime"
                       required
-                      minTime={startTime}
+                      maxTime={startTime}
                       disabled={isDisable}
                     />
                   </div>

@@ -1,10 +1,11 @@
-import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryClient } from "@/main";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
 import type {
+  AssignJobParams,
   EngineerData,
   // EngineerPaginationParams,
   // PagedResponse,
@@ -12,8 +13,9 @@ import type {
   FileUploadResponse,
   // EngineerFile,
   JobAssignment,
-  AssignJobParams,
   ProposalJobData,
+  ScreenUploadParams,
+  ScreenUploadResponse,
   UpdatePasswordParams,
 } from "./engineerTypes";
 
@@ -49,8 +51,19 @@ export function useEngineerDelete(options?: {
   });
 }
 
+export function useEngineerScreenShotUpload(options?: {
+  onSuccess?: (data: ScreenUploadResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (params: ScreenUploadParams) =>
+      EngineerAdapter.uploadScreenshot(params),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
 export function useEngineerFileUpload(
-  engineerId?: string,
   options?: {
     onSuccess?: (data: FileUploadResponse) => void;
     onError?: (error: unknown) => void;
@@ -61,22 +74,24 @@ export function useEngineerFileUpload(
     }) => void;
   },
 ) {
+
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: FileUploadParams) =>
       EngineerAdapter.uploadFile(params),
-    onSuccess: (data, variables) => {
-      if (engineerId) {
-        queryClient.invalidateQueries({
-          queryKey: queryKeys.engineer.detail(variables.engineerId),
-        });
-        // Refresh the store to get the updated profile image
-        useEngineerStore.getState().fetchEngineerProfile(variables.engineerId);
-      } else {
-        queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      }
+        onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.engineer.detail(variables.engineerId),
+      });
+
+      useEngineerStore
+        .getState()
+        .fetchEngineerProfile(variables.engineerId);
+
       options?.onSuccess?.(data);
     },
+
+
     onError: options?.onError,
   });
 }
@@ -134,6 +149,22 @@ export function useEngineerDownloadFile(options?: {
     onError: options?.onError,
   });
 }
+
+export function useDownloadEngineerFileStream(options?: {
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (fileKey: string) =>
+      EngineerAdapter.downloadFileStream(fileKey),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Hook to delete an engineer file
+ */
 
 export function useEngineerAssignJob(options?: {
   onSuccess?: (data: JobAssignment) => void;

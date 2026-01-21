@@ -9,8 +9,6 @@ export const ENGINEER_ROUTER_PATHS = {
   ENG_SIGNIN: (otp: string) => `/eng/api/v1/engineers/eng/signin/by-otp/${otp}`,
   REQ_OTP: (emailorPhone: string) =>
     `/user/api/v1/users/otp/request/${emailorPhone}`,
-  DELETE_FILE: (fileId: string) =>
-    `/eng/api/v1/engineers/files/${fileId}/delete`,
 
   // verify email and phone otp endpoints
   VERIFY_OTP: (emailorPhone: string, otp: string) =>
@@ -20,6 +18,16 @@ export const ENGINEER_ROUTER_PATHS = {
     `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
   UPLOAD_FILE: (engineerId: string, documentType: string) =>
     `/eng/api/v1/engineers/files/${engineerId}/${documentType}/upload`,
+  // File upload endpoints
+  GET_ENGINEER_FILES: (engineerId: string) =>
+    `/eng/api/v1/engineers/files/${engineerId}`,
+  DELETE_FILE: (fileId: string) =>
+    `/eng/api/v1/engineers/files/${fileId}/delete`,
+
+  DOWNLOAD_FILE_STREAM: (fileKey: string) =>
+    `/eng/api/v1/engineers/files/download/stream/${fileKey}`,
+  UPLOAD_SCREENSHOT: (engineerId: string, documentType: string) =>
+    `/eng/api/v1/engineers/jobs/history/${engineerId}/${documentType}/save`,
   GET_JOBS: (engineerId: string) =>
     `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   ASSIGN_JOB: (engineerId: string) =>
@@ -40,7 +48,7 @@ export const ENGINEER_ROUTER_PATHS = {
     `/eng/api/v1/engineers/proposals/delete/${id}`,
 
   // Jobs endpoints
-  GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/${id}`,
+  GET_JOBS_BY_ID: (id: string) => `/eng/api/v1/engineers/jobs/job/${id}`,
   GET_JOBS_BY_ENGINEER_ID: (engineerId: string) =>
     `/eng/api/v1/engineers/jobs/engineer/${engineerId}`,
   RESET_PASSWORD: (otp: string) =>

@@ -2,27 +2,30 @@ import { absoluteUrls } from "@/config/urls";
 import {
   NotificationSendTo,
   NotificationTypes,
-  NotificationUsers,
 } from "@/dummy_data/admin/manageNotification";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
+import RegionCountrySelectField from "@/shared/components/commonUI/inputs/RegionCountrySelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   validateNotificationMessage,
   validateNotificationTitle,
 } from "@/utils/validate";
+import { regionsAndCountries } from "@/dummy_data/regionsAndCountries";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useCreateNotification } from "@/shared/apiServices/admin/adminService";
 
 interface AddNotificationProps {
   title: string;
   notificationType: string;
   sendTo: string;
-  users: string;
+  targetRegionsCountries: string[];
   notificationMessage: string;
+  users?: string[]; // to be updated based on API requirements
 }
 
 /**
@@ -37,6 +40,16 @@ interface AddNotificationProps {
  */
 export default function AddNotification() {
   const navigate = useNavigate();
+  const createNotificationMutation = useCreateNotification({
+    onSuccess: (data) => {
+      toast.success(`Notification ${data.title} added successfully!`);
+      navigate(absoluteUrls.admin.home.manage_notification);
+    },
+    onError: (error) => {
+      console.error("Error adding notification:", error);
+      toast.error("Failed to add notification. Please try again.");
+    },
+  });
   const { showPopup } = usePopupStore();
 
   const methods = useForm<AddNotificationProps>({
@@ -44,13 +57,12 @@ export default function AddNotification() {
       title: "",
       notificationType: "",
       sendTo: "",
-      users: "",
+      targetRegionsCountries: [],
       notificationMessage: "",
     },
   });
 
   const handleSaveConfirmation = async (data: AddNotificationProps) => {
-    console.log("data :", data);
     await showPopup({
       title: "Add Notification",
       body: "Are you sure you want to save this details?",
@@ -64,14 +76,15 @@ export default function AddNotification() {
           label: "Save",
           value: "save",
           variant: "primary",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
-            console.log("Deleting job:", close);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
-            toast.success("Notification added successfully!");
-            navigate(absoluteUrls.admin.home.manage_notification);
-            methods.reset();
+          action: async (close) => {
+            const payload = {
+              title: data.title,
+              type: data.notificationType,
+              sendTo: data.sendTo,
+              message: data.notificationMessage,
+              users: data.targetRegionsCountries, // need to changed based on API later
+            };
+            await createNotificationMutation.mutateAsync(payload);
             close(true);
           },
         },
@@ -134,11 +147,11 @@ export default function AddNotification() {
               />
             </div>
             <div className="md:w-1/2">
-              <SelectField
-                label="Select Users"
-                name="users"
-                placeholder="Select Users"
-                options={NotificationUsers}
+              <RegionCountrySelectField
+                label="Select options"
+                name="targetRegionsCountries"
+                placeholder="Select options"
+                options={regionsAndCountries}
                 required
               />
             </div>

@@ -23,6 +23,10 @@ export interface ClientData {
   vat?: string;
   fullName?: string;
   confirmPassword?: string;
+  memberSince?: string;
+  rating?: number;
+  reviewCount?: number;
+  verifications?: string[];
 }
 
 export interface Sort {

@@ -9,6 +9,8 @@ import type {
   FileUploadParams,
   FileUploadResponse,
   JobAssignment,
+  ScreenUploadParams,
+  ScreenUploadResponse,
   ProposalJobData,
   UpdatePasswordParams,
 } from "./engineerTypes";
@@ -114,12 +116,10 @@ export class EngineerAdapter {
     }
   }
 
-  static async downloadFileStream(
-    fileKey: string,
-  ): Promise<{ blob: Blob; fileName?: string }> {
+  static async downloadFileStream(fileKey: string): Promise<{ blob: Blob }> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
         {
           responseType: "blob",
           headers: {
@@ -128,13 +128,36 @@ export class EngineerAdapter {
         },
       );
 
+      const blob = new Blob([response.data]);
+      return { blob };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
+    try {
+      return this.getFiles(engineerId);
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async downloadFileWithName(
+    fileKey: string,
+  ): Promise<{ blob: Blob; fileName: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        { responseType: "blob" },
+      );
+
       const contentDisposition = response.headers["content-disposition"];
       let fileName = "download";
+
       if (contentDisposition) {
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (match && match[1]) {
-          fileName = match[1];
-        }
+        if (match?.[1]) fileName = match[1];
       }
 
       return { blob: response.data, fileName };
@@ -148,7 +171,6 @@ export class EngineerAdapter {
   ): Promise<FileUploadResponse> {
     try {
       const { engineerId, file, documentType, onUploadProgress } = params;
-
       const formData = new FormData();
       formData.append("file", file);
 
@@ -171,6 +193,45 @@ export class EngineerAdapter {
                 percentage,
               });
             }
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw GlobalApiErrorHandler.handle(error);
+    }
+  }
+
+  static async uploadScreenshot(
+    params: ScreenUploadParams,
+  ): Promise<ScreenUploadResponse> {
+    try {
+      const { engineerId, file, documentType, metadata } = params;
+      const formData = new FormData();
+
+      if (file) {
+        formData.append("file", file);
+      }
+      formData.append(
+        "metadata",
+        new Blob(
+          [
+            JSON.stringify({
+              engineerJobId: metadata.engineerJobId,
+              remarks: metadata.remarks,
+            }),
+          ],
+          { type: "application/json" },
+        ),
+      );
+
+      const response = await uploadAxiosInstance.post(
+        ENGINEER_ROUTER_PATHS.UPLOAD_SCREENSHOT(engineerId, documentType),
+        formData,
+        {
+          headers: {
+            "X-USER": "Engineer",
+            "Content-Type": "multipart/form-data",
           },
         },
       );
@@ -212,6 +273,12 @@ export class EngineerAdapter {
     try {
       const response = await axiosInstance.put(
         `${ENGINEER_ROUTER_PATHS.UPDATE_JOB_STATUS(jobId)}?status=${status}`,
+        {},
+        {
+          headers: {
+            "X-USER": "Engineer",
+          },
+        },
       );
       return response.data;
     } catch (error) {
