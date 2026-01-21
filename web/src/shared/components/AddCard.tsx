@@ -9,7 +9,7 @@ import {
   formatExpiryDate,
 } from "@/utils/validate";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { AiOutlineClose } from "react-icons/ai";
 import { HiOutlinePlusSmall } from "react-icons/hi2";
 import { toast } from "react-toastify";
@@ -98,47 +98,38 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
 
         <div className="flex-1 overflow-y-auto p-6 pt-0">
           <div>
-            <Controller
+            <InputField
               name="cardNumber"
-              control={methods.control}
+              label="Card Number"
+              placeholder="9999 9999 9999 9999"
+              maxLength={19}
               rules={{ validate: cardNumberValidation }}
-              render={({ field }) => (
-                <InputField
-                  {...field}
-                  label="Card Number"
-                  placeholder="9999 9999 9999 9999"
-                  maxLength={19}
-                  onChange={(val: string) => {
-                    const formatted = formatCardNumber(val);
-                    field.onChange(formatted);
-                  }}
-                />
-              )}
+              onChange={(val) => {
+                const formatted = formatCardNumber(val);
+                methods.setValue("cardNumber", formatted, {
+                  shouldValidate: true,
+                });
+              }}
             />
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Controller
+              <InputField
                 name="expDate"
-                control={methods.control}
-                rules={{ validate: (v: string) => expiryDateValidation(v) }}
-                render={({ field }) => (
-                  <InputField
-                    {...field}
-                    label="Expiry Date"
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    rules={{ validate: expiryDateValidation }}
-                    onChange={(val: string) => {
-                      const formatted = formatExpiryDate(val);
-                      field.onChange(formatted);
-                    }}
-                    required
-                  />
-                )}
+                label="Expiry Date"
+                placeholder="MM/YY"
+                maxLength={5}
+                rules={{ validate: expiryDateValidation }}
+                onChange={(val) => {
+                  const formatted = formatExpiryDate(val);
+                  methods.setValue("expDate", formatted, {
+                    shouldValidate: true,
+                  });
+                }}
+                required
               />
             </div>
+
             <div>
               <InputField
                 label="CVV"
