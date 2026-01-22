@@ -307,22 +307,43 @@ export function validateAccNumber(value: string): true | string {
 }
 
 export const validateAddress = (value: string) => {
-  if (!value) return "Address must be at least 6 characters";
+  const errors: string[] = [];
 
-  // Disallow leading or trailing spaces
-  if (/^\s|\s$/.test(value))
-    return "Address must not start or end with a space";
-
-  const v = value.trim();
-  if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
-  // Allow letters, numbers, spaces, and / , . - #
-  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
-    return "Address may contain only letters, numbers, spaces, and / , . - #";
+  if (!value) {
+    return "Branch Address is required";
   }
 
-  return true;
+  // Check for leading/trailing spaces
+  if (/^\s|\s$/.test(value)) {
+    errors.push("Address must not start or end with a space");
+  }
+
+  const v = value.trim();
+
+  // Check for allowed characters: letters, numbers, spaces, / , . - #
+  if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
+    errors.push(
+      "Address may contain only letters (A-Z, a-z), numbers (0-9), spaces, and these symbols: / , . - #");
+  }
+
+  // Optional: Prevent multiple consecutive spaces
+  if (/\s{2,}/.test(v)) {
+    errors.push("Address cannot contain multiple consecutive spaces");
+  }
+
+  // Length checks
+  if (v.length < 6) {
+    errors.push("Address must be at least 6 characters long");
+  }
+
+  if (v.length > 50) {
+    errors.push("Address must not exceed 50 characters");
+  }
+
+  return errors.length ? errors.join(" and ") : true;
 };
+
+
 
 export const validateName = (value: string, fieldLabel = "Name") => {
   // length requirement: 2 to 50 characters
@@ -342,26 +363,37 @@ export const validateName = (value: string, fieldLabel = "Name") => {
   return true;
 };
 
-export const validateNameWithSpace = (value: string, fieldLabel = "Name") => {
+export const validateNameWithSpace = (value: string) => {
+  const errors: string[] = [];
   const raw = value || "";
 
   // Reject leading or trailing spaces
   if (/^\s|\s$/.test(raw)) {
-    return `${fieldLabel} must not start or end with a space`;
+    errors.push("Name must not start or end with a space");
+  }
+
+  // Reject consecutive spaces
+  if (/\s{2,}/.test(raw)) {
+    errors.push("Name cannot contain multiple consecutive spaces");
   }
 
   // Allow letters + internal spaces only
   if (!/^[A-Za-z ]+$/.test(raw)) {
-    return `${fieldLabel} must contain only alphabetic characters and spaces`;
+    errors.push("Name must contain only alphabetic characters and spaces");
   }
 
-  // Length requirement: 2 to 50 characters
-  if (raw.length < 2) {
-    return `${fieldLabel} must be at least 2 characters`;
-  }
-  if (raw.length > 50) {
-    return `${fieldLabel} must not exceed 50 characters`;
+  // Length checks (after trimming)
+  const trimmed = raw.trim();
+  if (trimmed.length < 2) {
+    errors.push("Name must be at least 2 characters long");
   }
 
-  return true;
+  if (trimmed.length > 50) {
+    errors.push("Name must not exceed 50 characters");
+  }
+
+  return errors.length ? errors.join(" and ") : true;
 };
+
+
+
