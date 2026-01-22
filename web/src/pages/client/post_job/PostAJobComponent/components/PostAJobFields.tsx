@@ -125,6 +125,15 @@ const PostAJobFields = ({
     },
     onDelete: () => handleDeleteInterviewer(Number(item.id)),
   }));
+
+  const formattedInterviewerSections = interviewerValue.map((section) => ({
+  ...section,
+  items: section.items.map((item) => ({
+    ...item,
+    value: item.value instanceof Date ? item.value.toISOString() : item.value,
+  })),
+}));
+
   return (
     <div className="flex gap-4 flex-row p-2">
       <div className="w-2/3 space-y-2">
@@ -172,16 +181,7 @@ const PostAJobFields = ({
               <ClientInterviewerSection
                 disabled={isDisable}
                 title="Client Interviewer"
-                sections={interviewerValue.map((section) => ({
-                  ...section,
-                  items: section.items.map((item) => ({
-                    ...item,
-                    value:
-                      item.value instanceof Date
-                        ? item.value.toISOString()
-                        : item.value,
-                  })),
-                }))}
+                sections={formattedInterviewerSections}
                 addAction={
                   <Button
                     onClick={() => {

@@ -174,8 +174,9 @@ export const validateAmount = (value: string) => {
   if (!Number.isSafeInteger(amount)) {
     return "Invalid amount";
   }
-  if (amount > 99999) {
-    return "Amount must not exceed 99999";
+  const maxAmount = Number(import.meta.env.VITE_MAX_AMOUNT) || 10000000;
+  if (amount > maxAmount) {
+    return `Amount must not exceed ${maxAmount.toLocaleString()}`;
   }
 
   return true;
