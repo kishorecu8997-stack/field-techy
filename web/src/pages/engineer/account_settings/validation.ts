@@ -326,7 +326,7 @@ export const validateAddress = (value: string) => {
       "Address may contain only letters (A-Z, a-z), numbers (0-9), spaces, and these symbols: / , . - #");
   }
 
-  // Optional: Prevent multiple consecutive spaces
+  //Prevent multiple consecutive spaces
   if (/\s{2,}/.test(v)) {
     errors.push("Address cannot contain multiple consecutive spaces");
   }
@@ -342,8 +342,6 @@ export const validateAddress = (value: string) => {
 
   return errors.length ? errors.join(" and ") : true;
 };
-
-
 
 export const validateName = (value: string, fieldLabel = "Name") => {
   // length requirement: 2 to 50 characters
@@ -366,6 +364,11 @@ export const validateName = (value: string, fieldLabel = "Name") => {
 export const validateNameWithSpace = (value: string) => {
   const errors: string[] = [];
   const raw = value || "";
+
+  // Required check (early return)
+  if (raw.trim() === "") {
+    return "Name is required";
+  }
 
   // Reject leading or trailing spaces
   if (/^\s|\s$/.test(raw)) {
@@ -392,8 +395,9 @@ export const validateNameWithSpace = (value: string) => {
     errors.push("Name must not exceed 50 characters");
   }
 
-  return errors.length ? errors.join(" and ") : true;
+  return errors.length ? errors.join(", ") : true;
 };
+
 
 
 
