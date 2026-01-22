@@ -19,6 +19,7 @@ import countries, {
   BUSINESS_TYPES,
 } from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
+import { validateCompany } from "@/utils/validate";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
@@ -84,7 +85,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           placeholder="Company Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          rules={{ validate: (v: string) => validateName(v) }}
+          rules={{ validate: (v: string) => validateCompany(v) }}
         />
         <InputField
           label="Contact Person Name"
@@ -93,7 +94,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           placeholder="Contact Person Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          allowedCharacters="string"
           rules={{ validate: (v: string) => validateName(v) }}
         />
         <VerifiedPhoneInputField
@@ -200,7 +200,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           type="text"
           placeholder="VAT Registration Number"
           required
-          allowedCharacters="alphanumeric"
           label="VAT Registration Number"
           rules={{ validate: (v: string) => validateVatNumber(v) }}
         />

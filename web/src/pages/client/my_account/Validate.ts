@@ -4,24 +4,24 @@ export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
+  if (raw !== raw.trim()) return `This Field must not have first or last spaces`;
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw)) return `This Field must not contain consecutive spaces`;
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
-    return `${value} must contain only alphabetic characters and single spaces`;
+    return `This Field must contain only alphabetic characters and single spaces`;
 
   // Reject if more than 10 spaces
-  const spaceCount = (raw.match(/ /g) || []).length;
-  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+  const spaceCount = (raw.match(/ /g) || []).length;0
+  if (spaceCount > 10) return `This Field must not contain more than 10 spaces`;
 
   // Length requirement: 2 to 50 characters
-  if (raw.length < 2) return `${value} must be at least 2 characters`;
-  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+  if (raw.length < 2) return `This Field must be at least 2 characters`;
+  if (raw.length > 50) return `This Field must not exceed 50 characters`;
 
-  return true;
+  return true;0
 };
 
 /**
@@ -81,10 +81,13 @@ export const validateAddress = (value: string) => {
 
   const v = value.trim();
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
+  if (v.length > 50) return "Address must not exceed 100 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
+  }
+  if (!/[A-Za-z]/.test(v) || !/\d/.test(v)) {
+    return "Address must contain both letters and numbers";
   }
   return true;
 };
