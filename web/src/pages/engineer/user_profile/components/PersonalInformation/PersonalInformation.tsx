@@ -1,9 +1,21 @@
-import { useEffect, useState } from "react";
+import {
+  useEngineerGetPersonalInfo,
+  useEngineerUpdatePersonalInfo,
+  type UpdatePersonalInfoBody,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
+import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
+import { toast } from "react-toastify";
 import {
   validateAddress,
   validateIsPhoneVerified,
@@ -11,19 +23,6 @@ import {
   validateName,
 } from "../../Validate";
 import type { EditProfileFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
-import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
-import { toast } from "react-toastify";
-import { usePopupStore } from "@/shared/store/popupStore";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
@@ -45,24 +44,37 @@ const PersonalInformation = () => {
     resetNavigationSource,
   } = useDrawerStore();
 
-  const { session } = useUserSessionStore();
-  const engineerId = session?.userId || "";
 
   const { data: engineerData, isLoading: isEngineerLoading } =
-    useEngineerGetById(engineerId);
-  const { mutate } = useEngineerUpdateById(engineerId);
+    useEngineerGetPersonalInfo();
+  const { mutate } = useEngineerUpdatePersonalInfo();
 
   const methods = useForm<EditProfileFormData>({
     defaultValues: {
-      fullName: engineerData?.fullName || "",
-      phoneNumber: engineerData?.phoneNumber || "",
-      emailId: engineerData?.email || "",
-      addressLocation: engineerData?.address || "",
+      fullName: "",
+      phoneNumber: "",
+      emailId: "",
+      addressLocation: "",
     },
     mode: "onSubmit",
   });
 
-  const { trigger } = methods;
+  const { trigger, reset } = methods;
+
+  // Update form values when engineerData is loaded
+  useEffect(() => {
+    if (engineerData) {
+      reset({
+        fullName: engineerData.name || "",
+        phoneNumber: engineerData.mobileno || "",
+        emailId: engineerData.email || "",
+        addressLocation: engineerData.address || "",
+      });
+      // Set verification status if data exists
+      setIsPhoneVerified(!!engineerData.mobileno);
+      setIsEmailVerified(!!engineerData.email);
+    }
+  }, [engineerData, reset]);
 
   useEffect(() => {
     if (isPhoneVerified) {
@@ -83,10 +95,9 @@ const PersonalInformation = () => {
       return;
     }
 
-    const updatedEngineer: EngineerData = {
-      ...engineerData,
-      fullName: formData.fullName,
-      phoneNumber: formData.phoneNumber,
+    const updatedEngineer = {
+      name: formData.fullName,
+      mobileno: formData.phoneNumber,
       email: formData.emailId,
       address: formData.addressLocation,
     };
@@ -108,7 +119,9 @@ const PersonalInformation = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            mutate(updatedEngineer, {
+            const updateBody: UpdatePersonalInfoBody = updatedEngineer;
+
+            mutate(updateBody, {
               onSuccess: () => {
                 toast.success("Profile Updated Successfully");
                 close(true);

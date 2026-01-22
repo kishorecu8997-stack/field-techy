@@ -2,10 +2,9 @@ import { create } from "zustand";
 import { useEffect } from "react";
 import type {
   EngineerData,
-  EngineerFile,
 } from "../apiServices/engineer/engineerTypes";
-import { EngineerAdapter } from "../apiServices/engineer/engineerAdapter";
 import { useUserSessionStore } from "./useUserSessionStore";
+import { getEducation, getPersonalInfo } from "../apiServices/engineer/engineerOpenApiService";
 
 interface EngineerStore {
   engineerProfile: EngineerData | null;
@@ -14,6 +13,7 @@ interface EngineerStore {
   setEngineerProfile: (profile: EngineerData | null) => void;
   clearEngineerProfile: () => void;
   fetchEngineerProfile: (id: string) => Promise<void>;
+  syncProfile: (data: Partial<EngineerData>) => void;
   setProfileImageUrl: (url: string | null) => void;
 }
 
@@ -30,40 +30,46 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearEngineerProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
     set({ engineerProfile: null, profileImageUrl: null });
+  },
+  syncProfile: (data) => {
+    set((state) => ({
+      engineerProfile: state.engineerProfile 
+        ? { ...state.engineerProfile, ...data } 
+        : (data as EngineerData)
+    }));
   },
   fetchEngineerProfile: async (id: string) => {
     if (get().loading) return;
     set({ loading: true });
     try {
-      const [profile, files] = await Promise.all([
-        EngineerAdapter.getById(id),
-        EngineerAdapter.getFiles(id),
+      // Call new API services from engineerOpenApiService
+      const [personalInfo, educationList] = await Promise.all([
+        getPersonalInfo(),
+        getEducation(),
       ]);
+
+      const profile: EngineerData = {
+        id, // Maintain ID from session/argument
+        fullName: personalInfo.name,
+        email: personalInfo.email,
+        phoneNumber: personalInfo.mobileno,
+        address: personalInfo.address,
+        educations: educationList.map(edu => ({
+          id: edu.id.toString(),
+          educationLevel: edu.level.toString(),
+          course: edu.course,
+          university: edu.university,
+          majorSubject: edu.majorSubject,
+          passingYear: edu.passingYear
+        }))
+      };
 
       set({ engineerProfile: profile });
 
-      const profilePic = files.find(
-        (f: EngineerFile) => f.fileType === "PICTURE",
-      );
-
-      if (profilePic) {
-        try {
-          const { blob } = await EngineerAdapter.downloadFileStream(
-            profilePic.fileKey,
-          );
-          const oldUrl = get().profileImageUrl;
-          if (oldUrl) URL.revokeObjectURL(oldUrl);
-
-          const url = URL.createObjectURL(blob);
-          set({ profileImageUrl: url });
-        } catch (err) {
-          console.error("Failed to download profile picture", err);
-        }
-      } else {
-        set({ profileImageUrl: null });
-      }
+      set({ profileImageUrl: null });
+     
     } catch (error) {
       console.error("Failed to fetch engineer profile:", error);
     } finally {
@@ -85,8 +91,6 @@ export const useEngineerProfile = () => {
   useEffect(() => {
     const userId = session?.userId;
     if (userId) {
-      // Fetch if no profile exists, or if the profile only has an ID (persisted state)
-      // We use !profile.fullName as a check for "full data"
       if (!profile || (profile.id === userId && !profile.fullName)) {
         fetchProfile(userId);
       }
