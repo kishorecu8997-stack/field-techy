@@ -6,7 +6,11 @@ import {
   appVerifyOtp, 
   engineerGetPersonalInfo,
   engineerGetEducation,
+  engineerAddEducation,
+  engineerDeleteEducation,
+  engineerUpdateEducation,
   engineerUpdatePersonalInfo,
+  appGetLookupData,
   type AppLoginData, 
   type AppLoginResponse, 
   type AppRegisterEngineerData, 
@@ -15,7 +19,15 @@ import {
   type AppVerifyOtpResponse,
   type EngineerGetPersonalInfoResponse,
   type EngineerUpdatePersonalInfoData,
-  type EngineerUpdatePersonalInfoResponse
+  type EngineerUpdatePersonalInfoResponse,
+  type EngineerGetEducationResponse,
+  type EngineerAddEducationData,
+  type EngineerAddEducationResponse,
+  type EngineerDeleteEducationResponse,
+  type EngineerUpdateEducationData,
+  type EngineerUpdateEducationResponse,
+  type AppGetLookupDataResponse,
+  type AppGetLookupDataData
 } from "@/api";
 import { createClient } from "@/api/client";
 import { queryKeys } from "../queryKeys";
@@ -30,8 +42,10 @@ export const apiClient = createClient({
 // Configure client to use auth interceptor
 apiClient.interceptors.request.use((request) => {
   const session = useUserSessionStore.getState().session;
-  if (session?.accessToken) {
-    request.headers.set("Authorization", `Bearer ${session.accessToken}`);
+  const token = session?.accessToken || localStorage.getItem("auth_token");
+  
+  if (token) {
+    request.headers.set("Authorization", `Bearer ${token}`);
   }
   return request;
 });
@@ -204,6 +218,108 @@ export function useEngineerUpdatePersonalInfo(options?: {
 }
 
 /**
+ * TanStack Query query hook for fetching engineer education list
+ */
+export function useEngineerGetEducation() {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.all, "education"],
+    queryFn: async () => {
+      const response = await engineerGetEducation({
+        client: apiClient,
+        throwOnError: true,
+      });
+      return response.data as EngineerGetEducationResponse;
+    },
+  });
+}
+
+/**
+ * TanStack Query mutation hook for adding new education record
+ */
+export type AddEducationBody = NonNullable<EngineerAddEducationData["body"]>;
+
+export function useEngineerAddEducation(options?: {
+  onSuccess?: (data: EngineerAddEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: AddEducationBody) => {
+      const response = await engineerAddEducation({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerAddEducationResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
+      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for deleting education record
+ */
+export function useEngineerDeleteEducation(options?: {
+  onSuccess?: (data: EngineerDeleteEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await engineerDeleteEducation({
+        client: apiClient,
+        path: { id },
+        throwOnError: true,
+      });
+      return response.data as EngineerDeleteEducationResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
+      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for updating education record
+ */
+export type UpdateEducationBody = NonNullable<EngineerUpdateEducationData["body"]>;
+
+export function useEngineerUpdateEducation(options?: {
+  onSuccess?: (data: EngineerUpdateEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, body }: { id: string; body: UpdateEducationBody }) => {
+      const response = await engineerUpdateEducation({
+        client: apiClient,
+        path: { id },
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerUpdateEducationResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
+      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
 export async function getPersonalInfo() {
@@ -219,13 +335,23 @@ export async function getEducation() {
     client: apiClient,
     throwOnError: true,
   });
-  return response.data as Array<{
-    id: number;
-    engineerId: number;
-    level: number;
-    course: string;
-    university: string;
-    majorSubject: string;
-    passingYear: number;
-  }>;
+  return response.data as EngineerGetEducationResponse;
+}
+
+/**
+ * TanStack Query hook for fetching lookup data (countries, states, etc.)
+ */
+export function useLookupData(table: AppGetLookupDataData["query"]["table"], parentId?: string) {
+  return useQuery({
+    queryKey: ["lookup", table, parentId],
+    queryFn: async () => {
+      const response = await appGetLookupData({
+        client: apiClient,
+        query: { table, parentId },
+        throwOnError: true,
+      });
+      return response.data as AppGetLookupDataResponse;
+    },
+    staleTime: 1000 * 60 * 60, // Keep lookup data fresh for 1 hour
+  });
 }
