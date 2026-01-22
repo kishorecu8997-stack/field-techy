@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa"; 
+import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
 import { absoluteUrls } from "@/config/urls";
@@ -48,7 +48,6 @@ export const JobSearchBarClient = () => {
         </Button>
         <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
 
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
         <InputField
           name="location"
           placeholder="Location"

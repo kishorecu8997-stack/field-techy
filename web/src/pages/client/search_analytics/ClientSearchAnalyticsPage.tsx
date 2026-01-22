@@ -2,7 +2,7 @@ import React from "react";
 import {
   searchEvents,
   clickEvents,
-} from "@/dummy_data/engineer_search/searchAnalytics";
+} from "@/dummy_data/client_search/clientsearchAnalytics";
 import {
   getTotalSearches,
   getKeywordFrequency,
@@ -73,7 +73,7 @@ const ClientSearchAnalyticsPage: React.FC = () => {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
       {/* Heading */}
-      <h2 className="text-3xl font-bold mb-2">Job search Analytics</h2>
+      <h2 className="text-3xl font-bold mb-2">Job Search Analytics</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
         Track performance of your posted jobs, views, applications, and
         proposals.
