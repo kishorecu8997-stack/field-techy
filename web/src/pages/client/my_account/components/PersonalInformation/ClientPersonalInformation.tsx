@@ -53,9 +53,19 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
     mode: "onSubmit",
   });
-  const { control, trigger } = methods;
+  const { control, trigger, setValue } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const country = useWatch({ control, name: "country" });
+  const state = useWatch({ control, name: "state" });
+
+  useEffect(() => {
+    setValue("state", "");
+    setValue("city", "");
+  }, [country]);
+
+  useEffect(() => {
+    setValue("city", "");
+  }, [state]);
 
   const handleSubmit = (data: PersonalInfo) => {
     console.log("Form submitted with data:", data);
@@ -70,6 +80,49 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       trigger("phoneNumber");
     }
   }, [isPhoneVerified, trigger]);
+
+  const stateOptions =
+    country === "in"
+      ? [
+          { value: "TN", label: "Tamil Nadu" },
+          { value: "MH", label: "Maharashtra" },
+        ]
+      : country === "uk"
+        ? [
+            { value: "ENG", label: "England" },
+            { value: "SCT", label: "Scotland" },
+          ]
+        : [];
+  const cityOptions = (() => {
+    if (!state) return [];
+    if (country === "in") {
+      if (state === "TN")
+        return [
+          { value: "CHE", label: "Chennai" },
+          { value: "CBE", label: "Coimbatore" },
+        ];
+      if (state === "MH")
+        return [
+          { value: "MUM", label: "Mumbai" },
+          { value: "PUN", label: "Pune" },
+        ];
+      return [];
+    }
+    if (country === "uk") {
+      if (state === "ENG")
+        return [
+          { value: "LDN", label: "London" },
+          { value: "MAN", label: "Manchester" },
+        ];
+      if (state === "SCT")
+        return [
+          { value: "EDI", label: "Edinburgh" },
+          { value: "GLA", label: "Glasgow" },
+        ];
+      return [];
+    }
+    return [];
+  })();
 
   return (
     <FormContainer
@@ -153,20 +206,14 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
         <SelectField
           name="state"
           placeholder="State"
-          options={[
-            { value: "1", label: "Maharashtra" },
-            { value: "2", label: "Manchester" },
-          ]}
+          options={stateOptions}
           required
           label="State"
         />
         <SelectField
           name="city"
           placeholder="City"
-          options={[
-            { value: "1", label: "Mumbai" },
-            { value: "2", label: "London" },
-          ]}
+          options={cityOptions}
           required
           label="City"
         />

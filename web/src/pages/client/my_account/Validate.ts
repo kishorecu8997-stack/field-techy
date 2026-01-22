@@ -465,11 +465,19 @@ export const validateFormat = (
 };
 
 export const validateVatNumber = (vatNumber: string): true | string => {
-  return validateFormat(
+  const formatResult = validateFormat(
     vatNumber,
     /^[A-Za-z0-9\-/ ]{2,16}$/,
     "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces.",
   );
+  if (formatResult !== true) {
+    return formatResult;
+  }
+  const cleaned = vatNumber.replace(/[\s\-/]/g, '');
+  if (cleaned === '' || /^0+$/.test(cleaned)) {
+    return "VAT registration number cannot be zero or empty";
+  }
+  return true;
 };
 
 export default {
