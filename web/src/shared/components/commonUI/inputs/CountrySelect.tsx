@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 export const CountrySelect = ({
   countries,
@@ -36,26 +37,36 @@ export const CountrySelect = ({
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        type="button"
-        className={`flex items-center w-20 gap-1 px-3 py-3 border-r border-gray-300 dark:border-gray-600 cursor-pointer ${
-          disabled
-            ? "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md"
-            : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md"
-        }`}
-        onClick={toggleDropdown}
-        disabled={disabled}
-      >
-        {currentCountry && (
-          <>
-            <img
-              src={currentCountry.flag}
-              alt={currentCountry.name}
-              className="w-5 h-5 object-contain"
-            />
-            <span>{currentCountry.code}</span>
-          </>
-        )}
-      </button>
+  type="button"
+  className={`flex items-center justify-between w-full px-3 py-3 border-r border-gray-300 dark:border-gray-600 cursor-pointer rounded-md ${
+    disabled
+      ? "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+      : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+  }`}
+  onClick={toggleDropdown}
+  disabled={disabled}
+>
+  <div className="flex items-center gap-2">
+    {currentCountry ? (
+      <>
+        <img
+          src={currentCountry.flag}
+          alt={currentCountry.name}
+          className="w-5 h-5 object-contain"
+        />
+        <span>{currentCountry.code}</span>
+      </>
+    ) : (
+      <span className="text-gray-400">Select</span>
+    )}
+  </div>
+  <MdKeyboardArrowDown
+    size={20}
+    className={`transition-transform duration-200 ${
+      isOpen ? "rotate-180" : "rotate-0"
+    } text-gray-500 dark:text-gray-400`}
+  />
+</button>
 
       {isOpen && !disabled && (
         <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">

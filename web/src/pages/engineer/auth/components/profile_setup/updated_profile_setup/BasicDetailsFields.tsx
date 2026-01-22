@@ -201,7 +201,7 @@ const BasicDetailsFields = () => {
         placeholder={statesLoading ? "Loading states..." : "Select State"}
         options={states}
         required
-        label="State"
+        label="State/Region"
         disabled={statesLoading || !country}
       />
 
@@ -260,6 +260,7 @@ const BasicDetailsFields = () => {
         required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}
+        allowedCharacters="numbers-dot"
       />
 
       <InputField

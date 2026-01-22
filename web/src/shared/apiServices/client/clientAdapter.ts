@@ -323,52 +323,88 @@ export class ClientAdapter {
   /**
    * Get list of states for a country
    */
-  static async getStates(
-    countryId?: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const states = [
+static async getStates(countryId?: string) {
+  const id = (countryId || "").toString().toLowerCase();
+  return new Promise<{ value: string; label: string }[]>((resolve) => {
+    setTimeout(() => {
+      let states: { value: string; label: string }[] = [];
+console.log("getStates called with countryId:", countryId);
+
+      if (id === "uk") {
+        states = [
+          { value: "England", label: "England" },
+          { value: "Scotland", label: "Scotland" },
+          { value: "Wales", label: "Wales" },
+          { value: "Northern Ireland", label: "Northern Ireland" },
+        ];
+      } else if (id === "in") {
+        states = [
           { value: "Maharashtra", label: "Maharashtra" },
           { value: "Karnataka", label: "Karnataka" },
           { value: "Delhi", label: "Delhi" },
           { value: "Tamil Nadu", label: "Tamil Nadu" },
           { value: "Gujarat", label: "Gujarat" },
         ];
-        resolve(states);
-      }, 500);
-    });
-  }
+      }
+      resolve(states);
+    }, 500);
+  });
+}
 
   /**
    * Get list of cities for a state
    */
   static async getCities(
-    stateId: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching cities for state: ${stateId}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const cityMap: Record<string, { value: string; label: string }[]> = {
-          Maharashtra: [
-            { value: "Mumbai", label: "Mumbai" },
-            { value: "Pune", label: "Pune" },
-            { value: "Nagpur", label: "Nagpur" },
-          ],
-          Karnataka: [
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Mysore", label: "Mysore" },
-          ],
-          Delhi: [
-            { value: "New Delhi", label: "New Delhi" },
-            { value: "Old Delhi", label: "Old Delhi" },
-          ],
-        };
-        resolve(cityMap[stateId] || []);
-      }, 500);
-    });
-  }
+  stateId: string,
+): Promise<{ value: string; label: string }[]> {
+  console.log(`[STUB] Fetching cities for state: ${stateId}`);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const cityMap: Record<string, { value: string; label: string }[]> = {
+        Maharashtra: [
+          { value: "Mumbai", label: "Mumbai" },
+          { value: "Pune", label: "Pune" },
+          { value: "Nagpur", label: "Nagpur" },
+        ],
+        Karnataka: [
+          { value: "Bangalore", label: "Bangalore" },
+          { value: "Mysore", label: "Mysore" },
+        ],
+        Delhi: [
+          { value: "New Delhi", label: "New Delhi" },
+          { value: "Old Delhi", label: "Old Delhi" },
+        ],
+        "Tamil Nadu": [
+          { value: "Chennai", label: "Chennai" },
+          { value: "Coimbatore", label: "Coimbatore" },
+        ],
+        Gujarat: [
+          { value: "Ahmedabad", label: "Ahmedabad" },
+          { value: "Surat", label: "Surat" },
+        ],
+
+        England: [
+          { value: "London", label: "London" },
+          { value: "Manchester", label: "Manchester" },
+          { value: "Liverpool", label: "Liverpool" },
+        ],
+        Scotland: [
+          { value: "Edinburgh", label: "Edinburgh" },
+          { value: "Glasgow", label: "Glasgow" },
+        ],
+        Wales: [
+          { value: "Cardiff", label: "Cardiff" },
+          { value: "Swansea", label: "Swansea" },
+        ],
+        "Northern Ireland": [
+          { value: "Belfast", label: "Belfast" },
+          { value: "Londonderry", label: "Londonderry" },
+        ],
+      };
+      resolve(cityMap[stateId] || []);
+    }, 500);
+  });
+}
 
   /**
    * Get list of industries

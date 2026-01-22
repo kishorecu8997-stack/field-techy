@@ -28,7 +28,7 @@ export const validateName = (value: string, fieldLabel = "Name") => {
     return `${fieldLabel} must not contain multiple consecutive spaces`;
 
   // Only letters allowed (A-Z) with single spaces allowed between multiple words
-  if (!/^[A-Za-z]+( [A-Za-z]+)?$/.test(value || ""))
+  if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(value || ""))
     return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
 
   // length requirement: 2 to 50 characters
@@ -110,7 +110,7 @@ export const validateAddress = (value: string) => {
 
   const v = value.trim();
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
+  if (v.length > 100) return "Address must not exceed 100 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
