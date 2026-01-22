@@ -144,12 +144,12 @@ export interface PostAJobFieldsProps {
   saveAsTemplate: boolean;
 }
 
-export interface PostOption  {
+export interface PostOption {
   label: string;
   action?: () => void;
   value: string | number;
   tooltip?: string;
-};
+}
 
 export interface SectionData {
   title: string;
