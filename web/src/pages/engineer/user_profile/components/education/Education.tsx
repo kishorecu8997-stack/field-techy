@@ -22,6 +22,13 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { data: levels, isLoading: isLevelsLoading } = useLookupData("educationLevels");
   const deleteMutation = useEngineerDeleteEducation();
 
+  console.log("Education Component Render:", {
+    isEduLoading,
+    isLevelsLoading,
+    educationsCount: educations?.length,
+    levelsCount: levels?.length
+  });
+
   const handleDeleteEducation = async (id: string) => {
     await showPopup({
       title: "Delete Education",

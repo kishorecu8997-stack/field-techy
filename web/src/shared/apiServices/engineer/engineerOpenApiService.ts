@@ -160,6 +160,7 @@ export function useEngineerGetPersonalInfo() {
   return useQuery({
     queryKey: [...queryKeys.engineer.all, "personal-info"],
     queryFn: async () => {
+      console.log("Fetching engineer personal info...");
       const response = await engineerGetPersonalInfo({
         client: apiClient,
         throwOnError: true,
@@ -174,6 +175,8 @@ export function useEngineerGetPersonalInfo() {
       });
       return data;
     },
+    refetchOnMount: true,
+    staleTime: 0,
   });
 }
 
@@ -224,12 +227,16 @@ export function useEngineerGetEducation() {
   return useQuery({
     queryKey: [...queryKeys.engineer.all, "education"],
     queryFn: async () => {
+      console.log("Fetching engineer education...");
       const response = await engineerGetEducation({
         client: apiClient,
         throwOnError: true,
       });
+      console.log("Education data received:", response.data);
       return response.data as EngineerGetEducationResponse;
     },
+    refetchOnMount: true,
+    staleTime: 0,
   });
 }
 
@@ -255,7 +262,7 @@ export function useEngineerAddEducation(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -282,7 +289,7 @@ export function useEngineerDeleteEducation(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -312,7 +319,7 @@ export function useEngineerUpdateEducation(options?: {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      // queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
