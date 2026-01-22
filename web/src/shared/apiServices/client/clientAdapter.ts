@@ -331,52 +331,47 @@ export class ClientAdapter {
       setTimeout(() => {
         const stateMap: Record<string, { value: string; label: string }[]> = {
       in: [
-        { value: "Andhra Pradesh", label: "Andhra Pradesh" },
-        { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
-        { value: "Assam", label: "Assam" },
-        { value: "Bihar", label: "Bihar" },
-        { value: "Chhattisgarh", label: "Chhattisgarh" },
-        { value: "Goa", label: "Goa" },
-        { value: "Gujarat", label: "Gujarat" },
-        { value: "Haryana", label: "Haryana" },
-        { value: "Himachal Pradesh", label: "Himachal Pradesh" },
-        { value: "Jharkhand", label: "Jharkhand" },
-        { value: "Karnataka", label: "Karnataka" },
-        { value: "Kerala", label: "Kerala" },
-        { value: "Madhya Pradesh", label: "Madhya Pradesh" },
-        { value: "Maharashtra", label: "Maharashtra" },
-        { value: "Manipur", label: "Manipur" },
-        { value: "Meghalaya", label: "Meghalaya" },
-        { value: "Mizoram", label: "Mizoram" },
-        { value: "Nagaland", label: "Nagaland" },
-        { value: "Odisha", label: "Odisha" },
-        { value: "Punjab", label: "Punjab" },
-        { value: "Rajasthan", label: "Rajasthan" },
-        { value: "Sikkim", label: "Sikkim" },
-        { value: "Tamil Nadu", label: "Tamil Nadu" },
-        { value: "Telangana", label: "Telangana" },
-        { value: "Tripura", label: "Tripura" },
-        { value: "Uttar Pradesh", label: "Uttar Pradesh" },
-        { value: "Uttarakhand", label: "Uttarakhand" },
-        { value: "West Bengal", label: "West Bengal" }
-      ],
-      uk: [
-        { value: "England", label: "England" },
-        { value: "Scotland", label: "Scotland" },
-        { value: "Wales", label: "Wales" },
-        { value: "Northern Ireland", label: "Northern Ireland" },
-      ],
- 
-      };
+            { value: "Andhra Pradesh", label: "Andhra Pradesh" },
+            { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
+            { value: "Assam", label: "Assam" },
+            { value: "Bihar", label: "Bihar" },
+            { value: "Chhattisgarh", label: "Chhattisgarh" },
+            { value: "Goa", label: "Goa" },
+            { value: "Gujarat", label: "Gujarat" },
+            { value: "Haryana", label: "Haryana" },
+            { value: "Himachal Pradesh", label: "Himachal Pradesh" },
+            { value: "Jharkhand", label: "Jharkhand" },
+            { value: "Karnataka", label: "Karnataka" },
+            { value: "Kerala", label: "Kerala" },
+            { value: "Madhya Pradesh", label: "Madhya Pradesh" },
+            { value: "Maharashtra", label: "Maharashtra" },
+            { value: "Manipur", label: "Manipur" },
+            { value: "Meghalaya", label: "Meghalaya" },
+            { value: "Mizoram", label: "Mizoram" },
+            { value: "Nagaland", label: "Nagaland" },
+            { value: "Odisha", label: "Odisha" },
+            { value: "Punjab", label: "Punjab" },
+            { value: "Rajasthan", label: "Rajasthan" },
+            { value: "Sikkim", label: "Sikkim" },
+            { value: "Tamil Nadu", label: "Tamil Nadu" },
+            { value: "Telangana", label: "Telangana" },
+            { value: "Tripura", label: "Tripura" },
+            { value: "Uttar Pradesh", label: "Uttar Pradesh" },
+            { value: "Uttarakhand", label: "Uttarakhand" },
+            { value: "West Bengal", label: "West Bengal" }
+          ],
+          uk: [
+            { value: "England", label: "England" },
+            { value: "Scotland", label: "Scotland" },
+            { value: "Wales", label: "Wales" },
+            { value: "Northern Ireland", label: "Northern Ireland" },
+          ],
+        };
         resolve(stateMap[countryId] || []);
       }, 500);
     });
   }
-
-
-  /**
-   * Get list of cities for a state
-   */
+/*Get list of cities for a state*/
   static async getCities(
     stateId: string,
   ): Promise<{ value: string; label: string }[]> {
@@ -427,17 +422,17 @@ export class ClientAdapter {
         { value: "Gurgaon", label: "Gurgaon" },
         { value: "Faridabad", label: "Faridabad" },
         { value: "Panipat", label: "Panipat" },
-      ],
+       ],
 
         "Himachal Pradesh": [
           { value: "Shimla", label: "Shimla" },
           { value: "Manali", label: "Manali" },
-],
+       ],
 
-Jharkhand: [
-  { value: "Ranchi", label: "Ranchi" },
-  { value: "Jamshedpur", label: "Jamshedpur" },
-],
+        Jharkhand: [
+        { value: "Ranchi", label: "Ranchi" },
+        { value: "Jamshedpur", label: "Jamshedpur" },
+       ],
 
 Karnataka: [
   { value: "Bangalore", label: "Bangalore" },
@@ -522,39 +517,35 @@ Tripura: [
   { value: "Varanasi", label: "Varanasi" },
 ],
 
-Uttarakhand: [
-  { value: "Dehradun", label: "Dehradun" },
-  { value: "Haridwar", label: "Haridwar" },
-],
-
-"West Bengal": [
-  { value: "Kolkata", label: "Kolkata" },
-  { value: "Siliguri", label: "Siliguri" },
-],
-England: [
-  { value: "London", label: "London" },
-  { value: "Manchester", label: "Manchester" },
-  { value: "Birmingham", label: "Birmingham" },
-  { value: "Liverpool", label: "Liverpool" },
-],
-
-Scotland: [
-  { value: "Edinburgh", label: "Edinburgh" },
-  { value: "Glasgow", label: "Glasgow" },
-  { value: "Aberdeen", label: "Aberdeen" },
-],
-
-Wales: [
-  { value: "Cardiff", label: "Cardiff" },
-  { value: "Swansea", label: "Swansea" },
-  { value: "Newport", label: "Newport" },
-],
-
-"Northern Ireland": [
-  { value: "Belfast", label: "Belfast" },
-  { value: "Derry", label: "Derry" },
-  { value: "Lisburn", label: "Lisburn" },
-],
+        Uttarakhand: [
+          { value: "Dehradun", label: "Dehradun" },
+          { value: "Haridwar", label: "Haridwar" },
+        ],
+        "West Bengal": [
+          { value: "Kolkata", label: "Kolkata" },
+          { value: "Siliguri", label: "Siliguri" },
+        ],
+        England: [
+          { value: "London", label: "London" },
+          { value: "Manchester", label: "Manchester" },
+          { value: "Birmingham", label: "Birmingham" },
+          { value: "Liverpool", label: "Liverpool" },
+        ],
+        Scotland: [
+          { value: "Edinburgh", label: "Edinburgh" },
+          { value: "Glasgow", label: "Glasgow" },
+          { value: "Aberdeen", label: "Aberdeen" },
+        ],
+        Wales: [
+          { value: "Cardiff", label: "Cardiff" },
+          { value: "Swansea", label: "Swansea" },
+          { value: "Newport", label: "Newport" },
+        ],
+        "Northern Ireland": [
+          { value: "Belfast", label: "Belfast" },
+          { value: "Derry", label: "Derry" },
+          { value: "Lisburn", label: "Lisburn" },
+        ],
         };
         resolve(cityMap[stateId] || []);
       }, 500);

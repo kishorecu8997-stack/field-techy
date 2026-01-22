@@ -152,13 +152,17 @@ const BasicDetailsFields = () => {
   const country = watch("country");
   const selectedState = watch("state");
 
+  const countryValue = typeof country === "string" ? country : country?.value;
+
+
   useEffect(() => {
   setValue("state", undefined);
   setValue("city", undefined);
 }, [country, setValue]);
 
   // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } = useStates(typeof country === "string" ? country : country?.value);
+  const { data: states = [], isLoading: statesLoading } =useStates(countryValue);
+
   const { data: cities = [], isLoading: citiesLoading } = useCities(
     selectedState?.value || selectedState,
   );
@@ -267,10 +271,7 @@ const BasicDetailsFields = () => {
         label="Postal Code"
         rules={{
           validate: (value: string) =>
-            validateZipcode(
-              value,
-              typeof country === "string" ? country : country?.value,
-            ),
+            validateZipcode(value, countryValue),
         }}
       />
 

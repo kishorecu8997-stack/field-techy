@@ -49,7 +49,6 @@ export const CountrySelect = ({
       >
         {currentCountry && (
           <>
-          
             <img
               src={currentCountry.flag}
               alt={currentCountry.name}
@@ -57,7 +56,6 @@ export const CountrySelect = ({
             />
             <span>{currentCountry.code}</span>
             <MdKeyboardArrowDown size={20} className={`text-gray-500 ${isOpen ? "rotate-180" : ""}`}/>
-
           </>
         )}
       </button>
