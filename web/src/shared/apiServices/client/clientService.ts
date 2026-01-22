@@ -159,7 +159,8 @@ export function useVerifyPhoneOTP(options?: {
 export function useStates(countryId?: string) {
   return useQuery({
     queryKey: ["states", countryId],
-    queryFn: () => ClientAdapter.getStates(countryId),
+    queryFn: () => ClientAdapter.getStates(countryId!),
+    enabled: !!countryId,
     staleTime: 5 * 60 * 1000,
   });
 }

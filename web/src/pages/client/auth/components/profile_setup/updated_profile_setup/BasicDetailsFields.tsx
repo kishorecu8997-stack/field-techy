@@ -5,7 +5,7 @@ import {
   validateName,
   validateVatNumber,
   validateZipcode,
-} from "@/pages/engineer/user_profile/Validate";
+} from "@/pages/client/my_account/Validate";
 import {
   validateEmail,
   validateEmailRules,
@@ -24,6 +24,7 @@ import {
   useVatOptions,
 } from "@/shared/apiServices/client/clientService";
 import { useDebouncedUserExists } from "@/shared/apiServices/user";
+import { useEffect } from "react";
 
 /**
  * Email field component with real-time availability validation
@@ -151,10 +152,13 @@ const BasicDetailsFields = () => {
   const country = watch("country");
   const selectedState = watch("state");
 
+  useEffect(() => {
+  setValue("state", undefined);
+  setValue("city", undefined);
+}, [country, setValue]);
+
   // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } = useStates(
-    country?.value,
-  );
+  const { data: states = [], isLoading: statesLoading } = useStates(typeof country === "string" ? country : country?.value);
   const { data: cities = [], isLoading: citiesLoading } = useCities(
     selectedState?.value || selectedState,
   );
@@ -241,10 +245,10 @@ const BasicDetailsFields = () => {
       />
       <SelectField
         name="state"
-        placeholder={statesLoading ? "Loading states..." : "Select State"}
+        placeholder={statesLoading ? "Loading states..." : "Select State/Region"}
         options={states}
         required
-        label="State"
+        label="State/Region"
         disabled={statesLoading}
       />
       <SelectField

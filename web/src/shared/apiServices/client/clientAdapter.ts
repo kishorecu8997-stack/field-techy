@@ -324,22 +324,55 @@ export class ClientAdapter {
    * Get list of states for a country
    */
   static async getStates(
-    countryId?: string,
+    countryId: string
   ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
+    console.log(`[STUB] Fetching states for country: ${countryId}`);
     return new Promise((resolve) => {
       setTimeout(() => {
-        const states = [
-          { value: "Maharashtra", label: "Maharashtra" },
-          { value: "Karnataka", label: "Karnataka" },
-          { value: "Delhi", label: "Delhi" },
-          { value: "Tamil Nadu", label: "Tamil Nadu" },
-          { value: "Gujarat", label: "Gujarat" },
-        ];
-        resolve(states);
+        const stateMap: Record<string, { value: string; label: string }[]> = {
+      in: [
+        { value: "Andhra Pradesh", label: "Andhra Pradesh" },
+        { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
+        { value: "Assam", label: "Assam" },
+        { value: "Bihar", label: "Bihar" },
+        { value: "Chhattisgarh", label: "Chhattisgarh" },
+        { value: "Goa", label: "Goa" },
+        { value: "Gujarat", label: "Gujarat" },
+        { value: "Haryana", label: "Haryana" },
+        { value: "Himachal Pradesh", label: "Himachal Pradesh" },
+        { value: "Jharkhand", label: "Jharkhand" },
+        { value: "Karnataka", label: "Karnataka" },
+        { value: "Kerala", label: "Kerala" },
+        { value: "Madhya Pradesh", label: "Madhya Pradesh" },
+        { value: "Maharashtra", label: "Maharashtra" },
+        { value: "Manipur", label: "Manipur" },
+        { value: "Meghalaya", label: "Meghalaya" },
+        { value: "Mizoram", label: "Mizoram" },
+        { value: "Nagaland", label: "Nagaland" },
+        { value: "Odisha", label: "Odisha" },
+        { value: "Punjab", label: "Punjab" },
+        { value: "Rajasthan", label: "Rajasthan" },
+        { value: "Sikkim", label: "Sikkim" },
+        { value: "Tamil Nadu", label: "Tamil Nadu" },
+        { value: "Telangana", label: "Telangana" },
+        { value: "Tripura", label: "Tripura" },
+        { value: "Uttar Pradesh", label: "Uttar Pradesh" },
+        { value: "Uttarakhand", label: "Uttarakhand" },
+        { value: "West Bengal", label: "West Bengal" }
+      ],
+      uk: [
+        { value: "England", label: "England" },
+        { value: "Scotland", label: "Scotland" },
+        { value: "Wales", label: "Wales" },
+        { value: "Northern Ireland", label: "Northern Ireland" },
+      ],
+ 
+      };
+        resolve(stateMap[countryId] || []);
       }, 500);
     });
   }
+
 
   /**
    * Get list of cities for a state
@@ -351,19 +384,177 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const cityMap: Record<string, { value: string; label: string }[]> = {
-          Maharashtra: [
-            { value: "Mumbai", label: "Mumbai" },
-            { value: "Pune", label: "Pune" },
-            { value: "Nagpur", label: "Nagpur" },
-          ],
-          Karnataka: [
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Mysore", label: "Mysore" },
-          ],
-          Delhi: [
-            { value: "New Delhi", label: "New Delhi" },
-            { value: "Old Delhi", label: "Old Delhi" },
-          ],
+          "Andhra Pradesh": [
+          { value: "Visakhapatnam", label: "Visakhapatnam" },
+          { value: "Vijayawada", label: "Vijayawada" },
+          { value: "Guntur", label: "Guntur" },
+            ],
+
+          "Arunachal Pradesh": [
+          { value: "Itanagar", label: "Itanagar" },
+          { value: "Tawang", label: "Tawang" },
+            ],
+
+          Assam: [
+          { value: "Guwahati", label: "Guwahati" },
+          { value: "Silchar", label: "Silchar" },
+          { value: "Dibrugarh", label: "Dibrugarh" },
+        ],
+
+          Bihar: [
+          { value: "Patna", label: "Patna" },
+          { value: "Gaya", label: "Gaya" },
+          { value: "Bhagalpur", label: "Bhagalpur" },
+        ],
+
+        Chhattisgarh: [
+          { value: "Raipur", label: "Raipur" },
+          { value: "Bilaspur", label: "Bilaspur" },
+        ],
+
+        Goa: [
+          { value: "Panaji", label: "Panaji" },
+          { value: "Margao", label: "Margao" },
+        ],
+
+        Gujarat: [
+        { value: "Ahmedabad", label: "Ahmedabad" },
+        { value: "Surat", label: "Surat" },
+        { value: "Vadodara", label: "Vadodara" },
+        ],
+
+        Haryana: [
+        { value: "Gurgaon", label: "Gurgaon" },
+        { value: "Faridabad", label: "Faridabad" },
+        { value: "Panipat", label: "Panipat" },
+      ],
+
+        "Himachal Pradesh": [
+          { value: "Shimla", label: "Shimla" },
+          { value: "Manali", label: "Manali" },
+],
+
+Jharkhand: [
+  { value: "Ranchi", label: "Ranchi" },
+  { value: "Jamshedpur", label: "Jamshedpur" },
+],
+
+Karnataka: [
+  { value: "Bangalore", label: "Bangalore" },
+  { value: "Mysore", label: "Mysore" },
+  { value: "Mangalore", label: "Mangalore" },
+],
+
+Kerala: [
+  { value: "Thiruvananthapuram", label: "Thiruvananthapuram" },
+  { value: "Kochi", label: "Kochi" },
+  { value: "Kozhikode", label: "Kozhikode" },
+],
+
+"Madhya Pradesh": [
+  { value: "Bhopal", label: "Bhopal" },
+  { value: "Indore", label: "Indore" },
+  { value: "Gwalior", label: "Gwalior" },
+],
+
+Maharashtra: [
+  { value: "Mumbai", label: "Mumbai" },
+  { value: "Pune", label: "Pune" },
+  { value: "Nagpur", label: "Nagpur" },
+],
+
+Manipur: [
+  { value: "Imphal", label: "Imphal" },
+],
+
+Meghalaya: [
+  { value: "Shillong", label: "Shillong" },
+],
+
+Mizoram: [
+  { value: "Aizawl", label: "Aizawl" },
+],
+
+Nagaland: [
+  { value: "Kohima", label: "Kohima" },
+  { value: "Dimapur", label: "Dimapur" },
+],
+
+Odisha: [
+  { value: "Bhubaneswar", label: "Bhubaneswar" },
+  { value: "Cuttack", label: "Cuttack" },
+],
+
+Punjab: [
+  { value: "Chandigarh", label: "Chandigarh" },
+  { value: "Ludhiana", label: "Ludhiana" },
+  { value: "Amritsar", label: "Amritsar" },
+],
+
+Rajasthan: [
+  { value: "Jaipur", label: "Jaipur" },
+  { value: "Udaipur", label: "Udaipur" },
+  { value: "Jodhpur", label: "Jodhpur" },
+],
+
+Sikkim: [
+  { value: "Gangtok", label: "Gangtok" },
+],
+
+"Tamil Nadu": [
+  { value: "Chennai", label: "Chennai" },
+  { value: "Coimbatore", label: "Coimbatore" },
+  { value: "Madurai", label: "Madurai" },
+],
+
+Telangana: [
+  { value: "Hyderabad", label: "Hyderabad" },
+  { value: "Warangal", label: "Warangal" },
+],
+
+Tripura: [
+  { value: "Agartala", label: "Agartala" },
+],
+
+"Uttar Pradesh": [
+  { value: "Lucknow", label: "Lucknow" },
+  { value: "Noida", label: "Noida" },
+  { value: "Varanasi", label: "Varanasi" },
+],
+
+Uttarakhand: [
+  { value: "Dehradun", label: "Dehradun" },
+  { value: "Haridwar", label: "Haridwar" },
+],
+
+"West Bengal": [
+  { value: "Kolkata", label: "Kolkata" },
+  { value: "Siliguri", label: "Siliguri" },
+],
+England: [
+  { value: "London", label: "London" },
+  { value: "Manchester", label: "Manchester" },
+  { value: "Birmingham", label: "Birmingham" },
+  { value: "Liverpool", label: "Liverpool" },
+],
+
+Scotland: [
+  { value: "Edinburgh", label: "Edinburgh" },
+  { value: "Glasgow", label: "Glasgow" },
+  { value: "Aberdeen", label: "Aberdeen" },
+],
+
+Wales: [
+  { value: "Cardiff", label: "Cardiff" },
+  { value: "Swansea", label: "Swansea" },
+  { value: "Newport", label: "Newport" },
+],
+
+"Northern Ireland": [
+  { value: "Belfast", label: "Belfast" },
+  { value: "Derry", label: "Derry" },
+  { value: "Lisburn", label: "Lisburn" },
+],
         };
         resolve(cityMap[stateId] || []);
       }, 500);

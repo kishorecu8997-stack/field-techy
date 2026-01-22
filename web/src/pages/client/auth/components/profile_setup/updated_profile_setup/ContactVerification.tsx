@@ -159,7 +159,7 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${
+                    className={`text-white dark:text-white font-medium ${
                       timeLeft > 0 || isPending
                         ? "opacity-50 cursor-not-allowed"
                         : ""
