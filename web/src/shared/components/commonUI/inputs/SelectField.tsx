@@ -166,9 +166,8 @@ export const SelectField = ({
                 onChange("");
               }
             }
-            
-    clearErrors?.(name);
-  
+
+            clearErrors?.(name);
           };
 
           const displayLabel = multiple

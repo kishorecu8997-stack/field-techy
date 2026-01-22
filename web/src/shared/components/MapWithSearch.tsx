@@ -159,8 +159,8 @@ const MapSearchBar: React.FC<{
             aria-label="Clear search"
             title="Clear search"
             className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center p-0
-             text-black dark:text-white
-             hover:text-gray-700 dark:hover:text-gray-300"
+              dark:text-white
+             hover:text-white-700 dark:hover:text-white-300"
           >
             ×
           </Button>

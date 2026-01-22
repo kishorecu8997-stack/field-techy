@@ -9,7 +9,10 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
-import { validateCurrentOrFutureDate, validateEndDate } from "../../../post_job/Validates";
+import {
+  validateCurrentOrFutureDate,
+  validateEndDate,
+} from "../../../post_job/Validates";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -374,8 +377,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                   <Controller
                     name="JobOccurrenceEndDate"
                     rules={{
-                      validate: (value) =>
-                            validateCurrentOrFutureDate(value),
+                      validate: (value) => validateCurrentOrFutureDate(value),
                     }}
                     control={ctx.control}
                     render={({ field }) => (
@@ -484,8 +486,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                            validateCurrentOrFutureDate(value),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -521,7 +522,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       name="endDate"
                       rules={{
                         validate: (value) =>
-                            validateEndDate(value, ctx.getValues("startDate")),
+                          validateEndDate(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
                       render={({ field }) => (

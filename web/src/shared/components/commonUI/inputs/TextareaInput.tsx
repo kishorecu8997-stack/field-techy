@@ -91,11 +91,10 @@ export const TextareaInput = ({
                }
               `}
               rows={4}
-                onChange={(e) => {
-                field.onChange(e); 
-                clearErrors(name); 
+              onChange={(e) => {
+                field.onChange(e);
+                clearErrors(name);
               }}
-
             />
             {error && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-500">

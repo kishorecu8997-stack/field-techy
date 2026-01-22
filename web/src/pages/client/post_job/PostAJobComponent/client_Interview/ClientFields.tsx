@@ -20,22 +20,22 @@ const ClientFields = () => {
   const startDate = ctx.watch("startDate");
 
   const minStartTime = useMemo(() => {
-      if (!startDate) return undefined;  
-      if (startDate) {
-        const selectedDate = new Date(startDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        selectedDate.setHours(0, 0, 0, 0);
-        if (selectedDate.getTime() === today.getTime()) {
-          const now = new Date();
-          now.setMinutes(now.getMinutes() + 1);
-          const hours = now.getHours().toString().padStart(2, "0");
-          const minutes = now.getMinutes().toString().padStart(2, "0");
-          return `${hours}:${minutes}`;
-        }
+    if (!startDate) return undefined;
+    if (startDate) {
+      const selectedDate = new Date(startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+      if (selectedDate.getTime() === today.getTime()) {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 1);
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        return `${hours}:${minutes}`;
       }
-      return undefined;
-    }, [startDate]);
+    }
+    return undefined;
+  }, [startDate]);
 
   return (
     <div className="flex flex-col h-full gap-2">
@@ -82,11 +82,11 @@ const ClientFields = () => {
             />
           </div>
           <div className="w-full">
-            <CustomTimePicker 
-            label="Start Time" 
-            name="startTime" 
-            required
-            minTime={minStartTime}
+            <CustomTimePicker
+              label="Start Time"
+              name="startTime"
+              required
+              minTime={minStartTime}
             />
           </div>
         </div>
