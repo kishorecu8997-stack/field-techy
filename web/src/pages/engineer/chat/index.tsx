@@ -66,7 +66,7 @@ const ChatLayout: React.FC = () => {
             <div className="">
               <input
                 type="text"
-                placeholder="Search Jobs.."
+                placeholder="Search Messages.."
                 className="w-full rounded-2xl bg-gray-100 dark:bg-gray-700 px-4 py-2 text-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-200"
               />
             </div>
