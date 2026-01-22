@@ -235,7 +235,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               {/* ---- POPUP ALWAYS OPENS ABOVE ---- */}
               <div
                 className={`
-                  absolute z-50 bg-white dark:bg-gray-800 shadow-lg border rounded-lg p-3 flex gap-4
+                  absolute z-50 bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-600 rounded-lg p-3 flex gap-4
                   transition-all duration-200 ease-out transform
 
                   bottom-full mb-2 origin-bottom
@@ -266,7 +266,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledHour
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
                               : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
@@ -301,7 +301,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledMinute
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
                               : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
@@ -332,7 +332,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledPeriod
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
                               : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"

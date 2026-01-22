@@ -67,8 +67,8 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
               }}
               className={`block w-full text-left px-4 py-2 text-sm dark:text-white dark:hover:bg-gray-700 ${
                 currentSort === option.value
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-600"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-600 dark:text-emerald-50"
+                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
               }`}
             >
               {option.label}
