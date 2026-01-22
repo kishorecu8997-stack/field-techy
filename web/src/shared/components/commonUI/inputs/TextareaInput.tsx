@@ -92,8 +92,8 @@ export const TextareaInput = ({
               `}
               rows={4}
                 onChange={(e) => {
-                field.onChange(e); // update value
-                clearErrors(name); // remove error as soon as user types
+                field.onChange(e); 
+                clearErrors(name); 
               }}
 
             />

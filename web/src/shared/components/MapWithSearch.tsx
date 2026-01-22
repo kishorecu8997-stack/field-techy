@@ -158,8 +158,8 @@ const MapSearchBar: React.FC<{
             }}
             aria-label="Clear search"   
             title="Clear search" 
-            variant="ghost"     // makes it transparent/no background
-            size="icon"         // makes it small square suitable for icons
+            variant="ghost"    
+            size="icon"         
             className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-5 h-5 flex items-center justify-center p-0"
           >
             ×
