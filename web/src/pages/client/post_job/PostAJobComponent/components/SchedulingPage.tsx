@@ -9,7 +9,7 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
-import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
+import { validateCurrentOrFutureDate, validateEndDate } from "../../../post_job/Validates";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -521,7 +521,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       name="endDate"
                       rules={{
                         validate: (value) =>
-                            validateCurrentOrFutureDate(value),
+                            validateEndDate(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
                       render={({ field }) => (

@@ -20,7 +20,7 @@ const ClientFields = () => {
   const startDate = ctx.watch("startDate");
 
   const minStartTime = useMemo(() => {
-      if (!startDate) return undefined; //updated one
+      if (!startDate) return undefined;  // If no start date is selected, do not enforce any minimum time
       if (startDate) {
         const selectedDate = new Date(startDate);
         const today = new Date();
