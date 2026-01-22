@@ -34,7 +34,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     <div className="relative inline-block">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:text-white text-sm font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >
         Sort by: {options.find((option) => option.value === sort)?.label}
         <svg
@@ -56,7 +56,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+        <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 border border-gray-200 rounded-md shadow-lg z-10">
           {options.map((option) => (
             <button
               key={option.value}
@@ -65,9 +65,9 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
                 onSortChange?.(option.value);
                 setIsOpen(false);
               }}
-              className={`block w-full text-left px-4 py-2 text-sm ${
+              className={`block w-full text-left px-4 py-2 text-sm dark:text-white dark:hover:bg-gray-700 ${
                 currentSort === option.value
-                  ? "bg-emerald-100 text-emerald-800"
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-600"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >

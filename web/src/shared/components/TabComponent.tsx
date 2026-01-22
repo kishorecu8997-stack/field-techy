@@ -61,7 +61,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                 activeTab === tab.label
                   ? "bg-teal-800 text-white"
-                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  : "bg-white border border-gray-500 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
               }`}
             >
               {tab.label}
