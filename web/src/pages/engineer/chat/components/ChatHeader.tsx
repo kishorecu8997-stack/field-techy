@@ -42,7 +42,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               Members: {group.members.join(", ")}
             </p>
           ) : (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Status : Online</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Status : Online
+            </p>
           )}
         </div>
       </div>
