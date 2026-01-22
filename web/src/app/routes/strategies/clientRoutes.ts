@@ -118,6 +118,10 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientExploreEngineers),
           },
           {
+            path: urls.client.home.search_analytics,
+            element: withSuspense(Components.ClientSearchAnalyticsPage),
+          },
+          {
             path: urls.client.home.post_JobPage,
             element: withSuspense(Components.ClientPostJobPage),
           },

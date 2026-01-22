@@ -73,6 +73,7 @@ export const urls = {
       post_JobPage: "post-job",
       post_a_job: "post-a-job",
       search_result: "search-result",
+      search_analytics: "search-analytics",
       faq: "faq",
       job_details: "job-details",
       terms_and_conditions: "terms-and-conditions",
@@ -215,6 +216,7 @@ export const absoluteUrls = {
       manage_proposal: `${BASE.CLIENT}/manage-proposals`,
       post_JobPage: `${BASE.CLIENT}/post-job`,
       search_result: `${BASE.CLIENT}/search-result`,
+      search_analytics: `${BASE.CLIENT}/search-analytics`,
       faq: `${BASE.CLIENT}/faq`,
       terms_and_conditions: `${BASE.CLIENT}/terms-and-conditions`,
       privacy_policy: `${BASE.CLIENT}/privacy-policy`,
@@ -228,6 +230,7 @@ export const absoluteUrls = {
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
       chat: `${BASE.CLIENT}/messages`,
+     
     },
   },
 
