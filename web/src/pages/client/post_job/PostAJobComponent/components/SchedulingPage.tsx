@@ -504,7 +504,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       )}
                     />
                   </div>
-                  <div className="w-full">
+                  <div className="relative w-full">
                     <CustomTimePicker
                       label="Start Time"
                       name="startTime"
@@ -538,7 +538,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       )}
                     />
                   </div>
-                  <div className="w-full">
+                  <div className="relative w-full">
                     <CustomTimePicker
                       label="End Time"
                       name="endTime"
