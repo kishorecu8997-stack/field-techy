@@ -48,27 +48,43 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
         </p>
         <div className="flex justify-between items-center">
           <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-            {showBalance ? (
-              <>
-                $
-                {earnings.balance.toLocaleString("en-US", {
+            {showBalance
+              ? earnings.balance.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                })}
-              </>
-            ) : (
-              <>******</>
-            )}
+                })
+              : "******"}
           </p>
+
           {!showBalance ? (
             <BsEyeSlashFill
               className="cursor-pointer text-lg"
+              role="button"
+              tabIndex={0}
+              aria-label="Show balance"
               onClick={() => setShowBalance(true)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setShowBalance(true);
+                }
+              }}
             />
           ) : (
             <BsEyeFill
               className="cursor-pointer text-lg"
+              role="button"
+              tabIndex={0}
+              aria-label="Hide balance"
               onClick={() => setShowBalance(false)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setShowBalance(false);
+                }
+              }}
             />
           )}
         </div>

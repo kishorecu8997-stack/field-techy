@@ -128,7 +128,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           <div className="flex justify-between items-center">
             <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
               {showBalance ? (
-                <>${formatCurrency(data.currentBalance).replace("$", "")}</>
+                <>{formatCurrency(data.currentBalance)}</>
               ) : (
                 <>******</>
               )}
@@ -137,11 +137,29 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               <BsEyeSlashFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(true)}
+                role="button"
+                aria-label="Show balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance(true);
+                  }
+                }}
               />
             ) : (
               <BsEyeFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(false)}
+                role="button"
+                aria-label="Show balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance(true);
+                  }
+                }}
               />
             )}
           </div>
