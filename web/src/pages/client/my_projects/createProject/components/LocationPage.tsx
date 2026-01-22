@@ -1,3 +1,4 @@
+import { useFormContext } from "react-hook-form";
 import {
   currencyTypes,
   projectCountries,
@@ -28,6 +29,11 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
  * @returns {JSX.Element} Location and currency selection section
  */
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
+  const { watch } = useFormContext();
+  const selectedWorkTypes = watch("locationType") || [];
+  const showOnsite = selectedWorkTypes.includes("onsite") || selectedWorkTypes.includes("hybrid");
+  const showRemote = selectedWorkTypes.includes("remote") || selectedWorkTypes.includes("hybrid");
+
   return (
     <div>
       <SectionHeader title="Location and Currency" />
@@ -40,22 +46,26 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
         options={workTypes}
         wrapperClassName="border pl-2 pt-2 bg-white border-gray-300 rounded-sm dark:bg-gray-800 dark:text-white"
       />
-      <TagSelectField
-        name="onSiteCoutry"
-        label="On-site Countries"
-        placeholder="Select countries from the list"
-        required
-        disabled={isDisable}
-        options={projectCountries}
-      />
-      <TagSelectField
-        disabled={isDisable}
+      {showOnsite && (
+        <TagSelectField
+          name="onSiteCoutry"
+          label="On-site Countries"
+          placeholder="Select countries from the list"
+          required
+          disabled={isDisable}
+          options={projectCountries}
+        />
+      )}
+      {showRemote && (
+        <TagSelectField
+        disabled={isDisable}  
         name="remoteCoutry"
-        label="Remote Countries"
-        placeholder="Select countries from the list"
-        required
-        options={projectCountries}
-      />
+          label="Remote Countries"
+          placeholder="Select countries from the list"
+          required
+          options={projectCountries}
+        />
+      )}
 
       <RadioField
         disabled={isDisable}
