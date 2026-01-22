@@ -85,7 +85,7 @@ export const validateEmail = (value: string): true | string => {
     const lastOne = domainLabels[2];
     const lastTwo = domainLabels.slice(1).join(".");
     if (validTLDs.includes(lastOne) && !validTLDs.includes(lastTwo)) {
-      return "Email domain format is not supported. Use example.com or example.co.in";
+      return "Email domain format is not supported. Use example.com or example.co.in or example.co.uk";
     }
   }
 

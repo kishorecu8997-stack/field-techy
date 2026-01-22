@@ -328,7 +328,7 @@ static async getStates(countryId?: string) {
   return new Promise<{ value: string; label: string }[]>((resolve) => {
     setTimeout(() => {
       let states: { value: string; label: string }[] = [];
-console.log("getStates called with countryId:", countryId);
+
 
       if (id === "uk") {
         states = [
