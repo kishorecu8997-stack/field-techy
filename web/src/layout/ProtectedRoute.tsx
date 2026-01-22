@@ -20,16 +20,11 @@ const getModuleLoginUrl = (pathname: string): string => {
   if (pathname.startsWith(BASE.ADMIN)) {
     return absoluteUrls.admin.auth.login;
   }
-  // Default to client login for /client routes or any other paths
   return absoluteUrls.client.auth.login;
 };
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  /**
-   * Optional role requirement. If provided, only users with this role can access.
-   * If not provided, any authenticated user can access.
-   */
   requiredRole?: UserRole;
 }
 
@@ -58,11 +53,9 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
   const logout = useUserSessionStore((state) => state.logout);
   const location = useLocation();
 
-  // Check if user lacks required role
   const hasInsufficientPermissions =
     session && requiredRole && session.role !== requiredRole;
 
-  // Handle logout and error notification for insufficient permissions
   useEffect(() => {
     if (hasInsufficientPermissions && session && requiredRole) {
       console.error(
@@ -73,14 +66,11 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
     }
   }, [hasInsufficientPermissions, session, requiredRole, logout]);
 
-  // If no session, redirect to login for the appropriate module
   if (!session) {
     return <Navigate to={getModuleLoginUrl(location.pathname)} replace />;
   }
 
-  // If a specific role is required, check if user has that role
   if (requiredRole && session.role !== requiredRole) {
-    // Determine which login page to redirect to based on user's role
     let loginUrl: string = absoluteUrls.client.auth.login;
     if (session.role === UserRole.ENGINEER) {
       loginUrl = absoluteUrls.engineer.auth.login;

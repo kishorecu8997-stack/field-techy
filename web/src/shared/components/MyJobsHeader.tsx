@@ -28,10 +28,8 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
 
-  // Check if on auth route (before login) - simplified header needed
   const isAuthRoute = location.pathname.includes("/auth/");
 
-  // Simplified header for auth routes (before login)
   if (isAuthRoute) {
     return (
       <div className="w-full sticky top-0 z-10 bg-gray-100 dark:bg-gray-900 mb-2">
