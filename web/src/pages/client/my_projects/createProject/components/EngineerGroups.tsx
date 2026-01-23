@@ -23,9 +23,8 @@ import { useFormContext } from "react-hook-form";
  * @returns {JSX.Element} Engineer selection and group picker section
  */
 export default function EngineerGroups({ isDisable }: { isDisable: boolean }) {
- const { watch } = useFormContext();
-const engineersNeededFrom = watch("engineersNeededFrom", "all");
-
+  const { watch } = useFormContext();
+  const engineersNeededFrom = watch("engineersNeededFrom", "all");
 
   return (
     <div>

@@ -120,12 +120,13 @@ export default function CreateProject() {
           <CreateProjectForm isDisable={isDisable} />
           {!isDisable && (
             <div className="flex justify-end w-9/12 items-center gap-4 pr-8">
-              <Button variant="outline" className="rounded-full"
+              <Button
+                variant="outline"
+                className="rounded-full"
                 onClick={() => {
                   methods.reset();
                   navigate(absoluteUrls.client.home.my_projects);
                   scrollToTop();
-
                 }}
               >
                 Cancel

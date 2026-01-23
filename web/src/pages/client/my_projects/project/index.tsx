@@ -56,7 +56,7 @@ const MyProjects: React.FC = () => {
         break;
 
       default:
-        break;// relevance = base order, nothing to sort
+        break; // relevance = base order, nothing to sort
     }
 
     return data;

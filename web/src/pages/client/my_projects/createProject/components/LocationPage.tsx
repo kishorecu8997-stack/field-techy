@@ -31,8 +31,12 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
   const { watch } = useFormContext();
   const selectedWorkTypes = watch("locationType") || [];
-  const showOnsite = selectedWorkTypes.includes("onsite") || selectedWorkTypes.includes("hybrid");
-  const showRemote = selectedWorkTypes.includes("remote") || selectedWorkTypes.includes("hybrid");
+  const showOnsite =
+    selectedWorkTypes.includes("onsite") ||
+    selectedWorkTypes.includes("hybrid");
+  const showRemote =
+    selectedWorkTypes.includes("remote") ||
+    selectedWorkTypes.includes("hybrid");
 
   return (
     <div>
@@ -58,8 +62,8 @@ const LocationPage = ({ isDisable }: { isDisable: boolean }) => {
       )}
       {showRemote && (
         <TagSelectField
-        disabled={isDisable}  
-        name="remoteCoutry"
+          disabled={isDisable}
+          name="remoteCoutry"
           label="Remote Countries"
           placeholder="Select countries from the list"
           required
