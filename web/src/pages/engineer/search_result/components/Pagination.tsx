@@ -61,7 +61,7 @@ const Pagination: React.FC<{
         className={`px-3 py-1 rounded-md ${
           currentPage === 1
             ? "text-gray-400 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-200"
+            : "dark:text-gray-400 text-gray-700 hover:bg-gray-200"
         }`}
       >
         {"<"}
@@ -79,7 +79,7 @@ const Pagination: React.FC<{
             className={`px-3 py-1 rounded-md ${
               currentPage === page
                 ? "bg-white border-2 border-green-700 text-green-700 font-medium"
-                : "text-gray-700 hover:bg-gray-200"
+                : "dark:text-gray-400 text-gray-700 hover:bg-gray-200"
             }`}
           >
             {page}
@@ -93,7 +93,7 @@ const Pagination: React.FC<{
         className={`px-3 py-1 rounded-md ${
           currentPage === totalPages
             ? "text-gray-400 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-200"
+            : "dark:text-gray-400 text-gray-700 hover:bg-gray-200"
         }`}
       >
         {">"}
