@@ -65,7 +65,7 @@ export default function ProjectServiceConfig() {
         />
         <div
           onClick={() => setIsOpen(true)}
-          className="text-emerald-900 items-center gap-1 cursor-pointer mt-2 hover:underline font-semibold flex justify-end"
+          className=" dark:text-teal-500 text-emerald-900 items-center gap-1 cursor-pointer mt-2 hover:underline font-semibold flex justify-end"
         >
           View Full Rate Card
           <FaArrowRightLong className="text-lg" />
