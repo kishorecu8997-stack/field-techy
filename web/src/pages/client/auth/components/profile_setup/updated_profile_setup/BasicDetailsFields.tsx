@@ -153,7 +153,6 @@ const BasicDetailsFields = () => {
   const selectedState = watch("state");
 
   const countryValue = typeof country === "string" ? country : country?.value;
-
   useEffect(() => {
     setValue("state", undefined);
     setValue("city", undefined);
