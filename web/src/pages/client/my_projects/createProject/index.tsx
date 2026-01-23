@@ -79,8 +79,8 @@ export default function CreateProject() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-4 bg-white dark:bg-gray-800">
         <FormContainer methods={methods} onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <div className="lg:col-span-2">
