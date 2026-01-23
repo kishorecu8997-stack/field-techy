@@ -61,11 +61,11 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   useEffect(() => {
     setValue("state", "");
     setValue("city", "");
-  }, [country]);
+  }, [country, setValue]);
 
   useEffect(() => {
     setValue("city", "");
-  }, [state]);
+  }, [state, setValue]);
 
   const handleSubmit = (data: PersonalInfo) => {
     console.log("Form submitted with data:", data);

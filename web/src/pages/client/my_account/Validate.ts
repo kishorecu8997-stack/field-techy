@@ -14,14 +14,13 @@ export const validateName = (value: string) => {
     return `This Field must contain only alphabetic characters and single spaces`;
 
   // Reject if more than 10 spaces
-  const spaceCount = (raw.match(/ /g) || []).length;0
+  const spaceCount = (raw.match(/ /g) || []).length;
   if (spaceCount > 10) return `This Field must not contain more than 10 spaces`;
 
   // Length requirement: 2 to 50 characters
   if (raw.length < 2) return `This Field must be at least 2 characters`;
   if (raw.length > 50) return `This Field must not exceed 50 characters`;
-
-  return true;0
+  return true;
 };
 
 /**
@@ -81,7 +80,7 @@ export const validateAddress = (value: string) => {
 
   const v = value.trim();
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 100 characters";
+  if (v.length > 100) return "Address must not exceed 100 characters";
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
