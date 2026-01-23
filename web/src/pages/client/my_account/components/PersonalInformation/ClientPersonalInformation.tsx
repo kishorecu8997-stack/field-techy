@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import {  useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import {
   validateAddress,
@@ -10,7 +10,7 @@ import {
   validateName,
   validateVatNumber,
   validateZipcode,
-  validateCompany
+  validateCompany,
 } from "../../Validate";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
@@ -18,7 +18,10 @@ import { toast } from "react-toastify";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
-import { useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
+import {
+  useIndustries,
+  useVatOptions,
+} from "@/shared/apiServices/client/clientService";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
@@ -52,8 +55,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     },
     mode: "onChange",
   });
-  const { data: industries = []} = useIndustries();
-  const { data: vatOptions = []} = useVatOptions();
+  const { data: industries = [] } = useIndustries();
+  const { data: vatOptions = [] } = useVatOptions();
   const { control, trigger, setValue } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const country = useWatch({ control, name: "country" });

@@ -4,10 +4,12 @@ export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `This Field must not have first or last spaces`;
+  if (raw !== raw.trim())
+    return `This Field must not have first or last spaces`;
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `This Field must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw))
+    return `This Field must not contain consecutive spaces`;
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
@@ -85,7 +87,7 @@ export const validateAddress = (value: string) => {
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
- // MUST contain at least one letter (very important now)
+  // MUST contain at least one letter (very important now)
   if (!/[A-Za-z]/.test(v)) {
     return "Address must contain at least one letter";
   }
@@ -473,8 +475,8 @@ export const validateVatNumber = (vatNumber: string): true | string => {
   if (formatResult !== true) {
     return formatResult;
   }
-  const cleaned = vatNumber.replace(/[\s\-/]/g, '');
-  if (cleaned === '' || /^0+$/.test(cleaned)) {
+  const cleaned = vatNumber.replace(/[\s\-/]/g, "");
+  if (cleaned === "" || /^0+$/.test(cleaned)) {
     return "VAT registration number cannot be zero or empty";
   }
   return true;
