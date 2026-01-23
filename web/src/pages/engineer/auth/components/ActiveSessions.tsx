@@ -103,7 +103,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     fetchSessions();
   }, []);
 
-  // Reset selection on session refetch or page change
+
   useEffect(() => {
     setSelectedSessions([]);
   }, [sessions]);
