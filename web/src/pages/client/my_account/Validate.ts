@@ -80,14 +80,23 @@ export const validateAddress = (value: string) => {
     return "Address must not start or end with a space";
 
   const v = value.trim();
+
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
+  if (v.length > 100) return "Address must not exceed 100 characters";
+
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
+
+  // NEW RULE: must contain at least one alphabetic character
+  if (!/[A-Za-z]/.test(v)) {
+    return "Address must include letters";
+  }
+
   return true;
 };
+
 
 /**
  * Validate a portfolio/URL field:

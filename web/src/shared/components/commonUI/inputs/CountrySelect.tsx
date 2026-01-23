@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { Button } from "../Buttons";
 /**
  * CountrySelect is a reusable dropdown component for selecting a country.
  *
@@ -55,29 +56,35 @@ export const CountrySelect = ({
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        className={`flex items-center min-w-[5rem] gap-1 px-3 py-3 border-r border-gray-300 dark:border-gray-600 cursor-pointer ${
-          disabled
-            ? "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md"
-            : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100  rounded-md"
-        }`}
+      <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="dropdown"
         onClick={toggleDropdown}
         disabled={disabled}
-      >
-        {currentCountry && (
-          <>
+        leftIcon={
+          currentCountry ? (
             <img
               src={currentCountry.flag}
               alt={currentCountry.name}
               className="w-5 h-5 object-contain"
             />
-            <span>{currentCountry.code}</span>
-            <MdKeyboardArrowDown size={20} className={`text-gray-500 ${isOpen ? "rotate-180" : ""}`}/>
-          </>
+          ) : null
+        }
+        rightIcon={
+          <MdKeyboardArrowDown
+            size={20}
+            className={`transition-transform duration-200 ${
+              isOpen ? "rotate-180" : "rotate-0"
+            } text-gray-500 dark:text-gray-400`}
+          />
+        }
+      >
+        {currentCountry ? (
+          currentCountry.code
+        ) : (
+          <span className="text-gray-400">Select</span>
         )}
-      </button>
+      </Button>
 
       {isOpen && !disabled && (
         <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
