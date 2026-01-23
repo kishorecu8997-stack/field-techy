@@ -30,7 +30,7 @@ const EditDocument = () => {
 
   const userId = useMemo(() => getUserId(), []);
 
-  const uploadMutation = useEngineerFileUpload(userId || undefined, {
+  const uploadMutation = useEngineerFileUpload({
     onSuccess: () => {
       toast.success("Document Uploaded Successfully");
       setActiveKey("documents");
