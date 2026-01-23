@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm, useWatch } from "react-hook-form";
+import {  useForm, useWatch } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import {
   validateAddress,
@@ -15,11 +15,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import { toast } from "react-toastify";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import countries, {
-  BUSINESS_TYPES,
-} from "@/dummy_data/client/clientMyProfieTypes";
+import countries from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
 import { validateCompany } from "@/utils/validate";
+import { useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
 
 interface ClientPersonalInformationProps {
   onMenuItemClick: (key: string) => void;
@@ -51,8 +50,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       taxDocument: "",
       vatRegistrationNumber: "",
     },
-    mode: "onSubmit",
+    mode: "onChange",
   });
+  const { data: industries = []} = useIndustries();
+  const { data: vatOptions = []} = useVatOptions();
   const { control, trigger, setValue } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const country = useWatch({ control, name: "country" });
@@ -167,8 +168,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           placeholder="Business Type"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
           options={[
-            { value: "1", label: "Corporate" },
-            { value: "2", label: "Home" },
+            { value: "1", label: "LLC" },
+            { value: "2", label: "Corporation" },
+            { value: "3", label: "Sole Proprietorship" },
+            { value: "4", label: "Partnership" },
           ]}
           required
         />
@@ -178,10 +181,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           name="industry"
           placeholder="Industry"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={[
-            { value: "1", label: "Information Technology" },
-            { value: "2", label: "Construction" },
-          ]}
+          options={industries.map((e) => ({
+            value: e.value,
+            label: e.label,
+          }))}
           required
         />
         <InputField
@@ -236,9 +239,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           label="Tax Document"
           name="taxDocument"
           placeholder="Tax Document(VAT)"
-          options={BUSINESS_TYPES.map((e) => ({
-            value: e.id,
-            label: e.name,
+          options={vatOptions.map((e) => ({
+            value: e.value,
+            label: e.label,
           }))}
           required
         />
