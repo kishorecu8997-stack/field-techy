@@ -260,7 +260,6 @@ const BasicDetailsFields = () => {
         required
         leftIcon={<IoWalletOutline className="text-lg text-gray-500" />}
         rules={{ validate: (v: string) => validateAmount(v) }}
-        allowedCharacters="numbers-dot"
       />
 
       <InputField
