@@ -10,6 +10,14 @@ import {
   engineerDeleteEducation,
   engineerUpdateEducation,
   engineerUpdatePersonalInfo,
+  engineerGetExperience,
+  engineerAddExperience,
+  engineerDeleteExperience,
+  engineerUpdateExperience,
+  engineerGetSkillsAndTools,
+  engineerUpdateSkillsAndTools,
+  engineerGetWorkPreference,
+  engineerUpdateWorkPreference,
   appGetLookupData,
   type AppLoginData, 
   type AppLoginResponse, 
@@ -26,6 +34,18 @@ import {
   type EngineerDeleteEducationResponse,
   type EngineerUpdateEducationData,
   type EngineerUpdateEducationResponse,
+  type EngineerGetExperienceResponse,
+  type EngineerAddExperienceData,
+  type EngineerAddExperienceResponse,
+  type EngineerDeleteExperienceResponse,
+  type EngineerUpdateExperienceData,
+  type EngineerUpdateExperienceResponse,
+  type EngineerGetSkillsAndToolsResponse,
+  type EngineerUpdateSkillsAndToolsData,
+  type EngineerUpdateSkillsAndToolsResponse,
+  type EngineerGetWorkPreferenceResponse,
+  type EngineerUpdateWorkPreferenceData,
+  type EngineerUpdateWorkPreferenceResponse,
   type AppGetLookupDataResponse,
   type AppGetLookupDataData
 } from "@/api";
@@ -118,7 +138,7 @@ export function useSendOtp(options?: {
       const response = await appSendOtp({
         client: apiClient,
         body: { type },
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppSendOtpResponse;
@@ -142,7 +162,7 @@ export function useVerifyOtp(options?: {
       const response = await appVerifyOtp({
         client: apiClient,
         body: { type, code },
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppVerifyOtpResponse;
@@ -327,6 +347,204 @@ export function useEngineerUpdateEducation(options?: {
 }
 
 /**
+ * TanStack Query query hook for fetching engineer work experience list
+ */
+export function useEngineerGetExperience() {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.all, "experience"],
+    queryFn: async () => {
+      const response = await engineerGetExperience({
+        client: apiClient,
+        throwOnError: true,
+      });
+      return response.data as EngineerGetExperienceResponse;
+    },
+    refetchOnMount: true,
+    staleTime: 0,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for adding new work experience record
+ */
+export type AddExperienceBody = NonNullable<EngineerAddExperienceData["body"]>;
+
+export function useEngineerAddExperience(options?: {
+  onSuccess?: (data: EngineerAddExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: AddExperienceBody) => {
+      const response = await engineerAddExperience({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerAddExperienceResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for deleting work experience record
+ */
+export function useEngineerDeleteExperience(options?: {
+  onSuccess?: (data: EngineerDeleteExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await engineerDeleteExperience({
+        client: apiClient,
+        path: { id },
+        throwOnError: true,
+      });
+      return response.data as EngineerDeleteExperienceResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for updating work experience record
+ */
+export type UpdateExperienceBody = NonNullable<EngineerUpdateExperienceData["body"]>;
+
+export function useEngineerUpdateExperience(options?: {
+  onSuccess?: (data: EngineerUpdateExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, body }: { id: string; body: UpdateExperienceBody }) => {
+      const response = await engineerUpdateExperience({
+        client: apiClient,
+        path: { id },
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerUpdateExperienceResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query query hook for fetching engineer skills and tools
+ */
+export function useEngineerGetSkillsAndTools() {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.all, "skills-tools"],
+    queryFn: async () => {
+      const response = await engineerGetSkillsAndTools({
+        client: apiClient,
+        throwOnError: true,
+      });
+      return response.data as EngineerGetSkillsAndToolsResponse;
+    },
+    refetchOnMount: true,
+    staleTime: 0,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for updating current engineer skills and tools
+ */
+export type UpdateSkillsAndToolsBody = NonNullable<EngineerUpdateSkillsAndToolsData["body"]>;
+
+export function useEngineerUpdateSkillsAndTools(options?: {
+  onSuccess?: (data: EngineerUpdateSkillsAndToolsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: UpdateSkillsAndToolsBody) => {
+      const response = await engineerUpdateSkillsAndTools({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerUpdateSkillsAndToolsResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "skills-tools"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query query hook for fetching current engineer work preference
+ */
+export function useEngineerGetWorkPreference() {
+  return useQuery({
+    queryKey: [...queryKeys.engineer.all, "work-preference"],
+    queryFn: async () => {
+      const response = await engineerGetWorkPreference({
+        client: apiClient,
+        throwOnError: true,
+      });
+      return response.data as EngineerGetWorkPreferenceResponse;
+    },
+    refetchOnMount: true,
+    staleTime: 0,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for updating engineer work preference
+ */
+export type UpdateWorkPreferenceBody = NonNullable<EngineerUpdateWorkPreferenceData["body"]>;
+
+export function useEngineerUpdateWorkPreference(options?: {
+  onSuccess?: (data: EngineerUpdateWorkPreferenceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: UpdateWorkPreferenceBody) => {
+      const response = await engineerUpdateWorkPreference({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as EngineerUpdateWorkPreferenceResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "work-preference"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
  * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
 export async function getPersonalInfo() {
@@ -343,6 +561,30 @@ export async function getEducation() {
     throwOnError: true,
   });
   return response.data as EngineerGetEducationResponse;
+}
+
+export async function getExperience() {
+  const response = await engineerGetExperience({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetExperienceResponse;
+}
+
+export async function getSkillsAndTools() {
+  const response = await engineerGetSkillsAndTools({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetSkillsAndToolsResponse;
+}
+
+export async function getWorkPreference() {
+  const response = await engineerGetWorkPreference({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetWorkPreferenceResponse;
 }
 
 /**

@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "openapi:client": "npx @hey-api/openapi-ts -i ../api/openapi.json -o web/src/api",
+    "openapi:client": "npx @hey-api/openapi-ts -i ../api/openapi.json -o src/api",
     "sdk:generate": "npm run openapi:client"
   },
   "dependencies": {

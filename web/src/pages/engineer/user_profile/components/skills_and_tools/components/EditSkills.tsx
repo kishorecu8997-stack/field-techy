@@ -1,87 +1,43 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
-import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
+  useEngineerGetSkillsAndTools,
+  useEngineerUpdateSkillsAndTools,
+  useLookupData
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 export type EditSkillsFormData = {
   skills: string[];
 };
-/**
- * The EditSkills component renders a form to modify a user's professional skills.
- * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing skills
- * retrieved from localStorage.
- * @param {EditSkillsProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered EditSkills form component.
- */
+
 const EditSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
-  const { session } = useUserSessionStore();
-  const engineerId = session?.userId || "";
 
-  const { data: engineerData, isLoading: isEngineerLoading } =
-    useEngineerGetById(engineerId);
-  const { mutate } = useEngineerUpdateById(engineerId);
-
-  const initialSkillIds = useMemo(() => {
-    const storedIds = localStorage.getItem("editSkillsId");
-    if (storedIds) {
-      try {
-        const parsedIds: (string | number)[] = JSON.parse(storedIds);
-        return parsedIds.map(String);
-      } catch (error) {
-        console.error("Failed to parse skill IDs from localStorage", error);
-        return engineerData?.jobSkills?.map(String) || [];
-      }
-    }
-    return engineerData?.jobSkills?.map(String) || [];
-  }, [engineerData]);
-
-  const skillOptions = skillsData.map((skill) => ({
-    label: skill.label,
-    value: skill.id.toString(),
-  }));
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: skillsLookup } = useLookupData("skills" as any);
 
   const methods = useForm<EditSkillsFormData>({
-    defaultValues: {
-      skills: initialSkillIds,
-    },
+    mode: "onSubmit",
   });
 
   useEffect(() => {
-    return () => {
-      localStorage.removeItem("editSkillsId");
-    };
-  }, []);
-  /**
-   * Handles the form submission for updating skills.
-   * Currently logs the data to the console and shows a success toast.
-   *
-   * @param {EditSkillsFormData} data - The validated form data containing the updated list of skill IDs.
-   */
-  const onSubmit = async (formData: EditSkillsFormData) => {
-    if (!engineerData) {
-      toast.error("Unable to load current profile data. Please try again.");
-      return;
+    if (currentSkillsAndTools) {
+      methods.reset({
+        skills: currentSkillsAndTools.skills.map(s => s.id.toString()),
+      });
     }
+  }, [currentSkillsAndTools, methods]);
 
-    const updatedEngineer: EngineerData = {
-      ...engineerData,
-      jobSkills: formData.skills,
-    };
-
+  const onSubmit = async (formData: EditSkillsFormData) => {
     await showPopup({
       title: "Update Skills",
       body: "Are you sure you want to update these skills?",
@@ -90,36 +46,41 @@ const EditSkills = () => {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
           label: "Yes, update",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            mutate(updatedEngineer, {
-              onSuccess: () => {
-                toast.success("Skills Updated Successfully");
-                close(true);
-                setActiveKey("skillsAndTools");
-              },
-              onError: (error) => {
-                console.error("Failed to update skills:", error);
-                toast.error("Failed to save skills. Please try again.");
-                close(true);
-              },
-            });
+            const skillIds = formData.skills.map(Number);
+            const toolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+
+            try {
+              await updateSkillsAndTools({
+                skills: skillIds,
+                tools: toolIds
+              });
+              toast.success("Skills Updated Successfully");
+              close(true);
+              setActiveKey("skillsAndTools");
+            } catch (error) {
+              console.error("Failed to update skills:", error);
+              toast.error("Failed to save skills. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  if (isEngineerLoading) {
-    return <LoaderComponent />;
-  }
+  const skillOptions = skillsLookup?.map((skill: any) => ({
+    label: skill.name,
+    value: skill.id.toString(),
+  })) || [];
+
+  if (isCurrentLoading) return <LoaderComponent />;
 
   return (
     <FormContainer

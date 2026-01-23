@@ -1,4 +1,3 @@
-import { skillsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
@@ -6,32 +5,32 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  useEngineerGetSkillsAndTools,
+  useEngineerUpdateSkillsAndTools,
+  useLookupData
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-/**
- * Defines the shape of the form data for adding skills.
- * @typedef {Object} AddSkillsFormData
- * @property {string[]} skills - An array of selected skill IDs.
- */
 export type AddSkillsFormData = {
   skills: string[];
 };
 
-/**
- * The AddSkills component renders a form for adding new professional skills.
- * It uses `react-hook-form` for form management and a `TagSelectField` for multi-selection.
- *
- * @returns {React.ReactElement} The rendered AddSkills form component.
- */
 const AddSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: skillsLookup } = useLookupData("skills" as any);
+
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
       skills: [],
     },
   });
 
-  const onSubmit = async (_: AddSkillsFormData) => {
+  const onSubmit = async (data: AddSkillsFormData) => {
     await showPopup({
       title: "Add Skills",
       body: "Are you sure you want to add these skills?",
@@ -40,29 +39,43 @@ const AddSkills = () => {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            console.log("No button clicked");
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
           label: "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Skills Added Successfully");
-            close(true);
-            setActiveKey("skillsAndTools");
+            const existingSkillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const newSkillIds = data.skills.map(Number);
+            const combinedSkillIds = Array.from(new Set([...existingSkillIds, ...newSkillIds]));
+            const toolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+
+            try {
+              await updateSkillsAndTools({
+                skills: combinedSkillIds,
+                tools: toolIds
+              });
+              toast.success("Skills Added Successfully");
+              close(true);
+              setActiveKey("skillsAndTools");
+            } catch (error) {
+              console.error("Failed to add skills:", error);
+              toast.error("Failed to add skills. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  const skillOptions = skillsData.map((skill) => ({
-    label: skill.label,
+  const skillOptions = skillsLookup?.map((skill: any) => ({
+    label: skill.name,
     value: skill.id.toString(),
-  }));
+  })) || [];
+
+  if (isCurrentLoading) return <LoaderComponent />;
 
   return (
     <FormContainer

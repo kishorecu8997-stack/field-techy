@@ -1,5 +1,3 @@
-import { preferredWorkTypesData, servicesCategoriesData } from "@/dummy_data";
-import { workPreferenceData } from "@/dummy_data/engineer_profile/workPreferenceData";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -14,18 +12,43 @@ import { RiTodoLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { validatePortfolioLink, validateRate } from "../../Validate";
 import type { WorkPreferenceFormData } from "./types";
+import {
+  useEngineerGetWorkPreference,
+  useEngineerUpdateWorkPreference,
+  useLookupData
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEffect } from "react";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * The WorkPreference component renders a form for users to edit their work-related preferences.
- * It uses `react-hook-form` for state management and validation.
- * @param {WorkPreferenceProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered WorkPreference form component.
  */
 const WorkPreference = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const handleSubmit = async (_: WorkPreferenceFormData) => {
+  const { data: workPreference, isLoading: isPrefLoading } = useEngineerGetWorkPreference();
+  const { mutateAsync: updateWorkPreference } = useEngineerUpdateWorkPreference();
+
+  const { data: employmentTypes } = useLookupData("employmentTypes");
+  const { data: serviceCategories } = useLookupData("serviceCategories");
+
+  const methods = useForm<WorkPreferenceFormData>({
+    mode: "onSubmit",
+  });
+
+  useEffect(() => {
+    if (workPreference) {
+      methods.reset({
+        portfolioLink: workPreference.portfolioLink || "",
+        preferredWorkTypes: workPreference.employmentTypeId?.toString() || "",
+        servicesCategories: workPreference.serviceCategoryId?.toString() || "",
+        ratePreference: workPreference.hourlyRate?.toString() || "",
+      });
+    }
+  }, [workPreference, methods]);
+
+  const handleSubmit = async (data: WorkPreferenceFormData) => {
     await showPopup({
       title: "Update Work Preferences",
       body: "Are you sure you want to update your work preferences?",
@@ -34,37 +57,35 @@ const WorkPreference = () => {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            console.log("No button clicked");
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
           label: "Yes, update",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Work Preferences Updated Successfully");
-            close(true);
-            setActiveKey("profile");
+            try {
+              await updateWorkPreference({
+                portfolioLink: data.portfolioLink,
+                employmentTypeId: Number(data.preferredWorkTypes),
+                serviceCategoryId: Number(data.servicesCategories),
+                hourlyRate: Number(data.ratePreference.replace(/[^0-9.]/g, "")),
+              });
+              toast.success("Work Preferences Updated Successfully");
+              close(true);
+              setActiveKey("profile");
+            } catch (error) {
+              console.error("Failed to update work preferences:", error);
+              toast.error("Failed to update work preferences. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  /**
-   * Initializes `react-hook-form` with default values for the work preference form.
-   */
-  const methods = useForm<WorkPreferenceFormData>({
-    defaultValues: {
-      portfolioLink: workPreferenceData[0].portfolioLink,
-      preferredWorkTypes: workPreferenceData[0].preferredWorkTypeIds,
-      servicesCategories: workPreferenceData[0].serviceCategoryIds,
-      ratePreference: workPreferenceData[0].ratePreference,
-    },
-    mode: "onSubmit",
-  });
+  if (isPrefLoading) return <LoaderComponent />;
 
   return (
     <FormContainer
@@ -75,7 +96,6 @@ const WorkPreference = () => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <InputField
           label="Portfolio Link"
-          isShowLabel={false}
           name="portfolioLink"
           type="text"
           placeholder="Portfolio Link"
@@ -85,32 +105,29 @@ const WorkPreference = () => {
         />
         <SelectField
           label="Preferred Work Types"
-          isShowLabel={false}
           name="preferredWorkTypes"
           placeholder="Preferred Work Type"
           leftIcon={<RiTodoLine className="text-lg text-gray-500" />}
-          options={preferredWorkTypesData.map((e) => ({
-            value: e.id,
-            label: e.type,
-          }))}
+          options={employmentTypes?.map((e) => ({
+            value: e.id.toString(),
+            label: e.name,
+          })) || []}
           required
         />
         <SelectField
           label="Services Categories"
-          isShowLabel={false}
           name="servicesCategories"
           placeholder="Services Categories"
           leftIcon={<HiOutlineBriefcase className="text-lg text-gray-500" />}
-          options={servicesCategoriesData.map((e) => ({
-            value: e.id,
-            label: e.category,
-          }))}
+          options={serviceCategories?.map((e) => ({
+            value: e.id.toString(),
+            label: e.name,
+          })) || []}
           required
         />
 
         <InputField
           label="Rate Preference"
-          isShowLabel={false}
           name="ratePreference"
           placeholder="Hourly/Fixed Rate Preference"
           leftIcon={<CiWallet className="text-lg text-gray-500" />}
