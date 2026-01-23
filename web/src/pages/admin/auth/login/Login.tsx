@@ -13,12 +13,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import type { LoginFormData } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
-import { useAdminSignInMutation } from "@/shared/apiServices/admin/adminService";
 import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
+import { useAdminLogin } from "@/shared/apiServices/admin/adminOpenApiService";
+import { AxiosError } from "axios";
 
 /**
  * AdminLogin
@@ -45,31 +46,41 @@ export default function AdminLogin() {
   });
 
   const navigate = useNavigate();
-  const adminSignInMutation = useAdminSignInMutation();
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const handleSubmit = (data: LoginFormData) => {
-    adminSignInMutation.mutateAsync(
-      { phoneOrEmail: data.email, password: data.password },
-      {
-        onSuccess: (resp) => {
-          const session: UserSession = {
-            accessToken: resp.accessToken,
-            userId: resp.userId,
-            role: resp.role || UserRole.ADMIN,
-            initiatedAt: resp.initiatedAt || Date.now(),
-            email: data.email,
-          };
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useAdminLogin({
+    onSuccess: async (resp) => {
+      // Store the token
+      if (resp.token) {
+        localStorage.setItem("auth_token", resp.token);
+      }
 
-          setUserSession(session);
-          navigate(`${absoluteUrls.admin.home.dashboard}`);
-          toast.success("Logged in successfully!");
-        },
-        onError: (error: unknown) => {
-          toast.error((error as Error)?.message || "Login failed");
-        },
-      },
-    );
+      setUserSession({
+        accessToken: resp.token,
+        userId: "uuid-123", // TODO: Get actual user ID from token or profile response
+        role: UserRole.ADMIN,
+        initiatedAt: Date.now(),
+      } as UserSession);
+
+      navigate(absoluteUrls.admin.home.dashboard);
+      toast.success("Logged in successfully");
+    },
+    onError: (error) => {
+      console.error(error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return;
+      }
+      const errorMessage =
+        error instanceof Error ? error.message : "Login failed";
+      toast.error(errorMessage);
+    },
+  });
+
+  const handleSubmit = async (data: LoginFormData) => {
+    await loginMutation({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   return (
@@ -119,6 +130,7 @@ export default function AdminLogin() {
           </div>
           <Button
             type="submit"
+            loading={isLoggingIn}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit

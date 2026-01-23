@@ -1,12 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { useState, useEffect } from "react";
-import { useAdminGetById } from "@/shared/apiServices/admin/adminService";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
-import type { AdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
-import { toast } from "react-toastify";
+import { useState } from "react";
 
 /**
  * AdminLayout
@@ -31,30 +26,30 @@ export default function AdminLayout() {
   };
 
   /* ---------- Admin Profile Integration ---------- */
-  const { session } = useUserSessionStore();
-  const { setAdminProfile } = useAdminProfileStore();
-  const { mutate: getAdminById } = useAdminGetById({
-    onSuccess: (data: AdminByIdResponse) => {
-      setAdminProfile({
-        id: data.id,
-        fullName: data.fullName,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        profilePicture: data.profilePicture,
-      });
-    },
-    onError: (err) => {
-      const msg =
-        err instanceof Error ? err.message : "Failed to load profile details";
-      toast.error(msg);
-    },
-  });
+  // const { session } = useUserSessionStore();
+  // const { setAdminProfile } = useAdminProfileStore();
+  // const { mutate: getAdminById } = useAdminGetById({
+  //   onSuccess: (data: AdminByIdResponse) => {
+  //     setAdminProfile({
+  //       id: data.id,
+  //       fullName: data.fullName,
+  //       email: data.email,
+  //       phoneNumber: data.phoneNumber,
+  //       profilePicture: data.profilePicture,
+  //     });
+  //   },
+  //   onError: (err) => {
+  //     const msg =
+  //       err instanceof Error ? err.message : "Failed to load profile details";
+  //     toast.error(msg);
+  //   },
+  // });
 
-  useEffect(() => {
-    if (session?.userId) {
-      getAdminById(session.userId);
-    }
-  }, [session?.userId]);
+  // useEffect(() => {
+  //   if (session?.userId) {
+  //     getAdminById(session.userId);
+  //   }
+  // }, [session?.userId]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">

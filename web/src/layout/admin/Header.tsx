@@ -8,8 +8,9 @@ import { absoluteUrls } from "@/config/urls";
 import { countries } from "@/dummy_data/adminDashboard";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useAdminFileStream } from "@/shared/apiServices/admin/adminService";
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
+import { useGetAdminPersonalInfo } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * Header
@@ -32,28 +33,12 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const token = useUserSessionStore((state) => state.session?.accessToken);
   const { adminProfile } = useAdminProfileStore();
-  const [adminProfilePic, setAdminProfilePic] = useState<string>("");
+  const [adminProfilePic] = useState<string>("");
 
-  // File stream for profile picture
-  const { data: adminProfileStream } = useAdminFileStream(
-    adminProfile?.profilePicture,
-  );
-
-  useEffect(() => {
-    if (!adminProfileStream?.blob) {
-      setAdminProfilePic(assetsConfig.images.profile.defaultProfileImage);
-      return;
-    }
-
-    const url = URL.createObjectURL(adminProfileStream.blob);
-    setAdminProfilePic(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [adminProfileStream]);
+  //New API
+  const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -125,16 +110,18 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  (adminProfile?.email?.charAt(0) || "A").toLocaleUpperCase()
+                  (
+                    adminPersonalInfo?.name?.charAt(0) || "A"
+                  ).toLocaleUpperCase()
                 )}
               </span>
             </div>
 
             <div className="hidden sm:block">
               <div className="font-semibold text-md">
-                {adminProfile?.fullName
-                  ? adminProfile.fullName
-                  : adminProfile?.email?.split("@")[0]}
+                {adminPersonalInfo?.name
+                  ? adminPersonalInfo.name
+                  : adminPersonalInfo?.email?.split("@")[0]}
               </div>
             </div>
           </div>

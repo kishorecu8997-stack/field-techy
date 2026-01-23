@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validateName } from "@/pages/engineer/user_profile/Validate";
@@ -13,49 +12,28 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import {
-  useAdminGetById,
-  useAdminUpdateProfileMutation,
-  useAdminUploadFileMutation,
-  useAdminFileStream,
-} from "@/shared/apiServices/admin/adminService";
+import { useAdminFileStream } from "@/shared/apiServices/admin/adminService";
 
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
-import type { AdminByIdResponse } from "@/shared/apiServices/admin/adminTypes";
 import type { ProfileFormData } from "./types";
-
-/* ---------- Helper ---------- */
-const getFileFromProfilePicture = async (
-  profilePicture: File | string,
-): Promise<File | null> => {
-  if (profilePicture instanceof File) return profilePicture;
-
-  if (typeof profilePicture === "string") {
-    const response = await fetch(profilePicture);
-    const blob = await response.blob();
-    return new File([blob], "avatar.jpeg", { type: blob.type });
-  }
-
-  return null;
-};
+import {
+  useAdminUpdatePersonalInfo,
+  useGetAdminPersonalInfo,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { queryClient } from "@/main";
 
 export default function PersonalDetails() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-
   const session = useUserSessionStore((s) => s.session);
-  const logout = useUserSessionStore((s) => s.logout);
-  const adminUpdateProfileMutation = useAdminUpdateProfileMutation();
-
-  const { adminProfile, setAdminProfile } = useAdminProfileStore();
-  const queryClient = useQueryClient();
+  const { adminProfile } = useAdminProfileStore();
 
   /* ---------- Stream image ---------- */
   const { data: adminProfileStream } = useAdminFileStream(
     adminProfile?.profilePicture,
   );
 
-  const [adminProfilePic, setAdminProfilePic] = useState<string>("");
+  const [, setAdminProfilePic] = useState<string>("");
 
   useEffect(() => {
     if (!adminProfileStream?.blob) return;
@@ -69,97 +47,57 @@ export default function PersonalDetails() {
   }, [adminProfileStream]);
 
   /* ---------- Get admin by id ---------- */
-  const { mutate: getAdminById } = useAdminGetById({
-    onSuccess: (data: unknown) => {
-      const resp = data as AdminByIdResponse;
-      setAdminProfile({
-        id: resp.id,
-        fullName: resp.fullName,
-        email: resp.email,
-        phoneNumber: resp.phoneNumber,
-        profilePicture: resp.profilePicture,
-      });
-
-      // Form reset is handled by useEffect listening to adminProfile changes
-    },
-    onError: () => {
-      toast.error("Failed to load profile details");
-    },
-  });
+  const { data: adminPersonalInfo } = useGetAdminPersonalInfo(
+    session?.accessToken || "",
+  );
 
   useEffect(() => {
-    if (adminProfile) {
-      methods.reset({
-        fullName: adminProfile.fullName,
-        email: adminProfile.email,
-        phoneNumber: adminProfile.phoneNumber,
-        profilePicture: "",
+    const getAdmin = async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["adminPersonalInfo"],
       });
-    } else if (session?.userId) {
-      // Fallback if store is empty
-      getAdminById(session.userId);
-    }
-  }, [adminProfile, session?.userId, getAdminById]);
+    };
+    getAdmin();
+  }, [adminPersonalInfo]);
+
+  /* ---------- Upadet admin profile ---------- */
+  const updateAdminProfile = useAdminUpdatePersonalInfo({
+    onSuccess: async () => {
+      toast.success("Profile details updated successfully!");
+      await queryClient.invalidateQueries({
+        queryKey: ["adminPersonalInfo"],
+      });
+      navigate(absoluteUrls.admin.home.dashboard);
+    },
+    onError: (err) => {
+      const msg =
+        err instanceof Error ? err.message : "Failed to update profile details";
+      toast.error(msg);
+    },
+  });
 
   /* ---------- Form ---------- */
   const methods = useForm<ProfileFormData>({
     defaultValues: {
-      fullName: "",
-      email: session?.email,
-      phoneNumber: "",
+      fullName: adminPersonalInfo?.name || "",
+      email: adminPersonalInfo?.email || "",
+      phoneNumber: adminPersonalInfo?.phoneNumber || "+91",
       profilePicture: "",
     },
   });
 
-  /* ---------- ONLY effect needed ---------- */
-  useEffect(() => {
-    if (adminProfilePic) {
-      methods.setValue("profilePicture", adminProfilePic, {
-        shouldDirty: false,
-        shouldValidate: false,
-      });
-    }
-  }, [adminProfilePic, methods, getAdminById, methods.reset]);
-
-  /* ---------- Upload ---------- */
-  const { mutateAsync: uploadProfileImage } = useAdminUploadFileMutation();
+  // /* ---------- ONLY effect needed ---------- */
+  // useEffect(() => {
+  //   if (adminProfilePic) {
+  //     methods.setValue("profilePicture", adminProfilePic, {
+  //       shouldDirty: false,
+  //       shouldValidate: false,
+  //     });
+  //   }
+  // }, [adminProfilePic, methods, methods.reset]);
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
-    const userId = session?.userId;
-
-    if (!userId) {
-      toast.error("Session expired. Please login again.");
-      logout();
-      navigate(absoluteUrls.admin.auth.login);
-      return;
-    }
-
-    let finalProfilePicKey = adminProfile?.profilePicture;
-
-    if (data.profilePicture) {
-      const file = await getFileFromProfilePicture(data.profilePicture);
-      if (!file) return;
-
-      await uploadProfileImage(
-        {
-          adminId: userId,
-          file,
-          fileType: "ADM_PROFILE_PIC",
-        },
-        {
-          onSuccess: (res: unknown) => {
-            const resp = (res ?? { fileKey: "" }) as { fileKey: string };
-            toast.success("Profile picture uploaded successfully");
-            finalProfilePicKey = resp.fileKey;
-          },
-          onError: () => {
-            toast.error("Failed to upload profile picture");
-          },
-        },
-      );
-    }
-
     await showPopup({
       title: "Profile Update",
       body: "Are you sure you want to update this profile?",
@@ -170,29 +108,19 @@ export default function PersonalDetails() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            await adminUpdateProfileMutation.mutateAsync(
-              {
-                id: userId,
-                fullName: data.fullName,
-                email: data.email,
-                phoneNumber: data.phoneNumber ?? "",
-                profilePicture: finalProfilePicKey as string,
-              },
-              {
-                onSuccess: () => {
-                  getAdminById(userId);
-
-                  // Invalidate file stream cache to ensure fresh image is fetched
-                  queryClient.invalidateQueries({
-                    queryKey: ["admin-file-stream"],
-                  });
-
-                  toast.success("Profile updated successfully");
-                  navigate(absoluteUrls.admin.home.dashboard);
-                  close(true);
+            try {
+              await updateAdminProfile.mutateAsync({
+                body: {
+                  name: data.fullName,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber ?? "",
                 },
-              },
-            );
+                token: session?.accessToken ?? "",
+              });
+              close(true);
+            } catch {
+              close(false);
+            }
           },
         },
       ],

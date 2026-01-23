@@ -10,7 +10,9 @@
     "format-and-build": "npm run format && npm run build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+   "openapi:client": "npx @hey-api/openapi-ts -i ../api/openapi.json -o src/api",
+    "sdk:generate": "npm run openapi:client"
   },
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.19",
