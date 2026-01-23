@@ -110,7 +110,7 @@ export default function BlockedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Blocked")}
             initialPageSize={10}
           />
         </div>

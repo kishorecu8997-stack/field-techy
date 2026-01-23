@@ -228,7 +228,7 @@ export default function ActiveUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Active")}
             initialPageSize={10}
           />
         </div>

@@ -227,7 +227,7 @@ export default function InactiveUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Inactive")}
             initialPageSize={10}
           />
         </div>

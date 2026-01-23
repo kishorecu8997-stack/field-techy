@@ -1,0 +1,89 @@
+import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
+import CustomTable from "@/shared/components/commonUI/custom_table";
+import type { Column } from "@/shared/components/commonUI/custom_table";
+import { FaUserCircle } from "react-icons/fa";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import type { ManageEngineerProps } from "../types";
+import Popup from "@/shared/components/Popup";
+import { IoCloseSharp } from "react-icons/io5";
+import { useState } from "react";
+
+export default function AllUsers() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+
+  const columns: Column<ManageEngineerProps>[] = [
+    { key: "id", label: "Sr.No." },
+    { key: "engineerID", label: "Engineer ID" },
+    {
+      key: "details",
+      label: "Details",
+      renderCell: (row) => (
+        <div className="flex items-center gap-2">
+          <FaUserCircle className="h-6 w-6 text-gray-500" />
+          <div>
+            <div className="font-semibold">{row.details.name}</div>
+            <div className="text-sm text-gray-500">{row.details.phone}</div>
+            <div className="text-sm text-gray-500">{row.details.email}</div>
+          </div>
+        </div>
+      ),
+    },
+    { key: "location", label: "Location" },
+    { key: "registrationDate", label: "Registration Date" },
+    { key: "kycStatus", label: "KYC Status" },
+    { key: "employmentStatus", label: "Employment Status" },
+    { key: "avgRating", label: "Avg Rating" },
+    {
+      key: "documents",
+      label: "Documents",
+      renderCell: (row) => (
+        <Button
+          className="bg-teal-700 text-white"
+          onClick={() => {
+            setIsModalOpen(true);
+            setSelectedRowId(row.id);
+          }}
+        >
+          {row.documents}
+        </Button>
+      ),
+    },
+  ];
+
+  const selectedEngineer = manageEngineer.find(
+    (eng) => eng.id === selectedRowId
+  );
+
+  return (
+    <div className="w-full h-full overflow-auto">
+      <CustomTable<ManageEngineerProps>
+        columns={columns}
+        data={manageEngineer}
+        initialPageSize={10}
+      />
+
+      {isModalOpen && selectedEngineer && (
+        <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <div className="p-4">
+            <div className="flex justify-between items-center">
+              <span className="font-bold">
+                View File for {selectedEngineer.details.name}
+              </span>
+              <div
+                className="text-xl font-semibold cursor-pointer"
+                onClick={() => setIsModalOpen(false)}
+              >
+                <IoCloseSharp />
+              </div>
+            </div>
+            <div className="border border-gray-400 h-36 my-6 flex items-center justify-center">
+              {/* Replace with actual file/image if available */}
+              <img src="https://via.placeholder.com/500" alt="file" />
+            </div>
+          </div>
+        </Popup>
+      )}
+    </div>
+  );
+}

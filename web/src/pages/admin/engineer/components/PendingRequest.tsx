@@ -43,12 +43,28 @@ export default function PendingRequest() {
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
-    const status = data.status;
+
+    const status = data.status.toLowerCase(); 
+    let toastMessage = "";
+
+    switch (status) {
+      case "approve":
+        toastMessage = "Engineer approved successfully!";
+        break;
+      case "reject":
+        toastMessage = "Engineer rejected successfully!";
+        break;
+      case "pending":
+        toastMessage = "Engineer marked as pending successfully!";
+        break;
+      default:
+        toastMessage = `Engineer status updated to ${data.status}`;
+        break;
+    }
+
     await showPopup({
-      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Engineer`,
-      body: `Are you sure you want to ${
-        status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this Engineer?`,
+      title: `${data.status.charAt(0).toUpperCase() + data.status.slice(1)} Engineer`,
+      body: `Are you sure you want to ${data.status.charAt(0).toUpperCase() + data.status.slice(1)} this Engineer?`,
       actionButtons: [
         {
           label: "Cancel",
@@ -59,21 +75,22 @@ export default function PendingRequest() {
           label: "Yes",
           value: "yes",
           variant:
-            status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
+            status === "approve"
+              ? "primary"
+              : status === "reject"
+                ? "danger"
+                : status === "pending"
+                  ? "outline"
+                  : "secondary",
           action: async (close) => {
-            toast.success(
-              `Enginner ${
-                status.toLocaleLowerCase() === "approve"
-                  ? "approved"
-                  : "rejected"
-              } successfully!`,
-            );
+            toast.success(toastMessage);
             close(true);
           },
         },
       ],
     });
   };
+
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
@@ -123,6 +140,25 @@ export default function PendingRequest() {
                 {row.details.email}
               </div>
             </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: "submittedDocuments",
+      label: "Submitted Documents",
+      renderCell: (row: ManageEngineerProps) => {
+        const documents = row.submittedDocuments;
+        return (
+          <div className="text-sm flex flex-col gap-1">
+            {documents.map((doc, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
+              >
+                {doc}
+              </span>
+            ))}
           </div>
         );
       },
@@ -241,7 +277,9 @@ export default function PendingRequest() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={manageEngineer.filter(
+              (engineer) => engineer.kycStatus === "Pending",
+            )}
             initialPageSize={10}
           />
         </div>

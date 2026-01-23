@@ -115,7 +115,7 @@ export default function SuspendedUser() {
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Suspended")}
             initialPageSize={10}
           />
         </div>

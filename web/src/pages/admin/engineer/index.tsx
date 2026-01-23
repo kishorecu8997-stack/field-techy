@@ -7,10 +7,16 @@ import SuspendedUser from "./components/SuspendedUser";
 import InactiveUser from "./components/InactiveUser";
 import BlockedUser from "./components/BlockedUser";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
+import AllUsers from "./components/AllUsers";
 
 export default function ManageEngineer() {
   const navigate = useNavigate();
   const tabs = [
+    {
+      label: "All Users",
+      content: <AllUsers />,
+      hide: false,
+    },
     {
       label: "Pending Request",
       content: <PendingRequest />,
@@ -58,7 +64,7 @@ export default function ManageEngineer() {
         </div>
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-        <AdminTabComponent tabs={tabs} defaultActiveTab={"Pending Request"} />
+        <AdminTabComponent tabs={tabs} defaultActiveTab={"All Users"} />
       </div>
     </div>
   );
