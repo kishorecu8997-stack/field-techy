@@ -10,6 +10,7 @@ import {
   validateName,
   validateVatNumber,
   validateZipcode,
+  validateCompany
 } from "../../Validate";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
@@ -17,7 +18,6 @@ import { toast } from "react-toastify";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import countries from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
-import { validateCompany } from "@/utils/validate";
 import { useIndustries, useVatOptions } from "@/shared/apiServices/client/clientService";
 
 interface ClientPersonalInformationProps {
