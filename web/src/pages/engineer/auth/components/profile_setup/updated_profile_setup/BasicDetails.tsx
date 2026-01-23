@@ -7,7 +7,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
@@ -67,9 +67,10 @@ const BasicDetails = () => {
       confirmPassword: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
-
   const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
     onSuccess: (data) => {
       console.log("Signup successful:", data);
@@ -83,7 +84,6 @@ const BasicDetails = () => {
       toast.error(error.message || "Registration failed. Please try again.");
     },
   });
-
   // Check for existing registration session
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
   useEffect(() => {
@@ -167,7 +167,6 @@ const BasicDetails = () => {
       tools: [],
       experiences: [],
       educations: [],
-
       files: null,
     };
 
@@ -221,21 +220,71 @@ const BasicDetails = () => {
               name="termsAndConditions"
               required
               isShowLabel={false}
+              renderError={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
-            >
-              I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+            <div className="text-sm text-gray-700 dark:text-gray-300 flex flex-wrap items-center gap-1">
+              <label htmlFor="termsAndConditions" className="cursor-pointer">
+                I agree to the
+              </label>
+              <button
+                type="button"
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await showPopup({
+                      title: "Engineer Terms & Conditions",
+                      body: (
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
+                          <p>
+                            <strong>What is Field Techy:</strong> A smart
+                            solution to hire verified engineers on demand, for
+                            home IT issues or business technical projects.
+                          </p>
+                          <p>
+                            <strong>Features:</strong> Post jobs quickly, hire
+                            verified engineers, track progress, communicate
+                            in-app, and pay securely via escrow.
+                          </p>
+                          <p>
+                            <strong>Who It’s For:</strong> Home clients needing
+                            one-time support and corporate clients managing
+                            multi-location projects.
+                          </p>
+                          <p>
+                            By using our service, you agree to all applicable
+                            terms and conditions.
+                          </p>
+                        </div>
+                      ),
+                      actionButtons: [
+                        {
+                          label: "Close",
+                          value: null,
+                          variant: "primary",
+                        },
+                      ],
+                    });
+                  } catch (error) {
+                    console.error(
+                      "Failed to open Engineer Terms & Conditions popup:",
+                      error,
+                    );
+                  }
+                }}
+              >
                 Terms and Conditions
-              </span>
-            </label>
+              </button>
+            </div>
           </div>
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
-
       <div className="flex-shrink-0 p-4">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <Button
