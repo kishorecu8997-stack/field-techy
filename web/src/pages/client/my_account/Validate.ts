@@ -85,8 +85,9 @@ export const validateAddress = (value: string) => {
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
-  if (!/[A-Za-z]/.test(v) || !/\d/.test(v)) {
-    return "Address must contain both letters and numbers";
+ // MUST contain at least one letter (very important now)
+  if (!/[A-Za-z]/.test(v)) {
+    return "Address must contain at least one letter";
   }
   return true;
 };
