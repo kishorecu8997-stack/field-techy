@@ -194,7 +194,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
         <div
-          className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="relative p-2 text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.client.home.chat);
           }}
@@ -205,7 +205,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           </span>
         </div>
         <div
-          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientNotification");
