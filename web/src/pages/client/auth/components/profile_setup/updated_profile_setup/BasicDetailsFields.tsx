@@ -25,6 +25,7 @@ import {
 } from "@/shared/apiServices/client/clientService";
 import { useDebouncedUserExists } from "@/shared/apiServices/user";
 import { useEffect } from "react";
+import {businessTypes} from "@/dummy_data/adminClientData";
 
 /**
  * Email field component with real-time availability validation
@@ -142,16 +143,14 @@ const EmailFieldWithValidation = () => {
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
-  const watchedRole = watch("businessType");
+  const watchedRole = watch("accountType");
   // Default to URL role if set, otherwise fallback to watched value or "home"
   const urlRole = window.location.pathname.includes("corporate")
     ? "CORPORATE"
     : undefined;
   const role = urlRole || watchedRole || "HOME";
-
   const country = watch("country");
   const selectedState = watch("state");
-
   const countryValue = typeof country === "string" ? country : country?.value;
   useEffect(() => {
     setValue("state", undefined);
@@ -161,7 +160,6 @@ const BasicDetailsFields = () => {
   // Fetch dropdown data from API
   const { data: states = [], isLoading: statesLoading } =
     useStates(countryValue);
-
   const { data: cities = [], isLoading: citiesLoading } = useCities(
     selectedState?.value || selectedState,
   );
@@ -180,7 +178,7 @@ const BasicDetailsFields = () => {
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("businessType", "HOME")}
+            onClick={() => setValue("accountType", "HOME")}
           >
             Home Client
           </div>
@@ -192,7 +190,7 @@ const BasicDetailsFields = () => {
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("businessType", "CORPORATE")}
+            onClick={() => setValue("accountType", "CORPORATE")}
           >
             Corporate Client
           </div>
@@ -283,10 +281,7 @@ const BasicDetailsFields = () => {
             placeholder="Business Type"
             label="Business Type"
             disabled={!!urlRole} // Disable if fixed by URL
-            options={[
-              { value: "CORPORATE", label: "Corporate" },
-              { value: "HOME", label: "Home" },
-            ]}
+            options={businessTypes}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
           />
