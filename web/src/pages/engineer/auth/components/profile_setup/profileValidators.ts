@@ -110,7 +110,7 @@ export const validateAddress = (value: string) => {
 
   const v = value.trim();
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 100) return "Address must not exceed 100 characters"; 
+  if (v.length > 100) return "Address must not exceed 100 characters";
   if (!/[A-Za-z]/.test(v)) {
     return "Address must contain at least one letter";
   }

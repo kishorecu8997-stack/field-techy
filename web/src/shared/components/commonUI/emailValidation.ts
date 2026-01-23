@@ -56,7 +56,17 @@ export const validateEmail = (value: string): true | string => {
     return "Email domain must be in format: example.com or example.co.in";
   }
 
-  const validTLDs = ["com", "org", "net", "in", "edu", "gov", "info", "co.in", "co.uk"];
+  const validTLDs = [
+    "com",
+    "org",
+    "net",
+    "in",
+    "edu",
+    "gov",
+    "info",
+    "co.in",
+    "co.uk",
+  ];
 
   let tldMatched = false;
 
