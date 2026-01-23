@@ -40,6 +40,20 @@ export default function PendingRequest() {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+
+      const filteredData = manageEngineer
+      .filter((e) => e.kycStatus === "Pending")
+      .filter((e) => {
+        const query = search.toLowerCase();
+
+        return (
+          e.engineerID.toLowerCase().includes(query) ||
+          e.details.name.toLowerCase().includes(query) ||
+          e.details.email.toLowerCase().includes(query) ||
+          e.location.toLowerCase().includes(query)
+        );
+      });
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
@@ -272,14 +286,12 @@ export default function PendingRequest() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput />
+          <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer.filter(
-              (engineer) => engineer.kycStatus === "Pending",
-            )}
+            data={filteredData}
             initialPageSize={10}
           />
         </div>
