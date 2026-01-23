@@ -154,14 +154,14 @@ const BasicDetailsFields = () => {
 
   const countryValue = typeof country === "string" ? country : country?.value;
 
-
   useEffect(() => {
-  setValue("state", undefined);
-  setValue("city", undefined);
-}, [country, setValue]);
+    setValue("state", undefined);
+    setValue("city", undefined);
+  }, [country, setValue]);
 
   // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } =useStates(countryValue);
+  const { data: states = [], isLoading: statesLoading } =
+    useStates(countryValue);
 
   const { data: cities = [], isLoading: citiesLoading } = useCities(
     selectedState?.value || selectedState,
@@ -249,7 +249,9 @@ const BasicDetailsFields = () => {
       />
       <SelectField
         name="state"
-        placeholder={statesLoading ? "Loading states..." : "Select State/Region"}
+        placeholder={
+          statesLoading ? "Loading states..." : "Select State/Region"
+        }
         options={states}
         required
         label="State/Region"
@@ -270,8 +272,7 @@ const BasicDetailsFields = () => {
         required
         label="Postal Code"
         rules={{
-          validate: (value: string) =>
-            validateZipcode(value, countryValue),
+          validate: (value: string) => validateZipcode(value, countryValue),
         }}
       />
 
