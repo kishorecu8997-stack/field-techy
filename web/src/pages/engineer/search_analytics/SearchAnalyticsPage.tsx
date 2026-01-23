@@ -73,7 +73,6 @@ const SearchAnalyticsPage: React.FC = () => {
       label: "Clicked",
       align: "left",
       renderCell: (row) => (row.clicked ? "Yes" : "No"),
-      
     },
   ];
 

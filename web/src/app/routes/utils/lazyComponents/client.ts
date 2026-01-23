@@ -94,7 +94,7 @@ export const PostAJobPage = React.lazy(
   () => import("@/pages/client/post_job/PostAJobComponent/PostJobPage"),
 );
 export const ClientSearchAnalyticsPage = React.lazy(
-  () => import("@/pages/client/search_analytics/ClientSearchAnalyticsPage") 
+  () => import("@/pages/client/search_analytics/ClientSearchAnalyticsPage"),
 );
 
 // Client Policy Pages

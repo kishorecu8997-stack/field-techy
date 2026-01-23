@@ -230,7 +230,6 @@ export const absoluteUrls = {
       ClientJobInviteEngineers: `${BASE.CLIENT}/explore-engineers`,
       ClientSelectEngineeers: `${BASE.CLIENT}/select-engineers`,
       chat: `${BASE.CLIENT}/messages`,
-     
     },
   },
 
