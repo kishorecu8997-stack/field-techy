@@ -6,6 +6,7 @@ import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useState } from "react";
 
 /**
  * SuspendedUser Component
@@ -25,6 +26,19 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 export default function SuspendedUser() {
   const { showPopup } = usePopupStore();
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageEngineer
+    .filter((e) => e.employmentStatus === "Suspended")
+    .filter((e) => {
+      const query = search.toLowerCase();
+      return (
+        e.engineerID.toLowerCase().includes(query) ||
+        e.details.name.toLowerCase().includes(query) ||
+        e.details.email.toLowerCase().includes(query) ||
+        e.location.toLowerCase().includes(query)
+      );
+    });
 
   const handleRevoke = async (id: number) => {
     await showPopup({
@@ -110,12 +124,12 @@ export default function SuspendedUser() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput />
+          <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Suspended")}
+            data={filteredData}
             initialPageSize={10}
           />
         </div>

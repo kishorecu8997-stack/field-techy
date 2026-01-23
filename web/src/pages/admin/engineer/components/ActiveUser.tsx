@@ -45,6 +45,21 @@ export default function ActiveUser() {
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageEngineer
+    .filter((e) => e.employmentStatus === "Active")
+    .filter((e) => {
+      const query = search.toLowerCase();
+
+      return (
+        e.engineerID.toLowerCase().includes(query) ||
+        e.details.name.toLowerCase().includes(query) ||
+        e.details.email.toLowerCase().includes(query) ||
+        e.location.toLowerCase().includes(query)
+      );
+    });
+
 
   useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
@@ -223,12 +238,11 @@ export default function ActiveUser() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput />
-        </div>
+          <SearchInput value={search} onChange={setSearch} />        </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer.filter((engineer) => engineer.employmentStatus === "Active")}
+            data={filteredData}
             initialPageSize={10}
           />
         </div>
