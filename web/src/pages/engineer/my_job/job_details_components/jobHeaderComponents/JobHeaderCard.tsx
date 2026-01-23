@@ -84,8 +84,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       <div
         className={`${
           isSendProposal
-            ? "text-gray-800 bg-yellow-50"
-            : "bg-teal-800 text-white"
+            ? "text-gray-800 bg-yellow-50 mt-4"
+            : "bg-teal-800 text-white mt-4"
         } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
