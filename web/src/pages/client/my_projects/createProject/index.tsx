@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import type { CreateProjectFormValues } from "../types";
+import { scrollToTop } from "@/utils";
 
 /**
  * CreateProject
@@ -44,11 +45,7 @@ export default function CreateProject() {
   const reviewProject = (data: CreateProjectFormValues) => {
     console.log("reviewProject", data);
     setIsDisable(true);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    scrollToTop();
   };
 
   //Save project
@@ -127,7 +124,8 @@ export default function CreateProject() {
                 onClick={() => {
                   methods.reset();
                   navigate(absoluteUrls.client.home.my_projects);
-                  window.scrollTo(0, 0);
+                  scrollToTop();
+
                 }}
               >
                 Cancel
