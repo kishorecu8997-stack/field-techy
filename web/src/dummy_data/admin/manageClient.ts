@@ -11,7 +11,7 @@ export const manageClient: ManageClientProps[] = [
     walletBalance: "₹12,500",
     kycStatus: "Verified",
     approvalStatus: "Approved",
-    RequiredType: "✓",
+    requiredType: "✓",
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ export const manageClient: ManageClientProps[] = [
     walletBalance: "₹3,200",
     kycStatus: "Pending",
     approvalStatus: "Pending",
-    RequiredType: "Address Proof",
+    requiredType: "Address Proof",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const manageClient: ManageClientProps[] = [
     walletBalance: "₹8,750",
     kycStatus: "Pending",
     approvalStatus: "Approved",
-    RequiredType: "Address Proof",
+    requiredType: "Address Proof",
   },
   {
     id: 4,
@@ -47,7 +47,7 @@ export const manageClient: ManageClientProps[] = [
     walletBalance: "₹1,450",
     kycStatus: "Rejected",
     approvalStatus: "Rejected",
-    RequiredType: "x",
+    requiredType: "x",
   },
   {
     id: 5,
@@ -59,6 +59,6 @@ export const manageClient: ManageClientProps[] = [
     walletBalance: "₹15,000",
     kycStatus: "Pending",
     approvalStatus: "Approved",
-    RequiredType: "License",
+    requiredType: "License",
   },
 ];
