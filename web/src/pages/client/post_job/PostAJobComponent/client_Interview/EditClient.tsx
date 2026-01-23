@@ -26,7 +26,7 @@ const EditClient = () => {
       lastName: value?.lastName,
       email: value?.email,
       mobile: value?.mobile,
-      startDate: new Date(value?.startDate),
+      startDate: value?.startDate ? new Date(value.startDate) : undefined,
       startTime: value?.startTime,
     },
   });
