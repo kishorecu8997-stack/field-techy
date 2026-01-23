@@ -106,7 +106,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   // Reset selection on session refetch or page change
   useEffect(() => {
     setSelectedSessions([]);
-  }, [sessions, currentPage]);
+  }, [sessions]);
 
   // Close modal on Escape key
   useEffect(() => {
