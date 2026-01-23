@@ -3,7 +3,8 @@ import {
   appLogin, 
   appRegisterEngineer, 
   appSendOtp, 
-  appVerifyOtp, 
+  appVerifyOtp,
+  appChangePassword,
   engineerGetPersonalInfo,
   engineerGetEducation,
   engineerAddEducation,
@@ -25,6 +26,8 @@ import {
   type AppRegisterEngineerResponse, 
   type AppSendOtpResponse, 
   type AppVerifyOtpResponse,
+  type AppChangePasswordData,
+  type AppChangePasswordResponse,
   type EngineerGetPersonalInfoResponse,
   type EngineerUpdatePersonalInfoData,
   type EngineerUpdatePersonalInfoResponse,
@@ -602,5 +605,29 @@ export function useLookupData(table: AppGetLookupDataData["query"]["table"], par
       return response.data as AppGetLookupDataResponse;
     },
     staleTime: 1000 * 60 * 60, // Keep lookup data fresh for 1 hour
+  });
+}
+
+/**
+ * TanStack Query mutation hook for changing password
+ */
+export type ChangePasswordBody = NonNullable<AppChangePasswordData["body"]>;
+
+export function useEngineerChangePassword(options?: {
+  onSuccess?: (data: AppChangePasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: ChangePasswordBody) => {
+      const response = await appChangePassword({
+        client: apiClient,
+        body,
+        headers: { Authorization: "" }, // Authorization is handled by apiClient interceptors
+        throwOnError: true,
+      });
+      return response.data as AppChangePasswordResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
