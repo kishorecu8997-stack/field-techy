@@ -18,27 +18,27 @@ export default function ManageEngineer() {
       hide: false,
     },
     {
-      label: "Pending Request",
+      label: "Pending Requests",
       content: <PendingRequest />,
       hide: false,
     },
     {
-      label: "Active User",
+      label: "Active Users",
       content: <ActiveUser />,
       hide: false,
     },
     {
-      label: "Inactive User",
+      label: "Inactive Users",
       content: <InactiveUser />,
       hide: false,
     },
     {
-      label: "Suspended User",
+      label: "Suspended Users",
       content: <SuspendedUser />,
       hide: false,
     },
     {
-      label: "Blocked User",
+      label: "Blocked Users",
       content: <BlockedUser />,
       hide: false,
     },
