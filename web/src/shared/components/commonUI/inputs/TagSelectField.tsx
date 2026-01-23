@@ -180,7 +180,7 @@ export const TagSelectField = ({
                     return (
                       <span
                         key={index}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded-full border border-teal-300 dark:border-teal-700 mt-2"
                       >
                         {tagLabel}
                         <button

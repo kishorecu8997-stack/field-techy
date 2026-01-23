@@ -54,7 +54,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   maxTime,
   onChange,
   containerClassName = "w-full",
-  inputClassName = "w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
+  inputClassName = "w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
 }) => {
   const { control, clearErrors } = useFormContext();
   const [open, setOpen] = useState(false);
@@ -225,18 +225,18 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                      : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
                  }`}
               >
-                <span className="text-gray-900 dark:text-gray-100 text-base">
+                <span className="text-gray-900 text-base dark:text-gray-200">
                   {rawValue
                     ? `${displayHour}:${displayMinute} ${displayPeriod}`
                     : "--:--"}
                 </span>
-                <Clock className="w-5 h-5 text-gray-600" />
+                <Clock className="w-5 h-5 text-gray-400" />
               </button>
 
               {/* ---- POPUP ALWAYS OPENS ABOVE ---- */}
               <div
                 className={`
-                  absolute z-50 bg-white shadow-lg border rounded-lg p-3 flex gap-4
+                  absolute z-50 bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-600 rounded-lg p-3 flex gap-4
                   transition-all duration-200 ease-out transform
 
                   bottom-full mb-2 origin-bottom
@@ -267,10 +267,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledHour
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
-                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
                         }`}
                       >
                         {h}
@@ -302,10 +302,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledMinute
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
-                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
                         }`}
                       >
                         {m}
@@ -333,10 +333,10 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                         }}
                         className={`px-3 py-1 rounded text-center text-sm ${
                           disabledPeriod
-                            ? "bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed"
+                            ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500 opacity-40 cursor-not-allowed"
                             : isActive
                               ? "bg-blue-600 text-white cursor-pointer"
-                              : "text-gray-800 hover:bg-gray-200 cursor-pointer"
+                              : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
                         }`}
                       >
                         {p}

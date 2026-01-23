@@ -221,7 +221,9 @@ export const SelectField = ({
                         )}
                         <span
                           className={`block truncate w-full ${
-                            !value ? "text-gray-400" : ""
+                            !value
+                              ? "text-gray-400 dark:text-gray-500"
+                              : "text-gray-900 dark:text-white"
                           }`}
                         >
                           {displayLabel}
@@ -293,7 +295,7 @@ export const SelectField = ({
                                       />
                                     )}
                                     <span
-                                      className={`block truncate ${
+                                      className={`block truncate text-gray-900 dark:text-white ${
                                         selected
                                           ? "font-semibold"
                                           : "font-normal"

@@ -118,8 +118,9 @@ export type DocumentType =
   | "GOVERNMENT_ID"
   | "CERTIFICATE"
   | "PICTURE"
+  | "PROPOSAL"
   | "WORK_SCREEN_SHOT"
-  | "PROPOSAL";
+  | "PROFILE_PICTURE";
 
 export interface Metadata {
   id?: string;
