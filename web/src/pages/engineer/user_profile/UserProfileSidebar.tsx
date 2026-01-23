@@ -5,6 +5,11 @@ import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
+import {
+  useEngineerProfile,
+  useEngineerStore,
+} from "@/shared/store/useEngineerStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -12,16 +17,10 @@ import {
   FaClipboardList,
   FaFile,
   FaGraduationCap,
-  FaSignOutAlt,
   FaUser,
-  FaWrench,
+  FaWrench
 } from "react-icons/fa";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
-import {
-  useEngineerStore,
-  useEngineerProfile,
-} from "@/shared/store/useEngineerStore";
 import type { MenuItem } from "./types";
 
 /**
@@ -92,12 +91,6 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
       icon: FaFile,
       id: "documents",
       onClick: () => onMenuItemClick("documents"),
-    },
-    {
-      label: "Logout",
-      icon: FaSignOutAlt,
-      id: "logout",
-      onClick: () => setIsOpen(true),
     },
   ];
 
