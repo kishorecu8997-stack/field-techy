@@ -84,7 +84,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   }, [clientProfile]);
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
+    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
         <img
           src={assetsConfig.logos.ftLogo}
