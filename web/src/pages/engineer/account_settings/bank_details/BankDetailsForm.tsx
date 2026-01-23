@@ -46,7 +46,6 @@ const BankDetailsForm = ({ formType }: { formType?: string }) => {
             label="Account Number"
             placeholder="Account number"
             required
-            allowedCharacters="numbers"
             rules={{ validate: validateAccNumber }}
           />
           <InputField
