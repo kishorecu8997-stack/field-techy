@@ -7,6 +7,7 @@ import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /**
  * SuspendedUser Component
@@ -56,6 +57,7 @@ export default function SuspendedUser() {
           variant: "primary",
           action: async (close) => {
             console.log("Revoking engineer:", id);
+            toast.success("Suspension revoked successfully!");
             close(true);
           },
         },

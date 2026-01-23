@@ -7,6 +7,7 @@ import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 /**
  * BlockedUser Component
@@ -55,6 +56,7 @@ export default function BlockedUser() {
           variant: "primary",
           action: async (close) => {
             console.log("Unlocking engineer:", id);
+            toast.success("Engineer unblocked successfully!");
             close(true);
           },
         },
