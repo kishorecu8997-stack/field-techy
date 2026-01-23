@@ -13,6 +13,9 @@ import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
 import ViewFileComponent from "./ViewFileComponent";
 import { usePopupStore } from "@/shared/store/popupStore";
+import SelectMenu from "@/shared/components/SelectMenu";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
+import { toast } from "react-toastify";
 
 /**
  * CorporateClient Component
@@ -27,8 +30,46 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 const CorporateClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+
+  const handleStatusChange = async (
+    row: ManageClientProps,
+    status: string | null,
+  ) => {
+    if (!status) return;
+
+    await showPopup({
+      title: `${status.charAt(0).toUpperCase() + status.slice(1)} Client`,
+      body: `Are you sure you want to ${status} this client?`,
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Yes",
+          value: "yes",
+          variant: status === "approve" ? "primary" : "danger",
+          action: async (close) => {
+            toast.success(
+              `Enginner ${
+                status.toLocaleLowerCase() === "approve"
+                  ? "approved"
+                  : status.toLocaleLowerCase() === "pending"
+                    ? "pending"
+                    : "rejected"
+              } successfully!`,
+            );
+            close(true);
+          },
+        },
+      ],
+    });
+  };
 
   //Delete confirmation
   const handleDeleteClient = async (client: ManageClientProps) => {
@@ -115,14 +156,32 @@ const CorporateClient: React.FC = () => {
       label: "KYC Status",
     },
     {
-      key: "walletBalance",
-      label: "Wallet Balance",
+      key: "RequiredType",
+      label: "Required Type",
     },
 
     {
       key: "approvalStatus",
-      label: "Approval Status",
+      label: "Approve / Reject",
+      renderCell: (row: ManageClientProps) => {
+        return (
+          <SelectMenu
+            placeholder="Select"
+            value={rowStatuses[row.id] || ""}
+            onChange={(value: string | null) => {
+              setRowStatuses((prev) => ({
+                ...prev,
+                [row.id]: value ?? "",
+              }));
+              handleStatusChange(row, value);
+            }}
+            options={JobStatus}
+            badge
+          />
+        );
+      },
     },
+
     {
       key: "action",
       label: "Actions",
