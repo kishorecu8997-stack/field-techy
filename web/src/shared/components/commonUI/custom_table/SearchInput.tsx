@@ -12,8 +12,8 @@ import { Search } from "lucide-react"; // lucide-react provides nice icons
  * @returns {JSX.Element} A search input with an integrated search icon and hover shadow effect.
  */
 type SearchInputProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
 };
  
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
@@ -24,7 +24,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
         type="text"
         placeholder="Search keyword"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         className="w-full text-sm outline-none text-gray-700 dark:text-white placeholder-gray-400"
       />
     </div>
