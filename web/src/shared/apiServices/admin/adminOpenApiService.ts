@@ -58,25 +58,29 @@ export type AdminPersonalInfoBody = NonNullable<
   AdminUpdatePersonalInfoData["body"]
 >;
 
+export type AdminUpdatePersonalInfoSuccess =
+  AdminUpdatePersonalInfoResponses[200];
+
 export function useAdminUpdatePersonalInfo(options?: {
-  onSuccess?: (data: AdminUpdatePersonalInfoResponses) => void;
+  onSuccess?: (data: AdminUpdatePersonalInfoSuccess) => void;
   onError?: (error: unknown) => void;
 }) {
-  return useMutation({
-    mutationFn: async ({
-      body,
-      token,
-    }: {
-      body: AdminPersonalInfoBody;
-      token: string;
-    }) => {
+  return useMutation<
+    AdminUpdatePersonalInfoSuccess,
+    unknown,
+    { body: AdminPersonalInfoBody; token: string }
+  >({
+    mutationFn: async ({ body, token }) => {
       const response = await adminUpdatePersonalInfo({
         client: apiClient,
         body,
         throwOnError: true,
-        headers: { authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      return response.data as any; // Need to fix AdminUpdatePersonalInfoData;
+
+      return response.data;
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -101,7 +105,7 @@ export function useAppChangePassword(options?: {
         client: apiClient,
         body,
         throwOnError: true,
-        headers: { authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data as AppChangePasswordResponse;
     },

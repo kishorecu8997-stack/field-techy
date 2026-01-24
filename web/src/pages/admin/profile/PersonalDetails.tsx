@@ -86,16 +86,6 @@ export default function PersonalDetails() {
     },
   });
 
-  // /* ---------- ONLY effect needed ---------- */
-  // useEffect(() => {
-  //   if (adminProfilePic) {
-  //     methods.setValue("profilePicture", adminProfilePic, {
-  //       shouldDirty: false,
-  //       shouldValidate: false,
-  //     });
-  //   }
-  // }, [adminProfilePic, methods, methods.reset]);
-
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
     await showPopup({

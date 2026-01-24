@@ -72,6 +72,7 @@ export default function ChangePassword() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
+            if (isChangingPassword) return;
             await adminChangePasswordMutation({
               body: {
                 oldPassword: currentPassword,
@@ -130,7 +131,8 @@ export default function ChangePassword() {
         <div className="flex justify-end mt-2">
           <Button
             type="submit"
-            // loading={isChangingPassword}
+            loading={isChangingPassword}
+            disabled={isChangingPassword}
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Save
