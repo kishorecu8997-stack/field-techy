@@ -38,10 +38,10 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>
         <p className="text-sm font-medium">
-          <span className="text-gray-500">Pay Type:</span> {engineer.pay_type}
+          <span className="text-gray-500 dark:text-white">Pay Type:</span> {engineer.pay_type}
         </p>
         <p className="text-sm font-medium">
-          <span className="text-gray-500">Availability:</span>{" "}
+          <span className="text-gray-500 dark:text-white">Availability:</span>{" "}
           {engineer.availability}
         </p>
         <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">

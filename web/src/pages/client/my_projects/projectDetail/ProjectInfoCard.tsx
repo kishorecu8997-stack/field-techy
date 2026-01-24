@@ -29,8 +29,8 @@ export default function ProjectInfoCard({
 }) {
   return (
     <div className="bg-gray-200 dark:bg-gray-800 dark:text-white rounded-xl p-4 shadow-sm my-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-2">Project Info</h3>
-      <ul className="space-y-2 text-sm text-gray-700">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Project Info</h3>
+      <ul className="space-y-2 text-sm text-gray-700 dark:text-white">
         <li className="flex items-start">
           <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mt-2 mr-2"></span>
           <span>
