@@ -130,7 +130,10 @@ const PostAJobFields = ({
     ...section,
     items: section.items.map((item) => ({
       ...item,
-      value: item.value instanceof Date ? item.value.toISOString() : item.value,
+      value:
+        item.value && typeof item.value === "object" && "getTime" in item.value
+          ? (item.value as Date).toISOString()
+          : item.value,
     })),
   }));
 
