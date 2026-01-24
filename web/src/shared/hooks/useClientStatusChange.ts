@@ -47,7 +47,6 @@ export const useClientStatusChange = () => {
             } else if (status === "reject") {
               toast.error("Client Status Rejected !");
             }
-
             close(true);
           },
         },
