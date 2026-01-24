@@ -13,14 +13,14 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { BiEdit } from "react-icons/bi";
 // import { HiOutlineDotsVertical } from "react-icons/hi";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import ProjectInfoCard from "./ProjectInfoCard";
 import MemberPopup from "../createProject/components/MemberPopup";
+import ProjectInfoCard from "./ProjectInfoCard";
 
 /**
  * `ProjectDetails` component displays the detailed view of a single project.
@@ -204,7 +204,7 @@ export default function ProjectDetails() {
                           Project Site {site.id}
                         </h4>
                         <div className="flex space-x-2">
-                          <BiEdit
+                          <FiEdit2
                             className="text-lg cursor-pointer"
                             onClick={() => {
                               localStorage.setItem(

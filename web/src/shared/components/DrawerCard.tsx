@@ -1,6 +1,6 @@
 import formatKeyToLabel from "@/utils/formatKeyToLabel";
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 /**
@@ -93,7 +93,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
                     className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
                     aria-label="Edit"
                   >
-                    <FaRegEdit />
+                    <FiEdit2 />
                   </button>
                   <button
                     onClick={() => onDeleteAction?.(item.id as number)}

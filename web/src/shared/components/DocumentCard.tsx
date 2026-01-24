@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LoaderComponent from "./commonUI/LoaderComponent";
 
@@ -189,7 +189,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
             aria-label="Edit expiry date"
             title="Edit expiry date"
           >
-            <FaRegEdit className="h-3 w-3" />
+            <FiEdit2 className="h-3 w-3" />
           </button>
         </div>
       )}
@@ -203,7 +203,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
             aria-label="Edit document"
             title="Edit"
           >
-            <FaRegEdit />
+            <FiEdit2 />
           </button>
 
           <button

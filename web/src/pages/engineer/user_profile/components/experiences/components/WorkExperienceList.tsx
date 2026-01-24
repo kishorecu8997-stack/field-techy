@@ -1,12 +1,12 @@
+import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
+  designationOptions,
   employmentTypeOptions,
   workLocationTypeOptions,
-  designationOptions,
 } from "./constants";
-import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
 
 /**
  * Represents a single work experience entry.
@@ -103,7 +103,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                       className="hover:text-blue-600 transition-colors"
                       aria-label="Edit"
                     >
-                      <FaRegEdit />
+                      <FiEdit2 />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(item.id || "")}
