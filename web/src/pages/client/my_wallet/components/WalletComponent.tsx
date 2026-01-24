@@ -147,13 +147,9 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
             onClick={() =>
               onMenuItemClick(WALLET_COMPONENTS.RECENT_TRANSACTIONS)
             }
-            className={`cursor-pointer text-sm ${
-              isDarkMode
-                ? "text-blue-400 hover:text-blue-300"
-                : "text-blue-600 hover:text-blue-700"
-            }`}
+            className="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
           >
-            View All
+            View all
           </button>
         </div>
 
