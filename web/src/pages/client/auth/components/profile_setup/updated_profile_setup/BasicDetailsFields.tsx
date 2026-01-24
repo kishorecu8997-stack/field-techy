@@ -151,7 +151,10 @@ const BasicDetailsFields = () => {
   const role = urlRole || watchedRole || "HOME";
   const country = watch("country");
   const selectedState = watch("state");
-  const countryValue = typeof country === "string" ? country : country?.value;
+  const countryValue =
+  typeof country === "string"
+    ? country
+    : country?.code || country?.value;
   useEffect(() => {
     setValue("state", undefined);
     setValue("city", undefined);
