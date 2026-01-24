@@ -64,7 +64,7 @@ export default function AllUsers() {
     },
   ];
 
-  const selectedEngineer = manageEngineer.find(
+  const selectedEngineer = filteredData.find(
     (eng) => eng.id === selectedRowId
   );
 
@@ -91,6 +91,7 @@ export default function AllUsers() {
               <div
                 className="text-xl font-semibold cursor-pointer"
                 onClick={() => setIsModalOpen(false)}
+                aria-label="Close modal"
               >
                 <IoCloseSharp />
               </div>
