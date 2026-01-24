@@ -1,14 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ImageUploaderField } from "./inputs/ImageUploaderField";
 import { useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
-import { useEffect } from "react";
 import { getUserId } from "@/utils";
-import { useLocation } from "react-router-dom";
-import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
-import { useQueryClient } from "@tanstack/react-query";
-import { useClientStore } from "@/shared/store/useClientStore";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 
 /**
  * ProfileCard component displays a user profile with avatar, name, title, and rating information.
@@ -56,47 +51,19 @@ const ProfileCard = ({
 }) => {
   const formContext = useFormContext();
   const watch = formContext?.watch;
-  const path = useLocation();
 
   const userId = getUserId();
   const profileImage = watch ? watch("profileImage") : null;
-  const { mutate: uploadFile } = useEngineerFileUpload(userId || undefined, {
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => toast.success("Profile picture updated successfully!"),
-    onError: () => toast.error("Failed to update profile picture."),
-  });
-  const queryClient = useQueryClient();
-  const fetchClientProfile = useClientStore(
-    (state) => state.fetchClientProfile,
-  );
-
-  const { mutate: uploadClientFile } = useUploadClientFile({
-    onSuccess: () => {
-      toast.success("Profile picture updated successfully!");
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: ["client-files", userId] });
-        fetchClientProfile(userId);
-      }
-    },
     onError: () => toast.error("Failed to update profile picture."),
   });
 
   useEffect(() => {
     if (userId && profileImage instanceof File) {
-      if (path.pathname.includes("engineer")) {
-        uploadFile({
-          engineerId: userId,
-          file: profileImage,
-          documentType: "PICTURE",
-        });
-      } else if (path.pathname.includes("client")) {
-        uploadClientFile({
-          file: profileImage,
-          clientId: userId,
-          documentType: "PROFILE_PICTURE",
-        });
-      }
+      uploadProfileFile(profileImage, "profilePicture");
     }
-  }, [userId, profileImage, uploadFile, uploadClientFile, path.pathname]);
+  }, [userId, profileImage]);
 
   return (
     <div
@@ -106,17 +73,16 @@ const ProfileCard = ({
     space-x-4 
     mb-6 
     p-4 
-    ${
-      backgroundcolor
-        ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
-        : ""
-    }`}
+    ${backgroundcolor
+          ? "bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl w-full dark:from-gray-800 dark:to-gray-900"
+          : ""
+        }`}
     >
       <div className="relative">
         <ImageUploaderField
           name="profileImage"
           initialImageUrl={avatarUrl}
-          isLoading={isLoadingProfilePicture}
+          isLoading={isLoadingProfilePicture || isUploading}
         />
       </div>
       <div>

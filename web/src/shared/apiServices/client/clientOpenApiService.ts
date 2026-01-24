@@ -1,27 +1,53 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  appChangePassword,
+  appDeleteProfileFile,
+  appDownloadProfileFile,
   appLogin,
+  appMarkProfileFileUploaded,
   appRegisterClient,
   appSendOtp,
+  appUploadProfileFile,
   appVerifyOtp,
   clientGetCompanyInfo,
   clientUpdateCompanyInfo,
+  type AppChangePasswordData,
+  type AppChangePasswordResponse,
+  type AppDeleteProfileFileData,
+  type AppDeleteProfileFileResponse,
+  type AppDownloadProfileFileResponse,
   type AppLoginData,
   type AppLoginResponse,
+  type AppMarkProfileFileUploadedData,
+  type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientData,
   type AppRegisterClientResponse,
   type AppSendOtpResponse,
+  type AppUploadProfileFileData,
+  type AppUploadProfileFileResponse,
   type AppVerifyOtpResponse,
   type ClientGetCompanyInfoResponse,
-  type ClientUpdateCompanyInfoResponse,
   type ClientUpdateCompanyInfoData,
+  type ClientUpdateCompanyInfoResponse
 } from "@/api";
 import { createClient } from "@/api/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUserSessionStore } from "../../store/useUserSessionStore";
 import { queryKeys } from "../queryKeys";
 
 // Create API client for OpenAPI calls
-const apiClient = createClient({
+export const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+});
+
+// Configure client to use auth interceptor
+apiClient.interceptors.request.use((request) => {
+  const session = useUserSessionStore.getState().session;
+  const token = session?.accessToken || localStorage.getItem("auth_token");
+
+  if (token) {
+    request.headers.set("Authorization", `Bearer ${token}`);
+  }
+  return request;
 });
 
 export type LoginBody = NonNullable<AppLoginData["body"]>;
@@ -82,7 +108,7 @@ export function useSendOtp(options?: {
       const response = await appSendOtp({
         client: apiClient,
         body: { type },
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppSendOtpResponse;
@@ -101,7 +127,7 @@ export function useVerifyOtp(options?: {
       const response = await appVerifyOtp({
         client: apiClient,
         body: { type, code },
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` },
         throwOnError: true,
       });
       return response.data as AppVerifyOtpResponse;
@@ -118,7 +144,7 @@ export function useClientGetCompanyInfo(token?: string, enabled: boolean = true)
     queryFn: async () => {
       const response = await clientGetCompanyInfo({
         client: apiClient,
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` } as any,
         throwOnError: true,
       });
       return response.data as ClientGetCompanyInfoResponse;
@@ -147,13 +173,136 @@ export function useClientUpdateCompanyInfo(options?: {
       const response = await clientUpdateCompanyInfo({
         client: apiClient,
         body,
-        headers: { authorization: `Bearer ${token || ""}` },
+        headers: { Authorization: `Bearer ${token || ""}` } as any,
         throwOnError: true,
       });
       return response.data as ClientUpdateCompanyInfoResponse;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.companyInfo });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for changing password
+ */
+export type ChangePasswordBody = NonNullable<AppChangePasswordData["body"]>;
+
+export function useClientChangePassword(options?: {
+  onSuccess?: (data: AppChangePasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: ChangePasswordBody) => {
+      const response = await appChangePassword({
+        client: apiClient,
+        body,
+        headers: { Authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppChangePasswordResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for initiating profile file upload
+ */
+export type UploadProfileFileBody = NonNullable<AppUploadProfileFileData["body"]>;
+
+export function useAppUploadProfileFile(options?: {
+  onSuccess?: (data: AppUploadProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: UploadProfileFileBody) => {
+      const response = await appUploadProfileFile({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppUploadProfileFileResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for marking profile file as uploaded
+ */
+export type MarkProfileFileUploadedBody = NonNullable<AppMarkProfileFileUploadedData["body"]>;
+
+export function useAppMarkProfileFileUploaded(options?: {
+  onSuccess?: (data: AppMarkProfileFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: MarkProfileFileUploadedBody) => {
+      const response = await appMarkProfileFileUploaded({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppMarkProfileFileUploadedResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query query hook for getting profile file download URL
+ */
+export function useAppDownloadProfileFile(fileId: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: ["profileFile", "download", fileId],
+    queryFn: async () => {
+      const response = await appDownloadProfileFile({
+        client: apiClient,
+        query: { fileId },
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppDownloadProfileFileResponse;
+    },
+    enabled: enabled && !!fileId,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for deleting profile file
+ */
+export type DeleteProfileFileBody = NonNullable<AppDeleteProfileFileData["body"]>;
+
+export function useAppDeleteProfileFile(options?: {
+  onSuccess?: (data: AppDeleteProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: DeleteProfileFileBody) => {
+      const response = await appDeleteProfileFile({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppDeleteProfileFileResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

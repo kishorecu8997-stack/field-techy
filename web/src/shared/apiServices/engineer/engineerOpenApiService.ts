@@ -5,6 +5,10 @@ import {
   appSendOtp, 
   appVerifyOtp,
   appChangePassword,
+  appUploadProfileFile,
+  appMarkProfileFileUploaded,
+  appDownloadProfileFile,
+  appDeleteProfileFile,
   engineerGetPersonalInfo,
   engineerGetEducation,
   engineerAddEducation,
@@ -28,6 +32,14 @@ import {
   type AppVerifyOtpResponse,
   type AppChangePasswordData,
   type AppChangePasswordResponse,
+  type AppUploadProfileFileData,
+  type AppUploadProfileFileResponse,
+  type AppMarkProfileFileUploadedData,
+  type AppMarkProfileFileUploadedResponse,
+  type AppDownloadProfileFileData,
+  type AppDownloadProfileFileResponse,
+  type AppDeleteProfileFileData,
+  type AppDeleteProfileFileResponse,
   type EngineerGetPersonalInfoResponse,
   type EngineerUpdatePersonalInfoData,
   type EngineerUpdatePersonalInfoResponse,
@@ -628,6 +640,105 @@ export function useEngineerChangePassword(options?: {
       return response.data as AppChangePasswordResponse;
     },
     onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for initiating profile file upload
+ */
+export type UploadProfileFileBody = NonNullable<AppUploadProfileFileData["body"]>;
+
+export function useAppUploadProfileFile(options?: {
+  onSuccess?: (data: AppUploadProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: UploadProfileFileBody) => {
+      const response = await appUploadProfileFile({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppUploadProfileFileResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for marking profile file as uploaded
+ */
+export type MarkProfileFileUploadedBody = NonNullable<AppMarkProfileFileUploadedData["body"]>;
+
+export function useAppMarkProfileFileUploaded(options?: {
+  onSuccess?: (data: AppMarkProfileFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: MarkProfileFileUploadedBody) => {
+      const response = await appMarkProfileFileUploaded({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppMarkProfileFileUploadedResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * TanStack Query query hook for getting profile file download URL
+ */
+export function useAppDownloadProfileFile(fileId: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: ["profileFile", "download", fileId],
+    queryFn: async () => {
+      const response = await appDownloadProfileFile({
+        client: apiClient,
+        query: { fileId },
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppDownloadProfileFileResponse;
+    },
+    enabled: enabled && !!fileId,
+  });
+}
+
+/**
+ * TanStack Query mutation hook for deleting profile file
+ */
+export type DeleteProfileFileBody = NonNullable<AppDeleteProfileFileData["body"]>;
+
+export function useAppDeleteProfileFile(options?: {
+  onSuccess?: (data: AppDeleteProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: DeleteProfileFileBody) => {
+      const response = await appDeleteProfileFile({
+        client: apiClient,
+        body,
+        headers: { authorization: "" },
+        throwOnError: true,
+      });
+      return response.data as AppDeleteProfileFileResponse;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 }

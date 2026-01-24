@@ -7,11 +7,13 @@ import {
   FaBookmark,
   FaBriefcase,
   FaCog,
+  FaFileDownload,
   FaSignOutAlt,
   FaUser,
   FaWallet,
 } from "react-icons/fa";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
+import { useProfileFileDownload } from "@/shared/hooks/useProfileFileDownload";
 import type { MenuItem } from "../account_settings/types";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { absoluteUrls } from "@/config/urls";
@@ -19,9 +21,12 @@ import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
 import {
-  useEngineerStore,
-  useEngineerProfile,
-} from "@/shared/store/useEngineerStore";
+  useAppDownloadProfileFile,
+  useEngineerGetPersonalInfo,
+  useEngineerGetWorkPreference,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -43,10 +48,21 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   /*
    * Use the profileImageUrl from the global store.
-   * The fetching logic is now centralized in useEngineerStore.
+   * The fetching logic is now centralised in useEngineerStore.
    */
   const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
-  const engineerProfile = useEngineerProfile();
+  const { data: personalInfo } = useEngineerGetPersonalInfo();
+  const { data: workPreference } = useEngineerGetWorkPreference();
+  const { data: serviceCategories } = useLookupData("serviceCategories");
+  /*
+   * Fetch the download URL for the profile picture if an ID exists.
+   */
+  const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
+  console.log(downloadData);
+
+  const serviceCategoryName = serviceCategories?.find(
+    (c: any) => c.id === workPreference?.serviceCategoryId,
+  )?.name;
 
   const methods = useForm({
     defaultValues: {
@@ -123,13 +139,13 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={
+              downloadData?.downloadUrl ||
               profileImageUrl ||
-              engineerProfile?.profilePicture ||
               assetsConfig.images.profile.defaultProfileImage
             }
-            name={engineerProfile?.fullName || ""}
-            title={engineerProfile?.serviceCategory || ""}
-            rating={engineerProfile?.averageRating || 0}
+            name={personalInfo?.name || ""}
+            title={serviceCategoryName || ""}
+            rating={0} // rating is currently not in API
             completionPercentage={39}
           />
         </div>
