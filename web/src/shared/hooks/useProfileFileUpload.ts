@@ -11,6 +11,8 @@ import {
   useAppUploadProfileFile as useClientUploadProfileFile,
   useAppMarkProfileFileUploaded as useClientMarkProfileFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 
 export type ProfileFileType = 'profilePicture' | 'resumeFile' | 'govIdDoc' | 'certificateDoc';
 
@@ -33,6 +35,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
   const queryClient = useQueryClient();
   const userId = getUserId();
   const fetchClientProfile = useClientStore((state) => state.fetchClientProfile);
+  const fetchEngineerProfile = useEngineerStore((state) => state.fetchEngineerProfile);
 
   // Engineer Hooks
   const { mutateAsync: initiateEngineerUpload } = useEngineerUploadProfileFile();
@@ -49,11 +52,14 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
     try {
       // 1. Initiate Upload
       const initiate = isEngineer ? initiateEngineerUpload : initiateClientUpload;
-      const { fileId, uploadUrl } = await initiate({
-        fileType,
-        filename: file.name,
-        size: file.size,
-        mimeType: file.type,
+      const { fileId,   uploadUrl } = await initiate({
+        body: {
+          fileType: fileType,
+          filename: file.name,
+          size: file.size,
+          mimeType: file.type,
+        },
+        headers: { authorization: "" },
       });
 
       // 2. Upload to S3
@@ -62,6 +68,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         body: file,
         headers: {
           "Content-Type": file.type,
+          "Content-Length": file.size.toString(),
         },
       });
 
@@ -69,15 +76,22 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
 
       // 3. Mark as Uploaded
       const markUploaded = isEngineer ? markEngineerUploaded : markClientUploaded;
-      const response = await markUploaded({ fileId });
+      const response = await markUploaded({
+        body: { fileId },
+        headers: { authorization: "" },
+      });
 
       // Handle post-upload updates
-      if (!isEngineer && userId) {
-        fetchClientProfile(userId);
+      if (userId) {
+        if (isEngineer) {
+          fetchEngineerProfile(userId);
+        } else {
+          fetchClientProfile(userId);
+        }
       }
 
       // Invalidate relevant queries to refresh UI
-      queryClient.invalidateQueries({ queryKey: isEngineer ? ["engineer"] : ["client"] });
+      queryClient.invalidateQueries({ queryKey: isEngineer ? queryKeys.engineer.all : queryKeys.client.all });
 
       options?.onSuccess?.(response);
       return response;

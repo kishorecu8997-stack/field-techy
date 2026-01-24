@@ -91,6 +91,7 @@ const Login = ({
       body: {
         email: data.email,
         password: data.password,
+        userRole: UserRole.CLIENT,
       },
     });
   };

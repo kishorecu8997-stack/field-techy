@@ -1,32 +1,30 @@
 import { assetsConfig } from "@/assets";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import {
-  FaBookmark,
-  FaBriefcase,
-  FaCog,
-  FaFileDownload,
-  FaSignOutAlt,
-  FaUser,
-  FaWallet,
-} from "react-icons/fa";
-import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
-import { useProfileFileDownload } from "@/shared/hooks/useProfileFileDownload";
-import type { MenuItem } from "../account_settings/types";
-import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import { absoluteUrls } from "@/config/urls";
-import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useNavigate } from "react-router-dom";
 import {
   useAppDownloadProfileFile,
   useEngineerGetPersonalInfo,
   useEngineerGetWorkPreference,
   useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import ProfileCard from "@/shared/components/commonUI/ProfileCard";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  FaBookmark,
+  FaBriefcase,
+  FaCog,
+  FaSignOutAlt,
+  FaUser,
+  FaWallet
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
+import type { MenuItem } from "../account_settings/types";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -58,10 +56,9 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
    * Fetch the download URL for the profile picture if an ID exists.
    */
   const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
-  console.log(downloadData);
 
   const serviceCategoryName = serviceCategories?.find(
-    (c: any) => c.id === workPreference?.serviceCategoryId,
+    (c) => c.id === workPreference?.serviceCategoryId,
   )?.name;
 
   const methods = useForm({

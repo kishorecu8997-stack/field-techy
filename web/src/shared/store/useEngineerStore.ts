@@ -10,6 +10,7 @@ interface EngineerStore {
   engineerProfile: EngineerData | null;
   profileImageUrl: string | null;
   loading: boolean;
+  profileFetched: boolean; // Add this flag
   setEngineerProfile: (profile: EngineerData | null) => void;
   clearEngineerProfile: () => void;
   fetchEngineerProfile: (id: string) => Promise<void>;
@@ -26,12 +27,13 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
   engineerProfile: null,
   profileImageUrl: null,
   loading: false,
+  profileFetched: false, // Initialize to false
   setEngineerProfile: (profile) => set({ engineerProfile: profile }),
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearEngineerProfile: () => {
     const currentUrl = get().profileImageUrl;
     if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
-    set({ engineerProfile: null, profileImageUrl: null });
+    set({ engineerProfile: null, profileImageUrl: null, profileFetched: false });
   },
   syncProfile: (data) => {
     set((state) => ({
@@ -66,7 +68,7 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
         }))
       };
 
-      set({ engineerProfile: profile });
+      set({ engineerProfile: profile, profileFetched: true });
 
       set({ profileImageUrl: null });
      
@@ -86,16 +88,16 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
 export const useEngineerProfile = () => {
   const session = useUserSessionStore((state) => state.session);
   const profile = useEngineerStore((state) => state.engineerProfile);
+  const profileFetched = useEngineerStore((state) => state.profileFetched);
+  const loading = useEngineerStore((state) => state.loading);
   const fetchProfile = useEngineerStore((state) => state.fetchEngineerProfile);
 
   useEffect(() => {
     const userId = session?.userId;
-    if (userId) {
-      if (!profile || (profile.id === userId && !profile.fullName)) {
-        fetchProfile(userId);
-      }
+    if (userId && !profileFetched && !loading) {
+      fetchProfile(userId);
     }
-  }, [session?.userId, profile?.id, profile?.fullName, fetchProfile]);
+  }, [session?.userId, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

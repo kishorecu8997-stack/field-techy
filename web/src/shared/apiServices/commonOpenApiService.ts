@@ -1,14 +1,16 @@
 import {
-    appDownloadProfileFileOptions,
-    appGetLookupDataOptions,
-    appSendOtpMutation,
-    appUploadProfileFileMutation,
-    appVerifyOtpMutation,
     type AppGetLookupDataData,
     type AppSendOtpResponse,
     type AppUploadProfileFileResponse,
     type AppVerifyOtpResponse
 } from "@/api";
+import {
+    appDownloadProfileFileOptions,
+    appGetLookupDataOptions,
+    appSendOtpMutation,
+    appUploadProfileFileMutation,
+    appVerifyOtpMutation,
+} from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 
@@ -49,14 +51,15 @@ export function useAppUploadProfileFile(options?: {
   });
 }
 
-export function useAppDownloadProfileFile(fileId: string, enabled: boolean = true) {
+export function useAppDownloadProfileFile(fileId: string | null | undefined, enabled: boolean = true) {
   return useQuery({
     ...appDownloadProfileFileOptions({
       client: apiClient,
-      query: { fileId },
+      query: { fileId: fileId || "" },
       headers: { authorization: "" },
     }),
     enabled: enabled && !!fileId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 

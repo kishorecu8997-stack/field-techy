@@ -8,6 +8,7 @@ interface ClientStore {
   clientProfile: ClientData | null;
   profileImageUrl: string | null;
   loading: boolean;
+  profileFetched: boolean; // Add this
   setClientProfile: (profile: ClientData | null) => void;
   clearClientProfile: () => void;
   fetchClientProfile: (id: string) => Promise<void>;
@@ -23,12 +24,13 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   clientProfile: null,
   profileImageUrl: null,
   loading: false,
+  profileFetched: false,
   setClientProfile: (profile) => set({ clientProfile: profile }),
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearClientProfile: () => {
     const currentUrl = get().profileImageUrl;
     if (currentUrl) URL.revokeObjectURL(currentUrl);
-    set({ clientProfile: null, profileImageUrl: null });
+    set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
   fetchClientProfile: async (id: string) => {
     if (get().loading) return;
@@ -40,7 +42,7 @@ export const useClientStore = create<ClientStore>((set, get) => ({
         ClientAdapter.getFiles(id),
       ]);
 
-      set({ clientProfile: profile });
+      set({ clientProfile: profile, profileFetched: true });
 
       // Find profile picture
       const profilePic = files.find(
@@ -81,17 +83,19 @@ export const useClientStore = create<ClientStore>((set, get) => ({
 export const useClientProfile = () => {
   const session = useUserSessionStore((state) => state.session);
   const profile = useClientStore((state) => state.clientProfile);
+  const profileFetched = useClientStore((state) => state.profileFetched);
+  const loading = useClientStore((state) => state.loading);
   const fetchProfile = useClientStore((state) => state.fetchClientProfile);
 
   useEffect(() => {
     const userId = session?.userId;
     // Verify user role is CLIENT to avoid incorrect fetches
     if (userId && session?.role === "CLIENT") {
-      if (!profile || (profile.id === userId && !profile.contactPersonName)) {
+      if (!profileFetched && !loading) {
         fetchProfile(userId);
       }
     }
-  }, [session?.userId, session?.role, profile, fetchProfile]);
+  }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

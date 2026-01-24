@@ -1,23 +1,4 @@
 import {
-  appChangePasswordMutation,
-  appDeleteProfileFileMutation,
-  appLoginMutation,
-  appMarkProfileFileUploadedMutation,
-  appRegisterEngineerMutation,
-  engineerAddEducationMutation,
-  engineerAddExperienceMutation,
-  engineerDeleteEducationMutation,
-  engineerDeleteExperienceMutation,
-  engineerGetEducationOptions,
-  engineerGetExperienceOptions,
-  engineerGetPersonalInfoOptions,
-  engineerGetSkillsAndToolsOptions,
-  engineerGetWorkPreferenceOptions,
-  engineerUpdateEducationMutation,
-  engineerUpdateExperienceMutation,
-  engineerUpdatePersonalInfoMutation,
-  engineerUpdateSkillsAndToolsMutation,
-  engineerUpdateWorkPreferenceMutation,
   engineerGetPersonalInfo,
   engineerGetEducation,
   engineerGetExperience,
@@ -43,6 +24,27 @@ import {
   type EngineerGetSkillsAndToolsResponse,
   type EngineerGetWorkPreferenceResponse,
 } from "@/api";
+import {
+  appChangePasswordMutation,
+  appDeleteProfileFileMutation,
+  appLoginMutation,
+  appMarkProfileFileUploadedMutation,
+  appRegisterEngineerMutation,
+  engineerAddEducationMutation,
+  engineerAddExperienceMutation,
+  engineerDeleteEducationMutation,
+  engineerDeleteExperienceMutation,
+  engineerGetEducationOptions,
+  engineerGetExperienceOptions,
+  engineerGetPersonalInfoOptions,
+  engineerGetSkillsAndToolsOptions,
+  engineerGetWorkPreferenceOptions,
+  engineerUpdateEducationMutation,
+  engineerUpdateExperienceMutation,
+  engineerUpdatePersonalInfoMutation,
+  engineerUpdateSkillsAndToolsMutation,
+  engineerUpdateWorkPreferenceMutation,
+} from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
 import { queryKeys } from "../queryKeys";
@@ -86,20 +88,9 @@ export function useEngineerLogin(options?: {
 }
 
 export function useEngineerGetPersonalInfo() {
-  const syncProfile = useEngineerStore((state) => state.syncProfile);
   return useQuery({
     ...engineerGetPersonalInfoOptions({ client: apiClient }),
-    select: (data: EngineerGetPersonalInfoResponse) => {
-      syncProfile({
-        fullName: data.name,
-        email: data.email,
-        phoneNumber: data.mobileno,
-        address: data.address,
-      });
-      return data;
-    },
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -129,8 +120,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
 export function useEngineerGetEducation() {
   return useQuery({
     ...engineerGetEducationOptions({ client: apiClient }),
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -185,8 +175,7 @@ export function useEngineerUpdateEducation(options?: {
 export function useEngineerGetExperience() {
   return useQuery({
     ...engineerGetExperienceOptions({ client: apiClient }),
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -241,8 +230,7 @@ export function useEngineerUpdateExperience(options?: {
 export function useEngineerGetSkillsAndTools() {
   return useQuery({
     ...engineerGetSkillsAndToolsOptions({ client: apiClient }),
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -265,8 +253,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
 export function useEngineerGetWorkPreference() {
   return useQuery({
     ...engineerGetWorkPreferenceOptions({ client: apiClient }),
-    refetchOnMount: true,
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000,
   });
 }
 

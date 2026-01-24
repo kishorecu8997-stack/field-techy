@@ -1,4 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  type AppChangePasswordResponse,
+  type AppDeleteProfileFileResponse,
+  type AppLoginResponse,
+  type AppMarkProfileFileUploadedResponse,
+  type AppRegisterClientResponse,
+  type ClientUpdateCompanyInfoResponse
+} from "@/api";
 import {
   appRegisterClientMutation,
   appLoginMutation,
@@ -7,13 +14,8 @@ import {
   appChangePasswordMutation,
   appMarkProfileFileUploadedMutation,
   appDeleteProfileFileMutation,
-  type AppChangePasswordResponse,
-  type AppDeleteProfileFileResponse,
-  type AppLoginResponse,
-  type AppMarkProfileFileUploadedResponse,
-  type AppRegisterClientResponse,
-  type ClientUpdateCompanyInfoResponse
-} from "@/api";
+} from "@/api/@tanstack/react-query.gen";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 

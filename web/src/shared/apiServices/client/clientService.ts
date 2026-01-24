@@ -94,6 +94,7 @@ export function useClientGetById(id: string, options?: { enabled?: boolean }) {
     queryKey: CLIENT_QUERY_KEYS.detail(id),
     queryFn: () => ClientAdapter.getById(id),
     enabled: !!id && (options?.enabled ?? true),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -105,6 +106,7 @@ export function useClientGetAll(
     queryKey: CLIENT_QUERY_KEYS.list(params),
     queryFn: () => ClientAdapter.getAll(params),
     enabled: options?.enabled ?? true,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -250,6 +252,7 @@ export function useClientFiles(clientId?: string) {
     queryKey: ["client-files", clientId],
     queryFn: () => ClientAdapter.getFiles(clientId!),
     enabled: !!clientId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -293,6 +296,7 @@ export function useGetJobs() {
     queryFn: () => ClientAdapter.getJobs(),
     enabled: true,
     notifyOnChangeProps: ["data", "error"],
+    staleTime: 2 * 60 * 1000, // 2 minutes for jobs
   });
 }
 
