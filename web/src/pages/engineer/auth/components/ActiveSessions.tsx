@@ -28,7 +28,7 @@ interface ActiveSessionsProps {
  * @returns
  */
 const ActiveSessions: React.FC<ActiveSessionsProps> = ({
-  itemsPerPage = 4,
+  itemsPerPage = 10,
   onLogout,
 }) => {
   const methods = useForm({ defaultValues: {} });
@@ -87,6 +87,36 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
           device: "Chrome on Android",
           isCurrent: false,
         },
+        {
+          id: "8",
+          startTime: "2025-12-10T09:30:00Z",
+          device: "Chrome on Windows",
+          isCurrent: false,
+        },
+        {
+          id: "9",
+          startTime: "2025-12-12T14:15:00Z",
+          device: "Safari on iPhone",
+          isCurrent: false,
+        },
+        {
+          id: "10",
+          startTime: "2025-12-14T21:45:00Z",
+          device: "Firefox on macOS",
+          isCurrent: false,
+        },
+        {
+          id: "11",
+          startTime: "2025-12-15T07:05:00Z",
+          device: "Edge on Windows",
+          isCurrent: false,
+        },
+        {
+          id: "12",
+          startTime: "2025-12-16T16:00:00Z",
+          device: "Chrome on Android",
+          isCurrent: true,
+        },
       ];
 
       await new Promise((res) => setTimeout(res, 800));
@@ -102,7 +132,6 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
   useEffect(() => {
     fetchSessions();
   }, []);
-
 
   useEffect(() => {
     setSelectedSessions([]);
