@@ -264,21 +264,21 @@ export default function ProjectDetails() {
 
           {/* SideCard */}
           <div className="lg:w-3/12 space-y-4">
-            <div className="bg-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
               <h3 className="text-sm md:text-lg font-medium mb-1">
                 Remaining Budget
               </h3>
-              <p className="md:text-3xl font-bold text-gray-900">
+              <p className="md:text-3xl font-bold text-gray-900 dark:text-gray-200">
                 INR {projectDetails?.remainingbudget}
               </p>
             </div>
 
-            <div className="bg-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
               <h3 className="text-sm font-medium mb-3">
                 Project Execution Timeline
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
+                <div className="bg-white dark:border dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
                   <p className="mb-1">Actual Start Date</p>
                   <p className="text-sm font-semibold">
                     {dayjs(projectDetails?.actualStartDate).format(
@@ -286,7 +286,7 @@ export default function ProjectDetails() {
                     )}
                   </p>
                 </div>
-                <div className="bg-white dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
+                <div className="bg-white dark:border dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
                   <p className="mb-1">Actual End Date</p>
                   <p className="text-sm font-semibold">
                     {dayjs(projectDetails?.actualEndDate).format("DD-MM-YYYY")}
