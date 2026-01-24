@@ -174,6 +174,7 @@ export const absoluteUrls = {
       updated_basic_details: `${BASE.AUTH}/updated-basic-details`,
       updated_documents: `${BASE.AUTH}/updated-documents`,
       verification: `${BASE.AUTH}/verification`,
+      terms_and_conditions: `${BASE.AUTH}/terms-and-conditions`,
     },
     home: {
       dashboard: `${BASE.ENGINEER}/dashboard`,
@@ -205,6 +206,7 @@ export const absoluteUrls = {
       privacy_policy: `${BASE.CLIENT_AUTH}/policy`,
       profile_setup: `${BASE.CLIENT_AUTH}/profile-setup`,
       documents: `${BASE.CLIENT_AUTH}/documents`,
+      terms_and_conditions: `${BASE.CLIENT_AUTH}/terms-and-conditions`,
     },
     home: {
       dashboard: `${BASE.CLIENT}/dashboard`,
