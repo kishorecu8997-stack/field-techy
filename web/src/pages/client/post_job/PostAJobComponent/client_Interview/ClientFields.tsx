@@ -6,7 +6,6 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
-import { useMemo } from "react";
 /*
  *  Client Fields
  *    - Displays a form to add client details
@@ -19,23 +18,21 @@ const ClientFields = () => {
   const ctx = useFormContext();
   const startDate = ctx.watch("startDate");
 
-  const minStartTime = useMemo(() => {
-    if (!startDate) return undefined;
-    if (startDate) {
-      const selectedDate = new Date(startDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      selectedDate.setHours(0, 0, 0, 0);
-      if (selectedDate.getTime() === today.getTime()) {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 1);
-        const hours = now.getHours().toString().padStart(2, "0");
-        const minutes = now.getMinutes().toString().padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
+  let minStartTime: string | undefined;
+  if (startDate) {
+    const selectedDate = new Date(startDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate.getTime() === today.getTime()) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 1);
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      minStartTime = `${hours}:${minutes}`;
     }
-    return undefined;
-  }, [startDate]);
+  }
 
   return (
     <div className="flex flex-col h-full gap-2">

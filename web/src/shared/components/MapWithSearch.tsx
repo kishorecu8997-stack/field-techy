@@ -11,6 +11,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { MapComponentProps } from "./type";
+import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -162,7 +163,8 @@ const MapSearchBar: React.FC<{
               dark:text-white
              hover:text-white-700 dark:hover:text-white-300"
           >
-            ×
+              <AiOutlineClose size={16} /> {/* size optional */}
+
           </Button>
         )}
         {suggestions.length > 0 && (
