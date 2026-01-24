@@ -291,9 +291,9 @@ const BasicDetails = () => {
             Already have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.login}
-              className="text-teal-900 dark:text-teal-400 underline font-semibold "
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
             >
-              Sign in
+              Sign In
             </NavLink>
           </h2>
         </div>
