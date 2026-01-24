@@ -1016,7 +1016,7 @@ export const validateDescription = (value: string) => {
 
   return true;
 };
-
+const MAX_BUDGET = 10000000;
 export const validateBudget = (value: string) => {
   const raw = value || "";
 
@@ -1052,8 +1052,6 @@ export const validateBudget = (value: string) => {
   if (num <= 0) {
     return "Budget must be greater than 0";
   }
-
-  const MAX_BUDGET = Number(import.meta.env.VITE_MAX_AMOUNT) || 10000000;
   if (num > MAX_BUDGET) {
     return `Budget cannot exceed ${MAX_BUDGET.toLocaleString()}`;
   }

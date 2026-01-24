@@ -5,6 +5,7 @@ import {
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "./commonUI/Buttons";
+import { useLayoutEffect } from "react";
 
 interface SortDropdownProps {
   currentSort?: SortOption;
@@ -35,19 +36,28 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     { value: SORT_OPTIONS.SALARY, label: "Salary" },
     { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      });
-    }
-  }, [isOpen]);
+  useLayoutEffect(() => {
+  const updatePosition = () => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    setDropdownPosition({
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+  };
+  if (isOpen) {
+    updatePosition(); // initial calculation
+    window.addEventListener("scroll", updatePosition);
+    window.addEventListener("resize", updatePosition);
+  }
+  return () => {
+    window.removeEventListener("scroll", updatePosition);
+    window.removeEventListener("resize", updatePosition);
+  };
+}, [isOpen]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        isOpen &&
         !buttonRef.current?.contains(event.target as Node) &&
         !dropdownRef.current?.contains(event.target as Node)
       ) {
@@ -56,7 +66,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, []);
 
   const dropdown = isOpen ? (
     <div
