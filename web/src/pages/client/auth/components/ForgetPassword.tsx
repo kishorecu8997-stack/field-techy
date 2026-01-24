@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import logo_light from "@/assets/logo/logo_light.svg";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
@@ -8,6 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
+import IconWithTheme from "@/shared/components/IconWithTheme";
 
 export type ForgetPasswordFormData = {
   email: string;
@@ -38,10 +40,10 @@ const ForgetPassword = () => {
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
-              className="h-20 w-24"
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
+              className="h-15 w-20"
             />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
