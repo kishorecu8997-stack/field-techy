@@ -4,6 +4,7 @@ import {
   appChangePassword,
   appForgotPassword,
   appLogin,
+  appResetPassword,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -12,6 +13,8 @@ import {
   type AppForgotPasswordResponse,
   type AppLoginData,
   type AppLoginResponse,
+  type AppResetPasswordData,
+  type AppResetPasswordResponse,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -131,6 +134,26 @@ export function useAppForgotPassword(options?: {
         throwOnError: true,
       });
       return response.data as AppForgotPasswordResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export type ResetPasswordBody = NonNullable<AppResetPasswordData["body"]>;
+
+export function useAppResetPassword(options?: {
+  onSuccess?: (data: AppResetPasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: ResetPasswordBody) => {
+      const response = await appResetPassword({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as AppResetPasswordResponse;
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,

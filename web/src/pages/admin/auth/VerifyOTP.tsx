@@ -1,5 +1,4 @@
 import { absoluteUrls } from "@/config/urls";
-import { useUserPasswordResetByOtpMutation } from "@/shared/apiServices/admin/adminService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -8,6 +7,9 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { VerifyOtpFormData } from "./types";
+import { useAppResetPassword } from "@/shared/apiServices/admin/adminOpenApiService";
+import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
+import { forgotSession } from "@/shared/store/useUserSessionStore";
 
 /**
  * AdminVerifyOTP component renders a form for entering and verifying a One Time Passcode (OTP).
@@ -16,9 +18,9 @@ import type { VerifyOtpFormData } from "./types";
 export default function AdminVerifyOTP() {
   const searchParams = useSearchParams();
   const navigate = useNavigate();
+  const forgotToken = forgotSession((s) => s.token);
 
   const email = searchParams[0].get("email") || navigate(-1);
-  const adminPasswordResetOtp = useUserPasswordResetByOtpMutation();
 
   const methods = useForm({
     defaultValues: {
@@ -29,25 +31,36 @@ export default function AdminVerifyOTP() {
     mode: "onChange",
   });
 
+  const { mutateAsync: adminRewsetPassword, isPending: isResettingPassword } =
+    useAppResetPassword();
+
   const handleSubmit = async (data: VerifyOtpFormData) => {
-    adminPasswordResetOtp.mutateAsync(
-      {
-        otp: data.otp,
-        phoneOrEmail: data.email as string,
-        password: data.password,
-      },
-      {
-        onSuccess: () => {
-          toast.success(
-            "Password reset successfully! You can now log in with your new password.",
-          );
-          navigate(`${absoluteUrls.admin.auth.login}`);
+    try {
+      await adminRewsetPassword(
+        {
+          code: data.otp,
+          token: forgotToken.token as string,
+          newPassword: data.password,
         },
-        onError: (error: unknown) => {
-          toast.error((error as Error)?.message || "Request failed");
+        {
+          onSuccess: () => {
+            toast.success(
+              "Password reset successfully! You can now log in with your new password.",
+            );
+            navigate(`${absoluteUrls.admin.auth.login}`);
+          },
+          onError: (error: unknown) => {
+            toast.error((error as Error)?.message || "Request failed");
+          },
         },
-      },
-    );
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Password reset failed");
+      }
+    }
   };
 
   return (
@@ -57,7 +70,7 @@ export default function AdminVerifyOTP() {
     >
       <FormContainer
         methods={methods}
-        className="bg-white m-6 w-full max-w-md mx-auto dark:bg-gray-800 p-4 rounded-lg"
+        className="bg-white m-4 md:px-6 w-full max-w-md md:mx-auto dark:bg-gray-800 p-4 rounded-lg"
         onSubmit={handleSubmit}
       >
         <p className="text-center my-4 text-2xl dark:text-white">
@@ -72,21 +85,30 @@ export default function AdminVerifyOTP() {
           required
           rules={validateOtp}
         />
+        <span className="dark:text-gray-500 text-sm">
+          Enter the OTP sent to your email
+        </span>
+
         <PasswordInput
           name="password"
-          label="Password"
+          label="New Password"
           required
           rules={{
             required: "Password is required",
             validate: (v) => validatePassword(v, ""),
           }}
         />
-        <span className="dark:text-gray-500 text-sm">
-          Enter the OTP sent to your email
-        </span>
 
+        <ConfirmPassword
+          name="confirmPassword"
+          label="Confirm New Password"
+          passwordField="password"
+          required
+        />
         <Button
           type="submit"
+          loading={isResettingPassword}
+          disabled={isResettingPassword}
           className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
           Submit

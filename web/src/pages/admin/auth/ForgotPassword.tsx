@@ -9,6 +9,8 @@ import type { ForgotPasswordFormData } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
 import { useAppForgotPassword } from "@/shared/apiServices/admin/adminOpenApiService";
+import { forgotSession } from "@/shared/store/useUserSessionStore";
+import { UserRole } from "@/shared/enums/users";
 
 /**
  * ForgotPassword component renders a form for users to request a password reset link.
@@ -24,6 +26,7 @@ export default function ForgotPassword() {
     },
   });
   const navigate = useNavigate();
+  const setToken = forgotSession((s) => s.setToken);
 
   const {
     mutateAsync: forgotPasswordAdminMutation,
@@ -34,13 +37,14 @@ export default function ForgotPassword() {
     try {
       const resp = await forgotPasswordAdminMutation({
         email: data.email,
-        userRole: "admin",
+        userRole: UserRole.ADMIN,
       });
 
       toast.success(
         "OTP sent successfully! Please check your email for further instructions.",
       );
-      navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}?token=${resp.token}`);
+      navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}`);
+      setToken({ token: resp.token as string });
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
