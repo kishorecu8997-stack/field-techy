@@ -287,7 +287,7 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
-          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300">
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
             Already have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.login}
