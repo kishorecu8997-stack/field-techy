@@ -247,7 +247,7 @@ const BasicDetails = () => {
           action: async (close) => {
             try {
               const apiData = buildApiData(data);
-              await registerMutation.mutateAsync(apiData);
+              await registerMutation.mutateAsync({ body: apiData });
               close(true);
             } catch {
               close(false);

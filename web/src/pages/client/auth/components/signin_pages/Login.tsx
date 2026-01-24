@@ -88,8 +88,10 @@ const Login = ({
 
   const handleSubmit = async (data: LoginEmailFormData) => {
     await loginMutation({
-      email: data.email,
-      password: data.password,
+      body: {
+        email: data.email,
+        password: data.password,
+      },
     });
   };
 

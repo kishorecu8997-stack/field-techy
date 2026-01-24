@@ -179,7 +179,7 @@ const BasicDetails = () => {
           value: true,
           action: async (close) => {
             try {
-              await registerMutation.mutateAsync(apiData);
+              await registerMutation.mutateAsync({ body: apiData });
               close(true);
             } catch {
               close(false);

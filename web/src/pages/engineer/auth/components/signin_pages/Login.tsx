@@ -110,12 +110,12 @@ const Login = ({
    * handleSubmit
    */
   const handleSubmit = async (data: LoginEmailFormData) => {
-    await loginMutation(
-      {
+    await loginMutation({
+      body: {
         email: data.email,
         password: data.password,
-      }
-    );
+      },
+    });
   };
 
   return (
