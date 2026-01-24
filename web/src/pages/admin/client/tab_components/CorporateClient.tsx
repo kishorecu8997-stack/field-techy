@@ -31,7 +31,6 @@ import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 const CorporateClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
-
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 

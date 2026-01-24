@@ -15,7 +15,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "link"
     | "text"
     | "solid"
-    | "no_style";
+    | "no_style"
+    | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -70,6 +71,8 @@ export const Button: React.FC<ButtonProps> = ({
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
     no_style: "",
+    warning: " bg-yellow-200 text-black border border-gray-500 hover:bg-gray-300 focus:ring-gray-100", 
+
   };
 
   const sizeStyles: Record<string, string> = {
