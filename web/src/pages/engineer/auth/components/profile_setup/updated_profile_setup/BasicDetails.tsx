@@ -8,7 +8,7 @@ import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistra
 import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -287,6 +287,15 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300">
+            Already have an account?{" "}
+            <NavLink
+              to={absoluteUrls.engineer.auth.login}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold "
+            >
+              Sign in
+            </NavLink>
+          </h2>
         </div>
       </div>
     </FormContainer>
