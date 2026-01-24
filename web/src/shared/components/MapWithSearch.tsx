@@ -163,8 +163,7 @@ const MapSearchBar: React.FC<{
               dark:text-white
              hover:text-white-700 dark:hover:text-white-300"
           >
-              <AiOutlineClose size={16} /> {/* size optional */}
-
+            <AiOutlineClose size={16} /> {/* size optional */}
           </Button>
         )}
         {suggestions.length > 0 && (
