@@ -238,7 +238,8 @@ export default function ActiveUser() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput value={search} onChange={setSearch} />        </div>
+          <SearchInput value={search} onChange={setSearch} />
+        </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}

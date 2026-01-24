@@ -7,10 +7,23 @@ import type { ManageEngineerProps } from "../types";
 import Popup from "@/shared/components/Popup";
 import { IoCloseSharp } from "react-icons/io5";
 import { useState } from "react";
+import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 
 export default function AllUsers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageEngineer.filter((e) => {
+    const query = search.toLowerCase();
+
+    return (
+      e.engineerID.toLowerCase().includes(query) ||
+      e.details.name.toLowerCase().includes(query) ||
+      e.details.email.toLowerCase().includes(query) ||
+      e.location.toLowerCase().includes(query)
+    );
+  });
 
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
@@ -56,13 +69,18 @@ export default function AllUsers() {
   );
 
   return (
-    <div className="w-full h-full overflow-auto">
+  <div>
+    <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
+              <div className="flex flex-wrap gap-4 items-center">
+          <SearchInput value={search} onChange={setSearch} />
+        </div>
+      <div className="w-full h-full overflow-auto">
       <CustomTable<ManageEngineerProps>
         columns={columns}
-        data={manageEngineer}
+        data={filteredData}
         initialPageSize={10}
       />
-
+      </div>
       {isModalOpen && selectedEngineer && (
         <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <div className="p-4">
@@ -85,5 +103,6 @@ export default function AllUsers() {
         </Popup>
       )}
     </div>
+  </div>
   );
 }

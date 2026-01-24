@@ -42,7 +42,7 @@ export default function PendingRequest() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-      const filteredData = manageEngineer
+  const filteredData = manageEngineer
       .filter((e) => e.kycStatus === "Pending")
       .filter((e) => {
         const query = search.toLowerCase();
@@ -58,7 +58,7 @@ export default function PendingRequest() {
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
 
-    const status = data.status.toLowerCase(); 
+    const status = data.status.toLowerCase();
     let toastMessage = "";
 
     switch (status) {
