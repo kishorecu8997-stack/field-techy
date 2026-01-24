@@ -85,7 +85,7 @@ const LiveChatWidget = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="flex-1 px-3 dark:text-white py-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
