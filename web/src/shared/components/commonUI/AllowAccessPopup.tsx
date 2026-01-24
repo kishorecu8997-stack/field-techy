@@ -139,7 +139,7 @@ export default function AllowAccessPopup({
           <p className="text-2xl font-semibold dark:text-white">
             Enable Notifications
           </p>
-          <p className="text-center mt-4 text-lg text-gray-600 ">
+          <p className="text-center mt-4 text-lg dark:text-white text-gray-600 ">
             Enable notifications to stay informed with real-time alerts,
             important updates, and timely reminders.
           </p>
@@ -168,7 +168,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={notificationLoading}
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            className="hover:underline text-gray-600 dark:text-white cursor-pointer bg-transparent border-0 p-0 text-left"
             onClick={() => {
               onDenyNotification?.();
               setNotificationPermission("denied");
