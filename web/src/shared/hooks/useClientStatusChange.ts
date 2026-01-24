@@ -15,7 +15,7 @@ export const useClientStatusChange = () => {
    * @param showPopup - Function to show confirmation popup
    */
   const handleStatusChange = async (
-    row: ManageClientProps,
+    _row: ManageClientProps,
     status: string | null,
     showPopup: (config: PopupConfig) => Promise<void>,
   ) => {

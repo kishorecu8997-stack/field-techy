@@ -1,5 +1,5 @@
 import { Search } from "lucide-react"; // lucide-react provides nice icons
- 
+
 /**
  * Renders a styled search input field with an icon.
  *
@@ -15,7 +15,7 @@ type SearchInputProps = {
   value?: string;
   onChange?: (value: string) => void;
 };
- 
+
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
   return (
     <div className="flex items-center border border-gray-300 my-2 rounded-lg px-3 py-1.5 w-80 bg-white dark:bg-gray-800 shadow-sm hover:shadow transition">
@@ -30,5 +30,3 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
     </div>
   );
 };
- 
- 

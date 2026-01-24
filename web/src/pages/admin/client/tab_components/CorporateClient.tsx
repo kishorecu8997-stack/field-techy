@@ -37,18 +37,17 @@ const CorporateClient: React.FC = () => {
 
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
-  
-    const filteredData = manageClient
-        .filter((e) => {
-          const query = search.toLowerCase();
-   
-          return (
-            e.clientID.toLowerCase().includes(query) ||
-            e.details.toLowerCase().includes(query) ||
-            e.location.toLowerCase().includes(query)
-          );
-        });
-  
+
+  const filteredData = manageClient.filter((e) => {
+    const query = search.toLowerCase();
+
+    return (
+      e.clientID.toLowerCase().includes(query) ||
+      e.details.toLowerCase().includes(query) ||
+      e.location.toLowerCase().includes(query)
+    );
+  });
+
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
       title: "Delete Client",
@@ -68,8 +67,8 @@ const CorporateClient: React.FC = () => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
-             toast.success("Client deleted successfully");
-            close(true);              
+            toast.success("Client deleted successfully");
+            close(true);
           },
         },
       ],
