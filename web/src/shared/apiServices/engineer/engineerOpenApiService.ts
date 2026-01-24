@@ -1,95 +1,50 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { 
-  appLogin, 
-  appRegisterEngineer, 
-  appSendOtp, 
-  appVerifyOtp,
-  appChangePassword,
-  appUploadProfileFile,
-  appMarkProfileFileUploaded,
-  appDownloadProfileFile,
-  appDeleteProfileFile,
-  engineerGetPersonalInfo,
-  engineerGetEducation,
-  engineerAddEducation,
-  engineerDeleteEducation,
-  engineerUpdateEducation,
-  engineerUpdatePersonalInfo,
-  engineerGetExperience,
-  engineerAddExperience,
-  engineerDeleteExperience,
-  engineerUpdateExperience,
-  engineerGetSkillsAndTools,
-  engineerUpdateSkillsAndTools,
-  engineerGetWorkPreference,
-  engineerUpdateWorkPreference,
-  appGetLookupData,
-  type AppLoginData, 
-  type AppLoginResponse, 
-  type AppRegisterEngineerData, 
-  type AppRegisterEngineerResponse, 
-  type AppSendOtpResponse, 
-  type AppVerifyOtpResponse,
-  type AppChangePasswordData,
+import {
+  appChangePasswordMutation,
+  appDeleteProfileFileMutation,
+  appLoginMutation,
+  appMarkProfileFileUploadedMutation,
+  appRegisterEngineerMutation,
+  engineerAddEducationMutation,
+  engineerAddExperienceMutation,
+  engineerDeleteEducationMutation,
+  engineerDeleteExperienceMutation,
+  engineerGetEducationOptions,
+  engineerGetExperienceOptions,
+  engineerGetPersonalInfoOptions,
+  engineerGetSkillsAndToolsOptions,
+  engineerGetWorkPreferenceOptions,
+  engineerUpdateEducationMutation,
+  engineerUpdateExperienceMutation,
+  engineerUpdatePersonalInfoMutation,
+  engineerUpdateSkillsAndToolsMutation,
+  engineerUpdateWorkPreferenceMutation,
   type AppChangePasswordResponse,
-  type AppUploadProfileFileData,
-  type AppUploadProfileFileResponse,
-  type AppMarkProfileFileUploadedData,
-  type AppMarkProfileFileUploadedResponse,
-  type AppDownloadProfileFileData,
-  type AppDownloadProfileFileResponse,
-  type AppDeleteProfileFileData,
   type AppDeleteProfileFileResponse,
-  type EngineerGetPersonalInfoResponse,
-  type EngineerUpdatePersonalInfoData,
-  type EngineerUpdatePersonalInfoResponse,
-  type EngineerGetEducationResponse,
-  type EngineerAddEducationData,
+  type AppLoginResponse,
+  type AppMarkProfileFileUploadedResponse,
+  type AppRegisterEngineerResponse,
   type EngineerAddEducationResponse,
-  type EngineerDeleteEducationResponse,
-  type EngineerUpdateEducationData,
-  type EngineerUpdateEducationResponse,
-  type EngineerGetExperienceResponse,
-  type EngineerAddExperienceData,
   type EngineerAddExperienceResponse,
+  type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
-  type EngineerUpdateExperienceData,
+  type EngineerGetPersonalInfoResponse,
+  type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
-  type EngineerGetSkillsAndToolsResponse,
-  type EngineerUpdateSkillsAndToolsData,
+  type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
-  type EngineerGetWorkPreferenceResponse,
-  type EngineerUpdateWorkPreferenceData,
-  type EngineerUpdateWorkPreferenceResponse,
-  type AppGetLookupDataResponse,
-  type AppGetLookupDataData
+  type EngineerUpdateWorkPreferenceResponse
 } from "@/api";
-import { createClient } from "@/api/client";
-import { queryKeys } from "../queryKeys";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
-import { useUserSessionStore } from "../../store/useUserSessionStore";
+import { queryKeys } from "../queryKeys";
+import { apiClient } from "../apiClient";
 
-// Create API client for OpenAPI calls
-export const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
-});
-
-// Configure client to use auth interceptor
-apiClient.interceptors.request.use((request) => {
-  const session = useUserSessionStore.getState().session;
-  const token = session?.accessToken || localStorage.getItem("auth_token");
-  
-  if (token) {
-    request.headers.set("Authorization", `Bearer ${token}`);
-  }
-  return request;
-});
+// RE-EXPORT shared hooks for convenience
+export * from "../commonOpenApiService";
 
 /**
- * TanStack Query mutation hook using OpenAPI generated appRegisterEngineer
- * This wraps the auto-generated SDK function with React Query for caching and state management
+ * Engineer-specific API services
  */
-export type RegisterEngineerBody = NonNullable<AppRegisterEngineerData["body"]>;
 
 export function useRegisterEngineer(options?: {
   onSuccess?: (data: AppRegisterEngineerResponse) => void;
@@ -97,14 +52,7 @@ export function useRegisterEngineer(options?: {
 }) {
   const queryClientInstance = useQueryClient();
   return useMutation({
-    mutationFn: async (body: RegisterEngineerBody) => {
-      const response = await appRegisterEngineer({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppRegisterEngineerResponse;
-    },
+    ...appRegisterEngineerMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClientInstance.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -113,22 +61,13 @@ export function useRegisterEngineer(options?: {
   });
 }
 
-export type LoginBody = NonNullable<AppLoginData["body"]>;
-
 export function useEngineerLogin(options?: {
   onSuccess?: (data: AppLoginResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: LoginBody) => {
-      const response = await appLogin({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppLoginResponse;
-    },
+    ...appLoginMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -137,71 +76,11 @@ export function useEngineerLogin(options?: {
   });
 }
 
-/**
- * TanStack Query mutation hook using OpenAPI generated appSendOtp
- * This wraps the auto-generated SDK function with React Query for state management
- * Requires JWT authorization token from registration response
- */
-export type SendOtpType = 'email' | 'phone';
-
-export function useSendOtp(options?: {
-  onSuccess?: (data: AppSendOtpResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation({
-    mutationFn: async ({ type, token }: { type: SendOtpType; token?: string }) => {
-      const response = await appSendOtp({
-        client: apiClient,
-        body: { type },
-        headers: { Authorization: `Bearer ${token || ""}` },
-        throwOnError: true,
-      });
-      return response.data as AppSendOtpResponse;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
-}
-
-/**
- * TanStack Query mutation hook using OpenAPI generated appVerifyOtp
- * This wraps the auto-generated SDK function with React Query for state management
- * Requires JWT authorization token from registration response
- */
-export function useVerifyOtp(options?: {
-  onSuccess?: (data: AppVerifyOtpResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation({
-    mutationFn: async ({ type, code, token }: { type: SendOtpType; code: string; token?: string }) => {
-      const response = await appVerifyOtp({
-        client: apiClient,
-        body: { type, code },
-        headers: { Authorization: `Bearer ${token || ""}` },
-        throwOnError: true,
-      });
-      return response.data as AppVerifyOtpResponse;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
-}
-
-/**
- * TanStack Query query hook for fetching engineer personal info
- */
 export function useEngineerGetPersonalInfo() {
   const syncProfile = useEngineerStore((state) => state.syncProfile);
   return useQuery({
-    queryKey: [...queryKeys.engineer.all, "personal-info"],
-    queryFn: async () => {
-      console.log("Fetching engineer personal info...");
-      const response = await engineerGetPersonalInfo({
-        client: apiClient,
-        throwOnError: true,
-      });
-      const data = response.data as EngineerGetPersonalInfoResponse;
-      // Sync with Zustand store
+    ...engineerGetPersonalInfoOptions({ client: apiClient }),
+    select: (data: EngineerGetPersonalInfoResponse) => {
       syncProfile({
         fullName: data.name,
         email: data.email,
@@ -215,11 +94,6 @@ export function useEngineerGetPersonalInfo() {
   });
 }
 
-/**
- * TanStack Query mutation hook for updating engineer personal info
- */
-export type UpdatePersonalInfoBody = NonNullable<EngineerUpdatePersonalInfoData["body"]>;
-
 export function useEngineerUpdatePersonalInfo(options?: {
   onSuccess?: (data: EngineerUpdatePersonalInfoResponse) => void;
   onError?: (error: unknown) => void;
@@ -228,73 +102,36 @@ export function useEngineerUpdatePersonalInfo(options?: {
   const syncProfile = useEngineerStore((state) => state.syncProfile);
 
   return useMutation({
-    mutationFn: async (body: UpdatePersonalInfoBody) => {
-      const response = await engineerUpdatePersonalInfo({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerUpdatePersonalInfoResponse;
-    },
+    ...engineerUpdatePersonalInfoMutation({ client: apiClient }),
     onSuccess: (data, variables) => {
-      // Invalidate queries to trigger re-fetch
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      
-      // Update local store immediately with the variables sent (optimistic-like) or wait for re-fetch
-      // Here we sync the variables to the store
       syncProfile({
-        fullName: variables.name,
-        email: variables.email,
-        phoneNumber: variables.mobileno,
-        address: variables.address,
+        fullName: variables.body?.name || '',
+        email: variables.body?.email || '',
+        phoneNumber: variables.body?.mobileno || '',
+        address: variables.body?.address || '',
       });
-
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
 
-/**
- * TanStack Query query hook for fetching engineer education list
- */
 export function useEngineerGetEducation() {
   return useQuery({
-    queryKey: [...queryKeys.engineer.all, "education"],
-    queryFn: async () => {
-      console.log("Fetching engineer education...");
-      const response = await engineerGetEducation({
-        client: apiClient,
-        throwOnError: true,
-      });
-      console.log("Education data received:", response.data);
-      return response.data as EngineerGetEducationResponse;
-    },
+    ...engineerGetEducationOptions({ client: apiClient }),
     refetchOnMount: true,
     staleTime: 0,
   });
 }
-
-/**
- * TanStack Query mutation hook for adding new education record
- */
-export type AddEducationBody = NonNullable<EngineerAddEducationData["body"]>;
 
 export function useEngineerAddEducation(options?: {
   onSuccess?: (data: EngineerAddEducationResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (body: AddEducationBody) => {
-      const response = await engineerAddEducation({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerAddEducationResponse;
-    },
+    ...engineerAddEducationMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -304,24 +141,13 @@ export function useEngineerAddEducation(options?: {
   });
 }
 
-/**
- * TanStack Query mutation hook for deleting education record
- */
 export function useEngineerDeleteEducation(options?: {
   onSuccess?: (data: EngineerDeleteEducationResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await engineerDeleteEducation({
-        client: apiClient,
-        path: { id },
-        throwOnError: true,
-      });
-      return response.data as EngineerDeleteEducationResponse;
-    },
+    ...engineerDeleteEducationMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -330,28 +156,14 @@ export function useEngineerDeleteEducation(options?: {
     onError: options?.onError,
   });
 }
-
-/**
- * TanStack Query mutation hook for updating education record
- */
-export type UpdateEducationBody = NonNullable<EngineerUpdateEducationData["body"]>;
 
 export function useEngineerUpdateEducation(options?: {
   onSuccess?: (data: EngineerUpdateEducationResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: UpdateEducationBody }) => {
-      const response = await engineerUpdateEducation({
-        client: apiClient,
-        path: { id },
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerUpdateEducationResponse;
-    },
+    ...engineerUpdateEducationMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -361,44 +173,21 @@ export function useEngineerUpdateEducation(options?: {
   });
 }
 
-/**
- * TanStack Query query hook for fetching engineer work experience list
- */
 export function useEngineerGetExperience() {
   return useQuery({
-    queryKey: [...queryKeys.engineer.all, "experience"],
-    queryFn: async () => {
-      const response = await engineerGetExperience({
-        client: apiClient,
-        throwOnError: true,
-      });
-      return response.data as EngineerGetExperienceResponse;
-    },
+    ...engineerGetExperienceOptions({ client: apiClient }),
     refetchOnMount: true,
     staleTime: 0,
   });
 }
-
-/**
- * TanStack Query mutation hook for adding new work experience record
- */
-export type AddExperienceBody = NonNullable<EngineerAddExperienceData["body"]>;
 
 export function useEngineerAddExperience(options?: {
   onSuccess?: (data: EngineerAddExperienceResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (body: AddExperienceBody) => {
-      const response = await engineerAddExperience({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerAddExperienceResponse;
-    },
+    ...engineerAddExperienceMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -408,24 +197,13 @@ export function useEngineerAddExperience(options?: {
   });
 }
 
-/**
- * TanStack Query mutation hook for deleting work experience record
- */
 export function useEngineerDeleteExperience(options?: {
   onSuccess?: (data: EngineerDeleteExperienceResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await engineerDeleteExperience({
-        client: apiClient,
-        path: { id },
-        throwOnError: true,
-      });
-      return response.data as EngineerDeleteExperienceResponse;
-    },
+    ...engineerDeleteExperienceMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -434,28 +212,14 @@ export function useEngineerDeleteExperience(options?: {
     onError: options?.onError,
   });
 }
-
-/**
- * TanStack Query mutation hook for updating work experience record
- */
-export type UpdateExperienceBody = NonNullable<EngineerUpdateExperienceData["body"]>;
 
 export function useEngineerUpdateExperience(options?: {
   onSuccess?: (data: EngineerUpdateExperienceResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: UpdateExperienceBody }) => {
-      const response = await engineerUpdateExperience({
-        client: apiClient,
-        path: { id },
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerUpdateExperienceResponse;
-    },
+    ...engineerUpdateExperienceMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -465,44 +229,21 @@ export function useEngineerUpdateExperience(options?: {
   });
 }
 
-/**
- * TanStack Query query hook for fetching engineer skills and tools
- */
 export function useEngineerGetSkillsAndTools() {
   return useQuery({
-    queryKey: [...queryKeys.engineer.all, "skills-tools"],
-    queryFn: async () => {
-      const response = await engineerGetSkillsAndTools({
-        client: apiClient,
-        throwOnError: true,
-      });
-      return response.data as EngineerGetSkillsAndToolsResponse;
-    },
+    ...engineerGetSkillsAndToolsOptions({ client: apiClient }),
     refetchOnMount: true,
     staleTime: 0,
   });
 }
-
-/**
- * TanStack Query mutation hook for updating current engineer skills and tools
- */
-export type UpdateSkillsAndToolsBody = NonNullable<EngineerUpdateSkillsAndToolsData["body"]>;
 
 export function useEngineerUpdateSkillsAndTools(options?: {
   onSuccess?: (data: EngineerUpdateSkillsAndToolsResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (body: UpdateSkillsAndToolsBody) => {
-      const response = await engineerUpdateSkillsAndTools({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerUpdateSkillsAndToolsResponse;
-    },
+    ...engineerUpdateSkillsAndToolsMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "skills-tools"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -512,44 +253,21 @@ export function useEngineerUpdateSkillsAndTools(options?: {
   });
 }
 
-/**
- * TanStack Query query hook for fetching current engineer work preference
- */
 export function useEngineerGetWorkPreference() {
   return useQuery({
-    queryKey: [...queryKeys.engineer.all, "work-preference"],
-    queryFn: async () => {
-      const response = await engineerGetWorkPreference({
-        client: apiClient,
-        throwOnError: true,
-      });
-      return response.data as EngineerGetWorkPreferenceResponse;
-    },
+    ...engineerGetWorkPreferenceOptions({ client: apiClient }),
     refetchOnMount: true,
     staleTime: 0,
   });
 }
-
-/**
- * TanStack Query mutation hook for updating engineer work preference
- */
-export type UpdateWorkPreferenceBody = NonNullable<EngineerUpdateWorkPreferenceData["body"]>;
 
 export function useEngineerUpdateWorkPreference(options?: {
   onSuccess?: (data: EngineerUpdateWorkPreferenceResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (body: UpdateWorkPreferenceBody) => {
-      const response = await engineerUpdateWorkPreference({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as EngineerUpdateWorkPreferenceResponse;
-    },
+    ...engineerUpdateWorkPreferenceMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "work-preference"] });
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
@@ -559,119 +277,16 @@ export function useEngineerUpdateWorkPreference(options?: {
   });
 }
 
-/**
- * Raw API functions for use outside of hooks (e.g. in Zustand stores)
- */
-export async function getPersonalInfo() {
-  const response = await engineerGetPersonalInfo({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetPersonalInfoResponse;
-}
-
-export async function getEducation() {
-  const response = await engineerGetEducation({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetEducationResponse;
-}
-
-export async function getExperience() {
-  const response = await engineerGetExperience({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetExperienceResponse;
-}
-
-export async function getSkillsAndTools() {
-  const response = await engineerGetSkillsAndTools({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetSkillsAndToolsResponse;
-}
-
-export async function getWorkPreference() {
-  const response = await engineerGetWorkPreference({
-    client: apiClient,
-    throwOnError: true,
-  });
-  return response.data as EngineerGetWorkPreferenceResponse;
-}
-
-/**
- * TanStack Query hook for fetching lookup data (countries, states, etc.)
- */
-export function useLookupData(table: AppGetLookupDataData["query"]["table"], parentId?: string) {
-  return useQuery({
-    queryKey: ["lookup", table, parentId],
-    queryFn: async () => {
-      const response = await appGetLookupData({
-        client: apiClient,
-        query: { table, parentId },
-        throwOnError: true,
-      });
-      return response.data as AppGetLookupDataResponse;
-    },
-    staleTime: 1000 * 60 * 60, // Keep lookup data fresh for 1 hour
-  });
-}
-
-/**
- * TanStack Query mutation hook for changing password
- */
-export type ChangePasswordBody = NonNullable<AppChangePasswordData["body"]>;
-
 export function useEngineerChangePassword(options?: {
   onSuccess?: (data: AppChangePasswordResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async (body: ChangePasswordBody) => {
-      const response = await appChangePassword({
-        client: apiClient,
-        body,
-        headers: { Authorization: "" }, // Authorization is handled by apiClient interceptors
-        throwOnError: true,
-      });
-      return response.data as AppChangePasswordResponse;
-    },
+    ...appChangePasswordMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
 }
-
-/**
- * TanStack Query mutation hook for initiating profile file upload
- */
-export type UploadProfileFileBody = NonNullable<AppUploadProfileFileData["body"]>;
-
-export function useAppUploadProfileFile(options?: {
-  onSuccess?: (data: AppUploadProfileFileResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation({
-    mutationFn: async (body: UploadProfileFileBody) => {
-      const response = await appUploadProfileFile({
-        client: apiClient,
-        body,
-        headers: { authorization: "" },
-        throwOnError: true,
-      });
-      return response.data as AppUploadProfileFileResponse;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
-  });
-}
-
-/**
- * TanStack Query mutation hook for marking profile file as uploaded
- */
-export type MarkProfileFileUploadedBody = NonNullable<AppMarkProfileFileUploadedData["body"]>;
 
 export function useAppMarkProfileFileUploaded(options?: {
   onSuccess?: (data: AppMarkProfileFileUploadedResponse) => void;
@@ -679,15 +294,7 @@ export function useAppMarkProfileFileUploaded(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: MarkProfileFileUploadedBody) => {
-      const response = await appMarkProfileFileUploaded({
-        client: apiClient,
-        body,
-        headers: { authorization: "" },
-        throwOnError: true,
-      });
-      return response.data as AppMarkProfileFileUploadedResponse;
-    },
+    ...appMarkProfileFileUploadedMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -696,45 +303,13 @@ export function useAppMarkProfileFileUploaded(options?: {
   });
 }
 
-/**
- * TanStack Query query hook for getting profile file download URL
- */
-export function useAppDownloadProfileFile(fileId: string, enabled: boolean = true) {
-  return useQuery({
-    queryKey: ["profileFile", "download", fileId],
-    queryFn: async () => {
-      const response = await appDownloadProfileFile({
-        client: apiClient,
-        query: { fileId },
-        headers: { authorization: "" },
-        throwOnError: true,
-      });
-      return response.data as AppDownloadProfileFileResponse;
-    },
-    enabled: enabled && !!fileId,
-  });
-}
-
-/**
- * TanStack Query mutation hook for deleting profile file
- */
-export type DeleteProfileFileBody = NonNullable<AppDeleteProfileFileData["body"]>;
-
 export function useAppDeleteProfileFile(options?: {
   onSuccess?: (data: AppDeleteProfileFileResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: DeleteProfileFileBody) => {
-      const response = await appDeleteProfileFile({
-        client: apiClient,
-        body,
-        headers: { authorization: "" },
-        throwOnError: true,
-      });
-      return response.data as AppDeleteProfileFileResponse;
-    },
+    ...appDeleteProfileFileMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
