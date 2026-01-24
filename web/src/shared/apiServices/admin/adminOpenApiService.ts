@@ -2,11 +2,14 @@ import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
   appChangePassword,
+  appForgotPassword,
   appLogin,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
   type AppChangePasswordResponse,
+  type AppForgotPasswordData,
+  type AppForgotPasswordResponse,
   type AppLoginData,
   type AppLoginResponse,
 } from "@/api";
@@ -108,6 +111,26 @@ export function useAppChangePassword(options?: {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data as AppChangePasswordResponse;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export type ForgotPasswordBody = NonNullable<AppForgotPasswordData["body"]>;
+
+export function useAppForgotPassword(options?: {
+  onSuccess?: (data: AppForgotPasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async (body: ForgotPasswordBody) => {
+      const response = await appForgotPassword({
+        client: apiClient,
+        body,
+        throwOnError: true,
+      });
+      return response.data as AppForgotPasswordResponse;
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,

@@ -80,6 +80,7 @@ export default function AdminLogin() {
     await loginMutation({
       email: data.email,
       password: data.password,
+      userRole: UserRole.ADMIN,
     });
   };
 

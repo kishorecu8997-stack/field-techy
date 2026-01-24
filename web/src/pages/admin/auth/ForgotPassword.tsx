@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { ForgotPasswordFormData } from "./types";
 import { absoluteUrls } from "@/config/urls";
-import { useAdminForgotPasswordOtpRequestMutation } from "@/shared/apiServices/admin/adminService";
 import { toast } from "react-toastify";
+import { useAppForgotPassword } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * ForgotPassword component renders a form for users to request a password reset link.
@@ -25,20 +25,29 @@ export default function ForgotPassword() {
   });
   const navigate = useNavigate();
 
-  const requestPasswordOTPMutation = useAdminForgotPasswordOtpRequestMutation();
+  const {
+    mutateAsync: forgotPasswordAdminMutation,
+    isPending: isResettingPassword,
+  } = useAppForgotPassword();
 
-  const handleSubmit = (data: ForgotPasswordFormData) => {
-    requestPasswordOTPMutation.mutate(data.email, {
-      onSuccess: () => {
-        toast.success(
-          "OTP sent successfully! Please check your email for further instructions.",
-        );
-        navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}`);
-      },
-      onError: (error: unknown) => {
-        toast.error((error as Error)?.message || "Request failed");
-      },
-    });
+  const handleSubmit = async (data: ForgotPasswordFormData) => {
+    try {
+      const resp = await forgotPasswordAdminMutation({
+        email: data.email,
+        userRole: "admin",
+      });
+
+      toast.success(
+        "OTP sent successfully! Please check your email for further instructions.",
+      );
+      navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}?token=${resp.token}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Password reset failed");
+      }
+    }
   };
 
   return (
@@ -73,6 +82,8 @@ export default function ForgotPassword() {
 
           <Button
             type="submit"
+            loading={isResettingPassword}
+            disabled={isResettingPassword}
             className="mt-2 w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
