@@ -12,11 +12,13 @@ import {
   validateZipcode,
   validateCompany,
 } from "../../Validate";
+import countries, {
+  businessTypes,
+} from "@/dummy_data/client/clientMyProfieTypes";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
 import { toast } from "react-toastify";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import countries from "@/dummy_data/client/clientMyProfieTypes";
 import { TbFileText } from "react-icons/tb";
 import {
   useIndustries,
@@ -61,15 +63,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const country = useWatch({ control, name: "country" });
   const state = useWatch({ control, name: "state" });
-
-  useEffect(() => {
-    setValue("state", "");
-    setValue("city", "");
-  }, [country, setValue]);
-
   useEffect(() => {
     setValue("city", "");
-  }, [state, setValue]);
+  }, [country, state, setValue]);
 
   const handleSubmit = (data: PersonalInfo) => {
     console.log("Form submitted with data:", data);
@@ -84,49 +80,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       trigger("phoneNumber");
     }
   }, [isPhoneVerified, trigger]);
-
-  const stateOptions =
-    country === "in"
-      ? [
-          { value: "TN", label: "Tamil Nadu" },
-          { value: "MH", label: "Maharashtra" },
-        ]
-      : country === "uk"
-        ? [
-            { value: "ENG", label: "England" },
-            { value: "SCT", label: "Scotland" },
-          ]
-        : [];
-  const cityOptions = (() => {
-    if (!state) return [];
-    if (country === "in") {
-      if (state === "TN")
-        return [
-          { value: "CHE", label: "Chennai" },
-          { value: "CBE", label: "Coimbatore" },
-        ];
-      if (state === "MH")
-        return [
-          { value: "MUM", label: "Mumbai" },
-          { value: "PUN", label: "Pune" },
-        ];
-      return [];
-    }
-    if (country === "uk") {
-      if (state === "ENG")
-        return [
-          { value: "LDN", label: "London" },
-          { value: "MAN", label: "Manchester" },
-        ];
-      if (state === "SCT")
-        return [
-          { value: "EDI", label: "Edinburgh" },
-          { value: "GLA", label: "Glasgow" },
-        ];
-      return [];
-    }
-    return [];
-  })();
+  const selectedCountry = countries.find((c) => c.value === country);
+  const stateOptions = selectedCountry?.states || [];
+  const selectedState = stateOptions.find((s) => s.value === state);
+  const cityOptions = selectedState?.cities || [];
 
   return (
     <FormContainer
@@ -170,12 +127,10 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           name="businessType"
           placeholder="Business Type"
           leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={[
-            { value: "1", label: "LLC" },
-            { value: "2", label: "Corporation" },
-            { value: "3", label: "Sole Proprietorship" },
-            { value: "4", label: "Partnership" },
-          ]}
+          options={businessTypes.map((e) => ({
+            value: e.value,
+            label: e.label,
+          }))}
           required
         />
 
