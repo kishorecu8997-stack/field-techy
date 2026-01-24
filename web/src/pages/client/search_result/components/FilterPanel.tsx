@@ -320,7 +320,7 @@ const FilterPanel: React.FC<{
             </div>
           ))}
         </div>
-        <div  className="text-sm text-emerald-700 font-medium mt-2 cursor-pointer dark:text-emerald-400 hover:underline">
+        <div className="text-sm text-emerald-700 font-medium mt-2 cursor-pointer dark:text-emerald-400 hover:underline">
           View All
         </div>
       </div>

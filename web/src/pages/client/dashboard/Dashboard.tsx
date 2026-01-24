@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
                 />
               ))}
             </div>
-            
+
             {/* Rest of your dashboard sections (unchanged) */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
@@ -107,7 +107,7 @@ const Dashboard: React.FC = () => {
                 >
                   <Button
                     variant="link"
-                     className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
+                    className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
                   >
                     View all
                   </Button>

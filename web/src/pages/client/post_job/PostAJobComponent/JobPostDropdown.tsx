@@ -73,7 +73,7 @@ export default function JobPostDropdown({
         <span className="font-semibold text-md dark:text-white">
           {selected ? selected.label : label || "Post A Job"}
         </span>
-        <span className="text-xl  dark:text-white">▾</span>
+        <span className="text-xl dark:text-white">▾</span>
       </div>
 
       {/* Dropdown menu */}
