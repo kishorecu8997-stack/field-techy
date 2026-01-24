@@ -13,6 +13,7 @@ import type {
   FileUploadResponse,
   PagedResponse,
 } from "./clientTypes";
+import regionsAndCountries from "@/dummy_data/regionsAndCountries";
 
 /*
  * ClientAdapter
@@ -323,87 +324,53 @@ export class ClientAdapter {
   /**
    * Get list of states for a country
    */
-  static async getStates(countryId?: string) {
-    const id = (countryId || "").toString().toLowerCase();
-    return new Promise<{ value: string; label: string }[]>((resolve) => {
-      setTimeout(() => {
-        let states: { value: string; label: string }[] = [];
+  static async getStates(countryLabel: string): Promise<{ value: string; label: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Filter subdivisions that belong to the given country
+      const states = regionsAndCountries
+        .filter(
+          (item) =>
+            item.type === "subdivision" &&
+            item.region?.toLowerCase() === countryLabel.toLowerCase()
+        )
+        .map((item) => ({
+          value: item.value,
+          label: item.label,
+        }));
 
-        if (id === "uk") {
-          states = [
-            { value: "England", label: "England" },
-            { value: "Scotland", label: "Scotland" },
-            { value: "Wales", label: "Wales" },
-            { value: "Northern Ireland", label: "Northern Ireland" },
-          ];
-        } else if (id === "in") {
-          states = [
-            { value: "Maharashtra", label: "Maharashtra" },
-            { value: "Karnataka", label: "Karnataka" },
-            { value: "Delhi", label: "Delhi" },
-            { value: "Tamil Nadu", label: "Tamil Nadu" },
-            { value: "Gujarat", label: "Gujarat" },
-          ];
-        }
-        resolve(states);
-      }, 500);
-    });
-  }
+      resolve(states);
+    }, 200); // simulate async
+  });
+}
 
   /**
    * Get list of cities for a state
    */
-  static async getCities(
-    stateId: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching cities for state: ${stateId}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const cityMap: Record<string, { value: string; label: string }[]> = {
-          Maharashtra: [
-            { value: "Mumbai", label: "Mumbai" },
-            { value: "Pune", label: "Pune" },
-            { value: "Nagpur", label: "Nagpur" },
-          ],
-          Karnataka: [
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Mysore", label: "Mysore" },
-          ],
-          Delhi: [
-            { value: "New Delhi", label: "New Delhi" },
-            { value: "Old Delhi", label: "Old Delhi" },
-          ],
-          "Tamil Nadu": [
-            { value: "Chennai", label: "Chennai" },
-            { value: "Coimbatore", label: "Coimbatore" },
-          ],
-          Gujarat: [
-            { value: "Ahmedabad", label: "Ahmedabad" },
-            { value: "Surat", label: "Surat" },
-          ],
+static async getCities(stateValue: string): Promise<{ value: string; label: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // 1. Find the state object first
+      const state = regionsAndCountries.find(
+        (item) => item.type === "subdivision" && item.value === stateValue
+      );
 
-          England: [
-            { value: "London", label: "London" },
-            { value: "Manchester", label: "Manchester" },
-            { value: "Liverpool", label: "Liverpool" },
-          ],
-          Scotland: [
-            { value: "Edinburgh", label: "Edinburgh" },
-            { value: "Glasgow", label: "Glasgow" },
-          ],
-          Wales: [
-            { value: "Cardiff", label: "Cardiff" },
-            { value: "Swansea", label: "Swansea" },
-          ],
-          "Northern Ireland": [
-            { value: "Belfast", label: "Belfast" },
-            { value: "Londonderry", label: "Londonderry" },
-          ],
-        };
-        resolve(cityMap[stateId] || []);
-      }, 500);
-    });
-  }
+      if (!state) {
+        resolve([]); // state not found
+        return;
+      }
+
+      // 2. Filter cities that have region = state's label
+      const cities = regionsAndCountries
+        .filter(
+          (item) => item.type === "city" && item.region === state.label
+        )
+        .map((item) => ({ value: item.value, label: item.label }));
+
+      resolve(cities);
+    }, 200);
+  });
+}
 
   /**
    * Get list of industries

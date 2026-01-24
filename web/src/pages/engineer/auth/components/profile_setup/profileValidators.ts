@@ -130,8 +130,9 @@ export const validateAddress = (value: string) => {
  * @param {string} value - The amount string to validate.
  * @returns {true | string} True if valid, otherwise an error message.
  */
+const MAX_BUDGET = 10000000;
+const MIN_AMOUNT = 1;
 export const validateAmount = (value: string) => {
-  const MAX_BUDGET = Number(import.meta.env.VITE_MAX_AMOUNT) || 10000000;
   if (!value) return "Amount is required";
   if (/\s/.test(value)) return "Spaces are not allowed";
   // Remove leading/trailing spaces just in case
@@ -144,7 +145,7 @@ export const validateAmount = (value: string) => {
 
   const num = parseFloat(v);
   if (!isNaN(num)) {
-    if (num < 1) return "Amount must be at least 1";
+    if (num < MIN_AMOUNT) return "Amount must be at least 1";
     if (num > MAX_BUDGET)
       return `Budget cannot exceed ${MAX_BUDGET.toLocaleString()}`;
   }
