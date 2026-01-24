@@ -80,7 +80,7 @@ export default function JobPostDropdown({
       {open && (
         <div
           ref={menuRef}
-          className={`absolute mt-2 w-56 bg-white shadow-lg border border-gray-200 dark:border-gray-700 rounded-xl p-2 z-20 animate-fadeIn ${
+          className={`absolute mt-2 w-56 bg-white shadow-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-xl p-2 z-20 animate-fadeIn ${
             dropdownPosition === "left" ? "left-0" : "right-0"
           }`}
         >
@@ -94,8 +94,10 @@ export default function JobPostDropdown({
                 setOpen(false);
                 opt.action?.();
               }}
-              className={`flex justify-start w-full px-4 py-2 rounded-lg hover:bg-emerald-100 transition cursor-pointer ${
-                selected?.value === opt.value ? "bg-emerald-100" : ""
+              className={`flex justify-start w-full px-4 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-gray-700 transition cursor-pointer ${
+                selected?.value === opt.value
+                  ? "bg-emerald-100 dark:bg-emerald-700"
+                  : ""
               }`}
             >
               {opt.label}
