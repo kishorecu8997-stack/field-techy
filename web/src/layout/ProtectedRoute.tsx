@@ -1,17 +1,30 @@
 import type { FC, ReactNode } from "react";
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { absoluteUrls } from "@/config/urls";
+import { absoluteUrls, BASE } from "@/config/urls";
 import { UserRole } from "@/shared/enums/users";
 import { toast } from "react-toastify";
 
+/**
+ * Determines the appropriate login URL based on the current pathname.
+ * This ensures users are redirected to the correct module's login page.
+ *
+ * @param pathname - The current URL pathname
+ * @returns The login URL for the appropriate module
+ */
+const getModuleLoginUrl = (pathname: string): string => {
+  if (pathname.startsWith(BASE.ENGINEER)) {
+    return absoluteUrls.engineer.auth.login;
+  }
+  if (pathname.startsWith(BASE.ADMIN)) {
+    return absoluteUrls.admin.auth.login;
+  }
+  return absoluteUrls.client.auth.login;
+};
+
 interface ProtectedRouteProps {
   children: ReactNode;
-  /**
-   * Optional role requirement. If provided, only users with this role can access.
-   * If not provided, any authenticated user can access.
-   */
   requiredRole?: UserRole;
 }
 
@@ -19,7 +32,8 @@ interface ProtectedRouteProps {
  * ProtectedRoute component.
  *
  * Wraps child components and ensures that only authenticated users can access them.
- * Redirects to the appropriate login page if the user is not authenticated.
+ * Redirects to the appropriate login page based on the module being accessed
+ * if the user is not authenticated.
  * Optionally restricts access to users with a specific role.
  *
  * If an authenticated user doesn't have the required role, they are logged out,
@@ -37,12 +51,11 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
 }) => {
   const session = useUserSessionStore((state) => state.session);
   const logout = useUserSessionStore((state) => state.logout);
+  const location = useLocation();
 
-  // Check if user lacks required role
   const hasInsufficientPermissions =
     session && requiredRole && session.role !== requiredRole;
 
-  // Handle logout and error notification for insufficient permissions
   useEffect(() => {
     if (hasInsufficientPermissions && session && requiredRole) {
       console.error(
@@ -53,15 +66,11 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({
     }
   }, [hasInsufficientPermissions, session, requiredRole, logout]);
 
-  // If no session, redirect to login
   if (!session) {
-    // Default to client login, but could be made configurable
-    return <Navigate to={absoluteUrls.client.auth.login} replace />;
+    return <Navigate to={getModuleLoginUrl(location.pathname)} replace />;
   }
 
-  // If a specific role is required, check if user has that role
   if (requiredRole && session.role !== requiredRole) {
-    // Determine which login page to redirect to based on user's role
     let loginUrl: string = absoluteUrls.client.auth.login;
     if (session.role === UserRole.ENGINEER) {
       loginUrl = absoluteUrls.engineer.auth.login;

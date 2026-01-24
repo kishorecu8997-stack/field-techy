@@ -16,6 +16,7 @@ api
 #Environment Variables
 .env
 dev-dist
+AGENT.md
 
 # Editor directories and files
 .vscode/*

@@ -97,14 +97,6 @@ const AccountSettings: React.FC<DrawerMenuProps> = ({
         onClose();
       },
     },
-    {
-      label: "Logout",
-      icon: icons.signOut,
-      id: "logout",
-      onClick: () => {
-        setIsOpen(true);
-      },
-    },
   ];
 
   const logout = useUserSessionStore((state) => state.logout);
