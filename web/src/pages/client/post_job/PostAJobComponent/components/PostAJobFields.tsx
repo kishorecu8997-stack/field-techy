@@ -127,12 +127,12 @@ const PostAJobFields = ({
   }));
 
   const formattedInterviewerSections = interviewerValue.map((section) => ({
-  ...section,
-  items: section.items.map((item) => ({
-    ...item,
-    value: item.value instanceof Date ? item.value.toISOString() : item.value,
-  })),
-}));
+    ...section,
+    items: section.items.map((item) => ({
+      ...item,
+      value: item.value instanceof Date ? item.value.toISOString() : item.value,
+    })),
+  }));
 
   return (
     <div className="flex gap-4 flex-row p-2">
