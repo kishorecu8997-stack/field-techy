@@ -35,7 +35,19 @@ const CorporateClient: React.FC = () => {
   const { showPopup } = usePopupStore();
 
   const { handleStatusChange } = useClientStatusChange();
-  //Delete confirmation
+  const [search, setSearch] = useState("");
+  
+    const filteredData = manageClient
+        .filter((e) => {
+          const query = search.toLowerCase();
+   
+          return (
+            e.clientID.toLowerCase().includes(query) ||
+            e.details.toLowerCase().includes(query) ||
+            e.location.toLowerCase().includes(query)
+          );
+        });
+  
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
       title: "Delete Client",
@@ -180,7 +192,7 @@ const CorporateClient: React.FC = () => {
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
-        <SearchInput />
+        <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
           onClick={() =>
@@ -193,7 +205,7 @@ const CorporateClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          data={manageClient}
+          data={filteredData}
           initialPageSize={10}
         />
       </div>
