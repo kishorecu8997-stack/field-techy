@@ -68,7 +68,7 @@ const CorporateClient: React.FC = () => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
-             toast.error("Client was deleted");
+             toast.success("Client deleted successfully");
             close(true);              
           },
         },
