@@ -18,7 +18,7 @@ import {
   FaFile,
   FaGraduationCap,
   FaUser,
-  FaWrench
+  FaWrench,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import type { MenuItem } from "./types";
