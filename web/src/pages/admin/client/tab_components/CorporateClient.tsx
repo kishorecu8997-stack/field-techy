@@ -127,7 +127,7 @@ const CorporateClient: React.FC = () => {
 
     {
       key: "approvalStatus",
-      label: "Approve / Reject",
+      label: "Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
