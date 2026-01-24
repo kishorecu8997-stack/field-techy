@@ -16,6 +16,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
+import { toast } from "react-toastify";
 /**
  * HomeClient Component
  *
@@ -66,6 +67,7 @@ const HomeClient: React.FC = () => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
+            toast.success("Client deleted successfully");
             close(true);
           },
         },
