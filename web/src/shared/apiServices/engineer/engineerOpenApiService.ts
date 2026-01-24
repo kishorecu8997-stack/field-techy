@@ -1,7 +1,7 @@
 import {
-  engineerGetPersonalInfo,
   engineerGetEducation,
   engineerGetExperience,
+  engineerGetPersonalInfo,
   engineerGetSkillsAndTools,
   engineerGetWorkPreference,
   type AppChangePasswordResponse,
@@ -13,16 +13,16 @@ import {
   type EngineerAddExperienceResponse,
   type EngineerDeleteEducationResponse,
   type EngineerDeleteExperienceResponse,
+  type EngineerGetEducationResponse,
+  type EngineerGetExperienceResponse,
   type EngineerGetPersonalInfoResponse,
+  type EngineerGetSkillsAndToolsResponse,
+  type EngineerGetWorkPreferenceResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
-  type EngineerUpdateWorkPreferenceResponse,
-  type EngineerGetEducationResponse,
-  type EngineerGetExperienceResponse,
-  type EngineerGetSkillsAndToolsResponse,
-  type EngineerGetWorkPreferenceResponse,
+  type EngineerUpdateWorkPreferenceResponse
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -47,8 +47,8 @@ import {
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
-import { queryKeys } from "../queryKeys";
 import { apiClient } from "../apiClient";
+import { queryKeys } from "../queryKeys";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -61,11 +61,11 @@ export function useRegisterEngineer(options?: {
   onSuccess?: (data: AppRegisterEngineerResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  const queryClientInstance = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     ...appRegisterEngineerMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClientInstance.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -278,7 +278,10 @@ export function useEngineerChangePassword(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    ...appChangePasswordMutation({ client: apiClient }),
+    ...appChangePasswordMutation({
+      client: apiClient,
+      headers: { Authorization: "" },
+    }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -290,7 +293,10 @@ export function useAppMarkProfileFileUploaded(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...appMarkProfileFileUploadedMutation({ client: apiClient }),
+    ...appMarkProfileFileUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -305,7 +311,10 @@ export function useAppDeleteProfileFile(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...appDeleteProfileFileMutation({ client: apiClient }),
+    ...appDeleteProfileFileMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);

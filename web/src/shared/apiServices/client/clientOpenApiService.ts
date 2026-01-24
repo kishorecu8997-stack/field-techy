@@ -4,7 +4,7 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
-  type ClientUpdateCompanyInfoResponse
+  type ClientUpdateCompanyInfoResponse,
 } from "@/api";
 import {
   appRegisterClientMutation,
@@ -30,11 +30,11 @@ export function useRegisterClient(options?: {
   onSuccess?: (data: AppRegisterClientResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  const queryClientInstance = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     ...appRegisterClientMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClientInstance.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -56,13 +56,14 @@ export function useClientLogin(options?: {
   });
 }
 
-export function useClientGetCompanyInfo(token?: string, enabled: boolean = true) {
+export function useClientGetCompanyInfo(enabled: boolean = true) {
   return useQuery({
     ...clientGetCompanyInfoOptions({
       client: apiClient,
-      headers: { Authorization: `Bearer ${token || ""}` } as any,
+      headers: { Authorization: "" },
     }),
-    enabled: enabled && !!token,
+    enabled: enabled,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -86,7 +87,10 @@ export function useClientChangePassword(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    ...appChangePasswordMutation({ client: apiClient }),
+    ...appChangePasswordMutation({
+      client: apiClient,
+      headers: { Authorization: "" },
+    }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -98,7 +102,10 @@ export function useAppMarkProfileFileUploaded(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...appMarkProfileFileUploadedMutation({ client: apiClient }),
+    ...appMarkProfileFileUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
@@ -113,7 +120,10 @@ export function useAppDeleteProfileFile(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    ...appDeleteProfileFileMutation({ client: apiClient }),
+    ...appDeleteProfileFileMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
