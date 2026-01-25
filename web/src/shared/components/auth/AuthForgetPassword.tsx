@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
-import { useToast } from "@/shared/components/commonUI/toastContext";
+import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 
 export type ForgetPasswordFormData = {
     email: string;

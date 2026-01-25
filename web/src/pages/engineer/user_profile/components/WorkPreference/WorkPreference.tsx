@@ -4,6 +4,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { useForm } from "react-hook-form";
 import { CiWallet } from "react-icons/ci";
 import { FiLink2 } from "react-icons/fi";
@@ -26,8 +27,13 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 const WorkPreference = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+  const { refetchProfile } = useEngineerStore();
 
-  const { data: workPreference, isLoading: isPrefLoading } = useEngineerGetWorkPreference();
+  const {
+    data: workPreference,
+    isLoading: isPrefLoading,
+    refetch: refetchHook
+  } = useEngineerGetWorkPreference();
   const { mutateAsync: updateWorkPreference } = useEngineerUpdateWorkPreference();
 
   const { data: employmentTypes } = useLookupData("employmentTypes");
@@ -74,6 +80,11 @@ const WorkPreference = () => {
                 }
               });
               toast.success("Work Preferences Updated Successfully");
+
+              // Refresh both the store and the local hook
+              await refetchProfile();
+              await refetchHook();
+
               close(true);
               setActiveKey("profile");
             } catch (error) {

@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { useResetPassword } from "@/shared/apiServices/commonOpenApiService";
-import { useToast } from "@/shared/components/commonUI/toastContext";
-import PasswordSection from "@/pages/engineer/auth/components/PasswordSection";
+import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import AuthPasswordSection from "./AuthPasswordSection";
 
 export type ResetPasswordFormData = {
     email: string;
@@ -105,7 +105,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
                             },
                         }}
                     />
-                    <PasswordSection />
+                    <AuthPasswordSection />
                     <div className="pt-6">
                         <Button
                             type="submit"

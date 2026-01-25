@@ -10,6 +10,7 @@ import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/Verifie
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
@@ -26,7 +27,6 @@ import type { EditProfileFormData } from "./types";
 /**
  * The PersonalInformation component renders a form for editing user profile details.
  * It uses `react-hook-form` for state management and validation.
- * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
 const PersonalInformation = () => {
@@ -34,6 +34,7 @@ const PersonalInformation = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const { showPopup } = usePopupStore();
+  const { refetchProfile } = useEngineerStore();
 
   const {
     navigationSource,
@@ -43,10 +44,12 @@ const PersonalInformation = () => {
     resetNavigationSource,
   } = useDrawerStore();
 
-
-  const { data: engineerData, isLoading: isEngineerLoading } =
-    useEngineerGetPersonalInfo();
-  const { mutate } = useEngineerUpdatePersonalInfo();
+  const {
+    data: engineerData,
+    isLoading: isEngineerLoading,
+    refetch: refetchHook,
+  } = useEngineerGetPersonalInfo();
+  const { mutateAsync: updatePersonalInfo } = useEngineerUpdatePersonalInfo();
 
   const methods = useForm<EditProfileFormData>({
     defaultValues: {
@@ -88,7 +91,6 @@ const PersonalInformation = () => {
   }, [isEmailVerified, trigger]);
 
   const handleSubmit = async (formData: EditProfileFormData) => {
-    // Safety check
     if (!engineerData) {
       toast.error("Unable to load current profile data. Please try again.");
       return;
@@ -118,26 +120,30 @@ const PersonalInformation = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            mutate({ body: updatedEngineer }, {
-              onSuccess: () => {
-                toast.success("Profile Updated Successfully");
-                close(true);
+            try {
+              await updatePersonalInfo({ body: updatedEngineer });
 
-                // Handle navigation
-                if (navigationSource === "profilecompletion" && returnToKey) {
-                  setActiveKey(returnToKey);
-                  setISOpenSidebar(true);
-                  resetNavigationSource();
-                } else {
-                  setActiveKey("profile");
-                }
-              },
-              onError: (error) => {
-                console.error("Failed to update profile:", error);
-                toast.error("Failed to update profile. Please try again.");
-                close(true);
-              },
-            });
+              toast.success("Profile Updated Successfully");
+
+              // Refresh both store and local component data
+              await refetchProfile();
+              await refetchHook();
+
+              close(true);
+
+              // Handle navigation
+              if (navigationSource === "profilecompletion" && returnToKey) {
+                setActiveKey(returnToKey);
+                setISOpenSidebar(true);
+                resetNavigationSource();
+              } else {
+                setActiveKey("profile");
+              }
+            } catch (error: any) {
+              console.error("Failed to update profile:", error);
+              toast.error("Failed to update profile. Please try again.");
+              close(true);
+            }
           },
         },
       ],

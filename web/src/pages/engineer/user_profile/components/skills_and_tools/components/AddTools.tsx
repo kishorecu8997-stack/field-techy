@@ -11,6 +11,7 @@ import {
   useLookupData
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 export type AddToolsFormData = {
   tools: string[];
@@ -23,6 +24,7 @@ const AddTools = () => {
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
   const { data: toolsLookup } = useLookupData("tools" as any);
+  const { refetchProfile } = useEngineerStore();
 
   const methods = useForm<AddToolsFormData>({
     defaultValues: {
@@ -59,6 +61,7 @@ const AddTools = () => {
                 }
               });
               toast.success("Tools Added Successfully");
+              await refetchProfile();
               close(true);
               setActiveKey("skillsAndTools");
             } catch (error) {
@@ -72,10 +75,15 @@ const AddTools = () => {
     });
   };
 
-  const toolOptions = toolsLookup?.map((tool: any) => ({
-    label: tool.name,
-    value: tool.id.toString(),
-  })) || [];
+  // Filter out tools that are already added to the profile
+  const existingToolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
+
+  const toolOptions = toolsLookup
+    ?.filter((tool: any) => !existingToolIds.includes(tool.id))
+    .map((tool: any) => ({
+      label: tool.name,
+      value: tool.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

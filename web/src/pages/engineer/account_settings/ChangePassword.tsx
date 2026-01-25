@@ -5,7 +5,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import PasswordSection from "../auth/components/PasswordSection";
+import AuthPasswordSection from "@/shared/components/auth/AuthPasswordSection";
 import { validatePassword } from "./validation";
 import { useEngineerChangePassword } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
@@ -86,7 +86,7 @@ const ChangePassword = () => {
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-        <PasswordSection />
+        <AuthPasswordSection />
       </div>
 
       <div className="mt-auto flex justify-end">

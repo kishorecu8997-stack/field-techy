@@ -16,14 +16,15 @@ import {
   type EngineerGetEducationResponse,
   type EngineerGetExperienceResponse,
   type EngineerGetPersonalInfoResponse,
-  type EngineerGetSkillsAndToolsResponse,
-  type EngineerGetWorkPreferenceResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
-  type EngineerUpdateWorkPreferenceResponse
+  type EngineerUpdateWorkPreferenceResponse,
+  type EngineerGetSkillsAndToolsResponse,
+  type EngineerGetWorkPreferenceResponse,
 } from "@/api";
+import { type EngineerData } from "./engineerTypes";
 import {
   appChangePasswordMutation,
   appDeleteProfileFileMutation,
@@ -90,7 +91,7 @@ export function useEngineerLogin(options?: {
 export function useEngineerGetPersonalInfo() {
   return useQuery({
     ...engineerGetPersonalInfoOptions({ client: apiClient }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0, // Ensure fresh data on every mount/invalidation for edit pages
   });
 }
 
@@ -103,14 +104,24 @@ export function useEngineerUpdatePersonalInfo(options?: {
 
   return useMutation({
     ...engineerUpdatePersonalInfoMutation({ client: apiClient }),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
-      syncProfile({
-        fullName: variables.body?.name || '',
-        email: variables.body?.email || '',
-        phoneNumber: variables.body?.mobileno || '',
-        address: variables.body?.address || '',
+    onSuccess: async (data, variables) => {
+      // Use refetchQueries and await it to ensure data is fresh before proceeding
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetPersonalInfo",
       });
+      
+      const updateData: Partial<EngineerData> = {};
+      if (variables.body?.name !== undefined) updateData.fullName = variables.body.name;
+      if (variables.body?.email !== undefined) updateData.email = variables.body.email;
+      if (variables.body?.mobileno !== undefined) updateData.phoneNumber = variables.body.mobileno;
+      if (variables.body?.address !== undefined) updateData.address = variables.body.address;
+      
+      syncProfile(updateData);
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -120,7 +131,7 @@ export function useEngineerUpdatePersonalInfo(options?: {
 export function useEngineerGetEducation() {
   return useQuery({
     ...engineerGetEducationOptions({ client: apiClient }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
@@ -131,9 +142,15 @@ export function useEngineerAddEducation(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerAddEducationMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -147,9 +164,15 @@ export function useEngineerDeleteEducation(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerDeleteEducationMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -163,9 +186,15 @@ export function useEngineerUpdateEducation(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerUpdateEducationMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "education"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -175,7 +204,7 @@ export function useEngineerUpdateEducation(options?: {
 export function useEngineerGetExperience() {
   return useQuery({
     ...engineerGetExperienceOptions({ client: apiClient }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
@@ -186,9 +215,15 @@ export function useEngineerAddExperience(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerAddExperienceMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -202,9 +237,15 @@ export function useEngineerDeleteExperience(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerDeleteExperienceMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -218,9 +259,15 @@ export function useEngineerUpdateExperience(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerUpdateExperienceMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "experience"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -230,7 +277,7 @@ export function useEngineerUpdateExperience(options?: {
 export function useEngineerGetSkillsAndTools() {
   return useQuery({
     ...engineerGetSkillsAndToolsOptions({ client: apiClient }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
@@ -241,9 +288,15 @@ export function useEngineerUpdateSkillsAndTools(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerUpdateSkillsAndToolsMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "skills-tools"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetSkillsAndTools",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -253,7 +306,7 @@ export function useEngineerUpdateSkillsAndTools(options?: {
 export function useEngineerGetWorkPreference() {
   return useQuery({
     ...engineerGetWorkPreferenceOptions({ client: apiClient }),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
@@ -264,9 +317,15 @@ export function useEngineerUpdateWorkPreference(options?: {
   const queryClient = useQueryClient();
   return useMutation({
     ...engineerUpdateWorkPreferenceMutation({ client: apiClient }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [...queryKeys.engineer.all, "work-preference"] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as any)._id === "engineerGetWorkPreference",
+      });
+      await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

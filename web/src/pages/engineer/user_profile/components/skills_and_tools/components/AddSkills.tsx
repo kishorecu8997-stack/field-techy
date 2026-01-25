@@ -11,6 +11,7 @@ import {
   useLookupData
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 export type AddSkillsFormData = {
   skills: string[];
@@ -23,6 +24,7 @@ const AddSkills = () => {
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
   const { data: skillsLookup } = useLookupData("skills" as any);
+  const { refetchProfile } = useEngineerStore();
 
   const methods = useForm<AddSkillsFormData>({
     defaultValues: {
@@ -59,6 +61,7 @@ const AddSkills = () => {
                 }
               });
               toast.success("Skills Added Successfully");
+              await refetchProfile();
               close(true);
               setActiveKey("skillsAndTools");
             } catch (error) {
@@ -72,10 +75,15 @@ const AddSkills = () => {
     });
   };
 
-  const skillOptions = skillsLookup?.map((skill: any) => ({
-    label: skill.name,
-    value: skill.id.toString(),
-  })) || [];
+  // Filter out skills that are already added to the profile
+  const existingSkillIds = currentSkillsAndTools?.skills.map((s) => s.id) || [];
+
+  const skillOptions = skillsLookup
+    ?.filter((skill: any) => !existingSkillIds.includes(skill.id))
+    .map((skill: any) => ({
+      label: skill.name,
+      value: skill.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 
