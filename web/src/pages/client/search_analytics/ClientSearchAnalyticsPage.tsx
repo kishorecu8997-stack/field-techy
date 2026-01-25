@@ -70,6 +70,25 @@ const ClientSearchAnalyticsPage: React.FC = () => {
     },
   ];
 
+  const analyticsCards = [
+    {
+      title: "Total Job Views",
+      value: searchEvents.length.toString(),
+    },
+    {
+      title: "Application Rate",
+      value: `${Math.round(
+        (new Set(clickEvents.map((c) => c.searchId)).size /
+          searchEvents.length) *
+          100,
+      )}%`,
+    },
+    {
+      title: "Active Postings",
+      value: new Set(searchEvents.map((e) => e.keyword)).size.toString(),
+    },
+  ];
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
       {/* Heading */}
@@ -80,16 +99,15 @@ const ClientSearchAnalyticsPage: React.FC = () => {
       </p>
 
       {/* Analytics Cards – updated titles for client context */}
-      <div className="flex flex-wrap gap-5 mb-10">
-        <AnalyticsCard
-          title="Total Job Views"
-          value={totalSearches.toString()}
-        />
-        <AnalyticsCard title="Application Rate" value={`${ctr}%`} />
-        <AnalyticsCard
-          title="Active Postings"
-          value={Object.keys(keywordFrequency).length.toString()}
-        />
+
+      <div className="flex flex-wrap gap-10 mb-10">
+        {analyticsCards.map((card) => (
+          <AnalyticsCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+          />
+        ))}
       </div>
 
       {/* Most Used Skills / Job Titles (placeholder name change) */}

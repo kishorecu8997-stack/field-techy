@@ -34,8 +34,6 @@ export const JobSearchBarClient = () => {
           inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
         />
 
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
-
         {/* Analytics Button/Icon */}
         <Button
           type="button"
