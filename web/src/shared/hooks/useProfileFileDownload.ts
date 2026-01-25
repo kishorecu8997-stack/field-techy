@@ -16,14 +16,14 @@ export interface UseProfileFileDownloadOptions {
 export const useProfileFileDownload = (options?: UseProfileFileDownloadOptions) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const downloadProfileFile = async (fileId: string, fileName?: string) => {
-    if (!fileId) return;    
+  const downloadProfileFile = async (fileType: 'profilePicture' | 'resumeFile' | 'govIdDoc' | 'certificateDoc', fileName?: string) => {
+    if (!fileType) return;    
     setIsDownloading(true);
 
     try {
       const response = await appDownloadProfileFile({
         client: apiClient,
-        query: { fileId },
+        query: { fileType },
         headers: { authorization: "" },
         throwOnError: true,
       });

@@ -2,14 +2,18 @@ import {
   type AppGetLookupDataData,
   type AppSendOtpResponse,
   type AppUploadProfileFileResponse,
-  type AppVerifyOtpResponse
+  type AppVerifyOtpResponse,
+  type AppForgotPasswordResponse,
+  type AppResetPasswordResponse
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
   appGetLookupDataOptions,
   appSendOtpMutation,
   appUploadProfileFileMutation,
-  appVerifyOtpMutation
+  appVerifyOtpMutation,
+  appForgotPasswordMutation,
+  appResetPasswordMutation
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -86,5 +90,27 @@ export function useLookupData(table: AppGetLookupDataData["query"]["table"], par
       query: { table, parentId },
     }),
     staleTime: 1000 * 60 * 60,
+  });
+}
+
+export function useForgotPassword(options?: {
+  onSuccess?: (data: AppForgotPasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appForgotPasswordMutation({ client: apiClient }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useResetPassword(options?: {
+  onSuccess?: (data: AppResetPasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appResetPasswordMutation({ client: apiClient }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
