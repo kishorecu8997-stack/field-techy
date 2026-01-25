@@ -115,7 +115,7 @@ const PostAJobFields = ({
       { label: "Last Name", value: item.lastName },
       { label: "Email ID", value: item.email },
       { label: "Mobile Number", value: item.mobile },
-      { label: "Available Date", value: item.startDate },
+      { label: "Available Date", value: item.startDate?.toDateString() },
       { label: "Available Time", value: item.startTime },
     ],
     onEdit: () => {
@@ -127,12 +127,15 @@ const PostAJobFields = ({
   }));
 
   const formattedInterviewerSections = interviewerValue.map((section) => ({
-  ...section,
-  items: section.items.map((item) => ({
-    ...item,
-    value: item.value instanceof Date ? item.value.toISOString() : item.value,
-  })),
-}));
+    ...section,
+    items: section.items.map((item) => ({
+      ...item,
+      value:
+        item.value && typeof item.value === "object" && "getTime" in item.value
+          ? (item.value as Date).toISOString()
+          : item.value,
+    })),
+  }));
 
   return (
     <div className="flex gap-4 flex-row p-2">

@@ -1,8 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
 import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { buildQuery } from "@/utils";
@@ -145,8 +145,6 @@ const BasicDetails = () => {
       budget: data.amount,
       rate: parseFloat(data.amount.replace(/[^0-9.]/g, "")) || 0,
       experienceYears: parseFloat(data.experienceYears) || 0,
-
-      // Hardcoded values matching the provided CURL/API requirements
       preferredWorkType: "REMOTE HYBRID",
       enableNotifications: data.isEnableNotifications,
       location: [
@@ -158,12 +156,7 @@ const BasicDetails = () => {
         .join(", "),
       averageRating: 4.7,
       status: "PENDING",
-
-      // Loosely typed skills - Stubbed to empty to match working CURL payload
-      // jobSkills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({ skillName: s.value || s })) : [],
       jobSkills: [],
-
-      // Stubbing complex arrays as empty to match working CURL payload
       tools: [],
       experiences: [],
       educations: [],

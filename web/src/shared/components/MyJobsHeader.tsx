@@ -3,6 +3,7 @@ import ReportPage from "@/pages/engineer/report";
 import Breadcrumb from "@/shared/components/Breadcrumb";
 import SortDropdown from "@/shared/components/SortDropdown";
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "./commonUI/Buttons";
 
 /**
@@ -25,7 +26,32 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   onClick,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
+  const location = useLocation();
 
+  const isAuthRoute = location.pathname.includes("/auth/");
+
+  if (isAuthRoute) {
+    return (
+      <div className="w-full sticky top-0 z-10 bg-gray-100 dark:bg-gray-900 mb-2">
+        <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 md:px-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                {title}
+              </h1>
+              {description && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {description}
+                </p>
+              )}
+            </div>
+          </div>
+        </header>
+      </div>
+    );
+  }
+
+  // Full header for protected routes (after login)
   return (
     <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900 mb-2">
       <div className="">
