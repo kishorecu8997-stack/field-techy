@@ -5,6 +5,8 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import PasswordSection from "./PasswordSection";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 export type ResetPasswordFormData = {
   password: string;
@@ -45,11 +47,11 @@ const ResetPassword = () => {
     <div className="flex items-center justify-center max-w-lg md:w-lg ">
       <div className="p-10 w-full max-w-lg">
         <div className="text-center mb-6">
-          <div className="flex justify-center mb-8">
-            <img
-              src={assetsConfig.logos.companyLogo}
-              alt="logo"
-              className="h-20 w-24"
+         <div className="flex justify-center mb-8">
+            <IconWithTheme
+              lightLogo={assetsConfig.logos.ftLogo}
+              darkLogo={logo_light}
+              className="h-15 w-20"
             />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">

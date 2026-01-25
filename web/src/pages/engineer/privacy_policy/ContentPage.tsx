@@ -5,7 +5,7 @@ const ContentPage = ({ content }: { content: Section[] }) => {
     <div className=" p-6 w-full space-y-8 text-gray-700">
       {content.map((section, index) => (
         <div key={index} className="mb-8">
-          <h2 className="text-xl font-bold mb-4 text-gray-900">
+          <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
             {section.title}
           </h2>
 
