@@ -49,7 +49,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
           {/* Action buttons */}
           <div className="p-6 pt-0">
             <div className="grid grid-cols-2 gap-3">
-              <Button type="button" variant="secondary" onClick={onCancel}>
+              <Button type="button" variant="solid" onClick={onCancel}>
                 Cancel
               </Button>
               <Button variant="primary" onClick={onConfirm} type="button">

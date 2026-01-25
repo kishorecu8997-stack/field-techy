@@ -58,7 +58,7 @@ const ChangePassword = () => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, update",

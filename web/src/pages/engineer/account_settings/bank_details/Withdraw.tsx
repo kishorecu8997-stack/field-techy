@@ -59,7 +59,7 @@ const Withdraw = () => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, initiate",

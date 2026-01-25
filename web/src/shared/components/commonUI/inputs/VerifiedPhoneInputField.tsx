@@ -141,9 +141,9 @@ export const VerifiedPhoneInputField = ({
       inputClassName || ""
     } ${verified ? "p-0" : ""} `;
     if (isInputDisabled) {
-      return `${baseClasses} bg-gray-100 dark: bg-gray-700 text-gray-500 dark: text-gray-400 cursor-not-allowed rounded-md`;
+      return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md`;
     }
-    return `${baseClasses} bg-white dark: bg-gray-800 text-gray-900 dark: text-gray-100 rounded-md`;
+    return `${baseClasses} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md`;
   };
 
   return (

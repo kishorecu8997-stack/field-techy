@@ -229,7 +229,7 @@ const BasicDetails = () => {
               </label>
               <button
                 type="button"
-                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0 dark:text-blue-300"
                 onClick={async (e) => {
                   e.stopPropagation();
                   try {

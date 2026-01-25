@@ -191,7 +191,7 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
               aria-label={isSelected ? "Remove bookmark" : "Bookmark job"}
             >
               {isSelected ? (
-                <icons.bookmarkFilled className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <icons.bookmarkFilled className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               ) : (
                 <icons.bookmark className="h-4 w-4" />
               )}

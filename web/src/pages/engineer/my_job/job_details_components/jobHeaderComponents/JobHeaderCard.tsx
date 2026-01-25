@@ -84,15 +84,21 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
       <div
         className={`${
           isSendProposal
-            ? "text-gray-800 bg-yellow-50 mt-4"
-            : "bg-teal-800 text-white mt-4"
+            ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
         } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
           <div className="flex gap-2 items-center">
             <div
-              className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
+              className="
+  flex flex-row-reverse items-center gap-2
+  px-4 py-2 rounded-md text-sm font-medium
+  transition-colors cursor-pointer
+  bg-gray-300 hover:bg-gray-400 text-gray-900
+  dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100
+"
               onClick={handleBreakDetails}
             >
               <span>Break Details</span>

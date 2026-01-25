@@ -70,10 +70,12 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
   return (
     <div className=" rounded-lg p-4 shadow-sm h-fit">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+          {title}
+        </h2>
         <button
           onClick={onAddAction}
-          className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
+          className="text-sm text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
         >
           <span>+</span> Add {title}
         </button>
@@ -88,10 +90,15 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
         ) : (
           <div className="space-y-4">
             {experiences.map((item, index) => (
-              <div key={item.id || index} className="bg-white px-4 py-3">
+              <div
+                key={item.id || index}
+                className="bg-white px-4 py-3 rounded-lg shadow 
+    border border-gray-200 
+    dark:bg-gray-700 dark:border-gray-700"
+              >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-lg font-semibold text-gray-400 dark:text-white">
                       {designationLabelMap.get(item.designation || "") ||
                         "Unknown Designation"}
                     </h3>
@@ -100,14 +107,14 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
                       onClick={() => onEditAction?.(item.id || "")}
-                      className="hover:text-blue-600 transition-colors"
+                      className="text-gray-300 hover:text-red-600 transition-colors dark:hover:text-blue-400"
                       aria-label="Edit"
                     >
                       <FaRegEdit />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(item.id || "")}
-                      className="hover:text-red-600 transition-colors"
+                      className="text-gray-300 hover:text-red-600 transition-colors"
                       aria-label="Delete"
                     >
                       <RiDeleteBin6Line />
@@ -115,27 +122,27 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </div>
                 </div>
 
-                <div>
-                  <p className="text-sm text-gray-600 mt-1">
+                <div className="mt-2 text-sm text-gray-600 dark:text-white">
+                  <p>
                     <span className="font-medium">Employer:</span>{" "}
                     {item.employer}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p>
                     <span className="font-medium">Work Location Type:</span>{" "}
                     {workLocationTypeLabelMap.get(
                       item.workLocationType || "",
                     ) || "N/A"}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p>
                     <span className="font-medium">Employment Type:</span>{" "}
                     {employmentTypeLabelMap.get(item.employmentType || "") ||
                       "N/A"}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p>
                     <span className="font-medium">Start Date:</span>{" "}
                     {formatDate(item.startDate)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p>
                     <span className="font-medium">End Date:</span>{" "}
                     {item.endDate ? formatDate(item.endDate) : "Present"}
                   </p>

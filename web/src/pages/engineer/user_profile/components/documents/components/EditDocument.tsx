@@ -59,7 +59,7 @@ const EditDocument = () => {
         {
           label: "Cancel",
           value: "no",
-          variant: "secondary",
+          variant: "danger",
           action: async (close) => {
             close(true);
           },
@@ -124,11 +124,11 @@ const EditDocument = () => {
         )}
       </div>
 
-      <div className="bg-white p-3 border-t">
+      <div >
         <Button
           type="submit"
           disabled={uploadMutation.isPending}
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
+        className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition-none rounded-none"
         >
           {uploadMutation.isPending ? "Uploading..." : "Save"}
         </Button>

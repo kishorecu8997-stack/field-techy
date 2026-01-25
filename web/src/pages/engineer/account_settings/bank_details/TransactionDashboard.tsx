@@ -1,5 +1,6 @@
 import { useTransactionStore } from "@/dummy_data/transactionStore";
 import { Button } from "@/shared/components/commonUI/Buttons";
+import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { InputField } from "@/shared/components/commonUI/inputs/InputField";
 import { formatCurrency, formatDate } from "@/shared/libs/utils";
 import { getStatusBadge } from "@/utils/statusUtils";
@@ -16,8 +17,8 @@ interface TransactionDashboardProps {
 }
 interface IFormInputs {
   searchTerm: string;
-  filterDateFrom: string;
-  filterDateTo: string;
+  filterDateFrom: Date | null;
+  filterDateTo: Date | null;
 }
 /**
  * Displays a table of transactions. Can show all or the last 10.
@@ -31,8 +32,8 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
   const methods = useForm<IFormInputs>({
     defaultValues: {
       searchTerm: "",
-      filterDateFrom: "",
-      filterDateTo: "",
+      filterDateFrom: null,
+      filterDateTo: null,
     },
   });
   const { watch, reset } = methods;
@@ -51,10 +52,11 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
     ) {
       return false;
     }
-    const txDate = new Date(tx.date); // Already validated in the step above
-    const txDateStr = txDate.toISOString().split("T")[0];
-    if (filterDateFrom && txDateStr < filterDateFrom) return false;
-    if (filterDateTo && txDateStr > filterDateTo) return false;
+    const txDate = new Date(tx.date);
+
+    if (filterDateFrom && txDate < filterDateFrom) return false;
+    if (filterDateTo && txDate > filterDateTo) return false;
+
     return true;
   });
   const clearFilters = () => {
@@ -86,27 +88,46 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
 
         {showAll && (
           <div className="mb-6 space-y-4">
-            <div className="flex gap-2">
+            <div className="flex items-center  gap-2">
               <div className="relative flex-grow">
                 <InputField
                   name="searchTerm"
                   placeholder="Search by description..."
                   leftIcon={<HiSearch className="text-gray-400 text-lg" />}
                   isShowLabel={false}
-                  inputClassName="pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-teal-500 focus:border-teal-500 p-2.5 text-sm outline-none transition-all"
+                  inputClassName="
+    h-[42px]
+    pl-10 w-full
+    rounded-lg
+    border border-gray-300 dark:border-gray-600
+    bg-gray-50 dark:bg-gray-700
+    text-gray-900 dark:text-white
+    text-sm leading-none
+    focus:ring-teal-500 focus:border-teal-500
+    outline-none transition-all
+  "
                 />
               </div>
               <div
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`px-4 py-2 rounded-lg border flex items-center gap-2 text-sm font-medium transition-colors ${
-                  isFilterOpen
-                    ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
-                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                }`}
+                className={`
+    h-[42px]
+    px-4
+    rounded-lg border
+    flex items-center gap-2
+    text-sm font-medium leading-none
+    transition-colors
+    ${
+      isFilterOpen
+        ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
+        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+    }
+  `}
               >
-                <HiFilter className="w-5 h-5" />
+                <HiFilter className="w-4 h-4" />
                 Filters
               </div>
+
               {hasActiveFilters && (
                 <Button
                   onClick={clearFilters}
@@ -118,18 +139,15 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
             </div>
 
             {isFilterOpen && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
-                <InputField
-                  name="filterDateFrom"
-                  label="From Date"
-                  type="date"
-                  inputClassName="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-2 text-sm focus:ring-teal-500 focus:border-teal-500 outline-none"
-                />
-                <InputField
+              <div className="grid grid-cols-1  gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700">
+                <DatePickerInput name="filterDateFrom" label="From Date" />
+
+                <DatePickerInput
                   name="filterDateTo"
                   label="To Date"
-                  type="date"
-                  inputClassName="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-2 text-sm focus:ring-teal-500 focus:border-teal-500 outline-none"
+                  minDate={
+                    filterDateFrom ? new Date(filterDateFrom) : undefined
+                  }
                 />
               </div>
             )}

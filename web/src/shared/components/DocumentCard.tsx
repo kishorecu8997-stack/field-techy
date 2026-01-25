@@ -236,7 +236,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
           <div className="flex space-x-2 mt-2">
             <button
               onClick={handleSaveExpiryDate}
-              className="px-3 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700"
+              className="px-3 py-1 text-xs bg-teal-600 text-white rounded-none hover:bg-teal-700 shadow-none border-none"
             >
               Save
             </button>

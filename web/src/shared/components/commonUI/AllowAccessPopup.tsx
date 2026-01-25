@@ -117,7 +117,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={locationLoading}
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition dark:bg-gradient-to-r dark:from-gray-500 dark:to-gray-700"
             onClick={() => {
               onDenyLocation?.();
               setLocationPermission("denied");
@@ -168,7 +168,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={notificationLoading}
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition dark:bg-gradient-to-r dark:from-gray-500 dark:to-gray-700"
             onClick={() => {
               onDenyNotification?.();
               setNotificationPermission("denied");

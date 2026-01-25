@@ -190,10 +190,10 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     <FormProvider {...methods}>
       <div className="p-6 max-w-3xl mx-auto font-sans">
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2 dark:text-gray-200">
             Where You're Logged In
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm font-medium dark:text-gray-300">
             Check the devices where you are currently logged in and secure your
             account.
           </p>
@@ -212,15 +212,22 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                   key={session.id}
                   className={`flex items-center p-4 border rounded-lg transition-colors duration-200 ${
                     isSelected
-                      ? "bg-blue-50 border-blue-400"
-                      : "bg-white border-gray-200 hover:bg-gray-50"
+                      ? "bg-blue-50 border-blue-400 dark:bg-gray-700 dark:border-blue-400"
+                      : "bg-white border-gray-200 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
                   }`}
                 >
                   <div className="mr-4">
                     <CheckboxField
                       name={`session_${session.id}`}
                       options={[{ label: "", value: session.id }]}
-                      inputClassName="w-4 h-4 text-blue-600 border-gray-300 rounded cursor-pointer"
+                      inputClassName="
+    w-4 h-4
+    accent-blue-600
+    dark:accent-gray-400
+    border-gray-300
+    dark:border-gray-600
+    cursor-pointer
+  "
                       wrapperClassName=""
                       direction="horizontal"
                       disabled={false}
@@ -228,17 +235,17 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                     />
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-gray-900 mb-1">
+                    <div className="font-semibold text-gray-900 mb-1 dark:text-white">
                       {session.device}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-400 font-bold">
                       Logged in:{" "}
                       {new Date(session.startTime).toLocaleString([], {
                         dateStyle: "medium",
                         timeStyle: "short",
                       })}
                     </div>
-                    <div className="text-xs text-blue-600 mt-1 font-medium">
+                    <div className="text-xs text-blue-600 mt-1 font-medium dark:text-blue-400">
                       {session.isCurrent ? "This Device" : "Active Now"}
                     </div>
                   </div>
@@ -288,7 +295,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
             ></div>
 
             {/* Modal content */}
-            <div className="bg-white p-6 rounded-lg shadow-lg z-10 max-w-sm w-full">
+            <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-lg shadow-lg z-10 max-w-sm w-full">
               <h2 className="text-lg font-bold mb-4">Confirm Logout</h2>
               <p className="mb-4">
                 Are you sure you want to logout {selectedSessions.length}{" "}

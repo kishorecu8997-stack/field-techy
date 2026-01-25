@@ -70,7 +70,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
           onClick={onAddAction}
           className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
         >
-          <span>+</span> Add {title}
+          <span>+</span> Add{title}
         </button>
       </div>
 
@@ -90,7 +90,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
                 <div className="flex space-x-2">
                   <button
                     onClick={() => onEditAction?.(item.id as number)}
-                    className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer dark:hover:text-blue-400"
                     aria-label="Edit"
                   >
                     <FaRegEdit />

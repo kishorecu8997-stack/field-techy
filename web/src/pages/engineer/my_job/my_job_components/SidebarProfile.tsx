@@ -73,7 +73,8 @@ const ProfileCard = () => {
             setActiveKey("profileCompletion");
             setISOpenSidebar(true);
           }}
-          className="w-fit h-fit bg-white text-teal-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold transition"
+         className="mt-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 h-fit"
+
         >
           Complete Now
         </button>

@@ -357,7 +357,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         {
           label: "Cancel",
           value: "no",
-          variant: "secondary",
+          variant: "danger",
           action: (close) => close(true),
         },
         {
@@ -385,15 +385,16 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
   if (isLoadingPreviews && engineerFiles.length > 0) {
     return (
-      <div className="bg-white rounded-lg">
+      <div className="bg-white rounded-lg dark:bg-gray-800">
         {onAddDocument && (
-          <div className="flex justify-end items-center mb-4">
+              <div className="flex justify-between items-center mb-2">
+             <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Documents</h2>
             <Button
               variant="link"
               onClick={onAddDocument}
-              className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
+               className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
             >
-              Add Document
+              + Add Document
             </Button>
           </div>
         )}
@@ -410,18 +411,23 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-lg dark:bg-gray-800 p-4 shadow-sm">
       {onAddDocument && (
-        <div className="flex justify-end items-center mb-4">
+            <div className="flex justify-between items-center mb-2">
+           <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Documents</h2>
           <Button
             variant="link"
             onClick={onAddDocument}
-            className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
+            className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
           >
-            Add Document
+            + Add Document
           </Button>
         </div>
       )}
+
+        <hr className="border-gray-200 mb-4" />
+      
+      
 
       {documents.length > 0 ? (
         <div className="space-y-4">
@@ -440,6 +446,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           No documents added yet. Click "Add Document" to get started.
         </div>
       )}
+      
     </div>
   );
 };
