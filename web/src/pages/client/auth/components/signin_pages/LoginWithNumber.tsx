@@ -72,7 +72,7 @@ const LoginWithNumber = ({
     const type = otpfor === 'email' ? 'email' : 'phone';
 
     try {
-      await sendOtp({ type }); // Token is optional/empty for pre-login
+      await sendOtp({ body: { type }, headers: { Authorization: "" } }); // Token is optional/empty for pre-login
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {
@@ -88,8 +88,11 @@ const LoginWithNumber = ({
 
     try {
       const response = await verifyOtp({
-        type,
-        code: otp,
+        body: {
+          type,
+          code: otp,
+        },
+        headers: { Authorization: "" }
       });
 
       console.log("OTP Response: ", response);
@@ -112,7 +115,7 @@ const LoginWithNumber = ({
   const onResendOtp = async () => {
     const type = otpfor === 'email' ? 'email' : 'phone';
     try {
-      await sendOtp({ type });
+      await sendOtp({ body: { type }, headers: { Authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {

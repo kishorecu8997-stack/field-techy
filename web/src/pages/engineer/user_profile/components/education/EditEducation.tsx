@@ -93,7 +93,7 @@ const EditEducation = () => {
             try {
               if (selectedId) {
                 await updateMutation.mutateAsync({
-                  id: String(selectedId),
+                  path: { id: String(selectedId) },
                   body: {
                     level: Number(formData.educationLevel),
                     course: formData.course || undefined,
@@ -104,11 +104,13 @@ const EditEducation = () => {
                 });
               } else {
                 await addMutation.mutateAsync({
-                  level: Number(formData.educationLevel),
-                  course: formData.course || "",
-                  university: formData.university?.trim() || "",
-                  majorSubject: formData.majorSubject?.trim() || "",
-                  passingYear: Number(formData.passingYear),
+                  body: {
+                    level: Number(formData.educationLevel),
+                    course: formData.course || "",
+                    university: formData.university?.trim() || "",
+                    majorSubject: formData.majorSubject?.trim() || "",
+                    passingYear: Number(formData.passingYear),
+                  }
                 });
               }
 

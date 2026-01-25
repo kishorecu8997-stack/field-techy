@@ -93,6 +93,16 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       // Invalidate relevant queries to refresh UI
       queryClient.invalidateQueries({ queryKey: isEngineer ? queryKeys.engineer.all : queryKeys.client.all });
 
+      // If it was a profile picture, update the preview URL in the store
+      if (fileType === 'profilePicture') {
+        const previewUrl = URL.createObjectURL(file);
+        if (isEngineer) {
+          useEngineerStore.getState().setProfileImageUrl(previewUrl);
+        } else {
+          useClientStore.getState().setProfileImageUrl(previewUrl);
+        }
+      }
+
       options?.onSuccess?.(response);
       return response;
 

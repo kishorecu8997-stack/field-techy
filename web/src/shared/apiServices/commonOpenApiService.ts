@@ -1,18 +1,28 @@
 import {
-    type AppGetLookupDataData,
-    type AppSendOtpResponse,
-    type AppUploadProfileFileResponse,
-    type AppVerifyOtpResponse
+  type AppGetLookupDataData,
+  type AppSendOtpResponse,
+  type AppUploadProfileFileResponse,
+  type AppVerifyOtpResponse
 } from "@/api";
 import {
-    appDownloadProfileFileOptions,
-    appGetLookupDataOptions,
-    appSendOtpMutation,
-    appUploadProfileFileMutation,
-    appVerifyOtpMutation,
+  appDownloadProfileFileOptions,
+  appGetLookupDataOptions,
+  appSendOtpMutation,
+  appUploadProfileFileMutation,
+  appVerifyOtpMutation
 } from "@/api/@tanstack/react-query.gen";
+import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
+
+export async function getDownloadUrl(fileType: string) {
+  const { data } = await appDownloadProfileFileSdk({
+    client: apiClient,
+    query: { fileType: fileType as any },
+    headers: { authorization: "" },
+  });
+  return data;
+}
 
 /**
  * Shared authentication and utility hooks to reduce code duplication
@@ -23,7 +33,10 @@ export function useSendOtp(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    ...appSendOtpMutation({ client: apiClient }),
+    ...appSendOtpMutation({
+      client: apiClient,
+      headers: { Authorization: "" },
+    }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -34,7 +47,10 @@ export function useVerifyOtp(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    ...appVerifyOtpMutation({ client: apiClient }),
+    ...appVerifyOtpMutation({
+      client: apiClient,
+      headers: { Authorization: "" },
+    }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -51,14 +67,14 @@ export function useAppUploadProfileFile(options?: {
   });
 }
 
-export function useAppDownloadProfileFile(fileId: string | null | undefined, enabled: boolean = true) {
+export function useAppDownloadProfileFile(fileType: string | null | undefined, enabled: boolean = true) {
   return useQuery({
     ...appDownloadProfileFileOptions({
       client: apiClient,
-      query: { fileId: fileId || "" },
+      query: { fileType: fileType as any },
       headers: { authorization: "" },
     }),
-    enabled: enabled && !!fileId,
+    enabled: enabled && !!fileType,
     staleTime: 5 * 60 * 1000,
   });
 }

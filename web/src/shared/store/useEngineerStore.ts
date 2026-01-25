@@ -5,6 +5,7 @@ import type {
 } from "../apiServices/engineer/engineerTypes";
 import { useUserSessionStore } from "./useUserSessionStore";
 import { getEducation, getPersonalInfo } from "../apiServices/engineer/engineerOpenApiService";
+import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
 interface EngineerStore {
   engineerProfile: EngineerData | null;
@@ -47,9 +48,10 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
     set({ loading: true });
     try {
       // Call new API services from engineerOpenApiService
-      const [personalInfo, educationList] = await Promise.all([
+      const [personalInfo, educationList, profilePicData] = await Promise.all([
         getPersonalInfo(),
         getEducation(),
+        getDownloadUrl("profilePicture").catch(() => null),
       ]);
 
       const profile: EngineerData = {
@@ -68,9 +70,11 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
         }))
       };
 
-      set({ engineerProfile: profile, profileFetched: true });
-
-      set({ profileImageUrl: null });
+      set({ 
+        engineerProfile: profile, 
+        profileFetched: true,
+        profileImageUrl: profilePicData?.downloadUrl || null
+      });
      
     } catch (error) {
       console.error("Failed to fetch engineer profile:", error);

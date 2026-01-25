@@ -60,11 +60,13 @@ const AddEducation = () => {
           action: async (close) => {
             try {
               await addEducationMutation.mutateAsync({
-                level: Number(data.educationLevel),
-                course: data.course || "",
-                university: data.university?.trim() || "",
-                majorSubject: data.majorSubject?.trim() || "",
-                passingYear: Number(data.passingYear),
+                body: {
+                  level: Number(data.educationLevel),
+                  course: data.course || "",
+                  university: data.university?.trim() || "",
+                  majorSubject: data.majorSubject?.trim() || "",
+                  passingYear: Number(data.passingYear),
+                }
               });
 
               toast.success("Education added successfully");

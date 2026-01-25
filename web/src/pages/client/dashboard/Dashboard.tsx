@@ -40,8 +40,7 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
-  const token = localStorage.getItem("auth_token") || undefined;
-  const { data: clientInfo } = useClientGetCompanyInfo(token, !companyInfo);
+  const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
 
   useEffect(() => {
     if (clientInfo && !companyInfo) {

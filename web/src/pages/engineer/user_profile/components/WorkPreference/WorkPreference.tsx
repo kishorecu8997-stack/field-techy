@@ -66,10 +66,12 @@ const WorkPreference = () => {
           action: async (close) => {
             try {
               await updateWorkPreference({
-                portfolioLink: data.portfolioLink,
-                employmentTypeId: Number(data.preferredWorkTypes),
-                serviceCategoryId: Number(data.servicesCategories),
-                hourlyRate: Number(data.ratePreference.replace(/[^0-9.]/g, "")),
+                body: {
+                  portfolioLink: data.portfolioLink,
+                  employmentTypeId: Number(data.preferredWorkTypes),
+                  serviceCategoryId: Number(data.servicesCategories),
+                  hourlyRate: Number(data.ratePreference.replace(/[^0-9.]/g, "")),
+                }
               });
               toast.success("Work Preferences Updated Successfully");
               close(true);

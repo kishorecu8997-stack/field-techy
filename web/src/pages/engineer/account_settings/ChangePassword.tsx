@@ -52,8 +52,11 @@ const ChangePassword = () => {
           action: async (close) => {
             try {
               await changePassword({
-                oldPassword: data.currentPassword,
-                newPassword: data.password,
+                body: {
+                  oldPassword: data.currentPassword,
+                  newPassword: data.password,
+                },
+                headers: { Authorization: "" }
               });
               toast.success("Password updated successfully!");
               setActiveKey("settings");

@@ -53,8 +53,10 @@ const AddTools = () => {
 
             try {
               await updateSkillsAndTools({
-                skills: skillIds,
-                tools: combinedToolIds
+                body: {
+                  skills: skillIds,
+                  tools: combinedToolIds
+                }
               });
               toast.success("Tools Added Successfully");
               close(true);

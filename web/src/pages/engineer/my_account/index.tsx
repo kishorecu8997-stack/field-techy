@@ -1,7 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import {
-  useAppDownloadProfileFile,
   useEngineerGetPersonalInfo,
   useEngineerGetWorkPreference,
   useLookupData,
@@ -46,16 +45,12 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   /*
    * Use the profileImageUrl from the global store.
-   * The fetching logic is now centralised in useEngineerStore.
+   * The fetching logic is now centralized in useEngineerStore.
    */
   const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const { data: personalInfo } = useEngineerGetPersonalInfo();
   const { data: workPreference } = useEngineerGetWorkPreference();
   const { data: serviceCategories } = useLookupData("serviceCategories");
-  /*
-   * Fetch the download URL for the profile picture if an ID exists.
-   */
-  const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
 
   const serviceCategoryName = serviceCategories?.find(
     (c) => c.id === workPreference?.serviceCategoryId,
@@ -63,7 +58,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   const methods = useForm({
     defaultValues: {
-      profileImage: assetsConfig.images.profile.defaultProfileImage,
+      profileImage: profileImageUrl || assetsConfig.images.profile.defaultProfileImage,
     },
   });
 
@@ -136,7 +131,6 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={
-              downloadData?.downloadUrl ||
               profileImageUrl ||
               assetsConfig.images.profile.defaultProfileImage
             }

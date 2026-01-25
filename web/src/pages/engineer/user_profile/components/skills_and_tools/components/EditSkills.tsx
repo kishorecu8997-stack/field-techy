@@ -58,8 +58,10 @@ const EditSkills = () => {
 
             try {
               await updateSkillsAndTools({
-                skills: skillIds,
-                tools: toolIds
+                body: {
+                  skills: skillIds,
+                  tools: toolIds
+                }
               });
               toast.success("Skills Updated Successfully");
               close(true);

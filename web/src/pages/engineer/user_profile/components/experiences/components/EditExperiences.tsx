@@ -101,8 +101,8 @@ const EditExperiences = () => {
 
             try {
               await updateExperience({
-                id: String(selectedId),
-                body: updatedExperience,
+                path: { id: String(selectedId) },
+                body: updatedExperience as any,
               });
 
               toast.success("Experience updated successfully");

@@ -40,7 +40,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
-  const token = localStorage.getItem("auth_token") || undefined;
 
   const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
     onSuccess: () => {
@@ -108,8 +107,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   const statesQuery = useStates(parentCountryId);
   const parentStateId =
     typeof selectedState === "object" &&
-    selectedState !== null &&
-    "value" in selectedState
+      selectedState !== null &&
+      "value" in selectedState
       ? (selectedState as any).value
       : selectedState;
   const citiesQuery = useCities(parentStateId);
@@ -200,7 +199,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     };
 
     await updateClient({
-      token,
       body: {
         clientType: isCorporate ? "corporate" : "home",
         name: data.contactPersonName, // Login name update?

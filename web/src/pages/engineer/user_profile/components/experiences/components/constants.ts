@@ -26,3 +26,9 @@ export const designationOptions = [
   { value: "9", label: "QA Engineer" },
   { value: "10", label: "Project Manager" },
 ] as const;
+
+export const workLocationTypeOptions = [
+  { label: "On-site", value: "1" },
+  { label: "Remote", value: "2" },
+  { label: "Hybrid", value: "3" },
+];

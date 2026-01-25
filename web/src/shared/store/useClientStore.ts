@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { ClientData, ClientFile } from "../apiServices/client/clientTypes";
+import type { ClientData } from "../apiServices/client/clientTypes";
 import { ClientAdapter } from "../apiServices/client/clientAdapter";
 import { useUserSessionStore } from "./useUserSessionStore";
+import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
 interface ClientStore {
   clientProfile: ClientData | null;
@@ -29,7 +30,7 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearClientProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
     set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
   fetchClientProfile: async (id: string) => {
@@ -37,36 +38,17 @@ export const useClientStore = create<ClientStore>((set, get) => ({
     set({ loading: true });
     try {
       // Fetch profile and files in parallel
-      const [profile, files] = await Promise.all([
+      const [profile, profilePicData] = await Promise.all([
         ClientAdapter.getById(id),
-        ClientAdapter.getFiles(id),
+        getDownloadUrl("profilePicture").catch(() => null),
       ]);
 
-      set({ clientProfile: profile, profileFetched: true });
+      set({ 
+        clientProfile: profile, 
+        profileFetched: true,
+        profileImageUrl: profilePicData?.downloadUrl || null
+      });
 
-      // Find profile picture
-      const profilePic = files.find(
-        (f: ClientFile) => f.fileType === "PROFILE_PICTURE",
-      );
-
-      if (profilePic) {
-        try {
-          const { blob } = await ClientAdapter.downloadFileStream(
-            profilePic.fileKey,
-          );
-          const oldUrl = get().profileImageUrl;
-          if (oldUrl) URL.revokeObjectURL(oldUrl);
-
-          const url = URL.createObjectURL(blob);
-          set({ profileImageUrl: url });
-        } catch (err) {
-          console.error("Failed to download profile picture", err);
-        }
-      } else {
-        const oldUrl = get().profileImageUrl;
-        if (oldUrl) URL.revokeObjectURL(oldUrl);
-        set({ profileImageUrl: null });
-      }
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
     } finally {

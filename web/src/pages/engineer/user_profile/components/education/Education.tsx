@@ -46,7 +46,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           variant: "primary",
           action: async (close) => {
             try {
-              await deleteMutation.mutateAsync(id);
+              await deleteMutation.mutateAsync({ path: { id: String(id) } });
               toast.success("Education Deleted Successfully");
               close(true);
               setActiveKey("education");

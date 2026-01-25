@@ -1,15 +1,14 @@
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
+import { useProfileFileUpload, type ProfileFileType } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useMemo } from "react";
-import type { DocumentType } from "@/shared/apiServices/engineer/engineerTypes";
-import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import { getUserId } from "@/utils";
-import { useProfileFileUpload, type ProfileFileType } from "@/shared/hooks/useProfileFileUpload";
+import { useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for editing a document.

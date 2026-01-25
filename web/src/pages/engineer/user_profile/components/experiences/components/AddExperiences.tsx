@@ -60,7 +60,7 @@ const AddExperiences = () => {
             };
 
             try {
-              await addExperience(newExperience);
+              await addExperience({ body: newExperience as any });
               toast.success("Experience Added Successfully");
               close(true);
               setActiveKey("experiences");

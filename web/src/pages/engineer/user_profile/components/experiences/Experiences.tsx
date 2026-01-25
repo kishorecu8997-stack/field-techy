@@ -46,7 +46,7 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           variant: "primary",
           action: async (close) => {
             try {
-              await deleteExperience(id);
+              await deleteExperience({ path: { id: String(id) } });
               toast.success("Experience Deleted Successfully");
               close(true);
               setActiveKey("experiences");

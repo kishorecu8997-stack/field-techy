@@ -28,7 +28,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
     <div className="flex flex-col items-center text-center py-6">
       <div className="relative w-24 h-24">
         <img
-          src={assetsConfig.images.profile.defaultProfileImage}
+          src={user.avatarUrl || assetsConfig.images.profile.defaultProfileImage}
           alt={user.name}
           className="w-full h-full rounded-full object-cover border-4 border-white shadow-md"
         />
