@@ -104,7 +104,7 @@ export default function SuspendedUser() {
     { key: "suspendTo", label: "Suspend To" },
     { key: "suspendBy", label: "Suspend By" },
     { key: "suspendOn", label: "Suspend On" },
-    { key: "currentStatus", label: "Current Status" },
+    { key: "currentStatus", label: "Current Status", dataCellAlign: "center" },
     {
       key: "action",
       label: "Actions",

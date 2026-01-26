@@ -6,6 +6,7 @@ import { validateDescription } from "@/utils/validate";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 export default function SuspendEngineer({
   isSuspendengineer,
@@ -14,9 +15,15 @@ export default function SuspendEngineer({
   isSuspendengineer: boolean;
   setIsSuspendengineer: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const ctx = useFormContext();
-  const suspendStartDate = ctx.watch("suspendStartDate");
-  const suspendEndDate = ctx.watch("suspendEndDate");
+  const { watch, handleSubmit } = useFormContext(); 
+  const suspendStartDate = watch("suspendStartDate");
+  // This function only executes if validation passes
+  const onSubmit = (data: any) => {
+    console.log("Form Data:", data);
+    // Add your API call logic here
+    toast.success("Engineer suspended successfully!");
+    setIsSuspendengineer(false);
+  };
   return (
     <div>
       <Popup
@@ -34,20 +41,20 @@ export default function SuspendEngineer({
             </div>
           </div>
 
-          <div className="my-4">
+          <div className="my-4 flex flex-col gap-4">
             <DatePickerInput
               name="suspendStartDate"
               label="Start Date"
               placeholder="Start Date"
-              required
-              maxDate={suspendEndDate || undefined}
+              required 
+              minDate={new Date(new Date().setHours(0, 0, 0, 0))}
             />
             <DatePickerInput
               name="suspendEndDate"
               label="End Date"
               placeholder="End Date"
               required
-              minDate={suspendStartDate || undefined}
+              minDate={suspendStartDate}
             />
             <TextareaInput
               name="reason"
@@ -57,16 +64,19 @@ export default function SuspendEngineer({
               rules={{ validate: (v: string) => validateDescription(v) }}
             />
           </div>
+          
           <div className="flex justify-end gap-2">
             <Button
               variant="outline"
+              type="button"
               onClick={() => setIsSuspendengineer(false)}
             >
               Cancel
             </Button>
             <Button
-              type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white"
+              type="button" 
+              className="w-fit bg-teal-900 text-white"
+              onClick={handleSubmit(onSubmit)}
             >
               Submit
             </Button>

@@ -146,27 +146,33 @@ export default function ActiveUser() {
     {
       key: "registrationDate",
       label: "Registration Date",
+      dataCellAlign: "center",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
+      dataCellAlign: "center",
     },
     {
       key: "kycStatus",
       label: "KYC Status",
+      dataCellAlign: "center",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
+      dataCellAlign: "center",
     },
     {
       key: "avgRating",
       label: "Avg Rating",
+      dataCellAlign: "center",
     },
     {
       key: "action",
       label: "Actions",
       align: "center",
+      dataCellAlign: "center",
       renderCell: (row: ManageEngineerProps) => (
         <ActionsMenu
           row={row}
@@ -202,10 +208,10 @@ export default function ActiveUser() {
           variant: "danger",
           action: async (close) => {
             console.log("Suspend data:", data);
-            close(true);
             methods.reset();
             setIsSuspendengineer(false);
             toast.success("Engineer suspended successfully!");
+            close(true);
           },
         },
       ],

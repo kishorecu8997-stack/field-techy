@@ -142,28 +142,34 @@ export default function InactiveUser() {
     {
       key: "registrationDate",
       label: "Registration Date",
+      dataCellAlign: "center",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
+      dataCellAlign: "center",
     },
     {
       key: "kycStatus",
       label: "KYC Status",
+      dataCellAlign: "center",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
+      dataCellAlign: "center",
     },
     {
       key: "avgRating",
       label: "Avg Rating",
+      dataCellAlign: "center",
     },
-    { key: "lastActiveOn", label: "Last Active On" },
+    { key: "lastActiveOn", label: "Last Active On", dataCellAlign: "center", },
     {
       key: "action",
       label: "Actions",
       align: "center",
+      dataCellAlign: "center",
       renderCell: (row: ManageEngineerProps) => (
         <ActionsMenu
           row={row}

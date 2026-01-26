@@ -97,8 +97,8 @@ export default function BlockedUser() {
       label: "Reason for Block",
     },
     { key: "suspendOn", label: "Blocked On" },
-    { key: "suspendBy", label: "Blocked By" },
-    { key: "currentStatus", label: "Current Status" },
+    { key: "suspendBy", label: "Blocked By", dataCellAlign: "center", },
+    { key: "currentStatus", label: "Current Status", dataCellAlign: "center", },
     {
       key: "action",
       label: "Actions",

@@ -75,10 +75,18 @@ export default function PendingRequest() {
         toastMessage = `Engineer status updated to ${data.status}`;
         break;
     }
+      let bodyMessage = "";
+
+    if (data.status.toLowerCase() === "pending") {
+      bodyMessage = "Are you sure you want to set this engineer to pending?";
+    } else {
+      const formattedStatus = data.status.charAt(0).toUpperCase() + data.status.slice(1).toLowerCase();
+      bodyMessage = `Are you sure you want to ${formattedStatus} this engineer?`;
+    }
 
     await showPopup({
       title: `${data.status.charAt(0).toUpperCase() + data.status.slice(1)} Engineer`,
-      body: `Are you sure you want to ${data.status.charAt(0).toUpperCase() + data.status.slice(1)} this Engineer?`,
+      body: bodyMessage,
       actionButtons: [
         {
           label: "Cancel",
@@ -94,10 +102,16 @@ export default function PendingRequest() {
               : status === "reject"
                 ? "danger"
                 : status === "pending"
-                  ? "outline"
+                  ? "warning"
                   : "secondary",
           action: async (close) => {
+            if (status === "reject") {
+            toast.error(toastMessage); 
+          } else if (status === "approve") {
             toast.success(toastMessage);
+          } else {
+            toast.warning(toastMessage)
+          }
             close(true);
           },
         },
@@ -168,7 +182,7 @@ export default function PendingRequest() {
             {documents.map((doc, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
+                className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
               >
                 {doc}
               </span>
@@ -205,43 +219,56 @@ export default function PendingRequest() {
     {
       key: "registrationDate",
       label: "Registration Date",
+      dataCellAlign: "center",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
+      dataCellAlign: "center",
     },
     {
       key: "kycStatus",
       label: "KYC Status",
+      dataCellAlign: "center",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
+      dataCellAlign: "center",
     },
     {
       key: "avgRating",
       label: "Avg Rating",
+      dataCellAlign: "center",
     },
     {
       key: "approvalStatus",
       label: "Approve/Reject",
       renderCell: (row: ManageEngineerProps) => {
+        const current = rowStatuses[row.id] ?? "pending";
+
+        const preparedOptions = JobStatus.map(opt => ({
+          ...opt,
+          disabled: opt.value === "pending" && current === "pending"
+        }));
         return (
           <div className="relative w-full">
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] || ""}
+              value={current}
               onChange={(value: string | null) => {
+                const newValue = value ?? "pending";
                 setRowStatuses((prev) => ({
                   ...prev,
-                  [row.id]: value ?? "",
+                  [row.id]: newValue
                 }));
                 handleStatusChange({
                   ...row,
                   status: value as adminJobsStatus,
                 });
               }}
-              options={JobStatus}
+              options={preparedOptions}
+              badge
             />
           </div>
         );
