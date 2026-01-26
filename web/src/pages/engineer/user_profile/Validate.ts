@@ -221,8 +221,6 @@ export const validateExperience = (value: string) => {
   return true;
 };
 
-// following two validations created by Mithun for validate university and major subject text fields
-
 // validate university text field
 export const validateUniversity = (value: string, required: boolean = true) => {
   const trimmed = value?.trim() ?? "";
@@ -235,6 +233,17 @@ export const validateUniversity = (value: string, required: boolean = true) => {
   // Length check above 200 characters
   if (trimmed.length > 200) {
     return "University must not exceed 200 characters";
+  }
+
+  const allowedPattern = /^[a-zA-Z0-9\s.#()+-]+$/;
+  if (!allowedPattern.test(trimmed)) {
+    return "University  can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, )).";
+  }
+
+  // Must contain at least one letter
+  const hasLetter = /[a-zA-Z]/.test(trimmed);
+  if (!hasLetter) {
+    return "University must contain at least one letter.";
   }
   return true;
 };
@@ -255,6 +264,17 @@ export const validateMajorSubject = (
   if (trimmed.length > 200) {
     return "Major Subject must not exceed 200 characters";
   }
+
+  const allowedPattern = /^[a-zA-Z0-9\s.#()+-]+$/;
+  if (!allowedPattern.test(trimmed)) {
+    return "Major Subject can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, )).";
+  }
+
+  // Must contain at least one letter
+  const hasLetter = /[a-zA-Z]/.test(trimmed);
+  if (!hasLetter) {
+    return "Major Subject must contain at least one letter.";
+  }
   return true;
 };
 
@@ -271,7 +291,6 @@ export const validatePassingYear = (value: string) => {
   if (!yearStr) return "Passing Year is required";
 
   // Disallow leading or trailing spaces
-
   if (/\s/.test(yearStr))
     return "Passing Year must not contain internal spaces";
   // Ensure the value contains only digits and is exactly 4 characters long.

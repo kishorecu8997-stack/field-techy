@@ -208,7 +208,6 @@ const EditEducation = () => {
           isShowLabel={false}
           name="passingYear"
           placeholder="e.g., 2023"
-          allowedCharacters="numbers"
           required
           rules={{ validate: (value: string) => validatePassingYear(value) }}
         />
