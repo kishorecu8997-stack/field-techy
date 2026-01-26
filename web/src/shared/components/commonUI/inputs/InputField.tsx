@@ -200,7 +200,7 @@ export const InputField = ({
                ${
                  error && !disabled
                    ? "border-red-500 focus:ring-1 focus:ring-red-400"
-                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40 "
+                   : "border-gray-300 dark:border-gray-600 focus:ring-primary/40"
                }
               `}
               />

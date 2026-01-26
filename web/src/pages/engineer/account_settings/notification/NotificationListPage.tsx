@@ -202,12 +202,11 @@ const NotificationListPage = () => {
                   setTab(title.type);
                   setSearch("");
                 }}
-                className={`px-5 py-2 text-sm font-semibold cursor-pointer
-    rounded-md dark:bg-gray-800  ${
-      title.type === tab
-        ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
-        : ""
-    } `}
+                  className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${
+                  title.type === tab
+                    ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
+                    : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                }`}
               >
                 {title.label}
               </div>
@@ -246,7 +245,7 @@ const NotificationListPage = () => {
                       <h1 className="font-bold text-md">
                         {notifications.title}
                       </h1>
-                      <p className="text-gray-400 text-md font-medium">
+                     <p className="text-gray-600 dark:text-gray-300 text-md font-medium">
                         {notifications.message}
                       </p>
                       {ButtonRender(notifications.type)}

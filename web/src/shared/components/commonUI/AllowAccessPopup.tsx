@@ -117,7 +117,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={locationLoading}
-            className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition dark:bg-gradient-to-r dark:from-gray-500 dark:to-gray-700"
+           className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={() => {
               onDenyLocation?.();
               setLocationPermission("denied");

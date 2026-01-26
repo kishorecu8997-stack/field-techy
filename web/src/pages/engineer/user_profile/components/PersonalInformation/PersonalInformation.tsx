@@ -200,7 +200,7 @@ const PersonalInformation = () => {
       <div className="bg-white">
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition-none rounded-none"
+          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
         >
           Edit Profile
         </Button>

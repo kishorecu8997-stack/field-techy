@@ -401,7 +401,7 @@ const JobCard: React.FC<{
                 {isBookmarked ? (
                   <icons.bookmarkFilled className="h-5 w-5 text-teal-600 dark:text-teal-400" />
                 ) : (
-                  <icons.bookmark className="w-4 h-4" />
+                  <icons.bookmark className="h-5 w-5" />
                 )}
               </div>
               <span>{jobData.postedTime || "Just now"}</span>

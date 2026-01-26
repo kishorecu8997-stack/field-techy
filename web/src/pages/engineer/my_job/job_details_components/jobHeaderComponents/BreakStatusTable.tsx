@@ -117,7 +117,7 @@ const BreakStatusTable: React.FC = () => {
             </span>
             {(statusKey === "Approved" || statusKey === "Rejected") &&
               row.reason && (
-                <span className="text-ml text-gray-600  mt-1 dark:text-gray-300">
+                <span className="text-sm text-gray-600  mt-1 dark:text-gray-300">
                   {row.reason}
                 </span>
               )}

@@ -387,12 +387,14 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     return (
       <div className="bg-white rounded-lg dark:bg-gray-800">
         {onAddDocument && (
-              <div className="flex justify-between items-center mb-2">
-             <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Documents</h2>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+              Documents
+            </h2>
             <Button
               variant="link"
               onClick={onAddDocument}
-               className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
+              className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
             >
               + Add Document
             </Button>
@@ -413,8 +415,10 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   return (
     <div className="bg-white rounded-lg dark:bg-gray-800 p-4 shadow-sm">
       {onAddDocument && (
-            <div className="flex justify-between items-center mb-2">
-           <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Documents</h2>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+            Documents
+          </h2>
           <Button
             variant="link"
             onClick={onAddDocument}
@@ -425,9 +429,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         </div>
       )}
 
-        <hr className="border-gray-200 mb-4" />
-      
-      
+      <hr className="border-gray-200 mb-4" />
 
       {documents.length > 0 ? (
         <div className="space-y-4">
@@ -446,7 +448,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           No documents added yet. Click "Add Document" to get started.
         </div>
       )}
-      
     </div>
   );
 };

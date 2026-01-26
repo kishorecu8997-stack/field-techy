@@ -18,11 +18,7 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
   onDeleteAction,
 }) => {
   return (
-    <div
-      className="bg-white px-4 py-3 rounded-lg shadow 
-    border border-gray-200 
-    dark:bg-gray-700 dark:border-gray-700"
-    >
+    <div className="bg-white px-4 py-3 rounded-lg shadow border border-gray-200 dark:bg-gray-700 dark:border-gray-700">
       {/* Header with Actions */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white">

@@ -124,15 +124,13 @@ const EditDocument = () => {
         )}
       </div>
 
-      <div >
-        <Button
-          type="submit"
-          disabled={uploadMutation.isPending}
-        className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition-none rounded-none"
-        >
-          {uploadMutation.isPending ? "Uploading..." : "Save"}
-        </Button>
-      </div>
+      <Button
+        type="submit"
+        disabled={uploadMutation.isPending}
+        className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 hover:opacity-90 transition rounded-none"
+      >
+        {uploadMutation.isPending ? "Uploading..." : "Save"}
+      </Button>
     </FormContainer>
   );
 };

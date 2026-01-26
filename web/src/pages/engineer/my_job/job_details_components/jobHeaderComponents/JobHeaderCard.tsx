@@ -92,13 +92,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
           <div className="flex gap-2 items-center">
             <div
-              className="
-  flex flex-row-reverse items-center gap-2
-  px-4 py-2 rounded-md text-sm font-medium
-  transition-colors cursor-pointer
-  bg-gray-300 hover:bg-gray-400 text-gray-900
-  dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100
-"
+              className="flex flex-row-reverse items-center gap-2px-4 py-2 rounded-md text-sm font-mediumtransition-colors cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100"
               onClick={handleBreakDetails}
             >
               <span>Break Details</span>

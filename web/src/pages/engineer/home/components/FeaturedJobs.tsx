@@ -193,7 +193,7 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
               {isSelected ? (
                 <icons.bookmarkFilled className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               ) : (
-                <icons.bookmark className="h-4 w-4" />
+                <icons.bookmark className="h-5 w-5" />
               )}
             </div>
           </div>

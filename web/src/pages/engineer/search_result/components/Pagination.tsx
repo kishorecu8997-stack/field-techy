@@ -61,7 +61,7 @@ const Pagination: React.FC<{
         className={`px-3 py-1 rounded-md ${
           currentPage === 1
             ? "text-gray-400 cursor-not-allowed  "
-            : "text-gray-700 "
+            : "text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
         }`}
       >
         {"<"}

@@ -44,19 +44,17 @@ const EducationList: React.FC<EducationListProps> = ({
 
       <div className="overflow-y-auto space-y-2">
         {items.length === 0 ? (
-          <p className="text- text-center py-6">No records yet.</p>
+          <p className="text-gray-500 text-center py-6 dark:text-gray-300">No records yet.</p>
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white px-4 py-3 rounded-lg shadow 
-    border border-gray-200 
-    dark:bg-gray-700 dark:border-gray-700"
+                className="bg-white px-4 py-3 rounded-lg shadow border border-gray-200 dark:bg-gray-700 dark:border-gray-700"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-400">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                       {item.educationLevel || "Untitled Education"}
                     </h3>
                   </div>

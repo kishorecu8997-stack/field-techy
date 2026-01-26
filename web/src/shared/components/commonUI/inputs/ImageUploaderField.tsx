@@ -351,14 +351,7 @@ export const ImageUploaderField = ({
                     <button
                       type="button"
                       onClick={() => setIsPopupOpen(false)}
-                      className="
-  mt-4 w-full py-2 text-sm font-medium
-  text-red-600 dark:text-red-400
-  border border-red-500 dark:border-red-600
-  rounded-lg
-  hover:bg-red-50 dark:hover:bg-red-900/30
-  transition-colors
-"
+                      className="mt-4 w-full py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-500 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                     >
                       Cancel
                     </button>

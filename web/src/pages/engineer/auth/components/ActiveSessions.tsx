@@ -134,10 +134,10 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
     <FormProvider {...methods}>
       <div className="p-6 max-w-3xl mx-auto font-sans">
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2 dark:text-gray-200">
             Logged In Devices & Activities
           </h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm dark:text-gray-400 font-medium">
             View and manage the devices where your account is currently logged
             in.
           </p>
@@ -164,14 +164,7 @@ const ActiveSessions: React.FC<ActiveSessionsProps> = ({
                     <CheckboxField
                       name={`session_${session.id}`}
                       options={[{ label: "", value: session.id }]}
-                      inputClassName="
-    w-4 h-4
-    accent-blue-600
-    dark:accent-gray-400
-    border-gray-300
-    dark:border-gray-600
-    cursor-pointer
-  "
+                      inputClassName="w-4 h-4 accent-blue-600 dark:accent-gray-400 border-gray-300 dark:border-gray-600 cursor-pointer"
                       wrapperClassName=""
                       direction="horizontal"
                       disabled={false}

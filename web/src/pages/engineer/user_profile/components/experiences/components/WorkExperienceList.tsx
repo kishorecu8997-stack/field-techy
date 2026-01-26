@@ -92,9 +92,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
             {experiences.map((item, index) => (
               <div
                 key={item.id || index}
-                className="bg-white px-4 py-3 rounded-lg shadow 
-    border border-gray-200 
-    dark:bg-gray-700 dark:border-gray-700"
+                className="bg-white px-4 py-3 rounded-lg shadow border border-gray-200 dark:bg-gray-700 dark:border-gray-700"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -107,7 +105,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
                       onClick={() => onEditAction?.(item.id || "")}
-                      className="text-gray-300 hover:text-red-600 transition-colors dark:hover:text-blue-400"
+                      className="text-gray-300 hover:text-blue-600 transition-colors dark:hover:text-blue-400"
                       aria-label="Edit"
                     >
                       <FaRegEdit />
