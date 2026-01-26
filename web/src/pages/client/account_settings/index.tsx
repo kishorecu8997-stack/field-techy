@@ -2,8 +2,8 @@ import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+//import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+//import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import type { MenuItem } from "@/pages/engineer/account_settings/types";
@@ -16,8 +16,8 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const location = useLocation();
   const isClient = location.pathname.includes("client");
-  const [isOpen, setIsOpen] = React.useState(false);
-  const logout = useUserSessionStore((state) => state.logout);
+  //const [isOpen, setIsOpen] = React.useState(false);
+  //const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate();
   const menuItems: MenuItem[] = [
     {
