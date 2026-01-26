@@ -14,7 +14,7 @@ import type {
   PagedResponse,
 } from "./clientTypes";
 import statesAndCitiesRaw from "@/dummy_data/statesAndCities.json";
-
+import type { Option, StatesAndCities } from "./statesAndCities.types";
 
 /*
  * ClientAdapter
@@ -27,15 +27,7 @@ import statesAndCitiesRaw from "@/dummy_data/statesAndCities.json";
  * parameters into the expected format for the API.
  */
 
-type Option = { value: string; label: string };
-
-type StatesAndCities = {
-  states: Record<string, Option[]>;
-  cities: Record<string, Option[]>;
-};
-
 const statesAndCities = statesAndCitiesRaw as StatesAndCities;
-
 export class ClientAdapter {
   /**
    * Registers a new client.
@@ -333,11 +325,14 @@ export class ClientAdapter {
   // ===== Dropdown Data Methods =====
 
   /**
-   * Get list of states for a country
-   */
+ * Retrieves the list of states for a given country.
+ *
+ * @param countryId - ISO country code (e.g. "IN", "US")
+ * @returns Promise resolving to a list of state options
+ */
   static async getStates(
   countryId: string,
-): Promise<{ value: string; label: string }[]> {
+): Promise<Option[]> {
   const normalizedCountryId = countryId.toUpperCase();
 
   console.log(
@@ -351,10 +346,15 @@ export class ClientAdapter {
   });
 }
 
-  /*Get list of cities for a state*/
+  /**
+ * Retrieves the list of cities for a given state.
+ *
+ * @param stateId - Unique identifier of the state
+ * @returns Promise resolving to a list of city options
+ */
   static async getCities(
   stateId: string,
-): Promise<{ value: string; label: string }[]> {
+): Promise<Option[]> {
   console.log(`[STUB] Fetching cities for state: ${stateId}`);
 
   return new Promise((resolve) => {
