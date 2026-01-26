@@ -154,7 +154,7 @@ const Withdraw = () => {
                 validate: (value: string) => {
                   const numeric = parseFloat(value);
                   if (isNaN(numeric)) return "Please enter a valid amount";
-                  if (numeric <= 0) return "Amount must be greater than 0";
+                  if (numeric < 10) return "Minimum withdrawal amount is $10";
 
                   if (availableBalance < minRetainedBalance) {
                     return `Balance is below minimum limit of $${minRetainedBalance}`;
