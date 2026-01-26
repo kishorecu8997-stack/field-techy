@@ -139,7 +139,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                 onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    setShowBalance(prev => !prev);
+                    setShowBalance((prev) => !prev);
                   }
                 }}
               />
@@ -153,7 +153,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                 onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    setShowBalance(prev => !prev);
+                    setShowBalance((prev) => !prev);
                   }
                 }}
               />
