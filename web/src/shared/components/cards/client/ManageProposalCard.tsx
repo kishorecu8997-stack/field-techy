@@ -46,26 +46,36 @@ const ManageProposalCard: React.FC<ManageProposalCardProps> = ({
         </div>
       )}
       <div className="flex flex-col flex-1">
-        <h2 className="text-lg font-semibold text-emerald-900 dark:text-emerald-400">{name}</h2>
+        <h2 className="text-lg font-semibold text-emerald-900 dark:text-emerald-400">
+          {name}
+        </h2>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mt-1">
           <span className="text-yellow-500 text-base">★</span>
           <span className="ml-1 font-medium">{rating}</span>
-          <span className="ml-1 text-gray-500 dark:text-gray-400">({reviews} reviews)</span>
+          <span className="ml-1 text-gray-500 dark:text-gray-400">
+            ({reviews} reviews)
+          </span>
         </div>
 
         <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
-          <span className="font-semibold text-gray-900 dark:text-gray-100">Bid Amount:</span>{" "}
+          <span className="font-semibold text-gray-900 dark:text-gray-100">
+            Bid Amount:
+          </span>{" "}
           {bidAmount}
         </p>
 
         <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-          <span className="font-semibold text-gray-900 dark:text-gray-100">Pay Type:</span>{" "}
+          <span className="font-semibold text-gray-900 dark:text-gray-100">
+            Pay Type:
+          </span>{" "}
           {payType}
         </p>
 
         <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-          <span className="font-semibold text-gray-900 dark:text-gray-100">Availability:</span>{" "}
+          <span className="font-semibold text-gray-900 dark:text-gray-100">
+            Availability:
+          </span>{" "}
           {availability}
         </p>
       </div>

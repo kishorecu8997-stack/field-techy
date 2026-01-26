@@ -20,10 +20,17 @@ const ContentPage = ({ content }: { content: Section[] }) => {
           {section.items && (
             <ul className="space-y-3">
               {section.items.map((item, i) => (
-                <li key={i} className="flex items-start text-gray-700 dark:text-gray-300">
+                <li
+                  key={i}
+                  className="flex items-start text-gray-700 dark:text-gray-300"
+                >
                   <span className="inline-block w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                   <div>
-                    {item.title && <strong className="text-gray-900 dark:text-white">{item.title}:</strong>}{" "}
+                    {item.title && (
+                      <strong className="text-gray-900 dark:text-white">
+                        {item.title}:
+                      </strong>
+                    )}{" "}
                     {item.description}
                   </div>
                 </li>

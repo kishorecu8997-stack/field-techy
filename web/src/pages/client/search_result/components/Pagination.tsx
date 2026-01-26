@@ -71,7 +71,10 @@ const Pagination: React.FC<{
 
       {pageNumbers.map((page, index) =>
         page === -1 ? (
-          <span key={`ellipsis-${index}`} className="px-3 py-1 dark:text-gray-300">
+          <span
+            key={`ellipsis-${index}`}
+            className="px-3 py-1 dark:text-gray-300"
+          >
             ...
           </span>
         ) : (

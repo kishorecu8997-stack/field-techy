@@ -50,12 +50,16 @@ const FreelancerCard: React.FC<FreelancerCardProps> = ({
       )}
 
       <div className="flex flex-col flex-1">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{name}</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {name}
+        </h2>
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mt-1">
           <span className="text-yellow-500 text-base">★</span>
           <span className="ml-1 font-medium">{rating}</span>
-          <span className="ml-1 text-gray-500 dark:text-gray-400">({reviews} reviews)</span>
+          <span className="ml-1 text-gray-500 dark:text-gray-400">
+            ({reviews} reviews)
+          </span>
         </div>
 
         <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{role}</p>

@@ -38,7 +38,8 @@ const EngineerCard: React.FC<EngineerCardProps> = ({ engineer }) => {
         </div>
         <p className="text-sm font-medium">{engineer.title}</p>
         <p className="text-sm font-medium">
-          <span className="text-gray-500 dark:text-white">Pay Type:</span> {engineer.pay_type}
+          <span className="text-gray-500 dark:text-white">Pay Type:</span>{" "}
+          {engineer.pay_type}
         </p>
         <p className="text-sm font-medium">
           <span className="text-gray-500 dark:text-white">Availability:</span>{" "}
