@@ -80,3 +80,4 @@ export const fullTimeFields = [
   "experienceLevel",
   "engagementModel",
 ];
+export const onDemandFields = [...fullTimeFields];

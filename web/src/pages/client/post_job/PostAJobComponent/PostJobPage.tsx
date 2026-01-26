@@ -150,7 +150,7 @@ const PostJobPage = () => {
       const s = new Date(start).getTime();
       const e = new Date(end).getTime();
       if (Number.isNaN(s) || Number.isNaN(e) || e < s) return { days: 1, weeks: 1 };
-      const diffDays = Math.ceil((e - s + 86400000) / 86400000);
+      const diffDays = Math.max(1, Math.ceil((e - s) / 86400000));
       const weeks = Math.max(1, Math.ceil(diffDays / 7));
       return { days: diffDays, weeks };
     };
@@ -255,7 +255,10 @@ const PostJobPage = () => {
         {
           label: "Edit Details",
           value: "edit",
-          variant: "outline",
+           variant: "outline",
+          action: (close) => {
+            close(false);
+          },
         },
         {
           label: "Post Job",

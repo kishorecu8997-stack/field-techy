@@ -540,7 +540,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                             {entry.images.map((img, imageIdx) => (
                               <div
                                 key={`${img.name}-${imageIdx}`}
-                                  className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                               >
                                 <img
                                   src={img.url}
@@ -713,6 +713,12 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
               type="submit"
               isScrollToTop
               className="rounded-full"
+              onClick={(event) => {
+                const form = event.currentTarget.form;
+                if (form && !form.reportValidity()) {
+                  event.preventDefault();
+                }
+              }}
             >
               Review Job Posting
             </Button>
