@@ -46,7 +46,7 @@ export const TagSelectField = ({
   options = [],
   disabled = false,
 }: TagSelectFieldProps) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
   const [selectedOption, setSelectedOption] = useState("");
 
   const validationRules: RegisterOptions = {
@@ -73,6 +73,7 @@ export const TagSelectField = ({
 
     const newValue = [...value, tagValue];
     onChange(newValue);
+    void trigger(name);
     setSelectedOption("");
   };
 
@@ -83,6 +84,7 @@ export const TagSelectField = ({
   ) => {
     const newValue = value.filter((_, i) => i !== index);
     onChange(newValue);
+    void trigger(name);
   };
 
   return (

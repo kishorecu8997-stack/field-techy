@@ -62,3 +62,21 @@ export const scheduledFields = [
   "repeatedByYear",
   "after",
 ];
+
+export const fullTimeFields = [
+  "jobTitle",
+  "description",
+  "locationType",
+  "country",
+  "state",
+  "city",
+  "startDate",
+  "endDate",
+  "numberOfVacancy",
+  "skills",
+  "tools",
+  "toolBudgetNotes",
+  "serviceCategory",
+  "experienceLevel",
+  "engagementModel",
+];
