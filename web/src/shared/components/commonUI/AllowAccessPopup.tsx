@@ -86,7 +86,10 @@ export default function AllowAccessPopup({
             className="text-center mx-auto my-4"
           />
 
-          <p className="text-2xl font-semibold">Access Your Location</p>
+          <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            Access Your Location
+          </p>
+
           <p className="text-center mt-4 text-lg text-gray-600">
             Easily grant the owner access to fetch current location and send
             notifications—stay connected, informed, and in control.
@@ -117,7 +120,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={locationLoading}
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            className="w-full my-4 bg-gradient-to-r from-rose-700 to-rose-900 text-white py-2 rounded-lg hover:opacity-90 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
             onClick={() => {
               onDenyLocation?.();
               setLocationPermission("denied");
@@ -168,7 +171,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={notificationLoading}
-            className="hover:underline text-gray-600 cursor-pointer bg-transparent border-0 p-0 text-left"
+            className="w-full my-4 bg-gradient-to-r from-rose-700 to-rose-900 text-white py-2 rounded-lg hover:opacity-90 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
             onClick={() => {
               onDenyNotification?.();
               setNotificationPermission("denied");

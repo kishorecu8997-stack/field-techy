@@ -49,14 +49,14 @@ const LiveChatWidget = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 bg-white dark:bg-gray-800 border rounded-lg shadow-2xl flex flex-col">
+        <div className="fixed bottom-24 right-6 z-50 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl flex flex-col">
           {/* Header with Close Button Tooltip */}
-          <div className="flex justify-between items-center p-3 border-b font-semibold text-gray-800 dark:text-gray-100">
+          <div className="flex justify-between items-center p-3 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-800 dark:text-gray-100">
             <span>Live Support</span>
             <Tooltip text="Close Chat">
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"
               >
                 <FiX className="w-5 h-5" />
               </button>
@@ -80,12 +80,12 @@ const LiveChatWidget = () => {
           </div>
 
           {/* Input with Send Button Tooltip */}
-          <div className="flex p-3 border-t gap-2">
+          <div className="flex p-3 border-t border-gray-200 dark:border-gray-700 gap-2">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -96,7 +96,7 @@ const LiveChatWidget = () => {
             <Tooltip text="Send Message">
               <button
                 onClick={sendMessage}
-                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
+                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded cursor-pointer"
               >
                 Send
               </button>
