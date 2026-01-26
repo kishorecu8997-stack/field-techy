@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import logo_light from "@/assets/logo/logo_light.svg";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import { JobSearchBarClient } from "./jobSearchBarClient";
@@ -11,6 +12,7 @@ import {
   useClientStore,
   useClientProfile,
 } from "@/shared/store/useClientStore";
+import IconWithTheme from "./IconWithTheme";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -86,12 +88,14 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <img
-          src={assetsConfig.logos.ftLogo}
-          alt="FT Logo"
-          className="h-12 w-auto cursor-pointer"
-          onClick={() => navigate(absoluteUrls.client.home.dashboard)}
-        />
+        <span onClick={() => navigate(absoluteUrls.client.home.dashboard)}>
+          <IconWithTheme
+            lightLogo={assetsConfig.logos.ftLogo}
+            darkLogo={logo_light}
+            header
+          />
+        </span>
+
         <NavLink
           to={absoluteUrls.client.home.my_projects}
           className={`${
