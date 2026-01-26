@@ -115,7 +115,7 @@ const PostAJobFields = ({
       { label: "Last Name", value: item.lastName },
       { label: "Email ID", value: item.email },
       { label: "Mobile Number", value: item.mobile },
-      { label: "Available Date", value: item.startDate },
+      { label: "Available Date", value: item.startDate?.toDateString() },
       { label: "Available Time", value: item.startTime },
     ],
     onEdit: () => {
@@ -125,6 +125,18 @@ const PostAJobFields = ({
     },
     onDelete: () => handleDeleteInterviewer(Number(item.id)),
   }));
+
+  const formattedInterviewerSections = interviewerValue.map((section) => ({
+    ...section,
+    items: section.items.map((item) => ({
+      ...item,
+      value:
+        item.value && typeof item.value === "object" && "getTime" in item.value
+          ? (item.value as Date).toISOString()
+          : item.value,
+    })),
+  }));
+
   return (
     <div className="flex gap-4 flex-row p-2">
       <div className="w-2/3 space-y-2">
@@ -172,7 +184,7 @@ const PostAJobFields = ({
               <ClientInterviewerSection
                 disabled={isDisable}
                 title="Client Interviewer"
-                sections={interviewerValue}
+                sections={formattedInterviewerSections}
                 addAction={
                   <Button
                     onClick={() => {
