@@ -56,14 +56,14 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
       },
     },
 
-    {
-      label: "Logout",
-      icon: icons.signOut,
-      id: "logout",
-      onClick: () => {
-        setIsOpen(true);
-      },
-    },
+    // {
+    //   label: "Logout",
+    //   icon: icons.signOut,
+    //   id: "logout",
+    //   onClick: () => {
+    //     setIsOpen(true);
+    //   },
+    // },
   ];
 
   return (
