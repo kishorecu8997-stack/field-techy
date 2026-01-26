@@ -55,7 +55,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         onClose();
       },
     },
-
+    // keeping this below comment for future use
     // {
     //   label: "Logout",
     //   icon: icons.signOut,
@@ -69,7 +69,8 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
   return (
     <div>
       <DrawerMenuSection items={menuItems} className="h-full" />
-      <LogoutConfirmationPopup
+      {/* keeping this below comment for future use */}
+      {/* <LogoutConfirmationPopup
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={() => {
@@ -82,7 +83,7 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
           );
         }}
         onCancel={() => setIsOpen(false)}
-      />
+      /> */}
     </div>
   );
 };
