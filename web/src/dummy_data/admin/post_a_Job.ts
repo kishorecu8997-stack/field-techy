@@ -7,7 +7,7 @@ export const interviewerData: ClientFieldsTypes[] = [
     lastName: "Risi",
     email: "ramrisi@xyz.in",
     mobile: "+91 9876543210",
-    startDate: new Date("2025-12-01"),
+    startDate: new Date("2025-11-01"),
     startTime: "01:00",
   },
   {
