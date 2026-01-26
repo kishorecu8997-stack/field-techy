@@ -20,7 +20,7 @@ const BreakDetails: React.FC = () => {
         Break Details
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="order-2 lg:order-1 flex flex-col">
+        <div className="order-2 lg:order-1 flex flex-col gap-4">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
             Break Status
           </h3>
@@ -30,12 +30,12 @@ const BreakDetails: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="order-1 lg:order-2 flex flex-col">
+        <div className="order-1 lg:order-2 flex flex-col gap-4">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
             Calendar view of Breaks
           </h3>
-          <div className="bg-white rounded-xl shadow-md overflow-hidden flex-1 min-h-0">
-            <div className="h-full">
+          <div className="bg-white dark:bg-gray-200 shadow-md overflow-hidden flex-1 min-h-0 rounded-xl ">
+            <div className="h-full dark:bg-gray-800 p-4 ">
               <BreakCalendar />
             </div>
           </div>

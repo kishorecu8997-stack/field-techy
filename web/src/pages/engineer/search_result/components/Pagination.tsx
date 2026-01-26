@@ -60,8 +60,8 @@ const Pagination: React.FC<{
         disabled={currentPage === 1}
         className={`px-3 py-1 rounded-md ${
           currentPage === 1
-            ? "text-gray-400 cursor-not-allowed  "
-            : "text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
+            ? "bg-white border-2 border-green-700 text-green-700 font-medium dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+            : "text-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-300"
         }`}
       >
         {"<"}
@@ -92,8 +92,8 @@ const Pagination: React.FC<{
         disabled={currentPage === totalPages}
         className={`px-3 py-1 rounded-md ${
           currentPage === totalPages
-            ? "text-gray-400 cursor-not-allowed"
-            : "text-gray-700 hover:bg-gray-200"
+            ? "bg-white border-2 border-green-700 text-green-700 font-medium dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+            : "text-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-300"
         }`}
       >
         {">"}

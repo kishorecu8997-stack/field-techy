@@ -105,7 +105,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
 
         {/* Info Tooltip */}
         <div className="relative inline-block group">
-          <CgDanger className="bg-gray-200 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors hover:bg-gray-300 dark:hover:bg-gray-600" />
+          <CgDanger className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors hover:bg-gray-300 dark:hover:bg-gray-600" />
           <div className="absolute left-1/2 md:left-full -translate-x-1/2 mt-2 hidden group-hover:block whitespace-nowrap bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50">
             <ul className="list-disc pl-4">
               {Object.values(JOB_STATUS_INFO).map((status) => (

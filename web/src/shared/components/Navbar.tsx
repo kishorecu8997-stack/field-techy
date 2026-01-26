@@ -14,6 +14,8 @@ import {
   useEngineerProfile,
   useEngineerStore,
 } from "../store/useEngineerStore";
+import IconWithTheme from "./IconWithTheme";
+import logo_light from "@/assets/logo/logo_light.svg";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -64,9 +66,9 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <img
-          src={assetsConfig.logos.ftLogo}
-          alt="FT Logo"
+        <IconWithTheme
+          darkLogo={assetsConfig.logos.ftLogoWhite}
+          lightLogo={assetsConfig.logos.ftLogo}
           className="h-12 w-auto cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.engineer.home.dashboard);

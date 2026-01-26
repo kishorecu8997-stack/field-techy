@@ -4,6 +4,8 @@ interface LogoProps {
   lightLogo: string; // image for light theme
   darkLogo: string; // image for dark theme
   className?: string; // optional styling
+  forceTheme?: "light" | "dark";
+  onClick?: () => void;
 }
 
 /**
@@ -21,9 +23,16 @@ const IconWithTheme: React.FC<LogoProps> = ({
   lightLogo,
   darkLogo,
   className = "",
+  forceTheme,
+  onClick,
 }) => {
   return (
-    <div className={`h-20 w-24 ${className}`}>
+    <div
+      className={`h-8 w-24 ${className}`}
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default" }}
+      role={onClick ? "button" : undefined}
+    >
       <img
         src={lightLogo}
         alt="logo"

@@ -30,7 +30,7 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
         {
           label: "Cancel",
           value: "no",
-          variant: "secondary",
+          variant: "danger",
           action: async (close) => {
             console.log("No button clicked");
             close(true);
