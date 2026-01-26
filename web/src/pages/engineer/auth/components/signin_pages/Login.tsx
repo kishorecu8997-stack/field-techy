@@ -1,7 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
-import logo_light from "@/assets/logo/logo_light.svg";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
@@ -178,7 +177,7 @@ const Login = ({
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={logo_light}
+              darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>

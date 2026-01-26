@@ -3,7 +3,6 @@ import { validateEmailRules } from "@/shared/components/commonUI/emailValidation
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import Popup from "@/shared/components/Popup";
-import logo_light from "@/assets/logo/logo_light.svg";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdOutlineMailOutline } from "react-icons/md";
@@ -48,7 +47,7 @@ const ForgetPassword = () => {
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-               darkLogo={assetsConfig.logos.ftLogoWhite}
+            darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>
