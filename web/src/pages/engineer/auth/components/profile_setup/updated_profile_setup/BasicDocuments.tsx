@@ -69,14 +69,13 @@ const BasicDocuments = () => {
     },
 
     onProgress: (progress: UploadProgress) => {
-  if (!uploadingDoc || !progress.percentage) return;
+      if (!uploadingDoc || !progress.percentage) return;
 
-  setUploadProgress((prev) => ({
-    ...prev,
-    [uploadingDoc]: progress.percentage!,
-  }));
-},
-
+      setUploadProgress((prev) => ({
+        ...prev,
+        [uploadingDoc]: progress.percentage!,
+      }));
+    },
   });
 
   const handleSkip = () => {

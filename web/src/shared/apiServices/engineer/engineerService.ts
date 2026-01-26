@@ -63,34 +63,28 @@ export function useEngineerScreenShotUpload(options?: {
   });
 }
 
-export function useEngineerFileUpload(
-  options?: {
-    onSuccess?: (data: FileUploadResponse) => void;
-    onError?: (error: unknown) => void;
-    onProgress?: (progress: {
-      loaded: number;
-      total?: number;
-      percentage?: number;
-    }) => void;
-  },
-) {
-
+export function useEngineerFileUpload(options?: {
+  onSuccess?: (data: FileUploadResponse) => void;
+  onError?: (error: unknown) => void;
+  onProgress?: (progress: {
+    loaded: number;
+    total?: number;
+    percentage?: number;
+  }) => void;
+}) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: FileUploadParams) =>
       EngineerAdapter.uploadFile(params),
-        onSuccess: (data, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.engineer.detail(variables.engineerId),
       });
 
-      useEngineerStore
-        .getState()
-        .fetchEngineerProfile(variables.engineerId);
+      useEngineerStore.getState().fetchEngineerProfile(variables.engineerId);
 
       options?.onSuccess?.(data);
     },
-
 
     onError: options?.onError,
   });
