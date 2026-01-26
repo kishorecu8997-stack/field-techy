@@ -343,7 +343,7 @@ export const ImageUploaderField = ({
                     <button
                       type="button"
                       onClick={triggerFileInput}
-                      className="w-full py-2 text-sm font-medium text-teal-700 hover:text-teal-800 border border-teal-300 hover:border-teal-500 rounded-lg transition"
+                      className="w-full py-2 text-sm font-medium text-teal-700 dark:text-teal-300 hover:text-teal-800 dark:hover:text-teal-200 border border-teal-300 dark:border-teal-500 hover:border-teal-500 dark:hover:border-teal-400 rounded-lg transition bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       Upload from Device
                     </button>
@@ -351,7 +351,7 @@ export const ImageUploaderField = ({
                     <button
                       type="button"
                       onClick={() => setIsPopupOpen(false)}
-                      className="mt-4 w-full py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                      className="mt-4 w-full py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition"
                     >
                       Cancel
                     </button>

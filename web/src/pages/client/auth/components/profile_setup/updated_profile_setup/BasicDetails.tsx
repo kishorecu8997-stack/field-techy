@@ -1,17 +1,17 @@
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
-import { buildQuery } from "@/utils";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
