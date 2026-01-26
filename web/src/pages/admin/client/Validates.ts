@@ -21,22 +21,22 @@ export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
+  if (raw !== raw.trim()) return `This field must not have first or last spaces`;
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw)) return `This field must not contain consecutive spaces`;
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
-    return `${value} must contain only alphabetic characters and single spaces`;
+    return `This field must contain only alphabetic characters and single spaces`;
 
   // Reject if more than 10 spaces
   const spaceCount = (raw.match(/ /g) || []).length;
-  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+  if (spaceCount > 10) return `This field must not contain more than 10 spaces`;
 
   // Length requirement: 2 to 50 characters
-  if (raw.length < 2) return `${value} must be at least 2 characters`;
-  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+  if (raw.length < 2) return `This field must be at least 2 characters`;
+  if (raw.length > 50) return `This field must not exceed 50 characters`;
 
   return true;
 };
@@ -54,6 +54,9 @@ export const validateAddress = (value: string) => {
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
+  }
+  if (!/[A-Za-z]/.test(v)) {
+    return "Address must contain at least one letter";
   }
   return true;
 };
@@ -123,8 +126,15 @@ const validateFormat = (
 };
 
 export const validateVatNumber = (vatNumber: string): true | string => {
+  const trimmedValue = vatNumber.trim();
+
+  // Reject all-zero VAT numbers (e.g. 00000000, 0000)
+  if (/^0+$/.test(trimmedValue)) {
+    return "VAT registration number cannot be all zeros.";
+  }
+
   return validateFormat(
-    vatNumber,
+    trimmedValue,
     /^[A-Za-z0-9\-/ ]{2,16}$/,
     "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces.",
   );

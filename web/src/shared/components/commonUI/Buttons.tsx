@@ -69,6 +69,8 @@ export const Button: React.FC<ButtonProps> = ({
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
+    dropdown:
+      "bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600",
     no_style: "",
   };
 
