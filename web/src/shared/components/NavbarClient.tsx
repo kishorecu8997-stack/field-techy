@@ -1,18 +1,17 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import {
+  useClientProfile,
+  useClientStore,
+} from "@/shared/store/useClientStore";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import logo_light from "@/assets/logo/logo_light.svg";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
-import { JobSearchBarClient } from "./jobSearchBarClient";
-import {
-  useClientStore,
-  useClientProfile,
-} from "@/shared/store/useClientStore";
 import IconWithTheme from "./IconWithTheme";
+import { JobSearchBarClient } from "./jobSearchBarClient";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -91,7 +90,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         <span onClick={() => navigate(absoluteUrls.client.home.dashboard)}>
           <IconWithTheme
             lightLogo={assetsConfig.logos.ftLogo}
-            darkLogo={logo_light}
+            darkLogo={assetsConfig.logos.ftLogoWhite}
             header
           />
         </span>
