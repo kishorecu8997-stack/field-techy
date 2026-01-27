@@ -9,7 +9,6 @@ import type { ForgotPasswordFormData } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import { toast } from "react-toastify";
 import { useAppForgotPassword } from "@/shared/apiServices/admin/adminOpenApiService";
-import { forgotSession } from "@/shared/store/useUserSessionStore";
 import { UserRole } from "@/shared/enums/users";
 
 /**
@@ -26,7 +25,6 @@ export default function ForgotPassword() {
     },
   });
   const navigate = useNavigate();
-  const setToken = forgotSession((s) => s.setToken);
 
   const {
     mutateAsync: forgotPasswordAdminMutation,
@@ -35,7 +33,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      const resp = await forgotPasswordAdminMutation({
+      await forgotPasswordAdminMutation({
         email: data.email,
         userRole: UserRole.ADMIN,
       });
@@ -44,7 +42,6 @@ export default function ForgotPassword() {
         "OTP sent successfully! Please check your email for further instructions.",
       );
       navigate(`${absoluteUrls.admin.auth.otp}?email=${data.email}`);
-      setToken({ token: resp.token as string });
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);

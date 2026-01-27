@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import type { VerifyOtpFormData } from "./types";
 import { useAppResetPassword } from "@/shared/apiServices/admin/adminOpenApiService";
 import { ConfirmPassword } from "@/shared/components/commonUI/inputs/ConfirmPassword";
-import { forgotSession } from "@/shared/store/useUserSessionStore";
 
 /**
  * AdminVerifyOTP component renders a form for entering and verifying a One Time Passcode (OTP).
@@ -18,7 +17,6 @@ import { forgotSession } from "@/shared/store/useUserSessionStore";
 export default function AdminVerifyOTP() {
   const searchParams = useSearchParams();
   const navigate = useNavigate();
-  const forgotToken = forgotSession((s) => s.token);
 
   const email = searchParams[0].get("email") || navigate(-1);
 
@@ -38,8 +36,8 @@ export default function AdminVerifyOTP() {
     try {
       await adminRewsetPassword(
         {
+          email: email as string,
           code: data.otp,
-          token: forgotToken.token as string,
           newPassword: data.password,
         },
         {
