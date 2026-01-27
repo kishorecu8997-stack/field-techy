@@ -71,7 +71,7 @@ export const Button: React.FC<ButtonProps> = ({
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
     dropdown:
-      "bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600",
+      "flex items-center justify-between h-[48px] px-3 py-1 border-r border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed",
     no_style: "",
   };
 
@@ -94,7 +94,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         baseStyles,
         variantStyles[variant],
-        sizeStyles[size],
+        variant !== "dropdown" && sizeStyles[size],
         fullWidth && "w-full",
         className,
       )}
