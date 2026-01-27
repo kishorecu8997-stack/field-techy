@@ -6,6 +6,8 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
+import { useEffect, useState } from "react";
+
 /*
  *  Client Fields
  *    - Displays a form to add client details
@@ -17,22 +19,41 @@ import SectionHeader from "../SectionHeader";
 const ClientFields = () => {
   const ctx = useFormContext();
   const startDate = ctx.watch("startDate");
+  const [minStartTime, setMinStartTime] = useState<string | undefined>();
 
-  let minStartTime: string | undefined;
-  if (startDate) {
-    const selectedDate = new Date(startDate);
+  useEffect(() => {
+    if (!startDate) {
+      setMinStartTime(undefined);
+      return;
+    }
+
+    let selectedDate: Date;
+    if (typeof startDate === "string") {
+      const [year, month, day] = startDate.split("-").map(Number);
+      selectedDate = new Date(year, month - 1, day);
+    } else if (startDate instanceof Date) {
+      selectedDate = new Date(startDate);
+    } else {
+      setMinStartTime(undefined);
+      return;
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     selectedDate.setHours(0, 0, 0, 0);
 
     if (selectedDate.getTime() === today.getTime()) {
       const now = new Date();
+      now.setSeconds(0, 0); // reset seconds and milliseconds
       now.setMinutes(now.getMinutes() + 1);
+
       const hours = now.getHours().toString().padStart(2, "0");
       const minutes = now.getMinutes().toString().padStart(2, "0");
-      minStartTime = `${hours}:${minutes}`;
+      setMinStartTime(`${hours}:${minutes}`);
+    } else {
+      setMinStartTime(undefined); // no restriction for future dates
     }
-  }
+  }, [startDate]);
 
   return (
     <div className="flex flex-col h-full gap-2">
