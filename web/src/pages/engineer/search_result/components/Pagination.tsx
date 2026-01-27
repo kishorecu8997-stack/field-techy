@@ -60,8 +60,8 @@ const Pagination: React.FC<{
         disabled={currentPage === 1}
         className={`px-3 py-1 rounded-md ${
           currentPage === 1
-            ? "bg-white border-2 border-green-700 text-green-700 font-medium dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-            : "text-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-300"
+            ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
+            : "text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
         }`}
       >
         {"<"}
@@ -69,7 +69,10 @@ const Pagination: React.FC<{
 
       {pageNumbers.map((page, index) =>
         page === -1 ? (
-          <span key={`ellipsis-${index}`} className="px-3 py-1">
+          <span
+            key={`ellipsis-${index}`}
+            className="px-3 py-1 text-gray-700 dark:text-white"
+          >
             ...
           </span>
         ) : (
@@ -78,8 +81,8 @@ const Pagination: React.FC<{
             onClick={() => onPageChange(page)}
             className={`px-3 py-1 rounded-md ${
               currentPage === page
-                ? "bg-white border-2 border-green-700 text-green-700 font-medium dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                : "text-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-300"
+                ? "bg-white dark:bg-gray-800 border-2 border-green-700 dark:border-green-500 text-green-700 dark:text-green-500 font-medium"
+                : "text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
             {page}
@@ -92,8 +95,8 @@ const Pagination: React.FC<{
         disabled={currentPage === totalPages}
         className={`px-3 py-1 rounded-md ${
           currentPage === totalPages
-            ? "bg-white border-2 border-green-700 text-green-700 font-medium dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-            : "text-gray-700 hover:bg-gray-600 dark:hover:bg-gray-600 dark:text-gray-300"
+            ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
+            : "text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
         }`}
       >
         {">"}

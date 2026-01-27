@@ -137,7 +137,7 @@ export const VerifiedPhoneInputField = ({
   };
 
   const getInputClassName = () => {
-    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark: placeholder-gray-500 outline-none ${
+    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark:placeholder-gray-500 outline-none ${
       inputClassName || ""
     } ${verified ? "p-0" : ""} `;
     if (isInputDisabled) {
