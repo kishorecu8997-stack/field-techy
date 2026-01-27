@@ -9,6 +9,22 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useState } from "react";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 
+/**
+ * AllUsers Component
+ *
+ * Displays a searchable table of engineers with details such as ID, name, email,
+ * location, registration date, KYC and employment status, average rating, and documents.
+ * Provides a modal popup to view the documents of a selected engineer.
+ *
+ * Features:
+ * - Search engineers by ID, name, email, or location.
+ * - Open document popup for a selected engineer.
+ * - Responsive and scrollable table.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered AllUsers component with search, table, and popup.
+ */
+
 export default function AllUsers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
