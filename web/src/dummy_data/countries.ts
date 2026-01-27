@@ -4,7 +4,7 @@ export interface CountryOption {
 }
 
 export const countries: CountryOption[] = [
-  { value: "india", label: "India" },
+  { value: "in", label: "India" },
   { value: "uk", label: "United Kingdom" },
 ];
 

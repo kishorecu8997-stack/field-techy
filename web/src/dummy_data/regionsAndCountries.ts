@@ -7,7 +7,7 @@ export interface RegionCountryOption {
 
 export const regionsAndCountries: RegionCountryOption[] = [
   { value: "Country", label: "Country", type: "option" },
-  { value: "India", label: "India", type: "region" },
+  { value: "In", label: "India", type: "region" },
   { value: "UK", label: "UK", type: "region" },
 
   // ================= INDIA =================
@@ -16,7 +16,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "andhra-pradesh",
     label: "Andhra Pradesh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   {
     value: "visakhapatnam",
@@ -36,7 +36,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "arunachal-pradesh",
     label: "Arunachal Pradesh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   {
     value: "itanagar",
@@ -46,12 +46,12 @@ export const regionsAndCountries: RegionCountryOption[] = [
   },
 
   // Assam
-  { value: "assam", label: "Assam", type: "subdivision", region: "India" },
+  { value: "assam", label: "Assam", type: "subdivision", region: "In" },
   { value: "guwahati", label: "Guwahati", type: "city", region: "Assam" },
   { value: "silchar", label: "Silchar", type: "city", region: "Assam" },
 
   // Bihar
-  { value: "bihar", label: "Bihar", type: "subdivision", region: "India" },
+  { value: "bihar", label: "Bihar", type: "subdivision", region: "In" },
   { value: "patna", label: "Patna", type: "city", region: "Bihar" },
   { value: "gaya", label: "Gaya", type: "city", region: "Bihar" },
 
@@ -60,7 +60,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "chhattisgarh",
     label: "Chhattisgarh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "raipur", label: "Raipur", type: "city", region: "Chhattisgarh" },
   {
@@ -71,17 +71,17 @@ export const regionsAndCountries: RegionCountryOption[] = [
   },
 
   // Goa
-  { value: "goa", label: "Goa", type: "subdivision", region: "India" },
+  { value: "goa", label: "Goa", type: "subdivision", region: "In" },
   { value: "panaji", label: "Panaji", type: "city", region: "Goa" },
   { value: "margao", label: "Margao", type: "city", region: "Goa" },
 
   // Gujarat
-  { value: "gujarat", label: "Gujarat", type: "subdivision", region: "India" },
+  { value: "gujarat", label: "Gujarat", type: "subdivision", region: "In" },
   { value: "ahmedabad", label: "Ahmedabad", type: "city", region: "Gujarat" },
   { value: "surat", label: "Surat", type: "city", region: "Gujarat" },
 
   // Haryana
-  { value: "haryana", label: "Haryana", type: "subdivision", region: "India" },
+  { value: "haryana", label: "Haryana", type: "subdivision", region: "In" },
   { value: "gurgaon", label: "Gurgaon", type: "city", region: "Haryana" },
   { value: "faridabad", label: "Faridabad", type: "city", region: "Haryana" },
 
@@ -90,7 +90,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "himachal-pradesh",
     label: "Himachal Pradesh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   {
     value: "shimla",
@@ -110,7 +110,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "jharkhand",
     label: "Jharkhand",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "ranchi", label: "Ranchi", type: "city", region: "Jharkhand" },
   {
@@ -125,13 +125,13 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "karnataka",
     label: "Karnataka",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "bangalore", label: "Bangalore", type: "city", region: "Karnataka" },
   { value: "mysore", label: "Mysore", type: "city", region: "Karnataka" },
 
   // Kerala
-  { value: "kerala", label: "Kerala", type: "subdivision", region: "India" },
+  { value: "kerala", label: "Kerala", type: "subdivision", region: "In" },
   {
     value: "thiruvananthapuram",
     label: "Thiruvananthapuram",
@@ -145,7 +145,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "madhya-pradesh",
     label: "Madhya Pradesh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "indore", label: "Indore", type: "city", region: "Madhya Pradesh" },
   { value: "bhopal", label: "Bhopal", type: "city", region: "Madhya Pradesh" },
@@ -155,13 +155,13 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "maharashtra",
     label: "Maharashtra",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "mumbai", label: "Mumbai", type: "city", region: "Maharashtra" },
   { value: "pune", label: "Pune", type: "city", region: "Maharashtra" },
 
   // Manipur
-  { value: "manipur", label: "Manipur", type: "subdivision", region: "India" },
+  { value: "manipur", label: "Manipur", type: "subdivision", region: "In" },
   { value: "imphal", label: "Imphal", type: "city", region: "Manipur" },
 
   // Meghalaya
@@ -169,12 +169,12 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "meghalaya",
     label: "Meghalaya",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "shillong", label: "Shillong", type: "city", region: "Meghalaya" },
 
   // Mizoram
-  { value: "mizoram", label: "Mizoram", type: "subdivision", region: "India" },
+  { value: "mizoram", label: "Mizoram", type: "subdivision", region: "In" },
   { value: "aizawl", label: "Aizawl", type: "city", region: "Mizoram" },
 
   // Nagaland
@@ -182,12 +182,12 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "nagaland",
     label: "Nagaland",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "kohima", label: "Kohima", type: "city", region: "Nagaland" },
 
   // Odisha
-  { value: "odisha", label: "Odisha", type: "subdivision", region: "India" },
+  { value: "odisha", label: "Odisha", type: "subdivision", region: "In" },
   {
     value: "bhubaneswar",
     label: "Bhubaneswar",
@@ -197,7 +197,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
   { value: "cuttack", label: "Cuttack", type: "city", region: "Odisha" },
 
   // Punjab
-  { value: "punjab", label: "Punjab", type: "subdivision", region: "India" },
+  { value: "punjab", label: "Punjab", type: "subdivision", region: "In" },
   { value: "amritsar", label: "Amritsar", type: "city", region: "Punjab" },
   { value: "ludhiana", label: "Ludhiana", type: "city", region: "Punjab" },
 
@@ -206,13 +206,13 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "rajasthan",
     label: "Rajasthan",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "jaipur", label: "Jaipur", type: "city", region: "Rajasthan" },
   { value: "udaipur", label: "Udaipur", type: "city", region: "Rajasthan" },
 
   // Sikkim
-  { value: "sikkim", label: "Sikkim", type: "subdivision", region: "India" },
+  { value: "sikkim", label: "Sikkim", type: "subdivision", region: "In" },
   { value: "gangtok", label: "Gangtok", type: "city", region: "Sikkim" },
 
   // Tamil Nadu
@@ -220,7 +220,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "tamil-nadu",
     label: "Tamil Nadu",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "chennai", label: "Chennai", type: "city", region: "Tamil Nadu" },
   {
@@ -235,12 +235,12 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "telangana",
     label: "Telangana",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "hyderabad", label: "Hyderabad", type: "city", region: "Telangana" },
 
   // Tripura
-  { value: "tripura", label: "Tripura", type: "subdivision", region: "India" },
+  { value: "tripura", label: "Tripura", type: "subdivision", region: "In" },
   { value: "agartala", label: "Agartala", type: "city", region: "Tripura" },
 
   // Uttar Pradesh
@@ -248,7 +248,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "uttar-pradesh",
     label: "Uttar Pradesh",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "lucknow", label: "Lucknow", type: "city", region: "Uttar Pradesh" },
   {
@@ -263,7 +263,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "uttarakhand",
     label: "Uttarakhand",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "dehradun", label: "Dehradun", type: "city", region: "Uttarakhand" },
   { value: "haridwar", label: "Haridwar", type: "city", region: "Uttarakhand" },
@@ -273,7 +273,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "west-bengal",
     label: "West Bengal",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   { value: "kolkata", label: "Kolkata", type: "city", region: "West Bengal" },
   {
@@ -284,7 +284,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
   },
 
   // Delhi
-  { value: "delhi", label: "Delhi", type: "subdivision", region: "India" },
+  { value: "delhi", label: "Delhi", type: "subdivision", region: "In" },
   { value: "new-delhi", label: "New Delhi", type: "city", region: "Delhi" },
 
   // Jammu and Kashmir
@@ -292,7 +292,7 @@ export const regionsAndCountries: RegionCountryOption[] = [
     value: "jammu-and-kashmir",
     label: "Jammu and Kashmir",
     type: "subdivision",
-    region: "India",
+    region: "In",
   },
   {
     value: "srinagar",
