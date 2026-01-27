@@ -1,7 +1,7 @@
 import type { WalletData, Transaction } from "../types";
 import { sampleWalletData } from "@/dummy_data/sampleWalletData";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 interface WalletComponentProps {
