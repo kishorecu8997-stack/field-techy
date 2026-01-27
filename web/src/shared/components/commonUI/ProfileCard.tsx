@@ -91,7 +91,7 @@ const ProfileCard = ({
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          {rating} Ratings {reviewCount && `| ${reviewCount} Reviews`}
+          {rating} Ratings | {reviewCount} Reviews
         </p>
       </div>
     </div>
