@@ -97,15 +97,14 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .dark *::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
- 
 :root {
   --toastify-color-light: #ffffff;
   --toastify-text-color-light: #111827;
-  --toastify-color-dark: #101828;           
+  --toastify-color-dark: #101828;
   --toastify-text-color-dark: #f3f4f6;
   --toastify-color-success: #07bc0c !important;
-  --toastify-color-error:   #e74c3c !important;
-  --toastify-color-warning: #f1c40f!important;
+  --toastify-color-error: #e74c3c !important;
+  --toastify-color-warning: #f1c40f !important;
   --toastify-color-default: #475569 !important;
-  --toastify-color-info:    #3abff8 !important;
+  --toastify-color-info: #3abff8 !important;
 }
