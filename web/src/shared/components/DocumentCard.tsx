@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin6Line, RiDownloadCloud2Line } from "react-icons/ri";
 import LoaderComponent from "./commonUI/LoaderComponent";
 
 const PDFPreview = React.lazy(() => import("./PdfPreview"));
@@ -42,6 +42,7 @@ interface DocumentCardProps {
   document: Document;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
+  onDownload?: (id: number) => void;
   onExpiryDateChange?: (id: number, expiryDate: string) => void;
   onAddMore?: () => void;
   id: number;
@@ -61,6 +62,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   document,
   onEdit,
   onDelete,
+  onDownload,
   onExpiryDateChange,
   onAddMore,
   id,
@@ -197,9 +199,20 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
         {renderPreview(document)}
 
         <div className="absolute right-3 bottom-3 flex items-center space-x-2 z-20">
+          {onDownload && (
+            <button
+              onClick={() => onDownload(id)}
+              className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+              aria-label="Download document"
+              title="Download"
+            >
+              <RiDownloadCloud2Line />
+            </button>
+          )}
+
           <button
             onClick={() => onEdit(id)}
-            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
+            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
             aria-label="Edit document"
             title="Edit"
           >
@@ -208,7 +221,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 
           <button
             onClick={() => onDelete(id)}
-            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center"
+            className="bg-teal-900 hover:bg-teal-950 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
             aria-label="Delete document"
             title="Delete"
           >
