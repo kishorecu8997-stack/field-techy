@@ -66,7 +66,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   /**
    * Maps legacy DocumentType to the new ProfileFileType
    */
-  const mapToProfileFileType = (type: string): ProfileFileType | null => {
+  const mapToProfileFileType = (type?: string): ProfileFileType | null => {
+    if (!type) return null;
     switch (type) {
       case "RESUME":
         return "resumeFile";
@@ -144,11 +145,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     const doc = documents.find((d) => d.id === id);
     if (!doc) return;
 
-    if (!doc.fileId) {
-      toast.error("Cannot delete: File ID is missing.");
-      return;
-    }
-
     await showPopup({
       title: "Delete Document",
       body: `Are you sure you want to delete ${doc.title}?`,
@@ -165,11 +161,26 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           variant: "danger",
           action: async (close) => {
             try {
+              const originalType = doc.metadata?.originalFileType;
+              const fileType = mapToProfileFileType(originalType);
+              if (!fileType) throw new Error("Unsupported file type");
+
               await deleteProfileFile({
-                body: { fileId: doc.fileId! },
+                body: { fileType },
                 headers: { authorization: "" },
               });
+
               toast.success(`${doc.title} deleted successfully.`);
+
+              // Clear manual preview URL if it exists
+              if (originalType) {
+                setManualPreviewUrls((prev) => {
+                  const newState = { ...prev };
+                  delete newState[originalType];
+                  return newState;
+                });
+              }
+
               // Invalidate download queries to refresh the list
               queryClient.invalidateQueries({
                 predicate: (query) =>
