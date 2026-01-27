@@ -1,17 +1,18 @@
 import SetPassword from "@/pages/engineer/auth/components/profile_setup/SetPassword";
 import { useClientSignup } from "@/shared/apiServices/client/clientService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { ClientBasicDetails } from "./types";
-import { buildQuery } from "@/utils";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { absoluteUrls } from "@/config/urls";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -381,6 +382,15 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 -mt-6 mb-4">
+            Already have an account?{" "}
+            <NavLink
+              to={absoluteUrls.client.auth.login}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+            >
+              Sign In
+            </NavLink>
+          </h2>
         </div>
       </div>
     </FormContainer>

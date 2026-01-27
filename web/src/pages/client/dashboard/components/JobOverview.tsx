@@ -36,6 +36,12 @@ const JobOverviewCard: React.FC<JobOverview> = ({
           textColor: "text-emerald-100 dark:text-emerald-900",
           buttonColor: "bg-emerald-200 dark:bg-emerald-800",
         };
+      case "cancelled":
+        return {
+          color: "bg-gray-300 dark:bg-gray-600",
+          textColor: "text-gray-800 dark:text-gray-200",
+          buttonColor: "bg-gray-200 dark:bg-gray-800",
+        };
       default: // Posted
         return {
           color: "bg-gray-100 dark:bg-gray-900",

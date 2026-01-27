@@ -137,13 +137,13 @@ export const VerifiedPhoneInputField = ({
   };
 
   const getInputClassName = () => {
-    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark: placeholder-gray-500 outline-none ${
+    const baseClasses = `flex-1 px-5 py-3 text-base placeholder-gray-400 dark:placeholder-gray-500 outline-none ${
       inputClassName || ""
     } ${verified ? "p-0" : ""} `;
     if (isInputDisabled) {
-      return `${baseClasses} bg-gray-100 dark: bg-gray-700 text-gray-500 dark: text-gray-400 cursor-not-allowed rounded-md`;
+      return `${baseClasses} bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-md`;
     }
-    return `${baseClasses} bg-white dark: bg-gray-800 text-gray-900 dark: text-gray-100 rounded-md`;
+    return `${baseClasses} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md`;
   };
 
   return (

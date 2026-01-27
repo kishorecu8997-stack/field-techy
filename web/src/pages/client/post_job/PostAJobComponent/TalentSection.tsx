@@ -48,7 +48,7 @@ export default function TalentSection() {
   ];
 
   return (
-    <section className="bg-teal-900 text-white rounded-2xl p-8 w-full max-w-xl shadow-lg">
+    <section className="bg-teal-900 text-white rounded-2xl p-8 w-full max-w-xl shadow-lg mt-4">
       <h2 className="text-xl font-semibold mb-2">Looking for Talent?</h2>
       <p className="text-sm opacity-90 mb-6">
         Post your job opportunity and effortlessly engage with skilled

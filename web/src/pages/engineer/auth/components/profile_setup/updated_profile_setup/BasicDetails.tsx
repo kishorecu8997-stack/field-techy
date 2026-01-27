@@ -1,14 +1,14 @@
 import { absoluteUrls } from "@/config/urls";
 import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -145,8 +145,6 @@ const BasicDetails = () => {
       budget: data.amount,
       rate: parseFloat(data.amount.replace(/[^0-9.]/g, "")) || 0,
       experienceYears: parseFloat(data.experienceYears) || 0,
-
-      // Hardcoded values matching the provided CURL/API requirements
       preferredWorkType: "REMOTE HYBRID",
       enableNotifications: data.isEnableNotifications,
       location: [
@@ -158,12 +156,7 @@ const BasicDetails = () => {
         .join(", "),
       averageRating: 4.7,
       status: "PENDING",
-
-      // Loosely typed skills - Stubbed to empty to match working CURL payload
-      // jobSkills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({ skillName: s.value || s })) : [],
       jobSkills: [],
-
-      // Stubbing complex arrays as empty to match working CURL payload
       tools: [],
       experiences: [],
       educations: [],
@@ -294,6 +287,15 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
+            Already have an account?{" "}
+            <NavLink
+              to={absoluteUrls.engineer.auth.login}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+            >
+              Sign In
+            </NavLink>
+          </h2>
         </div>
       </div>
     </FormContainer>
