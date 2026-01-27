@@ -47,7 +47,7 @@ const ForgetPassword = () => {
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-            darkLogo={assetsConfig.logos.ftLogoWhite}
+              darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>

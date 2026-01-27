@@ -107,7 +107,9 @@ const OnboardingFlowGuide = () => {
         Step {currentStep + 1} of {steps.length}
       </span>
       <div className="text-xl dark:text-white font-bold">{current.title}</div>
-      <p className="text-md text-gray-600 dark:text-gray-400 font-medium">{current.content}</p>
+      <p className="text-md text-gray-600 dark:text-gray-400 font-medium">
+        {current.content}
+      </p>
       <div className="flex items-center justify-between mt-4">
         <span
           className="font-medium cursor-pointer dark:text-[#009966] text-[#014d44]"

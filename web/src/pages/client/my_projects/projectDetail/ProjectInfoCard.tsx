@@ -57,21 +57,26 @@ export default function ProjectInfoCard({
         <li className="flex items-start dark:text-gray-400">
           <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mt-2 mr-2"></span>
           <span>
-            <strong className="pr-1 dark:text-gray-300">Tentative Start Date:</strong>
+            <strong className="pr-1 dark:text-gray-300">
+              Tentative Start Date:
+            </strong>
             {projectDetails?.duration.start}
           </span>
         </li>
         <li className="flex items-start dark:text-gray-400">
           <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mt-2 mr-2"></span>
           <span>
-            <strong className="pr-1 dark:text-gray-300">Tentative End Date:</strong>{" "}
+            <strong className="pr-1 dark:text-gray-300">
+              Tentative End Date:
+            </strong>{" "}
             {projectDetails?.duration.end}
           </span>
         </li>
         <li className="flex items-start dark:text-gray-400">
           <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mt-2 mr-2"></span>
           <span>
-            <strong className="dark:text-gray-300">Budget:</strong> {projectDetails?.budget}{" "}
+            <strong className="dark:text-gray-300">Budget:</strong>{" "}
+            {projectDetails?.budget}{" "}
             <span>({projectDetails?.purchaseOrder})</span>
           </span>
         </li>
@@ -86,7 +91,8 @@ export default function ProjectInfoCard({
         <li className="flex items-start dark:text-gray-400">
           <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mt-2 mr-2"></span>
           <span>
-            <strong className="dark:text-gray-300">Description:</strong> {projectDetails?.description}
+            <strong className="dark:text-gray-300">Description:</strong>{" "}
+            {projectDetails?.description}
           </span>
         </li>
       </ul>
