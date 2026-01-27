@@ -6,6 +6,7 @@ import App from "./app/App.tsx";
 import "./index.css";
 import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
+import { usePrefersDark } from "./shared/hooks/usePrefersDark.ts";
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
@@ -34,6 +35,10 @@ export const queryClient = new QueryClient({
 });
 
 const rootElement = document.getElementById("root")!;
+const ThemeWrapper = () => {
+  const isDark = usePrefersDark();
+  return <ToastContainer theme={isDark ? "dark" : "light"} />;
+};
 
 // Prevent multiple createRoot calls during hot module reloading
 let root = (window as any).__react_root__;
@@ -46,7 +51,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <GlobalPopup />
-      <ToastContainer />
+       <ThemeWrapper />
       <App />
     </QueryClientProvider>
   </React.StrictMode>,
