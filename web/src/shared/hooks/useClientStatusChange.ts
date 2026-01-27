@@ -2,11 +2,13 @@ import { toast } from "react-toastify";
 import type { ManageClientProps } from "@/pages/admin/client/types";
 import type { PopupConfig } from "../store/popupStore";
 
+/**
+ * Custom hook to handle client status changes with
+ * confirmation popup and toast notifications.
+ *
+ * @returns An object containing the handleStatusChange function
+ */
 export const useClientStatusChange = () => {
-  /**
-   * Hook to handle client status change with confirmation popup
-   * and success notification.
-   */
   /**
    * Triggers a confirmation popup and updates client status.
    *
