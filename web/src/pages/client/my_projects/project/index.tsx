@@ -41,7 +41,7 @@ const preparedData = base.map((project, index) => ({
   budgetNum: Number(project.budget.replace(/[^0-9]/g, "")),
 }));
 
-let data = [...preparedData];
+const data = [...preparedData];
 
 switch (currentSort) {
   case SORT_OPTIONS.DATE:

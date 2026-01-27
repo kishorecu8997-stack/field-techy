@@ -47,7 +47,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   };
   if (isOpen) {
     updatePosition(); // initial calculation
-    window.addEventListener("scroll", updatePosition);
+    window.addEventListener("scroll", updatePosition, { passive: true });
     window.addEventListener("resize", updatePosition);
   }
   return () => {
@@ -56,6 +56,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
   };
 }, [isOpen]);
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
       if (
         !buttonRef.current?.contains(event.target as Node) &&
@@ -66,7 +67,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isOpen]);
 
   const dropdown = isOpen ? (
     <div
