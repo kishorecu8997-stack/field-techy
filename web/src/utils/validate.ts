@@ -201,19 +201,19 @@ export const validateDesignation = (value: string) => {
 };
 
 export const validateCompany = (value: string) => {
-  if (!value) return "Employer must be at least 4 characters";
+  if (!value) return "Company Name must be at least 4 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
-    return "Employer must not start or end with a space";
+    return "Company Name must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 4) return "Employer must be at least 4 characters";
-  if (v.length > 50) return "Employer must not exceed 50 characters";
+  if (v.length < 4) return "Company Name must be at least 4 characters";
+  if (v.length > 50) return "Company Name must not exceed 50 characters";
 
   // Only letters, numbers, and / & - . with single spaces between
   if (!/^[A-Za-z0-9/&.-]+(?: [A-Za-z0-9/&.-]+)*$/.test(v)) {
-    return "Employer may contain only letters, numbers, single spaces, and / & - .";
+    return "Company Name may contain only letters, numbers, single spaces, and / & - .";
   }
 
   return true;
