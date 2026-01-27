@@ -19,7 +19,7 @@ export default function BlockEngineer({
       const onSubmit = (data: any) => {
         console.log("Form Data:", data);
         // Add your API call logic here
-        toast.success("Engineer suspended successfully!");
+        toast.success("Engineer blocked successfully!");
         setIsBlockEngineer(false);
       };
 
