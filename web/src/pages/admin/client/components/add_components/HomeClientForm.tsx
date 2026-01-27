@@ -20,6 +20,7 @@ const HomeClientForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ClientFormData>({
+    mode: "onChange",
     defaultValues: {
       profileImage: null,
       companyName: "",
@@ -84,7 +85,6 @@ const HomeClientForm: React.FC = () => {
             console.log("data :", data);
             // TODO: call your delete API here
             // await deleteJob(job.id);
-            toast.success("Client information saved successfully!");
             navigate(absoluteUrls.admin.home.manage_client);
             methods.reset();
             close(true);
