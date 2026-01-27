@@ -21,7 +21,6 @@ export default function BlockEngineer({
     const { handleSubmit } = useFormContext<BlockEngineerForm>();
       // This function only executes if validation passes
       const onSubmit: SubmitHandler<BlockEngineerForm> = (data) => {
-        console.log("Form Data:", data);
         // Add your API call logic here
         toast.success("Engineer blocked successfully!");
         setIsBlockEngineer(false);
