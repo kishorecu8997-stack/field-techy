@@ -2,12 +2,11 @@ import React from "react";
 import {
   searchEvents,
   clickEvents,
-} from "@/dummy_data/engineer_search/searchAnalytics";
+} from "@/dummy_data/client_search/clientsearchAnalytics";
 import {
   getTotalSearches,
   getKeywordFrequency,
   getSearchTrends,
-  getCTR,
   getSearchHistory,
 } from "@/utils/searchServiceAnalytics";
 import AnalyticsCard from "@/shared/components/search-analytics/AnalyticsCard";
@@ -27,26 +26,20 @@ interface SearchHistoryItem {
 }
 
 /**
- * SearchAnalyticsPage Component
+ * ClientSearchAnalyticsPage Component
  *
- * Main page component for displaying search analytics for engineers.
- * Shows analytics cards, most searched keywords, search trends, and search history.
- * Fetches data from dummy data and utility functions to calculate:
- * - Total searches
- * - Click-through rate
- * - Unique keywords
- * - Keyword frequency
- * - Search trends
- * - Search history
+ * Main page component for displaying analytics for clients.
+ * Shows key metrics about job postings, proposals, applications, and performance.
+ * Currently reuses engineer search analytics logic as placeholder.
+ * You should replace dummy data and utils with client-specific data sources later.
  *
  * @example
- * <SearchAnalyticsPage />
+ * <ClientSearchAnalyticsPage />
  */
-const SearchAnalyticsPage: React.FC = () => {
+const ClientSearchAnalyticsPage: React.FC = () => {
   const totalSearches = getTotalSearches(searchEvents);
   const keywordFrequency = getKeywordFrequency(searchEvents);
   const searchTrends = getSearchTrends(searchEvents);
-  const ctr = getCTR(searchEvents, clickEvents);
   const searchHistory = getSearchHistory(searchEvents, clickEvents);
 
   const sortedKeywords = Object.entries(keywordFrequency).sort(
@@ -56,49 +49,67 @@ const SearchAnalyticsPage: React.FC = () => {
     a.localeCompare(b),
   );
 
-  /**  Columns definition for CustomTable */
-  const searchHistoryColumns: Column<SearchHistoryItem>[] = [
+  const historyColumns: Column<SearchHistoryItem>[] = [
     {
       key: "keyword",
-      label: "Keyword",
+      label: "Job Title / Skill",
       align: "left",
     },
     {
       key: "date",
-      label: "Date",
+      label: "Posted / Viewed Date",
       align: "left",
     },
     {
       key: "clicked",
-      label: "Clicked",
+      label: "Application Received",
       align: "left",
       renderCell: (row) => (row.clicked ? "Yes" : "No"),
+    },
+  ];
+
+  const analyticsCards = [
+    {
+      title: "Total Job Views",
+      value: searchEvents.length.toString(),
+    },
+    {
+      title: "Application Rate",
+      value: `${Math.round(
+        (new Set(clickEvents.map((c) => c.searchId)).size /
+          searchEvents.length) *
+          100,
+      )}%`,
+    },
+    {
+      title: "Active Postings",
+      value: new Set(searchEvents.map((e) => e.keyword)).size.toString(),
     },
   ];
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
       {/* Heading */}
-      <h2 className="text-3xl font-bold mb-2">Search Analytics</h2>
+      <h2 className="text-3xl font-bold mb-2">Job Search Analytics</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
-        Analyze user search behavior and results performance.
+        Track performance of your posted jobs, views, applications, and
+        proposals.
       </p>
 
-      {/* Analytics Cards */}
-      <div className="flex flex-wrap gap-5 mb-10">
-        <AnalyticsCard
-          title="Total Searches"
-          value={totalSearches.toString()}
-        />
-        <AnalyticsCard title="Click-Through Rate" value={`${ctr}%`} />
-        <AnalyticsCard
-          title="Unique Keywords"
-          value={Object.keys(keywordFrequency).length.toString()}
-        />
+      {/* Analytics Cards – updated titles for client context */}
+
+      <div className="flex flex-wrap gap-10 mb-10">
+        {analyticsCards.map((card) => (
+          <AnalyticsCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+          />
+        ))}
       </div>
 
-      {/* Most Searched Keywords */}
-      <Section title="Most Searched Keywords">
+      {/* Most Used Skills / Job Titles (placeholder name change) */}
+      <Section title="Most Frequent Skills / Job Titles">
         {sortedKeywords.length > 0 ? (
           sortedKeywords.map(([keyword, count]) => (
             <KeywordRow
@@ -110,28 +121,28 @@ const SearchAnalyticsPage: React.FC = () => {
           ))
         ) : (
           <p className="p-3 text-gray-500 dark:text-gray-400">
-            No keywords searched yet
+            No job postings or views recorded yet
           </p>
         )}
       </Section>
 
-      {/* Search Trends */}
-      <Section title="Search Trends">
+      {/* Posting Trends */}
+      <Section title="Job Posting Trends">
         {sortedTrends.length > 0 ? (
           sortedTrends.map(([date, count]) => (
             <TrendRow key={date} date={date} count={count} />
           ))
         ) : (
           <p className="p-3 text-gray-500 dark:text-gray-400">
-            No search trends available
+            No posting trends available yet
           </p>
         )}
       </Section>
 
-      {/* Search History Analytics */}
-      <Section title="Search History Analytics">
+      {/* Application / Proposal History */}
+      <Section title="Application & Proposal History">
         <CustomTable<SearchHistoryItem>
-          columns={searchHistoryColumns}
+          columns={historyColumns}
           data={searchHistory}
           initialPageSize={10}
           showPagination={true}
@@ -141,4 +152,4 @@ const SearchAnalyticsPage: React.FC = () => {
   );
 };
 
-export default SearchAnalyticsPage;
+export default ClientSearchAnalyticsPage;
