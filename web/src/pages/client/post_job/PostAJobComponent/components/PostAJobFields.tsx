@@ -18,7 +18,7 @@ import usePostAJobStore, { CurrentLocation } from "@/shared/store/postAJobStore"
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useFormContext } from "react-hook-form";
@@ -51,8 +51,9 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
     register,
     setValue,
     clearErrors,
-    formState: { errors },
+    formState: { errors, submitCount },
   } = useFormContext();
+  const lastToolToastSubmitCount = useRef(0);
   const [toolEntries, setToolEntries] = useState<
     {
       name: string;
@@ -158,9 +159,18 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
 
   useEffect(() => {
     register("toolEntriesCount", {
-      validate: (val) => (Number(val) > 0 ? true : "Add at least one tool entry before submitting"),
+      validate: (val) => {
+        if (Number(val) > 0) return true;
+
+        if (submitCount > 0 && lastToolToastSubmitCount.current !== submitCount) {
+          lastToolToastSubmitCount.current = submitCount;
+          toast.error("Please add a tool details");
+        }
+
+        return "Add at least one tool entry before submitting";
+      },
     });
-  }, [register]);
+  }, [register, submitCount]);
 
   useEffect(() => {
     setValue("toolEntriesCount", toolEntries.length, { shouldValidate: true });
