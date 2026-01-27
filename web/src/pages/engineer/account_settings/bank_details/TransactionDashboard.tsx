@@ -89,23 +89,22 @@ const TransactionDashboard: React.FC<TransactionDashboardProps> = ({
         {showAll && (
           <div className="mb-6 space-y-4">
             <div className="flex items-center  gap-2">
-              <div className="relative flex-grow">
+              <div className="relative w-80">
                 <InputField
                   name="searchTerm"
                   placeholder="Search by description..."
                   leftIcon={<HiSearch className="text-gray-400 text-lg" />}
                   isShowLabel={false}
-                  inputClassName=" h-[42px] pl-10 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm leading-none focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                  inputClassName=" h-[42px] pl-8 w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm leading-none focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
                 />
               </div>
               <div
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`h-[42px]px-4 rounded-lg borderflex items-center gap-2 text-sm font-medium leading-none transition-colors
-    ${
-      isFilterOpen
-        ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
-        : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-    } `}
+                className={`h-[42px] px-4 rounded-lg border flex items-center gap-2 text-sm font-medium leading-none transition-colors ${
+                  isFilterOpen
+                    ? "bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300"
+                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
               >
                 <HiFilter className="w-4 h-4" />
                 Filters

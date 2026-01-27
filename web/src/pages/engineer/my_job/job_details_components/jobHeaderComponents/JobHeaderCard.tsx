@@ -92,13 +92,13 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
           <div className="flex gap-2 items-center">
             <div
-              className="flex flex-row-reverse items-center gap-2px-4 py-2 rounded-md text-sm font-mediumtransition-colors cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100"
+              className="flex items-center justify-between gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 min-w-[140px]"
               onClick={handleBreakDetails}
             >
               <span>Break Details</span>
               <div className="relative">
                 <FaBell size={20} />
-                <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
+                <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 items-center justify-center rounded-full bg-red-600 text-[10px] text-white font-bold"></span>
               </div>
             </div>
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">

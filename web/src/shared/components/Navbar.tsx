@@ -155,7 +155,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer ">
                 <div className="flex items-center space-x-3">
                   <FaBell
-                    className="mr-3 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                     size={18}
                   />
                   <div
@@ -176,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
-                  <FaComment className="mr-3" size={18} />
+                  <FaComment className="" size={18} />
                   <div
                     onClick={() => {
                       navigate(absoluteUrls.engineer.home.chat);
@@ -203,7 +203,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
           <FaComment
-            className="mr-3 text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
+            className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
             size={20}
           />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
@@ -218,7 +218,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           }}
         >
           <FaBell
-            className="mr-3 text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
+            className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
             size={20}
           />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
