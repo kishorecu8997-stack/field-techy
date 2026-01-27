@@ -34,33 +34,33 @@ const MyProjects: React.FC = () => {
     }
 
     // Step 1: precompute values and keep original index
-const preparedData = base.map((project, index) => ({
-  ...project,
-  originalIndex: index,
-  startTime: new Date(project.duration.start).getTime(),
-  budgetNum: Number(project.budget.replace(/[^0-9]/g, "")),
-}));
+    const preparedData = base.map((project, index) => ({
+      ...project,
+      originalIndex: index,
+      startTime: new Date(project.duration.start).getTime(),
+      budgetNum: Number(project.budget.replace(/[^0-9]/g, "")),
+    }));
 
-const data = [...preparedData];
+    const data = [...preparedData];
 
-switch (currentSort) {
-  case SORT_OPTIONS.DATE:
-    data.sort((a, b) => b.startTime - a.startTime);
-    break;
+    switch (currentSort) {
+      case SORT_OPTIONS.DATE:
+        data.sort((a, b) => b.startTime - a.startTime);
+        break;
 
-  case SORT_OPTIONS.SALARY:
-    data.sort((a, b) => b.budgetNum - a.budgetNum);
-    break;
+      case SORT_OPTIONS.SALARY:
+        data.sort((a, b) => b.budgetNum - a.budgetNum);
+        break;
 
-  case SORT_OPTIONS.DISTANCE:
-    data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
-    break;
+      case SORT_OPTIONS.DISTANCE:
+        data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+        break;
 
-  default:
-    // restore original order for "Relevance"
-    data.sort((a, b) => a.originalIndex - b.originalIndex);
-    break;
-}
+      default:
+        // restore original order for "Relevance"
+        data.sort((a, b) => a.originalIndex - b.originalIndex);
+        break;
+    }
 
     return data;
   }, [activeFilter, currentSort]);

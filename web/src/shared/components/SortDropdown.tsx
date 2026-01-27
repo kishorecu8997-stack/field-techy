@@ -37,24 +37,24 @@ const SortDropdown: React.FC<SortDropdownProps> = ({
     { value: SORT_OPTIONS.DISTANCE, label: "Distance" },
   ];
   useLayoutEffect(() => {
-  const updatePosition = () => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    setDropdownPosition({
-      top: rect.bottom + window.scrollY,
-      left: rect.left + window.scrollX,
-    });
-  };
-  if (isOpen) {
-    updatePosition(); // initial calculation
-    window.addEventListener("scroll", updatePosition, { passive: true });
-    window.addEventListener("resize", updatePosition);
-  }
-  return () => {
-    window.removeEventListener("scroll", updatePosition);
-    window.removeEventListener("resize", updatePosition);
-  };
-}, [isOpen]);
+    const updatePosition = () => {
+      if (!buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    };
+    if (isOpen) {
+      updatePosition(); // initial calculation
+      window.addEventListener("scroll", updatePosition, { passive: true });
+      window.addEventListener("resize", updatePosition);
+    }
+    return () => {
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [isOpen]);
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
