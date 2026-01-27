@@ -133,7 +133,6 @@ const AddEducation = () => {
           label="Passing Year"
           name="passingYear"
           placeholder="e.g., 2023"
-          allowedCharacters="numbers"
           required
           rules={{ validate: (value) => validatePassingYear(value) }}
         />
