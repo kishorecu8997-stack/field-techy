@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
  * reactively when the user changes the system theme.
  *
  * @example
- * const isDark = usePrefersDark();
+ * const isDark = useThemeHook();
  * return <div>{isDark ? "Dark Mode" : "Light Mode"}</div>;
  *
  * @returns {boolean} `true` if the user prefers dark mode, otherwise `false`.
  */
-export const usePrefersDark = (): boolean => {
+export const useThemeHook = (): boolean => {
   const [isDark, setIsDark] = useState(
     typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
   );
