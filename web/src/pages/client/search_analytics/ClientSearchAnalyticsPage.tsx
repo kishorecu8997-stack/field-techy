@@ -7,7 +7,6 @@ import {
   getTotalSearches,
   getKeywordFrequency,
   getSearchTrends,
-  getCTR,
   getSearchHistory,
 } from "@/utils/searchServiceAnalytics";
 import AnalyticsCard from "@/shared/components/search-analytics/AnalyticsCard";
@@ -41,7 +40,6 @@ const ClientSearchAnalyticsPage: React.FC = () => {
   const totalSearches = getTotalSearches(searchEvents);
   const keywordFrequency = getKeywordFrequency(searchEvents);
   const searchTrends = getSearchTrends(searchEvents);
-  const ctr = getCTR(searchEvents, clickEvents);
   const searchHistory = getSearchHistory(searchEvents, clickEvents);
 
   const sortedKeywords = Object.entries(keywordFrequency).sort(

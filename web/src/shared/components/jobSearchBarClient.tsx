@@ -44,7 +44,6 @@ export const JobSearchBarClient = () => {
         >
           <FaChartBar size={20} />
         </Button>
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
 
         <InputField
           name="location"
