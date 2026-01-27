@@ -52,9 +52,10 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   const { data: workPreference } = useEngineerGetWorkPreference();
   const { data: serviceCategories } = useLookupData("serviceCategories");
 
-  const serviceCategoryName = serviceCategories?.find(
-    (c) => c.id === workPreference?.serviceCategoryId,
-  )?.name;
+  const serviceCategoryName = Array.isArray(serviceCategories)
+    ? serviceCategories.find((c) => c.id === workPreference?.serviceCategoryId)
+      ?.name || ""
+    : "";
 
   const methods = useForm({
     defaultValues: {
