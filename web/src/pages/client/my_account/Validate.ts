@@ -88,12 +88,10 @@ export const validateAddress = (value: string) => {
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
   }
-
-  // NEW RULE: must contain at least one alphabetic character
+  // MUST contain at least one letter (very important now)
   if (!/[A-Za-z]/.test(v)) {
-    return "Address must include letters";
+    return "Address must contain at least one letter";
   }
-
   return true;
 };
 
@@ -188,19 +186,19 @@ export const validateDesignation = (value: string) => {
 };
 
 export const validateCompany = (value: string) => {
-  if (!value) return "Employer must be at least 4 characters";
+  if (!value) return "Company Name must be at least 4 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
-    return "Employer must not start or end with a space";
+    return "Company Name must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 4) return "Employer must be at least 4 characters";
-  if (v.length > 50) return "Employer must not exceed 50 characters";
+  if (v.length < 4) return "Company Name must be at least 4 characters";
+  if (v.length > 50) return "Company Name must not exceed 50 characters";
 
   // Only letters, numbers, and / & - . with single spaces between
   if (!/^[A-Za-z0-9/&.-]+(?: [A-Za-z0-9/&.-]+)*$/.test(v)) {
-    return "Employer may contain only letters, numbers, single spaces, and / & - .";
+    return "Company Name may contain only letters, numbers, single spaces, and / & - .";
   }
 
   return true;
@@ -471,11 +469,19 @@ export const validateFormat = (
 };
 
 export const validateVatNumber = (vatNumber: string): true | string => {
-  return validateFormat(
+  const formatResult = validateFormat(
     vatNumber,
     /^[A-Za-z0-9\-/ ]{2,16}$/,
     "VAT registration number must be 2–16 characters long and can only contain letters, digits, hyphens (-), slashes (/), or spaces.",
   );
+  if (formatResult !== true) {
+    return formatResult;
+  }
+  const cleaned = vatNumber.replace(/[\s\-/]/g, "");
+  if (cleaned === "" || /^0+$/.test(cleaned)) {
+    return "VAT registration number cannot be zero or empty";
+  }
+  return true;
 };
 
 export default {
