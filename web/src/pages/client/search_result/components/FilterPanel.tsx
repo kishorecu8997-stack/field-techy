@@ -258,6 +258,9 @@ const FilterPanel: React.FC<{
                 experience: value,
               });
             }}
+            style={{
+              background: `linear-gradient(to right, #10b981 0%, #10b981 ${(experience / 10) * 100}%, #e5e7eb ${(experience / 10) * 100}%, #e5e7eb 100%)`,
+            }}
             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider "
           />
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs whitespace-nowrap">

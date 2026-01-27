@@ -1,6 +1,7 @@
 import type { WalletData, Transaction } from "../types";
 import { sampleWalletData } from "@/dummy_data/sampleWalletData";
 import React, { useEffect, useState } from "react";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 interface WalletComponentProps {
   data?: WalletData;
@@ -17,6 +18,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
   onMenuItemClick,
 }) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [showBalance, setShowBalance] = useState<boolean>(false);
 
   // Check for system preference
   useEffect(() => {
@@ -115,7 +117,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
     >
       {/* Balance Section */}
       <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
-        <div className="text-center">
+        <div className="">
           <p
             className={`text-sm mb-1 ${
               isDarkMode ? "text-gray-300" : "text-gray-600"
@@ -123,19 +125,52 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           >
             Current Balance
           </p>
-          <p className="text-3xl font-bold">
-            ${formatCurrency(data.currentBalance).replace("$", "")}
-          </p>
-          <button
-            onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
-            className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
-              isDarkMode
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-emerald-700 hover:bg-emerald-800 text-white"
-            }`}
-          >
-            Add Fund
-          </button>
+          <div className="flex justify-between items-center">
+            <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
+              {showBalance ? formatCurrency(data.currentBalance) : "******"}
+            </p>
+            {!showBalance ? (
+              <BsEyeSlashFill
+                className="cursor-pointer text-lg"
+                onClick={() => setShowBalance(true)}
+                role="button"
+                aria-label="Show balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance((prev) => !prev);
+                  }
+                }}
+              />
+            ) : (
+              <BsEyeFill
+                className="cursor-pointer text-lg"
+                onClick={() => setShowBalance(false)}
+                role="button"
+                aria-label="Show balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance((prev) => !prev);
+                  }
+                }}
+              />
+            )}
+          </div>
+          <div className="flex justify-end">
+            <button
+              onClick={() => onMenuItemClick(WALLET_COMPONENTS.ADD_FUND)}
+              className={`mt-4 px-6 py-2 rounded-full font-medium transition-colors cursor-pointer ${
+                isDarkMode
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-emerald-700 hover:bg-emerald-800 text-white"
+              }`}
+            >
+              Add Fund
+            </button>
+          </div>
         </div>
       </div>
 
