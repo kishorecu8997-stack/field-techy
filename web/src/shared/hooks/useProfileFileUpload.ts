@@ -91,7 +91,17 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       }
 
       // Invalidate relevant queries to refresh UI
-      queryClient.invalidateQueries({ queryKey: isEngineer ? queryKeys.engineer.all : queryKeys.client.all });
+      const baseKey = isEngineer ? queryKeys.engineer.all : queryKeys.client.all;
+      queryClient.invalidateQueries({ queryKey: baseKey });
+      
+      // Invalidate the download query to get the fresh URL
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0])._id === "appDownloadProfileFile",
+      });
 
       // If it was a profile picture, update the preview URL in the store
       if (fileType === 'profilePicture') {

@@ -1,17 +1,16 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import DocumentCard from "@/shared/components/DocumentCard";
-import React, { useMemo } from "react";
-import {
-  useDeleteEngineerFile,
-  useEngineerGetFiles,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerFile } from "@/shared/apiServices/engineer/engineerTypes";
+import React, { useMemo, useState } from "react";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
-import { useEngineerFilesContext } from "../context/useEngineerFilesContext";
-import { getUserId } from "@/utils";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useAppDownloadProfileFile,
+  getDownloadUrl,
+  useAppDeleteProfileFile,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -23,6 +22,7 @@ export interface Document {
   category?: string;
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
+  fileId?: number;
   uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
@@ -37,170 +37,197 @@ interface DocumentsListProps {
 }
 
 /**
- * Maps EngineerFile fileType to Document fileType
- */
-const mapFileType = (
-  fileType: EngineerFile["fileType"],
-  mimeType: string,
-): Document["fileType"] => {
-  // Check mime type first for more accurate detection
-  if (mimeType.includes("pdf")) return "PDF";
-  if (mimeType.includes("png")) return "PNG";
-  if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "JPEG";
-  if (mimeType.includes("gif")) return "GIF";
-  if (
-    mimeType.includes("word") ||
-    mimeType.includes("document") ||
-    mimeType.includes("docx")
-  )
-    return "DOCX";
-  if (
-    mimeType.includes("excel") ||
-    mimeType.includes("spreadsheet") ||
-    mimeType.includes("xlsx")
-  )
-    return "XLSX";
-
-  // Fallback to fileType enum
-  if (
-    fileType === "GOVERNMENT_ID" ||
-    fileType === "CERTIFICATE" ||
-    fileType === "RESUME"
-  )
-    return "PDF";
-  if (fileType === "PICTURE") return "JPEG";
-
-  return "PDF"; // Default fallback
-};
-
-/**
  * Renders a list of documents with actions to add, edit, and delete.
- * Fetches files from API and displays them using DocumentCard.
- * @param {DocumentsListProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered list of documents.
+ * Fetches files from OpenAPI and displays them using DocumentCard.
  */
 const DocumentsList: React.FC<DocumentsListProps> = ({
   onAddDocument,
   onEditDocument,
 }) => {
   const { showPopup } = usePopupStore();
-  const userId = useMemo(() => getUserId(), []);
-  const contextData = useEngineerFilesContext();
+  const queryClient = useQueryClient();
 
-  if (!userId) {
-    return (
-      <div className="bg-white rounded-lg p-8 text-center text-gray-500">
-        Unable to load user session. Please log in again.
-      </div>
-    );
-  }
+  // Specialized hooks for the 3 profile document types
+  // Note: We drive the list from these hooks because the legacy 'engineerFiles' list
+  // currently doesn't capture the new profile-based file uploads.
+  const { data: resumeData, isLoading: isLoadingResume } =
+    useAppDownloadProfileFile("resumeFile");
+  const { data: govIdData, isLoading: isLoadingGovId } =
+    useAppDownloadProfileFile("govIdDoc");
+  const { data: certificateData, isLoading: isLoadingCertificate } =
+    useAppDownloadProfileFile("certificateDoc");
 
-  const filesQuery = useEngineerGetFiles(userId);
+  const { mutateAsync: deleteProfileFile } = useAppDeleteProfileFile();
 
-  const engineerFiles = useMemo(() => {
-    if (contextData) {
-      return contextData.files;
+  const [manualPreviewUrls, setManualPreviewUrls] = useState<
+    Record<string, string>
+  >({});
+
+  /**
+   * Maps legacy DocumentType to the new ProfileFileType
+   */
+  const mapToProfileFileType = (type: string): ProfileFileType | null => {
+    switch (type) {
+      case "RESUME":
+        return "resumeFile";
+      case "GOVERNMENT_ID":
+        return "govIdDoc";
+      case "CERTIFICATE":
+        return "certificateDoc";
+      default:
+        return null;
     }
-
-    return (filesQuery.data || []).filter(
-      (file) => file.fileType !== "PICTURE",
-    );
-  }, [contextData, filesQuery.data]);
-
-  const isLoadingFiles = contextData
-    ? contextData.isLoading
-    : filesQuery.isLoading;
-
-  const refetchFiles = contextData ? contextData.refetch : filesQuery.refetch;
-
-  const deleteFileMutation = useDeleteEngineerFile({
-    engineerId: userId,
-    onSuccess: () => {
-      toast.success("Document deleted successfully");
-      refetchFiles();
-    },
-    onError: (error) => {
-      toast.error("Failed to delete document");
-      console.error("Delete error:", error);
-    },
-  });
-
-  const { data: resumeData } = useAppDownloadProfileFile("resumeFile");
-  const { data: govIdData } = useAppDownloadProfileFile("govIdDoc");
-  const { data: certificateData } = useAppDownloadProfileFile("certificateDoc");
+  };
 
   const previewUrlsMap = useMemo(() => {
-    const urls: Record<string, string> = {};
-    if (resumeData?.downloadUrl) urls["RESUME"] = resumeData.downloadUrl;
-    if (govIdData?.downloadUrl) urls["GOVERNMENT_ID"] = govIdData.downloadUrl;
+    const fileData: Record<string, { url: string; id?: number }> = {};
+    if (resumeData?.downloadUrl)
+      fileData["RESUME"] = {
+        url: resumeData.downloadUrl,
+      };
+    if (govIdData?.downloadUrl)
+      fileData["GOVERNMENT_ID"] = {
+        url: govIdData.downloadUrl,
+      };
     if (certificateData?.downloadUrl)
-      urls["CERTIFICATE"] = certificateData.downloadUrl;
-    return urls;
+      fileData["CERTIFICATE"] = {
+        url: certificateData.downloadUrl,
+      };
+
+    return fileData;
   }, [resumeData, govIdData, certificateData]);
 
   const documents: Document[] = useMemo(() => {
-    return engineerFiles.map((file: EngineerFile, index: number) => {
-      const fileType = mapFileType(file.fileType, file.mimeType);
-      const uploadDate = file.createdAt
-        ? new Date(file.createdAt).toLocaleDateString()
-        : undefined;
+    const docMeta = [
+      { type: "RESUME", label: "Resume", fileName: "resume.pdf" },
+      {
+        type: "GOVERNMENT_ID",
+        label: "Government ID",
+        fileName: "government_id.pdf",
+      },
+      {
+        type: "CERTIFICATE",
+        label: "Certificate",
+        fileName: "certificate.pdf",
+      },
+    ];
 
-      const metadata: Record<string, string> = {
-        fileId: file.id,
-        fileKey: file.fileKey,
-        engineerId: file.engineerId,
-        mimeType: file.mimeType,
-        size: file.size.toString(),
-      };
+    return docMeta
+      .map((dm, index) => {
+        const fileInfo = previewUrlsMap[dm.type];
+        const previewUrl = fileInfo?.url || manualPreviewUrls[dm.type];
+        if (!previewUrl) return null;
 
-      return {
-        id: index, // Use index as numeric ID for DocumentCard compatibility
-        title: file.fileName || `Document ${index + 1}`,
-        fileName: file.fileName,
-        fileType,
-        previewUrl: previewUrlsMap[file.fileType],
-        uploadDate,
-        metadata,
-        expiryDate: undefined,
-        status: undefined,
-      };
-    });
-  }, [engineerFiles, previewUrlsMap]);
+        return {
+          id: index,
+          fileId: fileInfo?.id,
+          title: dm.label,
+          fileName: dm.fileName,
+          fileType: "PDF" as const,
+          previewUrl,
+          metadata: {
+            originalFileType: dm.type,
+          },
+        };
+      })
+      .filter(Boolean) as Document[];
+  }, [previewUrlsMap, manualPreviewUrls]);
+
+  const isLoadingFiles =
+    isLoadingResume || isLoadingGovId || isLoadingCertificate;
 
   const handleEdit = (id: number) => {
     onEditDocument?.(id);
   };
 
   const handleDelete = async (id: number) => {
-    const document = documents[id];
-    const fileId = document?.metadata?.fileId;
+    const doc = documents.find((d) => d.id === id);
+    if (!doc) return;
 
-    if (!fileId) {
-      toast.error("Cannot delete: File ID not found");
+    if (!doc.fileId) {
+      toast.error("Cannot delete: File ID is missing.");
       return;
     }
 
     await showPopup({
       title: "Delete Document",
-      body: "Are you sure you want to delete this document? This action cannot be undone.",
+      body: `Are you sure you want to delete ${doc.title}?`,
       actionButtons: [
         {
           label: "Cancel",
-          value: "no",
+          value: "cancel",
           variant: "secondary",
           action: (close) => close(true),
         },
         {
-          label: "Yes, delete",
-          value: "yes",
-          variant: "primary",
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
           action: async (close) => {
-            deleteFileMutation.mutate(fileId);
+            try {
+              await deleteProfileFile({
+                body: { fileId: doc.fileId! },
+                headers: { authorization: "" },
+              });
+              toast.success(`${doc.title} deleted successfully.`);
+              // Invalidate download queries to refresh the list
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as any)._id === "appDownloadProfileFile",
+              });
+            } catch (error) {
+              toast.error("Failed to delete document.");
+              console.error("Delete error:", error);
+            }
             close(true);
           },
         },
       ],
     });
+  };
+
+  const handleDownload = async (id: number) => {
+    const doc = documents.find((d) => d.id === id);
+    const originalType = doc?.metadata?.originalFileType;
+    const profileFileType = originalType
+      ? mapToProfileFileType(originalType)
+      : null;
+
+    if (!profileFileType) {
+      toast.error("Download failed: Unsupported file type");
+      return;
+    }
+
+    try {
+      const data = await getDownloadUrl(profileFileType);
+      if (data?.downloadUrl) {
+        const link = window.document.createElement("a");
+        link.href = data.downloadUrl;
+        link.target = "_blank";
+        link.setAttribute("download", doc?.fileName || "download");
+        window.document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        // Update the manual preview URLs map to refresh UI if needed
+        if (originalType) {
+          setManualPreviewUrls((prev) => ({
+            ...prev,
+            [originalType]: data.downloadUrl!,
+          }));
+        }
+
+        toast.success("Download started");
+      } else {
+        throw new Error("No download URL returned");
+      }
+    } catch (error) {
+      toast.error("Failed to get download URL");
+      console.error("Download error:", error);
+    }
   };
 
   if (isLoadingFiles) {
@@ -229,12 +256,13 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
 
       {documents.length > 0 ? (
         <div className="space-y-4">
-          {documents.map((doc, index) => (
+          {documents.map((doc) => (
             <DocumentCard
-              key={doc.metadata?.fileId || index}
+              key={doc.metadata?.originalFileType || doc.id}
               document={doc}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onDownload={handleDownload}
               id={doc.id}
             />
           ))}

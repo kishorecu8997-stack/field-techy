@@ -4,7 +4,8 @@ import {
   type AppUploadProfileFileResponse,
   type AppVerifyOtpResponse,
   type AppForgotPasswordResponse,
-  type AppResetPasswordResponse
+  type AppResetPasswordResponse,
+  type AppDownloadProfileFileData
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -19,10 +20,17 @@ import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.g
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "./apiClient";
 
-export async function getDownloadUrl(fileType: string) {
+export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
+
+/**
+ * Get download URL for a profile file.
+ * Note: Empty authorization header is required by type definition,
+ * but gets overridden by apiClient interceptor with actual JWT token.
+ */
+export async function getDownloadUrl(fileType: ProfileFileType) {
   const { data } = await appDownloadProfileFileSdk({
     client: apiClient,
-    query: { fileType: fileType as any },
+    query: { fileType },
     headers: { authorization: "" },
   });
   return data;
@@ -71,15 +79,25 @@ export function useAppUploadProfileFile(options?: {
   });
 }
 
-export function useAppDownloadProfileFile(fileType: string | null | undefined, enabled: boolean = true) {
+/**
+ * React Query hook to download a profile file.
+ * Note: Empty authorization header is required by type definition,
+ * but gets overridden by apiClient interceptor with actual JWT token.
+ */
+export function useAppDownloadProfileFile(
+  fileType: ProfileFileType | null | undefined,
+  enabled: boolean = true
+) {
   return useQuery({
     ...appDownloadProfileFileOptions({
       client: apiClient,
-      query: { fileType: fileType as any },
+      // Use a valid member of ProfileFileType as a fallback when disabled
+      // to satisfy the type system without using 'any'
+      query: { fileType: (fileType || "profilePicture") as ProfileFileType },
       headers: { authorization: "" },
     }),
     enabled: enabled && !!fileType,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
