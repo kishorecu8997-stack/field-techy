@@ -227,7 +227,7 @@ export const validateUniversity = (value: string, required: boolean = true) => {
 
   //  Check the field is Required or null it will give error message
   if (required && !trimmed) {
-    return "Please enter a university name.";
+    return "Please enter a university name";
   }
 
   // Length check above 200 characters
@@ -237,13 +237,13 @@ export const validateUniversity = (value: string, required: boolean = true) => {
 
   const allowedPattern = /^[a-zA-Z0-9\s.#()+-]+$/;
   if (!allowedPattern.test(trimmed)) {
-    return "University  can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, )).";
+    return "University can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, ))";
   }
 
   // Must contain at least one letter
   const hasLetter = /[a-zA-Z]/.test(trimmed);
   if (!hasLetter) {
-    return "University must contain at least one letter.";
+    return "University must contain at least one letter";
   }
   return true;
 };
@@ -267,13 +267,13 @@ export const validateMajorSubject = (
 
   const allowedPattern = /^[a-zA-Z0-9\s.#()+-]+$/;
   if (!allowedPattern.test(trimmed)) {
-    return "Major Subject can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, )).";
+    return "Major Subject can only contain letters, numbers, spaces, and standard symbols (#, +, -, ., (, ))";
   }
 
   // Must contain at least one letter
   const hasLetter = /[a-zA-Z]/.test(trimmed);
   if (!hasLetter) {
-    return "Major Subject must contain at least one letter.";
+    return "Major Subject must contain at least one letter";
   }
   return true;
 };
@@ -513,7 +513,7 @@ export const validatePortfolioLink = (value: string) => {
  * @returns {true | string} - True if verified, otherwise an error message.
  */
 export const validateIsVerified = (verified: boolean, fieldName: string) => {
-  return verified ? true : `${fieldName} must be verified.`;
+  return verified ? true : `${fieldName} must be verified`;
 };
 
 /**
