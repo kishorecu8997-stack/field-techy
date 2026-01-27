@@ -62,7 +62,6 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   >([]);
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
-
   const selectedCountry = watch("country");
   const selectedState = watch("state");
   const startDateValue = watch("startDate") as Date | null;
