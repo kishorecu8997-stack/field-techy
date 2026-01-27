@@ -5,11 +5,14 @@ import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
-import { countries } from "@/dummy_data/adminDashboard";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
-import { useGetAdminPersonalInfo } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  LookupTable,
+  useAppGetLookupData,
+  useGetAdminPersonalInfo,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
@@ -39,6 +42,7 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
   //New API
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
+  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -86,7 +90,12 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         <SelectMenu
           placeholder="Select Region"
           className="w-36"
-          options={countries}
+          options={
+            adminLookupData?.map((item) => ({
+              value: item.name,
+              label: item.name,
+            })) ?? []
+          }
           value={region}
           onChange={setRegion}
         />

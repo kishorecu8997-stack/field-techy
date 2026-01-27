@@ -3,6 +3,7 @@ import {
   adminUpdatePersonalInfo,
   appChangePassword,
   appForgotPassword,
+  appGetLookupData,
   appLogin,
   appResetPassword,
   type AdminUpdatePersonalInfoData,
@@ -11,6 +12,7 @@ import {
   type AppChangePasswordResponse,
   type AppForgotPasswordData,
   type AppForgotPasswordResponse,
+  type AppGetLookupDataData,
   type AppLoginData,
   type AppLoginResponse,
   type AppResetPasswordData,
@@ -18,6 +20,22 @@ import {
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+
+export const LookupTable = {
+  Countries: "countries",
+  Industries: "industries",
+  States: "states",
+  Cities: "cities",
+  EmploymentTypes: "employmentTypes",
+  Skills: "skills",
+  Tools: "tools",
+  ServiceCategories: "serviceCategories",
+  WorkLocations: "workLocations",
+  EducationLevels: "educationLevels",
+  Courses: "courses",
+} as const;
+
+export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
 
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
@@ -157,5 +175,30 @@ export function useAppResetPassword(options?: {
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+export type AppGetLookupDataResponse = NonNullable<
+  AppGetLookupDataData["body"]
+>;
+
+export function useAppGetLookupData(
+  table: LookupTable,
+  options?: {
+    onSuccess?: (data: AppGetLookupDataResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: ["adminLookupData", table],
+    queryFn: async () => {
+      const response = await appGetLookupData({
+        client: apiClient,
+        throwOnError: true,
+        query: { table },
+      });
+      return response.data;
+    },
+    ...options,
   });
 }
