@@ -63,7 +63,7 @@ const Home = () => {
             {findNewJobs.length > 0 && (
               <FeaturedJobs
                 jobs={findNewJobs as JobItem[]}
-                userSkills={profile?.jobSkills || []}
+                userSkills={[]}
                 userTools={profile?.tools || []}
                 title="Featured Jobs"
                 onViewAll={handleExploreJobs}
@@ -73,7 +73,7 @@ const Home = () => {
             {paginatedRecommendedJobs.length > 0 && (
               <RecommendedJobs
                 jobs={paginatedRecommendedJobs}
-                userSkills={profile?.jobSkills || []}
+                userSkills={[]}
                 userTools={profile?.tools || []}
                 onViewAll={handleExploreJobs}
                 title="Recommended Jobs"

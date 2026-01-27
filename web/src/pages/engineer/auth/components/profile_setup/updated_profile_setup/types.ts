@@ -9,9 +9,9 @@ export interface EngineerBasicDetails {
   postalCode: string;
 
   // Professional
-  skills: any[]; // TagSelect options
+  skills: (string | number)[]; // TagSelect options - IDs can be string or number
   portfolioLink: string;
-  serviceCategory: any; // Select option
+  serviceCategory: string | number; // Select option - ID can be string or number
   amount: string; // Rate/Budget
   designation: string;
   company: string;

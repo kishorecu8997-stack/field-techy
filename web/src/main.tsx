@@ -47,12 +47,16 @@ if (!root) {
   (window as any).__react_root__ = root;
 }
 
+import { ToastProvider } from "./shared/components/commonUI/toastContext.tsx";
+
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <GlobalPopup />
-       <ToastHandler />
-      <App />
+      <ToastProvider>
+        <GlobalPopup />
+        <ToastHandler />
+        <App />
+      </ToastProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 );

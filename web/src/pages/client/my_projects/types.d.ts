@@ -26,6 +26,7 @@ export interface Project {
   remainingbudget?: string;
   actualStartDate?: string;
   actualEndDate?: string;
+  distance?: number;
 }
 export interface JobCardHeaderProps {
   title: string;

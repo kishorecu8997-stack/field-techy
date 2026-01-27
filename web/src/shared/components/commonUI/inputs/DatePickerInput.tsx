@@ -28,7 +28,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   rules,
   containerClassName = "flex flex-col py-1 w-full",
 }) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
 
   let requiredMessage: string | false = false;
   if (typeof required === "string") requiredMessage = required;
@@ -49,6 +49,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
           onChange={onChange}
           value={value}
           error={error}
+          triggerField={() => trigger(name)}
           minDate={minDate}
           maxDate={maxDate}
           placeholder={placeholder}
@@ -89,6 +90,7 @@ const DatePickerRender: FC<{
   onChange: (date: Date | null) => void;
   value: Date | null;
   error?: FieldError;
+  triggerField: () => Promise<boolean>;
   minDate?: Date;
   maxDate?: Date;
   placeholder: string;
@@ -111,6 +113,7 @@ const DatePickerRender: FC<{
   label,
   isShowLabel,
   required,
+  triggerField,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
@@ -163,8 +166,10 @@ const DatePickerRender: FC<{
     const parsed = parseDate(text);
     if (parsed && isDateValid(parsed, minDate, maxDate)) {
       onChange(parsed);
+      void triggerField();
     } else if (text === "") {
       onChange(null);
+      void triggerField();
     }
   };
 
@@ -174,6 +179,7 @@ const DatePickerRender: FC<{
     if (isDateValid(date, minDate, maxDate)) {
       onChange(date);
       setIsOpen(false);
+      void triggerField();
     }
   };
 
