@@ -325,45 +325,38 @@ export class ClientAdapter {
   // ===== Dropdown Data Methods =====
 
   /**
- * Retrieves the list of states for a given country.
- *
- * @param countryId - ISO country code (e.g. "IN", "US")
- * @returns Promise resolving to a list of state options
- */
-  static async getStates(
-  countryId: string,
-): Promise<Option[]> {
-  const normalizedCountryId = countryId.toUpperCase();
+   * Retrieves the list of states for a given country.
+   *
+   * @param countryId - ISO country code (e.g. "IN", "US")
+   * @returns Promise resolving to a list of state options
+   */
+  static async getStates(countryId: string): Promise<Option[]> {
+    const normalizedCountryId = countryId.toUpperCase();
 
-  console.log(
-    `[STUB] Fetching states for country: ${normalizedCountryId}`,
-  );
+    console.log(`[STUB] Fetching states for country: ${normalizedCountryId}`);
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(statesAndCities.states[normalizedCountryId] ?? []);
-    }, 500);
-  });
-}
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(statesAndCities.states[normalizedCountryId] ?? []);
+      }, 500);
+    });
+  }
 
   /**
- * Retrieves the list of cities for a given state.
- *
- * @param stateId - Unique identifier of the state
- * @returns Promise resolving to a list of city options
- */
-  static async getCities(
-  stateId: string,
-): Promise<Option[]> {
-  console.log(`[STUB] Fetching cities for state: ${stateId}`);
+   * Retrieves the list of cities for a given state.
+   *
+   * @param stateId - Unique identifier of the state
+   * @returns Promise resolving to a list of city options
+   */
+  static async getCities(stateId: string): Promise<Option[]> {
+    console.log(`[STUB] Fetching cities for state: ${stateId}`);
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(statesAndCities.cities[stateId] ?? []);
-    }, 500);
-  });
-}
-
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(statesAndCities.cities[stateId] ?? []);
+      }, 500);
+    });
+  }
 
   /**
    * Get list of industries

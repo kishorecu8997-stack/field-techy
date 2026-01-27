@@ -25,7 +25,7 @@ import {
 } from "@/shared/apiServices/client/clientService";
 import { useDebouncedUserExists } from "@/shared/apiServices/user";
 import { useEffect } from "react";
-import {businessTypes} from "@/dummy_data/adminClientData";
+import { businessTypes } from "@/dummy_data/adminClientData";
 
 /**
  * Email field component with real-time availability validation
@@ -152,9 +152,7 @@ const BasicDetailsFields = () => {
   const country = watch("country");
   const selectedState = watch("state");
   const countryValue =
-  typeof country === "string"
-    ? country
-    : country?.code || country?.value;
+    typeof country === "string" ? country : country?.code || country?.value;
   useEffect(() => {
     setValue("state", undefined);
     setValue("city", undefined);

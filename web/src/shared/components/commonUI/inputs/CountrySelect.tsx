@@ -56,7 +56,7 @@ export const CountrySelect = ({
   };
 
   return (
-      <div className="relative" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <Button
         variant="dropdown"
         onClick={toggleDropdown}
