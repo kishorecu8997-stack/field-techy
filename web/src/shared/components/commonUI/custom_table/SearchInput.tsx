@@ -1,20 +1,26 @@
 import { Search } from "lucide-react"; // lucide-react provides nice icons
+import type { SearchInputProps } from "./type";
 
 /**
- * Renders a styled search input field with an icon.
+ * SearchInput Component
+ *
+ * A reusable styled search input field with an integrated search icon.
+ * It supports light and dark modes, hover effects, and updates parent
+ * components via the `onChange` callback whenever the input value changes.
  *
  * @component
- * @example
- * return (
- *   <SearchInput />
- * );
+ * @param {SearchInputProps} props - Component props
+ * @param {string} [props.value] - Current value of the search input
+ * @param {(value: string) => void} [props.onChange] - Callback invoked on input change
  *
- * @returns {JSX.Element} A search input with an integrated search icon and hover shadow effect.
+ * @example
+ * <SearchInput
+ *   value={searchValue}
+ *   onChange={(val) => setSearchValue(val)}
+ * />
+ *
+ * @returns {JSX.Element} A search input with an integrated search icon
  */
-type SearchInputProps = {
-  value?: string;
-  onChange?: (value: string) => void;
-};
 
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
   return (

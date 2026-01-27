@@ -34,6 +34,15 @@ import { toast } from "react-toastify";
  *
  * @returns {JSX.Element} The rendered PendingRequest component.
  */
+export const EngineerStatus = {
+  APPROVE: "approve",
+  REJECT: "reject",
+  PENDING: "pending",
+} as const;
+
+export type EngineerStatusType =
+  (typeof EngineerStatus)[keyof typeof EngineerStatus];
+
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
@@ -62,13 +71,13 @@ export default function PendingRequest() {
     let toastMessage = "";
 
     switch (status) {
-      case "approve":
+      case EngineerStatus.APPROVE:
         toastMessage = "Engineer approved successfully!";
         break;
-      case "reject":
+      case EngineerStatus.REJECT:
         toastMessage = "Engineer rejected successfully!";
         break;
-      case "pending":
+      case EngineerStatus.PENDING:
         toastMessage = "Engineer marked as pending successfully!";
         break;
       default:
@@ -97,17 +106,17 @@ export default function PendingRequest() {
           label: "Yes",
           value: "yes",
           variant:
-            status === "approve"
+            status === EngineerStatus.APPROVE
               ? "primary"
-              : status === "reject"
+              : status === EngineerStatus.REJECT
                 ? "danger"
-                : status === "pending"
+                : status === EngineerStatus.PENDING
                   ? "warning"
                   : "secondary",
           action: async (close) => {
-            if (status === "reject") {
+            if (status === EngineerStatus.REJECT) {
             toast.error(toastMessage); 
-          } else if (status === "approve") {
+          } else if (status === EngineerStatus.APPROVE) {
             toast.success(toastMessage);
           } else {
             toast.warning(toastMessage)
@@ -245,7 +254,7 @@ export default function PendingRequest() {
       key: "approvalStatus",
       label: "Approve/Reject",
       renderCell: (row: ManageEngineerProps) => {
-        const current = rowStatuses[row.id] ?? "pending";
+        const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
         const preparedOptions = [
           ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
             ...opt,

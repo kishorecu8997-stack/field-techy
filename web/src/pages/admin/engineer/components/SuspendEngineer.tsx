@@ -4,9 +4,15 @@ import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerI
 import Popup from "@/shared/components/Popup";
 import { validateDescription } from "@/utils/validate";
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type SubmitHandler } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
+
+type SuspendEngineerForm = {
+  suspendStartDate: Date
+  suspendEndDate: Date
+  reason: string
+}
 
 export default function SuspendEngineer({
   isSuspendEngineer,
@@ -15,11 +21,10 @@ export default function SuspendEngineer({
   isSuspendEngineer: boolean;
   setIsSuspendEngineer: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { watch, handleSubmit } = useFormContext(); 
+  const { watch, handleSubmit } = useFormContext<SuspendEngineerForm>(); 
   const suspendStartDate = watch("suspendStartDate");
   // This function only executes if validation passes
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+  const onSubmit: SubmitHandler<SuspendEngineerForm> = (data) => {
     // Add your API call logic here
     toast.success("Engineer suspended successfully!");
     setIsSuspendEngineer(false);
