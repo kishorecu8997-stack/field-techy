@@ -43,13 +43,14 @@ export default function AllUsers() {
       ),
     },
     { key: "location", label: "Location" },
-    { key: "registrationDate", label: "Registration Date" },
-    { key: "kycStatus", label: "KYC Status" },
-    { key: "employmentStatus", label: "Employment Status" },
-    { key: "avgRating", label: "Avg Rating" },
+    { key: "registrationDate", label: "Registration Date", dataCellAlign: "center", },
+    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center", },
+    { key: "employmentStatus", label: "Employment Status", dataCellAlign: "center", },
+    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center", },
     {
       key: "documents",
       label: "Documents",
+      dataCellAlign: "center",
       renderCell: (row) => (
         <Button
           className="bg-teal-700 text-white"
