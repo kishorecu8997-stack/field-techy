@@ -68,7 +68,7 @@ const PostAJobFields = ({
     }
   };
 
-  const handleDeleteInterviewer = async (_: number) => {
+  const handleDeleteInterviewer = async () => {
     await showPopup({
       title: "Delete Client Interviewer",
       body: "Are you sure you want to delete this interviewer?",
@@ -105,7 +105,7 @@ const PostAJobFields = ({
       setISOpenSidebar(true);
       setSelectedId(item.id);
     },
-    onDelete: () => handleDeleteInterviewer(item.id),
+    onDelete: () => handleDeleteInterviewer(),
   }));
 
   const interviewerValue = interviewerData.map((item) => ({
@@ -123,7 +123,7 @@ const PostAJobFields = ({
       setISOpenSidebar(true);
       setSelectedId(Number(item.id));
     },
-    onDelete: () => handleDeleteInterviewer(Number(item.id)),
+    onDelete: () => handleDeleteInterviewer(),
   }));
 
   const formattedInterviewerSections = interviewerValue.map((section) => ({
