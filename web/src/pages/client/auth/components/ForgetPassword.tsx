@@ -38,18 +38,16 @@ const ForgetPassword = () => {
       <div className=" p-10 w-full ">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
-            <>
-              <img
-                src={assetsConfig.logos.companyLogo}
-                alt="logo"
-                className="h-20 w-24 dark:hidden"
-              />
-              <img
-                src={assetsConfig.logos.company_logo_white}
-                alt="logo"
-                className="h-20 w-24 hidden dark:block"
-              />
-            </>
+            <img
+              src={assetsConfig.logos.companyLogo}
+              alt="logo"
+              className="h-20 w-24 dark:hidden"
+            />
+            <img
+              src={assetsConfig.logos.company_logo_white}
+              alt="logo"
+              className="h-20 w-24 hidden dark:block"
+            />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-md font-extralight ">
