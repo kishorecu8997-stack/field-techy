@@ -211,7 +211,7 @@ const PostJobPage = () => {
             </span>
           </div>
           <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Tools budget</span>
+            <span className="font-medium">Tools Cost</span>
             <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
               {data.toolBudgetTotal ? `₹${data.toolBudgetTotal.toLocaleString("en-IN")}` : "-"}
             </span>
@@ -244,7 +244,7 @@ const PostJobPage = () => {
     );
 
     await showPopup({
-      title: <span className="text-teal-700 dark:text-teal-400">Bill Summary per an Engineer</span>,
+      title: <span className="text-teal-700 dark:text-teal-400">Bill Summary</span>,
       body,
       actionButtons: [
         {

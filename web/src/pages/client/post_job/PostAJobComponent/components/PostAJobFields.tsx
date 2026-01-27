@@ -420,7 +420,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
               />
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                  Tool Images (PNG, JPEG, PDF)
+                  Tool Image (PNG, JPEG, PDF)
                 </label>
                 <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 h-28 flex items-center justify-center text-sm text-gray-600 dark:text-gray-200">
                   <input
@@ -465,7 +465,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
               </div>
               <InputField
                 name="toolBudgetNotes"
-                label="Tool Cost Estimate"
+                label="Tool Cost"
                 placeholder="Enter tool cost"
                 inputMode="number"
                 onChange={(val) => {
@@ -509,7 +509,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                               <span className="font-semibold">Tool Name:</span> <span className="font-normal">{entry.name}</span>
                             </div>
                             <div>
-                              <span className="font-semibold">Cost Estimate:</span> <span className="font-normal">{entry.budget}</span>
+                              <span className="font-semibold">Tool Cost:</span> <span className="font-normal">{entry.budget}</span>
                             </div>
                           </div>
                           <div className="flex gap-1">
@@ -534,7 +534,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                         {entry.images.length > 0 && (
                           <div className="mt-2 space-y-1">
                             <div className="text-sm text-gray-900 dark:text-gray-100">
-                              <span className="font-semibold">Relevant Images:</span>
+                              <span className="font-semibold">Tool Image:</span>
                             </div>
                             <div className="grid grid-cols-5 gap-1">
                             {entry.images.map((img, imageIdx) => (
