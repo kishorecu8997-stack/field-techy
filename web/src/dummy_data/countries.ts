@@ -167,12 +167,8 @@ export const citiesByState: Record<string, LocationOption[]> = {
     { value: "per", label: "Perth" },
     { value: "fre", label: "Fremantle" },
   ],
-  "sg-all": [
-    { value: "sg", label: "Singapore" },
-  ],
-  be: [
-    { value: "ber", label: "Berlin" },
-  ],
+  "sg-all": [{ value: "sg", label: "Singapore" }],
+  be: [{ value: "ber", label: "Berlin" }],
   by: [
     { value: "muc", label: "Munich" },
     { value: "nue", label: "Nuremberg" },
@@ -205,12 +201,8 @@ export const citiesByState: Record<string, LocationOption[]> = {
     { value: "dbn", label: "Durban" },
     { value: "pm", label: "Pietermaritzburg" },
   ],
-  du: [
-    { value: "dxb", label: "Dubai" },
-  ],
-  shj: [
-    { value: "shj-city", label: "Sharjah" },
-  ],
+  du: [{ value: "dxb", label: "Dubai" }],
+  shj: [{ value: "shj-city", label: "Sharjah" }],
 };
 
 export default countries;

@@ -3,7 +3,11 @@ import {
   interviewerData,
   pointOfContactData,
 } from "@/dummy_data/admin/post_a_Job";
-import { countries, statesByCountry, citiesByState } from "@/dummy_data/countries";
+import {
+  countries,
+  statesByCountry,
+  citiesByState,
+} from "@/dummy_data/countries";
 import { skills, experienceLevel } from "@/dummy_data/client";
 import { serviceCategories } from "@/dummy_data/serviceCategories";
 import { Button } from "@/shared/components/commonUI/Buttons";
@@ -14,7 +18,9 @@ import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import MapWithSearch from "@/shared/components/MapWithSearch";
 import { usePopupStore } from "@/shared/store/popupStore";
-import usePostAJobStore, { CurrentLocation } from "@/shared/store/postAJobStore";
+import usePostAJobStore, {
+  CurrentLocation,
+} from "@/shared/store/postAJobStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
@@ -162,7 +168,10 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
       validate: (val) => {
         if (Number(val) > 0) return true;
 
-        if (submitCount > 0 && lastToolToastSubmitCount.current !== submitCount) {
+        if (
+          submitCount > 0 &&
+          lastToolToastSubmitCount.current !== submitCount
+        ) {
           lastToolToastSubmitCount.current = submitCount;
           toast.error("Please add a tool details");
         }
@@ -202,9 +211,13 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
       return;
     }
 
-    const newImages = files && files.length > 0
-      ? Array.from(files).map((file) => ({ name: file.name, url: URL.createObjectURL(file) }))
-      : undefined;
+    const newImages =
+      files && files.length > 0
+        ? Array.from(files).map((file) => ({
+            name: file.name,
+            url: URL.createObjectURL(file),
+          }))
+        : undefined;
 
     if (editingToolIndex !== null) {
       setToolEntries((prev) => {
@@ -261,7 +274,10 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
     setToolImageInputKey((key) => key + 1);
   };
 
-  if (currentLocation === CurrentLocation.fullTime || currentLocation === CurrentLocation.onDemand) {
+  if (
+    currentLocation === CurrentLocation.fullTime ||
+    currentLocation === CurrentLocation.onDemand
+  ) {
     return (
       <div className="flex gap-4 flex-row p-2">
         <div className="w-2/3 space-y-8 bg-white dark:bg-gray-900 rounded-lg p-4">
@@ -456,7 +472,9 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                       <path d="M4 16.5V18a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 18v-1.5" />
                     </svg>
                     <div className="font-medium">Upload tool files</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">PNG, JPEG, PDF</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      PNG, JPEG, PDF
+                    </div>
                   </div>
                 </div>
                 {selectedToolFiles && selectedToolFiles.length > 0 && (
@@ -483,10 +501,12 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                 }}
                 rules={{
                   validate: (val) => {
-                    if (val === undefined || val === null || val === "") return true;
+                    if (val === undefined || val === null || val === "")
+                      return true;
                     const num = Number(val);
                     if (Number.isNaN(num)) return "Enter a valid amount";
-                    if (num > 10_000_000) return "Max allowed amount is 10000000";
+                    if (num > 10_000_000)
+                      return "Max allowed amount is 10000000";
                     return true;
                   },
                 }}
@@ -500,7 +520,9 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                   onClick={handleAddToolEntry}
                   disabled={isDisable}
                 >
-                  {editingToolIndex !== null ? "Update Tool Entry" : "Add Tool Entry"}
+                  {editingToolIndex !== null
+                    ? "Update Tool Entry"
+                    : "Add Tool Entry"}
                 </Button>
               </div>
               {toolEntries.length > 0 && (
@@ -515,10 +537,14 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                         <div className="flex items-start justify-between gap-2">
                           <div className="space-y-0.5 text-sm text-gray-900 dark:text-gray-100">
                             <div>
-                              <span className="font-semibold">Tool Name:</span> <span className="font-normal">{entry.name}</span>
+                              <span className="font-semibold">Tool Name:</span>{" "}
+                              <span className="font-normal">{entry.name}</span>
                             </div>
                             <div>
-                              <span className="font-semibold">Tool Cost:</span> <span className="font-normal">{entry.budget}</span>
+                              <span className="font-semibold">Tool Cost:</span>{" "}
+                              <span className="font-normal">
+                                {entry.budget}
+                              </span>
                             </div>
                           </div>
                           <div className="flex gap-1">
@@ -546,18 +572,18 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                               <span className="font-semibold">Tool Image:</span>
                             </div>
                             <div className="grid grid-cols-5 gap-1">
-                            {entry.images.map((img, imageIdx) => (
-                              <div
-                                key={`${img.name}-${imageIdx}`}
-                                className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-                              >
-                                <img
-                                  src={img.url}
-                                  alt={img.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ))}
+                              {entry.images.map((img, imageIdx) => (
+                                <div
+                                  key={`${img.name}-${imageIdx}`}
+                                  className="h-11 w-11 overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                >
+                                  <img
+                                    src={img.url}
+                                    alt={img.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))}
                             </div>
                           </div>
                         )}
@@ -611,9 +637,13 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                   <div>Rate</div>
                 </div>
                 <div className="text-sm px-4 py-3 grid grid-cols-5 gap-2 bg-white dark:bg-gray-800">
-                  <div>{getLabel(serviceCategories, summaryServiceCategory)}</div>
+                  <div>
+                    {getLabel(serviceCategories, summaryServiceCategory)}
+                  </div>
                   <div>{getLabel(experienceLevel, summaryExperienceLevel)}</div>
-                  <div>{getLabel(ENGAGEMENT_MODELS, summaryEngagementModel)}</div>
+                  <div>
+                    {getLabel(ENGAGEMENT_MODELS, summaryEngagementModel)}
+                  </div>
                   <div>{getLabel(countries, summaryCountry)}</div>
                   <div>{summaryRate}</div>
                 </div>
@@ -657,8 +687,12 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
                       <path d="M12 8l3 3" />
                       <path d="M4 16.5V18a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 18v-1.5" />
                     </svg>
-                    <div className="font-medium">Attachments (Guidelines, Docs)</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">PDF, JPG, PNG</div>
+                    <div className="font-medium">
+                      Attachments (Guidelines, Docs)
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      PDF, JPG, PNG
+                    </div>
                   </div>
                 </div>
               </div>
@@ -677,11 +711,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
               >
                 Cancel
               </Button>
-              <Button
-                isScrollToTop
-                className="rounded-md"
-                type="submit"
-              >
+              <Button isScrollToTop className="rounded-md" type="submit">
                 Submit
               </Button>
             </div>
