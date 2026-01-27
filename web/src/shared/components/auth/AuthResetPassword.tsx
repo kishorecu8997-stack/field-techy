@@ -24,6 +24,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email") || "";
+    const token = searchParams.get("token") || "";
     const { success, error: toastError } = useToast();
 
     const methods = useForm<ResetPasswordFormData>({
@@ -52,7 +53,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
     const handleSubmit = (data: ResetPasswordFormData) => {
         resetPassword({
             body: {
-                email: data.email,
+                token: token,
                 code: data.otp,
                 newPassword: data.password,
             },

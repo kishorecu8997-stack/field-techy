@@ -35,13 +35,15 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     });
 
     const { mutate: forgotPassword, isPending } = useForgotPassword({
-        onSuccess: () => {
+        onSuccess: (data) => {
             success("OTP sent to your email address");
             const resetUrl =
                 role === "client"
                     ? absoluteUrls.client.auth.reset_password
                     : absoluteUrls.engineer.auth.reset_password;
-            navigate(`${resetUrl}?email=${methods.getValues("email")}`);
+
+            const tokenQuery = data?.token ? `&token=${data.token}` : "";
+            navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
         },
         onError: (err: any) => {
             toastError(err?.body?.error || "Failed to send OTP");
