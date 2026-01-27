@@ -56,9 +56,9 @@ const JobInviteCard: React.FC<JobCardProps> = ({
           aria-label={isSelected ? "Selected" : "Not selected"}
         >
           {isSelected ? (
-            <AiOutlineCheckCircle className="w-full h-full  text-teal-800" />
+            <AiOutlineCheckCircle className="w-full h-full text-teal-800 dark:text-teal-400" />
           ) : (
-            <FaRegCircle className="w-full h-full text-inherit" />
+            <FaRegCircle className="w-full h-full text-gray-400 dark:text-gray-500" />
           )}
         </div>
         <input

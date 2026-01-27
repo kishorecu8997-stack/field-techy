@@ -5,6 +5,8 @@ import {
   cvvValidation,
   expiryDateValidation,
   validateAddress,
+  formatCardNumber,
+  formatExpiryDate,
 } from "@/utils/validate";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -88,32 +90,46 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
               <AiOutlineClose className="w-6 h-6" />
             </button>
           </div>
-          <h1 className="text-xl font-bold text-center"> Add Card</h1>
+          <h1 className="text-xl font-bold text-center text-gray-900 dark:text-white">
+            {" "}
+            Add Card
+          </h1>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 pt-0">
           <div>
             <InputField
-              label="Card Number"
               name="cardNumber"
+              label="Card Number"
               placeholder="9999 9999 9999 9999"
-              rules={{ validate: (v: string) => cardNumberValidation(v) }}
-              required
-              allowedCharacters="numbers"
+              maxLength={19}
+              rules={{ validate: cardNumberValidation }}
+              onChange={(val) => {
+                const formatted = formatCardNumber(val);
+                methods.setValue("cardNumber", formatted, {
+                  shouldValidate: true,
+                });
+              }}
             />
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <InputField
-                label="Expiry Date"
                 name="expDate"
+                label="Expiry Date"
                 placeholder="MM/YY"
-                rules={{ validate: (v: string) => expiryDateValidation(v) }}
+                maxLength={5}
+                rules={{ validate: expiryDateValidation }}
+                onChange={(val) => {
+                  const formatted = formatExpiryDate(val);
+                  methods.setValue("expDate", formatted, {
+                    shouldValidate: true,
+                  });
+                }}
                 required
-                allowedCharacters="digits-slash"
               />
             </div>
+
             <div>
               <InputField
                 label="CVV"
@@ -121,7 +137,7 @@ const AddCard: React.FC<AddCardProps> = ({ onClose, onAddCard }) => {
                 placeholder="Enter CVV"
                 rules={{ validate: (v: string) => cvvValidation(v) }}
                 required
-                allowedCharacters="numbers"
+                maxLength={4}
               />
             </div>
           </div>

@@ -162,16 +162,25 @@ export const validatePortfolio = async (value: string) => {
  * - no letters or special characters allowed
  */
 export const validateAmount = (value: string) => {
-  const v = (value || "").trim();
+  const v = value?.trim();
   if (!v) return "Amount is required";
-  if (/\s/.test(v)) return "Amount must not contain spaces";
-  if (!/^\d+$/.test(v))
-    return "Amount must contain digits only (no letters or special characters)";
-  if (v.length < 2) return "Amount must be at least 2 digits";
-  if (v.length > 5) return "Amount must not exceed 5 digits";
+  if (!/^\d+$/.test(v)) {
+    return "Amount must contain digits only";
+  }
+  if (v.startsWith("0")) {
+    return "Amount must not have leading zeros";
+  }
+  const amount = Number(v);
+  if (!Number.isSafeInteger(amount)) {
+    return "Invalid amount";
+  }
+  const maxAmount = Number(import.meta.env.VITE_MAX_AMOUNT) || 10000000;
+  if (amount > maxAmount) {
+    return `Amount must not exceed ${maxAmount.toLocaleString()}`;
+  }
+
   return true;
 };
-
 export const validateDesignation = (value: string) => {
   if (!value) return "Current Designation must be at least 2 characters";
 
@@ -192,19 +201,19 @@ export const validateDesignation = (value: string) => {
 };
 
 export const validateCompany = (value: string) => {
-  if (!value) return "Employer must be at least 4 characters";
+  if (!value) return "Company Name must be at least 4 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
-    return "Employer must not start or end with a space";
+    return "Company Name must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 4) return "Employer must be at least 4 characters";
-  if (v.length > 50) return "Employer must not exceed 50 characters";
+  if (v.length < 4) return "Company Name must be at least 4 characters";
+  if (v.length > 50) return "Company Name must not exceed 50 characters";
 
   // Only letters, numbers, and / & - . with single spaces between
   if (!/^[A-Za-z0-9/&.-]+(?: [A-Za-z0-9/&.-]+)*$/.test(v)) {
-    return "Employer may contain only letters, numbers, single spaces, and / & - .";
+    return "Company Name may contain only letters, numbers, single spaces, and / & - .";
   }
 
   return true;
@@ -453,6 +462,13 @@ export const cardNumberValidation = (value: string) => {
   }
 
   return true; // Validation successful
+};
+export const formatCardNumber = (value: string) => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+
+  // Group digits in sets of 4
+  return digits.replace(/(.{4})/g, "$1 ").trim();
 };
 
 // Luhn Algorithm for checksum validation
@@ -1157,6 +1173,16 @@ export const validateGroupName = (value: string) => {
   }
 
   return true;
+};
+
+export const formatExpiryDate = (val: string) => {
+  const digits = val.replace(/\D/g, "");
+  const limited = digits.slice(0, 4);
+  let formatted = limited;
+  if (limited.length > 2) {
+    formatted = limited.slice(0, 2) + "/" + limited.slice(2);
+  }
+  return formatted;
 };
 
 export default {

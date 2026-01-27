@@ -207,7 +207,7 @@ export const VerifiedPhoneInputField = ({
 
                             if (/^\d*$/.test(inputVal)) {
                               if (!maxDigits || inputVal.length <= maxDigits) {
-                                field.onChange(`${countryCode} ${inputVal} `);
+                                field.onChange(`${countryCode} ${inputVal}`);
                                 if (verified) setVerified(false);
                               }
                             }

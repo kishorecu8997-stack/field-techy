@@ -16,7 +16,7 @@ const ClientInterviewerSection: React.FC<MultiCardProps> = ({
   disabled,
 }) => {
   return (
-    <div className="space-y-2 border border-gray-200 rounded-2xl shadow p-4 bg-white dark:bg-gray-700 w-full">
+    <div className="space-y-2 border border-gray-200 rounded-2xl shadow p-4 bg-white dark:bg-gray-700 w-full mt-3">
       <div className="flex justify-between items-center">
         <h2 className="font-semibold text-md">{title}</h2>
       </div>
