@@ -246,22 +246,27 @@ export default function PendingRequest() {
       label: "Approve/Reject",
       renderCell: (row: ManageEngineerProps) => {
         const current = rowStatuses[row.id] ?? "pending";
-
-        const preparedOptions = JobStatus.map(opt => ({
-          ...opt,
-          disabled: opt.value === "pending" && current === "pending"
-        }));
+        const preparedOptions = [
+          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
+            ...opt,
+            disabled: true,
+          })),
+          ...JobStatus.filter((opt) => opt.value !== current),
+        ];
+        
         return (
           <div className="relative w-full">
             <SelectMenu
               placeholder="Select"
               value={current}
               onChange={(value: string | null) => {
-                const newValue = value ?? "pending";
+                if (!value || value === current) return;
+
                 setRowStatuses((prev) => ({
                   ...prev,
-                  [row.id]: newValue
+                  [row.id]: value,
                 }));
+
                 handleStatusChange({
                   ...row,
                   status: value as adminJobsStatus,
