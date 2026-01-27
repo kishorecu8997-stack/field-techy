@@ -67,11 +67,11 @@ export const CountrySelect = ({
       </Button>
 
       {isOpen && !disabled && (
-        <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
+        <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
           {countries.map((country) => (
             <div
               key={country.code}
-              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
               onClick={() => {
                 onChange(country.code);
                 setIsOpen(false);
