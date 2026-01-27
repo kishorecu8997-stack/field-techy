@@ -3,6 +3,12 @@ interface PasswordStrengthMeterProps {
     password: string;
 }
 
+/**
+ * A component for password strength meter functionality.
+ * @param {PasswordStrengthMeterProps} props - The props for the PasswordStrengthMeter component.
+ * @param {string} props.password - The password to be checked.
+ * @returns {JSX.Element} The PasswordStrengthMeter component.
+ */
 const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
     password,
 }) => {

@@ -18,6 +18,12 @@ interface AuthForgetPasswordProps {
     role: "client" | "engineer";
 }
 
+/**
+ * A component for forgot password functionality.
+ * @param {AuthForgetPasswordProps} props - The props for the AuthForgetPassword component.
+ * @param {"client" | "engineer"} props.role - The role of the user.
+ * @returns {JSX.Element} The AuthForgetPassword component.
+ */
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     const navigate = useNavigate();
     const { success, error: toastError } = useToast();

@@ -15,8 +15,18 @@ export type ToastContextValue = {
   warning: (message: string) => void;
 };
 
+/**
+ * A context for toast functionality.
+ * @param {ToastContextValue | undefined} value - The value for the ToastContext.
+ * @returns {JSX.Element} The ToastContext component.
+ */
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
+/**
+ * A provider for toast functionality.
+ * @param {ToastContextValue | undefined} value - The value for the ToastContext.
+ * @returns {JSX.Element} The ToastContext component.
+ */
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(
     () => ({
@@ -46,6 +56,10 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+/**
+ * A hook for toast functionality.
+ * @returns {ToastContextValue} The ToastContext value.
+ */
 export const useToast = () => {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used within a ToastProvider");

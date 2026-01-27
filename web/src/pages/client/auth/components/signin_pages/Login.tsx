@@ -48,8 +48,6 @@ const Login = ({
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin({
     onSuccess: async (resp) => {
-      console.log(`Login Response: `, resp);
-
       // Store the token
       if (resp.token) {
         localStorage.setItem("auth_token", resp.token);

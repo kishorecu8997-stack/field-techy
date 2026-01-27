@@ -91,8 +91,6 @@ const BasicDetails = () => {
   // TanStack Query mutation hook for client registration (using OpenAPI)
   const registerMutation = useRegisterClient({
     onSuccess: (result) => {
-      console.log("Signup successful:", result);
-
       // Store the JWT token for OTP verification
       if (result.token) {
         localStorage.setItem("auth_token", result.token);
@@ -104,7 +102,6 @@ const BasicDetails = () => {
       navigate("/client/auth/verification");
     },
     onError: (error: unknown) => {
-      console.error("Signup failed:", error);
       toast.error(
         (error as Error)?.message || "Registration failed. Please try again.",
       );
@@ -289,8 +286,7 @@ const BasicDetails = () => {
               <label htmlFor="termsAndConditions" className="cursor-pointer">
                 I agree to the
               </label>
-              <button
-                type="button"
+              <div
                 className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
                 onClick={async (e) => {
                   e.stopPropagation();
@@ -357,7 +353,7 @@ const BasicDetails = () => {
                 }}
               >
                 Terms and Conditions
-              </button>
+              </div>
             </div>
           </div>
           {errors?.termsAndConditions && (

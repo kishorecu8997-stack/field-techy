@@ -63,20 +63,14 @@ const LoginWithNumber = ({
 
   const otpfor = method.watch("otp");
 
-  const handleSubmit = async (data: LoginFormData) => {
-    const value = data.email ? data.email : data.phone;
-    console.log("value :", value);
-    // setRequestData(value);
-
-    // Determine type based on selection
+  const handleSubmit = async () => {
     const type = otpfor === 'email' ? 'email' : 'phone';
 
     try {
-      await sendOtp({ body: { type }, headers: { Authorization: "" } }); // Token is optional/empty for pre-login
+      await sendOtp({ body: { type }, headers: { Authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {
-      console.log(`OTP Response: `, error);
       const errorMessage =
         error instanceof Error ? error.message : "OTP Request failed";
       toast.error(errorMessage);
@@ -87,7 +81,7 @@ const LoginWithNumber = ({
     const type = otpfor === 'email' ? 'email' : 'phone';
 
     try {
-      const response = await verifyOtp({
+      await verifyOtp({
         body: {
           type,
           code: otp,
@@ -95,7 +89,6 @@ const LoginWithNumber = ({
         headers: { Authorization: "" }
       });
 
-      console.log("OTP Response: ", response);
       setIsOpen(false);
 
       // TODO: New API returns { message: string }, not a session. 
@@ -119,7 +112,6 @@ const LoginWithNumber = ({
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {
-      console.error(error);
       toast.error("OTP Request failed");
     }
   };
