@@ -9,11 +9,11 @@ import { IoCloseSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 export default function SuspendEngineer({
-  isSuspendengineer,
-  setIsSuspendengineer,
+  isSuspendEngineer,
+  setIsSuspendEngineer,
 }: {
-  isSuspendengineer: boolean;
-  setIsSuspendengineer: React.Dispatch<React.SetStateAction<boolean>>;
+  isSuspendEngineer: boolean;
+  setIsSuspendEngineer: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { watch, handleSubmit } = useFormContext(); 
   const suspendStartDate = watch("suspendStartDate");
@@ -22,20 +22,20 @@ export default function SuspendEngineer({
     console.log("Form Data:", data);
     // Add your API call logic here
     toast.success("Engineer suspended successfully!");
-    setIsSuspendengineer(false);
+    setIsSuspendEngineer(false);
   };
   return (
     <div>
       <Popup
-        open={isSuspendengineer}
-        onClose={() => setIsSuspendengineer(false)}
+        open={isSuspendEngineer}
+        onClose={() => setIsSuspendEngineer(false)}
       >
         <div className="p-4">
           <div className="flex justify-between items-center">
             <span className="font-bold">Suspend Engineer</span>
             <div
               className="text-xl font-semibold cursor-pointer"
-              onClick={() => setIsSuspendengineer(false)}
+              onClick={() => setIsSuspendEngineer(false)}
             >
               <IoCloseSharp />
             </div>
@@ -69,7 +69,7 @@ export default function SuspendEngineer({
             <Button
               variant="outline"
               type="button"
-              onClick={() => setIsSuspendengineer(false)}
+              onClick={() => setIsSuspendEngineer(false)}
             >
               Cancel
             </Button>

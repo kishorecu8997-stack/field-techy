@@ -41,7 +41,7 @@ export default function ActiveUser() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
-  const [isSuspendengineer, setIsSuspendengineer] = useState<boolean>(false);
+  const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -179,7 +179,7 @@ export default function ActiveUser() {
           showAction={showAction}
           setShowAction={setShowAction}
           handleDelete={handleDeleteEngineer}
-          setIsSuspend={setIsSuspendengineer}
+          setIsSuspend={setIsSuspendEngineer}
           setIsBlock={setIsBlockEngineer}
         />
       ),
@@ -189,7 +189,7 @@ export default function ActiveUser() {
   const onSubmit = async (
     data: SuspendEngineerFormData | BlockEngineerFormData,
   ) => {
-    if (isSuspendengineer) {
+    if (isSuspendEngineer) {
       await handleSuspendSubmit(data as SuspendEngineerFormData);
     } else {
       await handleBlockSubmit(data);
@@ -209,7 +209,7 @@ export default function ActiveUser() {
           action: async (close) => {
             console.log("Suspend data:", data);
             methods.reset();
-            setIsSuspendengineer(false);
+            setIsSuspendEngineer(false);
             toast.success("Engineer suspended successfully!");
             close(true);
           },
@@ -271,10 +271,10 @@ export default function ActiveUser() {
         </div>
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
-        {isSuspendengineer && (
+        {isSuspendEngineer && (
           <SuspendEngineer
-            isSuspendengineer={isSuspendengineer}
-            setIsSuspendengineer={setIsSuspendengineer}
+            isSuspendEngineer={isSuspendEngineer}
+            setIsSuspendEngineer={setIsSuspendEngineer}
           />
         )}
         {isBlockEngineer && (

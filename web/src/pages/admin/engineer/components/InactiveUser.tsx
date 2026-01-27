@@ -41,7 +41,7 @@ export default function InactiveUser() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
-  const [isSuspendengineer, setIsSuspendengineer] = useState<boolean>(false);
+  const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -64,8 +64,8 @@ export default function InactiveUser() {
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
-      title: "Delete Enginner",
-      body: "Are you sure you want to delete this enginner?",
+      title: "Delete Engineer",
+      body: "Are you sure you want to delete this engineer?",
       actionButtons: [
         {
           label: "Cancel",
@@ -176,7 +176,7 @@ export default function InactiveUser() {
           showAction={showAction}
           setShowAction={setShowAction}
           handleDelete={handleDeleteEngineer}
-          setIsSuspend={setIsSuspendengineer}
+          setIsSuspend={setIsSuspendEngineer}
           setIsBlock={setIsBlockEngineer}
         />
       ),
@@ -186,7 +186,7 @@ export default function InactiveUser() {
   const onSubmit = async (
     data: SuspendEngineerFormData | BlockEngineerFormData,
   ) => {
-    if (isSuspendengineer) {
+    if (isSuspendEngineer) {
       await handleSuspendSubmit(data as SuspendEngineerFormData);
     } else {
       await handleBlockSubmit(data);
@@ -207,7 +207,7 @@ export default function InactiveUser() {
             console.log("Suspend data:", data);
             close(true);
             methods.reset();
-            setIsSuspendengineer(false);
+            setIsSuspendEngineer(false);
             toast.success("Engineer suspended successfully!");
           },
         },
@@ -268,10 +268,10 @@ export default function InactiveUser() {
         </div>
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
-        {isSuspendengineer && (
+        {isSuspendEngineer && (
           <SuspendEngineer
-            isSuspendengineer={isSuspendengineer}
-            setIsSuspendengineer={setIsSuspendengineer}
+            isSuspendEngineer={isSuspendEngineer}
+            setIsSuspendEngineer={setIsSuspendEngineer}
           />
         )}
         {isBlockEngineer && (
