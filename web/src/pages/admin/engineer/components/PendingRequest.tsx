@@ -18,6 +18,15 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import type { adminJobsStatus } from "../../jobs/types";
 import { toast } from "react-toastify";
 
+export const EngineerStatus = {
+  APPROVE: "approve",
+  REJECT: "reject",
+  PENDING: "pending",
+} as const;
+
+export type EngineerStatusType =
+  (typeof EngineerStatus)[keyof typeof EngineerStatus];
+  
 /**
  * PendingRequest Component
  *
@@ -34,14 +43,6 @@ import { toast } from "react-toastify";
  *
  * @returns {JSX.Element} The rendered PendingRequest component.
  */
-export const EngineerStatus = {
-  APPROVE: "approve",
-  REJECT: "reject",
-  PENDING: "pending",
-} as const;
-
-export type EngineerStatusType =
-  (typeof EngineerStatus)[keyof typeof EngineerStatus];
 
 export default function PendingRequest() {
   const navigate = useNavigate();
