@@ -1,13 +1,15 @@
 import { earningsData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchDataClient";
+
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useMemo, useState } from "react";
-import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
+import jobFilters, { SORT_OPTIONS, type Job, type JobStatus, JOB_STATUSES, WORKING_TYPES } from "../search_result/types";
 import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
+import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
+import type { ClientGetJobsResponse } from "@/api";
 
 /**
  * `MyJobsClient` is the main page component for a client to view their jobs.
@@ -17,25 +19,48 @@ import { scrollToTop } from "@/utils";
  */
 const MyJobsClient: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>(jobFilters[0]);
+  const { data: jobsData } = useClientGetJobs();
+
+  const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
+    id: apiJob.id,
+    title: apiJob.jobTitle,
+    type: apiJob.jobType === "On site" ? WORKING_TYPES.onsite : WORKING_TYPES.remote,
+    startDate: apiJob.startDate ? new Date(apiJob.startDate).toDateString() : "N/A",
+    duration: apiJob.endDate ? "Calculated Duration" : "N/A",
+    location: apiJob.workLocationName || `${apiJob.cityId}, ${apiJob.countryId}`,
+    cityId: apiJob.cityId,
+    stateId: apiJob.stateId,
+    countryId: apiJob.countryId,
+    workLocationName: apiJob.workLocationName,
+    pay: apiJob.totalPrice ? `$${apiJob.totalPrice}` : "N/A",
+    status: (apiJob.status?.toLowerCase() as JobStatus) || JOB_STATUSES.posted,
+    serviceType: "Service Category " + apiJob.serviceCategoryId,
+    description: apiJob.jobDescription || undefined,
+    postedTime: apiJob.createdAt || undefined,
+  });
+
+  const allJobs: Job[] = useMemo(() => {
+    return (jobsData || []).map(mapApiJobToUiJob);
+  }, [jobsData]);
 
   const filteredJobs = useMemo(() => {
     if (activeFilter === jobFilters[0]) {
-      return sampleJobs as Job[];
+      return allJobs;
     }
     if (activeFilter === jobFilters[1]) {
-      return (sampleJobs as Job[]).filter((job) => job.status === "inprogress");
+      return allJobs.filter((job) => job.status === JOB_STATUSES.inprogress);
     }
     if (activeFilter === jobFilters[2]) {
-      return (sampleJobs as Job[]).filter((job) => job.status === "completed");
+      return allJobs.filter((job) => job.status === JOB_STATUSES.completed);
     }
     if (activeFilter === jobFilters[3]) {
-      return (sampleJobs as Job[]).filter((job) => job.status === "posted");
+      return allJobs.filter((job) => job.status === JOB_STATUSES.posted);
     }
     if (activeFilter === jobFilters[4]) {
-      return (sampleJobs as Job[]).filter((job) => job.status === "hold");
+      return allJobs.filter((job) => job.status === JOB_STATUSES.hold);
     }
-    return (sampleJobs as Job[]).filter((job) => job.status === activeFilter);
-  }, [activeFilter]);
+    return allJobs.filter((job) => job.status === activeFilter);
+  }, [activeFilter, allJobs]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;

@@ -1,7 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { TemplateData, experienceLevel } from "@/dummy_data/client";
-import { countries } from "@/dummy_data/countries";
-import { serviceCategories } from "@/dummy_data/serviceCategories";
+import { TemplateData } from "@/dummy_data/client";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -21,9 +19,11 @@ import {
   type PostAJobFieldsProps,
   type PostOption,
 } from "../types";
-import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
+import BillSummary from "./components/form_sections/BillSummary";
+import { useClientPostJob, useClientMarkJobFileUploaded } from "@/shared/apiServices/client/clientOpenApiService";
+import type { ClientPostJobData } from "@/api";
 
 /**
  * PostJobPage Component
@@ -40,24 +40,24 @@ const PostJobPage = () => {
 
   const formCtx = useForm<PostAJobFieldsProps>({
     defaultValues: {
-      projectName: "",
-      jobName: "",
-      jobTitle: "",
-      serviceCategory: "",
-      locationType: "" as unknown as locationTypeType,
-      location: "",
-      engagementModel: "",
-      country: "",
-      state: "",
-      city: "",
-      experienceLevel: "",
-      numberOfVacancy: "",
+      projectName: "Test Project",
+      jobName: "Test Job",
+      jobTitle: "Senior Field Engineer",
+      serviceCategory: "1",
+      locationType: "onsite" as unknown as locationTypeType,
+      location: "New York, USA",
+      engagementModel: "1",
+      country: "1",
+      state: "1",
+      city: "1",
+      experienceLevel: "1",
+      numberOfVacancy: "2",
       toolBudgetTotal: 0,
-      skills: [],
+      skills: ["1"],
       tools: [],
       safetyWears: [],
       task: "",
-      description: "",
+      description: "This is a test job description for validation purposes.",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
@@ -129,129 +129,14 @@ const PostJobPage = () => {
 
   const handleSubmit = async (data: PostAJobFieldsProps) => {
     billConsentRef.current = false;
-    const ratePerWeek = 2000;
-
-    const getLabel = (opts: { value: string; label: string }[], v?: string) =>
-      opts.find((o) => o.value === v)?.label || "-";
-
-    const formatDate = (value?: Date | null): string => {
-      if (!value) return "-";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return "-";
-      return d.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    };
-
-    const getDuration = (start?: Date | null, end?: Date | null) => {
-      if (!start || !end) return { days: 1, weeks: 1 };
-      const s = new Date(start).getTime();
-      const e = new Date(end).getTime();
-      if (Number.isNaN(s) || Number.isNaN(e) || e < s)
-        return { days: 1, weeks: 1 };
-      const diffDays = Math.max(1, Math.ceil((e - s) / 86400000));
-      const weeks = Math.max(1, Math.ceil(diffDays / 7));
-      return { days: diffDays, weeks };
-    };
-
-    const duration = getDuration(data.startDate, data.endDate);
-    const weeks = duration.weeks;
-    const toolBudget = data.toolBudgetTotal || 0;
-    const totalBill =
-      ratePerWeek * weeks * Number(data.numberOfVacancy || 1) + toolBudget;
-    const currency = new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(totalBill);
-
     const body = (
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Service Category</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(serviceCategories, data.serviceCategory)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Country</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(countries, data.country)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Engineer Experience Level</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(experienceLevel, data.experienceLevel)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Engagement Model</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(ENGAGEMENT_MODELS, data.engagementModel)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Rate</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              ₹{ratePerWeek}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Duration</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs text-right">
-              {formatDate(data.startDate)} – {formatDate(data.endDate)} (
-              {duration.days < 7
-                ? `${duration.days} ${duration.days === 1 ? "day" : "days"}`
-                : `${weeks} ${weeks === 1 ? "week" : "weeks"}`}
-              )
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Number of Vacancies</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {data.numberOfVacancy || "-"}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Tools Cost</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {data.toolBudgetTotal
-                ? `₹${data.toolBudgetTotal.toLocaleString("en-IN")}`
-                : "-"}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Service Charge</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              Free
-            </span>
-          </div>
-        </div>
-        <hr className="border-gray-200 dark:border-gray-600" />
-        <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
-          <span>Total Bill</span>
-          <span>{currency}</span>
-        </div>
-
-        <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 dark:bg-gray-700 dark:border-gray-600"
-            defaultChecked={billConsentRef.current}
-            onChange={(e) => {
-              billConsentRef.current = e.target.checked;
-            }}
-          />
-          <span>
-            By continuing, you agree to share this data within the selected
-            region
-          </span>
-        </label>
-      </div>
+      <BillSummary
+        data={data}
+        defaultConsent={billConsentRef.current}
+        onConsentChange={(checked) => {
+          billConsentRef.current = checked;
+        }}
+      />
     );
 
     await showPopup({
@@ -292,8 +177,103 @@ const PostJobPage = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePostAJob = async (_data: PostAJobFieldsProps) => {
-    toast.success("Job Posted successfully");
+  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
+  const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
+
+  const handlePostAJob = async (data: PostAJobFieldsProps) => {
+    // Map form data to API payload
+    const payload: ClientPostJobData["body"] = {
+      jobTitle: data.jobTitle,
+      jobDescription: data.description,
+      jobType: data.locationType === "onsite" ? "On site" : data.locationType === "remote" ? "Remote" : "Hybrid",
+      countryId: Number(data.country) || 1,
+      stateId: Number(data.state) || 1,
+      cityId: Number(data.city) || 1,
+      startDate: data.startDate ? data.startDate.toISOString() : undefined,
+      endDate: data.endDate ? data.endDate.toISOString() : undefined,
+      vacancies: Number(data.numberOfVacancy) || 1,
+      serviceCategoryId: Number(data.serviceCategory) || 1,
+      experienceLevelId: Number(data.experienceLevel) || 1,
+      engagementModelId: Number(data.engagementModel) || 1,
+      additionalDetails: data.otherInfo,
+      currencyId: 1,
+      skills: (data.skills || []).map((s) => Number(s)).filter((n) => !isNaN(n)),
+      tools: (data.toolsData || []).map((t) => ({
+        toolId: Number(t.id) || 0, // Using the selected tool ID
+        budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
+        image: t.images && t.images.length > 0 && t.images[0].file ? {
+          filename: t.images[0].file.name,
+          size: t.images[0].file.size,
+          mimeType: t.images[0].file.type
+        } : undefined
+      })),
+      attachment: data.attachment && data.attachment.length > 0 ? {
+        filename: data.attachment[0].name,
+        size: data.attachment[0].size,
+        mimeType: data.attachment[0].type
+      } : undefined,
+    };
+
+    postJob(
+      { body: payload },
+      {
+        onSuccess: async (response) => {
+          try {
+            const uploadPromises: Promise<unknown>[] = [];
+
+            // Upload Attachment
+            if (response.uploadUrls.attachment && data.attachment && data.attachment.length > 0) {
+              uploadPromises.push(
+                fetch(response.uploadUrls.attachment, {
+                  method: 'PUT',
+                  body: data.attachment[0],
+                  headers: {
+                    'Content-Type': data.attachment[0].type
+                  }
+                })
+              );
+            }
+
+            // Upload Tool Images
+            if (response.uploadUrls.tools && response.uploadUrls.tools.length > 0) {
+              const toolsWithImages = (data.toolsData || []).filter(t => t.images && t.images.length > 0 && t.images[0].file);
+
+              toolsWithImages.forEach((tool, index) => {
+                if (response.uploadUrls.tools[index] && tool.images[0].file) {
+                  uploadPromises.push(
+                    fetch(response.uploadUrls.tools[index], {
+                      method: 'PUT',
+                      body: tool.images[0].file,
+                      headers: {
+                        'Content-Type': tool.images[0].file.type
+                      }
+                    })
+                  );
+                }
+              });
+            }
+
+            await Promise.all(uploadPromises);
+
+            if (uploadPromises.length > 0) {
+              await markUploaded({ body: { jobId: response.id } });
+            }
+
+            toast.success(`Job posted! Code: ${response.jobCode}`);
+            navigate(absoluteUrls.client.home.my_jobs);
+          } catch (error) {
+            console.error("Upload error:", error);
+            toast.error("Job posted but failed to upload files");
+            navigate(absoluteUrls.client.home.my_jobs);
+          }
+        },
+        onError: (error: unknown) => {
+          console.error("Post job error:", error);
+          const msg = (error as { message?: string })?.message || "Failed to post job";
+          toast.error(msg);
+        },
+      }
+    );
   };
 
   return (
@@ -301,17 +281,11 @@ const PostJobPage = () => {
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <MyJobsHeader
           title={
-            currentLocation === CurrentLocation.dedicated
-              ? "Post a Job - Dedicated Service"
-              : currentLocation === CurrentLocation.dispatch
-                ? "Post a Job - Dispatch Service"
-                : currentLocation === CurrentLocation.scheduled
-                  ? "Post a Job - Scheduled Service"
-                  : currentLocation === CurrentLocation.fullTime
-                    ? "Post a Job - Full Time"
-                    : currentLocation === CurrentLocation.onDemand
-                      ? "Post a Job - On Demand"
-                      : "Post a Job"
+            currentLocation === CurrentLocation.fullTime
+              ? "Post a Job - Full Time"
+              : currentLocation === CurrentLocation.onDemand
+                ? "Post a Job - On Demand"
+                : "Post a Job"
           }
           isReport={false}
           isShowSort={false}
@@ -325,7 +299,7 @@ const PostJobPage = () => {
           }
         />
 
-        {currentLocation && <PostAJobFields isDisable={isDisable} />}
+        {currentLocation && <PostAJobFields isDisable={isDisable || isPosting} />}
       </FormContainer>
     </div>
   );

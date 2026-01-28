@@ -128,7 +128,7 @@ export interface PostAJobFieldsProps {
   budget: string;
   primaryLanguage: string;
   secondaryLanguage: string;
-  attachment: File | null;
+  attachment: FileList | null;
   otherInfo: string;
   startDate: Date | null;
   startTime: string;
@@ -148,6 +148,7 @@ export interface PostAJobFieldsProps {
   JobOccurrenceEndDate: Date | null;
   estimatedDuration: string;
   saveAsTemplate: boolean;
+  toolsData?: { id?: string; name: string; budget: string; images: { name: string; url: string; file: File }[] }[];
 }
 
 export interface PostOption {

@@ -4,16 +4,23 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
+  type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
+  type ClientGetRateCardResponse,
+  type ClientMarkJobFileUploadedResponses,
 } from "@/api";
 import {
-  appRegisterClientMutation,
-  appLoginMutation,
-  clientGetCompanyInfoOptions,
-  clientUpdateCompanyInfoMutation,
   appChangePasswordMutation,
-  appMarkProfileFileUploadedMutation,
   appDeleteProfileFileMutation,
+  appLoginMutation,
+  appMarkProfileFileUploadedMutation,
+  appRegisterClientMutation,
+  clientGetCompanyInfoOptions,
+  clientGetJobsOptions,
+  clientPostJobMutation,
+  clientUpdateCompanyInfoMutation,
+  clientGetRateCardMutation,
+  clientMarkJobFileUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -130,4 +137,52 @@ export function useAppDeleteProfileFile(options?: {
     },
     onError: options?.onError,
   });
+}
+
+export function useClientPostJob(options?: {
+  onSuccess?: (data: ClientPostJobResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientPostJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+// ... existing code ...
+export function useClientGetJobs(enabled: boolean = true) {
+  return useQuery({
+    ...clientGetJobsOptions({
+      client: apiClient,
+    }),
+    enabled: enabled,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useClientGetRateCard(options?: {
+    onSuccess?: (data: ClientGetRateCardResponse) => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        ...clientGetRateCardMutation({ client: apiClient }),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
+}
+
+export function useClientMarkJobFileUploaded(options?: {
+    onSuccess?: (data: ClientMarkJobFileUploadedResponses[keyof ClientMarkJobFileUploadedResponses]) => void;
+    onError?: (error: unknown) => void;
+}) {
+    return useMutation({
+        ...clientMarkJobFileUploadedMutation({ client: apiClient }),
+        onSuccess: options?.onSuccess,
+        onError: options?.onError,
+    });
 }

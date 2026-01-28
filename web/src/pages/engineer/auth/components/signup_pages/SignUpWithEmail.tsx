@@ -2,7 +2,6 @@ import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import IconWithTheme from "@/shared/components/IconWithTheme";
@@ -143,8 +142,8 @@ const SignUpWithEmail = ({
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
             className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
               }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
