@@ -199,11 +199,13 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-white dark:text-green-400 font-medium ${
-                      timeLeft > 0 || isPending
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className={`
+                      w-24 py-2 rounded-lg
+                      bg-gradient-to-r from-teal-700 to-teal-900
+                      text-white font-medium
+                      hover:opacity-90 transition
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
                   >
                     Resend
                   </Button>
