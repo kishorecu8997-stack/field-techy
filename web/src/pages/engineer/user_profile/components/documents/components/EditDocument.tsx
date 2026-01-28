@@ -1,21 +1,20 @@
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
+import { useProfileFileUpload, type ProfileFileType } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
-import { useMemo } from "react";
-import type { DocumentType } from "@/shared/apiServices/engineer/engineerTypes";
-import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
 import { getUserId } from "@/utils";
+import { useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * Defines the shape of the form data for editing a document.
  */
 export type EditDocumentFormData = {
-  documentType: DocumentType;
+  documentType: ProfileFileType;
   file: FileList;
 };
 
@@ -30,7 +29,7 @@ const EditDocument = () => {
 
   const userId = useMemo(() => getUserId(), []);
 
-  const uploadMutation = useEngineerFileUpload(userId || undefined, {
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => {
       toast.success("Document Uploaded Successfully");
       setActiveKey("documents");
@@ -40,6 +39,19 @@ const EditDocument = () => {
       toast.error("Failed to upload document");
     },
   });
+
+  const getProfileFileType = (docType: ProfileFileType): ProfileFileType => {
+    switch (docType) {
+      case "resumeFile":
+        return "resumeFile";
+      case "govIdDoc":
+        return "govIdDoc";
+      case "certificateDoc":
+        return "certificateDoc";
+      default:
+        return "resumeFile";
+    }
+  };
 
   const onSubmit = async (data: EditDocumentFormData) => {
     if (!userId) {
@@ -69,12 +81,14 @@ const EditDocument = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            uploadMutation.mutate({
-              engineerId: userId,
-              file: data.file[0],
-              documentType: data.documentType,
-            });
-            close(true);
+            try {
+              await uploadProfileFile(
+                data.file[0],
+                getProfileFileType(data.documentType),
+              );
+            } finally {
+              close(true);
+            }
           },
         },
       ],
@@ -84,14 +98,14 @@ const EditDocument = () => {
   const methods = useForm<EditDocumentFormData>({
     mode: "onSubmit",
     defaultValues: {
-      documentType: "RESUME",
+      documentType: "resumeFile",
     },
   });
 
   const documentTypeOptions = [
-    { label: "Resume", value: "RESUME" },
-    { label: "Government ID", value: "GOVERNMENT_ID" },
-    { label: "Certificate", value: "CERTIFICATE" },
+    { label: "Resume", value: "resumeFile" },
+    { label: "Government ID", value: "govIdDoc" },
+    { label: "Certificate", value: "certificateDoc" },
   ];
 
   return (
@@ -117,7 +131,7 @@ const EditDocument = () => {
           validatePDF={true}
         />
 
-        {uploadMutation.isPending && (
+        {isUploading && (
           <div className="mt-2 text-sm text-blue-600 animate-pulse">
             Uploading document...
           </div>
@@ -127,10 +141,10 @@ const EditDocument = () => {
       <div className="bg-white p-3 border-t">
         <Button
           type="submit"
-          disabled={uploadMutation.isPending}
+          disabled={isUploading}
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition disabled:opacity-50"
         >
-          {uploadMutation.isPending ? "Uploading..." : "Save"}
+          {isUploading ? "Uploading..." : "Save"}
         </Button>
       </div>
     </FormContainer>

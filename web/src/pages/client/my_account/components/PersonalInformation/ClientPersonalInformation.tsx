@@ -25,6 +25,7 @@ import {
   validateName,
   validateVatNumber,
   validateZipcode,
+  validateCompany,
 } from "../../Validate";
 
 interface ClientPersonalInformationProps {
@@ -39,37 +40,11 @@ interface ClientPersonalInformationProps {
 const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   onMenuItemClick,
 }) => {
-  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
-  const token = localStorage.getItem("auth_token") || undefined;
+  const { companyInfo } = useClientCompanyInfoStore();
 
   const { mutateAsync: updateClient } = useClientUpdateCompanyInfo({
     onSuccess: () => {
       toast.success("Profile Updated Successfully");
-      const data = methods.getValues();
-      if (companyInfo) {
-        setCompanyInfo({
-          ...companyInfo,
-          name: data.contactPersonName,
-          phoneNumber: data.phoneNumber,
-          ...("companyName" in companyInfo
-            ? { companyName: data.companyName }
-            : {}),
-          ...("personName" in companyInfo
-            ? { personName: data.contactPersonName }
-            : {}),
-          ...("address" in companyInfo ? { address: data.address } : {}),
-          ...("postalCode" in companyInfo
-            ? { postalCode: data.postalCode }
-            : {}),
-          ...("industryId" in companyInfo ? { industryId: data.industry } : {}),
-          ...("documentType" in companyInfo
-            ? { documentType: data.taxDocument }
-            : {}),
-          ...("documentNumber" in companyInfo
-            ? { documentNumber: data.vatRegistrationNumber }
-            : {}),
-        } as any);
-      }
       onMenuItemClick("clientAccount");
     },
     onError: (error: any) => {
@@ -82,7 +57,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       companyName: "",
       contactPersonName: "",
       phoneNumber: "",
-      businessType: "",
+      businessType: "PRIVATE",
       industry: "",
       address: "",
       country: "",
@@ -92,95 +67,78 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       taxDocument: "",
       vatRegistrationNumber: "",
     },
-    mode: "onSubmit",
+    mode: "onChange",
   });
   const { control, trigger, reset } = methods;
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+
+  // Watch values for dependent fields
   const country = useWatch({ control, name: "country" });
-  const selectedState = useWatch({ control, name: "state" });
+  const selectedStateValue = useWatch({ control, name: "state" });
 
   // Fetch dropdown data from API
   const countriesQuery = useCountries();
-  const parentCountryId =
-    typeof country === "object" && country !== null && "value" in country
-      ? (country as any).value
-      : country;
+
+  const parentCountryId = typeof country === "object" && country !== null && "value" in country
+    ? (country as any).value
+    : country;
+
   const statesQuery = useStates(parentCountryId);
-  const parentStateId =
-    typeof selectedState === "object" &&
-    selectedState !== null &&
-    "value" in selectedState
-      ? (selectedState as any).value
-      : selectedState;
+
+  const parentStateId = typeof selectedStateValue === "object" && selectedStateValue !== null && "value" in selectedStateValue
+    ? (selectedStateValue as any).value
+    : selectedStateValue;
+
   const citiesQuery = useCities(parentStateId);
   const industryQuery = useIndustries();
 
   const countries = useMemo(
-    () =>
-      (countriesQuery.data || []).map((i: LookupItem) => ({
-        value: i.id,
-        label: i.name,
-      })),
+    () => (countriesQuery.data || []).map((i: LookupItem) => ({
+      value: i.id,
+      label: i.name,
+    })),
     [countriesQuery.data],
   );
   const states = useMemo(
-    () =>
-      (statesQuery.data || []).map((i: LookupItem) => ({
-        value: i.id,
-        label: i.name,
-      })),
+    () => (statesQuery.data || []).map((i: LookupItem) => ({
+      value: i.id,
+      label: i.name,
+    })),
     [statesQuery.data],
   );
   const cities = useMemo(
-    () =>
-      (citiesQuery.data || []).map((i: LookupItem) => ({
-        value: i.id,
-        label: i.name,
-      })),
+    () => (citiesQuery.data || []).map((i: LookupItem) => ({
+      value: i.id,
+      label: i.name,
+    })),
     [citiesQuery.data],
   );
   const industries = useMemo(
-    () =>
-      (industryQuery.data || []).map((i: LookupItem) => ({
-        value: i.id,
-        label: i.name,
-      })),
+    () => (industryQuery.data || []).map((i: LookupItem) => ({
+      value: i.id,
+      label: i.name,
+    })),
     [industryQuery.data],
   );
 
   const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
+
   // Sync form with store data
   useEffect(() => {
     if (companyInfo) {
-      const isCorporate = companyInfo.clientType === "corporate";
-
       reset({
-        companyName:
-          (companyInfo.clientType === "corporate" && companyInfo.companyName) ||
-          "",
-        contactPersonName:
-          (companyInfo.clientType === "corporate"
-            ? companyInfo.personName
-            : companyInfo.name) || "",
+        companyName: ("companyName" in companyInfo && companyInfo.companyName) || "",
+        contactPersonName: ("personName" in companyInfo ? companyInfo.personName : companyInfo.name) || "",
         phoneNumber: companyInfo.phoneNumber || "",
-        businessType: isCorporate ? "1" : "2",
-        industry:
-          companyInfo.clientType === "corporate" ? companyInfo.industryId : "",
-        address:
-          (companyInfo.clientType === "corporate" ? companyInfo.address : "") ||
-          "",
-        country: companyInfo.countryId,
-        state: companyInfo.stateId,
-        city: companyInfo.cityId,
+        businessType: "PRIVATE", // Default or map if exists
+        industry: ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
+        address: ("address" in companyInfo ? companyInfo.address : "") || "",
+        country: companyInfo.countryId || "",
+        state: companyInfo.stateId || "",
+        city: companyInfo.cityId || "",
         postalCode: companyInfo.postalCode || "",
-        taxDocument:
-          (companyInfo.clientType === "corporate" &&
-            companyInfo.documentType) ||
-          "",
-        vatRegistrationNumber:
-          (companyInfo.clientType === "corporate" &&
-            companyInfo.documentNumber) ||
-          "",
+        taxDocument: ("documentType" in companyInfo && companyInfo.documentType) || "",
+        vatRegistrationNumber: ("documentNumber" in companyInfo && companyInfo.documentNumber) || "",
       });
 
       if (companyInfo.phoneNumber) {
@@ -190,7 +148,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   }, [companyInfo, reset]);
 
   const handleSubmit = async (data: PersonalInfo) => {
-    const isCorporate = data.businessType === "1"; // "1" is Corporate
+    const isCorporate = companyInfo?.clientType === "corporate";
 
     // Helper to get ID
     const getId = (val: any) => {
@@ -200,10 +158,9 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
     };
 
     await updateClient({
-      token,
       body: {
         clientType: isCorporate ? "corporate" : "home",
-        name: data.contactPersonName, // Login name update?
+        name: data.contactPersonName,
         companyName: isCorporate ? data.companyName : undefined,
         personName: data.contactPersonName,
         address: data.address,
@@ -231,15 +188,17 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       className="flex flex-col h-full"
     >
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
-        <InputField
-          label="Company Name"
-          name="companyName"
-          type="text"
-          placeholder="Company Name"
-          leftIcon={<FaRegUser className="text-lg text-gray-500" />}
-          required
-          rules={{ validate: (v: string) => validateName(v) }}
-        />
+        {companyInfo?.clientType === "corporate" && (
+          <InputField
+            label="Company Name"
+            name="companyName"
+            type="text"
+            placeholder="Company Name"
+            leftIcon={<FaRegUser className="text-lg text-gray-500" />}
+            required
+            rules={{ validate: (v: string) => validateCompany(v) }}
+          />
+        )}
         <InputField
           label="Contact Person Name"
           name="contactPersonName"
@@ -247,7 +206,6 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           placeholder="Contact Person Name"
           leftIcon={<FaRegUser className="text-lg text-gray-500" />}
           required
-          allowedCharacters="string"
           rules={{ validate: (v: string) => validateName(v) }}
         />
         <VerifiedPhoneInputField
@@ -276,14 +234,17 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           required
         />
 
-        <SelectField
-          label="Industry"
-          name="industry"
-          placeholder="Industry"
-          leftIcon={<TbFileText className="text-lg text-gray-500" />}
-          options={industries}
-          required
-        />
+        {companyInfo?.clientType === "corporate" && (
+          <SelectField
+            label="Industry"
+            name="industry"
+            placeholder="Industry"
+            leftIcon={<TbFileText className="text-lg text-gray-500" />}
+            options={industries}
+            required
+          />
+        )}
+
         <InputField
           label="Address"
           name="address"
@@ -306,6 +267,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           options={states}
           required
           label="State"
+          disabled={!country}
         />
         <SelectField
           name="city"
@@ -313,6 +275,7 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
           options={cities}
           required
           label="City"
+          disabled={!selectedStateValue}
         />
         <InputField
           name="postalCode"
@@ -329,26 +292,29 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
               ),
           }}
         />
-        <SelectField
-          label="Tax Document"
-          name="taxDocument"
-          placeholder="Tax Document(VAT)"
-          options={vatOptions}
-          required
-          disabled={vatLoading}
-        />
-        <InputField
-          name="vatRegistrationNumber"
-          type="text"
-          placeholder="VAT Registration Number"
-          required
-          allowedCharacters="alphanumeric"
-          label="VAT Registration Number"
-          rules={{ validate: (v: string) => validateVatNumber(v) }}
-        />
+        {companyInfo?.clientType === "corporate" && (
+          <>
+            <SelectField
+              label="Tax Document"
+              name="taxDocument"
+              placeholder="Tax Document(VAT)"
+              options={vatOptions}
+              required
+              disabled={vatLoading}
+            />
+            <InputField
+              name="vatRegistrationNumber"
+              type="text"
+              placeholder="VAT Registration Number"
+              required
+              label="VAT Registration Number"
+              rules={{ validate: (v: string) => validateVatNumber(v) }}
+            />
+          </>
+        )}
       </div>
 
-      <div className="bg-white ">
+      <div className="bg-white p-3 mt-auto">
         <Button
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"

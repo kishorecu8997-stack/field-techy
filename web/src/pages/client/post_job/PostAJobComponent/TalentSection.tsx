@@ -20,6 +20,7 @@ export default function TalentSection() {
     {
       label: "Dedicated Job Service",
       value: CurrentLocation.dedicated,
+      tooltip: "Long-term job for your projects, lasting 6–24 months.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.dedicated);
@@ -28,6 +29,7 @@ export default function TalentSection() {
     {
       label: "Dispatch Job Service",
       value: CurrentLocation.dispatch,
+      tooltip: "Immediate job for urgent tasks, typically for one day.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.dispatch);
@@ -36,15 +38,35 @@ export default function TalentSection() {
     {
       label: "Scheduled Job Service",
       value: CurrentLocation.scheduled,
+      tooltip:
+        "Plan jobs in advance for future dates, with repeatable scheduling.",
       action: () => {
         navigate(absoluteUrls.client.home.post_a_job);
         setCurrentLocation(CurrentLocation.scheduled);
       },
     },
+    {
+      label: "Full Time Job",
+      value: CurrentLocation.fullTime,
+      tooltip: "Hire for full-time roles with a dedicated form.",
+      action: () => {
+        navigate(absoluteUrls.client.home.post_a_job);
+        setCurrentLocation(CurrentLocation.fullTime);
+      },
+    },
+    {
+      label: "On Demand Job",
+      value: CurrentLocation.onDemand,
+      tooltip: "Hire for on-demand roles with a dedicated form.",
+      action: () => {
+        navigate(absoluteUrls.client.home.post_a_job);
+        setCurrentLocation(CurrentLocation.onDemand);
+      },
+    },
   ];
 
   return (
-    <section className="bg-teal-900 text-white rounded-2xl p-8 w-full max-w-xl shadow-lg">
+    <section className="bg-teal-900 text-white rounded-2xl p-8 w-full max-w-xl shadow-lg mt-4">
       <h2 className="text-xl font-semibold mb-2">Looking for Talent?</h2>
       <p className="text-sm opacity-90 mb-6">
         Post your job opportunity and effortlessly engage with skilled

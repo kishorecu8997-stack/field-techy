@@ -82,7 +82,7 @@ export default function AddNotification() {
               type: data.notificationType,
               sendTo: data.sendTo,
               message: data.notificationMessage,
-              users: data.users, // need to changed based on API later
+              users: data.targetRegionsCountries, // need to changed based on API later
             };
             await createNotificationMutation.mutateAsync(payload);
             close(true);

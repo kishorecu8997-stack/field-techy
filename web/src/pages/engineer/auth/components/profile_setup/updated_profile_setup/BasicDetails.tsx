@@ -1,13 +1,13 @@
 import { absoluteUrls } from "@/config/urls";
 import { useRegisterEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useForm, useFormState } from "react-hook-form";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -66,15 +66,14 @@ const BasicDetails = () => {
       confirmPassword: "",
     },
   });
-
+  const { errors } = useFormState({
+    control: formCtx.control,
+  });
   const { showPopup } = usePopupStore();
 
   // TanStack Query mutation hook for engineer registration (using OpenAPI)
   const registerMutation = useRegisterEngineer({
     onSuccess: (result) => {
-      console.log("Signup successful:", result);
-
-      // Store the JWT token for OTP verification
       if (result.token) {
         localStorage.setItem("auth_token", result.token);
         setToken(result.token);
@@ -85,13 +84,11 @@ const BasicDetails = () => {
       navigate(absoluteUrls.engineer.auth.verification);
     },
     onError: (error: any) => {
-      console.error("Signup failed:", error);
       toast.error(
         error?.message || "Registration failed. Please try again.",
       );
     },
   });
-
   // Check for existing registration session
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
   useEffect(() => {
@@ -179,7 +176,7 @@ const BasicDetails = () => {
           value: true,
           action: async (close) => {
             try {
-              await registerMutation.mutateAsync(apiData);
+              await registerMutation.mutateAsync({ body: apiData });
               close(true);
             } catch {
               close(false);
@@ -212,21 +209,71 @@ const BasicDetails = () => {
               name="termsAndConditions"
               required
               isShowLabel={false}
+              renderError={false}
               rules={{ required: "You must agree to the terms and conditions" }}
             />
-            <label
-              htmlFor="termsAndConditions"
-              className="text-sm text-gray-700 cursor-pointer dark:text-gray-300"
-            >
-              I agree to the{" "}
-              <span className="text-blue-600 underline cursor-pointer">
+            <div className="text-sm text-gray-700 dark:text-gray-300 flex flex-wrap items-center gap-1">
+              <label htmlFor="termsAndConditions" className="cursor-pointer">
+                I agree to the
+              </label>
+              <button
+                type="button"
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await showPopup({
+                      title: "Engineer Terms & Conditions",
+                      body: (
+                        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300 max-w-lg">
+                          <p>
+                            <strong>What is Field Techy:</strong> A smart
+                            solution to hire verified engineers on demand, for
+                            home IT issues or business technical projects.
+                          </p>
+                          <p>
+                            <strong>Features:</strong> Post jobs quickly, hire
+                            verified engineers, track progress, communicate
+                            in-app, and pay securely via escrow.
+                          </p>
+                          <p>
+                            <strong>Who It’s For:</strong> Home clients needing
+                            one-time support and corporate clients managing
+                            multi-location projects.
+                          </p>
+                          <p>
+                            By using our service, you agree to all applicable
+                            terms and conditions.
+                          </p>
+                        </div>
+                      ),
+                      actionButtons: [
+                        {
+                          label: "Close",
+                          value: null,
+                          variant: "primary",
+                        },
+                      ],
+                    });
+                  } catch (error) {
+                    console.error(
+                      "Failed to open Engineer Terms & Conditions popup:",
+                      error,
+                    );
+                  }
+                }}
+              >
                 Terms and Conditions
-              </span>
-            </label>
+              </button>
+            </div>
           </div>
+          {errors?.termsAndConditions && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.termsAndConditions.message}
+            </p>
+          )}
         </div>
       </div>
-
       <div className="flex-shrink-0 p-4">
         <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <Button
@@ -236,6 +283,15 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
+            Already have an account?{" "}
+            <NavLink
+              to={absoluteUrls.engineer.auth.login}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+            >
+              Sign In
+            </NavLink>
+          </h2>
         </div>
       </div>
     </FormContainer>

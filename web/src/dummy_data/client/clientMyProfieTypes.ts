@@ -125,11 +125,75 @@ export const INDUSTRIES: Industry[] = [
 export interface CountryOption {
   value: string;
   label: string;
+  states: StateOption[];
+}
+export interface StateOption {
+  value: string;
+  label: string;
+  cities: CityOption[];
+}
+export interface CityOption {
+  value: string;
+  label: string;
 }
 
 export const countries: CountryOption[] = [
-  { value: "in", label: "India" },
-  { value: "uk", label: "United Kingdom" },
+  {
+    value: "in",
+    label: "India",
+    states: [
+      {
+        value: "tn",
+        label: "Tamil Nadu",
+        cities: [
+          { value: "che", label: "Chennai" },
+          { value: "cbe", label: "Coimbatore" },
+        ],
+      },
+      {
+        value: "mh",
+        label: "Maharashtra",
+        cities: [
+          { value: "mum", label: "Mumbai" },
+          { value: "pun", label: "Pune" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "uk",
+    label: "United Kingdom",
+    states: [
+      {
+        value: "eng",
+        label: "England",
+        cities: [
+          { value: "ldn", label: "London" },
+          { value: "man", label: "Manchester" },
+        ],
+      },
+      {
+        value: "sct",
+        label: "Scotland",
+        cities: [
+          { value: "edi", label: "Edinburgh" },
+          { value: "gla", label: "Glasgow" },
+        ],
+      },
+    ],
+  },
+];
+
+export interface businessTypeOption {
+  value: string;
+  label: string;
+}
+
+export const businessTypes: businessTypeOption[] = [
+  { value: "1", label: "LLC" },
+  { value: "2", label: "Corporation" },
+  { value: "3", label: "Sole Proprietorship" },
+  { value: "4", label: "Partnership" },
 ];
 
 interface PersonalInfo {

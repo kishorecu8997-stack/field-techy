@@ -116,12 +116,10 @@ export class EngineerAdapter {
     }
   }
 
-  static async downloadFileStream(
-    fileKey: string,
-  ): Promise<{ blob: Blob; fileName?: string }> {
+  static async downloadFileStream(fileKey: string): Promise<{ blob: Blob }> {
     try {
       const response = await axiosInstance.get(
-        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE(fileKey),
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
         {
           responseType: "blob",
           headers: {
@@ -130,13 +128,36 @@ export class EngineerAdapter {
         },
       );
 
+      const blob = new Blob([response.data]);
+      return { blob };
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async getEngineerFiles(engineerId: string): Promise<EngineerFile[]> {
+    try {
+      return this.getFiles(engineerId);
+    } catch (error) {
+      GlobalApiErrorHandler.handleAndThrow(error);
+    }
+  }
+
+  static async downloadFileWithName(
+    fileKey: string,
+  ): Promise<{ blob: Blob; fileName: string }> {
+    try {
+      const response = await axiosInstance.get(
+        ENGINEER_ROUTER_PATHS.DOWNLOAD_FILE_STREAM(fileKey),
+        { responseType: "blob" },
+      );
+
       const contentDisposition = response.headers["content-disposition"];
       let fileName = "download";
+
       if (contentDisposition) {
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (match && match[1]) {
-          fileName = match[1];
-        }
+        if (match?.[1]) fileName = match[1];
       }
 
       return { blob: response.data, fileName };
@@ -150,7 +171,6 @@ export class EngineerAdapter {
   ): Promise<FileUploadResponse> {
     try {
       const { engineerId, file, documentType, onUploadProgress } = params;
-
       const formData = new FormData();
       formData.append("file", file);
 

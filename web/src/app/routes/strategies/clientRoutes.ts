@@ -1,12 +1,12 @@
-import type { RouteObject } from "react-router-dom";
-import React from "react";
 import { BASE, urls } from "@/config/urls";
-import { UserRole } from "@/shared/enums/users";
-import { withSuspense } from "../WithSuspense";
-import ProtectedRoute from "@/layout/ProtectedRoute";
 import AuthRedirect from "@/layout/AuthRedirect";
+import ProtectedRoute from "@/layout/ProtectedRoute";
+import { UserRole } from "@/shared/enums/users";
+import React from "react";
+import type { RouteObject } from "react-router-dom";
 import type { RouteStrategy } from "../types/routeTypes";
 import * as Components from "../utils/lazyComponents";
+import { withSuspense } from "../WithSuspense";
 
 /**
  * Client Route Strategy
@@ -118,6 +118,10 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientExploreEngineers),
           },
           {
+            path: urls.client.home.search_analytics,
+            element: withSuspense(Components.ClientSearchAnalyticsPage),
+          },
+          {
             path: urls.client.home.post_JobPage,
             element: withSuspense(Components.ClientPostJobPage),
           },
@@ -154,18 +158,6 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientInviteEngineers),
           },
           {
-            path: urls.client.home.faq,
-            element: withSuspense(Components.ClientFAQ),
-          },
-          {
-            path: urls.client.home.terms_and_conditions,
-            element: withSuspense(Components.ClientTermsAndConditions),
-          },
-          {
-            path: urls.client.home.privacy_policy,
-            element: withSuspense(Components.ClientPrivacyPolicy),
-          },
-          {
             path: urls.client.home.ClientJobInvite,
             element: withSuspense(Components.ClientJobInvite),
           },
@@ -176,6 +168,18 @@ export class ClientRouteStrategy implements RouteStrategy {
           {
             path: urls.client.home.chat,
             element: withSuspense(Components.EngineerChatPage),
+          },
+          {
+            path: urls.client.home.terms_and_conditions,
+            element: withSuspense(Components.ClientTermsAndConditions),
+          },
+          {
+            path: urls.client.home.privacy_policy,
+            element: withSuspense(Components.ClientPrivacyPolicy),
+          },
+          {
+            path: urls.client.home.faq,
+            element: withSuspense(Components.ClientFAQ),
           },
         ],
       },

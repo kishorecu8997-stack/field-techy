@@ -71,7 +71,7 @@ const SearchAnalyticsPage: React.FC = () => {
     {
       key: "clicked",
       label: "Clicked",
-      align: "center",
+      align: "left",
       renderCell: (row) => (row.clicked ? "Yes" : "No"),
     },
   ];
@@ -79,7 +79,7 @@ const SearchAnalyticsPage: React.FC = () => {
   return (
     <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-8">
       {/* Heading */}
-      <h2 className="text-3xl font-bold mb-2">Search Analysis</h2>
+      <h2 className="text-3xl font-bold mb-2">Search Analytics</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
         Analyze user search behavior and results performance.
       </p>

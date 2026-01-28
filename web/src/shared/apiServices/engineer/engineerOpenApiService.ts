@@ -1,53 +1,77 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  appLogin, 
-  appRegisterEngineer, 
-  appSendOtp, 
-  appVerifyOtp, 
-  type AppLoginData, 
-  type AppLoginResponse, 
-  type AppRegisterEngineerData, 
-  type AppRegisterEngineerResponse, 
-  type AppSendOtpResponse, 
-  type AppVerifyOtpResponse 
+import {
+  engineerGetEducation,
+  engineerGetExperience,
+  engineerGetPersonalInfo,
+  engineerGetSkillsAndTools,
+  engineerGetWorkPreference,
+  type AppChangePasswordResponse,
+  type AppDeleteProfileFileResponse,
+  type AppLoginResponse,
+  type AppMarkProfileFileUploadedResponse,
+  type AppRegisterEngineerResponse,
+  type EngineerAddEducationResponse,
+  type EngineerAddExperienceResponse,
+  type EngineerDeleteEducationResponse,
+  type EngineerDeleteExperienceResponse,
+  type EngineerGetEducationResponse,
+  type EngineerGetExperienceResponse,
+  type EngineerGetPersonalInfoResponse,
+  type EngineerUpdateEducationResponse,
+  type EngineerUpdateExperienceResponse,
+  type EngineerUpdatePersonalInfoResponse,
+  type EngineerUpdateSkillsAndToolsResponse,
+  type EngineerUpdateWorkPreferenceResponse,
+  type EngineerGetSkillsAndToolsResponse,
+  type EngineerGetWorkPreferenceResponse,
 } from "@/api";
-import { createClient } from "@/api/client";
+import { type EngineerData } from "./engineerTypes";
+import {
+  appChangePasswordMutation,
+  appDeleteProfileFileMutation,
+  appLoginMutation,
+  appMarkProfileFileUploadedMutation,
+  appRegisterEngineerMutation,
+  engineerAddEducationMutation,
+  engineerAddExperienceMutation,
+  engineerDeleteEducationMutation,
+  engineerDeleteExperienceMutation,
+  engineerGetEducationOptions,
+  engineerGetExperienceOptions,
+  engineerGetPersonalInfoOptions,
+  engineerGetSkillsAndToolsOptions,
+  engineerGetWorkPreferenceOptions,
+  engineerUpdateEducationMutation,
+  engineerUpdateExperienceMutation,
+  engineerUpdatePersonalInfoMutation,
+  engineerUpdateSkillsAndToolsMutation,
+  engineerUpdateWorkPreferenceMutation,
+} from "@/api/@tanstack/react-query.gen";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEngineerStore } from "../../store/useEngineerStore";
+import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
 
-// Create API client for OpenAPI calls
-const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
-});
+// RE-EXPORT shared hooks for convenience
+export * from "../commonOpenApiService";
 
 /**
- * TanStack Query mutation hook using OpenAPI generated appRegisterEngineer
- * This wraps the auto-generated SDK function with React Query for caching and state management
+ * Engineer-specific API services
  */
-export type RegisterEngineerBody = NonNullable<AppRegisterEngineerData["body"]>;
 
 export function useRegisterEngineer(options?: {
   onSuccess?: (data: AppRegisterEngineerResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  const queryClientInstance = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: RegisterEngineerBody) => {
-      const response = await appRegisterEngineer({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppRegisterEngineerResponse;
-    },
+    ...appRegisterEngineerMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClientInstance.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
-
-export type LoginBody = NonNullable<AppLoginData["body"]>;
 
 export function useEngineerLogin(options?: {
   onSuccess?: (data: AppLoginResponse) => void;
@@ -55,14 +79,301 @@ export function useEngineerLogin(options?: {
 }) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: LoginBody) => {
-      const response = await appLogin({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppLoginResponse;
+    ...appLoginMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerGetPersonalInfo() {
+  return useQuery({
+    ...engineerGetPersonalInfoOptions({ client: apiClient }),
+    staleTime: 0, // Ensure fresh data on every mount/invalidation for edit pages
+  });
+}
+
+export function useEngineerUpdatePersonalInfo(options?: {
+  onSuccess?: (data: EngineerUpdatePersonalInfoResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  const syncProfile = useEngineerStore((state) => state.syncProfile);
+
+  return useMutation({
+    ...engineerUpdatePersonalInfoMutation({ client: apiClient }),
+    onSuccess: async (data, variables) => {
+      // Use refetchQueries and await it to ensure data is fresh before proceeding
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetPersonalInfo",
+      });
+      
+      const updateData: Partial<EngineerData> = {};
+      if (variables.body?.name !== undefined) updateData.fullName = variables.body.name;
+      if (variables.body?.email !== undefined) updateData.email = variables.body.email;
+      if (variables.body?.mobileno !== undefined) updateData.phoneNumber = variables.body.mobileno;
+      if (variables.body?.address !== undefined) updateData.address = variables.body.address;
+      
+      syncProfile(updateData);
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerGetEducation() {
+  return useQuery({
+    ...engineerGetEducationOptions({ client: apiClient }),
+    staleTime: 0,
+  });
+}
+
+export function useEngineerAddEducation(options?: {
+  onSuccess?: (data: EngineerAddEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerAddEducationMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerDeleteEducation(options?: {
+  onSuccess?: (data: EngineerDeleteEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerDeleteEducationMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerUpdateEducation(options?: {
+  onSuccess?: (data: EngineerUpdateEducationResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerUpdateEducationMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerGetExperience() {
+  return useQuery({
+    ...engineerGetExperienceOptions({ client: apiClient }),
+    staleTime: 0,
+  });
+}
+
+export function useEngineerAddExperience(options?: {
+  onSuccess?: (data: EngineerAddExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerAddExperienceMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerDeleteExperience(options?: {
+  onSuccess?: (data: EngineerDeleteExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerDeleteExperienceMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerUpdateExperience(options?: {
+  onSuccess?: (data: EngineerUpdateExperienceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerUpdateExperienceMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerGetSkillsAndTools() {
+  return useQuery({
+    ...engineerGetSkillsAndToolsOptions({ client: apiClient }),
+    staleTime: 0,
+  });
+}
+
+export function useEngineerUpdateSkillsAndTools(options?: {
+  onSuccess?: (data: EngineerUpdateSkillsAndToolsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerUpdateSkillsAndToolsMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetSkillsAndTools",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerGetWorkPreference() {
+  return useQuery({
+    ...engineerGetWorkPreferenceOptions({ client: apiClient }),
+    staleTime: 0,
+  });
+}
+
+export function useEngineerUpdateWorkPreference(options?: {
+  onSuccess?: (data: EngineerUpdateWorkPreferenceResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...engineerUpdateWorkPreferenceMutation({ client: apiClient }),
+    onSuccess: async (data) => {
+      await queryClient.refetchQueries({
+        predicate: (query) =>
+          Array.isArray(query.queryKey) &&
+          query.queryKey[0] &&
+          typeof query.queryKey[0] === "object" &&
+          (query.queryKey[0] as { _id?: string })._id === "engineerGetWorkPreference",
+      });
+      await useEngineerStore.getState().refetchProfile();
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useEngineerChangePassword(options?: {
+  onSuccess?: (data: AppChangePasswordResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appChangePasswordMutation({
+      client: apiClient,
+      headers: { Authorization: "" },
+    }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAppMarkProfileFileUploaded(options?: {
+  onSuccess?: (data: AppMarkProfileFileUploadedResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...appMarkProfileFileUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAppDeleteProfileFile(options?: {
+  onSuccess?: (data: AppDeleteProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...appDeleteProfileFileMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.engineer.all });
       options?.onSuccess?.(data);
@@ -72,51 +383,44 @@ export function useEngineerLogin(options?: {
 }
 
 /**
- * TanStack Query mutation hook using OpenAPI generated appSendOtp
- * This wraps the auto-generated SDK function with React Query for state management
- * Requires JWT authorization token from registration response
+ * Raw API functions for use outside of hooks (e.g. in Zustand stores)
  */
-export type SendOtpType = 'email' | 'phone';
-
-export function useSendOtp(options?: {
-  onSuccess?: (data: AppSendOtpResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation({
-    mutationFn: async ({ type, token }: { type: SendOtpType; token?: string }) => {
-      const response = await appSendOtp({
-        client: apiClient,
-        body: { type },
-        headers: { authorization: `Bearer ${token || ""}` },
-        throwOnError: true,
-      });
-      return response.data as AppSendOtpResponse;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
+export async function getPersonalInfo() {
+  const response = await engineerGetPersonalInfo({
+    client: apiClient,
+    throwOnError: true,
   });
+  return response.data as EngineerGetPersonalInfoResponse;
 }
 
-/**
- * TanStack Query mutation hook using OpenAPI generated appVerifyOtp
- * This wraps the auto-generated SDK function with React Query for state management
- * Requires JWT authorization token from registration response
- */
-export function useVerifyOtp(options?: {
-  onSuccess?: (data: AppVerifyOtpResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation({
-    mutationFn: async ({ type, code, token }: { type: SendOtpType; code: string; token?: string }) => {
-      const response = await appVerifyOtp({
-        client: apiClient,
-        body: { type, code },
-        headers: { authorization: `Bearer ${token || ""}` },
-        throwOnError: true,
-      });
-      return response.data as AppVerifyOtpResponse;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
+export async function getEducation() {
+  const response = await engineerGetEducation({
+    client: apiClient,
+    throwOnError: true,
   });
+  return response.data as EngineerGetEducationResponse;
+}
+
+export async function getExperience() {
+  const response = await engineerGetExperience({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetExperienceResponse;
+}
+
+export async function getSkillsAndTools() {
+  const response = await engineerGetSkillsAndTools({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetSkillsAndToolsResponse;
+}
+
+export async function getWorkPreference() {
+  const response = await engineerGetWorkPreference({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as EngineerGetWorkPreferenceResponse;
 }

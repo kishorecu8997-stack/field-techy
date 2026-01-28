@@ -5,23 +5,23 @@ import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
-import React, { useState } from "react";
+import {
+  useEngineerProfile,
+  useEngineerStore,
+} from "@/shared/store/useEngineerStore";
+import { useServiceCategories, type LookupItem } from "@/shared/hooks/useLookup";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaBriefcase,
   FaClipboardList,
   FaFile,
   FaGraduationCap,
-  FaSignOutAlt,
   FaUser,
   FaWrench,
 } from "react-icons/fa";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useNavigate } from "react-router-dom";
-import {
-  useEngineerStore,
-  useEngineerProfile,
-} from "@/shared/store/useEngineerStore";
 import type { MenuItem } from "./types";
 
 /**
@@ -93,32 +93,41 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
       id: "documents",
       onClick: () => onMenuItemClick("documents"),
     },
-    {
-      label: "Logout",
-      icon: FaSignOutAlt,
-      id: "logout",
-      onClick: () => setIsOpen(true),
-    },
   ];
 
   const logout = useUserSessionStore((state) => state.logout);
   const engineerProfile = useEngineerProfile();
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
   const navigate = useNavigate();
+
+  // Fetch service categories to find the label for the category ID
+  const { data: serviceCategories } = useServiceCategories();
+
+  const categoryName = useMemo(() => {
+    if (!engineerProfile?.serviceCategory || !serviceCategories) return "";
+    // Find category by ID (comparing as strings for safety)
+    const category = serviceCategories.find(
+      (cat: LookupItem) => String(cat.id) === String(engineerProfile.serviceCategory),
+    );
+    return category ? category.name : "";
+  }, [engineerProfile?.serviceCategory, serviceCategories]);
 
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={
+              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
+            }
             name={engineerProfile?.fullName || ""}
-            title={engineerProfile?.serviceCategory || ""}
+            title={categoryName || "Engineer"}
             rating={engineerProfile?.averageRating || 0}
-            reviewCount={10}
-            completionPercentage={39}
+            reviewCount={0}
+            completionPercentage={0}
             flex="col"
           />
 

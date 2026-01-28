@@ -263,25 +263,25 @@ export const PhoneInputWithValidation = ({
           }
 
           // Check if phone number passes full validation (format + country-specific rules)
-          const phoneValidationResult = validatePhone(field.value || "");
-          const isPhoneFullyValid =
-            phoneValidationResult === true && isValidPhoneFormat;
+          // const phoneValidationResult = validatePhone(field.value || "");
+          // const isPhoneFullyValid =
+          //   phoneValidationResult === true && isValidPhoneFormat;
 
           // Only show check icon when phone is fully valid AND API confirms availability
-          const shouldShowCheck =
-            !isValidating &&
-            isPhoneFullyValid &&
-            isAvailable &&
-            isSuccess &&
-            queryData;
+          // const shouldShowCheck =
+          //   !isValidating &&
+          //   isPhoneFullyValid &&
+          //   isAvailable &&
+          //   isSuccess &&
+          //   queryData;
 
           // Show cancel icon when phone is valid but unavailable
-          const shouldShowCancel =
-            !isValidating &&
-            isPhoneFullyValid &&
-            isUnavailable &&
-            isSuccess &&
-            queryData;
+          // const shouldShowCancel =
+          //   !isValidating &&
+          //   isPhoneFullyValid &&
+          //   isUnavailable &&
+          //   isSuccess &&
+          //   queryData;
 
           return (
             <div className="flex flex-col gap-1">

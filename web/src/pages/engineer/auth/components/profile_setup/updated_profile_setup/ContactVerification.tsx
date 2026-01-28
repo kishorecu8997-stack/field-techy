@@ -99,10 +99,16 @@ const VerificationCard = ({
 
     try {
       if (type === "email") {
-        await sendOtp({ type: "email", token });
+        await sendOtp({
+          body: { type: "email" },
+          headers: { authorization: token }
+        });
         toast.success(`OTP sent to email: ${contact}`);
       } else {
-        await sendOtp({ type: "phone", token });
+        await sendOtp({
+          body: { type: "phone" },
+          headers: { authorization: token }
+        });
         toast.success(`OTP sent to mobile: ${contact}`);
       }
 
@@ -127,9 +133,15 @@ const VerificationCard = ({
 
     try {
       if (type === "email") {
-        await verifyOtp({ type: "email", code: data.otp, token });
+        await verifyOtp({
+          body: { type: "email", code: data.otp },
+          headers: { authorization: token }
+        });
       } else {
-        await verifyOtp({ type: "phone", code: data.otp, token });
+        await verifyOtp({
+          body: { type: "phone", code: data.otp },
+          headers: { authorization: token }
+        });
       }
 
       toast.success(

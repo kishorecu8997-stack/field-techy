@@ -53,9 +53,6 @@ const Login = ({
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } = useEngineerLogin({
     onSuccess: async (resp) => {
-      console.log(`Login Response: `, resp);
-
-      // Store the token
       if (resp.token) {
         localStorage.setItem("auth_token", resp.token);
       }
@@ -92,7 +89,6 @@ const Login = ({
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false,
     },
   });
   const email = methods.watch("email");
@@ -110,12 +106,13 @@ const Login = ({
    * handleSubmit
    */
   const handleSubmit = async (data: LoginEmailFormData) => {
-    await loginMutation(
-      {
+    await loginMutation({
+      body: {
         email: data.email,
         password: data.password,
-      }
-    );
+        userRole: UserRole.ENGINEER
+      },
+    });
   };
 
   return (

@@ -20,7 +20,7 @@ const ClientFields = () => {
 
   return (
     <div className="flex flex-col h-full gap-2">
-      <div className="flex flex-col overflow-auto">
+      <div className="flex flex-col">
         <div className="flex flex-col gap-2">
           <InputField
             label="First Name"

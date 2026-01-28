@@ -41,7 +41,7 @@ const AddFund = () => {
   const methods = useForm<AddFundFormData>({
     defaultValues: {
       amount: "",
-      cardId: initialPaymentOptions[0]?.id || "",
+      cardId: "",
     },
     mode: "onSubmit",
   });
@@ -49,6 +49,7 @@ const AddFund = () => {
   const [paymentOptions, setPaymentOptions] = useState<PaymentCardOption[]>(
     initialPaymentOptions,
   );
+  const selectedCardId = methods.watch("cardId"); // watch the selected card
 
   /**
    * @description Handles the addition of a new payment card.
@@ -78,7 +79,6 @@ const AddFund = () => {
             label="Amount"
             name="amount"
             placeholder="Enter Amount e.g., $10"
-            allowedCharacters="currency"
             required
             rules={{ validate: (v: string) => validateAmount(v) }}
           />
@@ -102,6 +102,7 @@ const AddFund = () => {
         <div className="bg-white ">
           <Button
             type="submit"
+            disabled={!selectedCardId}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Add Fund

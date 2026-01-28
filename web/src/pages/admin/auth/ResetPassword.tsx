@@ -1,6 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import PasswordSection from "@/pages/engineer/auth/components/PasswordSection";
+import AuthPasswordSection from "@/shared/components/auth/AuthPasswordSection";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
@@ -59,7 +59,7 @@ const ResetPassword = () => {
             onSubmit={handleSubmit}
             className="flex flex-col gap-3"
           >
-            <PasswordSection />
+            <AuthPasswordSection />
             <div className="pt-2">
               <Button
                 type="submit"
