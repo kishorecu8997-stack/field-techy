@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaSearch } from "react-icons/fa"; // or use your own icon components
+import { FaMapMarkerAlt, FaSearch, FaChartBar } from "react-icons/fa";
 import { InputField } from "./commonUI/inputs";
 import { FormContainer } from "./commonUI/inputs/FormContainer";
+import { absoluteUrls } from "@/config/urls";
+import { Button } from "./commonUI/Buttons";
+import { useNavigate } from "react-router-dom";
 
 /**
  * JobSearchBar component provides a dual-input search form for jobs and location.
@@ -14,6 +17,7 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
  */
 export const JobSearchBarClient = () => {
   const methods = useForm({});
+  const navigate = useNavigate();
 
   return (
     <FormContainer
@@ -30,7 +34,17 @@ export const JobSearchBarClient = () => {
           inputClassName="border-none bg-transparent rounded-none text-gray-900 dark:text-gray-100 pr-3 focus:outline-none py-2"
         />
 
-        <div className="h-8 w-px bg-gray-300 dark:bg-gray-600"></div>
+        {/* Analytics Button/Icon */}
+        <Button
+          type="button"
+          onClick={() => navigate(absoluteUrls.client.home.search_analytics)}
+          className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
+          title="View Search Analytics"
+          aria-label="View Search Analytics"
+        >
+          <FaChartBar size={20} />
+        </Button>
+
         <InputField
           name="location"
           placeholder="Location"

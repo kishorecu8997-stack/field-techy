@@ -1,0 +1,106 @@
+import { assetsConfig } from "@/assets";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm } from "react-hook-form";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { absoluteUrls } from "@/config/urls";
+import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
+import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+
+export type ForgetPasswordFormData = {
+    email: string;
+};
+
+interface AuthForgetPasswordProps {
+    role: "client" | "engineer";
+}
+
+/**
+ * A component for forgot password functionality.
+ * @param {AuthForgetPasswordProps} props - The props for the AuthForgetPassword component.
+ * @param {"client" | "engineer"} props.role - The role of the user.
+ * @returns {JSX.Element} The AuthForgetPassword component.
+ */
+const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
+    const navigate = useNavigate();
+    const { success, error: toastError } = useToast();
+
+    const methods = useForm<ForgetPasswordFormData>({
+        defaultValues: {
+            email: "",
+        },
+    });
+
+    const { mutate: forgotPassword, isPending } = useForgotPassword({
+        onSuccess: (data) => {
+            success("OTP sent to your email address");
+            const resetUrl =
+                role === "client"
+                    ? absoluteUrls.client.auth.reset_password
+                    : absoluteUrls.engineer.auth.reset_password;
+
+            const tokenQuery = data?.token ? `&token=${data.token}` : "";
+            navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
+        },
+        onError: (err: any) => {
+            toastError(err?.body?.error || "Failed to send OTP");
+        },
+    });
+
+    const handleSubmit = (data: ForgetPasswordFormData) => {
+        forgotPassword({
+            body: {
+                email: data.email,
+                userRole: role,
+            },
+        });
+    };
+
+    return (
+        <div className="flex items-center justify-center max-w-lg md:w-lg ">
+            <div className="p-10 w-full max-w-lg">
+                <div className="text-center mb-6">
+                    <div className="flex justify-center mb-8">
+                        <img
+                            src={assetsConfig.logos.companyLogo}
+                            alt="logo"
+                            className="h-16 w-20 sm:h-20 sm:w-24"
+                        />
+                    </div>
+                    <h2 className="text-3xl font-bold">Forgot password</h2>
+                    <h2 className="text-base font-normal text-gray-700 dark:text-gray-300 ">
+                        Enter your email id address to reset your password.
+                    </h2>
+                </div>
+                <FormContainer
+                    methods={methods}
+                    onSubmit={handleSubmit}
+                    className="flex flex-col  p-2 gap-10"
+                >
+                    <InputField
+                        name="email"
+                        label="Email ID"
+                        type="text"
+                        required
+                        leftIcon={<MdOutlineMailOutline className="text-lg text-gray-500" />}
+                        rules={validateEmailRules}
+                    />
+
+                    <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 transition py-6"
+                        loading={isPending}
+                        disabled={isPending}
+                    >
+                        Submit
+                    </Button>
+                </FormContainer>
+            </div>
+        </div>
+    );
+};
+
+export default AuthForgetPassword;

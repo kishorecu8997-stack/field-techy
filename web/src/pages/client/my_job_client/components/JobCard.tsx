@@ -95,7 +95,9 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             {startDate}
           </div>
           <span className={`text-xs font-medium ${getStatusColor(status)}`}>
-            {status.charAt(0).toUpperCase() + status.slice(1)}
+            {status.toLowerCase() === "inprogress"
+              ? "In-Progress"
+              : status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
         </div>
 

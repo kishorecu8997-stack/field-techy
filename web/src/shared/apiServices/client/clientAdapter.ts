@@ -401,10 +401,10 @@ static async getCities(stateValue: string): Promise<{ value: string; label: stri
     return new Promise((resolve) => {
       setTimeout(() => {
         const vatOptions = [
-          { value: "IE6388047V", label: "IE6388047V" },
-          { value: "ID9488043M", label: "ID9488043M" },
-          { value: "GB123456789", label: "GB123456789" },
-          { value: "FR12345678901", label: "FR12345678901" },
+          { value: "VAT", label: "VAT" },
+          { value: "GST", label: "GST" },
+          { value: "Tax", label: "Tax" },
+          { value: "Other", label: "Other" },
         ];
         resolve(vatOptions);
       }, 500);
