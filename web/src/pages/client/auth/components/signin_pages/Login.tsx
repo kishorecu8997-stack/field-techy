@@ -45,34 +45,36 @@ const Login = ({
   const navigate = useNavigate();
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin({
-    onSuccess: async (resp) => {
-      // Store the token
-      if (resp.token) {
-        localStorage.setItem("auth_token", resp.token);
-      }
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin(
+    {
+      onSuccess: async (resp) => {
+        // Store the token
+        if (resp.token) {
+          localStorage.setItem("auth_token", resp.token);
+        }
 
-      setUserSession({
-        accessToken: resp.token,
-        userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
-        role: UserRole.CLIENT,
-        initiatedAt: Date.now(),
-      } as UserSession);
+        setUserSession({
+          accessToken: resp.token,
+          userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
+          role: UserRole.CLIENT,
+          initiatedAt: Date.now(),
+        } as UserSession);
 
-      navigate(absoluteUrls.client.home.dashboard);
-      toast.success("Logged in successfully");
+        navigate(absoluteUrls.client.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        // Skip showing toast for 401 errors as axios interceptor already handles it
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return;
+        }
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
+        toast.error(errorMessage);
+      },
     },
-    onError: (error) => {
-      console.error(error);
-      // Skip showing toast for 401 errors as axios interceptor already handles it
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return;
-      }
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      toast.error(errorMessage);
-    },
-  });
+  );
 
   const methods = useForm({
     resolver: zodResolver(loginSchema),

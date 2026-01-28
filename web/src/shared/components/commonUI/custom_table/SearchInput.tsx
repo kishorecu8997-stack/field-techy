@@ -1,11 +1,6 @@
 import { Search } from "lucide-react"; // lucide-react provides nice icons
 import type { SearchInputProps } from "./type";
 
-type SearchInputProps = {
-  value?: string;
-  onChange?: (value: string) => void;
-};
-
 /**
  * SearchInput Component
  *

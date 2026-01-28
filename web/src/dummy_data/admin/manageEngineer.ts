@@ -127,7 +127,7 @@ export const manageEngineer: ManageEngineerProps[] = [
     suspendOn: "01 December 2025",
     currentStatus: "Inactive",
   },
-    {
+  {
     id: 6,
     engineerID: "ENG-1006",
     details: {
@@ -228,7 +228,6 @@ export const manageEngineer: ManageEngineerProps[] = [
     currentStatus: "Inactive",
   },
 ];
-
 
 export interface ClientReviewProps {
   id: number;

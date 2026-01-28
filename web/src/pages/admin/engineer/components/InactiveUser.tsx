@@ -164,7 +164,7 @@ export default function InactiveUser() {
       label: "Avg Rating",
       dataCellAlign: "center",
     },
-    { key: "lastActiveOn", label: "Last Active On", dataCellAlign: "center", },
+    { key: "lastActiveOn", label: "Last Active On", dataCellAlign: "center" },
     {
       key: "action",
       label: "Actions",

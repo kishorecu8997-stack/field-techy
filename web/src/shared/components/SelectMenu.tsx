@@ -162,13 +162,14 @@ const SelectMenu = ({
                 handleSelect(option);
               }}
               className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm 
-                ${option.disabled 
-                  ? "opacity-50 cursor-not-allowed"
-                  : option.value === selectedValue
-                  ? "bg-emerald-100 text-gray-900 font-medium"
-                  : badge
-                    ? `${option?.bg ?? "bg-gray-100"}`
-                    : "hover:bg-gray-100 dark:hover:bg-blue-400"
+                ${
+                  option.disabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : option.value === selectedValue
+                      ? "bg-emerald-100 text-gray-900 font-medium"
+                      : badge
+                        ? `${option?.bg ?? "bg-gray-100"}`
+                        : "hover:bg-gray-100 dark:hover:bg-blue-400"
                 }`}
             >
               {badge && option.icon && (

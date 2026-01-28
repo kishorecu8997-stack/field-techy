@@ -59,10 +59,18 @@ export default function AllUsers() {
       ),
     },
     { key: "location", label: "Location" },
-    { key: "registrationDate", label: "Registration Date", dataCellAlign: "center", },
-    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center", },
-    { key: "employmentStatus", label: "Employment Status", dataCellAlign: "center", },
-    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center", },
+    {
+      key: "registrationDate",
+      label: "Registration Date",
+      dataCellAlign: "center",
+    },
+    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
+    {
+      key: "employmentStatus",
+      label: "Employment Status",
+      dataCellAlign: "center",
+    },
+    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
     {
       key: "documents",
       label: "Documents",
@@ -81,46 +89,44 @@ export default function AllUsers() {
     },
   ];
 
-  const selectedEngineer = filteredData.find(
-    (eng) => eng.id === selectedRowId
-  );
+  const selectedEngineer = filteredData.find((eng) => eng.id === selectedRowId);
 
   return (
-  <div>
-    <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
-              <div className="flex flex-wrap gap-4 items-center">
+    <div>
+      <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
+        <div className="flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>
-      <div className="w-full h-full overflow-auto">
-      <CustomTable<ManageEngineerProps>
-        columns={columns}
-        data={filteredData}
-        initialPageSize={10}
-      />
-      </div>
-      {isModalOpen && selectedEngineer && (
-        <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <div className="p-4">
-            <div className="flex justify-between items-center">
-              <span className="font-bold">
-                View File for {selectedEngineer.details.name}
-              </span>
-              <div
-                className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-                aria-label="Close modal"
-              >
-                <IoCloseSharp />
+        <div className="w-full h-full overflow-auto">
+          <CustomTable<ManageEngineerProps>
+            columns={columns}
+            data={filteredData}
+            initialPageSize={10}
+          />
+        </div>
+        {isModalOpen && selectedEngineer && (
+          <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <div className="p-4">
+              <div className="flex justify-between items-center">
+                <span className="font-bold">
+                  View File for {selectedEngineer.details.name}
+                </span>
+                <div
+                  className="text-xl font-semibold cursor-pointer"
+                  onClick={() => setIsModalOpen(false)}
+                  aria-label="Close modal"
+                >
+                  <IoCloseSharp />
+                </div>
+              </div>
+              <div className="border border-gray-400 h-36 my-6 flex items-center justify-center">
+                {/* Replace with actual file/image if available */}
+                <img src="https://via.placeholder.com/500" alt="file" />
               </div>
             </div>
-            <div className="border border-gray-400 h-36 my-6 flex items-center justify-center">
-              {/* Replace with actual file/image if available */}
-              <img src="https://via.placeholder.com/500" alt="file" />
-            </div>
-          </div>
-        </Popup>
-      )}
+          </Popup>
+        )}
+      </div>
     </div>
-  </div>
   );
 }

@@ -111,15 +111,20 @@ export function useEngineerUpdatePersonalInfo(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetPersonalInfo",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetPersonalInfo",
       });
-      
+
       const updateData: Partial<EngineerData> = {};
-      if (variables.body?.name !== undefined) updateData.fullName = variables.body.name;
-      if (variables.body?.email !== undefined) updateData.email = variables.body.email;
-      if (variables.body?.mobileno !== undefined) updateData.phoneNumber = variables.body.mobileno;
-      if (variables.body?.address !== undefined) updateData.address = variables.body.address;
-      
+      if (variables.body?.name !== undefined)
+        updateData.fullName = variables.body.name;
+      if (variables.body?.email !== undefined)
+        updateData.email = variables.body.email;
+      if (variables.body?.mobileno !== undefined)
+        updateData.phoneNumber = variables.body.mobileno;
+      if (variables.body?.address !== undefined)
+        updateData.address = variables.body.address;
+
       syncProfile(updateData);
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -148,7 +153,8 @@ export function useEngineerAddEducation(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetEducation",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -170,7 +176,8 @@ export function useEngineerDeleteEducation(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetEducation",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -192,7 +199,8 @@ export function useEngineerUpdateEducation(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetEducation",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetEducation",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -221,7 +229,8 @@ export function useEngineerAddExperience(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetExperience",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -243,7 +252,8 @@ export function useEngineerDeleteExperience(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetExperience",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -265,7 +275,8 @@ export function useEngineerUpdateExperience(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetExperience",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetExperience",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -294,7 +305,8 @@ export function useEngineerUpdateSkillsAndTools(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetSkillsAndTools",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetSkillsAndTools",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);
@@ -323,7 +335,8 @@ export function useEngineerUpdateWorkPreference(options?: {
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0] as { _id?: string })._id === "engineerGetWorkPreference",
+          (query.queryKey[0] as { _id?: string })._id ===
+            "engineerGetWorkPreference",
       });
       await useEngineerStore.getState().refetchProfile();
       options?.onSuccess?.(data);

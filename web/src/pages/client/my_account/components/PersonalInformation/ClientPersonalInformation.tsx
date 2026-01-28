@@ -79,45 +79,53 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   // Fetch dropdown data from API
   const countriesQuery = useCountries();
 
-  const parentCountryId = typeof country === "object" && country !== null && "value" in country
-    ? (country as any).value
-    : country;
+  const parentCountryId =
+    typeof country === "object" && country !== null && "value" in country
+      ? (country as any).value
+      : country;
 
   const statesQuery = useStates(parentCountryId);
 
-  const parentStateId = typeof selectedStateValue === "object" && selectedStateValue !== null && "value" in selectedStateValue
-    ? (selectedStateValue as any).value
-    : selectedStateValue;
+  const parentStateId =
+    typeof selectedStateValue === "object" &&
+    selectedStateValue !== null &&
+    "value" in selectedStateValue
+      ? (selectedStateValue as any).value
+      : selectedStateValue;
 
   const citiesQuery = useCities(parentStateId);
   const industryQuery = useIndustries();
 
   const countries = useMemo(
-    () => (countriesQuery.data || []).map((i: LookupItem) => ({
-      value: i.id,
-      label: i.name,
-    })),
+    () =>
+      (countriesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
     [countriesQuery.data],
   );
   const states = useMemo(
-    () => (statesQuery.data || []).map((i: LookupItem) => ({
-      value: i.id,
-      label: i.name,
-    })),
+    () =>
+      (statesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
     [statesQuery.data],
   );
   const cities = useMemo(
-    () => (citiesQuery.data || []).map((i: LookupItem) => ({
-      value: i.id,
-      label: i.name,
-    })),
+    () =>
+      (citiesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
     [citiesQuery.data],
   );
   const industries = useMemo(
-    () => (industryQuery.data || []).map((i: LookupItem) => ({
-      value: i.id,
-      label: i.name,
-    })),
+    () =>
+      (industryQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
     [industryQuery.data],
   );
 
@@ -127,18 +135,25 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
   useEffect(() => {
     if (companyInfo) {
       reset({
-        companyName: ("companyName" in companyInfo && companyInfo.companyName) || "",
-        contactPersonName: ("personName" in companyInfo ? companyInfo.personName : companyInfo.name) || "",
+        companyName:
+          ("companyName" in companyInfo && companyInfo.companyName) || "",
+        contactPersonName:
+          ("personName" in companyInfo
+            ? companyInfo.personName
+            : companyInfo.name) || "",
         phoneNumber: companyInfo.phoneNumber || "",
         businessType: "PRIVATE", // Default or map if exists
-        industry: ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
+        industry:
+          ("industryId" in companyInfo ? companyInfo.industryId : "") || "",
         address: ("address" in companyInfo ? companyInfo.address : "") || "",
         country: companyInfo.countryId || "",
         state: companyInfo.stateId || "",
         city: companyInfo.cityId || "",
         postalCode: companyInfo.postalCode || "",
-        taxDocument: ("documentType" in companyInfo && companyInfo.documentType) || "",
-        vatRegistrationNumber: ("documentNumber" in companyInfo && companyInfo.documentNumber) || "",
+        taxDocument:
+          ("documentType" in companyInfo && companyInfo.documentType) || "",
+        vatRegistrationNumber:
+          ("documentNumber" in companyInfo && companyInfo.documentNumber) || "",
       });
 
       if (companyInfo.phoneNumber) {

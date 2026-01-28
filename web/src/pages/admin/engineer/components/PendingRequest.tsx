@@ -26,7 +26,7 @@ export const EngineerStatus = {
 
 export type EngineerStatusType =
   (typeof EngineerStatus)[keyof typeof EngineerStatus];
-  
+
 /**
  * PendingRequest Component
  *
@@ -53,17 +53,17 @@ export default function PendingRequest() {
   const [search, setSearch] = useState("");
 
   const filteredData = manageEngineer
-      .filter((e) => e.kycStatus === "Pending")
-      .filter((e) => {
-        const query = search.toLowerCase();
+    .filter((e) => e.kycStatus === "Pending")
+    .filter((e) => {
+      const query = search.toLowerCase();
 
-        return (
-          e.engineerID.toLowerCase().includes(query) ||
-          e.details.name.toLowerCase().includes(query) ||
-          e.details.email.toLowerCase().includes(query) ||
-          e.location.toLowerCase().includes(query)
-        );
-      });
+      return (
+        e.engineerID.toLowerCase().includes(query) ||
+        e.details.name.toLowerCase().includes(query) ||
+        e.details.email.toLowerCase().includes(query) ||
+        e.location.toLowerCase().includes(query)
+      );
+    });
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
@@ -85,12 +85,14 @@ export default function PendingRequest() {
         toastMessage = `Engineer status updated to ${data.status}`;
         break;
     }
-      let bodyMessage = "";
+    let bodyMessage = "";
 
     if (data.status.toLowerCase() === "pending") {
       bodyMessage = "Are you sure you want to set this engineer to pending?";
     } else {
-      const formattedStatus = data.status.charAt(0).toUpperCase() + data.status.slice(1).toLowerCase();
+      const formattedStatus =
+        data.status.charAt(0).toUpperCase() +
+        data.status.slice(1).toLowerCase();
       bodyMessage = `Are you sure you want to ${formattedStatus} this engineer?`;
     }
 
@@ -116,12 +118,12 @@ export default function PendingRequest() {
                   : "secondary",
           action: async (close) => {
             if (status === EngineerStatus.REJECT) {
-            toast.error(toastMessage); 
-          } else if (status === EngineerStatus.APPROVE) {
-            toast.success(toastMessage);
-          } else {
-            toast.warning(toastMessage)
-          }
+              toast.error(toastMessage);
+            } else if (status === EngineerStatus.APPROVE) {
+              toast.success(toastMessage);
+            } else {
+              toast.warning(toastMessage);
+            }
             close(true);
           },
         },
@@ -263,7 +265,7 @@ export default function PendingRequest() {
           })),
           ...JobStatus.filter((opt) => opt.value !== current),
         ];
-        
+
         return (
           <div className="relative w-full">
             <SelectMenu

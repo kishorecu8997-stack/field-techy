@@ -7,8 +7,8 @@ import { useFormContext, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
 type BlockEngineerForm = {
-  reason: string
-}
+  reason: string;
+};
 
 export default function BlockEngineer({
   isBlockEngineer,
@@ -17,14 +17,13 @@ export default function BlockEngineer({
   isBlockEngineer: boolean;
   setIsBlockEngineer: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-
-    const { handleSubmit } = useFormContext<BlockEngineerForm>();
-      // This function only executes if validation passes
-      const onSubmit: SubmitHandler<BlockEngineerForm> = (data) => {
-        // Add your API call logic here
-        toast.success("Engineer blocked successfully!");
-        setIsBlockEngineer(false);
-      };
+  const { handleSubmit } = useFormContext<BlockEngineerForm>();
+  // This function only executes if validation passes
+  const onSubmit: SubmitHandler<BlockEngineerForm> = () => {
+    // Add your API call logic here
+    toast.success("Engineer blocked successfully!");
+    setIsBlockEngineer(false);
+  };
 
   return (
     <div>

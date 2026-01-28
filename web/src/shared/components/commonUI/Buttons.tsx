@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "../../libs/utils";
 import Loader2 from "../Loader2";
 import { scrollToTop } from "@/utils";
- 
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   className?: string;
@@ -25,20 +25,20 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: ReactNode;
   isScrollToTop?: boolean;
 }
- 
+
 /**
-* Button - A reusable button component for React.
-*
-* Features:
-* - Supports primary, secondary, ghost, danger, outline, link, and solid variants.
-* - Supports small, medium, large, and icon sizes.
-* - Supports loading state.
-* - Supports left and right icons.
-* - Supports custom class names.
-* - Supports full width.
-* - Supports scroll to top on click.
-*/
- 
+ * Button - A reusable button component for React.
+ *
+ * Features:
+ * - Supports primary, secondary, ghost, danger, outline, link, and solid variants.
+ * - Supports small, medium, large, and icon sizes.
+ * - Supports loading state.
+ * - Supports left and right icons.
+ * - Supports custom class names.
+ * - Supports full width.
+ * - Supports scroll to top on click.
+ */
+
 export const Button: React.FC<ButtonProps> = ({
   children,
   className,
@@ -56,7 +56,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseStyles =
     "inline-flex items-center justify-center rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
- 
+
   const variantStyles: Record<string, string> = {
     primary:
       "bg-emerald-600 hover:bg-emerald-700 font-semibold text-white focus:ring-emerald-500",
@@ -74,21 +74,21 @@ export const Button: React.FC<ButtonProps> = ({
     warning:
       " bg-yellow-200 text-black border border-gray-500 hover:bg-yellow-300 focus:ring-gray-100",
   };
- 
+
   const sizeStyles: Record<string, string> = {
     sm: "h-11 px-3 text-sm",
     md: "h-11 px-4 text-sm",
     lg: "h-12 px-6 text-base",
     icon: "h-11 w-11",
   };
- 
+
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (isScrollToTop) scrollToTop();
     if (onClick) onClick(e);
   };
- 
+
   return (
-<button
+    <button
       onClick={handleClick}
       type={type}
       className={cn(
@@ -100,14 +100,14 @@ export const Button: React.FC<ButtonProps> = ({
       )}
       disabled={disabled || loading}
       {...rest}
->
+    >
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
- 
+
       {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
- 
+
       {children && <span>{children}</span>}
- 
+
       {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
-</button>
+    </button>
   );
 };

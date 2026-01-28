@@ -60,7 +60,6 @@ export default function ActiveUser() {
       );
     });
 
-
   useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
   //Delete confirmation
