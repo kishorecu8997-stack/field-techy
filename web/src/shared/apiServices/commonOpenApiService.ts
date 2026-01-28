@@ -4,8 +4,10 @@ import {
   type AppUploadProfileFileResponse,
   type AppVerifyOtpResponse,
   type AppForgotPasswordResponse,
+  type AppForgotPasswordError,
   type AppResetPasswordResponse,
-  type AppDownloadProfileFileData
+  type AppResetPasswordError,
+  type AppDownloadProfileFileData,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -14,7 +16,7 @@ import {
   appUploadProfileFileMutation,
   appVerifyOtpMutation,
   appForgotPasswordMutation,
-  appResetPasswordMutation
+  appResetPasswordMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -47,7 +49,7 @@ export function useSendOtp(options?: {
   return useMutation({
     ...appSendOtpMutation({
       client: apiClient,
-      headers: { Authorization: "" },
+      headers: { authorization: "" },
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -61,7 +63,7 @@ export function useVerifyOtp(options?: {
   return useMutation({
     ...appVerifyOtpMutation({
       client: apiClient,
-      headers: { Authorization: "" },
+      headers: { authorization: "" },
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -86,7 +88,7 @@ export function useAppUploadProfileFile(options?: {
  */
 export function useAppDownloadProfileFile(
   fileType: ProfileFileType | null | undefined,
-  enabled: boolean = true
+  enabled: boolean = true,
 ) {
   return useQuery({
     ...appDownloadProfileFileOptions({
@@ -101,7 +103,10 @@ export function useAppDownloadProfileFile(
   });
 }
 
-export function useLookupData(table: AppGetLookupDataData["query"]["table"], parentId?: string) {
+export function useLookupData(
+  table: AppGetLookupDataData["query"]["table"],
+  parentId?: string,
+) {
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,
@@ -113,7 +118,7 @@ export function useLookupData(table: AppGetLookupDataData["query"]["table"], par
 
 export function useForgotPassword(options?: {
   onSuccess?: (data: AppForgotPasswordResponse) => void;
-  onError?: (error: unknown) => void;
+  onError?: (error: AppForgotPasswordError) => void;
 }) {
   return useMutation({
     ...appForgotPasswordMutation({ client: apiClient }),
@@ -124,7 +129,7 @@ export function useForgotPassword(options?: {
 
 export function useResetPassword(options?: {
   onSuccess?: (data: AppResetPasswordResponse) => void;
-  onError?: (error: unknown) => void;
+  onError?: (error: AppResetPasswordError) => void;
 }) {
   return useMutation({
     ...appResetPasswordMutation({ client: apiClient }),

@@ -17,7 +17,10 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    if (
+      typeof window !== "undefined" &&
+      !pdfjsLib.GlobalWorkerOptions.workerSrc
+    ) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
     }
   }, []);

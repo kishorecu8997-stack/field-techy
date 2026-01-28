@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { Button } from "../Buttons";
- 
+
 export const CountrySelect = ({
   countries,
   value,
@@ -11,7 +11,7 @@ export const CountrySelect = ({
 }: CountrySelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
- 
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -26,15 +26,15 @@ export const CountrySelect = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
- 
+
   const currentCountry = countries.find((c) => c.code === value);
- 
+
   const toggleDropdown = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
     }
   };
- 
+
   return (
     <div className="relative" ref={dropdownRef}>
       <Button
@@ -65,7 +65,7 @@ export const CountrySelect = ({
           <span className="text-gray-400">Select</span>
         )}
       </Button>
- 
+
       {isOpen && !disabled && (
         <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
           {countries.map((country) => (

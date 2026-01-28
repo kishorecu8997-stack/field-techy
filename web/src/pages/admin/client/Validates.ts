@@ -21,10 +21,12 @@ export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `This field must not have first or last spaces`;
+  if (raw !== raw.trim())
+    return `This field must not have first or last spaces`;
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `This field must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw))
+    return `This field must not contain consecutive spaces`;
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
