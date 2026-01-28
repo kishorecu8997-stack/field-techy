@@ -165,7 +165,7 @@ export function useClientGetJobs(enabled: boolean = true) {
       client: apiClient,
     }),
     enabled: enabled,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 
