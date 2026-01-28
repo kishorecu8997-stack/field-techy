@@ -15,7 +15,7 @@ import type { ExperiencesFormData } from "./types";
 import {
   useEngineerGetExperience,
   useEngineerUpdateExperience,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
@@ -29,7 +29,7 @@ const EditExperiences = () => {
   const { mutateAsync: updateExperience } = useEngineerUpdateExperience();
   const { data: workLocations } = useLookupData("workLocations");
   const { data: employmentTypes } = useLookupData("employmentTypes");
-  const { data: designations } = useLookupData("serviceCategories")
+  const { data: designations } = useLookupData("serviceCategories");
 
   const methods = useForm<ExperiencesFormData>({
     mode: "onSubmit",
@@ -130,10 +130,12 @@ const EditExperiences = () => {
           label="Designation"
           name="designation"
           placeholder="Designation"
-          options={designations?.map((e) => ({
-            value: e.id,
-            label: e.name,
-          })) || []}
+          options={
+            designations?.map((e) => ({
+              value: e.id,
+              label: e.name,
+            })) || []
+          }
           required
         />
         <InputField
@@ -147,20 +149,24 @@ const EditExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            workLocations?.map((item) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <SelectField
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            employmentTypes?.map((item) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput

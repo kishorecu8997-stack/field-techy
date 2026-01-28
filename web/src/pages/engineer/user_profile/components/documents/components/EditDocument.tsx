@@ -2,7 +2,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { SelectField } from "@/shared/components/commonUI/inputs/SelectField";
-import { useProfileFileUpload, type ProfileFileType } from "@/shared/hooks/useProfileFileUpload";
+import {
+  useProfileFileUpload,
+  type ProfileFileType,
+} from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { getUserId } from "@/utils";
