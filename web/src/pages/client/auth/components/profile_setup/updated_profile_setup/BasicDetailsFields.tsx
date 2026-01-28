@@ -15,6 +15,7 @@ import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/Ph
 import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
+import { useVatOptions } from "@/shared/apiServices/client/clientService";
 import {
   useVatOptions,
 } from "@/shared/apiServices/client/clientService";
@@ -28,7 +29,7 @@ import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailF
 
 /**
  * Email field component with real-time availability validation
- * 
+ *
  * NOTE: User availability API is currently commented out.
  * When ready, uncomment the useDebouncedUserExists hook and related UI elements.
  */
@@ -65,10 +66,38 @@ const BasicDetailsFields = () => {
   const citiesQuery = useCities(parentStateId);
   const industryQuery = useIndustries();
 
-  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
-  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
-  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
-  const industries = useMemo(() => (industryQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [industryQuery.data]);
+  const countries = useMemo(
+    () =>
+      (countriesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [countriesQuery.data],
+  );
+  const states = useMemo(
+    () =>
+      (statesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [statesQuery.data],
+  );
+  const cities = useMemo(
+    () =>
+      (citiesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [citiesQuery.data],
+  );
+  const industries = useMemo(
+    () =>
+      (industryQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [industryQuery.data],
+  );
 
   const statesLoading = statesQuery.isLoading;
   const citiesLoading = citiesQuery.isLoading;
@@ -196,7 +225,9 @@ const BasicDetailsFields = () => {
           <SelectField
             name="industry"
             placeholder={
-              industryQuery.isLoading ? "Loading industries..." : "Select Industry"
+              industryQuery.isLoading
+                ? "Loading industries..."
+                : "Select Industry"
             }
             options={industries}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}

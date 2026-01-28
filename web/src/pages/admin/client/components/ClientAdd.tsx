@@ -107,7 +107,6 @@ const ClientAdd: React.FC = () => {
             name="contactPersonName"
             placeholder="Enter Contact Person Name"
             required
-            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
 

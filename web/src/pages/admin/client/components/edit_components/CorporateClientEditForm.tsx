@@ -20,6 +20,7 @@ const CorporateClientEditForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ClientFormData>({
+    mode: "onChange",
     defaultValues: {
       profileImage: null,
       companyName: "",
@@ -102,7 +103,6 @@ const CorporateClientEditForm: React.FC = () => {
       try {
         const formData = methods.getValues();
         console.log("Form submitted:", formData);
-        toast.success("Client information saved successfully!");
         navigate(absoluteUrls.admin.home.manage_client);
         methods.reset();
         setActiveTab("Basic Information");

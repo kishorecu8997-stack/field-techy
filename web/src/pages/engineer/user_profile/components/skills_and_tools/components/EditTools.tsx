@@ -9,7 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import {
   useEngineerGetSkillsAndTools,
   useEngineerUpdateSkillsAndTools,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -21,8 +21,10 @@ const EditTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: toolsLookup } = useLookupData("tools" as any);
 
   const methods = useForm<EditToolsFormData>({
@@ -32,7 +34,7 @@ const EditTools = () => {
   useEffect(() => {
     if (currentSkillsAndTools) {
       methods.reset({
-        tools: currentSkillsAndTools.tools.map(t => t.id.toString()),
+        tools: currentSkillsAndTools.tools.map((t) => t.id.toString()),
       });
     }
   }, [currentSkillsAndTools, methods]);
@@ -54,14 +56,15 @@ const EditTools = () => {
           variant: "primary",
           action: async (close) => {
             const toolIds = formData.tools.map(Number);
-            const skillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const skillIds =
+              currentSkillsAndTools?.skills.map((s) => s.id) || [];
 
             try {
               await updateSkillsAndTools({
                 body: {
                   skills: skillIds,
-                  tools: toolIds
-                }
+                  tools: toolIds,
+                },
               });
               toast.success("Tools Updated Successfully");
               close(true);
@@ -77,10 +80,11 @@ const EditTools = () => {
     });
   };
 
-  const toolOptions = toolsLookup?.map((tool: any) => ({
-    label: tool.name,
-    value: tool.id.toString(),
-  })) || [];
+  const toolOptions =
+    toolsLookup?.map((tool: any) => ({
+      label: tool.name,
+      value: tool.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

@@ -21,6 +21,7 @@ const HomeClientEditForm: React.FC = () => {
   const navigate = useNavigate();
 
   const methods = useForm<ClientFormData>({
+    mode: "onChange",
     defaultValues: {
       profileImage: null,
       companyName: "",

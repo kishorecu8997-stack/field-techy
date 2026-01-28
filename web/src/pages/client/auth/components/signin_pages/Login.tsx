@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -9,24 +10,22 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  type LoginEmailFormData,
-} from "../../validations/LoginEmail";
+import { UserRole } from "@/shared/enums/users";
 import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
-import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
-import { CiMail } from "react-icons/ci";
-import { UserRole } from "@/shared/enums/users";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { CiMail } from "react-icons/ci";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -46,34 +45,36 @@ const Login = ({
   const navigate = useNavigate();
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin({
-    onSuccess: async (resp) => {
-      // Store the token
-      if (resp.token) {
-        localStorage.setItem("auth_token", resp.token);
-      }
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin(
+    {
+      onSuccess: async (resp) => {
+        // Store the token
+        if (resp.token) {
+          localStorage.setItem("auth_token", resp.token);
+        }
 
-      setUserSession({
-        accessToken: resp.token,
-        userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
-        role: UserRole.CLIENT,
-        initiatedAt: Date.now(),
-      } as UserSession);
+        setUserSession({
+          accessToken: resp.token,
+          userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
+          role: UserRole.CLIENT,
+          initiatedAt: Date.now(),
+        } as UserSession);
 
-      navigate(absoluteUrls.client.home.dashboard);
-      toast.success("Logged in successfully");
+        navigate(absoluteUrls.client.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        // Skip showing toast for 401 errors as axios interceptor already handles it
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return;
+        }
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
+        toast.error(errorMessage);
+      },
     },
-    onError: (error) => {
-      console.error(error);
-      // Skip showing toast for 401 errors as axios interceptor already handles it
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return;
-      }
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      toast.error(errorMessage);
-    },
-  });
+  );
 
   const methods = useForm({
     resolver: zodResolver(loginSchema),
@@ -130,7 +131,6 @@ const Login = ({
             label="Email Address"
             type="email"
             required
-            rules={validateEmailRules}
           />
           <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
