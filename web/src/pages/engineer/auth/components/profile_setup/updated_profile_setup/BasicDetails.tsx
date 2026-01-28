@@ -84,9 +84,7 @@ const BasicDetails = () => {
       navigate(absoluteUrls.engineer.auth.verification);
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message || "Registration failed. Please try again.",
-      );
+      toast.error(error?.message || "Registration failed. Please try again.");
     },
   });
   // Check for existing registration session
@@ -117,7 +115,9 @@ const BasicDetails = () => {
         city: data.city,
         postalCode: data.postalCode,
         address: data.address,
-        skills: (data.skills || []).filter((s): s is string | number => s !== undefined),
+        skills: (data.skills || []).filter(
+          (s): s is string | number => s !== undefined,
+        ),
         portfolioLink: data.portfolioLink,
         serviceCategory: data.serviceCategory ?? "",
         amount: data.amount,
@@ -133,9 +133,9 @@ const BasicDetails = () => {
     // Extract IDs from select objects - OpenAPI expects number IDs
     const getIdValue = (val: any): number | undefined => {
       if (!val) return undefined;
-      if (typeof val === 'object' && 'value' in val) return Number(val.value);
-      if (typeof val === 'number') return val;
-      if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+      if (typeof val === "object" && "value" in val) return Number(val.value);
+      if (typeof val === "number") return val;
+      if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
       return undefined;
     };
 
@@ -151,7 +151,11 @@ const BasicDetails = () => {
       cityId: getIdValue(data.city),
       postalCode: data.postalCode,
       skills: Array.isArray(data.skills)
-        ? data.skills.map((s: any) => typeof s === 'object' ? Number(s.value) : Number(s)).filter(n => !isNaN(n))
+        ? data.skills
+            .map((s: any) =>
+              typeof s === "object" ? Number(s.value) : Number(s),
+            )
+            .filter((n) => !isNaN(n))
         : [],
       serviceCategoryId: getIdValue(data.serviceCategory),
       hourlyRate: parseFloat(data.amount?.replace(/[^0-9.]/g, "")) || undefined,

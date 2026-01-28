@@ -7,7 +7,7 @@ import {
   type AppForgotPasswordError,
   type AppResetPasswordResponse,
   type AppResetPasswordError,
-  type AppDownloadProfileFileData
+  type AppDownloadProfileFileData,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -16,7 +16,7 @@ import {
   appUploadProfileFileMutation,
   appVerifyOtpMutation,
   appForgotPasswordMutation,
-  appResetPasswordMutation
+  appResetPasswordMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -88,7 +88,7 @@ export function useAppUploadProfileFile(options?: {
  */
 export function useAppDownloadProfileFile(
   fileType: ProfileFileType | null | undefined,
-  enabled: boolean = true
+  enabled: boolean = true,
 ) {
   return useQuery({
     ...appDownloadProfileFileOptions({
@@ -103,7 +103,10 @@ export function useAppDownloadProfileFile(
   });
 }
 
-export function useLookupData(table: AppGetLookupDataData["query"]["table"], parentId?: string) {
+export function useLookupData(
+  table: AppGetLookupDataData["query"]["table"],
+  parentId?: string,
+) {
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,

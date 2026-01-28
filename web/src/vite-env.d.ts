@@ -16,4 +16,3 @@ declare global {
     __react_root__?: Root;
   }
 }
-

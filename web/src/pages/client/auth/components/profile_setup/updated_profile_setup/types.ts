@@ -3,7 +3,8 @@ export const ClientTypeEnum = {
   CORPORATE: "corporate",
 } as const;
 
-export type ClientTypeEnum = (typeof ClientTypeEnum)[keyof typeof ClientTypeEnum];
+export type ClientTypeEnum =
+  (typeof ClientTypeEnum)[keyof typeof ClientTypeEnum];
 
 export interface ClientBasicDetails {
   // Common fields for both home and corporate clients

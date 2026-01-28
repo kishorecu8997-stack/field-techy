@@ -7,7 +7,6 @@ import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
 
-
 /**
  * Creates a configured QueryClient instance with default query behaviors.
  *

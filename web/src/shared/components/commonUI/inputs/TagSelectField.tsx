@@ -104,7 +104,9 @@ export const TagSelectField = ({
   return (
     <div className={containerClassName}>
       {isShowLabel && (
-        <label className={`block mb-1 text-md font-semibold ${disabled ? "text-gray-400" : "text-gray-700 dark:text-gray-300"}`}>
+        <label
+          className={`block mb-1 text-md font-semibold ${disabled ? "text-gray-400" : "text-gray-700 dark:text-gray-300"}`}
+        >
           {label} {required && <span className="text-red-600">*</span>}
         </label>
       )}
@@ -122,7 +124,9 @@ export const TagSelectField = ({
             <>
               <Listbox
                 value={null} // We handle selection manually to support tagging
-                onChange={(val: any) => handleToggleTag(val.value, onChange, currentValues)}
+                onChange={(val: any) =>
+                  handleToggleTag(val.value, onChange, currentValues)
+                }
                 disabled={disabled}
               >
                 {({ open }) => {
@@ -134,11 +138,13 @@ export const TagSelectField = ({
                     <div className="relative">
                       <Listbox.Button
                         ref={buttonRef}
-                        className={`${inputClassName} ${leftIcon ? "pl-10" : ""
-                          } ${error && !disabled
+                        className={`${inputClassName} ${
+                          leftIcon ? "pl-10" : ""
+                        } ${
+                          error && !disabled
                             ? "border-red-500 focus:ring-1 focus:ring-red-400"
                             : "border-gray-300 dark:border-gray-600"
-                          }`}
+                        }`}
                       >
                         <div className="flex items-center w-full space-x-2">
                           {leftIcon && (
@@ -151,7 +157,9 @@ export const TagSelectField = ({
                           </span>
                         </div>
                         <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                          <FaChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${open ? "rotate-180" : ""}`} />
+                          <FaChevronDown
+                            className={`h-4 w-4 text-gray-500 transition-transform ${open ? "rotate-180" : ""}`}
+                          />
                         </span>
                       </Listbox.Button>
 
@@ -165,30 +173,40 @@ export const TagSelectField = ({
                         leaveTo="opacity-0 scale-95"
                       >
                         <Listbox.Options
-                          className={`absolute z-30 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 ${position === "top" ? "bottom-full mb-1" : "top-full mt-1"
-                            }`}
+                          className={`absolute z-30 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 ${
+                            position === "top"
+                              ? "bottom-full mb-1"
+                              : "top-full mt-1"
+                          }`}
                         >
                           {options.map((option) => {
-                            const isSelected = currentValues.map(String).includes(String(option.value));
+                            const isSelected = currentValues
+                              .map(String)
+                              .includes(String(option.value));
                             return (
                               <Listbox.Option
                                 key={option.value}
                                 value={option}
                                 className={({ active }) =>
-                                  `relative cursor-pointer select-none py-2.5 pl-4 pr-4 transition-colors ${isSelected
-                                    ? "bg-teal-50 dark:bg-teal-900/30 text-teal-900 dark:text-teal-200"
-                                    : active
-                                      ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-                                      : "text-gray-700 dark:text-gray-300"
+                                  `relative cursor-pointer select-none py-2.5 pl-4 pr-4 transition-colors ${
+                                    isSelected
+                                      ? "bg-teal-50 dark:bg-teal-900/30 text-teal-900 dark:text-teal-200"
+                                      : active
+                                        ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                                        : "text-gray-700 dark:text-gray-300"
                                   }`
                                 }
                               >
                                 <div className="flex items-center justify-between">
-                                  <span className={`block truncate ${isSelected ? "font-semibold" : "font-normal"}`}>
+                                  <span
+                                    className={`block truncate ${isSelected ? "font-semibold" : "font-normal"}`}
+                                  >
                                     {option.label}
                                   </span>
                                   {isSelected && (
-                                    <span className="text-teal-600 dark:text-teal-400 text-sm">✓</span>
+                                    <span className="text-teal-600 dark:text-teal-400 text-sm">
+                                      ✓
+                                    </span>
                                   )}
                                 </div>
                               </Listbox.Option>
@@ -202,15 +220,16 @@ export const TagSelectField = ({
               </Listbox>
 
               {error && (
-                <p className="mt-1 text-sm text-red-600">
-                  {error.message}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{error.message}</p>
               )}
 
               {/* Tag Pills */}
               <div className="flex flex-wrap gap-2 mt-2">
                 {currentValues.map((tagValue: string, index: number) => {
-                  const tagLabel = options.find((opt) => String(opt.value) === String(tagValue))?.label || tagValue;
+                  const tagLabel =
+                    options.find(
+                      (opt) => String(opt.value) === String(tagValue),
+                    )?.label || tagValue;
                   return (
                     <span
                       key={index}
@@ -219,7 +238,9 @@ export const TagSelectField = ({
                       {tagLabel}
                       <button
                         type="button"
-                        onClick={() => removeTag(index, onChange, currentValues)}
+                        onClick={() =>
+                          removeTag(index, onChange, currentValues)
+                        }
                         className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-200 transition-colors"
                       >
                         ×

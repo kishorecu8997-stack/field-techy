@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import {
   useEngineerGetSkillsAndTools,
   useEngineerUpdateSkillsAndTools,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
@@ -21,8 +21,10 @@ const AddSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: skillsLookup } = useLookupData("skills" as any);
   const { refetchProfile } = useEngineerStore();
 
@@ -48,17 +50,20 @@ const AddSkills = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            const existingSkillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const existingSkillIds =
+              currentSkillsAndTools?.skills.map((s) => s.id) || [];
             const newSkillIds = data.skills.map(Number);
-            const combinedSkillIds = Array.from(new Set([...existingSkillIds, ...newSkillIds]));
-            const toolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+            const combinedSkillIds = Array.from(
+              new Set([...existingSkillIds, ...newSkillIds]),
+            );
+            const toolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
 
             try {
               await updateSkillsAndTools({
                 body: {
                   skills: combinedSkillIds,
-                  tools: toolIds
-                }
+                  tools: toolIds,
+                },
               });
               toast.success("Skills Added Successfully");
               await refetchProfile();
@@ -78,12 +83,13 @@ const AddSkills = () => {
   // Filter out skills that are already added to the profile
   const existingSkillIds = currentSkillsAndTools?.skills.map((s) => s.id) || [];
 
-  const skillOptions = skillsLookup
-    ?.filter((skill: any) => !existingSkillIds.includes(skill.id))
-    .map((skill: any) => ({
-      label: skill.name,
-      value: skill.id.toString(),
-    })) || [];
+  const skillOptions =
+    skillsLookup
+      ?.filter((skill: any) => !existingSkillIds.includes(skill.id))
+      .map((skill: any) => ({
+        label: skill.name,
+        value: skill.id.toString(),
+      })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 
