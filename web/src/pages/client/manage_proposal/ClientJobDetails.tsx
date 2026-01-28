@@ -35,11 +35,35 @@ const ClientJobDetails = () => {
       ? sampleJobs.find((job) => job.id === jobId)
       : null;
 
+  // Check if this is the dummy Network Engineer job
+  const isDummyNetworkEngineer = matchedJob?.id === 12;
+
+  const numberOfVacancy =
+    isDummyNetworkEngineer && matchedJob && "numberOfVacancy" in matchedJob
+      ? (matchedJob as { numberOfVacancy?: number }).numberOfVacancy
+      : undefined;
+
+  const numberOfApplicants =
+    isDummyNetworkEngineer && matchedJob && "numberOfApplicants" in matchedJob
+      ? (matchedJob as { numberOfApplicants?: number }).numberOfApplicants
+      : undefined;
+  
+  // Set default tab based on job type
+  if (isDummyNetworkEngineer && activeTab === "Job Information") {
+    setActiveTab("Job Overview");
+  }
+
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
-          <MyJobsHeader title="Job Details" isShowBreadcrumb />
+          <MyJobsHeader 
+            title="Job Details" 
+            isShowBreadcrumb 
+            customLabels={{
+              [params.jobId || ""]: matchedJob?.title || "Job",
+            }}
+          />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
@@ -55,6 +79,11 @@ const ClientJobDetails = () => {
               setActiveTab={setActiveTab}
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
+              hideBreakDetails={isDummyNetworkEngineer}
+              hideDurationAndClient={isDummyNetworkEngineer}
+              jobLocation={isDummyNetworkEngineer ? matchedJob?.location : undefined}
+              numberOfVacancy={numberOfVacancy}
+              numberOfApplicants={numberOfApplicants}
             />
             <JobTabSection
               //@ts-expect-error Unable to resolve to a known type, refer the right type of job status and fix the mismatch
@@ -63,6 +92,8 @@ const ClientJobDetails = () => {
               isSendProposal={isSendProposal}
               activeTab={activeTab}
               OfferJobStatus={OfferJobStatus}
+              isDummyNetworkEngineer={isDummyNetworkEngineer}
+              showManageProposals
             />
           </div>
           <SidebarJobPostWallet earnings={earningsData} />

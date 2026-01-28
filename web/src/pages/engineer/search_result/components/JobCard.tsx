@@ -1,5 +1,5 @@
 import { icons } from "@/config/icons";
-import { getDurationString, scrollToTop } from "@/utils";
+import { scrollToTop } from "@/utils";
 import {
   BOOKMARK_CHANGE_EVENT,
   isJobSaved,
@@ -169,26 +169,33 @@ const JobCard: React.FC<{
     const { address: resolvedAddress } = useReverseGeocoding(job.location);
 
     const jobData = useMemo(() => {
-      const clientName =
-        typeof job.client === "string"
-          ? job.client
-          : job.client?.companyName || "-";
+      const jobRecord = job as unknown as Record<string, unknown>;
+
+      const getString = (key: string): string | undefined => {
+        const value = jobRecord[key];
+        return typeof value === "string" ? value : undefined;
+      };
+
+      const clientName = job.client?.companyName || "-";
+
+      const location =
+        [job.client?.city, job.client?.country].filter(Boolean).join(", ") || "-";
 
       return {
         id: job.id,
-        title: (job as any).jobTitle || (job as any).title || "",
+        title: job.jobTitle || getString("title") || "",
         clientName,
-        location: job.location,
-        salary: job.salary || (job as any).pay || "-",
+        location: location || job.location,
+        salary: job.salary || getString("pay") || "-",
         status: job.status,
         skills: job.skills,
         tools: job.tools,
-        description: (job as any).jobDescription || (job as any).description,
+        description: job.jobDescription || getString("description") || "",
         postedTime: job.postedTime,
         experience: job.experience,
-        duration: (job as any).jobDuration || (job as any).duration,
-        projectDeadline: (job as any).projectDeadline,
-        startDate: job.startDate as string,
+        duration: job.jobDuration || getString("duration"),
+        projectDeadline: job.projectDeadline || getString("projectDeadline"),
+        startDate: job.startDate || getString("startDate") || "",
       };
     }, [job]);
 
@@ -254,10 +261,16 @@ const JobCard: React.FC<{
       closed: "gray",
     } as const;
 
-    const getDuration = getDurationString({
-      startDateStr: job.startDate as string,
-      endDateStr: job.projectDeadline as string,
-    });
+    const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
+    const statusKey = (statusKeyRaw in STATUS_VARIANT_MAP
+      ? statusKeyRaw
+      : undefined) as keyof typeof STATUS_VARIANT_MAP | undefined;
+    const statusLabel = statusKey
+      ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
+      : job.status;
+
+    const salaryDisplay = jobData.salary ?? "-";
+    const hasSalary = Boolean(jobData.salary);
 
     return (
       <>
@@ -305,20 +318,19 @@ const JobCard: React.FC<{
                     </strong>
                   </span>
                 )}
-                {jobData.duration && <span>| {jobData.duration}</span>}
                 {jobData.status && (
-                  <Badge
-                    variant={
-                      STATUS_VARIANT_MAP[
-                      job.status as keyof typeof STATUS_VARIANT_MAP
-                      ] ?? "gray"
-                    }
-                  >
-                    {JOB_STATUSES[job.status as keyof typeof JOB_STATUSES] ??
-                      job.status}
-                  </Badge>
+                  <>
+                    <span>|</span>
+                    <Badge
+                      variant={
+                        statusKey ? STATUS_VARIANT_MAP[statusKey] : "gray"
+                      }
+                    >
+                      {statusLabel ?? job.status}
+                    </Badge>
+                  </>
                 )}
-                {getDuration && <span>| {getDuration || "-"}</span>}
+                {jobData.duration && <span>| {jobData.duration}</span>}
               </div>
             </div>
           </div>
@@ -371,14 +383,14 @@ const JobCard: React.FC<{
                 </div>
               )}
 
-              {(jobData.salary || "-") && (
+              {hasSalary ? (
                 <div className="flex items-center gap-1.5">
                   <BiDollar className="h-4 w-4 text-gray-500" />
                   <span className="text-gray-800 dark:text-gray-200">
-                    {jobData.salary || "-"}
+                    {salaryDisplay}
                   </span>
                 </div>
-              )}
+              ) : null}
 
               <div className="flex items-center gap-2">
                 <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />

@@ -21,21 +21,29 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
  */
 const JobDetailsPage = () => {
   const params = useParams();
+  const isDummyJob = params.jobId === "dummy-j1";
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState(
+    isDummyJob ? "Job Overview" : "Job Information"
+  );
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
 
-  // Always call hooks - pass empty string if jobId is missing
-  const { data: jobs, isLoading } = useClientGetJobsById(params.jobId ?? "");
+  // Skip API call for dummy job
+  
+  // Always call hooks - pass empty string if jobId is missing or dummy
+  const { data: jobs, isLoading } = useClientGetJobsById(
+    isDummyJob ? "" : params.jobId ?? ""
+  );
   const { data: client } = useClientGetById(jobs?.clientId ?? "", {
-    enabled: !!jobs?.clientId,
+    enabled: !!jobs?.clientId && !isDummyJob,
   });
-  const location =
-    [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+  const location = isDummyJob
+    ? "Chennai, Tamil Nadu, India"
+    : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -67,7 +75,7 @@ const JobDetailsPage = () => {
   }
 
   // Handle loading state
-  if (isLoading) {
+  if (isLoading && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -86,7 +94,7 @@ const JobDetailsPage = () => {
   }
 
   // Handle case where job data is not found
-  if (!jobs) {
+  if (!jobs && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -109,10 +117,17 @@ const JobDetailsPage = () => {
     );
   }
 
-  const getDuration = getDurationString({
-    startDateStr: jobs.startDate as string,
-    endDateStr: jobs.projectDeadline as string,
-  });
+  // Prepare dummy job data
+  const jobTitle = isDummyJob ? "Network Engineer" : (jobs?.jobTitle as string);
+  const clientName = isDummyJob ? "-" : (client?.companyName as string);
+  const duration = isDummyJob
+    ? "5 weeks"
+    : getDurationString({
+        startDateStr: jobs?.startDate as string,
+        endDateStr: jobs?.projectDeadline as string,
+      });
+  const engagementType = isDummyJob ? "ON_SITE" : (jobs?.engagementModel as string);
+  const jobStatus = isDummyJob ? "NEW" : (jobs?.status as JobStatus);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -122,34 +137,45 @@ const JobDetailsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
           isReport
+          customLabels={isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <JobHeaderCard
-              title={jobs?.jobTitle as string}
-              client={client?.companyName as string}
-              duration={getDuration as string}
-              type={jobs?.engagementModel as string}
-              status={jobs?.status as JobStatus}
+              title={jobTitle}
+              client={clientName}
+              duration={duration as string}
+              type={engagementType}
+              status={jobStatus}
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
               setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
+              hideBreakDetails={isDummyJob}
+              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
+              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
+              numberOfApplicants={isDummyJob ? 20 : undefined}
+              hideDurationAndClient={isDummyJob}
             />
 
             <JobTabSection
-              status={jobs?.status as JobStatus}
+              status={jobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
+              setSendProposal={setIsSendProposal}
               activeTab={activeTab}
               OfferJobStatus={OfferJobStatus}
+              isDummyJob={isDummyJob}
+              workLocation={location as string}
+              isDummyNetworkEngineer={isDummyJob}
+              showManageProposals={false}
             />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={client?.companyName as string}
+              name={clientName}
               memberSince={client?.memberSince as string}
               location={location as string}
               rating={client?.rating || 0}

@@ -59,6 +59,8 @@ export interface Job {
   engineers?: string;
   engineerAvatars?: string[];
   serviceType?: string;
+  numberOfVacancy?: number;
+  numberOfApplicants?: number;
 }
 
 /**

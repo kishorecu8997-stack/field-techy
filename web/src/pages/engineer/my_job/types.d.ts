@@ -38,6 +38,7 @@ export interface MyJobsHeaderProps {
   isShowButton?: boolean;
   buttonText?: string;
   onClick?: () => void;
+  customLabels?: Record<string, string>;
 }
 
 /**
@@ -98,6 +99,11 @@ export interface JobHeaderCardProps {
     | "started"
     | "checked-in"
     | undefined;
+  hideBreakDetails?: boolean;
+  jobLocation?: string;
+  numberOfVacancy?: number;
+  numberOfApplicants?: number;
+  hideDurationAndClient?: boolean;
 }
 
 export interface JobTabsProps {

@@ -62,11 +62,13 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
   };
 
-  const getWorkModeColor = (_: string) => {
+  const getWorkModeColor = (mode: string) => {
+    void mode; // keep signature while avoiding unused parameter warnings
     return "bg-indigo-600 text-white"; // both use same style per your code
   };
 
   const isOnsite = type === WORKING_TYPES.onsite;
+  const isDummyNetworkEngineer = id === 12; // Check if this is the dummy Network Engineer job
 
   return (
     <Link
@@ -106,10 +108,12 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           {location}
         </div>
 
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <IoCalendarOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          {duration}
-        </div>
+        {!isDummyNetworkEngineer && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <IoCalendarOutline className="w-4 h-4 mr-2 flex-shrink-0" />
+            {duration}
+          </div>
+        )}
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoConstructOutline className="w-4 h-4 mr-2 flex-shrink-0" />

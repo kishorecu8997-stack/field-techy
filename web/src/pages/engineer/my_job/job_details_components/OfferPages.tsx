@@ -18,7 +18,10 @@ import JobTabSection from "./JobTabSection";
  */
 const OfferPages = () => {
   const { jobId } = useParams();
-  const { data: apiJob } = useClientGetJobsById(jobId || "");
+  
+  // Skip API call for dummy job
+  const isDummyJob = jobId === "dummy-j1";
+  const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
@@ -26,6 +29,27 @@ const OfferPages = () => {
   const [activeTab, setActiveTab] = useState("Job Information");
 
   const jobData = useMemo(() => {
+    // Handle dummy job
+    if (isDummyJob) {
+      return {
+        title: "Network Engineer",
+        client: "-",
+        duration: "5 weeks",
+        type: "ON_SITE",
+        status: "NEW",
+        jobDescription: `Created on 10-Feb-2024, 09:00 AM
+Tentative Start on: 12-Feb-2024.
+Review feedback and make necessary adjustments by 15-Feb-2024
+Implementation phase begins on 16-Feb-2024
+Conduct user acceptance testing and finalize documentation`,
+        documents: [
+          { name: "Documents.doc", type: "file" },
+          { name: "Documents.doc", type: "file" },
+          { name: "Document.jpg", type: "image" },
+        ],
+      };
+    }
+    
     if (!apiJob) return null;
     return {
       title: apiJob.jobTitle || "Untitled Job",
@@ -34,7 +58,7 @@ const OfferPages = () => {
       type: apiJob.engagementModel || "ON_SITE",
       status: apiJob.status || "NEW",
     };
-  }, [apiJob]);
+  }, [apiJob, isDummyJob]);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -68,9 +92,17 @@ const OfferPages = () => {
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={apiJob?.client?.companyName || dummyClient.name}
+              name={
+                isDummyJob
+                  ? "-"
+                  : apiJob?.client?.companyName || dummyClient.name
+              }
               memberSince={dummyClient.memberSince}
-              location={apiJob?.location || dummyClient.location}
+              location={
+                isDummyJob
+                  ? "Chennai, Tamil Nadu, India"
+                  : apiJob?.location || dummyClient.location
+              }
               rating={dummyClient.rating}
               reviews={dummyClient.reviews}
               verifications={dummyClient.verifications}

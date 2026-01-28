@@ -14,6 +14,23 @@ import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
 
+// Dummy job card - always displayed at the top
+const dummyJob: JobItem = {
+  id: "dummy-j1",
+  jobTitle: "Network Engineer",
+  jobDescription: "We are looking for a skilled Network Engineer to manage, maintain, and optimize our network infrastructure. The role involves troubleshooting network issues, ensuring system security, and supporting smooth business operations.",
+  location: "Chennai, Tamil Nadu, India",
+  experience: "L3",
+  salary: "-",
+  postedTime: "Just now",
+  jobDuration: "5 weeks",
+  status: "NEW",
+  numberOfVacancy: 4,
+  client: {
+    companyName: "-",
+  },
+} as JobItem;
+
 /**
  * ExploreJobs Page - Browse and filter open job listings
  */
@@ -41,9 +58,11 @@ const ExploreJobs: React.FC = () => {
     slaLevel: "",
   });
 
-  // Filter jobs by status NEW
+  // Filter jobs by status NEW and add dummy job at the top
   const allNewJobs = useMemo(() => {
-    return (apiJobs || []).filter((job) => job.status === "NEW");
+    const apiNewJobs = (apiJobs || []).filter((job) => job.status === "NEW");
+    // Add dummy job to the beginning of the list
+    return [dummyJob, ...apiNewJobs];
   }, [apiJobs]);
 
   // Step 2: Apply filters
@@ -152,7 +171,7 @@ const ExploreJobs: React.FC = () => {
           (a, b) => extractSalaryNumber(b) - extractSalaryNumber(a),
         );
 
-      case SORT_OPTIONS.DISTANCE:
+      case SORT_OPTIONS.DISTANCE: {
         const isRemote = (job: JobItem) => {
           const loc = (job.location || "").toLowerCase();
           const type = (job.engagementModel || "").toLowerCase();
@@ -226,8 +245,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-              Math.cos(toRad(c2.lat)) *
-              Math.sin(dLng / 2) ** 2;
+                Math.cos(toRad(c2.lat)) *
+                Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -237,6 +256,7 @@ const ExploreJobs: React.FC = () => {
             haversine(userCoords, CITY_COORDS[cityB])
           );
         });
+      }
 
       default:
         return jobsCopy;
@@ -288,8 +308,9 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
-            } found`}
+          description={`${sortedJobs.length} job${
+            sortedJobs.length !== 1 ? "s" : ""
+          } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}
@@ -306,8 +327,8 @@ const ExploreJobs: React.FC = () => {
                   <JobCard
                     key={job.id}
                     job={job}
-                    userSkills={(profile?.jobSkills as string[]) || []}
-                    userTools={(profile?.tools as string[]) || []}
+                    userSkills={profile?.jobSkills || []}
+                    userTools={profile?.tools || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
                   />
                 ))
