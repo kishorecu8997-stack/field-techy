@@ -10,7 +10,6 @@ export const employmentTypeOptions = [
   { label: "Freelance", value: "5" },
 ];
 
-
 /**
  * Dummy data for designations. In a real app, this would likely come from an API.
  */

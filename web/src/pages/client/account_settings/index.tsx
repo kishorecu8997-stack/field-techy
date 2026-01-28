@@ -56,7 +56,6 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
   return (
     <div>
       <DrawerMenuSection items={menuItems} className="h-full" />
-      
     </div>
   );
 };

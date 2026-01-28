@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { WorkExperienceList } from "./components/WorkExperienceList";
 import {
   useEngineerGetExperience,
-  useEngineerDeleteExperience
+  useEngineerDeleteExperience,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;

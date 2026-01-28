@@ -1,15 +1,13 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type {
-  EngineerData,
-} from "../apiServices/engineer/engineerTypes";
+import type { EngineerData } from "../apiServices/engineer/engineerTypes";
 import { useUserSessionStore } from "./useUserSessionStore";
-import { 
-  getEducation, 
-  getExperience, 
-  getPersonalInfo, 
-  getSkillsAndTools, 
-  getWorkPreference 
+import {
+  getEducation,
+  getExperience,
+  getPersonalInfo,
+  getSkillsAndTools,
+  getWorkPreference,
 } from "../apiServices/engineer/engineerOpenApiService";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
@@ -40,14 +38,19 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearEngineerProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
-    set({ engineerProfile: null, profileImageUrl: null, profileFetched: false });
+    if (currentUrl && currentUrl.startsWith("blob:"))
+      URL.revokeObjectURL(currentUrl);
+    set({
+      engineerProfile: null,
+      profileImageUrl: null,
+      profileFetched: false,
+    });
   },
   syncProfile: (data) => {
     set((state) => ({
-      engineerProfile: state.engineerProfile 
-        ? { ...state.engineerProfile, ...data } 
-        : (data as EngineerData)
+      engineerProfile: state.engineerProfile
+        ? { ...state.engineerProfile, ...data }
+        : (data as EngineerData),
     }));
   },
   refetchProfile: async () => {
@@ -59,7 +62,14 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
     set({ loading: true });
     try {
       // Fetch ALL profile related data in parallel
-      const [personalInfo, educationList, experienceList, skillsTools, workPref, profilePicData] = await Promise.all([
+      const [
+        personalInfo,
+        educationList,
+        experienceList,
+        skillsTools,
+        workPref,
+        profilePicData,
+      ] = await Promise.all([
         getPersonalInfo(),
         getEducation(),
         getExperience(),
@@ -86,26 +96,25 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
           course: edu.course,
           university: edu.university,
           majorSubject: edu.majorSubject,
-          passingYear: edu.passingYear
+          passingYear: edu.passingYear,
         })),
         experiences: experienceList.map((exp: any) => ({
           id: exp.id.toString(),
-          designation: exp.designation || '',
-          employer: exp.employer || '',
-          employmentType: exp.employmentTypeId?.toString() || '',
-          workLocationType: exp.workLocationId?.toString() || '',
-          startDate: exp.startDate || '',
-          endDate: exp.endDate || '',
-          isCurrent: !exp.endDate
-        }))
+          designation: exp.designation || "",
+          employer: exp.employer || "",
+          employmentType: exp.employmentTypeId?.toString() || "",
+          workLocationType: exp.workLocationId?.toString() || "",
+          startDate: exp.startDate || "",
+          endDate: exp.endDate || "",
+          isCurrent: !exp.endDate,
+        })),
       };
 
-      set({ 
-        engineerProfile: profile, 
+      set({
+        engineerProfile: profile,
         profileFetched: true,
-        profileImageUrl: profilePicData?.downloadUrl || null
+        profileImageUrl: profilePicData?.downloadUrl || null,
       });
-      
     } catch (error) {
       console.error("Failed to fetch engineer profile:", error);
     } finally {

@@ -19,7 +19,7 @@ import {
   FaCog,
   FaSignOutAlt,
   FaUser,
-  FaWallet
+  FaWallet,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
@@ -54,12 +54,13 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   const serviceCategoryName = Array.isArray(serviceCategories)
     ? serviceCategories.find((c) => c.id === workPreference?.serviceCategoryId)
-      ?.name || ""
+        ?.name || ""
     : "";
 
   const methods = useForm({
     defaultValues: {
-      profileImage: profileImageUrl || assetsConfig.images.profile.defaultProfileImage,
+      profileImage:
+        profileImageUrl || assetsConfig.images.profile.defaultProfileImage,
     },
   });
 
@@ -132,8 +133,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={
-              profileImageUrl ||
-              assetsConfig.images.profile.defaultProfileImage
+              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
             }
             name={personalInfo?.name || ""}
             title={serviceCategoryName || ""}
