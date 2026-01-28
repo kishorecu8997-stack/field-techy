@@ -1,13 +1,15 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type { ClientData, ClientFile } from "../apiServices/client/clientTypes";
+import type { ClientData } from "../apiServices/client/clientTypes";
 import { ClientAdapter } from "../apiServices/client/clientAdapter";
 import { useUserSessionStore } from "./useUserSessionStore";
+import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
 interface ClientStore {
   clientProfile: ClientData | null;
   profileImageUrl: string | null;
   loading: boolean;
+  profileFetched: boolean; // Add this
   setClientProfile: (profile: ClientData | null) => void;
   clearClientProfile: () => void;
   fetchClientProfile: (id: string) => Promise<void>;
@@ -23,48 +25,30 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   clientProfile: null,
   profileImageUrl: null,
   loading: false,
+  profileFetched: false,
   setClientProfile: (profile) => set({ clientProfile: profile }),
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearClientProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
-    set({ clientProfile: null, profileImageUrl: null });
+    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
+    set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
   fetchClientProfile: async (id: string) => {
     if (get().loading) return;
     set({ loading: true });
     try {
       // Fetch profile and files in parallel
-      const [profile, files] = await Promise.all([
+      const [profile, profilePicData] = await Promise.all([
         ClientAdapter.getById(id),
-        ClientAdapter.getFiles(id),
+        getDownloadUrl("profilePicture").catch(() => null),
       ]);
 
-      set({ clientProfile: profile });
+      set({ 
+        clientProfile: profile, 
+        profileFetched: true,
+        profileImageUrl: profilePicData?.downloadUrl || null
+      });
 
-      // Find profile picture
-      const profilePic = files.find(
-        (f: ClientFile) => f.fileType === "PROFILE_PICTURE",
-      );
-
-      if (profilePic) {
-        try {
-          const { blob } = await ClientAdapter.downloadFileStream(
-            profilePic.fileKey,
-          );
-          const oldUrl = get().profileImageUrl;
-          if (oldUrl) URL.revokeObjectURL(oldUrl);
-
-          const url = URL.createObjectURL(blob);
-          set({ profileImageUrl: url });
-        } catch (err) {
-          console.error("Failed to download profile picture", err);
-        }
-      } else {
-        const oldUrl = get().profileImageUrl;
-        if (oldUrl) URL.revokeObjectURL(oldUrl);
-        set({ profileImageUrl: null });
-      }
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
     } finally {
@@ -81,17 +65,19 @@ export const useClientStore = create<ClientStore>((set, get) => ({
 export const useClientProfile = () => {
   const session = useUserSessionStore((state) => state.session);
   const profile = useClientStore((state) => state.clientProfile);
+  const profileFetched = useClientStore((state) => state.profileFetched);
+  const loading = useClientStore((state) => state.loading);
   const fetchProfile = useClientStore((state) => state.fetchClientProfile);
 
   useEffect(() => {
     const userId = session?.userId;
     // Verify user role is CLIENT to avoid incorrect fetches
     if (userId && session?.role === "CLIENT") {
-      if (!profile || (profile.id === userId && !profile.contactPersonName)) {
+      if (!profileFetched && !loading) {
         fetchProfile(userId);
       }
     }
-  }, [session?.userId, session?.role, profile, fetchProfile]);
+  }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

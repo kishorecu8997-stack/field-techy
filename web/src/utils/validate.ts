@@ -201,19 +201,19 @@ export const validateDesignation = (value: string) => {
 };
 
 export const validateCompany = (value: string) => {
-  if (!value) return "Employer must be at least 4 characters";
+  if (!value) return "Company Name must be at least 4 characters";
 
   // Disallow leading or trailing spaces
   if (/^\s|\s$/.test(value))
-    return "Employer must not start or end with a space";
+    return "Company Name must not start or end with a space";
 
   const v = value.trim();
-  if (v.length < 4) return "Employer must be at least 4 characters";
-  if (v.length > 50) return "Employer must not exceed 50 characters";
+  if (v.length < 4) return "Company Name must be at least 4 characters";
+  if (v.length > 50) return "Company Name must not exceed 50 characters";
 
   // Only letters, numbers, and / & - . with single spaces between
   if (!/^[A-Za-z0-9/&.-]+(?: [A-Za-z0-9/&.-]+)*$/.test(v)) {
-    return "Employer may contain only letters, numbers, single spaces, and / & - .";
+    return "Company Name may contain only letters, numbers, single spaces, and / & - .";
   }
 
   return true;
@@ -1016,7 +1016,7 @@ export const validateDescription = (value: string) => {
 
   return true;
 };
-
+const MAX_BUDGET = 10000000;
 export const validateBudget = (value: string) => {
   const raw = value || "";
 
@@ -1052,6 +1052,24 @@ export const validateBudget = (value: string) => {
   if (num <= 0) {
     return "Budget must be greater than 0";
   }
+  if (num > MAX_BUDGET) {
+    return `Budget cannot exceed ${MAX_BUDGET.toLocaleString()}`;
+  }
+  return true;
+};
+
+export const validateBusinessHours = (
+  from: string,
+  to: string,
+  minMinutes = 30,
+) => {
+  const [fh, fm] = from.split(":").map(Number);
+  const [th, tm] = to.split(":").map(Number);
+  const fromMinutes = fh * 60 + fm;
+  const toMinutes = th * 60 + tm;
+  if (fromMinutes >= toMinutes) return "End time must be after start time";
+  if (toMinutes - fromMinutes < minMinutes)
+    return `Duration must be at least ${minMinutes} minutes`;
 
   return true;
 };
@@ -1221,4 +1239,5 @@ export default {
   validatePurchaseOrderNumber,
   validateSiteId,
   validateSiteName,
+  validateBusinessHours,
 };

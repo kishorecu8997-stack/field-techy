@@ -47,7 +47,7 @@ export const RadioField = ({
   wrapperClassName,
   disabled = false,
 }: RadioFieldProps) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
 
   // Default validation rules
   const validationRules: RegisterOptions = {
@@ -105,7 +105,11 @@ export const RadioField = ({
                     disabled={disabled}
                     value={option.value}
                     checked={value === option.value}
-                    onChange={() => !disabled && onChange(option.value)}
+                    onChange={() => {
+                      if (disabled) return;
+                      onChange(option.value);
+                      void trigger(name);
+                    }}
                     onBlur={onBlur}
                     className={`${radioInputClassName} ${
                       disabled ? "cursor-not-allowed opacity-50" : ""

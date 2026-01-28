@@ -4,20 +4,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryKeys } from "../queryKeys";
 import { EngineerAdapter } from "./engineerAdapter";
+
 import type {
   AssignJobParams,
   EngineerData,
-  // EngineerPaginationParams,
-  // PagedResponse,
   FileUploadParams,
   FileUploadResponse,
-  // EngineerFile,
   JobAssignment,
   ProposalJobData,
   ScreenUploadParams,
   ScreenUploadResponse,
   UpdatePasswordParams,
 } from "./engineerTypes";
+
+// Create API client for OpenAPI calls
+
 
 // --- Mutations ---
 
@@ -35,6 +36,8 @@ export function useEngineerSignup(options?: {
     onError: options?.onError,
   });
 }
+
+
 
 export function useEngineerDelete(options?: {
   onSuccess?: () => void;
@@ -218,7 +221,7 @@ export function useUpdatePassword(options?: {
   });
 }
 
-// --- OTP Mutations ---
+// --- OTP Mutations (Legacy Adapter-based) ---
 
 export function useSendEmailOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
@@ -266,6 +269,8 @@ export function useVerifyPhoneOTP(options?: {
     onError: options?.onError,
   });
 }
+
+
 
 export function useDeleteEngineerFile(options?: {
   engineerId?: string;

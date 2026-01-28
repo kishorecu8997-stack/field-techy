@@ -61,12 +61,12 @@ export const Button: React.FC<ButtonProps> = ({
     primary:
       "bg-emerald-600 hover:bg-emerald-700 font-semibold text-white focus:ring-emerald-500",
     secondary:
-      "bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-300",
+      "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-500 focus:ring-gray-300 dark:focus:ring-gray-400",
     ghost:
       "bg-transparent hover:bg-gray-100 text-gray-800 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     outline:
-      "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
+      "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
