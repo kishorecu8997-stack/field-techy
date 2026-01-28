@@ -4,7 +4,9 @@ import {
   type AppUploadProfileFileResponse,
   type AppVerifyOtpResponse,
   type AppForgotPasswordResponse,
+  type AppForgotPasswordError,
   type AppResetPasswordResponse,
+  type AppResetPasswordError,
   type AppDownloadProfileFileData
 } from "@/api";
 import {
@@ -47,7 +49,7 @@ export function useSendOtp(options?: {
   return useMutation({
     ...appSendOtpMutation({
       client: apiClient,
-      headers: { Authorization: "" },
+      headers: { authorization: "" },
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -61,7 +63,7 @@ export function useVerifyOtp(options?: {
   return useMutation({
     ...appVerifyOtpMutation({
       client: apiClient,
-      headers: { Authorization: "" },
+      headers: { authorization: "" },
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
@@ -113,7 +115,7 @@ export function useLookupData(table: AppGetLookupDataData["query"]["table"], par
 
 export function useForgotPassword(options?: {
   onSuccess?: (data: AppForgotPasswordResponse) => void;
-  onError?: (error: unknown) => void;
+  onError?: (error: AppForgotPasswordError) => void;
 }) {
   return useMutation({
     ...appForgotPasswordMutation({ client: apiClient }),
@@ -124,7 +126,7 @@ export function useForgotPassword(options?: {
 
 export function useResetPassword(options?: {
   onSuccess?: (data: AppResetPasswordResponse) => void;
-  onError?: (error: unknown) => void;
+  onError?: (error: AppResetPasswordError) => void;
 }) {
   return useMutation({
     ...appResetPasswordMutation({ client: apiClient }),

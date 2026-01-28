@@ -9,6 +9,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
     email: string;
@@ -35,18 +36,19 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
     });
 
     const { mutate: forgotPassword, isPending } = useForgotPassword({
-        onSuccess: (data) => {
+        onSuccess: () => {
             success("OTP sent to your email address");
             const resetUrl =
                 role === "client"
                     ? absoluteUrls.client.auth.reset_password
                     : absoluteUrls.engineer.auth.reset_password;
 
-            const tokenQuery = data?.token ? `&token=${data.token}` : "";
+
+            const tokenQuery = "";
             navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
         },
-        onError: (err: any) => {
-            toastError(err?.body?.error || "Failed to send OTP");
+        onError: (err: AppForgotPasswordError) => {
+            toastError(err?.error || "Failed to send OTP");
         },
     });
 
