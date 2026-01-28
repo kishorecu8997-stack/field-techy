@@ -22,7 +22,7 @@ export const validateEmail = (value: string): true | string => {
 
   const trimmed = value.trim();
 
-  if (trimmed.length < 10) return "Email must be at least 10 characters";
+  if (trimmed.length < 5) return "Email must be at least 5 characters";
   if (trimmed.length > 100) return "Email must not exceed 100 characters";
 
   const parts = trimmed.split("@");
