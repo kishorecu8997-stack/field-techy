@@ -128,10 +128,10 @@ export const useEngineerProfile = () => {
 
   useEffect(() => {
     const userId = session?.userId;
-    if (userId && !profileFetched && !loading) {
+    if (userId && session?.role === "ENGINEER" && !profileFetched && !loading) {
       fetchProfile(userId);
     }
-  }, [session?.userId, profileFetched, loading, fetchProfile]);
+  }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

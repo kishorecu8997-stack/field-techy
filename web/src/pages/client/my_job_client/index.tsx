@@ -1,5 +1,4 @@
 import { earningsData } from "@/dummy_data/jobDetails";
-
 import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -63,7 +62,7 @@ const MyJobsClient: React.FC = () => {
   }, [activeFilter, allJobs]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -107,11 +106,13 @@ const MyJobsClient: React.FC = () => {
                   </p>
                 )}
               </div>
-              <Pagination
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                currentPage={currentPage}
-              />
+              {currentJobs.length > 6 && (
+                <Pagination
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  currentPage={currentPage}
+                />
+              )}
             </div>
           </div>
           <div className="lg:col-span-1">

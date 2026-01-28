@@ -4,10 +4,12 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
-  type ClientPostJobResponse,
-  type ClientUpdateCompanyInfoResponse,
   type ClientGetRateCardResponse,
   type ClientMarkJobFileUploadedResponses,
+  type ClientPostJobResponse,
+  type ClientUpdateCompanyInfoResponse,
+  clientGetCompanyInfo,
+  type ClientGetCompanyInfoResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -17,10 +19,11 @@ import {
   appRegisterClientMutation,
   clientGetCompanyInfoOptions,
   clientGetJobsOptions,
-  clientPostJobMutation,
-  clientUpdateCompanyInfoMutation,
   clientGetRateCardMutation,
   clientMarkJobFileUploadedMutation,
+  clientPostJobMutation,
+  clientUpdateCompanyInfoMutation,
+  clientGetJobsQueryKey,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
@@ -148,6 +151,7 @@ export function useClientPostJob(options?: {
     ...clientPostJobMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({ queryKey: clientGetJobsQueryKey({ client: apiClient }) });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -180,9 +184,25 @@ export function useClientMarkJobFileUploaded(options?: {
     onSuccess?: (data: ClientMarkJobFileUploadedResponses[keyof ClientMarkJobFileUploadedResponses]) => void;
     onError?: (error: unknown) => void;
 }) {
+    const queryClient = useQueryClient();
     return useMutation({
         ...clientMarkJobFileUploadedMutation({ client: apiClient }),
-        onSuccess: options?.onSuccess,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+            queryClient.invalidateQueries({ queryKey: clientGetJobsQueryKey({ client: apiClient }) });
+            options?.onSuccess?.(data);
+        },
         onError: options?.onError,
     });
+}
+
+/**
+ * Raw API functions for use outside of hooks (e.g. in Zustand stores)
+ */
+export async function getClientCompanyInfo() {
+  const response = await clientGetCompanyInfo({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as ClientGetCompanyInfoResponse;
 }

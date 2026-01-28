@@ -4,7 +4,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaChevronRight,
@@ -21,7 +21,9 @@ import { ClientFilesProvider } from "./context/ClientFilesProvider";
 import {
   useClientStore,
   useClientProfile,
+  useClientDisplayName,
 } from "@/shared/store/useClientStore";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -63,7 +65,10 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { profileImageUrl } = useClientStore();
+  const { profileImageUrl, clearClientProfile } = useClientStore();
+  const clearEngineerProfile = useEngineerStore(
+    (state) => state.clearEngineerProfile,
+  );
 
   // Use the custom hook to get/fetch profile
   const clientProfile = useClientProfile();
@@ -151,19 +156,13 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const handleConfirmationLogout = () => {
     logoutTrigger();
+    clearClientProfile();
+    clearEngineerProfile();
+    onClose();
     navigate(absoluteUrls.root);
   };
 
-  // Get display name from client profile
-  const displayName = useMemo(() => {
-    if (!clientProfile) return "Guest";
-    if (clientProfile.clientType === "CORPORATE") {
-      return (
-        clientProfile.companyName || clientProfile.contactPersonName || "Client"
-      );
-    }
-    return clientProfile.contactPersonName || "Client";
-  }, [clientProfile]);
+  const displayName = useClientDisplayName();
 
   return (
     <ClientFilesProvider value={filesContextValue}>
@@ -177,10 +176,10 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
                 ? "Corporate Client"
                 : "Home Client"
             }
-            rating={4}
-            reviewCount={10}
-            completionPercentage={39}
-            isLoadingProfilePicture={false} // Store handles internal loading if needed, or we can use loading from store
+            rating={clientProfile?.rating || 0}
+            reviewCount={clientProfile?.reviewCount || 0}
+            completionPercentage={0}
+            isLoadingProfilePicture={false}
           />
         </div>
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">
@@ -202,31 +201,28 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${
-                item.isLogout
-                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                  : ""
-              }
+              ${item.isLogout
+                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                    : ""
+                  }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${
-                    item.isLogout
-                      ? "text-red-600 dark:text-red-400 "
-                      : "text-gray-600 dark:text-gray-300 "
-                  }
+                  ${item.isLogout
+                        ? "text-red-600 dark:text-red-400 "
+                        : "text-gray-600 dark:text-gray-300 "
+                      }
                 `}
                   />
                   <span
                     className={`
-                ${
-                  item.isLogout
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-700 dark:text-gray-200"
-                }
+                ${item.isLogout
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-gray-700 dark:text-gray-200"
+                      }
                 `}
                   >
                     {item.label}

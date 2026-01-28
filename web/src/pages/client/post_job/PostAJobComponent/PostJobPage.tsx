@@ -169,7 +169,6 @@ const PostJobPage = () => {
             }
             await handlePostAJob(data);
             close(true);
-            navigate(absoluteUrls.client.home.my_jobs);
           },
         },
       ],
