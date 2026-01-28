@@ -1,3 +1,10 @@
+export const ClientTypeEnum = {
+  HOME: "home",
+  CORPORATE: "corporate",
+} as const;
+
+export type ClientTypeEnum = (typeof ClientTypeEnum)[keyof typeof ClientTypeEnum];
+
 export interface ClientBasicDetails {
   // Common fields for both home and corporate clients
   fullName?: string;
@@ -8,14 +15,15 @@ export interface ClientBasicDetails {
   city: string | { value: string; label: string };
   postalCode: string;
   address: string;
+  clientType: ClientTypeEnum;
 
   // Corporate-specific fields
   companyName?: string;
   contactPersonName?: string;
   businessType?: string;
   industry?: string;
-  vat?: string | { value: string; label: string };
-  vatRegistrationNumber?: string;
+  documentType?: string | { value: string; label: string };
+  registrationNumber?: string;
 
   // Verification flags
   isEnableNotifications?: boolean;

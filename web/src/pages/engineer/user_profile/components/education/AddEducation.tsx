@@ -14,29 +14,18 @@ import {
 import type { EducationFormData } from "./types";
 
 import {
-  educationLevels,
-  courses,
-} from "@/dummy_data/engineer_profile/education-data";
-
-import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { Education } from "@/shared/apiServices/engineer/engineerTypes";
-import { getUserId } from "@/utils";
+  useEngineerAddEducation,
+  useLookupData
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
- * AddEducation – fully integrated with backend, just like AddExperiences
+ * AddEducation – fully integrated with backend
  */
 const AddEducation = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const userId = getUserId();
-  if (!userId) return null;
-
-  const { data: engineerData } = useEngineerGetById(userId);
-  const { mutateAsync } = useEngineerUpdateById(userId);
+  const addEducationMutation = useEngineerAddEducation();
 
   const methods = useForm<EducationFormData>({
     defaultValues: {
@@ -48,6 +37,11 @@ const AddEducation = () => {
     },
     mode: "onSubmit",
   });
+
+  const selectedEducationLevel = methods.watch("educationLevel");
+
+  const { data: levels, isLoading: isLoadingLevels } = useLookupData("educationLevels");
+  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData("courses", selectedEducationLevel || undefined);
 
   const handleSubmit = async (data: EducationFormData) => {
     await showPopup({
@@ -64,28 +58,15 @@ const AddEducation = () => {
           label: "Yes, add",
           variant: "primary",
           action: async (close) => {
-            if (!engineerData) return;
-
-            const newEducation: Partial<Education> = {
-              educationLevel: data.educationLevel || undefined,
-              course: data.course || undefined,
-              university: data.university?.trim() || undefined,
-              majorSubject: data.majorSubject?.trim() || undefined,
-              passingYear: data.passingYear
-                ? Number(data.passingYear)
-                : undefined,
-            };
-
-            const updatedEducations = [
-              ...(engineerData.educations || []),
-              newEducation as Education,
-            ];
-
             try {
-              await mutateAsync({
-                ...engineerData,
-                educations:
-                  updatedEducations.length > 0 ? updatedEducations : undefined,
+              await addEducationMutation.mutateAsync({
+                body: {
+                  level: Number(data.educationLevel),
+                  course: data.course || "",
+                  university: data.university?.trim() || "",
+                  majorSubject: data.majorSubject?.trim() || "",
+                  passingYear: Number(data.passingYear),
+                }
               });
 
               toast.success("Education added successfully");
@@ -112,31 +93,28 @@ const AddEducation = () => {
       <div className="flex-1 overflow-y-auto px-3 space-y-3">
         <SelectField
           label="Education Level"
-          isShowLabel={false}
           name="educationLevel"
-          placeholder="Select education level"
-          options={educationLevels.map((e) => ({
-            value: e.key,
-            label: e.label,
+          placeholder={isLoadingLevels ? "Loading levels..." : "Select education level"}
+          options={(levels || []).map((e) => ({
+            value: String(e.id),
+            label: e.name,
           }))}
           required
         />
 
         <SelectField
           label="Course"
-          isShowLabel={false}
           name="course"
-          placeholder="Select course"
-          options={courses.map((c) => ({
-            value: c.key,
-            label: c.label,
+          placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+          options={(coursesData || []).map((c) => ({
+            value: c.name,
+            label: c.name,
           }))}
           required
         />
 
         <InputField
           label="University"
-          isShowLabel={false}
           name="university"
           placeholder="Enter university name"
           required
@@ -145,7 +123,6 @@ const AddEducation = () => {
 
         <InputField
           label="Major Subject"
-          isShowLabel={false}
           name="majorSubject"
           placeholder="Enter major subject (e.g., Physics)"
           required
@@ -154,10 +131,8 @@ const AddEducation = () => {
 
         <InputField
           label="Passing Year"
-          isShowLabel={false}
           name="passingYear"
           placeholder="e.g., 2023"
-          allowedCharacters="numbers"
           required
           rules={{ validate: (value) => validatePassingYear(value) }}
         />

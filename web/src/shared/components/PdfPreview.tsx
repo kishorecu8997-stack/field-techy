@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import type { RenderTask } from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry";
+import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 
 interface PDFPreviewProps {
   url: string;
@@ -14,6 +14,13 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
   const currentUrlRef = useRef<string>(url);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+    }
+  }, []);
 
   useEffect(() => {
     // Track current URL to prevent stale renders
@@ -152,7 +159,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
         renderTaskRef.current = null;
       }
     };
-  }, [url]);
+  }, [url, retryCount]);
 
   return (
     <div className="relative w-full h-56 rounded-lg  bg-white">
@@ -162,8 +169,17 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
         </div>
       )}
       {error ? (
-        <div className="flex items-center justify-center h-full text-gray-400">
-          Failed to load PDF preview
+        <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-2">
+          <span>Failed to load PDF preview</span>
+          <button
+            onClick={() => {
+              setError(false);
+              setRetryCount((prev: number) => prev + 1);
+            }}
+            className="text-xs text-teal-600 hover:underline"
+          >
+            Retry
+          </button>
         </div>
       ) : (
         <canvas ref={canvasRef} className="w-full h-full rounded-lg border  " />

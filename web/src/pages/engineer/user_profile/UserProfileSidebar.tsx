@@ -9,8 +9,9 @@ import {
   useEngineerProfile,
   useEngineerStore,
 } from "@/shared/store/useEngineerStore";
+import { useServiceCategories, type LookupItem } from "@/shared/hooks/useLookup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaBriefcase,
@@ -96,22 +97,37 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
 
   const logout = useUserSessionStore((state) => state.logout);
   const engineerProfile = useEngineerProfile();
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
   const navigate = useNavigate();
+
+  // Fetch service categories to find the label for the category ID
+  const { data: serviceCategories } = useServiceCategories();
+
+  const categoryName = useMemo(() => {
+    if (!engineerProfile?.serviceCategory || !serviceCategories) return "";
+    // Find category by ID (comparing as strings for safety)
+    const category = serviceCategories.find(
+      (cat: LookupItem) => String(cat.id) === String(engineerProfile.serviceCategory),
+    );
+    return category ? category.name : "";
+  }, [engineerProfile?.serviceCategory, serviceCategories]);
 
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={assetsConfig.images.profile.defaultProfileImage}
+            avatarUrl={
+              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
+            }
             name={engineerProfile?.fullName || ""}
-            title={engineerProfile?.serviceCategory || ""}
+            title={categoryName || "Engineer"}
             rating={engineerProfile?.averageRating || 0}
-            reviewCount={10}
-            completionPercentage={39}
+            reviewCount={0}
+            completionPercentage={0}
             flex="col"
           />
 

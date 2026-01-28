@@ -5,6 +5,8 @@ export const CurrentLocation = {
   dedicated: "dedicated",
   dispatch: "dispatch",
   scheduled: "scheduled",
+  fullTime: "fullTime",
+  onDemand: "onDemand",
 };
 export type currentLocationType =
   (typeof CurrentLocation)[keyof typeof CurrentLocation];
