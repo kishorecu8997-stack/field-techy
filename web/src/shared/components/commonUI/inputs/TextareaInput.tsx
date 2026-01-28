@@ -37,7 +37,7 @@ export const TextareaInput = ({
   textareaClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none  transition",
   disabled = false,
 }: TextareaInputProps) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
 
   // Build required validation message
   let requiredMessage: string | false = false;
@@ -79,6 +79,14 @@ export const TextareaInput = ({
               id={name}
               placeholder={placeholder || label}
               disabled={disabled}
+              onChange={async (e) => {
+                field.onChange(e);
+                try {
+                  await trigger(name);
+                } catch (err) {
+                  console.log("Error:", err);
+                }
+              }}
               className={`${textareaClassName} ${
                 disabled
                   ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 "

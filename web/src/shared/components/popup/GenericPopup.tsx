@@ -18,7 +18,7 @@ export interface GenericPopupButton {
 }
 
 export interface GenericPopupProps {
-  title: string;
+  title: string | React.ReactNode;
   body: string | React.ReactNode;
   actionButtons: GenericPopupButton[];
   onClose: (value: unknown) => void;

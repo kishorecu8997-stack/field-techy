@@ -55,6 +55,7 @@ interface ClientRegistrationState {
   isEnableNotifications: boolean;
   clientId: string | null; // Registered client ID from signup
   registrationComplete: boolean; // True when basic profile is submitted (documents optional)
+  token: string | null; // JWT token from registration
 
   // ===== Actions =====
 
@@ -132,6 +133,11 @@ interface ClientRegistrationState {
   setClientId: (id: string) => void;
 
   /**
+   * Set the JWT token from registration
+   */
+  setToken: (token: string) => void;
+
+  /**
    * Mark registration as complete (basic profile submitted)
    */
   markRegistrationComplete: () => void;
@@ -202,6 +208,7 @@ const initialState = {
   isEnableNotifications: true,
   clientId: null,
   registrationComplete: false,
+  token: null,
 };
 
 /**
@@ -278,6 +285,10 @@ export const useClientRegistrationStore = create<ClientRegistrationState>()(
         set({ clientId: id });
       },
 
+      setToken: (token) => {
+        set({ token });
+      },
+
       markRegistrationComplete: () => {
         set({ registrationComplete: true });
       },
@@ -334,6 +345,7 @@ export const useClientRegistrationStore = create<ClientRegistrationState>()(
         currentStep: state.currentStep,
         completedSteps: state.completedSteps,
         isEnableNotifications: state.isEnableNotifications,
+        token: state.token,
         // DO NOT persist: password, confirmPassword, payment info, document URLs
       }),
     },

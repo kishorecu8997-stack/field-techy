@@ -37,7 +37,7 @@ export const validateEmail = (value: string): true | string => {
     return "Email local part cannot start or end with a dot";
   if (localPart.includes(".."))
     return "Email local part cannot contain consecutive dots";
-  if (!/^[a-zA-Z0-9._-]+$/.test(localPart))
+  if (!/^[a-zA-Z0-9._+-]+$/.test(localPart))
     return "Email local part contains invalid characters";
 
   // Validate domain
