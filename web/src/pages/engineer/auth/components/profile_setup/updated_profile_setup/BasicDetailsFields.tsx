@@ -137,7 +137,7 @@ const BasicDetailsFields = () => {
         placeholder={statesLoading ? "Loading states..." : "Select State"}
         options={states}
         required
-        label="State"
+        label="State/Region"
         disabled={statesLoading || !country}
       />
 
