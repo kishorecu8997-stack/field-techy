@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { ToastContainer } from "react-toastify";
 import App from "./app/App.tsx";
 import "./index.css";
 import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
-import { useThemeHook } from "./shared/hooks/useThemeHook.ts";
+import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
+
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
@@ -35,16 +35,12 @@ export const queryClient = new QueryClient({
 });
 
 const rootElement = document.getElementById("root")!;
-const ToastHandler = () => {
-  const isDark = useThemeHook();
-  return <ToastContainer theme={isDark ? "dark" : "light"} />;
-};
 
 // Prevent multiple createRoot calls during hot module reloading
-let root = (window as any).__react_root__;
+let root = window.__react_root__;
 if (!root) {
   root = createRoot(rootElement);
-  (window as any).__react_root__ = root;
+  window.__react_root__ = root;
 }
 
 import { ToastProvider } from "./shared/components/commonUI/toastContext.tsx";
