@@ -1,26 +1,27 @@
-import { useState, useEffect } from "react";
+import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
-import {
-  useSendEmailOTP,
-  useSendPhoneOTP,
-  useVerifyEmailOTP,
-  useVerifyPhoneOTP,
-} from "@/shared/apiServices/engineer/engineerService";
 
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
+// TODO: Uncomment when OTP API is ready for production
+import {
+  useSendOtp,
+  useVerifyOtp
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+
 import { absoluteUrls } from "@/config/urls";
-import { buildQuery } from "@/utils";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
+import { buildQuery } from "@/utils";
 
 interface VerificationCardProps {
   type: "email" | "phone";
   contact: string;
   isVerified: boolean;
   onVerifySuccess: () => void;
+  token: string | null;
 }
 
 /**
@@ -28,6 +29,9 @@ interface VerificationCardProps {
  *
  * This component renders a verification card that allows users to verify their email or mobile number.
  * It utilizes the reusable `OTPInput` component for handling the OTP input.
+ * 
+ * NOTE: OTP API integration is enabled.
+ * Uses the new OpenAPI-based OTP hooks that require JWT authorization.
  *
  * This component is designed to be rendered within a `FormContainer` from `react-hook-form`
  * to connect the OTP input to the main form state.
@@ -36,6 +40,7 @@ interface VerificationCardProps {
  * @param {string} props.contact - The contact email or phone number.
  * @param {boolean} props.isVerified - Whether the contact is verified.
  * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
+ * @param {string | null} props.token - The JWT token from registration for API authorization.
  *
  * @returns {JSX.Element} The verification card for email or mobile number.
  *
@@ -45,6 +50,7 @@ interface VerificationCardProps {
  *   contact="test@example.com"
  *   isVerified={false}
  *   onVerifySuccess={() => {}}
+ *   token="jwt_token_here"
  * />
  */
 const VerificationCard = ({
@@ -52,26 +58,20 @@ const VerificationCard = ({
   contact,
   isVerified,
   onVerifySuccess,
+  token,
 }: VerificationCardProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0); // Start with 0 to allow immediate send if needed
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isPendingLocal, setIsPendingLocal] = useState(false);
 
   const methods = useForm({
     defaultValues: { otp: "" },
     mode: "onChange",
   });
 
-  const { mutateAsync: sendEmail, isPending: isSendingEmail } =
-    useSendEmailOTP();
-
-  const { mutateAsync: sendPhone, isPending: isSendingPhone } =
-    useSendPhoneOTP();
-
-  const { mutateAsync: verifyEmail, isPending: isVerifyingEmail } =
-    useVerifyEmailOTP();
-
-  const { mutateAsync: verifyPhone, isPending: isVerifyingPhone } =
-    useVerifyPhoneOTP();
+  // Use new OpenAPI-based OTP hooks
+  const { mutateAsync: sendOtp, isPending: isSending } = useSendOtp();
+  const { mutateAsync: verifyOtp, isPending: isVerifying } = useVerifyOtp();
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -79,43 +79,87 @@ const VerificationCard = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSendOtp = async () => {
+  const handleSendOtp = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!contact) {
+      toast.error(`Please provide a valid ${type}`);
+      return;
+    }
+
+    if (!token) {
+      toast.error("Authorization token not found. Please register again.");
+      return;
+    }
+
+    setIsPendingLocal(true);
+
     try {
       if (type === "email") {
-        await sendEmail(contact);
-        toast.success("OTP sent to email");
+        await sendOtp({
+          body: { type: "email" },
+          headers: { authorization: token }
+        });
+        toast.success(`OTP sent to email: ${contact}`);
       } else {
-        await sendPhone(contact);
-        toast.success("OTP sent to mobile");
+        await sendOtp({
+          body: { type: "phone" },
+          headers: { authorization: token }
+        });
+        toast.success(`OTP sent to mobile: ${contact}`);
       }
+
       setIsOtpSent(true);
       setTimeLeft(60);
     } catch (error) {
       toast.error(
         `Failed to send ${type === "email" ? "email" : "mobile"} OTP`,
       );
+    } finally {
+      setIsPendingLocal(false);
     }
   };
 
   const onSubmit = async (data: { otp: string }) => {
+    if (!token) {
+      toast.error("Authorization token not found. Please register again.");
+      return;
+    }
+
+    setIsPendingLocal(true);
+
     try {
       if (type === "email") {
-        await verifyEmail({ email: contact, otp: data.otp });
-        toast.success("Email verified successfully");
+        await verifyOtp({
+          body: { type: "email", code: data.otp },
+          headers: { authorization: token }
+        });
       } else {
-        await verifyPhone({ phoneNumber: contact, otp: data.otp });
-        toast.success("Mobile number verified successfully");
+        await verifyOtp({
+          body: { type: "phone", code: data.otp },
+          headers: { authorization: token }
+        });
       }
+
+      toast.success(
+        `${type === "email" ? "Email" : "Mobile number"} verified successfully`,
+      );
       onVerifySuccess();
+
     } catch (error) {
       toast.error(`Invalid ${type === "email" ? "Email" : "Mobile"} OTP`);
+    } finally {
+      setIsPendingLocal(false);
     }
   };
 
-  const isPending =
-    isSendingEmail || isSendingPhone || isVerifyingEmail || isVerifyingPhone;
+  const isPending = isSending || isVerifying || isPendingLocal;
 
   return (
+
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3 border border-gray-100 dark:border-gray-700">
       <div className="p-2 flex flex-col gap-2 items-center justify-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -157,11 +201,10 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${
-                      timeLeft > 0 || isPending
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
+                    className={`text-white dark:text-green-400 font-medium ${timeLeft > 0 || isPending
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                      }`}
                   >
                     Resend
                   </Button>
@@ -191,6 +234,7 @@ const ContactVerification = () => {
   const {
     email,
     phone,
+    token,
     setEngineerId,
     setSignupData,
     emailVerified: storeEmailVerified,
@@ -211,16 +255,10 @@ const ContactVerification = () => {
     // Navigate to Documents
     const param = buildQuery({ id: engineerId || "" });
     navigate(`${absoluteUrls.engineer.auth.updated_documents}?${param}`);
-
-    // Note: Use toast if strict verification is required but optional here allows proceeding?
-    // Client flow requires both. Engineer flow requested "verify email and mobile" so logic stands.
     if (!isEmailVerified && !isPhoneVerified) {
       toast.warning("Please verify your contact details.");
-      // Allow continue? "verify... to continue" in UI suggests required.
-      // Client side required both. I'll require both to match strict client flow.
       return;
     }
-    // Check strictness:
     if (!isEmailVerified || !isPhoneVerified) {
       toast.error("Please verify both email and mobile number.");
       return;
@@ -248,6 +286,7 @@ const ContactVerification = () => {
               setIsEmailVerified(true);
               setSignupData({ emailVerified: true });
             }}
+            token={token}
           />
         </div>
 
@@ -260,6 +299,7 @@ const ContactVerification = () => {
               setIsPhoneVerified(true);
               setSignupData({ mobileVerified: true });
             }}
+            token={token}
           />
         </div>
       </div>

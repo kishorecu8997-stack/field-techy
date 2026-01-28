@@ -4,12 +4,21 @@ export interface ServiceOption {
 }
 
 export const serviceCategories: ServiceOption[] = [
-  { value: "IT & Software Development", label: "IT & Software Development" },
-  { value: "Legal Services", label: "Legal Services" },
-  { value: "Marketing & Advertising", label: "Marketing & Advertising" },
-  { value: "Human Resources", label: "Human Resources" },
-  { value: "Financial Services", label: "Financial Services" },
-  // Add more as needed
+  { value: "network-engineer", label: "Network Engineer" },
+  { value: "software-engineer", label: "Software Engineer" },
+  { value: "full-stack-engineer", label: "Full Stack Engineer" },
+  { value: "cybersecurity-engineer", label: "Cybersecurity Engineer" },
+  { value: "devops-engineer", label: "DevOps Engineer" },
+  { value: "frontend-engineer", label: "Frontend Engineer" },
+  { value: "backend-engineer", label: "Backend Engineer" },
+  { value: "mobile-app-engineer", label: "Mobile App Engineer" },
+  { value: "cloud-engineer", label: "Cloud Engineer" },
+  { value: "qa-test-engineer", label: "QA / Test Engineer" },
+  { value: "system-engineer", label: "System Engineer" },
+  { value: "data-engineer", label: "Data Engineer" },
+  { value: "ai-ml-engineer", label: "AI / ML Engineer" },
+  { value: "embedded-systems-engineer", label: "Embedded Systems Engineer" },
+  { value: "security-engineer", label: "Security Engineer" },
 ];
 
 export default serviceCategories;

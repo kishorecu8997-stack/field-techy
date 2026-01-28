@@ -74,6 +74,12 @@ const MapSearchBar: React.FC<{
   const [, setLoading] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
 
+  const handleClear = () => {
+    setQuery("");
+    setSuggestions([]);
+    setUserTyping(false);
+  };
+
   useEffect(() => {
     if (!userTyping || !query.trim()) {
       setSuggestions([]);
@@ -147,7 +153,7 @@ const MapSearchBar: React.FC<{
           }}
           onKeyDown={handleKeyDown}
           placeholder="Search location..."
-          className="w-full py-2 px-4 border bg-white dark:bg-gray-800 rounded-lg shadow-md text-sm"
+          className="w-full py-2 pl-4 pr-10 border bg-white dark:bg-gray-800 rounded-lg shadow-md text-sm"
         />
         {query && (
           <Button

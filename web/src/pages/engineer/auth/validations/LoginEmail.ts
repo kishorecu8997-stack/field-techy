@@ -13,6 +13,7 @@ export const loginSchema = z.object({
     .min(1, "Password is required")
     .transform((arg) => xss(arg)),
   rememberMe: z.boolean().optional(),
+  userRole: z.enum(["engineer", "customer"]).optional(),
 });
 
 export type LoginEmailFormData = z.infer<typeof loginSchema>;

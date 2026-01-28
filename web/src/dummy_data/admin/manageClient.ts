@@ -9,8 +9,9 @@ export const manageClient: ManageClientProps[] = [
     location: "Mumbai, India",
     registrationDate: "2024-02-12",
     walletBalance: "₹12,500",
-    kycStatus: "Verified",
+    kycStatus: "Approved",
     approvalStatus: "Approved",
+    requiredType: "Done",
   },
   {
     id: 2,
@@ -21,7 +22,8 @@ export const manageClient: ManageClientProps[] = [
     registrationDate: "2024-03-08",
     walletBalance: "₹3,200",
     kycStatus: "Pending",
-    approvalStatus: "Under Review",
+    approvalStatus: "Pending",
+    requiredType: "Address Proof",
   },
   {
     id: 3,
@@ -31,8 +33,9 @@ export const manageClient: ManageClientProps[] = [
     location: "Bangalore, India",
     registrationDate: "2024-05-20",
     walletBalance: "₹8,750",
-    kycStatus: "Verified",
+    kycStatus: "Pending",
     approvalStatus: "Approved",
+    requiredType: "License",
   },
   {
     id: 4,
@@ -43,7 +46,8 @@ export const manageClient: ManageClientProps[] = [
     registrationDate: "2024-07-01",
     walletBalance: "₹1,450",
     kycStatus: "Rejected",
-    approvalStatus: "Suspended",
+    approvalStatus: "Rejected",
+    requiredType: "Fake Document",
   },
   {
     id: 5,
@@ -53,7 +57,8 @@ export const manageClient: ManageClientProps[] = [
     location: "Hyderabad, India",
     registrationDate: "2024-09-10",
     walletBalance: "₹15,000",
-    kycStatus: "Verified",
-    approvalStatus: "Approved",
+    kycStatus: "Pending",
+    approvalStatus: "Pending",
+    requiredType: " ID Proof",
   },
 ];

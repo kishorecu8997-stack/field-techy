@@ -3,7 +3,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
-import React from "react";
+import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
 import ViewFileComponent from "./ViewFileComponent";
 import { usePopupStore } from "@/shared/store/popupStore";
-
+import SelectMenu from "@/shared/components/SelectMenu";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
+import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
+import { toast } from "react-toastify";
 /**
  * HomeClient Component
  *
@@ -29,6 +32,19 @@ const HomeClient: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const { handleStatusChange } = useClientStatusChange();
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageClient.filter((e) => {
+    const query = search.toLowerCase();
+
+    return (
+      e.clientID.toLowerCase().includes(query) ||
+      e.details.toLowerCase().includes(query) ||
+      e.location.toLowerCase().includes(query)
+    );
+  });
 
   //Delete confirmation
   const handleDeleteClient = async (client: ManageClientProps) => {
@@ -50,6 +66,7 @@ const HomeClient: React.FC = () => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
+            toast.success("Client deleted successfully");
             close(true);
           },
         },
@@ -115,13 +132,29 @@ const HomeClient: React.FC = () => {
       label: "KYC Status",
     },
     {
-      key: "walletBalance",
-      label: "Wallet Balance",
+      key: "requiredType",
+      label: "Required Type",
     },
-
     {
       key: "approvalStatus",
-      label: "Approval Status",
+      label: "Status",
+      renderCell: (row: ManageClientProps) => {
+        return (
+          <SelectMenu
+            placeholder="Select"
+            value={rowStatuses[row.id] ?? row.approvalStatus ?? ""}
+            onChange={(value: string | null) => {
+              setRowStatuses((prev) => ({
+                ...prev,
+                [row.id]: value ?? "",
+              }));
+              handleStatusChange(row, value, showPopup);
+            }}
+            options={JobStatus}
+            badge
+          />
+        );
+      },
     },
     {
       key: "action",
@@ -157,7 +190,7 @@ const HomeClient: React.FC = () => {
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
-        <SearchInput />
+        <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
           onClick={() => navigate(`${absoluteUrls.admin.home.homeClientAdd}`)}
@@ -168,7 +201,7 @@ const HomeClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          data={manageClient}
+          data={filteredData}
           initialPageSize={10}
         />
       </div>

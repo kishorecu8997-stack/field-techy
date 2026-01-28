@@ -125,7 +125,7 @@ const SignUpWithEmail = ({
             leftIcon={
               <MdOutlineMailOutline className="text-lg text-gray-500" />
             }
-            rules={validateEmailRules}
+          // rules={validateEmailRules}
           />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
@@ -142,11 +142,10 @@ const SignUpWithEmail = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted || isSendingOTP
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:opacity-90"
-            }`}
+              }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>
