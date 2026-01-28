@@ -25,6 +25,7 @@ export const projectData: Project[] = [
     remainingbudget: "100,000",
     actualStartDate: "2024-10-05T14:30:00",
     actualEndDate: "2024-10-05T14:30:00",
+    distance: 12.5,
   },
   {
     title: "Cloud Migration Project",
@@ -50,6 +51,7 @@ export const projectData: Project[] = [
     remainingbudget: "1,21,000",
     actualStartDate: "2024-10-05T14:30:00",
     actualEndDate: "2024-10-05T14:30:00",
+    distance: 10.5,
   },
   {
     title: "AI Chatbot Integration",
@@ -75,6 +77,7 @@ export const projectData: Project[] = [
     remainingbudget: "50,000",
     actualStartDate: "2024-10-05T14:30:00",
     actualEndDate: "2024-10-05T14:30:00",
+    distance: 14.5,
   },
   {
     title: "E-commerce Platform Upgrade",
@@ -100,6 +103,7 @@ export const projectData: Project[] = [
     remainingbudget: "95,000",
     actualStartDate: "2024-10-05T14:30:00",
     actualEndDate: "2024-10-05T14:30:00",
+    distance: 9.5,
   },
 ];
 

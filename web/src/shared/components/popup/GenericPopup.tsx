@@ -15,11 +15,12 @@ export interface GenericPopupButton {
     | "solid"
     | "warning"
     | undefined;
+
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 
 export interface GenericPopupProps {
-  title: string;
+  title: string | React.ReactNode;
   body: string | React.ReactNode;
   actionButtons: GenericPopupButton[];
   onClose: (value: unknown) => void;

@@ -1,7 +1,17 @@
 import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import {
+  useEngineerGetPersonalInfo,
+  useEngineerGetWorkPreference,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
-import React, { useState, useEffect } from "react";
+import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
+import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaBookmark,
@@ -9,19 +19,11 @@ import {
   FaCog,
   FaSignOutAlt,
   FaUser,
-  FaWallet,
+  FaWallet
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { MenuItem } from "../account_settings/types";
-import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
-import { absoluteUrls } from "@/config/urls";
-import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useNavigate } from "react-router-dom";
-import {
-  useEngineerStore,
-  useEngineerProfile,
-} from "@/shared/store/useEngineerStore";
 
 /**
  * DrawerMenu component displays a vertical list of menu items with borders.
@@ -46,11 +48,18 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
    * The fetching logic is now centralized in useEngineerStore.
    */
   const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
-  const engineerProfile = useEngineerProfile();
+  const { data: personalInfo } = useEngineerGetPersonalInfo();
+  const { data: workPreference } = useEngineerGetWorkPreference();
+  const { data: serviceCategories } = useLookupData("serviceCategories");
+
+  const serviceCategoryName = Array.isArray(serviceCategories)
+    ? serviceCategories.find((c) => c.id === workPreference?.serviceCategoryId)
+      ?.name || ""
+    : "";
 
   const methods = useForm({
     defaultValues: {
-      profileImage: assetsConfig.images.profile.defaultProfileImage,
+      profileImage: profileImageUrl || assetsConfig.images.profile.defaultProfileImage,
     },
   });
 
@@ -124,12 +133,11 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           <ProfileCard
             avatarUrl={
               profileImageUrl ||
-              engineerProfile?.profilePicture ||
               assetsConfig.images.profile.defaultProfileImage
             }
-            name={engineerProfile?.fullName || ""}
-            title={engineerProfile?.serviceCategory || ""}
-            rating={engineerProfile?.averageRating || 0}
+            name={personalInfo?.name || ""}
+            title={serviceCategoryName || ""}
+            rating={0} // rating is currently not in API
             completionPercentage={39}
           />
         </div>
