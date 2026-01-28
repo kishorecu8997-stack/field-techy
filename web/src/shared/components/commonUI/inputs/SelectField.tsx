@@ -51,7 +51,7 @@ export const SelectField = ({
   multiple = false,
   disabled = false,
 }: SelectFieldProps & { multiple?: boolean }) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
   const [search, setSearch] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef(false);
@@ -166,6 +166,7 @@ export const SelectField = ({
                 onChange("");
               }
             }
+            void trigger(name);
           };
 
           const displayLabel = multiple
@@ -311,7 +312,7 @@ export const SelectField = ({
                     </Transition>
 
                     {error && (
-                      <p className="mt-1 text-xs text-red-600">
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-500">
                         {error.message}
                       </p>
                     )}

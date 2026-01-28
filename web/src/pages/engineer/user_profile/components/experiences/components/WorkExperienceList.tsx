@@ -6,20 +6,13 @@ import {
   workLocationTypeOptions,
   designationOptions,
 } from "./constants";
-import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
-
-/**
- * Represents a single work experience entry.
- */
-export type WorkExperience = Experience & { id: string };
 
 /**
  * Props for the WorkExperienceList component.
- * @interface WorkExperienceListProps
  */
 interface WorkExperienceListProps {
   title: string;
-  items?: Experience[];
+  items?: any[];
   onAddAction?: () => void;
   onEditAction?: (id: string) => void;
   onDeleteAction?: (id: string) => void;
@@ -27,22 +20,19 @@ interface WorkExperienceListProps {
 
 /**
  * Formats a date string into a more readable "DD Mon YYYY" format.
- * @param {string} dateStr - The date string to format (e.g., "2016-02-11").
- * @returns {string} The formatted date (e.g., "11 Feb 2016").
  */
-const formatDate = (dateStr: string) => {
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "Present";
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }); // e.g., 11-Feb-2016
+  });
 };
 
 /**
  * Creates a lookup map from a value to its label from an options array.
- * @param {Array<{value: string, label: string}>} options - The options array.
- * @returns {Map<string, string>} A map where keys are option values and values are option labels.
  */
 const createLabelMap = (
   options: Readonly<Array<{ value: string; label: string }>>,
@@ -54,9 +44,7 @@ const workLocationTypeLabelMap = createLabelMap(workLocationTypeOptions);
 const designationLabelMap = createLabelMap(designationOptions);
 
 /**
- * Renders a styled list of work experiences, each with details and action buttons.
- * @param {WorkExperienceListProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered list of work experiences.
+ * Renders a styled list of work experiences.
  */
 export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
   title,
@@ -81,7 +69,6 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
 
       <hr className="border-gray-200 mb-4" />
 
-      {/* Scrollable list wrapper: fixed max height with vertical scrollbar */}
       <div className="overflow-y-auto space-y-2">
         {experiences.length === 0 ? (
           <p className="text-gray-500 text-center py-6">No records yet.</p>
@@ -92,21 +79,21 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {designationLabelMap.get(item.designation || "") ||
-                        "Unknown Designation"}
+                      {designationLabelMap.get(String(item.designation || "")) ||
+                        item.designation || "Unknown Designation"}
                     </h3>
                   </div>
 
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
-                      onClick={() => onEditAction?.(item.id || "")}
+                      onClick={() => onEditAction?.(String(item.id || ""))}
                       className="hover:text-blue-600 transition-colors"
                       aria-label="Edit"
                     >
                       <FaRegEdit />
                     </button>
                     <button
-                      onClick={() => onDeleteAction?.(item.id || "")}
+                      onClick={() => onDeleteAction?.(String(item.id || ""))}
                       className="hover:text-red-600 transition-colors"
                       aria-label="Delete"
                     >
@@ -121,23 +108,19 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                     {item.employer}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    <span className="font-medium">Work Location Type:</span>{" "}
+                    <span className="font-medium">Work Location:</span>{" "}
                     {workLocationTypeLabelMap.get(
-                      item.workLocationType || "",
+                      String(item.workLocationId || ""),
                     ) || "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Employment Type:</span>{" "}
-                    {employmentTypeLabelMap.get(item.employmentType || "") ||
+                    {employmentTypeLabelMap.get(String(item.employmentTypeId || "")) ||
                       "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    <span className="font-medium">Start Date:</span>{" "}
-                    {formatDate(item.startDate)}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    <span className="font-medium">End Date:</span>{" "}
-                    {item.endDate ? formatDate(item.endDate) : "Present"}
+                    <span className="font-medium">Duration:</span>{" "}
+                    {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : "Present"}
                   </p>
                 </div>
 

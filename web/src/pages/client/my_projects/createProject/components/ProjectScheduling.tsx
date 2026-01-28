@@ -29,6 +29,8 @@ export default function ProjectScheduling({
   const methods = useFormContext();
   const scheduledStartDate = methods.watch("scheduledStartDate");
   const scheduledEndDate = methods.watch("scheduledEndDate");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return (
     <div>
@@ -40,6 +42,7 @@ export default function ProjectScheduling({
           label="Scheduled Start Date"
           placeholder="Start Date"
           required
+          minDate={today}
           maxDate={scheduledEndDate ? scheduledEndDate : null}
         />
         <DatePickerInput
@@ -48,7 +51,7 @@ export default function ProjectScheduling({
           label="Scheduled End Date"
           placeholder="End Date"
           required
-          minDate={scheduledStartDate ? scheduledStartDate : null}
+          minDate={scheduledStartDate ? scheduledStartDate : today}
         />
       </div>
     </div>
