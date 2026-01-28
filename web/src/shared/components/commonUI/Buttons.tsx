@@ -15,6 +15,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "link"
     | "text"
     | "solid"
+    | "liveChat"
+    | "closeChat"
+    | "liveChatSend"
     | "no_style";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
@@ -69,6 +72,11 @@ export const Button: React.FC<ButtonProps> = ({
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
+    liveChat: "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
+    liveChatSend:
+      "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
+    closeChat:
+      "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center p-1 h-8 w-8",
     no_style: "",
   };
 

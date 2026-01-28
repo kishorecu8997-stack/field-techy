@@ -2,6 +2,7 @@ import { useState } from "react";
 import { mockChat } from "@/dummy_data/supportChat";
 import { FiMessageSquare, FiX } from "react-icons/fi";
 import Tooltip from "@/shared/components/Tooltip";
+import { Button } from "../commonUI/Buttons";
 
 /**
  * LiveChatWidget component displays a live chat widget with a button to open it.
@@ -38,12 +39,13 @@ const LiveChatWidget = () => {
       {/* Live Chat Button with Tooltip */}
       <div className="fixed bottom-6 right-6 z-50 inline-block">
         <Tooltip text="Live Chat">
-          <button
+          <Button
             onClick={() => setIsOpen(!isOpen)}
-            className="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-full shadow-xl flex items-center justify-center"
+            variant="liveChat"
+            className="w-12 h-12 rounded-full shadow-xl"
           >
             <FiMessageSquare className="w-5 h-5" />
-          </button>
+          </Button>
         </Tooltip>
       </div>
 
@@ -54,12 +56,13 @@ const LiveChatWidget = () => {
           <div className="flex justify-between items-center p-3 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-800 dark:text-gray-100">
             <span>Live Support</span>
             <Tooltip text="Close Chat">
-              <button
+              <Button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer"
+                variant="closeChat"
+                
               >
                 <FiX className="w-5 h-5" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
 
@@ -94,12 +97,13 @@ const LiveChatWidget = () => {
               }}
             />
             <Tooltip text="Send Message">
-              <button
+              <Button
                 onClick={sendMessage}
-                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded cursor-pointer"
+                variant="liveChatSend"
+                size="md"
               >
                 Send
-              </button>
+              </Button>
             </Tooltip>
           </div>
         </div>
