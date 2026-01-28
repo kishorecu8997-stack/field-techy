@@ -67,7 +67,7 @@ const LoginWithNumber = ({
     const type = otpfor === 'email' ? 'email' : 'phone';
 
     try {
-      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      await sendOtp({ body: { type }, headers: { authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {
@@ -86,7 +86,7 @@ const LoginWithNumber = ({
           type,
           code: otp,
         },
-        headers: { Authorization: "" }
+        headers: { authorization: "" }
       });
 
       setIsOpen(false);
@@ -108,7 +108,7 @@ const LoginWithNumber = ({
   const onResendOtp = async () => {
     const type = otpfor === 'email' ? 'email' : 'phone';
     try {
-      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      await sendOtp({ body: { type }, headers: { authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {

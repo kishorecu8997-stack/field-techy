@@ -19,6 +19,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "closeChat"
     | "liveChatSend"
     | "no_style";
+    | "no_style"
+    | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -78,6 +80,8 @@ export const Button: React.FC<ButtonProps> = ({
     closeChat:
       "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center p-1 h-8 w-8",
     no_style: "",
+    warning:
+      " bg-yellow-200 text-black border border-gray-500 hover:bg-yellow-300 focus:ring-gray-100",
   };
 
   const sizeStyles: Record<string, string> = {
