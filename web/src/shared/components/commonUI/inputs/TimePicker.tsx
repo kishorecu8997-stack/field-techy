@@ -1,4 +1,5 @@
 // TimePicker.tsx
+import { useThemeHook } from "@/shared/hooks/useThemeHook";
 import React, { useState, useEffect, useRef } from "react";
 
 /**
@@ -52,7 +53,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [hours, setHours] = useState(10);
   const [minutes, setMinutes] = useState(35);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const isDarkMode = useThemeHook();
   const pickerRef = useRef<HTMLDivElement>(null);
 
   // Initialize with value if provided
@@ -63,19 +64,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
       setMinutes(m);
     }
   }, [value]);
-
-  // Detect system theme
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDarkMode(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   // Handle clicks outside to close picker
   useEffect(() => {
