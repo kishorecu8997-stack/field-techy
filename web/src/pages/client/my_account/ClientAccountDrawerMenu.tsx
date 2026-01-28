@@ -24,6 +24,7 @@ import {
   useClientDisplayName,
 } from "@/shared/store/useClientStore";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
@@ -65,7 +66,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { profileImageUrl, clearClientProfile } = useClientStore();
+  const { profileImageUrl, clearClientProfile, setProfileImageUrl } = useClientStore();
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
@@ -107,25 +108,39 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   } = useClientFiles(clientId);
 
   // Filter out non-profile-pic files for the context
-  const { documentFiles } = useMemo(() => {
+  const { documentFiles, profilePictureFile } = useMemo(() => {
     const documents = clientFiles.filter(
       (file) => file.fileType !== "PROFILE_PICTURE",
     );
+    const profilePic = clientFiles.find(
+      (file) => file.fileType === "PROFILE_PICTURE",
+    );
     return {
       documentFiles: documents,
+      profilePictureFile: profilePic || null,
     };
   }, [clientFiles]);
+
+  const { data: profileDownloadData } = useAppDownloadProfileFile("profilePicture");
+  const profileUrlFromApi = profileDownloadData?.downloadUrl;
+
+  // Sync profile URL to global store
+  useEffect(() => {
+    if (profileUrlFromApi) {
+      setProfileImageUrl(profileUrlFromApi);
+    }
+  }, [profileUrlFromApi, setProfileImageUrl]);
 
   // Prepare context value
   // Prepare context value
   const filesContextValue = useMemo(
     () => ({
       files: documentFiles,
-      profilePictureFile: null, // Managed by store now
+      profilePictureFile: profilePictureFile,
       isLoading: isLoadingFiles,
       refetch: refetchFiles,
     }),
-    [documentFiles, isLoadingFiles, refetchFiles],
+    [documentFiles, profilePictureFile, isLoadingFiles, refetchFiles],
   );
 
   const menuItems: ClientMenuItems[] = [
