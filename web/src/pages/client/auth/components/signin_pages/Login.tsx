@@ -1,6 +1,7 @@
 import { assetsConfig } from "@/assets";
 import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
@@ -9,24 +10,22 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  type LoginEmailFormData,
-} from "../../validations/LoginEmail";
+import { UserRole } from "@/shared/enums/users";
 import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
-import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
-import { CiMail } from "react-icons/ci";
-import { UserRole } from "@/shared/enums/users";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { CiMail } from "react-icons/ci";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
 
 /**
  * Login component
@@ -130,7 +129,6 @@ const Login = ({
             label="Email Address"
             type="email"
             required
-            rules={validateEmailRules}
           />
           <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">

@@ -149,7 +149,7 @@ const Login = ({
             label="Email ID"
             type="text"
             required
-            rules={validateEmailRules}
+          // rules={validateEmailRules}
           />
           <PasswordInput
             name="password"
