@@ -1,9 +1,21 @@
-import { useEffect, useState } from "react";
+import {
+  useEngineerGetPersonalInfo,
+  useEngineerUpdatePersonalInfo,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
-import { CiLocationOn } from "react-icons/ci";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
+import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { usePopupStore } from "@/shared/store/popupStore";
+import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
+import { toast } from "react-toastify";
 import {
   validateAddress,
   validateIsPhoneVerified,
@@ -11,24 +23,10 @@ import {
   validateName,
 } from "../../Validate";
 import type { EditProfileFormData } from "./types";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import VerifiedPhoneInputField from "@/shared/components/commonUI/inputs/VerifiedPhoneInputField";
-import VerifiedEmailInputField from "@/shared/components/commonUI/inputs/VerifiedEmailInputField";
-import { toast } from "react-toastify";
-import { usePopupStore } from "@/shared/store/popupStore";
-import useDrawerStore from "@/shared/store/useDrawerStore";
-import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * The PersonalInformation component renders a form for editing user profile details.
  * It uses `react-hook-form` for state management and validation.
- * @param {PersonalInfoProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered PersonalInformation form component.
  */
 const PersonalInformation = () => {
@@ -36,6 +34,7 @@ const PersonalInformation = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const { showPopup } = usePopupStore();
+  const { refetchProfile } = useEngineerStore();
 
   const {
     navigationSource,
@@ -45,24 +44,39 @@ const PersonalInformation = () => {
     resetNavigationSource,
   } = useDrawerStore();
 
-  const { session } = useUserSessionStore();
-  const engineerId = session?.userId || "";
-
-  const { data: engineerData, isLoading: isEngineerLoading } =
-    useEngineerGetById(engineerId);
-  const { mutate } = useEngineerUpdateById(engineerId);
+  const {
+    data: engineerData,
+    isLoading: isEngineerLoading,
+    refetch: refetchHook,
+  } = useEngineerGetPersonalInfo();
+  const { mutateAsync: updatePersonalInfo } = useEngineerUpdatePersonalInfo();
 
   const methods = useForm<EditProfileFormData>({
     defaultValues: {
-      fullName: engineerData?.fullName || "",
-      phoneNumber: engineerData?.phoneNumber || "",
-      emailId: engineerData?.email || "",
-      addressLocation: engineerData?.address || "",
+      fullName: "",
+      phoneNumber: "",
+      emailId: "",
+      addressLocation: "",
     },
     mode: "onSubmit",
   });
 
-  const { trigger } = methods;
+  const { trigger, reset } = methods;
+
+  // Update form values when engineerData is loaded
+  useEffect(() => {
+    if (engineerData) {
+      reset({
+        fullName: engineerData.name || "",
+        phoneNumber: engineerData.mobileno || "",
+        emailId: engineerData.email || "",
+        addressLocation: engineerData.address || "",
+      });
+      // Set verification status if data exists
+      setIsPhoneVerified(!!engineerData.mobileno);
+      setIsEmailVerified(!!engineerData.email);
+    }
+  }, [engineerData, reset]);
 
   useEffect(() => {
     if (isPhoneVerified) {
@@ -77,16 +91,14 @@ const PersonalInformation = () => {
   }, [isEmailVerified, trigger]);
 
   const handleSubmit = async (formData: EditProfileFormData) => {
-    // Safety check
     if (!engineerData) {
       toast.error("Unable to load current profile data. Please try again.");
       return;
     }
 
-    const updatedEngineer: EngineerData = {
-      ...engineerData,
-      fullName: formData.fullName,
-      phoneNumber: formData.phoneNumber,
+    const updatedEngineer = {
+      name: formData.fullName,
+      mobileno: formData.phoneNumber,
       email: formData.emailId,
       address: formData.addressLocation,
     };
@@ -108,26 +120,30 @@ const PersonalInformation = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            mutate(updatedEngineer, {
-              onSuccess: () => {
-                toast.success("Profile Updated Successfully");
-                close(true);
+            try {
+              await updatePersonalInfo({ body: updatedEngineer });
 
-                // Handle navigation
-                if (navigationSource === "profilecompletion" && returnToKey) {
-                  setActiveKey(returnToKey);
-                  setISOpenSidebar(true);
-                  resetNavigationSource();
-                } else {
-                  setActiveKey("profile");
-                }
-              },
-              onError: (error) => {
-                console.error("Failed to update profile:", error);
-                toast.error("Failed to update profile. Please try again.");
-                close(true);
-              },
-            });
+              toast.success("Profile Updated Successfully");
+
+              // Refresh both store and local component data
+              await refetchProfile();
+              await refetchHook();
+
+              close(true);
+
+              // Handle navigation
+              if (navigationSource === "profilecompletion" && returnToKey) {
+                setActiveKey(returnToKey);
+                setISOpenSidebar(true);
+                resetNavigationSource();
+              } else {
+                setActiveKey("profile");
+              }
+            } catch (error: any) {
+              console.error("Failed to update profile:", error);
+              toast.error("Failed to update profile. Please try again.");
+              close(true);
+            }
           },
         },
       ],

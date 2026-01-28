@@ -1,14 +1,13 @@
 import { absoluteUrls } from "@/config/urls";
-import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
+import { useRegisterEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
-import { buildQuery } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
@@ -40,8 +39,8 @@ const BasicDetails = () => {
     company,
     experienceYears,
     updateProfileData,
-    setEngineerId,
     markStepCompleted,
+    setToken,
   } = useEngineerRegistrationStore();
 
   const formCtx = useForm<EngineerBasicDetails>({
@@ -57,7 +56,7 @@ const BasicDetails = () => {
 
       skills: skills || [],
       portfolioLink: portfolioLink || "",
-      serviceCategory: serviceCategory || "",
+      serviceCategory: serviceCategory,
       amount: amount || "",
       designation: designation || "",
       company: company || "",
@@ -71,26 +70,29 @@ const BasicDetails = () => {
     control: formCtx.control,
   });
   const { showPopup } = usePopupStore();
-  const { mutateAsync: signup, isPending: isSubmitting } = useEngineerSignup({
-    onSuccess: (data) => {
-      console.log("Signup successful:", data);
-      if (data.id) {
-        setEngineerId(data.id);
+
+  // TanStack Query mutation hook for engineer registration (using OpenAPI)
+  const registerMutation = useRegisterEngineer({
+    onSuccess: (result) => {
+      if (result.token) {
+        localStorage.setItem("auth_token", result.token);
+        setToken(result.token);
       }
+
       toast.success("Profile details submitted successfully!");
+      markStepCompleted(3);
+      navigate(absoluteUrls.engineer.auth.verification);
     },
     onError: (error: any) => {
-      console.error("Signup failed:", error);
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error(
+        error?.message || "Registration failed. Please try again.",
+      );
     },
   });
   // Check for existing registration session
   const [hasAskedToContinue, setHasAskedToContinue] = useState(false);
   useEffect(() => {
-    // If we have signup data but validation flag is missing or logic says we should ask
-    // For now, mirroring client logic: check if email/phone exists
     if (!hasAskedToContinue && (signupEmail || signupPhone)) {
-      // Logic handled in Signup page mostly, but good as fallback here if user refreshes
       setHasAskedToContinue(true);
     }
   }, [signupEmail, signupPhone, hasAskedToContinue]);
@@ -115,9 +117,9 @@ const BasicDetails = () => {
         city: data.city,
         postalCode: data.postalCode,
         address: data.address,
-        skills: data.skills,
+        skills: (data.skills || []).filter((s): s is string | number => s !== undefined),
         portfolioLink: data.portfolioLink,
-        serviceCategory: data.serviceCategory,
+        serviceCategory: data.serviceCategory ?? "",
         amount: data.amount,
         designation: data.designation,
         company: data.company,
@@ -127,40 +129,36 @@ const BasicDetails = () => {
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
 
-  const getValue = (val: any) => {
-    if (!val) return "";
-    if (typeof val === "object" && "value" in val) return val.value as string;
-    return String(val);
-  };
-
   const handleSubmit = async (data: EngineerBasicDetails) => {
-    const apiData: any = {
-      password: data.password,
+    // Extract IDs from select objects - OpenAPI expects number IDs
+    const getIdValue = (val: any): number | undefined => {
+      if (!val) return undefined;
+      if (typeof val === 'object' && 'value' in val) return Number(val.value);
+      if (typeof val === 'number') return val;
+      if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+      return undefined;
+    };
+
+    // Format data to match OpenAPI AppRegisterEngineerData body schema
+    const apiData = {
+      name: data.fullName,
       phoneNumber: data.phone,
       email: data.email,
-      fullName: data.fullName,
+      password: data.password || "",
       address: data.address,
-      portfolioLink: data.portfolioLink,
-      serviceCategory: getValue(data.serviceCategory),
-      budget: data.amount,
-      rate: parseFloat(data.amount.replace(/[^0-9.]/g, "")) || 0,
-      experienceYears: parseFloat(data.experienceYears) || 0,
-      preferredWorkType: "REMOTE HYBRID",
-      enableNotifications: data.isEnableNotifications,
-      location: [
-        getValue(data.city),
-        getValue(data.state),
-        getValue(data.country),
-      ]
-        .filter(Boolean)
-        .join(", "),
-      averageRating: 4.7,
-      status: "PENDING",
-      jobSkills: [],
-      tools: [],
-      experiences: [],
-      educations: [],
-      files: null,
+      countryId: getIdValue(data.country),
+      stateId: getIdValue(data.state),
+      cityId: getIdValue(data.city),
+      postalCode: data.postalCode,
+      skills: Array.isArray(data.skills)
+        ? data.skills.map((s: any) => typeof s === 'object' ? Number(s.value) : Number(s)).filter(n => !isNaN(n))
+        : [],
+      serviceCategoryId: getIdValue(data.serviceCategory),
+      hourlyRate: parseFloat(data.amount?.replace(/[^0-9.]/g, "")) || undefined,
+      portfolioLink: data.portfolioLink || "",
+      currentDesignation: data.designation,
+      employer: data.company,
+      yearsOfExperience: parseFloat(data.experienceYears) || undefined,
     };
 
     await showPopup({
@@ -177,14 +175,12 @@ const BasicDetails = () => {
           label: "Submit",
           value: true,
           action: async (close) => {
-            const result = await signup(apiData);
-            markStepCompleted(3);
-
-            // Navigate to Verification
-            const params = buildQuery({ id: result.id });
-            navigate(`${absoluteUrls.engineer.auth.verification}?${params}`);
-
-            close(true);
+            try {
+              await registerMutation.mutateAsync({ body: apiData });
+              close(true);
+            } catch {
+              close(false);
+            }
           },
         },
       ],
@@ -283,10 +279,19 @@ const BasicDetails = () => {
           <Button
             type="submit"
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-            loading={isSubmitting}
+            loading={registerMutation.isPending}
           >
             Save and Continue
           </Button>
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
+            Already have an account?{" "}
+            <NavLink
+              to={absoluteUrls.engineer.auth.login}
+              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+            >
+              Sign In
+            </NavLink>
+          </h2>
         </div>
       </div>
     </FormContainer>

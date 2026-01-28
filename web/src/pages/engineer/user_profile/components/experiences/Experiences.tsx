@@ -3,8 +3,10 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import React from "react";
 import { toast } from "react-toastify";
 import { WorkExperienceList } from "./components/WorkExperienceList";
-import { getUserId } from "@/utils";
-import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
+import {
+  useEngineerGetExperience,
+  useEngineerDeleteExperience
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 interface DrawerMenuProps {
   onMenuItemClick: (key: string) => void;
 }
@@ -22,6 +24,9 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { setActiveKey, setImmediateParentKey, setSelectedId } =
     useDrawerStore();
 
+  const { data: experiences } = useEngineerGetExperience();
+  const { mutateAsync: deleteExperience } = useEngineerDeleteExperience();
+
   const handleDeleteExperience = async (id: string) => {
     await showPopup({
       title: "Delete Experience",
@@ -32,7 +37,6 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           value: "no",
           variant: "danger",
           action: async (close) => {
-            console.log("No button clicked");
             close(true);
           },
         },
@@ -41,24 +45,27 @@ const Experiences: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Experience Deleted Successfully");
-            console.log("Yes button clicked", id);
-            close(true);
-            setActiveKey("experiences");
+            try {
+              await deleteExperience({ path: { id: String(id) } });
+              toast.success("Experience Deleted Successfully");
+              close(true);
+              setActiveKey("experiences");
+            } catch (error) {
+              console.error("Failed to delete experience:", error);
+              toast.error("Failed to delete experience. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  const userId = getUserId();
-  const { data: engineerData } = useEngineerGetById(userId || "");
-
   return (
     <div className="">
       <WorkExperienceList
         title="Experiences"
-        items={engineerData?.experiences}
+        items={experiences as any}
         onAddAction={() => {
           setImmediateParentKey("experiences");
           onMenuItemClick(`addExperiences`);

@@ -110,7 +110,6 @@ const MatchScoreRing: React.FC<{ score: number }> = ({ score }) => {
  */
 const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const job = props as JobItem;
-  console.log("props :", props);
   const [isSelected, setSelected] = useState(false);
   const matchScore = props.matchScore;
 

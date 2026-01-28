@@ -1,30 +1,30 @@
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useForm } from "react-hook-form";
-import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
-import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import {
+  useEngineerGetSkillsAndTools,
+  useEngineerUpdateSkillsAndTools,
+  useLookupData
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
-/**
- * Defines the shape of the form data for adding tools.
- * @typedef {Object} AddToolsFormData
- * @property {string[]} tools - An array of selected tool IDs.
- */
 export type AddToolsFormData = {
   tools: string[];
 };
 
-/**
- * The AddTools component renders a form for adding new professional tools.
- * It uses `react-hook-form` for form management and a `TagSelectField` for multi-selection.
- * @param {AddToolsProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered AddTools form component.
- */
 const AddTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
+
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: toolsLookup } = useLookupData("tools" as any);
+  const { refetchProfile } = useEngineerStore();
 
   const methods = useForm<AddToolsFormData>({
     defaultValues: {
@@ -32,7 +32,7 @@ const AddTools = () => {
     },
   });
 
-  const onSubmit = async (_: AddToolsFormData) => {
+  const onSubmit = async (data: AddToolsFormData) => {
     await showPopup({
       title: "Add Tools",
       body: "Are you sure you want to add these tools?",
@@ -41,28 +41,51 @@ const AddTools = () => {
           label: "Cancel",
           value: "no",
           variant: "danger",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
           label: "Yes, add",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Tools Added Successfully");
-            close(true);
-            setActiveKey("skillsAndTools");
+            const skillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const existingToolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+            const newToolIds = data.tools.map(Number);
+            const combinedToolIds = Array.from(new Set([...existingToolIds, ...newToolIds]));
+
+            try {
+              await updateSkillsAndTools({
+                body: {
+                  skills: skillIds,
+                  tools: combinedToolIds
+                }
+              });
+              toast.success("Tools Added Successfully");
+              await refetchProfile();
+              close(true);
+              setActiveKey("skillsAndTools");
+            } catch (error) {
+              console.error("Failed to add tools:", error);
+              toast.error("Failed to add tools. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  const toolOptions = addEditToolsData.map((tool) => ({
-    label: tool.label,
-    value: tool.id.toString(),
-  }));
+  // Filter out tools that are already added to the profile
+  const existingToolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
+
+  const toolOptions = toolsLookup
+    ?.filter((tool: any) => !existingToolIds.includes(tool.id))
+    .map((tool: any) => ({
+      label: tool.name,
+      value: tool.id.toString(),
+    })) || [];
+
+  if (isCurrentLoading) return <LoaderComponent />;
 
   return (
     <FormContainer

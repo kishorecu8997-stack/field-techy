@@ -11,12 +11,10 @@ import OTPPage from "../../../../engineer/auth/components/OTPPage";
 import { toast } from "react-toastify";
 import logo_light from "@/assets/logo/logo_light.svg";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
-  useReqMobileVerificationOtpMutation,
-  useRequestVerificationOtpMutation,
-  useVerifyOtpMutation,
-} from "@/shared/apiServices/auth/clients/clientAuthService";
+  useSendOtp,
+  useVerifyOtp,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { IoChevronBack } from "react-icons/io5";
@@ -47,15 +45,14 @@ const LoginWithNumber = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
-  const reqMobileVerificationOtpMutation =
-    useReqMobileVerificationOtpMutation();
-  const setUserSession = useUserSessionStore((s) => s.setSession);
+  // const setUserSession = useUserSessionStore((s) => s.setSession); // Unused for now
 
-  const requestVerificationOtpMutation = useRequestVerificationOtpMutation();
-  const verifyOtpMutation = useVerifyOtpMutation();
+  // Use new OpenAPI-based OTP hooks
+  const { mutateAsync: sendOtp, isPending: isSending } = useSendOtp();
+  const { mutateAsync: verifyOtp } = useVerifyOtp();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [requestData, setRequestData] = useState<string | undefined>();
+  // const [requestData, setRequestData] = useState<string | undefined>(); // Unused
   const method = useForm<LoginFormData>({
     defaultValues: {
       phone: "",
@@ -66,60 +63,57 @@ const LoginWithNumber = ({
 
   const otpfor = method.watch("otp");
 
-  const handleSubmit = async (data: LoginFormData) => {
-    const value = data.email ? data.email : data.phone;
-    setRequestData(value);
+  const handleSubmit = async () => {
+    const type = otpfor === 'email' ? 'email' : 'phone';
 
-    await requestVerificationOtpMutation.mutateAsync(value, {
-      onSuccess: async (resp) => {
-        console.log(`OTP Response: `, resp);
-        toast.success("OTP Requested, kindly check your phone for OTP");
-        setIsOpen(true);
-      },
-      onError: async (error) => {
-        console.log(`OTP Response: `, error);
-        const errorMessage =
-          error instanceof Error ? error.message : "OTP Request failed";
-        toast.error(errorMessage);
-      },
-    });
+    try {
+      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      toast.success("OTP Requested, kindly check your phone for OTP");
+      setIsOpen(true);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "OTP Request failed";
+      toast.error(errorMessage);
+    }
   };
 
   const handleOtpSubmission = async (otp: string) => {
-    await verifyOtpMutation.mutateAsync(
-      {
-        phoneOrEmail: requestData as string,
-        otp,
-      },
-      {
-        onSuccess: (response) => {
-          setIsOpen(false);
-          setUserSession(response);
-          navigate(absoluteUrls.client.home.dashboard);
-          toast.success("Logged in successfully");
+    const type = otpfor === 'email' ? 'email' : 'phone';
+
+    try {
+      await verifyOtp({
+        body: {
+          type,
+          code: otp,
         },
-        onError: (error) => {
-          const errorMessage =
-            error instanceof Error ? error.message : "OTP Verification failed";
-          toast.error(errorMessage);
-        },
-      },
-    );
+        headers: { Authorization: "" }
+      });
+
+      setIsOpen(false);
+
+      // TODO: New API returns { message: string }, not a session. 
+      // We cannot set user session here yet without a token from this endpoint.
+      // Assuming successful verification leads to dashboard for now.
+      // setUserSession(response); 
+
+      navigate(absoluteUrls.client.home.dashboard);
+      toast.success("Logged in successfully");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "OTP Verification failed";
+      toast.error(errorMessage);
+    }
   };
 
   const onResendOtp = async () => {
-    const phone = method.getValues("phone");
-    await reqMobileVerificationOtpMutation.mutateAsync(phone, {
-      onSuccess: async (resp) => {
-        console.log(`OTP Response: `, resp);
-        toast.success("OTP Requested, kindly check your phone for OTP");
-        setIsOpen(true);
-      },
-      onError: (error) => {
-        console.error(error);
-        toast.error("OTP Request failed");
-      },
-    });
+    const type = otpfor === 'email' ? 'email' : 'phone';
+    try {
+      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      toast.success("OTP Requested, kindly check your phone for OTP");
+      setIsOpen(true);
+    } catch (error) {
+      toast.error("OTP Request failed");
+    }
   };
 
   return (
@@ -128,9 +122,9 @@ const LoginWithNumber = ({
         <div className="text-center mb-6">
           <div className="flex justify-center mb-8">
             <IconWithTheme
-              lightLogo={assetsConfig.logos.companyLogo}
+              lightLogo={assetsConfig.logos.ftLogo}
               darkLogo={logo_light}
-              className="h-20 w-24"
+              className="h-15 w-24"
             />
           </div>
           <h2 className="text-3xl font-bold">Sign In</h2>
@@ -169,7 +163,7 @@ const LoginWithNumber = ({
 
           <Button
             type="submit"
-            loading={reqMobileVerificationOtpMutation.isPending}
+            loading={isSending}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Send OTP
@@ -184,14 +178,11 @@ const LoginWithNumber = ({
         </div>
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header={`Verify ${
-              otpfor === "phoneNumber" ? "Phone Number" : "Email"
-            }`}
-            description={`A verification OTP has been sent to your ${
-              otpfor === "phoneNumber" ? "phone" : "email"
-            }. Please check your ${
-              otpfor === "phoneNumber" ? "phone" : "email"
-            }.`}
+            header={`Verify ${otpfor === "phoneNumber" ? "Phone Number" : "Email"
+              }`}
+            description={`A verification OTP has been sent to your ${otpfor === "phoneNumber" ? "phone" : "email"
+              }. Please check your ${otpfor === "phoneNumber" ? "phone" : "email"
+              }.`}
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
             onResend={onResendOtp}

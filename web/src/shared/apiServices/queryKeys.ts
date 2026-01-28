@@ -8,6 +8,7 @@ export const queryKeys = {
     allClients: () => [...queryKeys.client.all, "all-clients"] as const,
     list: (params: ClientPaginationParams) =>
       [...queryKeys.client.all, "list", params] as const,
+    companyInfo: ["client", "companyInfo"] as const,
   },
   engineer: {
     byId: (id: string) => `engineer-user-${id}`,

@@ -23,7 +23,7 @@ const LogoutConfirmationPopup: React.FC<LogoutProps> = ({
   return (
     <Popup open={isOpen} onClose={onClose}>
       {/* Centering wrapper */}
-      <div className="flex items-center justify-center px-4">
+      <div className="flex items-center justify-center px-0 w-full">
         <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
           {/* Header */}
           <div className="p-6 pb-4">
