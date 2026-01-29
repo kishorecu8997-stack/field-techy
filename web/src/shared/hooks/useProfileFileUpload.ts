@@ -14,7 +14,11 @@ import {
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 
-export type ProfileFileType = 'profilePicture' | 'resumeFile' | 'govIdDoc' | 'certificateDoc';
+export type ProfileFileType =
+  | "profilePicture"
+  | "resumeFile"
+  | "govIdDoc"
+  | "certificateDoc";
 
 export interface UseProfileFileUploadOptions {
   onSuccess?: (data?: any) => void;
@@ -26,7 +30,7 @@ export interface UseProfileFileUploadOptions {
  * 1. Initiate upload (get presigned URL)
  * 2. Upload raw file to S3
  * 3. Mark as uploaded in the database
- * 
+ *
  * Works for both Engineer and Client contexts based on URL path.
  */
 export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
@@ -34,16 +38,23 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
   const path = useLocation();
   const queryClient = useQueryClient();
   const userId = getUserId();
-  const fetchClientProfile = useClientStore((state) => state.fetchClientProfile);
-  const fetchEngineerProfile = useEngineerStore((state) => state.fetchEngineerProfile);
+  const fetchClientProfile = useClientStore(
+    (state) => state.fetchClientProfile,
+  );
+  const fetchEngineerProfile = useEngineerStore(
+    (state) => state.fetchEngineerProfile,
+  );
 
   // Engineer Hooks
-  const { mutateAsync: initiateEngineerUpload } = useEngineerUploadProfileFile();
-  const { mutateAsync: markEngineerUploaded } = useEngineerMarkProfileFileUploaded();
+  const { mutateAsync: initiateEngineerUpload } =
+    useEngineerUploadProfileFile();
+  const { mutateAsync: markEngineerUploaded } =
+    useEngineerMarkProfileFileUploaded();
 
   // Client Hooks
   const { mutateAsync: initiateClientUpload } = useClientUploadProfileFile();
-  const { mutateAsync: markClientUploaded } = useClientMarkProfileFileUploaded();
+  const { mutateAsync: markClientUploaded } =
+    useClientMarkProfileFileUploaded();
 
   const uploadProfileFile = async (file: File, fileType: ProfileFileType) => {
     setIsUploading(true);
@@ -51,8 +62,10 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
 
     try {
       // 1. Initiate Upload
-      const initiate = isEngineer ? initiateEngineerUpload : initiateClientUpload;
-      const { fileId,   uploadUrl } = await initiate({
+      const initiate = isEngineer
+        ? initiateEngineerUpload
+        : initiateClientUpload;
+      const { fileId, uploadUrl } = await initiate({
         body: {
           fileType: fileType,
           filename: file.name,
@@ -75,7 +88,9 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       if (!uploadResponse.ok) throw new Error("Failed to upload to S3");
 
       // 3. Mark as Uploaded
-      const markUploaded = isEngineer ? markEngineerUploaded : markClientUploaded;
+      const markUploaded = isEngineer
+        ? markEngineerUploaded
+        : markClientUploaded;
       const response = await markUploaded({
         body: { fileId },
         headers: { authorization: "" },
@@ -91,20 +106,22 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       }
 
       // Invalidate relevant queries to refresh UI
-      const baseKey = isEngineer ? queryKeys.engineer.all : queryKeys.client.all;
+      const baseKey = isEngineer
+        ? queryKeys.engineer.all
+        : queryKeys.client.all;
       queryClient.invalidateQueries({ queryKey: baseKey });
-      
+
       // Invalidate the download query to get the fresh URL
       queryClient.invalidateQueries({
         predicate: (query) =>
           Array.isArray(query.queryKey) &&
           query.queryKey[0] &&
           typeof query.queryKey[0] === "object" &&
-          (query.queryKey[0])._id === "appDownloadProfileFile",
+          query.queryKey[0]._id === "appDownloadProfileFile",
       });
 
       // If it was a profile picture, update the preview URL in the store
-      if (fileType === 'profilePicture') {
+      if (fileType === "profilePicture") {
         const previewUrl = URL.createObjectURL(file);
         if (isEngineer) {
           useEngineerStore.getState().setProfileImageUrl(previewUrl);
@@ -115,7 +132,6 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
 
       options?.onSuccess?.(response);
       return response;
-
     } catch (error) {
       console.error("Upload error:", error);
       options?.onError?.(error);

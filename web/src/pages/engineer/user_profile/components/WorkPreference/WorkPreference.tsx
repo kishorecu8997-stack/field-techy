@@ -16,7 +16,7 @@ import type { WorkPreferenceFormData } from "./types";
 import {
   useEngineerGetWorkPreference,
   useEngineerUpdateWorkPreference,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { useEffect } from "react";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -32,9 +32,10 @@ const WorkPreference = () => {
   const {
     data: workPreference,
     isLoading: isPrefLoading,
-    refetch: refetchHook
+    refetch: refetchHook,
   } = useEngineerGetWorkPreference();
-  const { mutateAsync: updateWorkPreference } = useEngineerUpdateWorkPreference();
+  const { mutateAsync: updateWorkPreference } =
+    useEngineerUpdateWorkPreference();
 
   const { data: employmentTypes } = useLookupData("employmentTypes");
   const { data: serviceCategories } = useLookupData("serviceCategories");
@@ -76,8 +77,10 @@ const WorkPreference = () => {
                   portfolioLink: data.portfolioLink,
                   employmentTypeId: Number(data.preferredWorkTypes),
                   serviceCategoryId: Number(data.servicesCategories),
-                  hourlyRate: Number(data.ratePreference.replace(/[^0-9.]/g, "")),
-                }
+                  hourlyRate: Number(
+                    data.ratePreference.replace(/[^0-9.]/g, ""),
+                  ),
+                },
               });
               toast.success("Work Preferences Updated Successfully");
 
@@ -89,7 +92,9 @@ const WorkPreference = () => {
               setActiveKey("profile");
             } catch (error) {
               console.error("Failed to update work preferences:", error);
-              toast.error("Failed to update work preferences. Please try again.");
+              toast.error(
+                "Failed to update work preferences. Please try again.",
+              );
               close(true);
             }
           },
@@ -121,10 +126,12 @@ const WorkPreference = () => {
           name="preferredWorkTypes"
           placeholder="Preferred Work Type"
           leftIcon={<RiTodoLine className="text-lg text-gray-500" />}
-          options={employmentTypes?.map((e) => ({
-            value: e.id.toString(),
-            label: e.name,
-          })) || []}
+          options={
+            employmentTypes?.map((e) => ({
+              value: e.id.toString(),
+              label: e.name,
+            })) || []
+          }
           required
         />
         <SelectField
@@ -132,10 +139,12 @@ const WorkPreference = () => {
           name="servicesCategories"
           placeholder="Services Categories"
           leftIcon={<HiOutlineBriefcase className="text-lg text-gray-500" />}
-          options={serviceCategories?.map((e) => ({
-            value: e.id.toString(),
-            label: e.name,
-          })) || []}
+          options={
+            serviceCategories?.map((e) => ({
+              value: e.id.toString(),
+              label: e.name,
+            })) || []
+          }
           required
         />
 

@@ -19,7 +19,6 @@ import type {
 
 // Create API client for OpenAPI calls
 
-
 // --- Mutations ---
 
 export function useEngineerSignup(options?: {
@@ -36,8 +35,6 @@ export function useEngineerSignup(options?: {
     onError: options?.onError,
   });
 }
-
-
 
 export function useEngineerDelete(options?: {
   onSuccess?: () => void;
@@ -269,8 +266,6 @@ export function useVerifyPhoneOTP(options?: {
     onError: options?.onError,
   });
 }
-
-
 
 export function useDeleteEngineerFile(options?: {
   engineerId?: string;

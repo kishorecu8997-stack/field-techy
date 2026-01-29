@@ -1,5 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { Button } from "../Buttons";
+/**
+ * CountrySelect is a reusable dropdown component for selecting a country.
+ *
+ * It displays the currently selected country’s flag and country code, and
+ * allows the user to choose a different country from a dropdown list.
+ * The dropdown automatically closes when the user clicks outside of it.
+ *
+ * The component supports a disabled state, which prevents user interaction
+ * and visually indicates that the field is inactive.
+ *
+ * @param {CountrySelectProps} props - The props for the CountrySelect component.
+ * @param {Array} props.countries - A list of available countries, each containing
+ * a country code, name, and flag URL.
+ * @param {string} props.value - The currently selected country code.
+ * @param {(code: string) => void} props.onChange - Callback invoked when a new
+ * country is selected. The selected country code is passed as an argument.
+ * @param {boolean} [props.disabled=false] - Whether the dropdown is disabled.
+ *
+ * @returns {JSX.Element} A dropdown UI for selecting a country.
+ */
 
 export const CountrySelect = ({
   countries,
@@ -35,33 +57,41 @@ export const CountrySelect = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        className={`flex items-center w-20 gap-1 px-3 py-3 border-r border-gray-300 dark:border-gray-600 cursor-pointer ${disabled
-          ? "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed rounded-l-md"
-          : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100  rounded-l-md"
-          }`}
+      <Button
+        variant="dropdown"
         onClick={toggleDropdown}
         disabled={disabled}
-      >
-        {currentCountry && (
-          <>
+        leftIcon={
+          currentCountry ? (
             <img
               src={currentCountry.flag}
               alt={currentCountry.name}
               className="w-5 h-5 object-contain"
             />
-            <span>{currentCountry.code}</span>
-          </>
+          ) : null
+        }
+        rightIcon={
+          <MdKeyboardArrowDown
+            size={20}
+            className={`transition-transform duration-200 ${
+              isOpen ? "rotate-180" : "rotate-0"
+            } text-gray-500 dark:text-gray-400`}
+          />
+        }
+      >
+        {currentCountry ? (
+          currentCountry.code
+        ) : (
+          <span className="text-gray-400">Select</span>
         )}
-      </button>
+      </Button>
 
       {isOpen && !disabled && (
-        <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
+        <div className="absolute z-10 mt-1 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-300 dark:border-gray-600">
           {countries.map((country) => (
             <div
               key={country.code}
-              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
               onClick={() => {
                 onChange(country.code);
                 setIsOpen(false);

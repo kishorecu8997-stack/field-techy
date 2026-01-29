@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { getUserId } from "@/utils";
-import { appDownloadProfileFile, type AppDownloadProfileFileResponse } from "@/api";
+import {
+  appDownloadProfileFile,
+  type AppDownloadProfileFileResponse,
+} from "@/api";
 import { apiClient } from "@/shared/apiServices/apiClient";
 
 export interface UseProfileFileDownloadOptions {
@@ -13,11 +16,16 @@ export interface UseProfileFileDownloadOptions {
  * 1. Get presigned download URL
  * 2. Optionally trigger browser download
  */
-export const useProfileFileDownload = (options?: UseProfileFileDownloadOptions) => {
+export const useProfileFileDownload = (
+  options?: UseProfileFileDownloadOptions,
+) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const downloadProfileFile = async (fileType: 'profilePicture' | 'resumeFile' | 'govIdDoc' | 'certificateDoc', fileName?: string) => {
-    if (!fileType) return;    
+  const downloadProfileFile = async (
+    fileType: "profilePicture" | "resumeFile" | "govIdDoc" | "certificateDoc",
+    fileName?: string,
+  ) => {
+    if (!fileType) return;
     setIsDownloading(true);
 
     try {

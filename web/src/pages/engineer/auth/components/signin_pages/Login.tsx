@@ -2,7 +2,6 @@ import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
 import Popup from "@/shared/components/Popup";
 import logo_light from "@/assets/logo/logo_light.svg";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
@@ -51,39 +50,40 @@ const Login = ({
 
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useEngineerLogin({
-    onSuccess: async (resp) => {
-      if (resp.token) {
-        localStorage.setItem("auth_token", resp.token);
-      }
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } =
+    useEngineerLogin({
+      onSuccess: async (resp) => {
+        if (resp.token) {
+          localStorage.setItem("auth_token", resp.token);
+        }
 
-      setUserSession({
-        accessToken: resp.token,
-        userId: "uuid-123", // TODO: Get actual user ID from token or profile response
-        role: UserRole.ENGINEER,
-        initiatedAt: Date.now(),
-      } as UserSession);
+        setUserSession({
+          accessToken: resp.token,
+          userId: "uuid-123", // TODO: Get actual user ID from token or profile response
+          role: UserRole.ENGINEER,
+          initiatedAt: Date.now(),
+        } as UserSession);
 
-      const twoFa = getTwoFaStorage();
-      if (twoFa.enabled) {
-        triggerTwoFA();
-        return;
-      }
+        const twoFa = getTwoFaStorage();
+        if (twoFa.enabled) {
+          triggerTwoFA();
+          return;
+        }
 
-      navigate(absoluteUrls.engineer.home.dashboard);
-      toast.success("Logged in successfully");
-    },
-    onError: (error) => {
-      console.error(error);
-      // Skip showing toast for 401 errors as axios interceptor already handles it
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return;
-      }
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      toast.error(errorMessage);
-    },
-  });
+        navigate(absoluteUrls.engineer.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        // Skip showing toast for 401 errors as axios interceptor already handles it
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return;
+        }
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -110,7 +110,7 @@ const Login = ({
       body: {
         email: data.email,
         password: data.password,
-        userRole: UserRole.ENGINEER
+        userRole: UserRole.ENGINEER,
       },
     });
   };
@@ -149,7 +149,7 @@ const Login = ({
             label="Email ID"
             type="text"
             required
-            rules={validateEmailRules}
+            // rules={validateEmailRules}
           />
           <PasswordInput
             name="password"
@@ -200,7 +200,6 @@ const Login = ({
             </span>
           </Button>
         </div> */}
-
 
         <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
           <TwoFASetup

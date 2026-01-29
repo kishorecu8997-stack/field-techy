@@ -56,13 +56,15 @@ const ChangePassword = () => {
                   oldPassword: data.currentPassword,
                   newPassword: data.password,
                 },
-                headers: { Authorization: "" }
+                headers: { Authorization: "" },
               });
               toast.success("Password updated successfully!");
               setActiveKey("settings");
               close(true);
             } catch (error) {
-              toast.error("Failed to update password. Please check your current password.");
+              toast.error(
+                "Failed to update password. Please check your current password.",
+              );
               console.error("Error updating password:", error);
               close(true);
             }
