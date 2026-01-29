@@ -241,7 +241,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => { },
+  onMapClick = () => {},
   viewOnly = false,
   onPositionChange,
   className,
