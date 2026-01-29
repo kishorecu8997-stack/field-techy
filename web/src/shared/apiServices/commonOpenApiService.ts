@@ -7,7 +7,9 @@ import {
   type AppForgotPasswordError,
   type AppResetPasswordResponse,
   type AppResetPasswordError,
-  type AppDownloadProfileFileData
+  type AppDownloadProfileFileData,
+  type AppMarkProfileFileUploadedResponse,
+  type AppMarkProfileFileUploadedError,
 } from "@/api";
 import {
   appDownloadProfileFileOptions,
@@ -16,7 +18,8 @@ import {
   appUploadProfileFileMutation,
   appVerifyOtpMutation,
   appForgotPasswordMutation,
-  appResetPasswordMutation
+  appResetPasswordMutation,
+  appMarkProfileFileUploadedMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { appDownloadProfileFile as appDownloadProfileFileSdk } from "@/api/sdk.gen";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -130,6 +133,20 @@ export function useResetPassword(options?: {
 }) {
   return useMutation({
     ...appResetPasswordMutation({ client: apiClient }),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export function useAppMarkProfileFileUploaded(options?: {
+  onSuccess?: (data: AppMarkProfileFileUploadedResponse) => void;
+  onError?: (error: AppMarkProfileFileUploadedError) => void;
+}) {
+  return useMutation({
+    ...appMarkProfileFileUploadedMutation({
+      client: apiClient,
+      headers: { authorization: "" },
+    }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });

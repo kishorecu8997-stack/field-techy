@@ -12,39 +12,21 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useAdminFileStream } from "@/shared/apiServices/admin/adminService";
-
-import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
 import type { ProfileFormData } from "./types";
 import {
   useAdminUpdatePersonalInfo,
   useGetAdminPersonalInfo,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { queryClient } from "@/main";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
+import { getUserId } from "@/utils";
+import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 export default function PersonalDetails() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const session = useUserSessionStore((s) => s.session);
-  const { adminProfile } = useAdminProfileStore();
-
-  /* ---------- Stream image ---------- */
-  const { data: adminProfileStream } = useAdminFileStream(
-    adminProfile?.profilePicture,
-  );
-
-  const [, setAdminProfilePic] = useState<string>("");
-
-  useEffect(() => {
-    if (!adminProfileStream?.blob) return;
-
-    const url = URL.createObjectURL(adminProfileStream.blob);
-    setAdminProfilePic(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [adminProfileStream]);
+  const userId = getUserId();
 
   /* ---------- Get admin by id ---------- */
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(
@@ -60,10 +42,11 @@ export default function PersonalDetails() {
     getAdmin();
   }, [adminPersonalInfo]);
 
-  /* ---------- Upadet admin profile ---------- */
+  /* ---------- Update admin profile ---------- */
   const updateAdminProfile = useAdminUpdatePersonalInfo({
     onSuccess: async () => {
       toast.success("Profile details updated successfully!");
+      // Invalidate both personal info and the generic admin query key if needed
       await queryClient.invalidateQueries({
         queryKey: ["adminPersonalInfo"],
       });
@@ -85,6 +68,7 @@ export default function PersonalDetails() {
       profilePicture: "",
     },
   });
+  const profileImage = methods.watch("profilePicture");
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
@@ -117,6 +101,34 @@ export default function PersonalDetails() {
     });
   };
 
+  /* ---------- File Upload ---------- */
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({
+    onSuccess: () => {
+      toast.success("Profile picture updated successfully!");
+    },
+    onError: () => toast.error("Failed to update profile picture."),
+  });
+
+  useEffect(() => {
+    if (userId && profileImage instanceof File) {
+      uploadProfileFile(profileImage, "profilePicture");
+    }
+  }, [userId, profileImage]);
+
+  /* ---------- File Download (Profile Pic) ---------- */
+  const { data: downloadData, isLoading: isLoadingProfilePicture } = useAppDownloadProfileFile("profilePicture");
+  
+  // Create object URL when blob is received
+  const [, setProfilePicUrl] = useState<string>("");
+  
+  useEffect(() => {
+    if (downloadData && 'downloadUrl' in (downloadData)) {
+       const url = (downloadData).downloadUrl;
+       setProfilePicUrl(url);
+       methods.setValue("profilePicture", url);
+    } 
+  }, [downloadData, methods]);
+
   return (
     <FormContainer
       methods={methods}
@@ -124,7 +136,12 @@ export default function PersonalDetails() {
       className="flex flex-col gap-3 mt-2 px-2 pb-4 w-full"
     >
       <div className="flex">
-        <ImageUploaderField label="Profile Image" name="profilePicture" />
+        <ImageUploaderField 
+          label="Profile Image" 
+          name="profilePicture" 
+          initialImageUrl={downloadData?.downloadUrl || ""}
+          isLoading={isUploading || isLoadingProfilePicture}
+        />
       </div>
 
       <div className="flex gap-4">

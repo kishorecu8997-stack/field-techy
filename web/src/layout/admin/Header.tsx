@@ -7,13 +7,14 @@ import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
+
 import {
   LookupTable,
   useAppGetLookupData,
   useGetAdminPersonalInfo,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Header
@@ -37,12 +38,24 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const token = useUserSessionStore((state) => state.session?.accessToken);
-  const { adminProfile } = useAdminProfileStore();
-  const [adminProfilePic] = useState<string>("");
 
   //New API
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
+  
+    /* ---------- File Download (Profile Pic) ---------- */
+    const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
+    
+    // Create object URL when blob is received
+    const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+    
+    useEffect(() => {
+      if (downloadData && 'downloadUrl' in (downloadData as any)) {
+         const url = (downloadData as any).downloadUrl;
+         setProfilePicUrl(url);
+      } 
+    }, [downloadData]);
+  
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,9 +125,9 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
-                {adminProfile?.profilePicture && adminProfilePic ? (
+                {profilePicUrl ? (
                   <img
-                    src={adminProfilePic}
+                    src={profilePicUrl}
                     alt="profile"
                     className="w-10 h-10 rounded-full object-cover"
                   />

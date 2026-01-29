@@ -11,6 +11,10 @@ import {
   useAppUploadProfileFile as useClientUploadProfileFile,
   useAppMarkProfileFileUploaded as useClientMarkProfileFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useAppUploadProfileFile,
+  useAppMarkProfileFileUploaded,
+} from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 
@@ -37,6 +41,10 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
   const fetchClientProfile = useClientStore((state) => state.fetchClientProfile);
   const fetchEngineerProfile = useEngineerStore((state) => state.fetchEngineerProfile);
 
+  // Common/Admin Hooks
+  const { mutateAsync: initiateCommonUpload } = useAppUploadProfileFile();
+  const { mutateAsync: markCommonUploaded } = useAppMarkProfileFileUploaded();
+
   // Engineer Hooks
   const { mutateAsync: initiateEngineerUpload } = useEngineerUploadProfileFile();
   const { mutateAsync: markEngineerUploaded } = useEngineerMarkProfileFileUploaded();
@@ -48,10 +56,11 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
   const uploadProfileFile = async (file: File, fileType: ProfileFileType) => {
     setIsUploading(true);
     const isEngineer = path.pathname.includes("engineer");
+    const isAdmin = path.pathname.includes("admin");
 
     try {
       // 1. Initiate Upload
-      const initiate = isEngineer ? initiateEngineerUpload : initiateClientUpload;
+      const initiate = isEngineer ? initiateEngineerUpload : (isAdmin ? initiateCommonUpload : initiateClientUpload);
       const { fileId,   uploadUrl } = await initiate({
         body: {
           fileType: fileType,
@@ -75,7 +84,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       if (!uploadResponse.ok) throw new Error("Failed to upload to S3");
 
       // 3. Mark as Uploaded
-      const markUploaded = isEngineer ? markEngineerUploaded : markClientUploaded;
+      const markUploaded = isEngineer ? markEngineerUploaded : (isAdmin ? markCommonUploaded : markClientUploaded);
       const response = await markUploaded({
         body: { fileId },
         headers: { authorization: "" },
@@ -91,7 +100,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       }
 
       // Invalidate relevant queries to refresh UI
-      const baseKey = isEngineer ? queryKeys.engineer.all : queryKeys.client.all;
+      const baseKey = isEngineer ? queryKeys.engineer.all : (isAdmin ? queryKeys.admin.all : queryKeys.client.all);
       queryClient.invalidateQueries({ queryKey: baseKey });
       
       // Invalidate the download query to get the fresh URL
@@ -108,6 +117,9 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         const previewUrl = URL.createObjectURL(file);
         if (isEngineer) {
           useEngineerStore.getState().setProfileImageUrl(previewUrl);
+        } else if (path.pathname.includes("admin")) {
+          // Admin store update if applicable, though PersonalDetails might handle its own state locally
+          // For now, we rely on invalidation or local state if store doesn't support it directly in the same way
         } else {
           useClientStore.getState().setProfileImageUrl(previewUrl);
         }
