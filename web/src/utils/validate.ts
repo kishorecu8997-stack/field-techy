@@ -17,7 +17,7 @@ export const validateName = (value: string) => {
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
-    return `${value} must contain only alphabetic characters and single spaces`;
+    return `must contain only alphabetic characters and single spaces`;
 
   // Reject if more than 10 spaces
   const spaceCount = (raw.match(/ /g) || []).length;
@@ -31,43 +31,42 @@ export const validateName = (value: string) => {
 };
 
 export const validatePhone = (fullValue: string): true | string => {
+  const parts = fullValue.trim().split(" ");
+  if (parts.length < 2) {
+    return "Please enter a valid phone number";
+  }
 
-    const parts = fullValue.trim().split(" ");
-    if (parts.length < 2) {
-      return "Please enter a valid phone number";
+  const countryCode = parts[0];
+  const phoneNumber = parts.slice(1).join("").trim();
+
+  const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
+  if (!selectedCountry) {
+    return "Invalid country code";
+  }
+
+  if (!/^\d+$/.test(phoneNumber)) {
+    return "Phone number must contain only digits (0-9)";
+  }
+
+  const { validationKey } = selectedCountry;
+  if (validationKey === "india") {
+    if (phoneNumber.length !== 10) {
+      return "Indian phone number must be exactly 10 digits long";
     }
-
-    const countryCode = parts[0];
-    const phoneNumber = parts.slice(1).join("").trim();
-
-    const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
-    if (!selectedCountry) {
-      return "Invalid country code";
+    if (!/^[6-9]/.test(phoneNumber)) {
+      return "Indian mobile numbers must start with 6, 7, 8, or 9";
     }
-
-    if (!/^\d+$/.test(phoneNumber)) {
-      return "Phone number must contain only digits (0-9)";
+  } else if (validationKey === "uk") {
+    if (phoneNumber.length !== 10) {
+      return "UK phone number must be exactly 10 digits long";
     }
-
-    const { validationKey } = selectedCountry;
-    if (validationKey === "india") {
-      if (phoneNumber.length !== 10) {
-        return "Indian phone number must be exactly 10 digits long";
-      }
-      if (!/^[6-9]/.test(phoneNumber)) {
-        return "Indian mobile numbers must start with 6, 7, 8, or 9";
-      }
-    } else if (validationKey === "uk") {
-      if (phoneNumber.length !== 10) {
-        return "UK phone number must be exactly 10 digits long";
-      }
-      if (!/^[789]/.test(phoneNumber)) {
-        return "UK mobile numbers must start with 7, 8, or 9";
-      }
+    if (!/^[789]/.test(phoneNumber)) {
+      return "UK mobile numbers must start with 7, 8, or 9";
     }
+  }
 
-    return true;
-  };
+  return true;
+};
 
 /**
  * Validate email address - based on a more secure regex pattern.
@@ -140,8 +139,8 @@ export const validateAddress = (value: string) => {
   }
 
   const digitCount = (v.match(/\d/g) || []).length;
-  if (digitCount > 3) {
-    return "Address may contain at most 3 numbers";
+  if (digitCount > 6) {
+    return "Address may contain at most 6 numbers";
   }
 
   return true;
@@ -714,6 +713,11 @@ export const validatePricePerHour = (value: string) => {
   const num = parseFloat(raw);
   if (num <= 0) {
     return "Price must be greater than 0";
+  }
+
+  // Maximum price limit
+  if (num > 99999) {
+    return "Price must not exceed 99,999";
   }
 
   return true;
