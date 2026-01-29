@@ -66,7 +66,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { profileImageUrl, clearClientProfile, setProfileImageUrl } = useClientStore();
+  const { profileImageUrl, clearClientProfile, setProfileImageUrl } =
+    useClientStore();
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
@@ -121,7 +122,8 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     };
   }, [clientFiles]);
 
-  const { data: profileDownloadData } = useAppDownloadProfileFile("profilePicture");
+  const { data: profileDownloadData } =
+    useAppDownloadProfileFile("profilePicture");
   const profileUrlFromApi = profileDownloadData?.downloadUrl;
 
   // Sync profile URL to global store
@@ -216,28 +218,31 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
               hover:bg-gray-50 dark:hover:bg-gray-700 
               hover:pl-6 
               hover:text-teal-600 dark:hover:text-teal-400
-              ${item.isLogout
-                    ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                    : ""
-                  }
+              ${
+                item.isLogout
+                  ? "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                  : ""
+              }
             `}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon
                     className={`
                   h-5 w-5 transition-colors 
-                  ${item.isLogout
-                        ? "text-red-600 dark:text-red-400 "
-                        : "text-gray-600 dark:text-gray-300 "
-                      }
+                  ${
+                    item.isLogout
+                      ? "text-red-600 dark:text-red-400 "
+                      : "text-gray-600 dark:text-gray-300 "
+                  }
                 `}
                   />
                   <span
                     className={`
-                ${item.isLogout
-                        ? "text-red-600 dark:text-red-400"
-                        : "text-gray-700 dark:text-gray-200"
-                      }
+                ${
+                  item.isLogout
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-gray-700 dark:text-gray-200"
+                }
                 `}
                   >
                     {item.label}

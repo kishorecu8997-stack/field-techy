@@ -1,7 +1,10 @@
 import type { ClientPostJobData } from "@/api";
 import { absoluteUrls } from "@/config/urls";
 import { TemplateData } from "@/dummy_data/client";
-import { useClientMarkJobFileUploaded, useClientPostJob } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientMarkJobFileUploaded,
+  useClientPostJob,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
@@ -19,7 +22,7 @@ import {
   OccurrenceFields,
   RepeatByFields,
   type PostAJobFieldsProps,
-  type PostOption
+  type PostOption,
 } from "../types";
 import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
@@ -183,7 +186,12 @@ const PostJobPage = () => {
     const payload: ClientPostJobData["body"] = {
       jobTitle: data.jobTitle,
       jobDescription: data.description,
-      jobType: data.locationType === "onsite" ? "On site" : data.locationType === "remote" ? "Remote" : "Hybrid",
+      jobType:
+        data.locationType === "onsite"
+          ? "On site"
+          : data.locationType === "remote"
+            ? "Remote"
+            : "Hybrid",
       countryId: Number(data.country) || 1,
       stateId: Number(data.state) || 1,
       cityId: Number(data.city) || 1,
@@ -195,21 +203,29 @@ const PostJobPage = () => {
       engagementModelId: Number(data.engagementModel) || 1,
       additionalDetails: data.otherInfo,
       currencyId: 1,
-      skills: (data.skills || []).map((s) => Number(s)).filter((n) => !isNaN(n)),
+      skills: (data.skills || [])
+        .map((s) => Number(s))
+        .filter((n) => !isNaN(n)),
       tools: (data.toolsData || []).map((t) => ({
         toolId: Number(t.id) || 0, // Using the selected tool ID
         budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
-        image: t.images && t.images.length > 0 && t.images[0].file ? {
-          filename: t.images[0].file.name,
-          size: t.images[0].file.size,
-          mimeType: t.images[0].file.type
-        } : undefined
+        image:
+          t.images && t.images.length > 0 && t.images[0].file
+            ? {
+                filename: t.images[0].file.name,
+                size: t.images[0].file.size,
+                mimeType: t.images[0].file.type,
+              }
+            : undefined,
       })),
-      attachment: data.attachment && data.attachment.length > 0 ? {
-        filename: data.attachment[0].name,
-        size: data.attachment[0].size,
-        mimeType: data.attachment[0].type
-      } : undefined,
+      attachment:
+        data.attachment && data.attachment.length > 0
+          ? {
+              filename: data.attachment[0].name,
+              size: data.attachment[0].size,
+              mimeType: data.attachment[0].type,
+            }
+          : undefined,
     };
 
     postJob(
@@ -220,32 +236,41 @@ const PostJobPage = () => {
             const uploadPromises: Promise<unknown>[] = [];
 
             // Upload Attachment
-            if (response.uploadUrls.attachment && data.attachment && data.attachment.length > 0) {
+            if (
+              response.uploadUrls.attachment &&
+              data.attachment &&
+              data.attachment.length > 0
+            ) {
               uploadPromises.push(
                 fetch(response.uploadUrls.attachment, {
-                  method: 'PUT',
+                  method: "PUT",
                   body: data.attachment[0],
                   headers: {
-                    'Content-Type': data.attachment[0].type
-                  }
-                })
+                    "Content-Type": data.attachment[0].type,
+                  },
+                }),
               );
             }
 
             // Upload Tool Images
-            if (response.uploadUrls.tools && response.uploadUrls.tools.length > 0) {
-              const toolsWithImages = (data.toolsData || []).filter(t => t.images && t.images.length > 0 && t.images[0].file);
+            if (
+              response.uploadUrls.tools &&
+              response.uploadUrls.tools.length > 0
+            ) {
+              const toolsWithImages = (data.toolsData || []).filter(
+                (t) => t.images && t.images.length > 0 && t.images[0].file,
+              );
 
               toolsWithImages.forEach((tool, index) => {
                 if (response.uploadUrls.tools[index] && tool.images[0].file) {
                   uploadPromises.push(
                     fetch(response.uploadUrls.tools[index], {
-                      method: 'PUT',
+                      method: "PUT",
                       body: tool.images[0].file,
                       headers: {
-                        'Content-Type': tool.images[0].file.type
-                      }
-                    })
+                        "Content-Type": tool.images[0].file.type,
+                      },
+                    }),
                   );
                 }
               });
@@ -269,7 +294,7 @@ const PostJobPage = () => {
           console.error("Post job error:", error);
           toast.error(GlobalApiErrorHandler.handle(error).message);
         },
-      }
+      },
     );
   };
 
@@ -296,7 +321,9 @@ const PostJobPage = () => {
           }
         />
 
-        {currentLocation && <PostAJobFields isDisable={isDisable || isPosting} />}
+        {currentLocation && (
+          <PostAJobFields isDisable={isDisable || isPosting} />
+        )}
       </FormContainer>
     </div>
   );

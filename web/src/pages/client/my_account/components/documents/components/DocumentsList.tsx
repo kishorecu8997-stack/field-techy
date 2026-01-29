@@ -13,7 +13,7 @@ import { useClientFilesContext } from "../../../context/useClientFilesContext";
 import {
   useAppDownloadProfileFile,
   getDownloadUrl,
-  type ProfileFileType
+  type ProfileFileType,
 } from "@/shared/apiServices/commonOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 
@@ -190,7 +190,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           action: async (close) => {
             try {
               await deleteFileMutation.mutateAsync(fileId);
-              // Notification usually handled by mutation onSuccess, 
+              // Notification usually handled by mutation onSuccess,
               // but we are using mutateAsync here for cleaner modal closing
             } catch (error) {
               console.error("Delete error:", error);
@@ -210,7 +210,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     let profileFileType: ProfileFileType | null = null;
     if (originalType === "GOVERNMENT_ID") profileFileType = "govIdDoc";
     else if (originalType === "CERTIFICATE") profileFileType = "certificateDoc";
-    else if (originalType === "PROFILE_PICTURE") profileFileType = "profilePicture";
+    else if (originalType === "PROFILE_PICTURE")
+      profileFileType = "profilePicture";
 
     if (!profileFileType) {
       toast.error("Download failed: Unsupported document type for download");

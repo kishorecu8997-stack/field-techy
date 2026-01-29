@@ -142,7 +142,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row)
-                                : (row as Record<string, unknown>)[col.key as string] as React.ReactNode}
+                                : ((row as Record<string, unknown>)[
+                                    col.key as string
+                                  ] as React.ReactNode)}
                             </td>
                           ))}
                         </tr>
@@ -179,7 +181,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row)
-                                : (row as Record<string, unknown>)[col.key as string] as React.ReactNode}
+                                : ((row as Record<string, unknown>)[
+                                    col.key as string
+                                  ] as React.ReactNode)}
                             </div>
                           ) : (
                             <div
@@ -192,7 +196,9 @@ export function CustomTable<T>({
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
                                   ? col.renderCell(row)
-                                  : (row as Record<string, unknown>)[col.key as string] as React.ReactNode}
+                                  : ((row as Record<string, unknown>)[
+                                      col.key as string
+                                    ] as React.ReactNode)}
                               </span>
                             </div>
                           );

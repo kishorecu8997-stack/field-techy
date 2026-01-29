@@ -22,8 +22,10 @@ const EditTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: toolsLookup } = useLookupData("tools");
 
   const methods = useForm<EditToolsFormData>({
@@ -79,10 +81,11 @@ const EditTools = () => {
     });
   };
 
-  const toolOptions = toolsLookup?.map((tool: { name: string; id: number }) => ({
-    label: tool.name,
-    value: tool.id.toString(),
-  })) || [];
+  const toolOptions =
+    toolsLookup?.map((tool: { name: string; id: number }) => ({
+      label: tool.name,
+      value: tool.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

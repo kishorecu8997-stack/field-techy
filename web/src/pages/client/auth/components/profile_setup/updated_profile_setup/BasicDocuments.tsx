@@ -10,7 +10,7 @@ import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import {
   useUploadClientFile,
-  useAppMarkProfileFileUploaded
+  useAppMarkProfileFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
 import { type ClientDocumentType } from "@/shared/apiServices/client/clientTypes";
 import { useState } from "react";
@@ -70,7 +70,7 @@ const BasicDocuments = () => {
 
   const handleUploadProcess = async (
     file: File,
-    type: "profilePicture" | "govIdDoc" | "certificateDoc"
+    type: "profilePicture" | "govIdDoc" | "certificateDoc",
   ) => {
     const docKey: ClientDocumentType =
       type === "profilePicture"

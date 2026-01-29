@@ -22,8 +22,10 @@ const EditSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: skillsLookup } = useLookupData("skills");
 
   const methods = useForm<EditSkillsFormData>({
@@ -78,10 +80,11 @@ const EditSkills = () => {
     });
   };
 
-  const skillOptions = skillsLookup?.map((skill: { name: string; id: number }) => ({
-    label: skill.name,
-    value: skill.id.toString(),
-  })) || [];
+  const skillOptions =
+    skillsLookup?.map((skill: { name: string; id: number }) => ({
+      label: skill.name,
+      value: skill.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

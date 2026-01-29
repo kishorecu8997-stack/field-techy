@@ -148,7 +148,12 @@ export interface PostAJobFieldsProps {
   JobOccurrenceEndDate: Date | null;
   estimatedDuration: string;
   saveAsTemplate: boolean;
-  toolsData?: { id?: string; name: string; budget: string; images: { name: string; url: string; file: File }[] }[];
+  toolsData?: {
+    id?: string;
+    name: string;
+    budget: string;
+    images: { name: string; url: string; file: File }[];
+  }[];
 }
 
 export interface PostOption {

@@ -4,7 +4,13 @@ import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useMemo, useState } from "react";
-import jobFilters, { SORT_OPTIONS, type Job, type JobStatus, JOB_STATUSES, WORKING_TYPES } from "../search_result/types";
+import jobFilters, {
+  SORT_OPTIONS,
+  type Job,
+  type JobStatus,
+  JOB_STATUSES,
+  WORKING_TYPES,
+} from "../search_result/types";
 import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
 import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
@@ -23,10 +29,16 @@ const MyJobsClient: React.FC = () => {
   const mapApiJobToUiJob = (apiJob: ClientGetJobsResponse[0]): Job => ({
     id: apiJob.id,
     title: apiJob.jobTitle,
-    type: apiJob.jobType === "On site" ? WORKING_TYPES.onsite : WORKING_TYPES.remote,
-    startDate: apiJob.startDate ? new Date(apiJob.startDate).toDateString() : "N/A",
+    type:
+      apiJob.jobType === "On site"
+        ? WORKING_TYPES.onsite
+        : WORKING_TYPES.remote,
+    startDate: apiJob.startDate
+      ? new Date(apiJob.startDate).toDateString()
+      : "N/A",
     duration: apiJob.endDate ? "Calculated Duration" : "N/A",
-    location: apiJob.workLocationName || `${apiJob.cityId}, ${apiJob.countryId}`,
+    location:
+      apiJob.workLocationName || `${apiJob.cityId}, ${apiJob.countryId}`,
     cityId: apiJob.cityId,
     stateId: apiJob.stateId,
     countryId: apiJob.countryId,

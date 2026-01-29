@@ -143,12 +143,7 @@ const Login = ({
           onSubmit={handleSubmit}
           className="flex flex-col gap-3 p-2 w-full"
         >
-          <InputField
-            name="email"
-            label="Email ID"
-            type="text"
-            required
-          />
+          <InputField name="email" label="Email ID" type="text" required />
           <PasswordInput
             name="password"
             label="Password"

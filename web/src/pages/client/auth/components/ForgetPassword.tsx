@@ -1,4 +1,14 @@
-import AuthForgetPassword from "@/shared/components/auth/AuthForgetPassword";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { assetsConfig } from "@/assets";
+import { absoluteUrls } from "@/config/urls";
+import type { ForgetPasswordFormData } from "@/shared/components/auth/AuthForgetPassword";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import Popup from "@/shared/components/Popup";
+import { useState } from "react";
+import OTPPage from "./OTPPage";
 
 const ForgetPassword = () => {
   const [isOpen, setIsOpen] = useState(false);

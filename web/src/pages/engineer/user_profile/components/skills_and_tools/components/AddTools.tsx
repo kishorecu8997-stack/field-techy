@@ -22,8 +22,10 @@ const AddTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: toolsLookup } = useLookupData("tools");
   const { refetchProfile } = useEngineerStore();
 
@@ -83,12 +85,16 @@ const AddTools = () => {
   // Filter out tools that are already added to the profile
   const existingToolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
 
-  const toolOptions = toolsLookup
-    ?.filter((tool: { id: number; name: string }) => !existingToolIds.includes(tool.id))
-    .map((tool: { id: number; name: string }) => ({
-      label: tool.name,
-      value: tool.id.toString(),
-    })) || [];
+  const toolOptions =
+    toolsLookup
+      ?.filter(
+        (tool: { id: number; name: string }) =>
+          !existingToolIds.includes(tool.id),
+      )
+      .map((tool: { id: number; name: string }) => ({
+        label: tool.name,
+        value: tool.id.toString(),
+      })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

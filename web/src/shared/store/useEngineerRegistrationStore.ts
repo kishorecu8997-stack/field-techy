@@ -16,16 +16,36 @@ interface EngineerRegistrationState {
   fullName: string;
   email: string;
   phone: string;
-  country: string | number | { value?: string | number; label?: string } | null | undefined;
-  state: string | number | { value?: string | number; label?: string } | null | undefined;
-  city: string | number | { value?: string | number; label?: string } | null | undefined;
+  country:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
+  state:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
+  city:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
   postalCode: string;
   address: string;
 
   // Professional Details
   skills: (string | number | { value?: string | number; label?: string })[]; // IDs or Names
   portfolioLink: string;
-  serviceCategory: string | number | { value?: string | number; label?: string } | null | undefined; // ID or Name
+  serviceCategory:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined; // ID or Name
   amount: string; // Rate/Budget
   designation: string;
   company: string;
@@ -61,14 +81,34 @@ interface EngineerRegistrationState {
       fullName: string;
       email: string;
       phone: string;
-      country: string | number | { value?: string | number; label?: string } | null | undefined;
-      state: string | number | { value?: string | number; label?: string } | null | undefined;
-      city: string | number | { value?: string | number; label?: string } | null | undefined;
+      country:
+        | string
+        | number
+        | { value?: string | number; label?: string }
+        | null
+        | undefined;
+      state:
+        | string
+        | number
+        | { value?: string | number; label?: string }
+        | null
+        | undefined;
+      city:
+        | string
+        | number
+        | { value?: string | number; label?: string }
+        | null
+        | undefined;
       postalCode: string;
       address: string;
       skills: (string | number | { value?: string | number; label?: string })[];
       portfolioLink: string;
-      serviceCategory: string | number | { value?: string | number; label?: string } | null | undefined;
+      serviceCategory:
+        | string
+        | number
+        | { value?: string | number; label?: string }
+        | null
+        | undefined;
       amount: string;
       designation: string;
       company: string;
@@ -205,7 +245,11 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
           address: state.address,
 
           portfolioLink: state.portfolioLink,
-          serviceCategory: (typeof state.serviceCategory === 'object' && state.serviceCategory !== null) ? state.serviceCategory.value ?? "" : state.serviceCategory ?? "",
+          serviceCategory:
+            typeof state.serviceCategory === "object" &&
+            state.serviceCategory !== null
+              ? (state.serviceCategory.value ?? "")
+              : (state.serviceCategory ?? ""),
 
           budget: state.amount,
           rate: parseFloat(state.amount.replace(/[^0-9.]/g, "")) || 0,
@@ -218,7 +262,9 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
           averageRating: 0.0,
           status: "PENDING",
 
-          jobSkills: state.skills.map(s => (typeof s === 'object' && s !== null) ? s.value ?? "" : s),
+          jobSkills: state.skills.map((s) =>
+            typeof s === "object" && s !== null ? (s.value ?? "") : s,
+          ),
           tools: [],
 
           experiences:

@@ -18,7 +18,8 @@ import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
 // Fix default icon issue
-(L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl = undefined;
+(L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl =
+  undefined;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
@@ -81,12 +82,6 @@ const MapSearchBar: React.FC<{
   const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
   const [, setLoading] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-
-  const handleClear = () => {
-    setQuery("");
-    setSuggestions([]);
-    setUserTyping(false);
-  };
 
   useEffect(() => {
     if (!userTyping || !query.trim()) {

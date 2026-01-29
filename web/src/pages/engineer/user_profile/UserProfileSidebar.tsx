@@ -109,14 +109,18 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
 
   // Engineer data
   const engineerProfile = useEngineerProfile();
-  const engineerProfileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfileImageUrl = useEngineerStore(
+    (state) => state.profileImageUrl,
+  );
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
 
   // Client data
   const clientProfile = useClientProfile();
-  const clientProfileImageUrl = useClientStore((state) => state.profileImageUrl);
+  const clientProfileImageUrl = useClientStore(
+    (state) => state.profileImageUrl,
+  );
   const clearClientProfile = useClientStore(
     (state) => state.clearClientProfile,
   );
@@ -136,18 +140,30 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
   const displayTitle = useMemo(() => {
     if (isClient) {
       if (!clientProfile) return "Client";
-      return clientProfile.clientType === "CORPORATE" ? "Corporate Client" : "Home Client";
+      return clientProfile.clientType === "CORPORATE"
+        ? "Corporate Client"
+        : "Home Client";
     }
-    if (!engineerProfile?.serviceCategory || !serviceCategories) return "Engineer";
+    if (!engineerProfile?.serviceCategory || !serviceCategories)
+      return "Engineer";
     const category = serviceCategories.find(
       (cat: LookupItem) =>
         String(cat.id) === String(engineerProfile.serviceCategory),
     );
     return category ? category.name : "Engineer";
-  }, [isClient, clientProfile, engineerProfile?.serviceCategory, serviceCategories]);
+  }, [
+    isClient,
+    clientProfile,
+    engineerProfile?.serviceCategory,
+    serviceCategories,
+  ]);
 
-  const displayImageUrl = isClient ? clientProfileImageUrl : engineerProfileImageUrl;
-  const displayRating = isClient ? (clientProfile?.rating || 0) : (engineerProfile?.averageRating || 0);
+  const displayImageUrl = isClient
+    ? clientProfileImageUrl
+    : engineerProfileImageUrl;
+  const displayRating = isClient
+    ? clientProfile?.rating || 0
+    : engineerProfile?.averageRating || 0;
 
   return (
     <>
@@ -160,7 +176,7 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
             name={displayName}
             title={displayTitle}
             rating={displayRating}
-            reviewCount={isClient ? (clientProfile?.reviewCount || 0) : 0}
+            reviewCount={isClient ? clientProfile?.reviewCount || 0 : 0}
             completionPercentage={0}
             flex="col"
           />

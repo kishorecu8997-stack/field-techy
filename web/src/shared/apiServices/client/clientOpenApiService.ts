@@ -168,7 +168,9 @@ export function useClientPostJob(options?: {
     ...clientPostJobMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-      queryClient.invalidateQueries({ queryKey: clientGetJobsQueryKey({ client: apiClient }) });
+      queryClient.invalidateQueries({
+        queryKey: clientGetJobsQueryKey({ client: apiClient }),
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
@@ -187,36 +189,40 @@ export function useClientGetJobs(enabled: boolean = true) {
 }
 
 export function useClientGetRateCard(options?: {
-    onSuccess?: (data: ClientGetRateCardResponse) => void;
-    onError?: (error: unknown) => void;
+  onSuccess?: (data: ClientGetRateCardResponse) => void;
+  onError?: (error: unknown) => void;
 }) {
-    return useMutation({
-        mutationFn: async (args: Omit<ClientGetRateCardData, "url">) => {
-            const { data } = await clientGetRateCard({
-                client: apiClient,
-                ...args,
-            });
-            return data!;
-        },
-        onSuccess: options?.onSuccess,
-        onError: options?.onError,
-    });
+  return useMutation({
+    mutationFn: async (args: Omit<ClientGetRateCardData, "url">) => {
+      const { data } = await clientGetRateCard({
+        client: apiClient,
+        ...args,
+      });
+      return data!;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
 }
 
 export function useClientMarkJobFileUploaded(options?: {
-    onSuccess?: (data: ClientMarkJobFileUploadedResponses[keyof ClientMarkJobFileUploadedResponses]) => void;
-    onError?: (error: unknown) => void;
+  onSuccess?: (
+    data: ClientMarkJobFileUploadedResponses[keyof ClientMarkJobFileUploadedResponses],
+  ) => void;
+  onError?: (error: unknown) => void;
 }) {
-    const queryClient = useQueryClient();
-    return useMutation({
-        ...clientMarkJobFileUploadedMutation({ client: apiClient }),
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
-            queryClient.invalidateQueries({ queryKey: clientGetJobsQueryKey({ client: apiClient }) });
-            options?.onSuccess?.(data);
-        },
-        onError: options?.onError,
-    });
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientMarkJobFileUploadedMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      queryClient.invalidateQueries({
+        queryKey: clientGetJobsQueryKey({ client: apiClient }),
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
 }
 
 /**

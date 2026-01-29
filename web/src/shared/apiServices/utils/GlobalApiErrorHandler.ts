@@ -259,8 +259,15 @@ export class GlobalApiErrorHandler {
     // Handle generic objects (e.g. from fetch/hey-api)
     if (typeof error === "object" && error !== null) {
       const errorResponse = error as ApiErrorResponse;
-      if (errorResponse.message || errorResponse.detail || errorResponse.title) {
-        const message = this.extractErrorMessage(errorResponse, errorResponse.instance);
+      if (
+        errorResponse.message ||
+        errorResponse.detail ||
+        errorResponse.title
+      ) {
+        const message = this.extractErrorMessage(
+          errorResponse,
+          errorResponse.instance,
+        );
         return new Error(message);
       }
     }

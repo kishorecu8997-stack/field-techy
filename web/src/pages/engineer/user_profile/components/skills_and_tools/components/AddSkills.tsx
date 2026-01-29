@@ -22,8 +22,10 @@ const AddSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: skillsLookup } = useLookupData("skills");
   const { refetchProfile } = useEngineerStore();
 
@@ -82,12 +84,13 @@ const AddSkills = () => {
   // Filter out skills that are already added to the profile
   const existingSkillIds = currentSkillsAndTools?.skills.map((s) => s.id) || [];
 
-  const skillOptions = skillsLookup
-    ?.filter((skill: { id: number }) => !existingSkillIds.includes(skill.id))
-    .map((skill: { name: string; id: number }) => ({
-      label: skill.name,
-      value: skill.id.toString(),
-    })) || [];
+  const skillOptions =
+    skillsLookup
+      ?.filter((skill: { id: number }) => !existingSkillIds.includes(skill.id))
+      .map((skill: { name: string; id: number }) => ({
+        label: skill.name,
+        value: skill.id.toString(),
+      })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

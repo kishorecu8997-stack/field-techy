@@ -84,14 +84,18 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   // Engineer Data
   const engineerProfile = useEngineerProfile();
-  const engineerProfileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfileImageUrl = useEngineerStore(
+    (state) => state.profileImageUrl,
+  );
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
 
   // Client Data
   const clientProfile = useClientProfile();
-  const clientProfileImageUrl = useClientStore((state) => state.profileImageUrl);
+  const clientProfileImageUrl = useClientStore(
+    (state) => state.profileImageUrl,
+  );
   const clearClientProfile = useClientStore(
     (state) => state.clearClientProfile,
   );
@@ -99,16 +103,21 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   const isClient = session?.role === "CLIENT";
 
   const displayName = isClient
-    ? (clientProfile?.clientType === "CORPORATE" ? clientProfile?.companyName : clientProfile?.contactPersonName) || "Client"
+    ? (clientProfile?.clientType === "CORPORATE"
+        ? clientProfile?.companyName
+        : clientProfile?.contactPersonName) || "Client"
     : engineerProfile?.fullName || "";
 
   const displayTitle = isClient
-    ? (clientProfile?.clientType === "CORPORATE" ? "Corporate Client" : "Home Client")
+    ? clientProfile?.clientType === "CORPORATE"
+      ? "Corporate Client"
+      : "Home Client"
     : String(engineerProfile?.serviceCategory || "");
 
   const displayImage = isClient
-    ? (clientProfileImageUrl || assetsConfig.images.profile.defaultProfileImage)
-    : (engineerProfileImageUrl || assetsConfig.images.profile.defaultProfileImage);
+    ? clientProfileImageUrl || assetsConfig.images.profile.defaultProfileImage
+    : engineerProfileImageUrl ||
+      assetsConfig.images.profile.defaultProfileImage;
 
   return (
     <>
@@ -118,7 +127,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
             avatarUrl={displayImage}
             name={displayName}
             title={displayTitle}
-            rating={isClient ? 4.0 : (engineerProfile?.averageRating || 0)} // Placeholder for Client
+            rating={isClient ? 4.0 : engineerProfile?.averageRating || 0} // Placeholder for Client
             reviewCount={10}
             completionPercentage={isClient ? 100 : 39} // Placeholder for Client
             engineerId={!isClient ? engineerProfile?.id : undefined}

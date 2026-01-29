@@ -1,5 +1,8 @@
 ﻿import { absoluteUrls } from "@/config/urls";
-import { useLookupData, useClientGetRateCard } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useLookupData,
+  useClientGetRateCard,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,38 +36,50 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   const { data: citiesData } = useLookupData("cities", selectedState);
 
   const countryOptions = useMemo(
-    () => countriesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
-    [countriesData]
+    () =>
+      countriesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
+    [countriesData],
   );
 
   const stateOptions = useMemo(
-    () => statesData?.map((s) => ({ label: s.name, value: String(s.id) })) || [],
-    [statesData]
+    () =>
+      statesData?.map((s) => ({ label: s.name, value: String(s.id) })) || [],
+    [statesData],
   );
 
   const cityOptions = useMemo(
-    () => citiesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
-    [citiesData]
+    () =>
+      citiesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
+    [citiesData],
   );
 
   const serviceCategoryOptions = useMemo(
-    () => serviceCategoriesData?.map((s) => ({ label: s.name, value: String(s.id) })) || [],
-    [serviceCategoriesData]
+    () =>
+      serviceCategoriesData?.map((s) => ({
+        label: s.name,
+        value: String(s.id),
+      })) || [],
+    [serviceCategoriesData],
   );
 
   const experienceLevelOptions = useMemo(
-    () => experienceLevelsData?.map((e) => ({ label: e.name, value: String(e.id) })) || [],
-    [experienceLevelsData]
+    () =>
+      experienceLevelsData?.map((e) => ({
+        label: e.name,
+        value: String(e.id),
+      })) || [],
+    [experienceLevelsData],
   );
 
   const skillOptions = useMemo(
-    () => skillsData?.map((s) => ({ label: s.name, value: String(s.id) })) || [],
-    [skillsData]
+    () =>
+      skillsData?.map((s) => ({ label: s.name, value: String(s.id) })) || [],
+    [skillsData],
   );
 
   const toolOptions = useMemo(
     () => toolsData?.map((t) => ({ label: t.name, value: String(t.id) })) || [],
-    [toolsData]
+    [toolsData],
   );
 
   useEffect(() => {
@@ -108,7 +123,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
           onError: () => {
             setRate(null);
           },
-        }
+        },
       );
     } else {
       setRate(null);

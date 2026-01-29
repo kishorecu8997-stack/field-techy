@@ -120,10 +120,12 @@ const AddExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item: { id: number; name: string }) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            workLocations?.map((item: { id: number; name: string }) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
 
@@ -131,10 +133,12 @@ const AddExperiences = () => {
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item: { id: number; name: string }) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            employmentTypes?.map((item: { id: number; name: string }) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput

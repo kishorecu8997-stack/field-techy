@@ -4,42 +4,42 @@ import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerI
 import SectionHeader from "../../SectionHeader";
 
 const SchedulingSection = ({ isDisable }: { isDisable: boolean }) => {
-    const { watch } = useFormContext();
-    const startDateValue = watch("startDate") as Date | null;
+  const { watch } = useFormContext();
+  const startDateValue = watch("startDate") as Date | null;
 
-    const today = useMemo(() => {
-        const d = new Date();
-        d.setHours(0, 0, 0, 0);
-        return d;
-    }, []);
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
 
-    return (
-        <div className="space-y-3">
-            <SectionHeader title="Scheduling" />
-            <div className="flex flex-row w-full gap-4 items-center">
-                <div className="w-1/2">
-                    <DatePickerInput
-                        label="Start Date"
-                        name="startDate"
-                        placeholder="Select Start Date"
-                        minDate={today}
-                        required
-                        disabled={isDisable}
-                    />
-                </div>
-                <div className="w-1/2">
-                    <DatePickerInput
-                        label="End Date"
-                        name="endDate"
-                        placeholder="Select End Date"
-                        minDate={startDateValue || today}
-                        required
-                        disabled={isDisable}
-                    />
-                </div>
-            </div>
+  return (
+    <div className="space-y-3">
+      <SectionHeader title="Scheduling" />
+      <div className="flex flex-row w-full gap-4 items-center">
+        <div className="w-1/2">
+          <DatePickerInput
+            label="Start Date"
+            name="startDate"
+            placeholder="Select Start Date"
+            minDate={today}
+            required
+            disabled={isDisable}
+          />
         </div>
-    );
+        <div className="w-1/2">
+          <DatePickerInput
+            label="End Date"
+            name="endDate"
+            placeholder="Select End Date"
+            minDate={startDateValue || today}
+            required
+            disabled={isDisable}
+          />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SchedulingSection;

@@ -46,28 +46,35 @@ export const useClientStore = create<ClientStore>((set, get) => ({
           email: profile.email,
           phoneNumber: profile.phoneNumber,
           clientType: profile.clientType.toUpperCase(),
-          contactPersonName: profile.clientType === 'corporate' ? (profile.personName || profile.name) : profile.name,
-          companyName: profile.clientType === 'corporate' ? (profile.companyName || profile.name) : profile.name,
-          address: profile.clientType === 'corporate' ? profile.address : undefined,
+          contactPersonName:
+            profile.clientType === "corporate"
+              ? profile.personName || profile.name
+              : profile.name,
+          companyName:
+            profile.clientType === "corporate"
+              ? profile.companyName || profile.name
+              : profile.name,
+          address:
+            profile.clientType === "corporate" ? profile.address : undefined,
           profilePicture: profile.profilePictureUrl,
         };
 
         let profilePicUrl = profile.profilePictureUrl || null;
 
         // If we have a relative path and need to fetch download URL
-        if (profilePicUrl && !profilePicUrl.startsWith('http')) {
-             try {
-                const picData = await getDownloadUrl("profilePicture");
-                profilePicUrl = picData?.downloadUrl || profilePicUrl;
-             } catch (e) {
-                console.error("Failed to get profile picture download URL", e);
-             }
+        if (profilePicUrl && !profilePicUrl.startsWith("http")) {
+          try {
+            const picData = await getDownloadUrl("profilePicture");
+            profilePicUrl = picData?.downloadUrl || profilePicUrl;
+          } catch (e) {
+            console.error("Failed to get profile picture download URL", e);
+          }
         }
 
         set({
           clientProfile: mappedProfile,
           profileFetched: true,
-          profileImageUrl: profilePicUrl
+          profileImageUrl: profilePicUrl,
         });
       }
     } catch (error) {
@@ -93,7 +100,7 @@ export const useClientProfile = () => {
   useEffect(() => {
     const userId = session?.userId;
     const role = session?.role;
-    
+
     // Verify user role is CLIENT to avoid incorrect fetches
     if (userId && (role === "CLIENT" || role === "client")) {
       if (!profileFetched && !loading) {
@@ -112,7 +119,7 @@ export const useClientProfile = () => {
 export const useClientDisplayName = () => {
   const profile = useClientProfile();
   if (!profile) return "Guest";
-  
+
   if (profile.clientType === "CORPORATE") {
     return profile.companyName || profile.contactPersonName || "Client";
   }

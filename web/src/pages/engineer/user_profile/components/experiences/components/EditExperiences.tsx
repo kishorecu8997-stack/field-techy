@@ -138,10 +138,12 @@ const EditExperiences = () => {
           label="Designation"
           name="designation"
           placeholder="Designation"
-          options={designations?.map((e: { id: number; name: string }) => ({
-            value: e.id.toString(),
-            label: e.name,
-          })) || []}
+          options={
+            designations?.map((e: { id: number; name: string }) => ({
+              value: e.id.toString(),
+              label: e.name,
+            })) || []
+          }
           required
         />
         <InputField
@@ -155,20 +157,24 @@ const EditExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item: { id: number; name: string }) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            workLocations?.map((item: { id: number; name: string }) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <SelectField
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item: { id: number; name: string }) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            employmentTypes?.map((item: { id: number; name: string }) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput

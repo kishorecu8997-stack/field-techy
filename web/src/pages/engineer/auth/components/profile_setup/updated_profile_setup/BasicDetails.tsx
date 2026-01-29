@@ -116,7 +116,14 @@ const BasicDetails = () => {
         city: data.city,
         postalCode: data.postalCode,
         address: data.address,
-        skills: (data.skills || []).filter((s): s is string | number | { value?: string | number; label?: string } => s !== undefined),
+        skills: (data.skills || []).filter(
+          (
+            s,
+          ): s is
+            | string
+            | number
+            | { value?: string | number; label?: string } => s !== undefined,
+        ),
         portfolioLink: data.portfolioLink,
         serviceCategory: data.serviceCategory ?? "",
         amount: data.amount,
@@ -132,11 +139,11 @@ const BasicDetails = () => {
     // Extract IDs from select objects - OpenAPI expects number IDs
     const getIdValue = (val: unknown): number | undefined => {
       if (!val) return undefined;
-      if (typeof val === 'object' && val !== null && 'value' in val) {
+      if (typeof val === "object" && val !== null && "value" in val) {
         return Number((val as { value: string | number }).value);
       }
-      if (typeof val === 'number') return val;
-      if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+      if (typeof val === "number") return val;
+      if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
       return undefined;
     };
 
@@ -152,10 +159,12 @@ const BasicDetails = () => {
       cityId: getIdValue(data.city),
       postalCode: data.postalCode,
       skills: Array.isArray(data.skills)
-        ? data.skills.map((s: unknown) => {
-          const val = getIdValue(s);
-          return val !== undefined ? val : NaN;
-        }).filter(n => !isNaN(n))
+        ? data.skills
+            .map((s: unknown) => {
+              const val = getIdValue(s);
+              return val !== undefined ? val : NaN;
+            })
+            .filter((n) => !isNaN(n))
         : [],
       serviceCategoryId: getIdValue(data.serviceCategory),
       hourlyRate: parseFloat(data.amount?.replace(/[^0-9.]/g, "")) || undefined,
