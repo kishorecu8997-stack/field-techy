@@ -10,6 +10,17 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import OTPPage from "./OTPPage";
 
+export type ForgetPasswordFormData = {
+  email: string;
+};
+
+/**
+ * Type representing the data structure for the Login form.
+ * @typedef {Object} LoginFormData
+ * @property {string} email - User's email address.
+ * @property {string} password - User's password.
+ * @property {boolean} rememberMe - Whether to remember the user.
+ */
 const ForgetPassword = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
