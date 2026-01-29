@@ -164,7 +164,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
               <Controller
                 name="applicationEndDate"
                 rules={{
-                  validate: (value) =>  validateCurrentOrFutureDate(value),
+                  validate: (value) => validateCurrentOrFutureDate(value),
                 }}
                 control={ctx.control}
                 render={({ field }) => (
