@@ -15,7 +15,6 @@ import {
   useEngineerStore,
 } from "../store/useEngineerStore";
 import IconWithTheme from "./IconWithTheme";
-import logo_light from "@/assets/logo/logo_light.svg";
 
 /**
  * Header component with navigation, search bar, and user profile.
