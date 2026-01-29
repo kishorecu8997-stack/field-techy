@@ -41,10 +41,24 @@ export default function ActiveUser() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [showAction, setShowAction] = useState<number | null>(null);
-  const [isSuspendengineer, setIsSuspendengineer] = useState<boolean>(false);
+  const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageEngineer
+    .filter((e) => e.employmentStatus === "Active")
+    .filter((e) => {
+      const query = search.toLowerCase();
+
+      return (
+        e.engineerID.toLowerCase().includes(query) ||
+        e.details.name.toLowerCase().includes(query) ||
+        e.details.email.toLowerCase().includes(query) ||
+        e.location.toLowerCase().includes(query)
+      );
+    });
 
   useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
 
@@ -131,34 +145,40 @@ export default function ActiveUser() {
     {
       key: "registrationDate",
       label: "Registration Date",
+      dataCellAlign: "center",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
+      dataCellAlign: "center",
     },
     {
       key: "kycStatus",
       label: "KYC Status",
+      dataCellAlign: "center",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
+      dataCellAlign: "center",
     },
     {
       key: "avgRating",
       label: "Avg Rating",
+      dataCellAlign: "center",
     },
     {
       key: "action",
       label: "Actions",
       align: "center",
+      dataCellAlign: "center",
       renderCell: (row: ManageEngineerProps) => (
         <ActionsMenu
           row={row}
           showAction={showAction}
           setShowAction={setShowAction}
           handleDelete={handleDeleteEngineer}
-          setIsSuspend={setIsSuspendengineer}
+          setIsSuspend={setIsSuspendEngineer}
           setIsBlock={setIsBlockEngineer}
         />
       ),
@@ -168,7 +188,7 @@ export default function ActiveUser() {
   const onSubmit = async (
     data: SuspendEngineerFormData | BlockEngineerFormData,
   ) => {
-    if (isSuspendengineer) {
+    if (isSuspendEngineer) {
       await handleSuspendSubmit(data as SuspendEngineerFormData);
     } else {
       await handleBlockSubmit(data);
@@ -187,10 +207,10 @@ export default function ActiveUser() {
           variant: "danger",
           action: async (close) => {
             console.log("Suspend data:", data);
-            close(true);
             methods.reset();
-            setIsSuspendengineer(false);
+            setIsSuspendEngineer(false);
             toast.success("Engineer suspended successfully!");
+            close(true);
           },
         },
       ],
@@ -223,12 +243,12 @@ export default function ActiveUser() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput />
+          <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={filteredData}
             initialPageSize={10}
           />
         </div>
@@ -250,10 +270,10 @@ export default function ActiveUser() {
         </div>
       </Popup>
       <FormContainer methods={methods} onSubmit={onSubmit}>
-        {isSuspendengineer && (
+        {isSuspendEngineer && (
           <SuspendEngineer
-            isSuspendengineer={isSuspendengineer}
-            setIsSuspendengineer={setIsSuspendengineer}
+            isSuspendEngineer={isSuspendEngineer}
+            setIsSuspendEngineer={setIsSuspendEngineer}
           />
         )}
         {isBlockEngineer && (

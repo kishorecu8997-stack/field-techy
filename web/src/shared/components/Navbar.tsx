@@ -69,6 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
         <IconWithTheme
           darkLogo={assetsConfig.logos.ftLogoWhite}
           lightLogo={assetsConfig.logos.ftLogo}
+          header
           className="h-12 w-auto cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.engineer.home.dashboard);

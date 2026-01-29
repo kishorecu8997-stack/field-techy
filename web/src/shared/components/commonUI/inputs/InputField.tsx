@@ -195,7 +195,7 @@ export const InputField = ({
                   ${
                     disabled
                       ? " cursor-not-allowed opacity-60 border-gray-400 dark:border-gray-600 focus:ring-0"
-                      : "cursor-text bg-white dark:bg-gray-800"
+                      : "cursor-text bg-white bg-gray-800 dark:bg-gray-800"
                   }
                ${
                  error && !disabled

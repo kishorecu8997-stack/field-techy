@@ -1,5 +1,6 @@
 import React from "react";
-import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
+import { FaPlusCircle, } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface EducationItem {
@@ -66,7 +67,7 @@ const EducationList: React.FC<EducationListProps> = ({
                       onClick={() => onEditAction?.(item.id)}
                       className="text-gray-300 hover:text-blue-600 transition-colors dark:hover:text-blue-400"
                     >
-                      <FaRegEdit />
+                      <FiEdit2 />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(item.id)}

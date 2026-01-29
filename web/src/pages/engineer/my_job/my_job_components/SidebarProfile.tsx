@@ -114,7 +114,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
             setActiveKey("myEarning", false);
             setISOpenSidebar(true);
           }}
-          className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
+          className="text-sm text-teal-800 dark:text-teal-400 font-medium hover:underline cursor-pointer"
         >
           View all
         </div>
@@ -237,7 +237,7 @@ const SavedJobsCard = () => {
         </h3>
         <div
           onClick={() => navigate(absoluteUrls.engineer.home.saved_jobs)}
-          className="text-sm text-teal-800 dark:text-teal-400 hover:underline cursor-pointer"
+          className="text-sm text-teal-800 dark:text-teal-400 hover:underline font-medium cursor-pointer"
         >
           View all
         </div>

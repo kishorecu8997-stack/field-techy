@@ -1,5 +1,4 @@
 import { assetsConfig } from "@/assets";
-import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
 import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
@@ -102,7 +101,7 @@ const Login = ({
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={logo_light}
+              darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>

@@ -65,7 +65,8 @@ export const validateEmail = (value: string): true | string => {
     "gov",
     "info",
     "co.in",
-    "co.uk",
+    "co.uk", 
+    "uk",
   ];
 
   let tldMatched = false;
