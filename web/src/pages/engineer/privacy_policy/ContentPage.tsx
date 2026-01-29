@@ -23,8 +23,16 @@ const ContentPage = ({ content }: { content: Section[] }) => {
                 <li key={i} className="flex items-start">
                   <span className="inline-block w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                   <div>
-                    {item.title && <strong className="mb-4 leading-relaxed whitespace-pre-line dark:text-gray-300">{item.title}:</strong>}{" "}
-                    {item.description && <span className="mb-4 leading-relaxed whitespace-pre-line dark:text-gray-300">{item.description}</span>}
+                    {item.title && (
+                      <strong className="mb-4 leading-relaxed whitespace-pre-line dark:text-gray-300">
+                        {item.title}:
+                      </strong>
+                    )}{" "}
+                    {item.description && (
+                      <span className="mb-4 leading-relaxed whitespace-pre-line dark:text-gray-300">
+                        {item.description}
+                      </span>
+                    )}
                   </div>
                 </li>
               ))}
