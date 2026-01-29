@@ -10,6 +10,7 @@ import {
   type ClientUpdateCompanyInfoResponse,
   clientGetCompanyInfo,
   type ClientGetCompanyInfoResponse,
+  type AppUploadProfileFileResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -24,10 +25,14 @@ import {
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
   clientGetJobsQueryKey,
+  appUploadProfileFileMutation,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
+import { useUploadClientFile } from "./clientService";
+
+export { useUploadClientFile };
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -120,6 +125,17 @@ export function useAppMarkProfileFileUploaded(options?: {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       options?.onSuccess?.(data);
     },
+    onError: options?.onError,
+  });
+}
+
+export function useAppUploadProfileFile(options?: {
+  onSuccess?: (data: AppUploadProfileFileResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    ...appUploadProfileFileMutation({ client: apiClient }),
+    onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
 }
