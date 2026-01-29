@@ -13,6 +13,7 @@ import type {
   FileUploadResponse,
   PagedResponse,
 } from "./clientTypes";
+import regionsAndCountries from "@/dummy_data/regionsAndCountries";
 
 /*
  * ClientAdapter
@@ -323,52 +324,53 @@ export class ClientAdapter {
   /**
    * Get list of states for a country
    */
-  static async getStates(
-    countryId?: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const states = [
-          { value: "Maharashtra", label: "Maharashtra" },
-          { value: "Karnataka", label: "Karnataka" },
-          { value: "Delhi", label: "Delhi" },
-          { value: "Tamil Nadu", label: "Tamil Nadu" },
-          { value: "Gujarat", label: "Gujarat" },
-        ];
-        resolve(states);
-      }, 500);
-    });
-  }
+  static async getStates(countryLabel: string): Promise<{ value: string; label: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Filter subdivisions that belong to the given country
+      const states = regionsAndCountries
+        .filter(
+          (item) =>
+            item.type === "subdivision" &&
+            item.region?.toLowerCase() === countryLabel.toLowerCase()
+        )
+        .map((item) => ({
+          value: item.value,
+          label: item.label,
+        }));
+
+      resolve(states);
+    }, 200); // simulate async
+  });
+}
 
   /**
    * Get list of cities for a state
    */
-  static async getCities(
-    stateId: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching cities for state: ${stateId}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const cityMap: Record<string, { value: string; label: string }[]> = {
-          Maharashtra: [
-            { value: "Mumbai", label: "Mumbai" },
-            { value: "Pune", label: "Pune" },
-            { value: "Nagpur", label: "Nagpur" },
-          ],
-          Karnataka: [
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Mysore", label: "Mysore" },
-          ],
-          Delhi: [
-            { value: "New Delhi", label: "New Delhi" },
-            { value: "Old Delhi", label: "Old Delhi" },
-          ],
-        };
-        resolve(cityMap[stateId] || []);
-      }, 500);
-    });
-  }
+static async getCities(stateValue: string): Promise<{ value: string; label: string }[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // 1. Find the state object first
+      const state = regionsAndCountries.find(
+        (item) => item.type === "subdivision" && item.value === stateValue
+      );
+
+      if (!state) {
+        resolve([]); // state not found
+        return;
+      }
+
+      // 2. Filter cities that have region = state's label
+      const cities = regionsAndCountries
+        .filter(
+          (item) => item.type === "city" && item.region === state.label
+        )
+        .map((item) => ({ value: item.value, label: item.label }));
+
+      resolve(cities);
+    }, 200);
+  });
+}
 
   /**
    * Get list of industries
