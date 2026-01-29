@@ -20,9 +20,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "liveChatSend"
     | "no_style"
     | "dropdown"
-    | "no_style"
-    | "dropdown";
-
     | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
@@ -82,9 +79,6 @@ export const Button: React.FC<ButtonProps> = ({
       "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
     closeChat:
       "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center p-1 h-8 w-8",
-    no_style: "",
-    dropdown:
-      "flex items-center justify-between h-[48px] px-3 py-1 border-r border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed",
     no_style: "",
     dropdown:
       "flex items-center justify-between h-[48px] px-3 py-1 border-r border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed",

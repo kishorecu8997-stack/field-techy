@@ -5,10 +5,10 @@ import {
   validateVatNumber,
   validateZipcode,
 } from "@/pages/client/my_account/Validate";
-import {
-  validateEmail,
-  validateEmailRules,
-} from "@/shared/components/commonUI/emailValidation";
+// import {
+//   validateEmail,
+//   validateEmailRules,
+// } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
@@ -16,10 +16,10 @@ import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { useVatOptions } from "@/shared/apiServices/client/clientService";
-import {
-  useVatOptions,
-} from "@/shared/apiServices/client/clientService";
-import { useDebouncedUserExists } from "@/shared/apiServices/user";
+// import {
+//   useVatOptions,
+// } from "@/shared/apiServices/client/clientService";
+// import { useDebouncedUserExists } from "@/shared/apiServices/user";
 import { useEffect } from "react";
 import { businessTypes } from "@/dummy_data/adminClientData";
 import { useCities, useCountries, useIndustries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
@@ -51,14 +51,14 @@ const BasicDetailsFields = () => {
     setValue("city", undefined);
   }, [country, setValue]);
 
-  // Fetch dropdown data from API
-  const { data: states = [], isLoading: statesLoading } =
-    useStates(countryValue);
-  const { data: cities = [], isLoading: citiesLoading } = useCities(
-    selectedState?.value || selectedState,
-  );
-  const { data: industries = [], isLoading: industriesLoading } =
-    useIndustries();
+  // // Fetch dropdown data from API
+  // const { data: states = [], isLoading: statesLoading } =
+  //   useStates(countryValue);
+  // const { data: cities = [], isLoading: citiesLoading } = useCities(
+  //   selectedState?.value || selectedState,
+  // );
+  // const { data: industries = [], isLoading: industriesLoading } =
+  //   useIndustries();
   const countriesQuery = useCountries();
   const parentCountryId = country?.value ?? country;
   const statesQuery = useStates(parentCountryId);
