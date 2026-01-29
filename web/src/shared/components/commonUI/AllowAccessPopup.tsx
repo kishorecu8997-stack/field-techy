@@ -83,11 +83,14 @@ export default function AllowAccessPopup({
           <img
             src={assetsConfig.icons.location}
             alt="location-icon"
-            className="text-center mx-auto my-4"
+            className="text-center mx-auto my-4 brightness-150"
           />
 
-          <p className="text-2xl font-semibold">Access Your Location</p>
-          <p className="text-center mt-4 text-lg text-gray-600">
+          <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            Access Your Location
+          </p>
+
+          <p className="text-center mt-4 text-lg text-gray-600 dark:text-gray-400">
             Easily grant the owner access to fetch current location and send
             notifications—stay connected, informed, and in control.
           </p>
@@ -96,7 +99,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={locationLoading}
-            className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full my-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={async () => {
               const success = await requestLocation();
               if (success) {
@@ -117,7 +120,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={locationLoading}
-           className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full my-2 bg-gradient-to-r from-rose-700 to-rose-900 text-white py-2 rounded-lg hover:opacity-90 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
             onClick={() => {
               onDenyLocation?.();
               setLocationPermission("denied");
@@ -133,13 +136,13 @@ export default function AllowAccessPopup({
           <img
             src={assetsConfig.icons.notification}
             alt="notification-icon"
-            className="text-center mx-auto my-4"
+            className="text-center mx-auto my-4 filter brightness-150"
           />
 
           <p className="text-2xl font-semibold dark:text-white">
             Enable Notifications
           </p>
-          <p className="text-center mt-4 text-lg text-gray-600 ">
+          <p className="text-center mt-4 text-lg text-gray-600 dark:text-gray-400">
             Enable notifications to stay informed with real-time alerts,
             important updates, and timely reminders.
           </p>
@@ -148,7 +151,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={notificationLoading}
-            className="w-full my-6 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full my-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
             onClick={async () => {
               const success = await requestNotificationPermission();
               if (success) {
@@ -168,7 +171,7 @@ export default function AllowAccessPopup({
           <Button
             type="button"
             disabled={notificationLoading}
-            className="w-full my-0 bg-gradient-to-r from-gray-500 to-gray-700 text-white py-2 rounded-lg hover:opacity-90 transition dark:bg-gradient-to-r dark:from-gray-500 dark:to-gray-700"
+            className="w-full my-2 bg-gradient-to-r from-rose-700 to-rose-900 text-white py-2 rounded-lg hover:opacity-90 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-1"
             onClick={() => {
               onDenyNotification?.();
               setNotificationPermission("denied");

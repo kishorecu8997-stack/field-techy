@@ -2,6 +2,26 @@ import { useState, useRef, useEffect } from "react";
 import type { CountrySelectProps } from "./type";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { Button } from "../Buttons";
+/**
+ * CountrySelect is a reusable dropdown component for selecting a country.
+ *
+ * It displays the currently selected country’s flag and country code, and
+ * allows the user to choose a different country from a dropdown list.
+ * The dropdown automatically closes when the user clicks outside of it.
+ *
+ * The component supports a disabled state, which prevents user interaction
+ * and visually indicates that the field is inactive.
+ *
+ * @param {CountrySelectProps} props - The props for the CountrySelect component.
+ * @param {Array} props.countries - A list of available countries, each containing
+ * a country code, name, and flag URL.
+ * @param {string} props.value - The currently selected country code.
+ * @param {(code: string) => void} props.onChange - Callback invoked when a new
+ * country is selected. The selected country code is passed as an argument.
+ * @param {boolean} [props.disabled=false] - Whether the dropdown is disabled.
+ *
+ * @returns {JSX.Element} A dropdown UI for selecting a country.
+ */
 
 export const CountrySelect = ({
   countries,
