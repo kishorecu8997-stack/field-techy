@@ -169,14 +169,16 @@ export default function EditEngineer() {
           />
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
-            <Button
-              type="button"
-              onClick={handlePrevious}
-              disabled={activeTab === "Basic Information"}
-              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
-            >
-              Back
-            </Button>
+            {activeTab !== "Basic Information" && (
+              <Button
+                type="button"
+                onClick={handlePrevious}
+                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+              >
+                Back
+              </Button>
+            )}
+
             <Button
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
