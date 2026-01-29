@@ -3,7 +3,7 @@ import EducationList from "./EducationList";
 import {
   useEngineerGetEducation,
   useEngineerDeleteEducation,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -18,15 +18,17 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { setActiveKey, setImmediateParentKey, setSelectedId } =
     useDrawerStore();
 
-  const { data: educations, isLoading: isEduLoading } = useEngineerGetEducation();
-  const { data: levels, isLoading: isLevelsLoading } = useLookupData("educationLevels");
+  const { data: educations, isLoading: isEduLoading } =
+    useEngineerGetEducation();
+  const { data: levels, isLoading: isLevelsLoading } =
+    useLookupData("educationLevels");
   const deleteMutation = useEngineerDeleteEducation();
 
   console.log("Education Component Render:", {
     isEduLoading,
     isLevelsLoading,
     educationsCount: educations?.length,
-    levelsCount: levels?.length
+    levelsCount: levels?.length,
   });
 
   const handleDeleteEducation = async (id: string) => {

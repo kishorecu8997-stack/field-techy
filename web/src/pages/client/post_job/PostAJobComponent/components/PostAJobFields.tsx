@@ -137,7 +137,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
       setISOpenSidebar(true);
       setSelectedId(item.id);
     },
-    onDelete: handleDeleteInterviewer,
+    onDelete: () => handleDeleteInterviewer(),
   }));
 
   const interviewerValue = interviewerData.map((item) => ({
@@ -155,12 +155,18 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
       setISOpenSidebar(true);
       setSelectedId(Number(item.id));
     },
-    onDelete: handleDeleteInterviewer,
+    onDelete: () => handleDeleteInterviewer(),
   }));
 
   const formattedInterviewerSections = interviewerValue.map((section) => ({
     ...section,
-    items: section.items.map((item) => ({ ...item, value: item.value })),
+    items: section.items.map((item) => ({
+      ...item,
+      value:
+        item.value && typeof item.value === "object" && "getTime" in item.value
+          ? (item.value as Date).toISOString()
+          : item.value,
+    })),
   }));
 
   useEffect(() => {

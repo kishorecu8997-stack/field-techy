@@ -8,14 +8,12 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import {
-  designationOptions,
-} from "./constants";
+import { designationOptions } from "./constants";
 import { toast } from "react-toastify";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import {
   useEngineerAddExperience,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
@@ -121,10 +119,12 @@ const AddExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item: any) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            workLocations?.map((item: any) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
 
@@ -132,10 +132,12 @@ const AddExperiences = () => {
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item: any) => ({
-            value: item.id.toString(),
-            label: item.name,
-          })) || []}
+          options={
+            employmentTypes?.map((item: any) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput

@@ -83,23 +83,26 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
               >
                 <div className="flex items-start justify-between">
                   <div>
-                   <h3 className="text-lg font-semibold text-gray-400 dark:text-white">
-                      {designationLabelMap.get(String(item.designation || "")) ||
-                        item.designation || "Unknown Designation"}
+                    <h3 className="text-lg font-semibold text-gray-400 dark:text-white">
+                      {designationLabelMap.get(
+                        String(item.designation || ""),
+                      ) ||
+                        item.designation ||
+                        "Unknown Designation"}
                     </h3>
                   </div>
 
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
                       onClick={() => onEditAction?.(String(item.id || ""))}
-                       className="text-gray-300 hover:text-blue-600 transition-colors dark:hover:text-blue-400"
+                      className="text-gray-300 hover:text-blue-600 transition-colors dark:hover:text-blue-400"
                       aria-label="Edit"
                     >
                       <FaRegEdit />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(String(item.id || ""))}
-                    className="text-gray-300 hover:text-red-600 transition-colors"
+                      className="text-gray-300 hover:text-red-600 transition-colors"
                       aria-label="Delete"
                     >
                       <RiDeleteBin6Line />
@@ -120,12 +123,14 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                   <p>
                     <span className="font-medium">Employment Type:</span>{" "}
-                    {employmentTypeLabelMap.get(String(item.employmentTypeId || "")) ||
-                      "N/A"}
+                    {employmentTypeLabelMap.get(
+                      String(item.employmentTypeId || ""),
+                    ) || "N/A"}
                   </p>
                   <p className="">
                     <span className="font-medium">Duration:</span>{" "}
-                    {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : "Present"}
+                    {formatDate(item.startDate)} -{" "}
+                    {item.endDate ? formatDate(item.endDate) : "Present"}
                   </p>
                 </div>
 

@@ -20,6 +20,7 @@ const CorporateClientForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const methods = useForm<ClientFormData>({
+    mode: "onChange",
     defaultValues: {
       profileImage: null,
       companyName: "",

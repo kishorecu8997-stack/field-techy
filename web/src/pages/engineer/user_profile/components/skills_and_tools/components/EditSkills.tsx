@@ -9,7 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import {
   useEngineerGetSkillsAndTools,
   useEngineerUpdateSkillsAndTools,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
@@ -21,8 +21,10 @@ const EditSkills = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
 
-  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
-  const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
   const { data: skillsLookup } = useLookupData("skills" as any);
 
   const methods = useForm<EditSkillsFormData>({
@@ -32,7 +34,7 @@ const EditSkills = () => {
   useEffect(() => {
     if (currentSkillsAndTools) {
       methods.reset({
-        skills: currentSkillsAndTools.skills.map(s => s.id.toString()),
+        skills: currentSkillsAndTools.skills.map((s) => s.id.toString()),
       });
     }
   }, [currentSkillsAndTools, methods]);
@@ -54,14 +56,14 @@ const EditSkills = () => {
           variant: "primary",
           action: async (close) => {
             const skillIds = formData.skills.map(Number);
-            const toolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+            const toolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
 
             try {
               await updateSkillsAndTools({
                 body: {
                   skills: skillIds,
-                  tools: toolIds
-                }
+                  tools: toolIds,
+                },
               });
               toast.success("Skills Updated Successfully");
               close(true);
@@ -77,10 +79,11 @@ const EditSkills = () => {
     });
   };
 
-  const skillOptions = skillsLookup?.map((skill: any) => ({
-    label: skill.name,
-    value: skill.id.toString(),
-  })) || [];
+  const skillOptions =
+    skillsLookup?.map((skill: any) => ({
+      label: skill.name,
+      value: skill.id.toString(),
+    })) || [];
 
   if (isCurrentLoading) return <LoaderComponent />;
 

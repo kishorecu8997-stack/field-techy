@@ -15,7 +15,7 @@ import type { EducationFormData } from "./types";
 
 import {
   useEngineerAddEducation,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
@@ -40,8 +40,12 @@ const AddEducation = () => {
 
   const selectedEducationLevel = methods.watch("educationLevel");
 
-  const { data: levels, isLoading: isLoadingLevels } = useLookupData("educationLevels");
-  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData("courses", selectedEducationLevel || undefined);
+  const { data: levels, isLoading: isLoadingLevels } =
+    useLookupData("educationLevels");
+  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData(
+    "courses",
+    selectedEducationLevel || undefined,
+  );
 
   const handleSubmit = async (data: EducationFormData) => {
     await showPopup({
@@ -66,7 +70,7 @@ const AddEducation = () => {
                   university: data.university?.trim() || "",
                   majorSubject: data.majorSubject?.trim() || "",
                   passingYear: Number(data.passingYear),
-                }
+                },
               });
 
               toast.success("Education added successfully");
@@ -94,7 +98,9 @@ const AddEducation = () => {
         <SelectField
           label="Education Level"
           name="educationLevel"
-          placeholder={isLoadingLevels ? "Loading levels..." : "Select education level"}
+          placeholder={
+            isLoadingLevels ? "Loading levels..." : "Select education level"
+          }
           options={(levels || []).map((e) => ({
             value: String(e.id),
             label: e.name,
@@ -105,7 +111,9 @@ const AddEducation = () => {
         <SelectField
           label="Course"
           name="course"
-          placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+          placeholder={
+            isLoadingCourses ? "Loading courses..." : "Select course"
+          }
           options={(coursesData || []).map((c) => ({
             value: c.name,
             label: c.name,

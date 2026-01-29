@@ -69,10 +69,10 @@ const LoginWithNumber = ({
 
     // Determine type based on input (simplified check, ideal would be based on which field was filled)
     // Here we use otpfor but 'value' holds the actual contact string
-    const type = otpfor === 'email' ? 'email' : 'phone';
+    const type = otpfor === "email" ? "email" : "phone";
 
     try {
-      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      await sendOtp({ body: { type }, headers: { authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
       setIsOpen(true);
     } catch (error) {
@@ -85,7 +85,7 @@ const LoginWithNumber = ({
 
   //OTP Verification
   const handleOtpSubmission = async (otp: string) => {
-    const type = otpfor === 'email' ? 'email' : 'phone';
+    const type = otpfor === "email" ? "email" : "phone";
 
     try {
       const response = await verifyOtp({
@@ -93,16 +93,16 @@ const LoginWithNumber = ({
           type,
           code: otp,
         },
-        headers: { Authorization: "" }
+        headers: { authorization: "" },
       });
 
       console.log("Respone Engineer: ", response);
       setIsOpen(false);
 
-      // TODO: New API returns { message: string }, not a session. 
+      // TODO: New API returns { message: string }, not a session.
       // We cannot set user session here yet without a token.
       // Assuming successful verification leads to dashboard for now.
-      // setUserSession(response); 
+      // setUserSession(response);
 
       const phoneNumber = method.getValues("phone");
       if (phoneNumber) {
@@ -120,9 +120,9 @@ const LoginWithNumber = ({
   };
 
   const onResendOtp = async () => {
-    const type = otpfor === 'email' ? 'email' : 'phone';
+    const type = otpfor === "email" ? "email" : "phone";
     try {
-      await sendOtp({ body: { type }, headers: { Authorization: "" } });
+      await sendOtp({ body: { type }, headers: { authorization: "" } });
       toast.success("OTP Requested, kindly check your phone for OTP");
     } catch (error) {
       console.error(error);
@@ -193,11 +193,14 @@ const LoginWithNumber = ({
 
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
-            header={`Verify ${otpfor === "phoneNumber" ? "Phone Number" : "Email"
-              }`}
-            description={`A verification OTP has been sent to your ${otpfor === "phoneNumber" ? "phone" : "email"
-              }. Please check your ${otpfor === "phoneNumber" ? "phone" : "email"
-              }.`}
+            header={`Verify ${
+              otpfor === "phoneNumber" ? "Phone Number" : "Email"
+            }`}
+            description={`A verification OTP has been sent to your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }. Please check your ${
+              otpfor === "phoneNumber" ? "phone" : "email"
+            }.`}
             onClose={() => setIsOpen(false)}
             onSubmit={(data) => handleOtpSubmission(data.otp)}
             onResend={onResendOtp}
