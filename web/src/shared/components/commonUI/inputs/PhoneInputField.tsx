@@ -169,7 +169,7 @@ export const PhoneInputField = ({
           const [countryCode = PHONE_COUNTRIES[0].code, ...rest] = (
             field.value || ""
           ).split(" ");
-          const numberValue = rest.join(" ");
+          const numberValue = rest.join("");
 
           const selectedCountry = PHONE_COUNTRIES.find(
             (c) => c.code === countryCode,

@@ -9,7 +9,7 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
   validateAddress,
   validateName,
-  validatePortfolioLink,
+  validatePhone,
   validatePricePerHour,
 } from "@/utils/validate";
 
@@ -56,10 +56,14 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Name"
             required
-            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
-          <PhoneInputField name="phoneNumber" label="Mobile Number" required />
+          <PhoneInputField
+            name="phoneNumber"
+            label="Mobile Number"
+            required
+             rules={{ validate: (v: string) => validatePhone(v) }}
+          />
           <TagSelectField
             name="skills"
             label="Skills"
@@ -97,8 +101,6 @@ export default function BasicInformation() {
             label="Portfolio Link"
             type="text"
             placeholder="Portfolio Link"
-            required
-            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
           <InputField
             name="price"
@@ -106,7 +108,6 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Price per/hour"
             required
-            allowedCharacters="currency"
             rules={{ validate: (v: string) => validatePricePerHour(v) }}
           />
         </div>
