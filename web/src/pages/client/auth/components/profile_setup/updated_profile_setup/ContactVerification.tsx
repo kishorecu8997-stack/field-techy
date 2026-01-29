@@ -9,16 +9,16 @@ import { absoluteUrls } from "@/config/urls";
 import { buildQuery } from "@/utils";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import {
-  useSendEmailOTP,
-  useSendPhoneOTP,
+  useSendOtp,
   useVerifyOtp,
-} from "@/shared/apiServices/client/clientService";
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 interface VerificationCardProps {
   type: "email" | "phone";
   contact: string;
   isVerified: boolean;
   onVerifySuccess: () => void;
+  token: string | null;
 }
 
 /**
@@ -26,6 +26,9 @@ interface VerificationCardProps {
  *
  * This component renders a verification card that allows users to verify their email or mobile number.
  * It utilizes the reusable `OTPInput` component for handling the OTP input.
+ *
+ * NOTE: OTP API integration is enabled.
+ * Uses the new OpenAPI-based OTP hooks that require JWT authorization.
  *
  * This component is designed to be rendered within a `FormContainer` from `react-hook-form`
  * to connect the OTP input to the main form state.
@@ -35,65 +38,29 @@ interface VerificationCardProps {
  * @param {string} props.contact - The contact email or phone number.
  * @param {boolean} props.isVerified - Whether the contact is verified.
  * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
+ * @param {string | null} props.token - The JWT token from registration for API authorization.
  *
  * @returns {JSX.Element} The verification card for email or mobile number.
- *
- * @example
- * <VerificationCard
- *   type="email"
- *   contact="test@example.com"
- *   isVerified={false}
- *   onVerifySuccess={() => {}}
- * />
- *
  */
 const VerificationCard = ({
   type,
   contact,
   isVerified,
   onVerifySuccess,
+  token,
 }: VerificationCardProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0); // Start with 0 to allow immediate send if needed
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isPendingLocal, setIsPendingLocal] = useState(false);
 
   const methods = useForm({
     defaultValues: { otp: "" },
     mode: "onChange",
   });
 
-  const { isPending: isSendingEmail, mutate: sendEmail } = useSendEmailOTP({
-    onSuccess: () => {
-      toast.success("OTP sent to email");
-      setIsOtpSent(true);
-      setTimeLeft(60);
-    },
-    onError: () => toast.error("Failed to send email OTP"),
-  });
-
-  const { isPending: isSendingPhone, mutate: sendPhone } = useSendPhoneOTP({
-    onSuccess: () => {
-      toast.success("OTP sent to mobile");
-      setIsOtpSent(true);
-      setTimeLeft(60);
-    },
-    onError: () => toast.error("Failed to send mobile OTP"),
-  });
-
-  const { isPending: isVerifyingEmail, mutate: verifyEmail } = useVerifyOtp({
-    onSuccess: () => {
-      toast.success("Email verified successfully");
-      onVerifySuccess();
-    },
-    onError: () => toast.error("Invalid Email OTP"),
-  });
-
-  const { isPending: isVerifyingPhone, mutate: verifyPhone } = useVerifyOtp({
-    onSuccess: () => {
-      toast.success("Mobile number verified successfully");
-      onVerifySuccess();
-    },
-    onError: () => toast.error("Invalid Mobile OTP"),
-  });
+  // Use new OpenAPI-based OTP hooks
+  const { mutateAsync: sendOtp, isPending: isSending } = useSendOtp();
+  const { mutateAsync: verifyOtp, isPending: isVerifying } = useVerifyOtp();
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -101,21 +68,85 @@ const VerificationCard = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSendOtp = () => {
-    if (type === "email") sendEmail(contact);
-    else sendPhone(contact);
-  };
+  const handleSendOtp = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
-  const onSubmit = (data: { otp: string }) => {
-    if (type === "email") verifyEmail({ emailOrPhone: contact, otp: data.otp });
-    else {
-      alert("in mobile");
-      verifyPhone({ emailOrPhone: contact, otp: data.otp });
+    if (!contact) {
+      toast.error(`Please provide a valid ${type}`);
+      return;
+    }
+
+    if (!token) {
+      toast.error("Authorization token not found. Please register again.");
+      return;
+    }
+
+    setIsPendingLocal(true);
+
+    try {
+      if (type === "email") {
+        await sendOtp({
+          body: { type: "email" },
+          headers: { authorization: token },
+        });
+        toast.success(`OTP sent to email: ${contact}`);
+      } else {
+        await sendOtp({
+          body: { type: "phone" },
+          headers: { authorization: token },
+        });
+        toast.success(`OTP sent to mobile: ${contact}`);
+      }
+
+      setIsOtpSent(true);
+      setTimeLeft(60);
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        `Failed to send ${type === "email" ? "email" : "mobile"} OTP`,
+      );
+    } finally {
+      setIsPendingLocal(false);
     }
   };
 
-  const isPending =
-    isSendingEmail || isSendingPhone || isVerifyingEmail || isVerifyingPhone;
+  const onSubmit = async (data: { otp: string }) => {
+    if (!token) {
+      toast.error("Authorization token not found. Please register again.");
+      return;
+    }
+
+    setIsPendingLocal(true);
+
+    try {
+      if (type === "email") {
+        await verifyOtp({
+          body: { type: "email", code: data.otp },
+          headers: { authorization: token },
+        });
+      } else {
+        await verifyOtp({
+          body: { type: "phone", code: data.otp },
+          headers: { authorization: token },
+        });
+      }
+
+      toast.success(
+        `${type === "email" ? "Email" : "Mobile number"} verified successfully`,
+      );
+      onVerifySuccess();
+    } catch (error) {
+      console.error(error);
+      toast.error(`Invalid ${type === "email" ? "Email" : "Mobile"} OTP`);
+    } finally {
+      setIsPendingLocal(false);
+    }
+  };
+
+  const isPending = isSending || isVerifying || isPendingLocal;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3 border border-gray-100 dark:border-gray-700">
@@ -149,8 +180,9 @@ const VerificationCard = ({
               </Button>
             ) : (
               <>
-                <OTPInput name="otp" length={6} errorAlign="center" />
-
+                <div className="flex flex-col w-full justify-center items-center ">
+                  <OTPInput name="otp" length={6} errorAlign="center" />
+                </div>
                 <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5 px-1">
                   <span>
                     {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
@@ -190,8 +222,7 @@ const VerificationCard = ({
  *
  * This component renders a verification card for email and phone number verification.
  * It uses the `useClientRegistrationStore` hook to access the client's email and phone number.
- * It also uses the `useSendEmailOTP` and `useSendPhoneOTP` hooks to send OTPs.
- * The `useVerifyOtp` hook is used to verify the OTPs.
+ * It uses the `useSendOtp` and `useVerifyOtp` hooks to send and verify OTPs via OpenAPI.
  *
  * The component handles the verification process, including sending and verifying OTPs.
  * It also handles the case where the user needs to resend the OTP.
@@ -207,6 +238,7 @@ const ContactVerification = () => {
     email,
     phone,
     clientId,
+    token, // Get token from store
     setClientId,
     setSignupData,
     emailVerified,
@@ -250,6 +282,7 @@ const ContactVerification = () => {
             onVerifySuccess={() => {
               setSignupData({ emailVerified: true });
             }}
+            token={token}
           />
         </div>
 
@@ -261,6 +294,7 @@ const ContactVerification = () => {
             onVerifySuccess={() => {
               setSignupData({ mobileVerified: true });
             }}
+            token={token}
           />
         </div>
       </div>

@@ -109,10 +109,16 @@ export interface PostAJobFieldsProps {
   projectName: string;
   jobName: string;
   jobTitle: string;
+  serviceCategory?: string;
   locationType: locationTypeType;
   location: string;
+  engagementModel?: string;
+  country?: string;
+  state?: string;
+  city?: string;
   experienceLevel: string;
   numberOfVacancy: string;
+  toolBudgetTotal?: number;
   skills: string[];
   tools: string[];
   safetyWears: string[];

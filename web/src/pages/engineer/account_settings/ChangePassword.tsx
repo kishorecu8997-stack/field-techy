@@ -1,7 +1,3 @@
-import {
-  useEngineerGetById,
-  useUpdatePassword,
-} from "@/shared/apiServices/engineer/engineerService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { PasswordInput } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -9,9 +5,9 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import PasswordSection from "../auth/components/PasswordSection";
+import AuthPasswordSection from "@/shared/components/auth/AuthPasswordSection";
 import { validatePassword } from "./validation";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useEngineerChangePassword } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Page component for changing user password, featuring fields for current, new, and confirmed passwords.
@@ -19,38 +15,26 @@ import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
  */
 const ChangePassword = () => {
   const FormCtx = useForm<{
-    email: string;
     currentPassword: string;
     password: string;
+    confirmPassword: string;
   }>({
     mode: "onChange",
     defaultValues: {
       currentPassword: "",
       password: "",
+      confirmPassword: "",
     },
   });
+
   const { setActiveKey } = useDrawerStore();
   const { showPopup } = usePopupStore();
-
-  const session = useUserSessionStore((state) => state.session);
-  const userId = session?.userId;
-
-  const { data: sessionData } = useEngineerGetById(userId ?? "", {
-    enabled: !!userId,
-  });
-  const { mutateAsync: updatePassword } = useUpdatePassword();
+  const { mutateAsync: changePassword } = useEngineerChangePassword();
 
   const handleSubmit = async (data: {
     currentPassword: string;
     password: string;
   }) => {
-    const email = sessionData?.email;
-    if (!email) {
-      toast.error(
-        "User information is not fully loaded. Please wait a moment and try again.",
-      );
-      return;
-    }
     await showPopup({
       title: "Change Password",
       body: "Are you sure you want to change your password?",
@@ -59,6 +43,7 @@ const ChangePassword = () => {
           label: "Cancel",
           value: "cancel",
           variant: "outline",
+          action: async (close) => close(true),
         },
         {
           label: "Yes, update",
@@ -66,17 +51,22 @@ const ChangePassword = () => {
           variant: "primary",
           action: async (close) => {
             try {
-              await updatePassword({
-                phoneOrEmail: email,
-                newPassword: data.password,
-                oldPassword: data.currentPassword,
+              await changePassword({
+                body: {
+                  oldPassword: data.currentPassword,
+                  newPassword: data.password,
+                },
+                headers: { Authorization: "" },
               });
               toast.success("Password updated successfully!");
               setActiveKey("settings");
               close(true);
             } catch (error) {
-              toast.error("Failed to update password");
+              toast.error(
+                "Failed to update password. Please check your current password.",
+              );
               console.error("Error updating password:", error);
+              close(true);
             }
           },
         },
@@ -98,7 +88,7 @@ const ChangePassword = () => {
           required
           rules={{ validate: (v: string) => validatePassword(v) }}
         />
-        <PasswordSection />
+        <AuthPasswordSection />
       </div>
 
       <div className="mt-auto flex justify-end">

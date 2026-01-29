@@ -1,5 +1,6 @@
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
+import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
@@ -10,55 +11,47 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
-import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 
 import {
-  designationOptions,
-  employmentTypeOptions,
-  workLocationTypeOptions,
-} from "./constants";
-import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { Experience } from "@/shared/apiServices/engineer/engineerTypes";
-import { getUserId } from "@/utils";
+  useEngineerGetExperience,
+  useEngineerUpdateExperience,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
- * EditExperiences component – now handles both ADDING a new experience
- * and EDITING an existing one based on whether selectedId is present.
+ * EditExperiences component handles updating an existing experience.
  */
 const EditExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey, selectedId } = useDrawerStore();
 
-  const userId = getUserId();
-  if (!userId) return null;
-
-  const { data: engineerData } = useEngineerGetById(userId);
-  const { mutateAsync } = useEngineerUpdateById(userId);
+  const { data: experiences } = useEngineerGetExperience();
+  const { mutateAsync: updateExperience } = useEngineerUpdateExperience();
+  const { data: workLocations } = useLookupData("workLocations");
+  const { data: employmentTypes } = useLookupData("employmentTypes");
+  const { data: designations } = useLookupData("serviceCategories");
 
   const methods = useForm<ExperiencesFormData>({
     mode: "onSubmit",
   });
 
   useEffect(() => {
-    if (selectedId && engineerData?.experiences) {
-      const experience = engineerData.experiences.find(
-        (exp) => exp.id === selectedId,
+    if (selectedId && experiences) {
+      const experience = experiences.find(
+        (exp) => exp.id.toString() === selectedId,
       );
 
       if (experience) {
         methods.reset({
-          designation: experience.designation,
-          employer: experience.employer,
-          workLocationType: experience.workLocationType,
-          employmentType: experience.employmentType,
+          designation: experience.designation || "",
+          employer: experience.employer || "",
+          workLocationType: experience.workLocationId?.toString() || "",
+          employmentType: experience.employmentTypeId?.toString() || "",
           startDate: experience.startDate
             ? new Date(experience.startDate)
             : null,
           endDate: experience.endDate ? new Date(experience.endDate) : null,
-          isCurrent: experience.isCurrent ?? !experience.endDate,
+          isCurrent: !experience.endDate,
         });
         return;
       }
@@ -73,14 +66,14 @@ const EditExperiences = () => {
       endDate: null,
       isCurrent: false,
     });
-  }, [engineerData, selectedId, methods]);
+  }, [experiences, selectedId, methods]);
 
   const handleSubmit = async () => {
+    if (!selectedId) return;
+
     await showPopup({
-      title: selectedId ? "Update Experience" : "Add Experience",
-      body: selectedId
-        ? "Are you sure you want to update this experience?"
-        : "Are you sure you want to add this experience?",
+      title: "Update Experience",
+      body: "Are you sure you want to update this experience?",
       actionButtons: [
         {
           label: "Cancel",
@@ -89,66 +82,30 @@ const EditExperiences = () => {
           action: async (close) => close(true),
         },
         {
-          label: selectedId ? "Yes, update" : "Yes, add",
+          label: "Yes, update",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            if (!engineerData) return;
-
             const formData = methods.getValues();
-            const currentExperiences = engineerData.experiences || [];
 
-            let updatedExperiences: Experience[];
-
-            if (selectedId) {
-              updatedExperiences = currentExperiences.map((exp) => {
-                if (exp.id === selectedId) {
-                  exp.designation = String(formData.designation ?? "");
-                  exp.employer = (formData.employer || "").trim();
-                  exp.workLocationType = formData.workLocationType as string;
-                  exp.employmentType = formData.employmentType as string;
-                  exp.startDate =
-                    formData.startDate?.toISOString().split("T")[0] || "";
-                  exp.endDate = formData.isCurrent
-                    ? undefined // ← Fixed: undefined instead of null
-                    : formData.endDate?.toISOString().split("T")[0] ||
-                      undefined;
-                  exp.isCurrent = formData.isCurrent;
-                }
-                return exp;
-              });
-            } else {
-              const newExperience: Experience = {
-                designation: String(formData.designation ?? ""),
-                employer: (formData.employer || "").trim(),
-                workLocationType: formData.workLocationType as string,
-                employmentType: formData.employmentType as string,
-                startDate:
-                  formData.startDate?.toISOString().split("T")[0] || "",
-                endDate: formData.isCurrent
-                  ? undefined
-                  : formData.endDate?.toISOString().split("T")[0] || undefined,
-                isCurrent: formData.isCurrent,
-              };
-
-              updatedExperiences = [...currentExperiences, newExperience];
-            }
+            const updatedExperience = {
+              designation: String(formData.designation ?? ""),
+              employer: (formData.employer || "").trim(),
+              employmentTypeId: Number(formData.employmentType),
+              workLocationId: Number(formData.workLocationType),
+              startDate: formData.startDate?.toISOString().split("T")[0] || "",
+              endDate: formData.isCurrent
+                ? null
+                : formData.endDate?.toISOString().split("T")[0] || null,
+            };
 
             try {
-              await mutateAsync({
-                ...engineerData,
-                experiences:
-                  updatedExperiences.length > 0
-                    ? updatedExperiences
-                    : undefined,
+              await updateExperience({
+                path: { id: String(selectedId) },
+                body: updatedExperience as any,
               });
 
-              toast.success(
-                selectedId
-                  ? "Experience updated successfully"
-                  : "Experience added successfully",
-              );
-
+              toast.success("Experience updated successfully");
               close(true);
               setActiveKey("experiences");
             } catch (error) {
@@ -168,21 +125,21 @@ const EditExperiences = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
-      <div className="flex-1 overflow-y-auto px-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-3 space-y-2">
         <SelectField
           label="Designation"
-          isShowLabel={false}
           name="designation"
           placeholder="Designation"
-          options={designationOptions.map((e) => ({
-            value: e.value,
-            label: e.label,
-          }))}
+          options={
+            designations?.map((e) => ({
+              value: e.id,
+              label: e.name,
+            })) || []
+          }
           required
         />
         <InputField
           label="Employer"
-          isShowLabel={false}
           name="employer"
           placeholder="Employer"
           required
@@ -190,24 +147,31 @@ const EditExperiences = () => {
         />
         <SelectField
           label="Work Location Type"
-          isShowLabel={false}
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocationTypeOptions}
+          options={
+            workLocations?.map((item) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <SelectField
           label="Employment Type"
-          isShowLabel={false}
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypeOptions}
+          options={
+            employmentTypes?.map((item) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput
           name="startDate"
           label="Start Date"
-          isShowLabel={false}
           placeholder="Start date"
           required
           maxDate={new Date()}
@@ -221,7 +185,6 @@ const EditExperiences = () => {
           <DatePickerInput
             name="endDate"
             label="End Date"
-            isShowLabel={false}
             placeholder="End date (required if not current)"
             minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
             maxDate={new Date()}
@@ -256,7 +219,7 @@ const EditExperiences = () => {
           type="submit"
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
         >
-          {selectedId ? "Update" : "Add"} Experience
+          Update Experience
         </Button>
       </div>
     </FormContainer>

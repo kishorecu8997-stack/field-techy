@@ -3,11 +3,11 @@ interface PersonalInfo {
   contactPersonName: string;
   phoneNumber: string;
   businessType: string;
-  industry: string;
+  industry: string | number;
   address: string;
-  country: string;
-  state: string;
-  city: string;
+  country: string | number;
+  state: string | number;
+  city: string | number;
   postalCode: string;
   taxDocument: string;
   vatRegistrationNumber: string;

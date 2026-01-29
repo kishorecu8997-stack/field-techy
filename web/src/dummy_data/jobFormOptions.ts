@@ -44,9 +44,9 @@ export const EXPERIENCE_LEVELS = [
 ];
 
 export const ENGAGEMENT_MODELS = [
-  { value: "hourly", label: "Hourly" },
-  { value: "fixed", label: "Fixed Price" },
-  { value: "milestone", label: "Milestone Based" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" },
 ];
 
 export const JOB_VISIBILITY = [

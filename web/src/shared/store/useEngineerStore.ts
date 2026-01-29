@@ -1,19 +1,26 @@
 import { create } from "zustand";
 import { useEffect } from "react";
-import type {
-  EngineerData,
-  EngineerFile,
-} from "../apiServices/engineer/engineerTypes";
-import { EngineerAdapter } from "../apiServices/engineer/engineerAdapter";
+import type { EngineerData } from "../apiServices/engineer/engineerTypes";
 import { useUserSessionStore } from "./useUserSessionStore";
+import {
+  getEducation,
+  getExperience,
+  getPersonalInfo,
+  getSkillsAndTools,
+  getWorkPreference,
+} from "../apiServices/engineer/engineerOpenApiService";
+import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
 interface EngineerStore {
   engineerProfile: EngineerData | null;
   profileImageUrl: string | null;
   loading: boolean;
+  profileFetched: boolean;
   setEngineerProfile: (profile: EngineerData | null) => void;
   clearEngineerProfile: () => void;
   fetchEngineerProfile: (id: string) => Promise<void>;
+  refetchProfile: () => Promise<void>;
+  syncProfile: (data: Partial<EngineerData>) => void;
   setProfileImageUrl: (url: string | null) => void;
 }
 
@@ -26,44 +33,88 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
   engineerProfile: null,
   profileImageUrl: null,
   loading: false,
+  profileFetched: false,
   setEngineerProfile: (profile) => set({ engineerProfile: profile }),
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearEngineerProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
-    set({ engineerProfile: null, profileImageUrl: null });
+    if (currentUrl && currentUrl.startsWith("blob:"))
+      URL.revokeObjectURL(currentUrl);
+    set({
+      engineerProfile: null,
+      profileImageUrl: null,
+      profileFetched: false,
+    });
+  },
+  syncProfile: (data) => {
+    set((state) => ({
+      engineerProfile: state.engineerProfile
+        ? { ...state.engineerProfile, ...data }
+        : (data as EngineerData),
+    }));
+  },
+  refetchProfile: async () => {
+    const id = get().engineerProfile?.id;
+    if (id) await get().fetchEngineerProfile(id);
   },
   fetchEngineerProfile: async (id: string) => {
     if (get().loading) return;
     set({ loading: true });
     try {
-      const [profile, files] = await Promise.all([
-        EngineerAdapter.getById(id),
-        EngineerAdapter.getFiles(id),
+      // Fetch ALL profile related data in parallel
+      const [
+        personalInfo,
+        educationList,
+        experienceList,
+        skillsTools,
+        workPref,
+        profilePicData,
+      ] = await Promise.all([
+        getPersonalInfo(),
+        getEducation(),
+        getExperience(),
+        getSkillsAndTools(),
+        getWorkPreference(),
+        getDownloadUrl("profilePicture").catch(() => null),
       ]);
 
-      set({ engineerProfile: profile });
+      const profile: EngineerData = {
+        id, // Maintain ID from session/argument
+        fullName: personalInfo.name,
+        email: personalInfo.email,
+        phoneNumber: personalInfo.mobileno,
+        address: personalInfo.address,
+        serviceCategory: workPref.serviceCategoryId,
+        rate: workPref.hourlyRate,
+        portfolioLink: workPref.portfolioLink,
+        jobSkills: skillsTools.skills.map((s: any) => s.name),
+        tools: skillsTools.tools.map((t: any) => t.name),
+        preferredWorkType: workPref.employmentTypeId?.toString(),
+        educations: educationList.map((edu: any) => ({
+          id: edu.id.toString(),
+          educationLevel: edu.level.toString(),
+          course: edu.course,
+          university: edu.university,
+          majorSubject: edu.majorSubject,
+          passingYear: edu.passingYear,
+        })),
+        experiences: experienceList.map((exp: any) => ({
+          id: exp.id.toString(),
+          designation: exp.designation || "",
+          employer: exp.employer || "",
+          employmentType: exp.employmentTypeId?.toString() || "",
+          workLocationType: exp.workLocationId?.toString() || "",
+          startDate: exp.startDate || "",
+          endDate: exp.endDate || "",
+          isCurrent: !exp.endDate,
+        })),
+      };
 
-      const profilePic = files.find(
-        (f: EngineerFile) => f.fileType === "PICTURE",
-      );
-
-      if (profilePic) {
-        try {
-          const { blob } = await EngineerAdapter.downloadFileStream(
-            profilePic.fileKey,
-          );
-          const oldUrl = get().profileImageUrl;
-          if (oldUrl) URL.revokeObjectURL(oldUrl);
-
-          const url = URL.createObjectURL(blob);
-          set({ profileImageUrl: url });
-        } catch (err) {
-          console.error("Failed to download profile picture", err);
-        }
-      } else {
-        set({ profileImageUrl: null });
-      }
+      set({
+        engineerProfile: profile,
+        profileFetched: true,
+        profileImageUrl: profilePicData?.downloadUrl || null,
+      });
     } catch (error) {
       console.error("Failed to fetch engineer profile:", error);
     } finally {
@@ -80,18 +131,16 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
 export const useEngineerProfile = () => {
   const session = useUserSessionStore((state) => state.session);
   const profile = useEngineerStore((state) => state.engineerProfile);
+  const profileFetched = useEngineerStore((state) => state.profileFetched);
+  const loading = useEngineerStore((state) => state.loading);
   const fetchProfile = useEngineerStore((state) => state.fetchEngineerProfile);
 
   useEffect(() => {
     const userId = session?.userId;
-    if (userId) {
-      // Fetch if no profile exists, or if the profile only has an ID (persisted state)
-      // We use !profile.fullName as a check for "full data"
-      if (!profile || (profile.id === userId && !profile.fullName)) {
-        fetchProfile(userId);
-      }
+    if (userId && !profileFetched && !loading) {
+      fetchProfile(userId);
     }
-  }, [session?.userId, profile?.id, profile?.fullName, fetchProfile]);
+  }, [session?.userId, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

@@ -307,8 +307,8 @@ const ExploreJobs: React.FC = () => {
                   <JobCard
                     key={job.id}
                     job={job}
-                    userSkills={profile?.jobSkills || []}
-                    userTools={profile?.tools || []}
+                    userSkills={(profile?.jobSkills as string[]) || []}
+                    userTools={(profile?.tools as string[]) || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
                   />
                 ))

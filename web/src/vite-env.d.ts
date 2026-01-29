@@ -7,3 +7,12 @@ declare module "virtual:pwa-register" {
     onOfflineReady?: () => void;
   }): () => void;
 }
+
+// --- Add global window type for React root ---
+import type { Root } from "react-dom/client";
+
+declare global {
+  interface Window {
+    __react_root__?: Root;
+  }
+}

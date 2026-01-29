@@ -1,7 +1,10 @@
 import React from "react";
 import EducationList from "./EducationList";
-import { getUserId } from "@/utils";
-import { useEngineerGetById } from "@/shared/apiServices/engineer/engineerService";
+import {
+  useEngineerGetEducation,
+  useEngineerDeleteEducation,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
@@ -15,10 +18,20 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
   const { setActiveKey, setImmediateParentKey, setSelectedId } =
     useDrawerStore();
 
-  const userId = getUserId();
-  const { data: engineerData } = useEngineerGetById(userId || "");
+  const { data: educations, isLoading: isEduLoading } =
+    useEngineerGetEducation();
+  const { data: levels, isLoading: isLevelsLoading } =
+    useLookupData("educationLevels");
+  const deleteMutation = useEngineerDeleteEducation();
 
-  const handleDeleteEducation = async () => {
+  console.log("Education Component Render:", {
+    isEduLoading,
+    isLevelsLoading,
+    educationsCount: educations?.length,
+    levelsCount: levels?.length,
+  });
+
+  const handleDeleteEducation = async (id: string) => {
     await showPopup({
       title: "Delete Education",
       body: "Are you sure you want to delete this education?",
@@ -34,26 +47,39 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           value: "delete",
           variant: "primary",
           action: async (close) => {
-            toast.success("Education Deleted Successfully");
-            close(true);
-            setActiveKey("education");
+            try {
+              await deleteMutation.mutateAsync({ path: { id: String(id) } });
+              toast.success("Education Deleted Successfully");
+              close(true);
+              setActiveKey("education");
+            } catch (error) {
+              toast.error("Failed to delete education");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
+  const getLevelLabel = (levelId: number) => {
+    const level = levels?.find((l) => l.id === levelId);
+    return level ? level.name : `Level ${levelId}`;
+  };
+
+  if (isEduLoading || isLevelsLoading) return <div>Loading...</div>;
+
   return (
     <div className="">
       <EducationList
         title="Education"
-        items={(engineerData?.educations || []).map((edu) => ({
-          id: edu.id || "temp-id",
-          educationLevel: edu.educationLevel ?? null,
-          course: edu.course ?? null,
-          university: edu.university ?? null,
-          majorSubject: edu.majorSubject ?? null,
-          passingYear: edu.passingYear ?? null,
+        items={(educations || []).map((edu) => ({
+          id: String(edu.id),
+          educationLevel: getLevelLabel(edu.level),
+          course: edu.course,
+          university: edu.university,
+          majorSubject: edu.majorSubject,
+          passingYear: edu.passingYear,
         }))}
         onAddAction={() => {
           setImmediateParentKey("education");
@@ -64,7 +90,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
           setImmediateParentKey("education");
           onMenuItemClick("editEducation");
         }}
-        onDeleteAction={() => handleDeleteEducation()}
+        onDeleteAction={(id) => handleDeleteEducation(id)}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import type { CreateProjectFormValues } from "../types";
+import { scrollToTop } from "@/utils";
 
 /**
  * CreateProject
@@ -44,6 +45,7 @@ export default function CreateProject() {
   const reviewProject = (data: CreateProjectFormValues) => {
     console.log("reviewProject", data);
     setIsDisable(true);
+    scrollToTop();
   };
 
   //Save project
@@ -118,7 +120,15 @@ export default function CreateProject() {
           <CreateProjectForm isDisable={isDisable} />
           {!isDisable && (
             <div className="flex justify-end w-9/12 items-center gap-4 pr-8">
-              <Button variant="outline" className="rounded-full">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => {
+                  methods.reset();
+                  navigate(absoluteUrls.client.home.my_projects);
+                  scrollToTop();
+                }}
+              >
                 Cancel
               </Button>
               <Button

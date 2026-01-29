@@ -15,44 +15,45 @@ import {
 import type { EducationFormData } from "./types";
 
 import {
-  educationLevels,
-  courses,
-} from "@/dummy_data/engineer_profile/education-data";
-
-import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { Education } from "@/shared/apiServices/engineer/engineerTypes";
-import { getUserId } from "@/utils";
+  useEngineerAddEducation,
+  useEngineerGetEducation,
+  useEngineerUpdateEducation,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * EditEducation – unified component for both ADD and EDIT
- * Exactly like EditExperiences.tsx
  */
 const EditEducation = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey, selectedId } = useDrawerStore();
 
-  const userId = getUserId();
-  if (!userId) return null;
-
-  const { data: engineerData } = useEngineerGetById(userId);
-  const { mutateAsync } = useEngineerUpdateById(userId);
+  const { data: educations } = useEngineerGetEducation();
+  const updateMutation = useEngineerUpdateEducation();
+  const addMutation = useEngineerAddEducation();
 
   const methods = useForm<EducationFormData>({
     mode: "onSubmit",
   });
 
+  const selectedEducationLevel = methods.watch("educationLevel");
+
+  const { data: levels, isLoading: isLoadingLevels } =
+    useLookupData("educationLevels");
+  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData(
+    "courses",
+    selectedEducationLevel || undefined,
+  );
+
   useEffect(() => {
-    if (selectedId && engineerData?.educations) {
-      const education = engineerData.educations.find(
-        (edu) => edu.id === selectedId,
+    if (selectedId && educations) {
+      const education = educations.find(
+        (edu) => String(edu.id) === String(selectedId),
       );
 
       if (education) {
         methods.reset({
-          educationLevel: education.educationLevel || "",
+          educationLevel: String(education.level) || "",
           course: education.course || "",
           university: education.university || "",
           majorSubject: education.majorSubject || "",
@@ -71,7 +72,7 @@ const EditEducation = () => {
       majorSubject: "",
       passingYear: "",
     });
-  }, [engineerData, selectedId, methods]);
+  }, [educations, selectedId, methods]);
 
   const handleSubmit = async () => {
     await showPopup({
@@ -91,49 +92,33 @@ const EditEducation = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            if (!engineerData) return;
-
             const formData = methods.getValues();
-            const currentEducations = engineerData.educations || [];
-
-            let updatedEducations: Education[];
-
-            if (selectedId) {
-              updatedEducations = currentEducations.map((edu) => {
-                if (edu.id === selectedId) {
-                  edu.educationLevel = formData.educationLevel || undefined;
-                  edu.course = formData.course || undefined;
-                  edu.university = formData.university?.trim() || undefined;
-                  edu.majorSubject = formData.majorSubject?.trim() || undefined;
-                  edu.passingYear = formData.passingYear
-                    ? Number(formData.passingYear)
-                    : undefined;
-                }
-                return edu;
-              });
-            } else {
-              const newEducation: Partial<Education> = {
-                educationLevel: formData.educationLevel || undefined,
-                course: formData.course || undefined,
-                university: formData.university?.trim() || undefined,
-                majorSubject: formData.majorSubject?.trim() || undefined,
-                passingYear: formData.passingYear
-                  ? Number(formData.passingYear)
-                  : undefined,
-              };
-
-              updatedEducations = [
-                ...currentEducations,
-                newEducation as Education,
-              ];
-            }
 
             try {
-              await mutateAsync({
-                ...engineerData,
-                educations:
-                  updatedEducations.length > 0 ? updatedEducations : undefined,
-              });
+              if (selectedId) {
+                await updateMutation.mutateAsync({
+                  path: { id: String(selectedId) },
+                  body: {
+                    level: Number(formData.educationLevel),
+                    course: formData.course || undefined,
+                    university: formData.university?.trim() || undefined,
+                    majorSubject: formData.majorSubject?.trim() || undefined,
+                    passingYear: formData.passingYear
+                      ? Number(formData.passingYear)
+                      : undefined,
+                  },
+                });
+              } else {
+                await addMutation.mutateAsync({
+                  body: {
+                    level: Number(formData.educationLevel),
+                    course: formData.course || "",
+                    university: formData.university?.trim() || "",
+                    majorSubject: formData.majorSubject?.trim() || "",
+                    passingYear: Number(formData.passingYear),
+                  },
+                });
+              }
 
               toast.success(
                 selectedId
@@ -165,10 +150,12 @@ const EditEducation = () => {
           label="Education Level"
           isShowLabel={false}
           name="educationLevel"
-          placeholder="Select education level"
-          options={educationLevels.map((e) => ({
-            value: e.key,
-            label: e.label,
+          placeholder={
+            isLoadingLevels ? "Loading levels..." : "Select education level"
+          }
+          options={(levels || []).map((e) => ({
+            value: String(e.id),
+            label: e.name,
           }))}
           required
         />
@@ -177,10 +164,12 @@ const EditEducation = () => {
           label="Course"
           isShowLabel={false}
           name="course"
-          placeholder="Select course"
-          options={courses.map((c) => ({
-            value: c.key,
-            label: c.label,
+          placeholder={
+            isLoadingCourses ? "Loading courses..." : "Select course"
+          }
+          options={(coursesData || []).map((c) => ({
+            value: c.name,
+            label: c.name,
           }))}
           required
         />
@@ -208,7 +197,6 @@ const EditEducation = () => {
           isShowLabel={false}
           name="passingYear"
           placeholder="e.g., 2023"
-          allowedCharacters="numbers"
           required
           rules={{ validate: (value: string) => validatePassingYear(value) }}
         />
