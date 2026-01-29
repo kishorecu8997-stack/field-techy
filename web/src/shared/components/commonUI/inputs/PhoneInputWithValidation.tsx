@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { MdCheckCircle, MdCancel } from "react-icons/md";
 import { CountrySelect } from "./CountrySelect";
 import { COUNTRIES } from "./PhoneInputField";
 import { usePhoneCountries } from "@/shared/apiServices/client/clientService";
-import { useDebouncedUserExists } from "@/shared/apiServices/user";
+
+// TODO: Uncomment when user availability check API is ready for production
+// import { useDebouncedUserExists } from "@/shared/apiServices/user";
+// import { MdCheckCircle, MdCancel } from "react-icons/md";
 
 interface PhoneInputWithValidationProps {
   name?: string;
@@ -15,6 +17,9 @@ interface PhoneInputWithValidationProps {
 /**
  * Phone input component with real-time availability validation
  * Handles country code selection, phone number validation, and availability checking
+ *
+ * NOTE: User availability API is currently commented out.
+ * When ready, uncomment the useDebouncedUserExists hook and related UI elements.
  */
 export const PhoneInputWithValidation = ({
   name = "phone",
@@ -69,19 +74,38 @@ export const PhoneInputWithValidation = ({
 
   const isValidPhoneFormat = phoneValue && validatePhoneFormat(phoneValue);
 
+  // TODO: Uncomment when user availability check API is ready for production
   // Debounced user exists check
-  const {
-    isAvailable,
-    isUnavailable,
-    isValidating,
-    hasError,
-    data: queryData,
-    isSuccess,
-  } = useDebouncedUserExists(
-    isValidPhoneFormat && fullPhoneNumber ? fullPhoneNumber : undefined,
-    500,
-    { enabled: isValidPhoneFormat && !!fullPhoneNumber },
-  );
+  // const {
+  //   isAvailable,
+  //   isUnavailable,
+  //   isValidating,
+  //   hasError,
+  //   data: queryData,
+  //   isSuccess,
+  // } = useDebouncedUserExists(
+  //   isValidPhoneFormat && fullPhoneNumber ? fullPhoneNumber : undefined,
+  //   500,
+  //   { enabled: isValidPhoneFormat && !!fullPhoneNumber },
+  // );
+
+  // Mock values while API is disabled
+  const isAvailable = false;
+  const isUnavailable = false;
+  const isValidating = false;
+  const hasError = false;
+  const queryData = null;
+  const isSuccess = false;
+
+  // Suppress unused variable warnings
+  void isAvailable;
+  void isUnavailable;
+  void isValidating;
+  void hasError;
+  void queryData;
+  void isSuccess;
+  void fullPhoneNumber;
+  void isValidPhoneFormat;
 
   // Phone validation function
   const validatePhone = (fullValue: string): true | string => {
@@ -239,25 +263,25 @@ export const PhoneInputWithValidation = ({
           }
 
           // Check if phone number passes full validation (format + country-specific rules)
-          const phoneValidationResult = validatePhone(field.value || "");
-          const isPhoneFullyValid =
-            phoneValidationResult === true && isValidPhoneFormat;
+          // const phoneValidationResult = validatePhone(field.value || "");
+          // const isPhoneFullyValid =
+          //   phoneValidationResult === true && isValidPhoneFormat;
 
           // Only show check icon when phone is fully valid AND API confirms availability
-          const shouldShowCheck =
-            !isValidating &&
-            isPhoneFullyValid &&
-            isAvailable &&
-            isSuccess &&
-            queryData;
+          // const shouldShowCheck =
+          //   !isValidating &&
+          //   isPhoneFullyValid &&
+          //   isAvailable &&
+          //   isSuccess &&
+          //   queryData;
 
           // Show cancel icon when phone is valid but unavailable
-          const shouldShowCancel =
-            !isValidating &&
-            isPhoneFullyValid &&
-            isUnavailable &&
-            isSuccess &&
-            queryData;
+          // const shouldShowCancel =
+          //   !isValidating &&
+          //   isPhoneFullyValid &&
+          //   isUnavailable &&
+          //   isSuccess &&
+          //   queryData;
 
           return (
             <div className="flex flex-col gap-1">
@@ -314,7 +338,8 @@ export const PhoneInputWithValidation = ({
                     className="flex-1 px-5 py-3 bg-white dark:bg-gray-800 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none pr-10 border-0 rounded-none focus:ring-0"
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    {isValidating && isValidPhoneFormat && (
+                    {/* TODO: Uncomment when user availability check API is ready for production */}
+                    {/* {isValidating && isValidPhoneFormat && (
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-teal-600"></div>
                     )}
                     {shouldShowCheck && (
@@ -322,7 +347,7 @@ export const PhoneInputWithValidation = ({
                     )}
                     {shouldShowCancel && (
                       <MdCancel className="text-red-500 text-xl" />
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -332,7 +357,8 @@ export const PhoneInputWithValidation = ({
                 {error && (
                   <span className="text-red-500 text-xs">{error.message}</span>
                 )}
-                {!error && shouldShowCheck && (
+                {/* TODO: Uncomment when user availability check API is ready for production */}
+                {/* {!error && shouldShowCheck && (
                   <span className="text-green-500 text-xs">
                     This phone number is available
                   </span>
@@ -342,7 +368,7 @@ export const PhoneInputWithValidation = ({
                     This phone number is already taken. Please use a different
                     phone number.
                   </span>
-                )}
+                )} */}
               </div>
             </div>
           );

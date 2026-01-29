@@ -13,6 +13,8 @@ import type {
   FileUploadResponse,
   PagedResponse,
 } from "./clientTypes";
+import statesAndCitiesRaw from "@/dummy_data/statesAndCities.json";
+import type { Option, StatesAndCities } from "./statesAndCities.types";
 
 /*
  * ClientAdapter
@@ -24,6 +26,8 @@ import type {
  * The adapter also includes a helper function for converting pagination
  * parameters into the expected format for the API.
  */
+
+const statesAndCities = statesAndCitiesRaw as StatesAndCities;
 export class ClientAdapter {
   /**
    * Registers a new client.
@@ -321,51 +325,35 @@ export class ClientAdapter {
   // ===== Dropdown Data Methods =====
 
   /**
-   * Get list of states for a country
+   * Retrieves the list of states for a given country.
+   *
+   * @param countryId - ISO country code (e.g. "IN", "US")
+   * @returns Promise resolving to a list of state options
    */
-  static async getStates(
-    countryId?: string,
-  ): Promise<{ value: string; label: string }[]> {
-    console.log(`[STUB] Fetching states for country: ${countryId || "all"}`);
+  static async getStates(countryId: string): Promise<Option[]> {
+    const normalizedCountryId = countryId.toUpperCase();
+
+    console.log(`[STUB] Fetching states for country: ${normalizedCountryId}`);
+
     return new Promise((resolve) => {
       setTimeout(() => {
-        const states = [
-          { value: "Maharashtra", label: "Maharashtra" },
-          { value: "Karnataka", label: "Karnataka" },
-          { value: "Delhi", label: "Delhi" },
-          { value: "Tamil Nadu", label: "Tamil Nadu" },
-          { value: "Gujarat", label: "Gujarat" },
-        ];
-        resolve(states);
+        resolve(statesAndCities.states[normalizedCountryId] ?? []);
       }, 500);
     });
   }
 
   /**
-   * Get list of cities for a state
+   * Retrieves the list of cities for a given state.
+   *
+   * @param stateId - Unique identifier of the state
+   * @returns Promise resolving to a list of city options
    */
-  static async getCities(
-    stateId: string,
-  ): Promise<{ value: string; label: string }[]> {
+  static async getCities(stateId: string): Promise<Option[]> {
     console.log(`[STUB] Fetching cities for state: ${stateId}`);
+
     return new Promise((resolve) => {
       setTimeout(() => {
-        const cityMap: Record<string, { value: string; label: string }[]> = {
-          Maharashtra: [
-            { value: "Mumbai", label: "Mumbai" },
-            { value: "Pune", label: "Pune" },
-            { value: "Nagpur", label: "Nagpur" },
-          ],
-          Karnataka: [
-            { value: "Bangalore", label: "Bangalore" },
-            { value: "Mysore", label: "Mysore" },
-          ],
-          Delhi: [
-            { value: "New Delhi", label: "New Delhi" },
-            { value: "Old Delhi", label: "Old Delhi" },
-          ],
-        };
-        resolve(cityMap[stateId] || []);
+        resolve(statesAndCities.cities[stateId] ?? []);
       }, 500);
     });
   }
@@ -399,10 +387,10 @@ export class ClientAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         const vatOptions = [
-          { value: "IE6388047V", label: "IE6388047V" },
-          { value: "ID9488043M", label: "ID9488043M" },
-          { value: "GB123456789", label: "GB123456789" },
-          { value: "FR12345678901", label: "FR12345678901" },
+          { value: "VAT", label: "VAT" },
+          { value: "GST", label: "GST" },
+          { value: "Tax", label: "Tax" },
+          { value: "Other", label: "Other" },
         ];
         resolve(vatOptions);
       }, 500);

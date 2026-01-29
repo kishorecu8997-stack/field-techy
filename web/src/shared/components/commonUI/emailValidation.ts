@@ -22,7 +22,7 @@ export const validateEmail = (value: string): true | string => {
 
   const trimmed = value.trim();
 
-  if (trimmed.length < 10) return "Email must be at least 10 characters";
+  if (trimmed.length < 5) return "Email must be at least 5 characters";
   if (trimmed.length > 100) return "Email must not exceed 100 characters";
 
   const parts = trimmed.split("@");
@@ -37,7 +37,7 @@ export const validateEmail = (value: string): true | string => {
     return "Email local part cannot start or end with a dot";
   if (localPart.includes(".."))
     return "Email local part cannot contain consecutive dots";
-  if (!/^[a-zA-Z0-9._-]+$/.test(localPart))
+  if (!/^[a-zA-Z0-9._+-]+$/.test(localPart))
     return "Email local part contains invalid characters";
 
   // Validate domain
@@ -56,7 +56,18 @@ export const validateEmail = (value: string): true | string => {
     return "Email domain must be in format: example.com or example.co.in";
   }
 
-  const validTLDs = ["com", "org", "net", "in", "edu", "gov", "info", "co.in","co.uk"];
+  const validTLDs = [
+    "com",
+    "org",
+    "net",
+    "in",
+    "edu",
+    "gov",
+    "info",
+    "co.in",
+    "co.uk", 
+    "uk",
+  ];
 
   let tldMatched = false;
 
@@ -81,13 +92,11 @@ export const validateEmail = (value: string): true | string => {
   }
 
   // Additional: if 3 labels and matched 1-part TLD, reject (e.g., a.b.com → but b is not co)
-  // Example: user@host.com.in → 3 labels, ends with .in → but .com.in is not in list → should reject
   if (domainLabels.length === 3) {
     const lastOne = domainLabels[2];
     const lastTwo = domainLabels.slice(1).join(".");
-    // If only 1-part TLD matched, but 2-part version is NOT in list → likely invalid
     if (validTLDs.includes(lastOne) && !validTLDs.includes(lastTwo)) {
-      return "Email domain format is not supported. Use example.com or example.co.in";
+      return "Email domain format is not supported. Use example.com or example.co.in or example.co.uk";
     }
   }
 

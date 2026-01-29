@@ -2,9 +2,9 @@ import { locationType, RepeatByFields } from "@/pages/client/post_job/types";
 import type { ChatMessage, Conversation } from "@/pages/engineer/chat/types";
 
 export const experienceLevel = [
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "expert", label: "Expert" },
+  { value: "level1", label: "Level 1" },
+  { value: "level2", label: "Level 2" },
+  { value: "level3", label: "Level 3" },
 ];
 
 export const skills = [

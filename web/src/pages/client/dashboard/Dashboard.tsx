@@ -2,18 +2,20 @@ import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
+import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { useFCM } from "@/shared/hooks/useFCM";
+import { useGeolocation } from "@/shared/hooks/useGeolocation";
+import { useClientCompanyInfoStore } from "@/shared/store/useClientCompanyInfoStore";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
 import React, { useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import SidebarJobPostWallet from "../../../shared/components/SidebarJobPostWallet";
-import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
-import { useDeviceStore } from "@/shared/store/useDeviceStore";
-import { useGeolocation } from "@/shared/hooks/useGeolocation";
-import { useFCM } from "@/shared/hooks/useFCM";
+import type { Job } from "../search_result/types";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
-import type { Job } from "../search_result/types";
-import { Button } from "@/shared/components/commonUI/Buttons";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -25,6 +27,14 @@ const Dashboard: React.FC = () => {
   const { locationPermission, notificationPermission } = useDeviceStore();
   const { checkPermission: checkLocationPermission } = useGeolocation();
   const { checkPermission: checkNotificationPermission } = useFCM();
+  const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
+  const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
+
+  useEffect(() => {
+    if (clientInfo && !companyInfo) {
+      setCompanyInfo(clientInfo);
+    }
+  }, [clientInfo, companyInfo, setCompanyInfo]);
 
   const inProgressJobsData = useMemo(
     () => sampleJobs.filter((job) => job.status === "inprogress"),
@@ -38,9 +48,6 @@ const Dashboard: React.FC = () => {
   }, [checkLocationPermission, checkNotificationPermission]);
 
   useEffect(() => {
-    // Show popup if either permission is in 'prompt' state (or not granted/denied explicitly yet)
-    // We can also check for 'denied' if we want to re-prompt, but usually we respect 'denied' until user resets.
-    // Here we check if it's 'prompt' or 'default'.
     if (
       locationPermission === "prompt" ||
       notificationPermission === "default"
@@ -81,7 +88,7 @@ const Dashboard: React.FC = () => {
                   >
                     <Button
                       variant="link"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer"
+                      className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
                     >
                       View all
                     </Button>
@@ -105,9 +112,12 @@ const Dashboard: React.FC = () => {
                   to={absoluteUrls.client.home.my_jobs}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >
-                  <div className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                  <Button
+                    variant="link"
+                    className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
+                  >
                     View all
-                  </div>
+                  </Button>
                 </NavLink>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">

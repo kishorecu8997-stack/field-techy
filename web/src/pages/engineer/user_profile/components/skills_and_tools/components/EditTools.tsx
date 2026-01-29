@@ -1,86 +1,45 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { useForm } from "react-hook-form";
 import { TagSelectField } from "@/shared/components/commonUI/inputs/TagSelectField";
-import { addEditToolsData } from "@/dummy_data";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { toast } from "react-toastify";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import type { EngineerData } from "@/shared/apiServices/engineer/engineerTypes";
+  useEngineerGetSkillsAndTools,
+  useEngineerUpdateSkillsAndTools,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-/**
- * Defines the shape of the form data for editing tools.
- * @typedef {Object} EditToolsFormData
- * @property {string[]} tools - An array of selected tool IDs.
- */
 export type EditToolsFormData = {
   tools: string[];
 };
-/**
- * The EditTools component renders a form to modify a user's professional tools.
- * It uses `react-hook-form` and pre-populates the `TagSelectField` with existing tools.
- * @param {EditToolsProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered EditTools form component.
- */
+
 const EditTools = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
-  const { session } = useUserSessionStore();
-  const engineerId = session?.userId || "";
 
-  const { data: engineerData, isLoading: isEngineerLoading } =
-    useEngineerGetById(engineerId);
-  const { mutate } = useEngineerUpdateById(engineerId);
-
-  const initialToolIds = useMemo(() => {
-    const storedIds = localStorage.getItem("editToolsId");
-    if (storedIds) {
-      try {
-        const parsedIds: (string | number)[] = JSON.parse(storedIds);
-        return parsedIds.map(String);
-      } catch (error) {
-        console.error("Failed to parse tool IDs from localStorage", error);
-        return engineerData?.tools?.map(String) || [];
-      }
-    }
-    return engineerData?.tools?.map(String) || [];
-  }, [engineerData]);
+  const { data: currentSkillsAndTools, isLoading: isCurrentLoading } =
+    useEngineerGetSkillsAndTools();
+  const { mutateAsync: updateSkillsAndTools } =
+    useEngineerUpdateSkillsAndTools();
+  const { data: toolsLookup } = useLookupData("tools" as any);
 
   const methods = useForm<EditToolsFormData>({
-    defaultValues: {
-      tools: initialToolIds,
-    },
+    mode: "onSubmit",
   });
 
   useEffect(() => {
-    return () => {
-      localStorage.removeItem("editToolsId");
-    };
-  }, []);
-
-  const toolOptions = addEditToolsData.map((tool) => ({
-    label: tool.label,
-    value: tool.id.toString(),
-  }));
+    if (currentSkillsAndTools) {
+      methods.reset({
+        tools: currentSkillsAndTools.tools.map((t) => t.id.toString()),
+      });
+    }
+  }, [currentSkillsAndTools, methods]);
 
   const onSubmit = async (formData: EditToolsFormData) => {
-    if (!engineerData) {
-      toast.error("Unable to load current profile data. Please try again.");
-      return;
-    }
-
-    const updatedEngineer: EngineerData = {
-      ...engineerData,
-      tools: formData.tools,
-    };
-
     await showPopup({
       title: "Update Tools",
       body: "Are you sure you want to update these tools?",
@@ -89,36 +48,45 @@ const EditTools = () => {
           label: "Cancel",
           value: "no",
           variant: "secondary",
-          action: async (close) => {
-            close(true);
-          },
+          action: async (close) => close(true),
         },
         {
           label: "Yes, update",
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            mutate(updatedEngineer, {
-              onSuccess: () => {
-                toast.success("Tools Updated Successfully");
-                close(true);
-                setActiveKey("skillsAndTools");
-              },
-              onError: (error) => {
-                console.error("Failed to update tools:", error);
-                toast.error("Failed to save tools. Please try again.");
-                close(true);
-              },
-            });
+            const toolIds = formData.tools.map(Number);
+            const skillIds =
+              currentSkillsAndTools?.skills.map((s) => s.id) || [];
+
+            try {
+              await updateSkillsAndTools({
+                body: {
+                  skills: skillIds,
+                  tools: toolIds,
+                },
+              });
+              toast.success("Tools Updated Successfully");
+              close(true);
+              setActiveKey("skillsAndTools");
+            } catch (error) {
+              console.error("Failed to update tools:", error);
+              toast.error("Failed to save tools. Please try again.");
+              close(true);
+            }
           },
         },
       ],
     });
   };
 
-  if (isEngineerLoading) {
-    return <LoaderComponent />;
-  }
+  const toolOptions =
+    toolsLookup?.map((tool: any) => ({
+      label: tool.name,
+      value: tool.id.toString(),
+    })) || [];
+
+  if (isCurrentLoading) return <LoaderComponent />;
 
   return (
     <FormContainer

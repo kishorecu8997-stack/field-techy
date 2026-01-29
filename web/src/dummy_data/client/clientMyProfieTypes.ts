@@ -4,45 +4,7 @@ export interface BusinessType {
   description: string;
 }
 
-export const BUSINESS_TYPES: BusinessType[] = [
-  {
-    id: "retail",
-    name: "Retail",
-    description: "Businesses that sell goods directly to consumers.",
-  },
-  {
-    id: "hospitality",
-    name: "Hospitality",
-    description: "Hotels, restaurants, and other service-oriented businesses.",
-  },
-  {
-    id: "manufacturing",
-    name: "Manufacturing",
-    description: "Companies that produce goods from raw materials.",
-  },
-  {
-    id: "tech",
-    name: "Technology",
-    description: "Software, hardware, and IT services companies.",
-  },
-  {
-    id: "healthcare",
-    name: "Healthcare",
-    description: "Medical and health-related service providers.",
-  },
-  {
-    id: "service",
-    name: "Service",
-    description:
-      "Businesses offering professional or personal services (e.g., consulting, cleaning, legal, etc.).",
-  },
-  {
-    id: "maintenance",
-    name: "Maintenance",
-    description:
-      "Companies providing repair, upkeep, or servicing of equipment, facilities, or systems.",
-  },
-];
+export const BUSINESS_TYPES: BusinessType[] = [];
 
 export interface Industry {
   id: string;
@@ -163,11 +125,75 @@ export const INDUSTRIES: Industry[] = [
 export interface CountryOption {
   value: string;
   label: string;
+  states: StateOption[];
+}
+export interface StateOption {
+  value: string;
+  label: string;
+  cities: CityOption[];
+}
+export interface CityOption {
+  value: string;
+  label: string;
 }
 
 export const countries: CountryOption[] = [
-  { value: "in", label: "India" },
-  { value: "uk", label: "United Kingdom" },
+  {
+    value: "in",
+    label: "India",
+    states: [
+      {
+        value: "tn",
+        label: "Tamil Nadu",
+        cities: [
+          { value: "che", label: "Chennai" },
+          { value: "cbe", label: "Coimbatore" },
+        ],
+      },
+      {
+        value: "mh",
+        label: "Maharashtra",
+        cities: [
+          { value: "mum", label: "Mumbai" },
+          { value: "pun", label: "Pune" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "uk",
+    label: "United Kingdom",
+    states: [
+      {
+        value: "eng",
+        label: "England",
+        cities: [
+          { value: "ldn", label: "London" },
+          { value: "man", label: "Manchester" },
+        ],
+      },
+      {
+        value: "sct",
+        label: "Scotland",
+        cities: [
+          { value: "edi", label: "Edinburgh" },
+          { value: "gla", label: "Glasgow" },
+        ],
+      },
+    ],
+  },
+];
+
+export interface businessTypeOption {
+  value: string;
+  label: string;
+}
+
+export const businessTypes: businessTypeOption[] = [
+  { value: "1", label: "LLC" },
+  { value: "2", label: "Corporation" },
+  { value: "3", label: "Sole Proprietorship" },
+  { value: "4", label: "Partnership" },
 ];
 
 interface PersonalInfo {

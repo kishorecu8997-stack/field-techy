@@ -8,31 +8,25 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import {
-  designationOptions,
-  employmentTypeOptions,
-  workLocationTypeOptions,
-} from "./constants";
+import { designationOptions } from "./constants";
 import { toast } from "react-toastify";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import {
-  useEngineerGetById,
-  useEngineerUpdateById,
-} from "@/shared/apiServices/engineer/engineerService";
-import { getUserId } from "@/utils";
+  useEngineerAddExperience,
+  useLookupData,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * The AddExperiences component renders a form for adding a new work experience entry.
  * It uses `react-hook-form` for form management, validation, and submission.
- * @param {AddExperiencesProps} props - Component props.
  * @returns {React.ReactElement} The rendered AddExperiences form component.
  */
 const AddExperiences = () => {
   const { showPopup } = usePopupStore();
   const { setActiveKey } = useDrawerStore();
-  const userId = getUserId();
-  const { data: engineerData } = useEngineerGetById(userId || "");
-  const { mutateAsync } = useEngineerUpdateById(userId || "");
+  const { mutateAsync: addExperience } = useEngineerAddExperience();
+  const { data: workLocations } = useLookupData("workLocations");
+  const { data: employmentTypes } = useLookupData("employmentTypes");
 
   const handleSubmit = async (data: ExperiencesFormData) => {
     await showPopup({
@@ -52,33 +46,19 @@ const AddExperiences = () => {
           value: "yes",
           variant: "primary",
           action: async (close: (v: boolean) => void) => {
-            if (!engineerData || !userId) return;
-
             const newExperience = {
               designation: String(data.designation ?? ""),
               employer: (data.employer || "").trim(),
-              workLocationType: data.workLocationType,
-              employmentType: data.employmentType,
+              employmentTypeId: Number(data.employmentType),
+              workLocationId: Number(data.workLocationType),
               startDate: data.startDate?.toISOString().split("T")[0] || "",
               endDate: data.isCurrent
                 ? undefined
                 : data.endDate?.toISOString().split("T")[0] || undefined,
-              isCurrent: data.isCurrent,
             };
 
-            const updatedExperiences = [
-              ...(engineerData.experiences || []),
-              newExperience,
-            ];
-
             try {
-              await mutateAsync({
-                ...engineerData,
-                experiences:
-                  updatedExperiences.length > 0
-                    ? updatedExperiences
-                    : undefined,
-              });
+              await addExperience({ body: newExperience as any });
               toast.success("Experience Added Successfully");
               close(true);
               setActiveKey("experiences");
@@ -116,10 +96,9 @@ const AddExperiences = () => {
       onSubmit={handleSubmit}
       className="flex flex-col h-full"
     >
-      <div className="flex-1 overflow-y-auto px-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-3 space-y-2">
         <SelectField
           label="Designation"
-          isShowLabel={false}
           name="designation"
           placeholder="Designation"
           options={designationOptions.map((e) => ({
@@ -130,7 +109,6 @@ const AddExperiences = () => {
         />
         <InputField
           label="Employer"
-          isShowLabel={false}
           name="employer"
           placeholder="Employer"
           required
@@ -139,25 +117,32 @@ const AddExperiences = () => {
 
         <SelectField
           label="Work Location Type"
-          isShowLabel={false}
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocationTypeOptions}
+          options={
+            workLocations?.map((item: any) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
 
         <SelectField
           label="Employment Type"
-          isShowLabel={false}
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypeOptions}
+          options={
+            employmentTypes?.map((item: any) => ({
+              value: item.id.toString(),
+              label: item.name,
+            })) || []
+          }
           required
         />
         <DatePickerInput
           name="startDate"
           label="Start Date"
-          isShowLabel={false}
           placeholder="Start Date"
           required
           maxDate={new Date()}
@@ -172,7 +157,6 @@ const AddExperiences = () => {
             <DatePickerInput
               name="endDate"
               label="End Date"
-              isShowLabel={false}
               placeholder="End date (required if not current)"
               minDate={methods.watch("startDate") || new Date(1970, 0, 1)}
               maxDate={new Date()}

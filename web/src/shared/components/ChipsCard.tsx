@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface ChipsCardProps {
@@ -44,7 +44,7 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
             className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
             aria-label={`Edit`}
           >
-            <FaRegEdit />
+            <FiEdit2 />
           </button>
         )}
         {onDeleteAction && (

@@ -45,6 +45,24 @@ export default function TalentSection() {
         setCurrentLocation(CurrentLocation.scheduled);
       },
     },
+    {
+      label: "Full Time Job",
+      value: CurrentLocation.fullTime,
+      tooltip: "Hire for full-time roles with a dedicated form.",
+      action: () => {
+        navigate(absoluteUrls.client.home.post_a_job);
+        setCurrentLocation(CurrentLocation.fullTime);
+      },
+    },
+    {
+      label: "On Demand Job",
+      value: CurrentLocation.onDemand,
+      tooltip: "Hire for on-demand roles with a dedicated form.",
+      action: () => {
+        navigate(absoluteUrls.client.home.post_a_job);
+        setCurrentLocation(CurrentLocation.onDemand);
+      },
+    },
   ];
 
   return (

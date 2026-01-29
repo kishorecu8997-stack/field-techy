@@ -28,7 +28,7 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   rules,
   containerClassName = "flex flex-col py-1 w-full",
 }) => {
-  const { control } = useFormContext();
+  const { control, trigger } = useFormContext();
 
   let requiredMessage: string | false = false;
   if (typeof required === "string") requiredMessage = required;
@@ -44,11 +44,13 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
       name={name}
       control={control}
       rules={validationRules}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
+      render={({ field, fieldState: { error } }) => (
         <DatePickerRender
-          onChange={onChange}
-          value={value}
+          name={name}
+          onChange={(date) => field.onChange(date)}
+          value={field.value}
           error={error}
+          triggerField={() => trigger(name)}
           minDate={minDate}
           maxDate={maxDate}
           placeholder={placeholder}
@@ -86,9 +88,11 @@ const isDateValid = (date: Date, minDate?: Date, maxDate?: Date): boolean => {
 };
 
 const DatePickerRender: FC<{
+  name: string;
   onChange: (date: Date | null) => void;
   value: Date | null;
   error?: FieldError;
+  triggerField: () => Promise<boolean>;
   minDate?: Date;
   maxDate?: Date;
   placeholder: string;
@@ -99,6 +103,7 @@ const DatePickerRender: FC<{
   isShowLabel: boolean;
   required: boolean | string;
 }> = ({
+  name,
   onChange,
   value,
   error,
@@ -111,7 +116,9 @@ const DatePickerRender: FC<{
   label,
   isShowLabel,
   required,
+  triggerField,
 }) => {
+  const { trigger } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
   const [currentMonth, setCurrentMonth] = useState(value || new Date());
@@ -163,8 +170,10 @@ const DatePickerRender: FC<{
     const parsed = parseDate(text);
     if (parsed && isDateValid(parsed, minDate, maxDate)) {
       onChange(parsed);
+      void triggerField();
     } else if (text === "") {
       onChange(null);
+      void triggerField();
     }
   };
 
@@ -174,6 +183,7 @@ const DatePickerRender: FC<{
     if (isDateValid(date, minDate, maxDate)) {
       onChange(date);
       setIsOpen(false);
+      void triggerField();
     }
   };
 

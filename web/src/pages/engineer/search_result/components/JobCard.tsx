@@ -155,8 +155,8 @@ const JobCard: React.FC<{
   showBookmark?: boolean;
   navigateToJob?: string;
   onBookmarkChange?: () => void;
-  userSkills?: string[];
-  userTools?: string[];
+  userSkills?: (string | number)[];
+  userTools?: (string | number)[];
 }> = ({
   job,
   showBookmark = true,
@@ -195,7 +195,7 @@ const JobCard: React.FC<{
   const matchScore = useMemo(() => {
     return calculateMatchScore(
       [...(jobData.skills || []), ...(jobData.tools || [])],
-      [...userSkills, ...userTools],
+      [...userSkills, ...userTools].map(String),
     );
   }, [jobData.skills, jobData.tools, userSkills, userTools]);
 

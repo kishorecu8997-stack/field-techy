@@ -1,8 +1,7 @@
 import { assetsConfig } from "@/assets";
-import logo_light from "@/assets/logo/logo_light.svg";
 import { absoluteUrls } from "@/config/urls";
+import { useClientLogin } from "@/shared/apiServices/client/clientOpenApiService";
 import IconWithTheme from "@/shared/components/IconWithTheme";
-import Popup from "@/shared/components/Popup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
   CheckboxInput,
@@ -10,36 +9,28 @@ import {
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import OTPPage from "../../../../engineer/auth/components/OTPPage";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  type LoginEmailFormData,
-} from "../../validations/LoginEmail";
+import { UserRole } from "@/shared/enums/users";
 import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
-import {
-  useClientSignInMutation,
-  useReqEmailVerificationOtpMutation,
-  useVerifyEmailVerificationOtpMutation,
-} from "@/shared/apiServices/auth/clients/clientAuthService";
-import { CiMail } from "react-icons/ci";
-import { UserRole } from "@/shared/enums/users";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { CiMail } from "react-icons/ci";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  loginSchema,
+  type LoginEmailFormData,
+} from "../../validations/LoginEmail";
 
 /**
  * Login component
  *
  * Renders the client sign-in form (email/password) with options to sign in
- * via phone number or LinkedIn. Submitting opens the OTP dialog in this
- * implementation; after OTP success the access popup is shown.
+ * via phone number or LinkedIn.
  *
  * Props:
  * @param {{ setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>> }} props - A single prop used to switch to number-based login UI.
@@ -51,14 +42,39 @@ const Login = ({
   setIsNumberLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
-
-  const clientSignInMutation = useClientSignInMutation();
-  const reqEmailVerificationOtpMutation = useReqEmailVerificationOtpMutation();
-  const verifyEmailVerificationOtpMutation =
-    useVerifyEmailVerificationOtpMutation();
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useClientLogin(
+    {
+      onSuccess: async (resp) => {
+        // Store the token
+        if (resp.token) {
+          localStorage.setItem("auth_token", resp.token);
+        }
+
+        setUserSession({
+          accessToken: resp.token,
+          userId: "uuid-client-123", // TODO: Get actual user ID from token or profile response
+          role: UserRole.CLIENT,
+          initiatedAt: Date.now(),
+        } as UserSession);
+
+        navigate(absoluteUrls.client.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        // Skip showing toast for 401 errors as axios interceptor already handles it
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return;
+        }
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
+        toast.error(errorMessage);
+      },
+    },
+  );
+
   const methods = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -68,90 +84,12 @@ const Login = ({
     },
   });
 
-  /**
-   * handleSubmit
-   *
-   * Called by the form when the user submits credentials. Current behaviour
-   * opens the OTP popup (simulating second-factor or phone flow). Real
-   * implementations should validate credentials against an API and only
-   * open the OTP/modal on success.
-   */
   const handleSubmit = async (data: LoginEmailFormData) => {
-    await clientSignInMutation.mutateAsync(
-      {
-        phoneOrEmail: data.email,
+    await loginMutation({
+      body: {
+        email: data.email,
         password: data.password,
-      },
-      {
-        onSuccess: async (resp) => {
-          //second layer of verification
-          // setIsOpen(true);
-          // toast.success("OTP Requested, kindly check your email for OTP");
-          setUserSession(resp);
-          console.log(`Login Response: `, resp);
-          navigate(absoluteUrls.client.home.dashboard);
-          toast.success("Logged in successfully");
-        },
-        onError: (error) => {
-          console.error(error);
-          // Skip showing toast for 401 errors as axios interceptor already handles it
-          if (error instanceof AxiosError && error.response?.status === 401) {
-            return;
-          }
-          const errorMessage =
-            error instanceof Error ? error.message : "Login failed";
-          toast.error(errorMessage);
-        },
-      },
-    );
-  };
-
-  /**
-   * handleOtpSubmission
-   * call verifyEmailVerificationOtpMutation to verify the otp
-   * @param otp otp code
-   */
-  const handleOtpSubmission = async (otp: string) => {
-    const email = methods.getValues("email");
-    await verifyEmailVerificationOtpMutation.mutateAsync(
-      { email, otp },
-      {
-        onSuccess: async (resp) => {
-          console.log(`OTP Response: `, resp);
-          //TODO: integrate the otp stubbed version
-          const stubbedResponse: UserSession = {
-            accessToken: "something fake",
-            userId: "uuid-123",
-            role: UserRole.CLIENT,
-            initiatedAt: Date.now(),
-            // displayName: "John Doe",
-            // metadata: {},
-          };
-
-          setIsOpen(false);
-          setUserSession(stubbedResponse);
-          navigate(absoluteUrls.client.home.dashboard);
-          toast.success("Logged in successfully");
-        },
-        onError: (error) => {
-          console.error(error);
-          toast.error("");
-        },
-      },
-    );
-  };
-
-  const onResendOtp = async () => {
-    const email = methods.getValues("email");
-    await reqEmailVerificationOtpMutation.mutateAsync(email, {
-      onSuccess: async (resp) => {
-        console.log(`OTP Response: `, resp);
-        toast.success("OTP Requested, kindly check your email for OTP");
-        setIsOpen(true);
-      },
-      onError: (error) => {
-        console.error(error);
-        toast.error("OTP Request failed");
+        userRole: UserRole.CLIENT,
       },
     });
   };
@@ -163,7 +101,7 @@ const Login = ({
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={logo_light}
+              darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>
@@ -192,7 +130,6 @@ const Login = ({
             label="Email Address"
             type="email"
             required
-            rules={validateEmailRules}
           />
           <PasswordInput name="password" label="Password" required />
           <div className="flex items-center justify-between flex-wrap">
@@ -206,10 +143,7 @@ const Login = ({
           </div>
           <Button
             type="submit"
-            loading={
-              clientSignInMutation.isPending ||
-              reqEmailVerificationOtpMutation.isPending
-            }
+            loading={isLoggingIn}
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Submit
@@ -222,32 +156,6 @@ const Login = ({
           <CiMail className="dark:text-gray-300 text-lg" />
           Sign In with OTP
         </div>
-        {/* <div className="flex flex-row items-center justify-center gap-4 pt-5">
-          <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
-          <span className="text-gray-500 dark:text-gray-400 text-sm">or</span>
-          <hr className="flex-1 border-t border-gray-300 dark:border-gray-700" />
-        </div> */}
-        {/* <div className="flex flex-col gap-2 items-center justify-center pt-5">
-          <Button
-            className="w-full dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-            variant="outline"
-            disabled
-            leftIcon={<BiLogoLinkedin className="text-lg text-blue-400" />}
-          >
-            <span className="whitespace-nowrap text-gray-900 dark:text-white">
-              LinkedIn
-            </span>
-          </Button>
-        </div> */}
-        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-          <OTPPage
-            header="Enter the OTP"
-            description="We sent you an OTP code"
-            onClose={() => setIsOpen(false)}
-            onSubmit={(data) => handleOtpSubmission(data.otp)}
-            onResend={onResendOtp}
-          />
-        </Popup>
       </div>
     </div>
   );

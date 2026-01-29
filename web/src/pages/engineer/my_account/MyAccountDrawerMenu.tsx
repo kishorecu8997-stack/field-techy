@@ -76,6 +76,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
 
   const logout = useUserSessionStore((state) => state.logout);
   const engineerProfile = useEngineerProfile();
+  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
@@ -86,11 +87,10 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={
-              engineerProfile?.profilePicture ||
-              assetsConfig.images.profile.defaultProfileImage
+              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
             }
             name={engineerProfile?.fullName || ""}
-            title={engineerProfile?.serviceCategory || ""}
+            title={String(engineerProfile?.serviceCategory || "")}
             rating={engineerProfile?.averageRating || 0}
             reviewCount={10}
             completionPercentage={39}

@@ -258,6 +258,9 @@ const FilterPanel: React.FC<{
                 experience: value,
               });
             }}
+            style={{
+              background: `linear-gradient(to right, #10b981 0%, #10b981 ${(experience / 10) * 100}%, #e5e7eb ${(experience / 10) * 100}%, #e5e7eb 100%)`,
+            }}
             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider "
           />
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 bg-green-700 text-white px-2 py-1 rounded-full text-xs whitespace-nowrap">
@@ -320,7 +323,7 @@ const FilterPanel: React.FC<{
             </div>
           ))}
         </div>
-        <div className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mt-2 cursor-pointer">
+        <div className="text-sm text-emerald-700 font-medium mt-2 cursor-pointer dark:text-emerald-400 hover:underline">
           View All
         </div>
       </div>

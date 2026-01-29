@@ -2,8 +2,6 @@ import { icons } from "@/config/icons";
 import { absoluteUrls } from "@/config/urls";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import DrawerMenuSection from "../../../shared/components/drawer/DrawerMenuSection";
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import type { MenuItem } from "@/pages/engineer/account_settings/types";
@@ -16,8 +14,6 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const location = useLocation();
   const isClient = location.pathname.includes("client");
-  const [isOpen, setIsOpen] = React.useState(false);
-  const logout = useUserSessionStore((state) => state.logout);
   const navigate = useNavigate();
   const menuItems: MenuItem[] = [
     {
@@ -55,34 +51,11 @@ const AccountSettingsDrawerMenu: React.FC<DrawerMenuProps> = ({ onClose }) => {
         onClose();
       },
     },
-
-    {
-      label: "Logout",
-      icon: icons.signOut,
-      id: "logout",
-      onClick: () => {
-        setIsOpen(true);
-      },
-    },
   ];
 
   return (
     <div>
       <DrawerMenuSection items={menuItems} className="h-full" />
-      <LogoutConfirmationPopup
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={() => {
-          logout();
-          onClose();
-          navigate(
-            isClient
-              ? absoluteUrls.client.auth.login
-              : absoluteUrls.engineer.auth.login,
-          );
-        }}
-        onCancel={() => setIsOpen(false)}
-      />
     </div>
   );
 };

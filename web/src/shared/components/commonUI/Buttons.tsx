@@ -15,7 +15,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "link"
     | "text"
     | "solid"
-    | "no_style";
+    | "liveChat"
+    | "closeChat"
+    | "liveChatSend"
+    | "no_style"
+    | "dropdown"
+    | "no_style"
+    | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
   loading?: boolean;
@@ -60,16 +66,25 @@ export const Button: React.FC<ButtonProps> = ({
     primary:
       "bg-emerald-600 hover:bg-emerald-700 font-semibold text-white focus:ring-emerald-500",
     secondary:
-      "bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-300",
+      "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-500 focus:ring-gray-300 dark:focus:ring-gray-400",
     ghost:
       "bg-transparent hover:bg-gray-100 text-gray-800 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     outline:
-      "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:text-white dark:hover:bg-zinc-800",
+      "border border-gray-300 text-gray-800 hover:bg-gray-100 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
     link: "bg-transparent underline-offset-4 hover:underline text-emerald-600 hover:text-emerald-700 ",
     solid:
       "bg-[#0f1727] dark:border dark:border-gray-500 text-white hover:bg-[#1e293b] focus:ring-2 focus:ring-[#334155] focus:outline-none",
+    liveChat: "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
+    liveChatSend:
+      "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
+    closeChat:
+      "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center p-1 h-8 w-8",
     no_style: "",
+    dropdown:
+      "flex items-center justify-between h-[48px] px-3 py-1 border-r border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed",
+    warning:
+      " bg-yellow-200 text-black border border-gray-500 hover:bg-yellow-300 focus:ring-gray-100",
   };
 
   const sizeStyles: Record<string, string> = {
@@ -91,7 +106,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         baseStyles,
         variantStyles[variant],
-        sizeStyles[size],
+        variant !== "dropdown" && sizeStyles[size],
         fullWidth && "w-full",
         className,
       )}

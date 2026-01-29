@@ -1,25 +1,5 @@
-import { assetsConfig } from "@/assets";
-import { absoluteUrls } from "@/config/urls";
-import { Button } from "@/shared/components/commonUI/Buttons";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import Popup from "@/shared/components/Popup";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import OTPPage from "./OTPPage";
+import AuthForgetPassword from "@/shared/components/auth/AuthForgetPassword";
 
-export type ForgetPasswordFormData = {
-  email: string;
-};
-
-/**
- * Type representing the data structure for the Login form.
- * @typedef {Object} LoginFormData
- * @property {string} email - User's email address.
- * @property {string} password - User's password.
- * @property {boolean} rememberMe - Whether to remember the user.
- */
 const ForgetPassword = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -41,7 +21,12 @@ const ForgetPassword = () => {
             <img
               src={assetsConfig.logos.companyLogo}
               alt="logo"
-              className="h-20 w-24"
+              className="h-20 w-24 dark:hidden"
+            />
+            <img
+              src={assetsConfig.logos.company_logo_white}
+              alt="logo"
+              className="h-20 w-24 hidden dark:block"
             />
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
