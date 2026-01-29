@@ -74,6 +74,14 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   const startDateValue = watch("startDate") as Date | null;
   const locationType = watch("locationType");
   const selectedToolFiles = watch("toolImages") as FileList | undefined;
+  const stateOptions = useMemo(() => {
+    return selectedCountry ? statesByCountry[selectedCountry.value] || [] : [];
+  }, [selectedCountry]);
+
+  const cityOptions = useMemo(() => {
+    return selectedState ? citiesByState[selectedState.value] || [] : [];
+  }, [selectedState]);
+  const today = useMemo(() => new Date(), []);
 
   const handleDeleteInterviewer = async () => {
     await showPopup({
@@ -198,16 +206,15 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
             name: file.name,
             url: URL.createObjectURL(file),
           }))
-        : undefined;
+        : [];
 
     if (editingToolIndex !== null) {
       setToolEntries((prev) => {
         const next = [...prev];
-        const existingImages = prev[editingToolIndex]?.images || [];
         next[editingToolIndex] = {
           name,
           budget: budget || "-",
-          images: newImages ?? existingImages,
+          images: newImages,
         };
         return next;
       });
@@ -215,7 +222,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
     } else {
       setToolEntries((prev) => [
         ...prev,
-        { name, budget: budget || "-", images: newImages ?? [] },
+        { name, budget: budget || "-", images: newImages },
       ]);
     }
 
