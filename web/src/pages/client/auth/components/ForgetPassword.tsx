@@ -41,7 +41,7 @@ const ForgetPassword = () => {
             <img
               src={assetsConfig.logos.companyLogo}
               alt="logo"
-              className="h-20 w-24"
+              className="h-20 w-24 dark:hidden"
             />
             <img
               src={assetsConfig.logos.company_logo_white}
