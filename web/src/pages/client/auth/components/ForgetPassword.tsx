@@ -10,9 +10,7 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import OTPPage from "./OTPPage";
 
-export type ForgetPasswordFormData = {
-  email: string;
-};
+
 
 /**
  * Type representing the data structure for the Login form.
