@@ -32,7 +32,7 @@ const AddBankDetails = () => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, add",

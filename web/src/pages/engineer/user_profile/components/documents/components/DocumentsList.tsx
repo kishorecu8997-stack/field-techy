@@ -11,6 +11,7 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
+import { FaPlus } from "react-icons/fa";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -152,7 +153,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         {
           label: "Cancel",
           value: "cancel",
-          variant: "secondary",
+          variant: "danger",
           action: (close) => close(true),
         },
         {
@@ -252,18 +253,24 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-lg dark:bg-gray-800 p-4 shadow-sm">
       {onAddDocument && (
-        <div className="flex justify-end items-center mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+            Documents
+          </h2>
           <Button
             variant="link"
             onClick={onAddDocument}
-            className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
+            className={`flex !flex-row !items-center text-teal-600 hover:text-teal-800 hover:underline font-medium text-base transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
           >
+            <FaPlus className="h-5 w-5 shrink-0 pr-2" />
             Add Document
           </Button>
         </div>
       )}
+
+      <hr className="border-gray-200 mb-4" />
 
       {documents.length > 0 ? (
         <div className="space-y-4">

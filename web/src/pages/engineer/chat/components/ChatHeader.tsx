@@ -25,7 +25,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   return (
     <div className="px-16 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-emerald-800 text-white flex items-center justify-center font-semibold">
+        <div className="h-12 w-12 rounded-full bg-teal-800 text-white flex items-center justify-center font-semibold">
           {conversation.name
             .split(" ")
             .map((n) => n[0])
@@ -49,15 +49,15 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-4 text-emerald-800 dark:text-emerald-500">
+      <div className="flex items-center gap-4 text-teal-800 dark:text-teal-500">
         <button
-          className="p-2 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900"
+          className="p-2 rounded-full hover:bg-teal-50 dark:hover:bg-teal-900"
           title="Video call"
         >
           <FaVideo />
         </button>
         <button
-          className="p-2 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900"
+          className="p-2 rounded-full hover:bg-teal-50 dark:hover:bg-teal-900"
           title="Voice call"
         >
           <FaPhoneAlt />

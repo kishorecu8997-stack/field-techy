@@ -102,7 +102,7 @@ const NotificationListPage = () => {
         >
           {btnname(type)}
         </Button>
-        <Button variant="outline">Mark as Read</Button>
+        <Button variant="primary">Mark as Read</Button>
       </div>
     );
   };
@@ -187,10 +187,10 @@ const NotificationListPage = () => {
 
   return (
     <>
-      <div className="flex flex-col h-full space-y-3 px-3 pt-5 py-3 bg-white rounded-lg">
+      <div className="flex flex-col h-full space-y-3 px-3 pt-5 py-3 bg-white rounded-lg dark:bg-gray-700">
         <div>
           <h1 className="text-xl font-bold">Notifications</h1>
-          <p className="font-semibold text-gray-600">
+          <p className="font-semibold text-gray-600 dark:text-gray-300">
             Stay up to date about all activities
           </p>
         </div>
@@ -202,15 +202,17 @@ const NotificationListPage = () => {
                   setTab(title.type);
                   setSearch("");
                 }}
-                className={`p-2 px-5 text-sm font-semibold cursor-pointer text-teal-800 rounded-4xl ${
-                  title.type === tab ? "bg-gray-300" : ""
-                } `}
+                className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${
+                  title.type === tab
+                    ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
+                    : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                }`}
               >
                 {title.label}
               </div>
             ))}
           </div>
-          <div className="flex items-center flex-row gap-x-5">
+          <div className="flex items-center flex-row gap-x-5 dark:bg-gray-800">
             <div className="hidden lg:font-semibold text-teal-800">
               Mark all as read
             </div>
@@ -232,9 +234,9 @@ const NotificationListPage = () => {
             .map((notifications: NotificationProps) => (
               <div
                 onClick={() => notifiypopup(notifications)}
-                className="bg-gray-100 rounded-md p-3 cursor-pointer"
+                className="bg-gray-100 rounded-md p-3 cursor-pointer dark:bg-gray-800"
               >
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-row justify-between dark:bg-gray-800">
                   <div className="flex flex-col md:flex-row gap-x-4">
                     <div className="flex justify-center items-center text-2xl size-10 text-white bg-teal-800 rounded-full mb-3 md:mb-0">
                       {IconRender(`${notifications.type}`)}
@@ -243,7 +245,7 @@ const NotificationListPage = () => {
                       <h1 className="font-bold text-md">
                         {notifications.title}
                       </h1>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-600 dark:text-gray-300 text-md font-medium">
                         {notifications.message}
                       </p>
                       {ButtonRender(notifications.type)}
@@ -264,7 +266,7 @@ const NotificationListPage = () => {
             scrollTo(0, 0));
         }}
       >
-        <span className="text-gray-600 font-semibold">
+        <span className="text-gray-400 font-semibold">
           Load Older Notifications
         </span>
         <IoIosArrowDown className="text-xl" />

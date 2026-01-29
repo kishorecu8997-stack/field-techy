@@ -86,7 +86,7 @@ const BasicDocuments = () => {
         {
           label: "Cancel",
           value: false,
-          variant: "outline",
+          variant: "danger",
           action: (close) => close(false),
         },
         {

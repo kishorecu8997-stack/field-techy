@@ -60,7 +60,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
             className={`flex items-center justify-between px-6 py-2 rounded-lg text-sm font-medium border transition-all shadow-sm ${
               isSpecificActive
                 ? "bg-teal-800 text-white border-teal-900"
-                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50"
+                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 "
             }`}
           >
             <span className="flex items-center gap-1">
@@ -92,7 +92,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
                     className={`text-left px-4 py-2 text-sm transition-colors ${
                       isActive
                         ? "bg-teal-100 text-teal-900 dark:bg-teal-900 dark:text-teal-100"
-                        : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        : "text-gray-700 dark:text-gray-200"
                     }`}
                   >
                     {option}
@@ -105,7 +105,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
 
         {/* Info Tooltip */}
         <div className="relative inline-block group">
-          <CgDanger className="bg-gray-200 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors" />
+          <CgDanger className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full text-5xl size-10 text-gray-500 cursor-pointer hover:bg-gray-300 transition-colors hover:bg-gray-300 dark:hover:bg-gray-600" />
           <div className="absolute left-1/2 md:left-full -translate-x-1/2 mt-2 hidden group-hover:block whitespace-nowrap bg-gray-900 text-white text-xs px-3 py-2 rounded shadow-lg z-50">
             <ul className="list-disc pl-4">
               {Object.values(JOB_STATUS_INFO).map((status) => (

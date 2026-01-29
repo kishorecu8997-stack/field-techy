@@ -132,7 +132,7 @@ const Login = ({
             Don't have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.signup}
-              className="text-teal-900 dark:text-teal-400 underline font-semibold"
+              className="text-teal-900 dark:text-teal-300 underline font-semibold "
             >
               Sign Up
             </NavLink>
