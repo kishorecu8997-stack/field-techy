@@ -1,6 +1,6 @@
 import formatKeyToLabel from "@/utils/formatKeyToLabel";
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FaPlusCircle, FaRegEdit, FaRegPlusSquare } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 /**
@@ -70,7 +70,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
           onClick={onAddAction}
           className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
         >
-          <span>+</span> Add{title}
+          <FaPlusCircle className="h-5 w-5 shrink-0" />
         </button>
       </div>
 

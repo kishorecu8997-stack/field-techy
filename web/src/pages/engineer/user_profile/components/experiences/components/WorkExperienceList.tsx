@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   employmentTypeOptions,
@@ -63,9 +63,9 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
         </h2>
         <button
           onClick={onAddAction}
-          className="text-sm text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
+          className={`flex !flex-row !items-center gap-2 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
         >
-          <span>+</span> Add {title}
+          <FaPlusCircle className="h-5 w-5 shrink-0" /> Add {title}
         </button>
       </div>
 
@@ -115,7 +115,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                     <span className="font-medium">Employer:</span>{" "}
                     {item.employer}
                   </p>
-                  <p className="">
+                  <p>
                     <span className="font-medium">Work Location:</span>{" "}
                     {workLocationTypeLabelMap.get(
                       String(item.workLocationId || ""),
@@ -127,7 +127,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                       String(item.employmentTypeId || ""),
                     ) || "N/A"}
                   </p>
-                  <p className="">
+                  <p>
                     <span className="font-medium">Duration:</span>{" "}
                     {formatDate(item.startDate)} -{" "}
                     {item.endDate ? formatDate(item.endDate) : "Present"}

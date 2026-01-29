@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface EducationItem {
@@ -34,9 +34,9 @@ const EducationList: React.FC<EducationListProps> = ({
         </h2>
         <button
           onClick={onAddAction}
-          className="text-sm text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
+          className={`flex !flex-row !items-center gap-2 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
         >
-          <span>+</span> Add {title}
+          <FaPlusCircle className="h-5 w-5 shrink-0" /> Add {title}
         </button>
       </div>
 
@@ -44,7 +44,9 @@ const EducationList: React.FC<EducationListProps> = ({
 
       <div className="overflow-y-auto space-y-2">
         {items.length === 0 ? (
-          <p className="text-gray-500 text-center py-6 dark:text-gray-300">No records yet.</p>
+          <p className="text-gray-500 text-center py-6 dark:text-gray-300">
+            No records yet.
+          </p>
         ) : (
           <div className="space-y-4">
             {items.map((item) => (

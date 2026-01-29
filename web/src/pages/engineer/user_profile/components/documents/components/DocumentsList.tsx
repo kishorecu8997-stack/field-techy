@@ -11,6 +11,7 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 import { useQueryClient } from "@tanstack/react-query";
+import { FaPlusCircle } from "react-icons/fa";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -261,9 +262,10 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           <Button
             variant="link"
             onClick={onAddDocument}
-            className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1 dark:text-teal-300 dark:hover:text-teal-200"
+            className={`flex !flex-row !items-center gap-3 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
           >
-            + Add Document
+            <FaPlusCircle className="h-5 w-5 shrink-0" />
+            Add Document
           </Button>
         </div>
       )}
