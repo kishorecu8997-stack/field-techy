@@ -59,6 +59,8 @@ export default function AddEngineer() {
       governmentId: "",
       certificate: "",
     },
+    mode:"onChange",
+    reValidateMode: "onChange",
   });
 
   const { trigger } = methods;
@@ -76,17 +78,25 @@ export default function AddEngineer() {
         "skills",
         "price",
         "serviceCategory",
-        "portfolio",
       ]);
       if (isValid) setActiveTab("Experience Details");
     } else if (activeTab === "Experience Details") {
       isValid = await trigger([
         "designation",
+        "resume",
         "location",
         "employer",
         "experience",
       ]);
       if (isValid) setActiveTab("Documents");
+    }
+  };
+
+  const handlePrevious = async () => {
+    if (activeTab === "Experience Details") {
+      setActiveTab("Basic Information");
+    } else if (activeTab === "Documents") {
+      setActiveTab("Experience Details");
     }
   };
 
@@ -158,7 +168,7 @@ export default function AddEngineer() {
 
   return (
     <div className="w-full px-4 h-full mt-6">
-      <div className="flex justify-between gap-4">
+      <div className="flex py-3 justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Add Engineer</h2>
         <Button variant="solid" className="" onClick={() => navigate(-1)}>
           Back
@@ -175,7 +185,15 @@ export default function AddEngineer() {
             onTabChange={setActiveTab}
           />
 
-          <div className="flex justify-end mt-6 px-4 pb-4">
+          <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
+            <Button
+              type="button"
+              onClick={handlePrevious}
+              disabled={activeTab === "Basic Information"}
+              className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
+            >
+              Back
+            </Button>
             <Button
               type="button"
               onClick={isLastTab ? handleSave : handleNext}
