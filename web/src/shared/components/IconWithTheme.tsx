@@ -4,6 +4,7 @@ interface LogoProps {
   lightLogo: string; // image for light theme
   darkLogo: string; // image for dark theme
   className?: string; // optional styling
+  header?: boolean; // image for header
 }
 
 /**
@@ -21,9 +22,10 @@ const IconWithTheme: React.FC<LogoProps> = ({
   lightLogo,
   darkLogo,
   className = "",
+  header,
 }) => {
   return (
-    <div className={`h-20 w-24 ${className}`}>
+    <div className={`${header ? "size-16" : "h-20 w-24"} ${className}`}>
       <img
         src={lightLogo}
         alt="logo"

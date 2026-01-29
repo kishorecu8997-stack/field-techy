@@ -103,14 +103,16 @@ const OnboardingFlowGuide = () => {
 
   return (
     <div ref={popoverRef} className="flex flex-col gap-y-2">
-      <span className="font-medium w-fit px-3 py-2 rounded-xl bg-[#c4e9e4]">
+      <span className="font-medium w-fit px-3 py-2 rounded-xl dark:bg-[#009966] bg-[#c4e9e4]">
         Step {currentStep + 1} of {steps.length}
       </span>
-      <div className="text-xl font-bold">{current.title}</div>
-      <p className="text-md text-gray-600 font-medium">{current.content}</p>
+      <div className="text-xl dark:text-white font-bold">{current.title}</div>
+      <p className="text-md text-gray-600 dark:text-gray-400 font-medium">
+        {current.content}
+      </p>
       <div className="flex items-center justify-between mt-4">
         <span
-          className="font-medium cursor-pointer text-[#014d44]"
+          className="font-medium cursor-pointer dark:text-[#009966] text-[#014d44]"
           onClick={() => {
             setIsOpen(false);
             localStorage.setItem("onboarding_guide", "true");
@@ -121,7 +123,7 @@ const OnboardingFlowGuide = () => {
         <div className="flex gap-3 items-center px-1 py-1">
           {!isFirstStep && (
             <span
-              className="flex flex-row-reverse gap-2 items-center cursor-pointer"
+              className="flex flex-row-reverse dark:text-white gap-2 items-center cursor-pointer"
               onClick={() => setCurrentStep(currentStep - 1)}
             >
               Back
@@ -133,21 +135,21 @@ const OnboardingFlowGuide = () => {
 
           {!isLastStep ? (
             <span
-              className="flex gap-2 items-center cursor-pointer"
+              className="flex gap-2 dark:text-white items-center cursor-pointer"
               onClick={() => setCurrentStep(currentStep + 1)}
             >
               Next
-              <span className="p-1 flex justify-center items-center border size-8 rounded-full bg-[#014d44]">
+              <span className="p-1 flex justify-center items-center border size-8 rounded-full dark:bg-[#009966] bg-[#014d44]">
                 <IoMdArrowForward className="font-medium text-white" />
               </span>
             </span>
           ) : (
             <span
-              className="flex gap-2 items-center cursor-pointer"
+              className="flex gap-2 items-center dark:text-white  cursor-pointer"
               onClick={handlecomplete}
             >
               Finish
-              <span className="p-1 flex justify-center items-center border size-8 rounded-full bg-[#014d44]">
+              <span className="p-1 flex justify-center items-center border size-8 rounded-full dark:bg-[#009966] bg-[#014d44]">
                 <IoMdArrowForward className="font-medium text-white" />
               </span>
             </span>

@@ -326,8 +326,8 @@ const FilterPanel: React.FC<{
             </button>
           ))}
         </div>
-        <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mt-2 cursor-pointer">
-          View All
+        <button className="text-sm text-teal-800 dark:text-teal-400 mt-2 hover:underline font-medium cursor-pointer">
+          View all
         </button>
       </div>
     </div>

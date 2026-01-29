@@ -347,7 +347,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <div className="w-full">
                       <SelectField
                         disabled={isDisable}
-                        label="Repeat Year"
+                        label="Repeat on Month ( For Every year selection )"
                         name="repeatedByYear"
                         required
                         options={getMonthList()}
@@ -377,7 +377,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     value: OccurrenceEndType.onDate,
                   },
                   {
-                    label: "After particular date",
+                    label: "After Particular Occurrence",
                     value: OccurrenceEndType.afterDate,
                   },
                 ]}
