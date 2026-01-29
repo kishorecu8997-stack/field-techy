@@ -20,7 +20,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "liveChatSend"
     | "no_style"
     | "dropdown"
-    | "no_style"
     | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;

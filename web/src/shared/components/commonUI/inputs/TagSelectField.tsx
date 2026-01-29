@@ -1,5 +1,5 @@
 import { Listbox, Transition } from "@headlessui/react";
-import React, { Fragment, useRef,useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import {
   Controller,
   useFormContext,
@@ -46,9 +46,9 @@ export const TagSelectField = ({
   options = [],
   disabled = false,
 }: TagSelectFieldProps) => {
-  const { control} = useFormContext();
+  const { control } = useFormContext();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-const [position, setPosition] = useState<"top" | "bottom">("bottom");
+  const [position, setPosition] = useState<"top" | "bottom">("bottom");
 
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
