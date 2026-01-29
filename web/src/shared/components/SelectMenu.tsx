@@ -6,6 +6,7 @@ interface Option {
   label: string;
   bg?: string;
   icon?: React.ComponentType<{ className?: string }>;
+  disabled?: boolean;
 }
 
 interface SimpleSelectProps {
@@ -97,6 +98,7 @@ const SelectMenu = ({
   }, [isOpen]);
 
   const handleSelect = (option: Option) => {
+    if (option.disabled) return;
     onChange?.(option.value);
     setIsOpen(false);
   };
@@ -159,13 +161,16 @@ const SelectMenu = ({
               onClick={() => {
                 handleSelect(option);
               }}
-              className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm ${
-                badge
-                  ? `${option?.bg ?? "bg-gray-100"}`
-                  : option.value === selectedValue
-                    ? "bg-emerald-100 text-gray-900 font-medium"
-                    : "hover:bg-gray-100 dark:hover:bg-blue-400"
-              }`}
+              className={`flex items-center gap-x-1 px-3 py-2 cursor-pointer text-sm 
+                ${
+                  option.disabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : option.value === selectedValue
+                      ? "bg-emerald-100 text-gray-900 font-medium"
+                      : badge
+                        ? `${option?.bg ?? "bg-gray-100"}`
+                        : "hover:bg-gray-100 dark:hover:bg-blue-400"
+                }`}
             >
               {badge && option.icon && (
                 <option.icon className="inline w-4 h-4 ml-2" />
