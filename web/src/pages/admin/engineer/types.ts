@@ -78,6 +78,7 @@ export interface ManageEngineerProps {
   suspendBy?: string;
   suspendOn?: string;
   currentStatus?: string;
+  submittedDocuments: string[];
 }
 export interface SuspendEngineerFormData {
   suspendStartDate: Date | null;

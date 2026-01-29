@@ -13,7 +13,8 @@ import type {
   FileUploadResponse,
   PagedResponse,
 } from "./clientTypes";
-import regionsAndCountries from "@/dummy_data/regionsAndCountries";
+import statesAndCitiesRaw from "@/dummy_data/statesAndCities.json";
+import type { Option, StatesAndCities } from "./statesAndCities.types";
 
 /*
  * ClientAdapter
@@ -25,6 +26,8 @@ import regionsAndCountries from "@/dummy_data/regionsAndCountries";
  * The adapter also includes a helper function for converting pagination
  * parameters into the expected format for the API.
  */
+
+const statesAndCities = statesAndCitiesRaw as StatesAndCities;
 export class ClientAdapter {
   /**
    * Registers a new client.
@@ -322,55 +325,38 @@ export class ClientAdapter {
   // ===== Dropdown Data Methods =====
 
   /**
-   * Get list of states for a country
+   * Retrieves the list of states for a given country.
+   *
+   * @param countryId - ISO country code (e.g. "IN", "US")
+   * @returns Promise resolving to a list of state options
    */
-  static async getStates(countryLabel: string): Promise<{ value: string; label: string }[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Filter subdivisions that belong to the given country
-      const states = regionsAndCountries
-        .filter(
-          (item) =>
-            item.type === "subdivision" &&
-            item.region?.toLowerCase() === countryLabel.toLowerCase()
-        )
-        .map((item) => ({
-          value: item.value,
-          label: item.label,
-        }));
+  static async getStates(countryId: string): Promise<Option[]> {
+    const normalizedCountryId = countryId.toUpperCase();
 
-      resolve(states);
-    }, 200); // simulate async
-  });
-}
+    console.log(`[STUB] Fetching states for country: ${normalizedCountryId}`);
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(statesAndCities.states[normalizedCountryId] ?? []);
+      }, 500);
+    });
+  }
 
   /**
-   * Get list of cities for a state
+   * Retrieves the list of cities for a given state.
+   *
+   * @param stateId - Unique identifier of the state
+   * @returns Promise resolving to a list of city options
    */
-static async getCities(stateValue: string): Promise<{ value: string; label: string }[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // 1. Find the state object first
-      const state = regionsAndCountries.find(
-        (item) => item.type === "subdivision" && item.value === stateValue
-      );
+  static async getCities(stateId: string): Promise<Option[]> {
+    console.log(`[STUB] Fetching cities for state: ${stateId}`);
 
-      if (!state) {
-        resolve([]); // state not found
-        return;
-      }
-
-      // 2. Filter cities that have region = state's label
-      const cities = regionsAndCountries
-        .filter(
-          (item) => item.type === "city" && item.region === state.label
-        )
-        .map((item) => ({ value: item.value, label: item.label }));
-
-      resolve(cities);
-    }, 200);
-  });
-}
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(statesAndCities.cities[stateId] ?? []);
+      }, 500);
+    });
+  }
 
   /**
    * Get list of industries
