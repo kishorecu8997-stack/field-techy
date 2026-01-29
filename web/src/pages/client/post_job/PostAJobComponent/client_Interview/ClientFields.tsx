@@ -6,6 +6,7 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { validateEmail, validateName } from "@/utils/validate";
 import { Controller, useFormContext } from "react-hook-form";
 import SectionHeader from "../SectionHeader";
+import { useEffect, useState } from "react";
 
 /*
  *  Client Fields
@@ -17,6 +18,42 @@ import SectionHeader from "../SectionHeader";
  *  */
 const ClientFields = () => {
   const ctx = useFormContext();
+  const startDate = ctx.watch("startDate");
+  const [minStartTime, setMinStartTime] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!startDate) {
+      setMinStartTime(undefined);
+      return;
+    }
+
+    let selectedDate: Date;
+    if (typeof startDate === "string") {
+      const [year, month, day] = startDate.split("-").map(Number);
+      selectedDate = new Date(year, month - 1, day);
+    } else if (startDate instanceof Date) {
+      selectedDate = new Date(startDate);
+    } else {
+      setMinStartTime(undefined);
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate.getTime() === today.getTime()) {
+      const now = new Date();
+      now.setSeconds(0, 0); // reset seconds and milliseconds
+      now.setMinutes(now.getMinutes() + 1);
+
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      setMinStartTime(`${hours}:${minutes}`);
+    } else {
+      setMinStartTime(undefined); // no restriction for future dates
+    }
+  }, [startDate]);
 
   return (
     <div className="flex flex-col h-full gap-2">
@@ -55,6 +92,7 @@ const ClientFields = () => {
                     label="Start Date"
                     placeholder="Select start date"
                     {...field}
+                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                     required
                   />
                 </>
@@ -62,7 +100,12 @@ const ClientFields = () => {
             />
           </div>
           <div className="w-full">
-            <CustomTimePicker label="Start Time" name="startTime" required />
+            <CustomTimePicker
+              label="Start Time"
+              name="startTime"
+              required
+              minTime={minStartTime}
+            />
           </div>
         </div>
       </div>

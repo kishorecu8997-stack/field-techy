@@ -369,7 +369,7 @@ const BasicDetails = () => {
         </div>
       </div>
       <div className="flex-shrink-0 p-4">
-        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto -translate-x-2 transform">
           <Button
             type="submit"
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
