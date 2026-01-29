@@ -4,6 +4,7 @@ import {
   type FieldValues,
   type RegisterOptions,
   type Path,
+  useFormContext,
 } from "react-hook-form";
 
 interface CheckboxSelectorProps<T extends FieldValues> {
@@ -59,6 +60,7 @@ const CheckboxSelector = <T extends FieldValues>({
   selectorClassName = "",
   disabled = false,
 }: CheckboxSelectorProps<T>) => {
+  const { clearErrors } = useFormContext<T>();
   // Build required message
   let requiredMessage: string | false = false;
   if (typeof required === "string") {
@@ -89,6 +91,9 @@ const CheckboxSelector = <T extends FieldValues>({
             ? selected.filter((x) => x !== item)
             : [...selected, item];
           onChange(updated);
+          if (updated.length > 0) {
+            clearErrors(name);
+          }
         };
 
         return (
