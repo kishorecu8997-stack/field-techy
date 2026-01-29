@@ -14,7 +14,10 @@ import {
   useEngineerProfile,
   useEngineerStore,
 } from "@/shared/store/useEngineerStore";
-import { useServiceCategories, type LookupItem } from "@/shared/hooks/useLookup";
+import {
+  useServiceCategories,
+  type LookupItem,
+} from "@/shared/hooks/useLookup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -137,7 +140,8 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
     }
     if (!engineerProfile?.serviceCategory || !serviceCategories) return "Engineer";
     const category = serviceCategories.find(
-      (cat: LookupItem) => String(cat.id) === String(engineerProfile.serviceCategory),
+      (cat: LookupItem) =>
+        String(cat.id) === String(engineerProfile.serviceCategory),
     );
     return category ? category.name : "Engineer";
   }, [isClient, clientProfile, engineerProfile?.serviceCategory, serviceCategories]);

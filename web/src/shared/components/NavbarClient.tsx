@@ -6,6 +6,7 @@ import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
+import IconWithTheme from "./IconWithTheme";
 import { JobSearchBarClient } from "./jobSearchBarClient";
 import {
   useClientStore,
@@ -73,14 +74,16 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   const displayName = useClientDisplayName();
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
+    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <img
-          src={assetsConfig.logos.ftLogo}
-          alt="FT Logo"
-          className="h-12 w-auto cursor-pointer"
-          onClick={() => navigate(absoluteUrls.client.home.dashboard)}
-        />
+        <span onClick={() => navigate(absoluteUrls.client.home.dashboard)}>
+          <IconWithTheme
+            lightLogo={assetsConfig.logos.ftLogo}
+            darkLogo={assetsConfig.logos.ftLogoWhite}
+            header
+          />
+        </span>
+
         <NavLink
           to={absoluteUrls.client.home.my_projects}
           className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
@@ -181,7 +184,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
         <div
-          className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="relative p-2 text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.client.home.chat);
           }}
@@ -192,7 +195,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           </span>
         </div>
         <div
-          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientNotification");

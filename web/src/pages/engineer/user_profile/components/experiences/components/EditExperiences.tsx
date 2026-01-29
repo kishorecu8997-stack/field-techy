@@ -16,7 +16,7 @@ import type { ExperiencesFormData } from "./types";
 import {
   useEngineerGetExperience,
   useEngineerUpdateExperience,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
@@ -30,7 +30,7 @@ const EditExperiences = () => {
   const { mutateAsync: updateExperience } = useEngineerUpdateExperience();
   const { data: workLocations } = useLookupData("workLocations");
   const { data: employmentTypes } = useLookupData("employmentTypes");
-  const { data: designations } = useLookupData("serviceCategories")
+  const { data: designations } = useLookupData("serviceCategories");
 
   const methods = useForm<ExperiencesFormData>({
     mode: "onSubmit",

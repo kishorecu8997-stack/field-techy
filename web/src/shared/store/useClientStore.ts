@@ -30,7 +30,8 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearClientProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
+    if (currentUrl && currentUrl.startsWith("blob:"))
+      URL.revokeObjectURL(currentUrl);
     set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
   fetchClientProfile: async () => {

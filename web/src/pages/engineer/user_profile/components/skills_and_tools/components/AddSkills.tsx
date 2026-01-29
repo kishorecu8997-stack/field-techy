@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import {
   useEngineerGetSkillsAndTools,
   useEngineerUpdateSkillsAndTools,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
@@ -49,17 +49,20 @@ const AddSkills = () => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            const existingSkillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const existingSkillIds =
+              currentSkillsAndTools?.skills.map((s) => s.id) || [];
             const newSkillIds = data.skills.map(Number);
-            const combinedSkillIds = Array.from(new Set([...existingSkillIds, ...newSkillIds]));
-            const toolIds = currentSkillsAndTools?.tools.map(t => t.id) || [];
+            const combinedSkillIds = Array.from(
+              new Set([...existingSkillIds, ...newSkillIds]),
+            );
+            const toolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
 
             try {
               await updateSkillsAndTools({
                 body: {
                   skills: combinedSkillIds,
-                  tools: toolIds
-                }
+                  tools: toolIds,
+                },
               });
               toast.success("Skills Added Successfully");
               await refetchProfile();

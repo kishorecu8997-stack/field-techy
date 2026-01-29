@@ -9,7 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import {
   useEngineerGetSkillsAndTools,
   useEngineerUpdateSkillsAndTools,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -33,7 +33,7 @@ const EditTools = () => {
   useEffect(() => {
     if (currentSkillsAndTools) {
       methods.reset({
-        tools: currentSkillsAndTools.tools.map(t => t.id.toString()),
+        tools: currentSkillsAndTools.tools.map((t) => t.id.toString()),
       });
     }
   }, [currentSkillsAndTools, methods]);
@@ -55,14 +55,15 @@ const EditTools = () => {
           variant: "primary",
           action: async (close) => {
             const toolIds = formData.tools.map(Number);
-            const skillIds = currentSkillsAndTools?.skills.map(s => s.id) || [];
+            const skillIds =
+              currentSkillsAndTools?.skills.map((s) => s.id) || [];
 
             try {
               await updateSkillsAndTools({
                 body: {
                   skills: skillIds,
-                  tools: toolIds
-                }
+                  tools: toolIds,
+                },
               });
               toast.success("Tools Updated Successfully");
               close(true);

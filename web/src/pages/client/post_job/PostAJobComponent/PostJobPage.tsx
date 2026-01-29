@@ -1,13 +1,16 @@
+import type { ClientPostJobData } from "@/api";
 import { absoluteUrls } from "@/config/urls";
 import { TemplateData } from "@/dummy_data/client";
+import { useClientMarkJobFileUploaded, useClientPostJob } from "@/shared/apiServices/client/clientOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { useForm } from "react-hook-form";
 import { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -15,15 +18,12 @@ import {
   OccurrenceEndType,
   OccurrenceFields,
   RepeatByFields,
-  type locationTypeType,
   type PostAJobFieldsProps,
-  type PostOption,
+  type PostOption
 } from "../types";
+import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
-import BillSummary from "./components/form_sections/BillSummary";
-import { useClientPostJob, useClientMarkJobFileUploaded } from "@/shared/apiServices/client/clientOpenApiService";
-import type { ClientPostJobData } from "@/api";
 
 /**
  * PostJobPage Component
@@ -175,7 +175,6 @@ const PostJobPage = () => {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate: postJob, isPending: isPosting } = useClientPostJob();
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
@@ -268,8 +267,7 @@ const PostJobPage = () => {
         },
         onError: (error: unknown) => {
           console.error("Post job error:", error);
-          const msg = (error as { message?: string })?.message || "Failed to post job";
-          toast.error(msg);
+          toast.error(GlobalApiErrorHandler.handle(error).message);
         },
       }
     );

@@ -8,15 +8,13 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import type { ExperiencesFormData } from "./types";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import {
-  designationOptions,
-} from "./constants";
+import { designationOptions } from "./constants";
 import { toast } from "react-toastify";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import {
   useEngineerAddExperience,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**

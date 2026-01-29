@@ -56,7 +56,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   containerClassName = "w-full",
   inputClassName = "w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
 }) => {
-  const { control } = useFormContext();
+  const { control, clearErrors } = useFormContext();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -198,6 +198,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
           const setValue = (h: string, m: string, p: "AM" | "PM") => {
             const newVal = combineTo24(h, m, p);
             field.onChange(newVal);
+            clearErrors(name);
             onChange?.(newVal);
           };
 

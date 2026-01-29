@@ -124,7 +124,7 @@ const SignUpWithEmail = ({
             leftIcon={
               <MdOutlineMailOutline className="text-lg text-gray-500" />
             }
-          // rules={validateEmailRules}
+            // rules={validateEmailRules}
           />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput

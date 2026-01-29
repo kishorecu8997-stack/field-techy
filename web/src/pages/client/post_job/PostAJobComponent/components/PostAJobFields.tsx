@@ -93,14 +93,11 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
     ) {
       getRateCard(
         {
-          body: {
+          query: {
             serviceCategoryId: Number(serviceCategory),
             experienceLevelId: Number(experienceLevel),
             engagementModelId: Number(engagementModel) || 1,
             countryId: Number(selectedCountry),
-          },
-          headers: {
-            authorization: "",
           },
         },
         {
@@ -127,24 +124,19 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div className="flex gap-4 flex-row p-2">
       <div className="w-2/3 space-y-8 bg-white dark:bg-gray-900 rounded-lg p-4">
-
         <JobDetailsSection isDisable={isDisable} />
-
         <LocationSection
           isDisable={isDisable}
           countryOptions={countryOptions}
           stateOptions={stateOptions}
           cityOptions={cityOptions}
         />
-
         <SchedulingSection isDisable={isDisable} />
-
         <RequirementsSection
           isDisable={isDisable}
           skillOptions={skillOptions}
           toolOptions={toolOptions}
         />
-
         <RateCardSection
           isDisable={isDisable}
           serviceCategoryOptions={serviceCategoryOptions}
@@ -152,9 +144,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
           countryOptions={countryOptions}
           rate={rate}
         />
-
         <OtherDetailsSection isDisable={isDisable} />
-
         {!isDisable && (
           <div className="flex justify-end gap-2 mt-2">
             <Button

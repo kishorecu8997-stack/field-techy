@@ -1,10 +1,10 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
+  designationOptions,
   employmentTypeOptions,
   workLocationTypeOptions,
-  designationOptions,
 } from "./constants";
 
 /**
@@ -79,8 +79,11 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800">
-                      {designationLabelMap.get(String(item.designation || "")) ||
-                        item.designation || "Unknown Designation"}
+                      {designationLabelMap.get(
+                        String(item.designation || ""),
+                      ) ||
+                        item.designation ||
+                        "Unknown Designation"}
                     </h3>
                   </div>
 
@@ -90,7 +93,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                       className="hover:text-blue-600 transition-colors"
                       aria-label="Edit"
                     >
-                      <FaRegEdit />
+                      <FiEdit2 />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(String(item.id || ""))}
@@ -115,12 +118,14 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Employment Type:</span>{" "}
-                    {employmentTypeLabelMap.get(String(item.employmentTypeId || "")) ||
-                      "N/A"}
+                    {employmentTypeLabelMap.get(
+                      String(item.employmentTypeId || ""),
+                    ) || "N/A"}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     <span className="font-medium">Duration:</span>{" "}
-                    {formatDate(item.startDate)} - {item.endDate ? formatDate(item.endDate) : "Present"}
+                    {formatDate(item.startDate)} -{" "}
+                    {item.endDate ? formatDate(item.endDate) : "Present"}
                   </p>
                 </div>
 

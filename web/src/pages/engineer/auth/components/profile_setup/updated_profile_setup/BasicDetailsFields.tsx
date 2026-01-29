@@ -13,7 +13,14 @@ import { InputField } from "@/shared/components/commonUI/inputs";
 import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
-import { useCities, useCountries, useServiceCategories, useSkills, useStates, type LookupItem } from "@/shared/hooks/useLookup";
+import {
+  useCities,
+  useCountries,
+  useServiceCategories,
+  useSkills,
+  useStates,
+  type LookupItem,
+} from "@/shared/hooks/useLookup";
 import { validatePortfolioLink } from "@/shared/libs/utils";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
@@ -22,7 +29,6 @@ import { FaRegUser } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoUnlinkSharp, IoWalletOutline } from "react-icons/io5";
 import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
-
 
 const BasicDetailsFields = () => {
   const { watch } = useFormContext();
@@ -41,11 +47,46 @@ const BasicDetailsFields = () => {
   const skillsQuery = useSkills();
   const serviceCategoriesQuery = useServiceCategories();
 
-  const countries = useMemo(() => (countriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [countriesQuery.data]);
-  const states = useMemo(() => (statesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [statesQuery.data]);
-  const cities = useMemo(() => (citiesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [citiesQuery.data]);
-  const skills = useMemo(() => (skillsQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [skillsQuery.data]);
-  const serviceCategories = useMemo(() => (serviceCategoriesQuery.data || []).map((i: LookupItem) => ({ value: i.id, label: i.name })), [serviceCategoriesQuery.data]);
+  const countries = useMemo(
+    () =>
+      (countriesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [countriesQuery.data],
+  );
+  const states = useMemo(
+    () =>
+      (statesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [statesQuery.data],
+  );
+  const cities = useMemo(
+    () =>
+      (citiesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [citiesQuery.data],
+  );
+  const skills = useMemo(
+    () =>
+      (skillsQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [skillsQuery.data],
+  );
+  const serviceCategories = useMemo(
+    () =>
+      (serviceCategoriesQuery.data || []).map((i: LookupItem) => ({
+        value: i.id,
+        label: i.name,
+      })),
+    [serviceCategoriesQuery.data],
+  );
 
   const statesLoading = statesQuery.isLoading;
   const citiesLoading = citiesQuery.isLoading;
@@ -143,7 +184,9 @@ const BasicDetailsFields = () => {
       <SelectField
         name="serviceCategory"
         label="Service Category"
-        placeholder={serviceCategoriesLoading ? "Loading categories..." : "Select Category"}
+        placeholder={
+          serviceCategoriesLoading ? "Loading categories..." : "Select Category"
+        }
         options={serviceCategories}
         required
         disabled={serviceCategoriesLoading}
