@@ -13,14 +13,14 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { BiEdit } from "react-icons/bi";
 // import { HiOutlineDotsVertical } from "react-icons/hi";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiDocumentText } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import ProjectInfoCard from "./ProjectInfoCard";
 import MemberPopup from "../createProject/components/MemberPopup";
+import ProjectInfoCard from "./ProjectInfoCard";
 
 /**
  * `ProjectDetails` component displays the detailed view of a single project.
@@ -204,7 +204,7 @@ export default function ProjectDetails() {
                           Project Site {site.id}
                         </h4>
                         <div className="flex space-x-2">
-                          <BiEdit
+                          <FiEdit2
                             className="text-lg cursor-pointer"
                             onClick={() => {
                               localStorage.setItem(
@@ -264,21 +264,21 @@ export default function ProjectDetails() {
 
           {/* SideCard */}
           <div className="lg:w-3/12 space-y-4">
-            <div className="bg-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
               <h3 className="text-sm md:text-lg font-medium mb-1">
                 Remaining Budget
               </h3>
-              <p className="md:text-3xl font-bold text-gray-900">
+              <p className="md:text-3xl font-bold text-gray-900 dark:text-gray-200">
                 INR {projectDetails?.remainingbudget}
               </p>
             </div>
 
-            <div className="bg-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-4 shadow-sm">
               <h3 className="text-sm font-medium mb-3">
                 Project Execution Timeline
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
+                <div className="bg-white dark:border dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
                   <p className="mb-1">Actual Start Date</p>
                   <p className="text-sm font-semibold">
                     {dayjs(projectDetails?.actualStartDate).format(
@@ -286,7 +286,7 @@ export default function ProjectDetails() {
                     )}
                   </p>
                 </div>
-                <div className="bg-white dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
+                <div className="bg-white dark:border dark:bg-gray-800 dark:text-white rounded-lg p-3 text-center shadow-sm">
                   <p className="mb-1">Actual End Date</p>
                   <p className="text-sm font-semibold">
                     {dayjs(projectDetails?.actualEndDate).format("DD-MM-YYYY")}

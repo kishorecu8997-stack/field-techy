@@ -1,6 +1,7 @@
 import type { WalletData, Transaction } from "../types";
 import { sampleWalletData } from "@/dummy_data/sampleWalletData";
-import React, { useEffect, useState } from "react";
+import { useThemeHook } from "@/shared/hooks/useThemeHook";
+import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 interface WalletComponentProps {
@@ -17,22 +18,8 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
   data = sampleWalletData,
   onMenuItemClick,
 }) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-
-  // Check for system preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDarkMode(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -182,13 +169,9 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
             onClick={() =>
               onMenuItemClick(WALLET_COMPONENTS.RECENT_TRANSACTIONS)
             }
-            className={`cursor-pointer text-sm ${
-              isDarkMode
-                ? "text-blue-400 hover:text-blue-300"
-                : "text-blue-600 hover:text-blue-700"
-            }`}
+            className="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
           >
-            View All
+            View all
           </button>
         </div>
 

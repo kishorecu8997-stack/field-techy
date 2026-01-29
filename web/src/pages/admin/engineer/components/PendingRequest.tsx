@@ -18,6 +18,15 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import type { adminJobsStatus } from "../../jobs/types";
 import { toast } from "react-toastify";
 
+export const EngineerStatus = {
+  APPROVE: "approve",
+  REJECT: "reject",
+  PENDING: "pending",
+} as const;
+
+export type EngineerStatusType =
+  (typeof EngineerStatus)[keyof typeof EngineerStatus];
+
 /**
  * PendingRequest Component
  *
@@ -34,21 +43,62 @@ import { toast } from "react-toastify";
  *
  * @returns {JSX.Element} The rendered PendingRequest component.
  */
+
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageEngineer
+    .filter((e) => e.kycStatus === "Pending")
+    .filter((e) => {
+      const query = search.toLowerCase();
+
+      return (
+        e.engineerID.toLowerCase().includes(query) ||
+        e.details.name.toLowerCase().includes(query) ||
+        e.details.email.toLowerCase().includes(query) ||
+        e.location.toLowerCase().includes(query)
+      );
+    });
 
   const handleStatusChange = async (data: ManageEngineerProps) => {
     if (!data.status) return;
-    const status = data.status;
+
+    const status = data.status.toLowerCase();
+    let toastMessage = "";
+
+    switch (status) {
+      case EngineerStatus.APPROVE:
+        toastMessage = "Engineer approved successfully!";
+        break;
+      case EngineerStatus.REJECT:
+        toastMessage = "Engineer rejected successfully!";
+        break;
+      case EngineerStatus.PENDING:
+        toastMessage = "Engineer marked as pending successfully!";
+        break;
+      default:
+        toastMessage = `Engineer status updated to ${data.status}`;
+        break;
+    }
+    let bodyMessage = "";
+
+    if (data.status.toLowerCase() === "pending") {
+      bodyMessage = "Are you sure you want to set this engineer to pending?";
+    } else {
+      const formattedStatus =
+        data.status.charAt(0).toUpperCase() +
+        data.status.slice(1).toLowerCase();
+      bodyMessage = `Are you sure you want to ${formattedStatus} this engineer?`;
+    }
+
     await showPopup({
-      title: `${status?.charAt(0).toUpperCase() + status?.slice(1)} Engineer`,
-      body: `Are you sure you want to ${
-        status?.charAt(0).toUpperCase() + status?.slice(1)
-      } this Engineer?`,
+      title: `${data.status.charAt(0).toUpperCase() + data.status.slice(1)} Engineer`,
+      body: bodyMessage,
       actionButtons: [
         {
           label: "Cancel",
@@ -59,21 +109,28 @@ export default function PendingRequest() {
           label: "Yes",
           value: "yes",
           variant:
-            status.toLocaleLowerCase() === "approve" ? "primary" : "danger",
+            status === EngineerStatus.APPROVE
+              ? "primary"
+              : status === EngineerStatus.REJECT
+                ? "danger"
+                : status === EngineerStatus.PENDING
+                  ? "warning"
+                  : "secondary",
           action: async (close) => {
-            toast.success(
-              `Enginner ${
-                status.toLocaleLowerCase() === "approve"
-                  ? "approved"
-                  : "rejected"
-              } successfully!`,
-            );
+            if (status === EngineerStatus.REJECT) {
+              toast.error(toastMessage);
+            } else if (status === EngineerStatus.APPROVE) {
+              toast.success(toastMessage);
+            } else {
+              toast.warning(toastMessage);
+            }
             close(true);
           },
         },
       ],
     });
   };
+
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
@@ -128,6 +185,25 @@ export default function PendingRequest() {
       },
     },
     {
+      key: "submittedDocuments",
+      label: "Submitted Documents",
+      renderCell: (row: ManageEngineerProps) => {
+        const documents = row.submittedDocuments;
+        return (
+          <div className="text-sm flex flex-col gap-1">
+            {documents.map((doc, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
+              >
+                {doc}
+              </span>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
       key: "documents",
       label: "View Documents",
       align: "center",
@@ -155,43 +231,61 @@ export default function PendingRequest() {
     {
       key: "registrationDate",
       label: "Registration Date",
+      dataCellAlign: "center",
     },
     {
       key: "walletBalance",
       label: "Wallet Balance",
+      dataCellAlign: "center",
     },
     {
       key: "kycStatus",
       label: "KYC Status",
+      dataCellAlign: "center",
     },
     {
       key: "employmentStatus",
       label: "Employment Status",
+      dataCellAlign: "center",
     },
     {
       key: "avgRating",
       label: "Avg Rating",
+      dataCellAlign: "center",
     },
     {
       key: "approvalStatus",
       label: "Approve/Reject",
       renderCell: (row: ManageEngineerProps) => {
+        const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
+        const preparedOptions = [
+          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
+            ...opt,
+            disabled: true,
+          })),
+          ...JobStatus.filter((opt) => opt.value !== current),
+        ];
+
         return (
           <div className="relative w-full">
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] || ""}
+              value={current}
               onChange={(value: string | null) => {
+                if (!value || value === current) return;
+
                 setRowStatuses((prev) => ({
                   ...prev,
-                  [row.id]: value ?? "",
+                  [row.id]: value,
                 }));
+
                 handleStatusChange({
                   ...row,
                   status: value as adminJobsStatus,
                 });
               }}
-              options={JobStatus}
+              options={preparedOptions}
+              badge
             />
           </div>
         );
@@ -236,12 +330,12 @@ export default function PendingRequest() {
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput />
+          <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto ">
           <CustomTable<ManageEngineerProps>
             columns={columns}
-            data={manageEngineer}
+            data={filteredData}
             initialPageSize={10}
           />
         </div>

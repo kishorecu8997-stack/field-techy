@@ -1,35 +1,33 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import Popup from "@/shared/components/Popup";
-import logo_light from "@/assets/logo/logo_light.svg";
-import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import {
   CheckboxInput,
   InputField,
   PasswordInput,
 } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import Popup from "@/shared/components/Popup";
 import { validatePassword } from "@/shared/libs/utils";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 
-import type { LoginFormData } from "../types";
+import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { toast } from "react-toastify";
-import { type LoginEmailFormData } from "../../validations/LoginEmail";
+import IconWithTheme from "@/shared/components/IconWithTheme";
+import TwoFASetup from "@/shared/components/TwoFASetup";
+import { UserRole } from "@/shared/enums/users";
+import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import {
   useUserSessionStore,
   type UserSession,
 } from "@/shared/store/useUserSessionStore";
-import { useEngineerLogin } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { CiMail } from "react-icons/ci";
-import { UserRole } from "@/shared/enums/users";
-import { AxiosError } from "axios";
-import TwoFASetup from "@/shared/components/TwoFASetup";
-import { useTwoFactorAuth } from "@/shared/hooks/useTwoFactorAuth ";
 import { getTwoFaStorage } from "@/utils/TwoFAStorage";
-import IconWithTheme from "@/shared/components/IconWithTheme";
+import { AxiosError } from "axios";
+import { CiMail } from "react-icons/ci";
+import { toast } from "react-toastify";
+import { type LoginEmailFormData } from "../../validations/LoginEmail";
+import type { LoginFormData } from "../types";
 
 /**
  * Login component
@@ -51,39 +49,40 @@ const Login = ({
 
   const setUserSession = useUserSessionStore((s) => s.setSession);
 
-  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useEngineerLogin({
-    onSuccess: async (resp) => {
-      if (resp.token) {
-        localStorage.setItem("auth_token", resp.token);
-      }
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } =
+    useEngineerLogin({
+      onSuccess: async (resp) => {
+        if (resp.token) {
+          localStorage.setItem("auth_token", resp.token);
+        }
 
-      setUserSession({
-        accessToken: resp.token,
-        userId: "uuid-123", // TODO: Get actual user ID from token or profile response
-        role: UserRole.ENGINEER,
-        initiatedAt: Date.now(),
-      } as UserSession);
+        setUserSession({
+          accessToken: resp.token,
+          userId: "uuid-123", // TODO: Get actual user ID from token or profile response
+          role: UserRole.ENGINEER,
+          initiatedAt: Date.now(),
+        } as UserSession);
 
-      const twoFa = getTwoFaStorage();
-      if (twoFa.enabled) {
-        triggerTwoFA();
-        return;
-      }
+        const twoFa = getTwoFaStorage();
+        if (twoFa.enabled) {
+          triggerTwoFA();
+          return;
+        }
 
-      navigate(absoluteUrls.engineer.home.dashboard);
-      toast.success("Logged in successfully");
-    },
-    onError: (error) => {
-      console.error(error);
-      // Skip showing toast for 401 errors as axios interceptor already handles it
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return;
-      }
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      toast.error(errorMessage);
-    },
-  });
+        navigate(absoluteUrls.engineer.home.dashboard);
+        toast.success("Logged in successfully");
+      },
+      onError: (error) => {
+        console.error(error);
+        // Skip showing toast for 401 errors as axios interceptor already handles it
+        if (error instanceof AxiosError && error.response?.status === 401) {
+          return;
+        }
+        const errorMessage =
+          error instanceof Error ? error.message : "Login failed";
+        toast.error(errorMessage);
+      },
+    });
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -110,7 +109,7 @@ const Login = ({
       body: {
         email: data.email,
         password: data.password,
-        userRole: UserRole.ENGINEER
+        userRole: UserRole.ENGINEER,
       },
     });
   };
@@ -122,7 +121,7 @@ const Login = ({
           <div className="flex justify-center mb-8">
             <IconWithTheme
               lightLogo={assetsConfig.logos.ftLogo}
-              darkLogo={logo_light}
+              darkLogo={assetsConfig.logos.ftLogoWhite}
               className="h-15 w-20"
             />
           </div>
@@ -149,7 +148,7 @@ const Login = ({
             label="Email ID"
             type="text"
             required
-            rules={validateEmailRules}
+            // rules={validateEmailRules}
           />
           <PasswordInput
             name="password"
@@ -200,7 +199,6 @@ const Login = ({
             </span>
           </Button>
         </div> */}
-
 
         <Popup open={isTwoFaOpen} onClose={() => setIsTwoFaOpen(false)}>
           <TwoFASetup

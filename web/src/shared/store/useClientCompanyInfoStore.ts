@@ -7,8 +7,10 @@ interface ClientCompanyInfoState {
   clearCompanyInfo: () => void;
 }
 
-export const useClientCompanyInfoStore = create<ClientCompanyInfoState>((set) => ({
-  companyInfo: null,
-  setCompanyInfo: (info) => set({ companyInfo: info }),
-  clearCompanyInfo: () => set({ companyInfo: null }),
-}));
+export const useClientCompanyInfoStore = create<ClientCompanyInfoState>(
+  (set) => ({
+    companyInfo: null,
+    setCompanyInfo: (info) => set({ companyInfo: info }),
+    clearCompanyInfo: () => set({ companyInfo: null }),
+  }),
+);

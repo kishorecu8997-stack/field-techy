@@ -75,31 +75,6 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   const locationType = watch("locationType");
   const selectedToolFiles = watch("toolImages") as FileList | undefined;
 
-  const today = useMemo(() => {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }, []);
-
-  const stateOptions = useMemo(
-    () => statesByCountry[selectedCountry] || [],
-    [selectedCountry],
-  );
-
-  const cityOptions = useMemo(
-    () => citiesByState[selectedState] || [],
-    [selectedState],
-  );
-
-  useEffect(() => {
-    setValue("state", "");
-    setValue("city", "");
-  }, [selectedCountry, setValue]);
-
-  useEffect(() => {
-    setValue("city", "");
-  }, [selectedState, setValue]);
-
   const handleDeleteInterviewer = async () => {
     await showPopup({
       title: "Delete Client Interviewer",

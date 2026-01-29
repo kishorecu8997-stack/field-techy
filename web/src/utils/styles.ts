@@ -13,7 +13,15 @@ export const getMdGridColsClass = (cols: number) => {
   return map[cols] ?? "md:grid-cols-3"; // default
 };
 
+const isDark =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 export const tourStyles = {
+  popover: (base: CSSProperties) => ({
+    ...base,
+    backgroundColor: isDark ? "#101829" : "#ffffff",
+  }),
   maskArea: (base: CSSProperties & { rx?: number }) => ({
     ...base,
     rx: 10,

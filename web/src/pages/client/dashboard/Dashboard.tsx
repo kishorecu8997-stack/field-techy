@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
                   >
                     <Button
                       variant="link"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer"
+                      className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
                     >
                       View all
                     </Button>
@@ -112,9 +112,12 @@ const Dashboard: React.FC = () => {
                   to={absoluteUrls.client.home.my_jobs}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >
-                  <div className="text-blue-600 dark:text-blue-400 hover:underline text-sm cursor-pointer">
+                  <Button
+                    variant="link"
+                    className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
+                  >
                     View all
-                  </div>
+                  </Button>
                 </NavLink>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 cursor-pointer">

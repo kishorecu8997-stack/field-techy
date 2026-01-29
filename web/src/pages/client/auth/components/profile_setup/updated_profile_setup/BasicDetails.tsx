@@ -158,19 +158,24 @@ const BasicDetails = () => {
   // Helper to safely get numeric ID from string or Select option
   const getIdValue = (val: unknown): number | undefined => {
     if (!val) return undefined;
-    if (typeof val === 'object' && 'value' in (val as object)) {
+    if (typeof val === "object" && "value" in (val as object)) {
       const v = (val as { value: unknown }).value;
-      return typeof v === 'number' ? v : (typeof v === 'string' && !isNaN(Number(v)) ? Number(v) : undefined);
+      return typeof v === "number"
+        ? v
+        : typeof v === "string" && !isNaN(Number(v))
+          ? Number(v)
+          : undefined;
     }
-    if (typeof val === 'number') return val;
-    if (typeof val === 'string' && !isNaN(Number(val))) return Number(val);
+    if (typeof val === "number") return val;
+    if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
     return undefined;
   };
 
   // Helper to safely get string value from Select option
   const getStringValue = (val: unknown): string => {
     if (!val) return "";
-    if (typeof val === "object" && "value" in (val as object)) return String((val as { value: unknown }).value);
+    if (typeof val === "object" && "value" in (val as object))
+      return String((val as { value: unknown }).value);
     return String(val);
   };
 
@@ -191,20 +196,20 @@ const BasicDetails = () => {
 
     return clientType === ClientTypeEnum.CORPORATE
       ? {
-        ...baseFields,
-        clientType: "corporate" as const, // API expects string literal "corporate"
-        companyName: data.companyName || "",
-        personName: data.contactPersonName || data.fullName || "",
-        address: data.address || "",
-        industryId: getIdValue(data.industry),
-        documentType: getStringValue(data.documentType) || undefined,
-        documentNumber: data.registrationNumber || undefined,
-        businessType: getStringValue(data.businessType) || undefined,
-      }
+          ...baseFields,
+          clientType: "corporate" as const, // API expects string literal "corporate"
+          companyName: data.companyName || "",
+          personName: data.contactPersonName || data.fullName || "",
+          address: data.address || "",
+          industryId: getIdValue(data.industry),
+          documentType: getStringValue(data.documentType) || undefined,
+          documentNumber: data.registrationNumber || undefined,
+          businessType: getStringValue(data.businessType) || undefined,
+        }
       : {
-        ...baseFields,
-        clientType: "home" as const, // API expects string literal "home"
-      };
+          ...baseFields,
+          clientType: "home" as const, // API expects string literal "home"
+        };
   };
 
   // Auto-save form changes to store
@@ -364,7 +369,7 @@ const BasicDetails = () => {
         </div>
       </div>
       <div className="flex-shrink-0 p-4">
-        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto -translate-x-2 transform">
           <Button
             type="submit"
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
@@ -388,4 +393,3 @@ const BasicDetails = () => {
 };
 
 export default BasicDetails;
-

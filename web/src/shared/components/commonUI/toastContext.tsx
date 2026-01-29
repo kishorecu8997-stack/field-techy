@@ -50,9 +50,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <ToastContext.Provider value={value}>
-      {children}
-    </ToastContext.Provider>
+    <ToastContext.Provider value={value}>{children}</ToastContext.Provider>
   );
 };
 

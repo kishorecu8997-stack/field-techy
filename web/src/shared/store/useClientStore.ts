@@ -30,7 +30,8 @@ export const useClientStore = create<ClientStore>((set, get) => ({
   setProfileImageUrl: (url) => set({ profileImageUrl: url }),
   clearClientProfile: () => {
     const currentUrl = get().profileImageUrl;
-    if (currentUrl && currentUrl.startsWith('blob:')) URL.revokeObjectURL(currentUrl);
+    if (currentUrl && currentUrl.startsWith("blob:"))
+      URL.revokeObjectURL(currentUrl);
     set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
   fetchClientProfile: async (id: string) => {
@@ -43,12 +44,11 @@ export const useClientStore = create<ClientStore>((set, get) => ({
         getDownloadUrl("profilePicture").catch(() => null),
       ]);
 
-      set({ 
-        clientProfile: profile, 
+      set({
+        clientProfile: profile,
         profileFetched: true,
-        profileImageUrl: profilePicData?.downloadUrl || null
+        profileImageUrl: profilePicData?.downloadUrl || null,
       });
-
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
     } finally {
