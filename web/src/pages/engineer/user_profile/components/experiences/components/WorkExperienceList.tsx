@@ -1,6 +1,6 @@
 import React from "react";
 import { FiEdit2 } from "react-icons/fi";
-import { FaPlusCircle, } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   designationOptions,
@@ -66,7 +66,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
           onClick={onAddAction}
           className={`flex !flex-row !items-center gap-2 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
         >
-          <FaPlusCircle className="h-5 w-5 shrink-0" /> Add {title}
+          <FaPlus className="h-3 w-3" /> Add {title}
         </button>
       </div>
 
