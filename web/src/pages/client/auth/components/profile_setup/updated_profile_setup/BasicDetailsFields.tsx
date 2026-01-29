@@ -22,7 +22,13 @@ import { useVatOptions } from "@/shared/apiServices/client/clientService";
 // import { useDebouncedUserExists } from "@/shared/apiServices/user";
 import { useEffect } from "react";
 import { businessTypes } from "@/dummy_data/adminClientData";
-import { useCities, useCountries, useIndustries, useStates, type LookupItem } from "@/shared/hooks/useLookup";
+import {
+  useCities,
+  useCountries,
+  useIndustries,
+  useStates,
+  type LookupItem,
+} from "@/shared/hooks/useLookup";
 import { useMemo } from "react";
 import { ClientTypeEnum } from "./types";
 import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";

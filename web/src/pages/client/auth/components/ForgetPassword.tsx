@@ -8,11 +8,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
- 
+
 export type ForgetPasswordFormData = {
   email: string;
 };
- 
+
 /**
  * Type representing the data structure for the Login form.
  * @typedef {Object} LoginFormData
@@ -28,11 +28,11 @@ const ForgetPassword = () => {
       email: "",
     },
   });
- 
+
   const handleSubmit = () => {
     setIsOpen(true);
   };
- 
+
   return (
     <div className="flex items-center justify-center w-lg">
       <div className=" p-10 w-full ">
@@ -65,7 +65,7 @@ const ForgetPassword = () => {
             type="email"
             required
           />
- 
+
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90 transition py-6"
@@ -73,7 +73,7 @@ const ForgetPassword = () => {
             Submit
           </Button>
         </FormContainer>
- 
+
         <Popup open={isOpen} onClose={() => setIsOpen(false)}>
           <OTPPage
             header="Enter the OTP"
@@ -88,5 +88,5 @@ const ForgetPassword = () => {
     </div>
   );
 };
- 
+
 export default ForgetPassword;
