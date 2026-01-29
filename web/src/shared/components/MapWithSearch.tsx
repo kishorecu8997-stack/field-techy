@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import React, { useEffect, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 import {
   MapContainer,
   Marker,
@@ -10,21 +11,13 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { MapComponentProps } from "./type";
-import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
+import { fixLeafletIcon } from "@/utils/leafletSetup";
+
 // Fix default icon issue
-(L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl =
-  undefined;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+fixLeafletIcon();
 
 /* ===========================================================
    DYNAMIC MAP INTERACTION CONTROLLER (IMPORTANT)
@@ -33,8 +26,21 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
   viewOnly,
 }) => {
   const map = useMap();
+  const [zoomControl, setZoomControl] = useState<L.Control.Zoom | null>(null);
 
   useEffect(() => {
+    if (!viewOnly && !zoomControl) {
+      // Create and add zoom control if it doesn't exist and we are not in viewOnly
+      const zc = L.control.zoom({ position: "topleft" });
+      zc.addTo(map);
+      setZoomControl(zc);
+    } else if (viewOnly && zoomControl) {
+      // Remove zoom control if we are in viewOnly
+      zoomControl.remove();
+      setZoomControl(null);
+    }
+
+    // Handle interactions
     if (viewOnly) {
       map.dragging.disable();
       map.scrollWheelZoom.disable();
@@ -42,10 +48,6 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.boxZoom.disable();
       map.keyboard.disable();
       map.touchZoom.disable();
-
-      // Remove zoom control visually
-
-      map.zoomControl?.remove();
     } else {
       map.dragging.enable();
       map.scrollWheelZoom.enable();
@@ -53,12 +55,17 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.boxZoom.enable();
       map.keyboard.enable();
       map.touchZoom.enable();
-
-      // Re-enable zoom control
-
-      map.zoomControl?.addTo(map);
     }
-  }, [viewOnly, map]);
+  }, [viewOnly, map, zoomControl]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (zoomControl) {
+        zoomControl.remove();
+      }
+    };
+  }, [zoomControl]);
 
   return null;
 };
@@ -241,7 +248,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => {},
+  onMapClick = () => { },
   viewOnly = false,
   onPositionChange,
   className,
@@ -278,7 +285,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
       <MapContainer
         center={initialPosition}
         zoom={initialZoom}
-        zoomControl={!viewOnly}
+        zoomControl={false}
         dragging={!viewOnly}
         scrollWheelZoom={!viewOnly}
         doubleClickZoom={!viewOnly}

@@ -16,13 +16,10 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import type { MapComponentProps } from "./type";
 
+import { fixLeafletIcon } from "@/utils/leafletSetup";
+
 // Fix default icon issue
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+fixLeafletIcon();
 
 // Handle map clicks and update map view
 const MapEventHandler: React.FC<{
@@ -54,7 +51,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   initialPosition = [51.505, -0.09],
   initialZoom = 13,
   markers = [],
-  onMapClick = () => {},
+  onMapClick = () => { },
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
 
