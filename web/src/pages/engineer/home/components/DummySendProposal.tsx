@@ -23,14 +23,19 @@ const DummySendProposal: React.FC<DummySendProposalProps> = ({
     mode: "onChange",
     defaultValues: {
       description: "",
-      attachment: null,
+      attachment: undefined,
     },
   });
 
   const handleSubmit = async () => {
-    toast.success("Proposal submitted successfully!");
-    if (onCancel) onCancel();
-  };
+try {
+toast.success("Proposal submitted successfully!");
+if (onCancel) onCancel();
+} catch (error) {
+console.error("Proposal submission failed:", error);
+toast.error("Failed to submit proposal. Please try again.");
+}
+};
 
   return (
     <div className="space-y-6">

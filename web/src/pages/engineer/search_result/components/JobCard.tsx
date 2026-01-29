@@ -1,5 +1,5 @@
 import { icons } from "@/config/icons";
-import { scrollToTop } from "@/utils";
+import { getDurationString, scrollToTop } from "@/utils";
 import {
   BOOKMARK_CHANGE_EVENT,
   isJobSaved,
@@ -213,20 +213,6 @@ const JobCard: React.FC<{
       }
     }, [jobData.id]);
 
-  const matchScore = useMemo(() => {
-    return calculateMatchScore(
-      [...(jobData.skills || []), ...(jobData.tools || [])],
-      [...userSkills, ...userTools].map(String),
-    );
-  }, [jobData.skills, jobData.tools, userSkills, userTools]);
-
-  // Sync bookmark state on mount and when job.id changes
-  useEffect(() => {
-    if (jobData.id) {
-      setIsBookmarked(isJobSaved(jobData.id));
-    }
-  }, [jobData.id]);
-
   // Listen for bookmark changes
   useEffect(() => {
     const handleBookmarkChange = () => {
@@ -350,6 +336,7 @@ const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
                 )}
               </div>
             </div>
+          </div>
 
             {/* Job metadata */}
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -435,11 +422,11 @@ const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
               </div>
             )}
             
-            {(jobData.salary || "-") && (
+            {jobData.salary && (
               <div className="flex items-center gap-1.5">
                 <BiDollar className="h-4 w-4 text-gray-500" />
                 <span className="text-gray-800 dark:text-gray-200">
-                  {jobData.salary || "-"}
+                  {jobData.salary}
                 </span>
               </div>
             )}

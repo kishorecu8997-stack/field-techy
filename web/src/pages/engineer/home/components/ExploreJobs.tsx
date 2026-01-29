@@ -21,13 +21,13 @@ const dummyJob: JobItem = {
   jobDescription: "We are looking for a skilled Network Engineer to manage, maintain, and optimize our network infrastructure. The role involves troubleshooting network issues, ensuring system security, and supporting smooth business operations.",
   location: "Chennai, Tamil Nadu, India",
   experience: "L3",
-  salary: "-",
+  salary: "3000",
   postedTime: "Just now",
   jobDuration: "5 weeks",
   status: "NEW",
   numberOfVacancy: 4,
   client: {
-    companyName: "-",
+    companyName: "teceze",
   },
 } as JobItem;
 
