@@ -9,6 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { validateCompany, validateDateRange } from "../../../Validate";
 import type { ExperiencesFormData } from "./types";
 
@@ -102,15 +103,22 @@ const EditExperiences = () => {
             try {
               await updateExperience({
                 path: { id: String(selectedId) },
-                body: updatedExperience as any,
+                body: updatedExperience as {
+                  designation: string;
+                  employer: string;
+                  employmentTypeId: number;
+                  workLocationId: number;
+                  startDate: string;
+                  endDate: string | null;
+                },
               });
 
               toast.success("Experience updated successfully");
               close(true);
               setActiveKey("experiences");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to save experience:", error);
-              toast.error("Failed to save experience. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -130,8 +138,8 @@ const EditExperiences = () => {
           label="Designation"
           name="designation"
           placeholder="Designation"
-          options={designations?.map((e) => ({
-            value: e.id,
+          options={designations?.map((e: { id: number; name: string }) => ({
+            value: e.id.toString(),
             label: e.name,
           })) || []}
           required
@@ -147,7 +155,7 @@ const EditExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item) => ({
+          options={workLocations?.map((item: { id: number; name: string }) => ({
             value: item.id.toString(),
             label: item.name,
           })) || []}
@@ -157,7 +165,7 @@ const EditExperiences = () => {
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item) => ({
+          options={employmentTypes?.map((item: { id: number; name: string }) => ({
             value: item.id.toString(),
             label: item.name,
           })) || []}

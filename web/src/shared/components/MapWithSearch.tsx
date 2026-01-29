@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -17,7 +16,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 // Fix default icon issue
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+(L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl = undefined;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
@@ -61,6 +60,15 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
   return null;
 };
 
+interface NominatimResult {
+  lat: string;
+  lon: string;
+  display_name: string;
+  address?: {
+    [key: string]: string;
+  };
+}
+
 /* ===========================================================
    SEARCH BAR COMPONENT
    =========================================================== */
@@ -68,7 +76,7 @@ const MapSearchBar: React.FC<{
   onSelect: (latlng: L.LatLng, name: string) => void;
 }> = ({ onSelect }) => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
   const [, setLoading] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
 
@@ -104,7 +112,7 @@ const MapSearchBar: React.FC<{
     return () => clearTimeout(timeout);
   }, [query, userTyping]);
 
-  const handleSelect = (place: any) => {
+  const handleSelect = (place: NominatimResult) => {
     const lat = parseFloat(place.lat);
     const lon = parseFloat(place.lon);
 
@@ -231,7 +239,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
   initialPosition = [20.5937, 78.9629],
   initialZoom = 5,
   markers = [],
-  onMapClick = () => {},
+  onMapClick = () => { },
   viewOnly = false,
   onPositionChange,
   className,

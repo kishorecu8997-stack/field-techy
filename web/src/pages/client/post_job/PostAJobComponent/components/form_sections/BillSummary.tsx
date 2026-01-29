@@ -33,7 +33,7 @@ export const BillSummary = ({ data, onConsentChange, defaultConsent = false }: B
         ) {
             getRateCard(
                 {
-                    body: {
+                    query: {
                         serviceCategoryId: Number(data.serviceCategory),
                         experienceLevelId: Number(data.experienceLevel),
                         engagementModelId: Number(data.engagementModel) || 1,
@@ -45,7 +45,6 @@ export const BillSummary = ({ data, onConsentChange, defaultConsent = false }: B
                 },
                 {
                     onSuccess: (response) => {
-                        // @ts-ignore
                         setRatePerWeek(Number(response.rate));
                     },
                     onError: () => {

@@ -77,10 +77,10 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
         serviceCategory: workPref.serviceCategoryId,
         rate: workPref.hourlyRate,
         portfolioLink: workPref.portfolioLink,
-        jobSkills: skillsTools.skills.map((s: any) => s.name),
-        tools: skillsTools.tools.map((t: any) => t.name),
+        jobSkills: skillsTools.skills.map((s: { name: string }) => s.name),
+        tools: skillsTools.tools.map((t: { name: string }) => t.name),
         preferredWorkType: workPref.employmentTypeId?.toString(),
-        educations: educationList.map((edu: any) => ({
+        educations: educationList.map((edu) => ({
           id: edu.id.toString(),
           educationLevel: edu.level.toString(),
           course: edu.course,
@@ -88,7 +88,7 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
           majorSubject: edu.majorSubject,
           passingYear: edu.passingYear
         })),
-        experiences: experienceList.map((exp: any) => ({
+        experiences: experienceList.map((exp) => ({
           id: exp.id.toString(),
           designation: exp.designation || '',
           employer: exp.employer || '',

@@ -27,7 +27,7 @@ type LookupQueryOptions = UseQueryOptions<LookupItem[], Error, LookupItem[], Que
  * Memoized API client using Vite env variable fallback.
  */
 export const useApiClient = () => {
-  const baseUrl = (import.meta as any).env?.VITE_API_URL_NEW ?? "http://localhost:3000";
+  const baseUrl = (import.meta.env as { VITE_API_URL_NEW?: string }).VITE_API_URL_NEW ?? "http://localhost:3000";
   return useMemo(() => createClient({ baseUrl }), [baseUrl]);
 };
 
@@ -48,7 +48,7 @@ export function useLookup(table: LookupTable, parentId?: string | number | null,
       ? { table, parentId: resolvedParentId }
       : { table };
     const res = await appGetLookupData({ client, query, responseStyle: "data" });
-    return Array.isArray(res) ? res : (res && (res).data) || [];
+    return Array.isArray(res) ? res : (res && (res as any).data) || [];
   };
 
   // Safely merge options but exclude `queryKey` to avoid type conflicts

@@ -12,6 +12,7 @@ import {
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 export type AddSkillsFormData = {
   skills: string[];
@@ -23,7 +24,7 @@ const AddSkills = () => {
 
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
-  const { data: skillsLookup } = useLookupData("skills" as any);
+  const { data: skillsLookup } = useLookupData("skills");
   const { refetchProfile } = useEngineerStore();
 
   const methods = useForm<AddSkillsFormData>({
@@ -64,9 +65,9 @@ const AddSkills = () => {
               await refetchProfile();
               close(true);
               setActiveKey("skillsAndTools");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to add skills:", error);
-              toast.error("Failed to add skills. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -79,8 +80,8 @@ const AddSkills = () => {
   const existingSkillIds = currentSkillsAndTools?.skills.map((s) => s.id) || [];
 
   const skillOptions = skillsLookup
-    ?.filter((skill: any) => !existingSkillIds.includes(skill.id))
-    .map((skill: any) => ({
+    ?.filter((skill: { id: number }) => !existingSkillIds.includes(skill.id))
+    .map((skill: { name: string; id: number }) => ({
       label: skill.name,
       value: skill.id.toString(),
     })) || [];

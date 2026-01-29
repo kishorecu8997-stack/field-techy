@@ -121,8 +121,8 @@ export const TagSelectField = ({
           return (
             <>
               <Listbox
-                value={null} // We handle selection manually to support tagging
-                onChange={(val: any) => handleToggleTag(val.value, onChange, currentValues)}
+                value={undefined} // We handle selection manually to support tagging
+                onChange={(val: TagOption) => handleToggleTag(String(val.value), onChange, currentValues)}
                 disabled={disabled}
               >
                 {({ open }) => {

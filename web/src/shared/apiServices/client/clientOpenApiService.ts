@@ -11,6 +11,8 @@ import {
   clientGetCompanyInfo,
   type ClientGetCompanyInfoResponse,
   type AppUploadProfileFileResponse,
+  clientGetRateCard,
+  type ClientGetRateCardData,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -20,7 +22,6 @@ import {
   appRegisterClientMutation,
   clientGetCompanyInfoOptions,
   clientGetJobsOptions,
-  clientGetRateCardMutation,
   clientMarkJobFileUploadedMutation,
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
@@ -190,7 +191,13 @@ export function useClientGetRateCard(options?: {
     onError?: (error: unknown) => void;
 }) {
     return useMutation({
-        ...clientGetRateCardMutation({ client: apiClient }),
+        mutationFn: async (args: Omit<ClientGetRateCardData, "url">) => {
+            const { data } = await clientGetRateCard({
+                client: apiClient,
+                ...args,
+            });
+            return data!;
+        },
         onSuccess: options?.onSuccess,
         onError: options?.onError,
     });

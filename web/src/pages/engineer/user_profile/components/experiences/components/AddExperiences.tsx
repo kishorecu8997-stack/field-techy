@@ -12,6 +12,7 @@ import {
   designationOptions,
 } from "./constants";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { CheckboxInput } from "@/shared/components/commonUI/inputs/CheckboxInput";
 import {
   useEngineerAddExperience,
@@ -60,13 +61,13 @@ const AddExperiences = () => {
             };
 
             try {
-              await addExperience({ body: newExperience as any });
+              await addExperience({ body: newExperience });
               toast.success("Experience Added Successfully");
               close(true);
               setActiveKey("experiences");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to add experience:", error);
-              toast.error("Failed to add experience. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -121,7 +122,7 @@ const AddExperiences = () => {
           label="Work Location Type"
           name="workLocationType"
           placeholder="Work Location Type"
-          options={workLocations?.map((item: any) => ({
+          options={workLocations?.map((item: { id: number; name: string }) => ({
             value: item.id.toString(),
             label: item.name,
           })) || []}
@@ -132,7 +133,7 @@ const AddExperiences = () => {
           label="Employment Type"
           name="employmentType"
           placeholder="Employment Type"
-          options={employmentTypes?.map((item: any) => ({
+          options={employmentTypes?.map((item: { id: number; name: string }) => ({
             value: item.id.toString(),
             label: item.name,
           })) || []}

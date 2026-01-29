@@ -17,7 +17,7 @@ import { queryKeys } from "@/shared/apiServices/queryKeys";
 export type ProfileFileType = 'profilePicture' | 'resumeFile' | 'govIdDoc' | 'certificateDoc';
 
 export interface UseProfileFileUploadOptions {
-  onSuccess?: (data?: any) => void;
+  onSuccess?: (data?: unknown) => void;
   onError?: (error: unknown) => void;
 }
 
@@ -86,7 +86,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         if (isEngineer) {
           fetchEngineerProfile(userId);
         } else {
-          fetchClientProfile(userId);
+          fetchClientProfile();
         }
       }
 

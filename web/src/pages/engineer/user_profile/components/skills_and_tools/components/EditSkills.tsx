@@ -12,6 +12,7 @@ import {
   useLookupData
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 export type EditSkillsFormData = {
   skills: string[];
@@ -23,7 +24,7 @@ const EditSkills = () => {
 
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
-  const { data: skillsLookup } = useLookupData("skills" as any);
+  const { data: skillsLookup } = useLookupData("skills");
 
   const methods = useForm<EditSkillsFormData>({
     mode: "onSubmit",
@@ -66,9 +67,9 @@ const EditSkills = () => {
               toast.success("Skills Updated Successfully");
               close(true);
               setActiveKey("skillsAndTools");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to update skills:", error);
-              toast.error("Failed to save skills. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -77,7 +78,7 @@ const EditSkills = () => {
     });
   };
 
-  const skillOptions = skillsLookup?.map((skill: any) => ({
+  const skillOptions = skillsLookup?.map((skill: { name: string; id: number }) => ({
     label: skill.name,
     value: skill.id.toString(),
   })) || [];

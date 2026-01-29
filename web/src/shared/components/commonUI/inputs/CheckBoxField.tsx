@@ -74,8 +74,7 @@ export const CheckboxField = ({
           const handleSelect = (val: string | number) => {
             if (disabled) return;
             if (value.includes(val)) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onChange(value.filter((v: any) => v !== val));
+              onChange(value.filter((v: string | number) => v !== val));
             } else {
               onChange([...value, val]);
             }
@@ -85,18 +84,16 @@ export const CheckboxField = ({
             <>
               {/*wrapper className now customizable */}
               <div
-                className={`${wrapperClassName} ${layoutClass} ${
-                  disabled ? "cursor-not-allowed" : ""
-                }`}
+                className={`${wrapperClassName} ${layoutClass} ${disabled ? "cursor-not-allowed" : ""
+                  }`}
               >
                 {options.map((option) => (
                   <label
                     key={option.value}
-                    className={`${itemClassName} ${
-                      disabled
+                    className={`${itemClassName} ${disabled
                         ? "cursor-not-allowed opacity-60"
                         : "cursor-pointer"
-                    }`}
+                      }`}
                   >
                     <input
                       type="checkbox"
@@ -107,12 +104,11 @@ export const CheckboxField = ({
                       className={`
                         ${inputClassName}
                         ${disabled ? "cursor-not-allowed" : ""}
-                        ${
-                          disabled && value.includes(option.value)
-                            ? "!bg-blue-600 !border-blue-600 opacity-100"
-                            : disabled
-                              ? "opacity-40"
-                              : ""
+                        ${disabled && value.includes(option.value)
+                          ? "!bg-blue-600 !border-blue-600 opacity-100"
+                          : disabled
+                            ? "opacity-40"
+                            : ""
                         }
                       `}
                       disabled={disabled}

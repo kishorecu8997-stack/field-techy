@@ -11,6 +11,7 @@ import {
   useEngineerUpdateSkillsAndTools,
   useLookupData
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 export type EditToolsFormData = {
@@ -23,7 +24,7 @@ const EditTools = () => {
 
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
-  const { data: toolsLookup } = useLookupData("tools" as any);
+  const { data: toolsLookup } = useLookupData("tools");
 
   const methods = useForm<EditToolsFormData>({
     mode: "onSubmit",
@@ -66,9 +67,9 @@ const EditTools = () => {
               toast.success("Tools Updated Successfully");
               close(true);
               setActiveKey("skillsAndTools");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to update tools:", error);
-              toast.error("Failed to save tools. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -77,7 +78,7 @@ const EditTools = () => {
     });
   };
 
-  const toolOptions = toolsLookup?.map((tool: any) => ({
+  const toolOptions = toolsLookup?.map((tool: { name: string; id: number }) => ({
     label: tool.name,
     value: tool.id.toString(),
   })) || [];

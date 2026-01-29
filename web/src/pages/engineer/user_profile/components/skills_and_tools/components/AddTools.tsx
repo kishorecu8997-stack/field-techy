@@ -10,6 +10,7 @@ import {
   useEngineerUpdateSkillsAndTools,
   useLookupData
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 
@@ -23,7 +24,7 @@ const AddTools = () => {
 
   const { data: currentSkillsAndTools, isLoading: isCurrentLoading } = useEngineerGetSkillsAndTools();
   const { mutateAsync: updateSkillsAndTools } = useEngineerUpdateSkillsAndTools();
-  const { data: toolsLookup } = useLookupData("tools" as any);
+  const { data: toolsLookup } = useLookupData("tools");
   const { refetchProfile } = useEngineerStore();
 
   const methods = useForm<AddToolsFormData>({
@@ -64,9 +65,9 @@ const AddTools = () => {
               await refetchProfile();
               close(true);
               setActiveKey("skillsAndTools");
-            } catch (error) {
+            } catch (error: unknown) {
               console.error("Failed to add tools:", error);
-              toast.error("Failed to add tools. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },
@@ -79,8 +80,8 @@ const AddTools = () => {
   const existingToolIds = currentSkillsAndTools?.tools.map((t) => t.id) || [];
 
   const toolOptions = toolsLookup
-    ?.filter((tool: any) => !existingToolIds.includes(tool.id))
-    .map((tool: any) => ({
+    ?.filter((tool: { id: number; name: string }) => !existingToolIds.includes(tool.id))
+    .map((tool: { id: number; name: string }) => ({
       label: tool.name,
       value: tool.id.toString(),
     })) || [];
