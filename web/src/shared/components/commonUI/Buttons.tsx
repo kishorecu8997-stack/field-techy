@@ -16,7 +16,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "text"
     | "solid"
     | "dropdown"
-    | "no_style"
     | "warning";
   size?: "sm" | "md" | "lg" | "icon";
   disabled?: boolean;
