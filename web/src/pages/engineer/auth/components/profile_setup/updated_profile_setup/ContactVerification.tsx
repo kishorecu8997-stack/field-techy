@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 // TODO: Uncomment when OTP API is ready for production
 import {
   useSendOtp,
-  useVerifyOtp
+  useVerifyOtp,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 import { absoluteUrls } from "@/config/urls";
@@ -29,7 +29,7 @@ interface VerificationCardProps {
  *
  * This component renders a verification card that allows users to verify their email or mobile number.
  * It utilizes the reusable `OTPInput` component for handling the OTP input.
- * 
+ *
  * NOTE: OTP API integration is enabled.
  * Uses the new OpenAPI-based OTP hooks that require JWT authorization.
  *
@@ -101,13 +101,13 @@ const VerificationCard = ({
       if (type === "email") {
         await sendOtp({
           body: { type: "email" },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
         toast.success(`OTP sent to email: ${contact}`);
       } else {
         await sendOtp({
           body: { type: "phone" },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
         toast.success(`OTP sent to mobile: ${contact}`);
       }
@@ -135,12 +135,12 @@ const VerificationCard = ({
       if (type === "email") {
         await verifyOtp({
           body: { type: "email", code: data.otp },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
       } else {
         await verifyOtp({
           body: { type: "phone", code: data.otp },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
       }
 
@@ -148,7 +148,6 @@ const VerificationCard = ({
         `${type === "email" ? "Email" : "Mobile number"} verified successfully`,
       );
       onVerifySuccess();
-
     } catch (error) {
       toast.error(`Invalid ${type === "email" ? "Email" : "Mobile"} OTP`);
     } finally {
@@ -159,7 +158,6 @@ const VerificationCard = ({
   const isPending = isSending || isVerifying || isPendingLocal;
 
   return (
-
     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3 border border-gray-100 dark:border-gray-700">
       <div className="p-2 flex flex-col gap-2 items-center justify-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -201,10 +199,13 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-white dark:text-green-400 font-medium ${timeLeft > 0 || isPending
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                      }`}
+                    className={`
+                      w-24 py-2 rounded-lg
+                      bg-gradient-to-r from-teal-700 to-teal-900
+                      text-white font-medium
+                      hover:opacity-90 transition
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
                   >
                     Resend
                   </Button>

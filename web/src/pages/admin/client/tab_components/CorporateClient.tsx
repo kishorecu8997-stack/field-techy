@@ -13,6 +13,10 @@ import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
 import ViewFileComponent from "./ViewFileComponent";
 import { usePopupStore } from "@/shared/store/popupStore";
+import SelectMenu from "@/shared/components/SelectMenu";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
+import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
+import { toast } from "react-toastify";
 
 /**
  * CorporateClient Component
@@ -27,10 +31,23 @@ import { usePopupStore } from "@/shared/store/popupStore";
  */
 const CorporateClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 
-  //Delete confirmation
+  const { handleStatusChange } = useClientStatusChange();
+  const [search, setSearch] = useState("");
+
+  const filteredData = manageClient.filter((e) => {
+    const query = search.toLowerCase();
+
+    return (
+      e.clientID.toLowerCase().includes(query) ||
+      e.details.toLowerCase().includes(query) ||
+      e.location.toLowerCase().includes(query)
+    );
+  });
+
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
       title: "Delete Client",
@@ -50,6 +67,7 @@ const CorporateClient: React.FC = () => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
+            toast.success("Client deleted successfully");
             close(true);
           },
         },
@@ -115,14 +133,32 @@ const CorporateClient: React.FC = () => {
       label: "KYC Status",
     },
     {
-      key: "walletBalance",
-      label: "Wallet Balance",
+      key: "requiredType",
+      label: "Required Type",
     },
 
     {
       key: "approvalStatus",
-      label: "Approval Status",
+      label: "Status",
+      renderCell: (row: ManageClientProps) => {
+        return (
+          <SelectMenu
+            placeholder="Select"
+            value={rowStatuses[row.id] || ""}
+            onChange={(value: string | null) => {
+              setRowStatuses((prev) => ({
+                ...prev,
+                [row.id]: value ?? "",
+              }));
+              handleStatusChange(row, value, showPopup);
+            }}
+            options={JobStatus}
+            badge
+          />
+        );
+      },
     },
+
     {
       key: "action",
       label: "Actions",
@@ -157,7 +193,7 @@ const CorporateClient: React.FC = () => {
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
-        <SearchInput />
+        <SearchInput value={search} onChange={setSearch} />
         <Button
           className="w-fit bg-gradient-to-r bg-teal-900 text-white"
           onClick={() =>
@@ -170,7 +206,7 @@ const CorporateClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          data={manageClient}
+          data={filteredData}
           initialPageSize={10}
         />
       </div>

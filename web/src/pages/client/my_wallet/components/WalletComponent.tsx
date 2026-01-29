@@ -1,6 +1,7 @@
 import type { WalletData, Transaction } from "../types";
 import { sampleWalletData } from "@/dummy_data/sampleWalletData";
-import React, { useEffect, useState } from "react";
+import { useThemeHook } from "@/shared/hooks/useThemeHook";
+import React, { useState } from "react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 interface WalletComponentProps {
@@ -17,22 +18,8 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
   data = sampleWalletData,
   onMenuItemClick,
 }) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
-
-  // Check for system preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDarkMode(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {

@@ -8,6 +8,7 @@ export interface ManageClientProps {
   walletBalance: string;
   kycStatus: string;
   approvalStatus: string;
+  requiredType: string;
 }
 
 export interface walletViewData {

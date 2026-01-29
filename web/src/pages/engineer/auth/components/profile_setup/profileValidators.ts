@@ -28,7 +28,7 @@ export const validateName = (value: string, fieldLabel = "Name") => {
     return `${fieldLabel} must not contain multiple consecutive spaces`;
 
   // Only letters allowed (A-Z) with single spaces allowed between multiple words
-  if (!/^[A-Za-z]+( [A-Za-z]+)?$/.test(value || ""))
+  if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(value || ""))
     return `${fieldLabel} must contain only alphabetic characters (no numbers or special characters)`;
 
   // length requirement: 2 to 50 characters
@@ -110,7 +110,10 @@ export const validateAddress = (value: string) => {
 
   const v = value.trim();
   if (v.length < 6) return "Address must be at least 6 characters";
-  if (v.length > 50) return "Address must not exceed 50 characters";
+  if (v.length > 100) return "Address must not exceed 100 characters";
+  if (!/[A-Za-z]/.test(v)) {
+    return "Address must contain at least one letter";
+  }
   // Allow letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
@@ -127,21 +130,25 @@ export const validateAddress = (value: string) => {
  * @param {string} value - The amount string to validate.
  * @returns {true | string} True if valid, otherwise an error message.
  */
+const MAX_BUDGET = 10000000;
+const MIN_AMOUNT = 1;
 export const validateAmount = (value: string) => {
-  const v = (value || "").trim();
-  if (!v) return "Amount is required";
-  if (/\s/.test(v)) return "Amount must not contain spaces";
+  if (!value) return "Amount is required";
+  if (/\s/.test(value)) return "Spaces are not allowed";
+  // Remove leading/trailing spaces just in case
+  const v = value.trim();
 
-  // Allow: digits only OR digits.digits (1-2 decimal places)
-  if (!/^\d+(\.\d{1,2})?$/.test(v)) {
+  // Allow digits only OR digits.digits (max 2 decimals), allow typing single dot
+  if (!/^\d*\.?\d{0,2}$/.test(v)) {
     return "Amount must be a valid number with up to 2 decimal places (e.g., 50 or 50.99)";
   }
 
   const num = parseFloat(v);
-  if (isNaN(num)) return "Amount must be a valid number";
-
-  if (num < 1) return "Amount must be at least 1";
-  if (num > 99999) return "Amount must not exceed 99999";
+  if (!isNaN(num)) {
+    if (num < MIN_AMOUNT) return "Amount must be at least 1";
+    if (num > MAX_BUDGET)
+      return `Budget cannot exceed ${MAX_BUDGET.toLocaleString()}`;
+  }
 
   return true;
 };

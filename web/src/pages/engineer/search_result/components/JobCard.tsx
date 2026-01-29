@@ -164,9 +164,9 @@ const JobCard: React.FC<{
   userSkills = [],
   userTools = [],
 }) => {
-    const [isBookmarked, setIsBookmarked] = useState(isJobSaved(job.id));
-    const [showWhyPopover, setShowWhyPopover] = useState(false);
-    const { address: resolvedAddress } = useReverseGeocoding(job.location);
+  const [isBookmarked, setIsBookmarked] = useState(isJobSaved(job.id));
+  const [showWhyPopover, setShowWhyPopover] = useState(false);
+  const { address: resolvedAddress } = useReverseGeocoding(job.location);
 
     const jobData = useMemo(() => {
       const jobRecord = job as unknown as Record<string, unknown>;
@@ -213,55 +213,70 @@ const JobCard: React.FC<{
       }
     }, [jobData.id]);
 
-    // Listen for bookmark changes
-    useEffect(() => {
-      const handleBookmarkChange = () => {
-        if (job.id) {
-          setIsBookmarked(isJobSaved(job.id));
-        }
-      };
-      window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-      return () => {
-        window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
-      };
-    }, [job.id]);
+  const matchScore = useMemo(() => {
+    return calculateMatchScore(
+      [...(jobData.skills || []), ...(jobData.tools || [])],
+      [...userSkills, ...userTools].map(String),
+    );
+  }, [jobData.skills, jobData.tools, userSkills, userTools]);
 
-    // Handle bookmark toggle
-    const handleBookmarkClick = (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!job.id) return;
-      const wasBookmarked = isBookmarked;
-      toggleSavedJob(job);
-      setIsBookmarked(!wasBookmarked);
+  // Sync bookmark state on mount and when job.id changes
+  useEffect(() => {
+    if (jobData.id) {
+      setIsBookmarked(isJobSaved(jobData.id));
+    }
+  }, [jobData.id]);
 
-      if (!wasBookmarked) {
-        toast.success("Job saved successfully");
-      } else {
-        toast.error("Job removed from saved");
+  // Listen for bookmark changes
+  useEffect(() => {
+    const handleBookmarkChange = () => {
+      if (job.id) {
+        setIsBookmarked(isJobSaved(job.id));
       }
     };
+    window.addEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    return () => {
+      window.removeEventListener(BOOKMARK_CHANGE_EVENT, handleBookmarkChange);
+    };
+  }, [job.id]);
 
-    const STATUS_VARIANT_MAP = {
-      new: "green",
-      offer: "blue",
-      applied: "yellow",
-      inprogress: "teal",
-      completed: "gray",
-      notified: "purple",
-      unallocated: "yellow",
-      partiallyAssigned: "amber",
-      assigned: "teal",
-      selected: "blue",
-      hold: "red",
-      draft: "gray",
-      canceled: "rose",
-      escalationInProgress: "pink",
-      workInProgress: "teal",
-      closed: "gray",
-    } as const;
+  // Handle bookmark toggle
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!job.id) return;
+    const wasBookmarked = isBookmarked;
+    toggleSavedJob(job);
+    setIsBookmarked(!wasBookmarked);
 
-    const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
+    if (!wasBookmarked) {
+      toast.success("Job saved successfully");
+    } else {
+      toast.error("Job removed from saved");
+    }
+  };
+
+    
+  const STATUS_VARIANT_MAP = {
+    new: "green",
+    offer: "blue",
+    applied: "yellow",
+    inprogress: "teal",
+    completed: "gray",
+    notified: "purple",
+    unallocated: "yellow",
+    partiallyAssigned: "amber",
+    assigned: "teal",
+    selected: "blue",
+    hold: "red",
+    draft: "gray",
+    canceled: "rose",
+    escalationInProgress: "pink",
+    workInProgress: "teal",
+    closed: "gray",
+  } as const;
+
+const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
     const statusKey = (statusKeyRaw in STATUS_VARIANT_MAP
       ? statusKeyRaw
       : undefined) as keyof typeof STATUS_VARIANT_MAP | undefined;
@@ -272,41 +287,27 @@ const JobCard: React.FC<{
     const salaryDisplay = jobData.salary ?? "-";
     const hasSalary = Boolean(jobData.salary);
 
-    return (
-      <>
-        <Link
-          id="recommendedJobs"
-          to={navigateToJob}
-          onClick={scrollToTop}
-          className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
-        >
-          {/* HEADER */}
-          <div className="flex justify-between items-start gap-3 mb-3">
-            <div className="min-w-0 flex-1">
-              {/* Job title */}
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
-                  {jobData.title}
-                </h3>
+  const getDuration = getDurationString({
+    startDateStr: job.startDate as string,
+    endDateStr: job.projectDeadline as string,
+  });
 
-                {/* Right-aligned: Match score & help button */}
-                <div className="flex items-center gap-2">
-                  {matchScore > 0 && <MatchScoreRing score={matchScore} />}
-                  {matchScore > 0 && (
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setShowWhyPopover(true);
-                      }}
-                      className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                      aria-label="Why is this job recommended?"
-                    >
-                      <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
-                    </button>
-                  )}
-                </div>
-              </div>
+  return (
+    <>
+      <Link
+        id="recommendedJobs"
+        to={navigateToJob}
+        onClick={scrollToTop}
+        className="block p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-4 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
+      >
+        {/* HEADER */}
+        <div className="flex justify-between items-start gap-3 mb-3">
+          <div className="min-w-0 flex-1">
+            {/* Job title */}
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                {jobData.title}
+              </h3>
 
               {/* Job metadata */}
               <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -331,57 +332,79 @@ const JobCard: React.FC<{
                   </>
                 )}
                 {jobData.duration && <span>| {jobData.duration}</span>}
+              {/* Right-aligned: Match score & help button */}
+              <div className="flex items-center gap-2">
+                {matchScore > 0 && <MatchScoreRing score={matchScore} />}
+                {matchScore > 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowWhyPopover(true);
+                    }}
+                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                    aria-label="Why is this job recommended?"
+                  >
+                    <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                  </button>
+                )}
               </div>
             </div>
-          </div>
 
-          {/* DESCRIPTION */}
-          <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-            {jobData.description}
-          </p>
-
-          {/* SKILLS & TOOLS */}
-          {(job.skills?.length || job.tools?.length) && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {jobData.skills?.slice(0, 5).map((skill, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
-                >
-                  {skill}
+            {/* Job metadata */}
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
+              {jobData.clientName && (
+                <span>
+                  Client:{" "}
+                  <strong className="text-gray-900 dark:text-white">
+                    {jobData.clientName}
+                  </strong>
                 </span>
-              ))}
-              {jobData.tools?.slice(0, 3).map((tool, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
+              )}
+              {jobData.duration && <span>| {jobData.duration}</span>}
+              {jobData.status && (
+                <Badge
+                  variant={
+                    STATUS_VARIANT_MAP[
+                      job.status as keyof typeof STATUS_VARIANT_MAP
+                    ] ?? "gray"
+                  }
                 >
-                  {tool}
-                </span>
-              ))}
+                  {JOB_STATUSES[job.status as keyof typeof JOB_STATUSES] ??
+                    job.status}
+                </Badge>
+              )}
+              {getDuration && <span>| {getDuration || "-"}</span>}
             </div>
-          )}
+          </div>
+        </div>
 
-          {/* FOOTER BAR */}
-          <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
-            <div className="flex flex-wrap items-center gap-5">
-              {jobData.location && (
-                <div className="flex items-center gap-1.5">
-                  <IoLocationSharp className="h-4 w-4 text-gray-500" />
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {resolvedAddress || jobData.location}
-                  </span>
-                </div>
-              )}
+        {/* DESCRIPTION */}
+        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+          {jobData.description}
+        </p>
 
-              {job.slaLevel && (
-                <div className="flex items-center gap-1.5">
-                  <icons.active className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {job.slaLevel}
-                  </span>
-                </div>
-              )}
+        {/* SKILLS & TOOLS */}
+        {(job.skills?.length || job.tools?.length) && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {jobData.skills?.slice(0, 5).map((skill, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400"
+              >
+                {skill}
+              </span>
+            ))}
+            {jobData.tools?.slice(0, 3).map((tool, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 text-xs rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+        )}
 
               {hasSalary ? (
                 <div className="flex items-center gap-1.5">
@@ -391,45 +414,74 @@ const JobCard: React.FC<{
                   </span>
                 </div>
               ) : null}
-
-              <div className="flex items-center gap-2">
-                <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                <span className="font-medium text-gray-800 dark:text-gray-200">
-                  {getExperienceLevel(
-                    jobData.experience ? Number(jobData.experience) : 0,
-                  )}
+        {/* FOOTER BAR */}
+        <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
+          <div className="flex flex-wrap items-center gap-5">
+            {jobData.location && (
+              <div className="flex items-center gap-1.5">
+                <IoLocationSharp className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-800 dark:text-gray-200">
+                  {resolvedAddress || jobData.location}
                 </span>
               </div>
-            </div>
+            )}
 
-            {/* BOOKMARK */}
-            {showBookmark && (
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <div
-                  onClick={handleBookmarkClick}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                  aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                >
-                  {isBookmarked ? (
-                    <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  ) : (
-                    <icons.bookmark className="w-4 h-4" />
-                  )}
-                </div>
-                <span>{jobData.postedTime || "Just now"}</span>
+            {job.slaLevel && (
+              <div className="flex items-center gap-1.5">
+                <icons.active className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                <span className="text-gray-800 dark:text-gray-200">
+                  {job.slaLevel}
+                </span>
               </div>
             )}
-          </div>
-        </Link>
+            
+            {(jobData.salary || "-") && (
+              <div className="flex items-center gap-1.5">
+                <BiDollar className="h-4 w-4 text-gray-500" />
+                <span className="text-gray-800 dark:text-gray-200">
+                  {jobData.salary || "-"}
+                </span>
+              </div>
+            )}
 
-        {showWhyPopover && (
-          <WhyRecommendedPopover
-            score={matchScore}
-            onClose={() => setShowWhyPopover(false)}
-          />
-        )}
-      </>
-    );
-  };
+            <div className="flex items-center gap-2">
+              <BiUser className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              <span className="font-medium text-gray-800 dark:text-gray-200">
+                {getExperienceLevel(
+                  jobData.experience ? Number(jobData.experience) : 0,
+                )}
+              </span>
+            </div>
+          </div>
+
+          {/* BOOKMARK */}
+          {showBookmark && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <div
+                onClick={handleBookmarkClick}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+              >
+                {isBookmarked ? (
+                  <icons.bookmarkFilled className="w-4 h-4 text-green-600 dark:text-green-400" />
+                ) : (
+                  <icons.bookmark className="w-4 h-4" />
+                )}
+              </div>
+              <span>{jobData.postedTime || "Just now"}</span>
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {showWhyPopover && (
+        <WhyRecommendedPopover
+          score={matchScore}
+          onClose={() => setShowWhyPopover(false)}
+        />
+      )}
+    </>
+  );
+};
 
 export default JobCard;

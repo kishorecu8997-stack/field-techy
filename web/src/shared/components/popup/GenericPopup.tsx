@@ -13,7 +13,9 @@ export interface GenericPopupButton {
     | "ghost"
     | "text"
     | "solid"
+    | "warning"
     | undefined;
+
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
 

@@ -26,7 +26,7 @@ interface VerificationCardProps {
  *
  * This component renders a verification card that allows users to verify their email or mobile number.
  * It utilizes the reusable `OTPInput` component for handling the OTP input.
- * 
+ *
  * NOTE: OTP API integration is enabled.
  * Uses the new OpenAPI-based OTP hooks that require JWT authorization.
  *
@@ -39,7 +39,7 @@ interface VerificationCardProps {
  * @param {boolean} props.isVerified - Whether the contact is verified.
  * @param {() => void} props.onVerifySuccess - The function to call when the verification is successful.
  * @param {string | null} props.token - The JWT token from registration for API authorization.
- * 
+ *
  * @returns {JSX.Element} The verification card for email or mobile number.
  */
 const VerificationCard = ({
@@ -90,13 +90,13 @@ const VerificationCard = ({
       if (type === "email") {
         await sendOtp({
           body: { type: "email" },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
         toast.success(`OTP sent to email: ${contact}`);
       } else {
         await sendOtp({
           body: { type: "phone" },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
         toast.success(`OTP sent to mobile: ${contact}`);
       }
@@ -125,12 +125,12 @@ const VerificationCard = ({
       if (type === "email") {
         await verifyOtp({
           body: { type: "email", code: data.otp },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
       } else {
         await verifyOtp({
           body: { type: "phone", code: data.otp },
-          headers: { Authorization: token }
+          headers: { authorization: token },
         });
       }
 
@@ -138,7 +138,6 @@ const VerificationCard = ({
         `${type === "email" ? "Email" : "Mobile number"} verified successfully`,
       );
       onVerifySuccess();
-
     } catch (error) {
       console.error(error);
       toast.error(`Invalid ${type === "email" ? "Email" : "Mobile"} OTP`);
@@ -192,10 +191,11 @@ const VerificationCard = ({
                     type="button"
                     onClick={handleSendOtp}
                     disabled={timeLeft > 0 || isPending}
-                    className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 || isPending
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                      }`}
+                    className={`text-green-600 dark:text-green-400 font-medium ${
+                      timeLeft > 0 || isPending
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
                   >
                     Resend
                   </Button>

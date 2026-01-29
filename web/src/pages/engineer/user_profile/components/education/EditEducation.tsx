@@ -18,7 +18,7 @@ import {
   useEngineerAddEducation,
   useEngineerGetEducation,
   useEngineerUpdateEducation,
-  useLookupData
+  useLookupData,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
@@ -38,8 +38,12 @@ const EditEducation = () => {
 
   const selectedEducationLevel = methods.watch("educationLevel");
 
-  const { data: levels, isLoading: isLoadingLevels } = useLookupData("educationLevels");
-  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData("courses", selectedEducationLevel || undefined);
+  const { data: levels, isLoading: isLoadingLevels } =
+    useLookupData("educationLevels");
+  const { data: coursesData, isLoading: isLoadingCourses } = useLookupData(
+    "courses",
+    selectedEducationLevel || undefined,
+  );
 
   useEffect(() => {
     if (selectedId && educations) {
@@ -99,8 +103,10 @@ const EditEducation = () => {
                     course: formData.course || undefined,
                     university: formData.university?.trim() || undefined,
                     majorSubject: formData.majorSubject?.trim() || undefined,
-                    passingYear: formData.passingYear ? Number(formData.passingYear) : undefined,
-                  }
+                    passingYear: formData.passingYear
+                      ? Number(formData.passingYear)
+                      : undefined,
+                  },
                 });
               } else {
                 await addMutation.mutateAsync({
@@ -110,7 +116,7 @@ const EditEducation = () => {
                     university: formData.university?.trim() || "",
                     majorSubject: formData.majorSubject?.trim() || "",
                     passingYear: Number(formData.passingYear),
-                  }
+                  },
                 });
               }
 
@@ -144,7 +150,9 @@ const EditEducation = () => {
           label="Education Level"
           isShowLabel={false}
           name="educationLevel"
-          placeholder={isLoadingLevels ? "Loading levels..." : "Select education level"}
+          placeholder={
+            isLoadingLevels ? "Loading levels..." : "Select education level"
+          }
           options={(levels || []).map((e) => ({
             value: String(e.id),
             label: e.name,
@@ -156,7 +164,9 @@ const EditEducation = () => {
           label="Course"
           isShowLabel={false}
           name="course"
-          placeholder={isLoadingCourses ? "Loading courses..." : "Select course"}
+          placeholder={
+            isLoadingCourses ? "Loading courses..." : "Select course"
+          }
           options={(coursesData || []).map((c) => ({
             value: c.name,
             label: c.name,
@@ -187,7 +197,6 @@ const EditEducation = () => {
           isShowLabel={false}
           name="passingYear"
           placeholder="e.g., 2023"
-          allowedCharacters="numbers"
           required
           rules={{ validate: (value: string) => validatePassingYear(value) }}
         />
