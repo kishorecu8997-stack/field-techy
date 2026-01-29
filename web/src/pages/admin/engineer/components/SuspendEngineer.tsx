@@ -4,50 +4,62 @@ import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerI
 import Popup from "@/shared/components/Popup";
 import { validateDescription } from "@/utils/validate";
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type SubmitHandler } from "react-hook-form";
 import { IoCloseSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
+
+type SuspendEngineerForm = {
+  suspendStartDate: Date;
+  suspendEndDate: Date;
+  reason: string;
+};
 
 export default function SuspendEngineer({
-  isSuspendengineer,
-  setIsSuspendengineer,
+  isSuspendEngineer,
+  setIsSuspendEngineer,
 }: {
-  isSuspendengineer: boolean;
-  setIsSuspendengineer: React.Dispatch<React.SetStateAction<boolean>>;
+  isSuspendEngineer: boolean;
+  setIsSuspendEngineer: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const ctx = useFormContext();
-  const suspendStartDate = ctx.watch("suspendStartDate");
-  const suspendEndDate = ctx.watch("suspendEndDate");
+  const { watch, handleSubmit } = useFormContext<SuspendEngineerForm>();
+  const suspendStartDate = watch("suspendStartDate");
+  // This function only executes if validation passes
+  const onSubmit: SubmitHandler<SuspendEngineerForm> = () => {
+    // Add your API call logic here
+    toast.success("Engineer suspended successfully!");
+    setIsSuspendEngineer(false);
+  };
   return (
     <div>
       <Popup
-        open={isSuspendengineer}
-        onClose={() => setIsSuspendengineer(false)}
+        open={isSuspendEngineer}
+        onClose={() => setIsSuspendEngineer(false)}
       >
         <div className="p-4">
           <div className="flex justify-between items-center">
             <span className="font-bold">Suspend Engineer</span>
             <div
               className="text-xl font-semibold cursor-pointer"
-              onClick={() => setIsSuspendengineer(false)}
+              onClick={() => setIsSuspendEngineer(false)}
             >
               <IoCloseSharp />
             </div>
           </div>
 
-          <div className="my-4">
+          <div className="my-4 flex flex-col gap-4">
             <DatePickerInput
               name="suspendStartDate"
               label="Start Date"
               placeholder="Start Date"
               required
-              maxDate={suspendEndDate || undefined}
+              minDate={new Date(new Date().setHours(0, 0, 0, 0))}
             />
             <DatePickerInput
               name="suspendEndDate"
               label="End Date"
               placeholder="End Date"
               required
-              minDate={suspendStartDate || undefined}
+              minDate={suspendStartDate}
             />
             <TextareaInput
               name="reason"
@@ -57,16 +69,19 @@ export default function SuspendEngineer({
               rules={{ validate: (v: string) => validateDescription(v) }}
             />
           </div>
+
           <div className="flex justify-end gap-2">
             <Button
               variant="outline"
-              onClick={() => setIsSuspendengineer(false)}
+              type="button"
+              onClick={() => setIsSuspendEngineer(false)}
             >
               Cancel
             </Button>
             <Button
-              type="submit"
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white"
+              type="button"
+              className="w-fit bg-teal-900 text-white"
+              onClick={handleSubmit(onSubmit)}
             >
               Submit
             </Button>

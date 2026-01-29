@@ -4,7 +4,7 @@ import {
   validateName,
   validateVatNumber,
   validateZipcode,
-} from "@/pages/engineer/user_profile/Validate";
+} from "@/pages/client/my_account/Validate";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
@@ -12,6 +12,8 @@ import { useFormContext } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { useVatOptions } from "@/shared/apiServices/client/clientService";
+import { useEffect } from "react";
+import { businessTypes } from "@/dummy_data/adminClientData";
 import {
   useCities,
   useCountries,
@@ -32,16 +34,21 @@ import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailF
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
-  const watchedRole = watch("clientType");
-  const urlRole = window.location.pathname.includes(ClientTypeEnum.CORPORATE)
-    ? ClientTypeEnum.CORPORATE
+  const watchedRole = watch("accountType");
+  // Default to URL role if set, otherwise fallback to watched value or "home"
+  const urlRole = window.location.pathname.includes("corporate")
+    ? "CORPORATE"
     : undefined;
-  const role = urlRole || watchedRole || ClientTypeEnum.HOME;
-
+  const role = urlRole || watchedRole || "HOME";
   const country = watch("country");
   const selectedState = watch("state");
+  const countryValue =
+    typeof country === "string" ? country : country?.code || country?.value;
+  useEffect(() => {
+    setValue("state", undefined);
+    setValue("city", undefined);
+  }, [country, setValue]);
 
-  // Fetch dropdown data from API
   const countriesQuery = useCountries();
   const parentCountryId = country?.value ?? country;
   const statesQuery = useStates(parentCountryId);
@@ -94,11 +101,11 @@ const BasicDetailsFields = () => {
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
-        role === ClientTypeEnum.HOME
+        role === "HOME"
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("clientType", ClientTypeEnum.HOME)}
+            onClick={() => setValue("accountType", "HOME")}
           >
             Home Client
           </div>
@@ -106,11 +113,11 @@ const BasicDetailsFields = () => {
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
-        role === ClientTypeEnum.CORPORATE
+        role === "CORPORATE"
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("clientType", ClientTypeEnum.CORPORATE)}
+            onClick={() => setValue("accountType", "CORPORATE")}
           >
             Corporate Client
           </div>
@@ -166,11 +173,13 @@ const BasicDetailsFields = () => {
       />
       <SelectField
         name="state"
-        placeholder={statesLoading ? "Loading states..." : "Select State"}
+        placeholder={
+          statesLoading ? "Loading states..." : "Select State/Region"
+        }
         options={states}
         required
-        label="State"
-        disabled={statesLoading || !country}
+        label="State/Region"
+        disabled={statesLoading}
       />
       <SelectField
         name="city"
@@ -187,11 +196,7 @@ const BasicDetailsFields = () => {
         required
         label="Postal Code"
         rules={{
-          validate: (value: string) =>
-            validateZipcode(
-              value,
-              typeof country === "string" ? country : country?.value,
-            ),
+          validate: (value: string) => validateZipcode(value, countryValue),
         }}
       />
 
@@ -203,12 +208,7 @@ const BasicDetailsFields = () => {
             placeholder="Business Type"
             label="Business Type"
             disabled={!!urlRole} // Disable if fixed by URL
-            options={[
-              { value: "PRIVATE", label: "Private" },
-              { value: "GOVERNMENT", label: "Government" },
-              { value: "NGO", label: "NGO" },
-              { value: "OTHER", label: "Other" },
-            ]}
+            options={businessTypes}
             leftIcon={<TbFileText className="text-lg text-gray-500" />}
             required
           />

@@ -1,10 +1,10 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
+  designationOptions,
   employmentTypeOptions,
   workLocationTypeOptions,
-  designationOptions,
 } from "./constants";
 
 /**
@@ -93,7 +93,7 @@ export const WorkExperienceList: React.FC<WorkExperienceListProps> = ({
                       className="hover:text-blue-600 transition-colors"
                       aria-label="Edit"
                     >
-                      <FaRegEdit />
+                      <FiEdit2 />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(String(item.id || ""))}

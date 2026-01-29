@@ -1,16 +1,17 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import {
+  useClientProfile,
+  useClientStore,
+} from "@/shared/store/useClientStore";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
+import IconWithTheme from "./IconWithTheme";
 import { JobSearchBarClient } from "./jobSearchBarClient";
-import {
-  useClientStore,
-  useClientProfile,
-} from "@/shared/store/useClientStore";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -84,14 +85,16 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   }, [clientProfile]);
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
+    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <img
-          src={assetsConfig.logos.ftLogo}
-          alt="FT Logo"
-          className="h-12 w-auto cursor-pointer"
-          onClick={() => navigate(absoluteUrls.client.home.dashboard)}
-        />
+        <span onClick={() => navigate(absoluteUrls.client.home.dashboard)}>
+          <IconWithTheme
+            lightLogo={assetsConfig.logos.ftLogo}
+            darkLogo={assetsConfig.logos.ftLogoWhite}
+            header
+          />
+        </span>
+
         <NavLink
           to={absoluteUrls.client.home.my_projects}
           className={`${
@@ -194,7 +197,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
       {/* Desktop buttons - hidden on mobile */}
       <div className="hidden md:flex items-center space-x-4">
         <div
-          className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="relative p-2 text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.client.home.chat);
           }}
@@ -205,7 +208,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           </span>
         </div>
         <div
-          className="p-2 relative text-gray-600 hover:text-gray-900 cursor-pointer"
+          className="p-2 relative text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
             onDrawerToggle();
             setActiveKey("clientNotification");

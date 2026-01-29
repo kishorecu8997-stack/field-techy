@@ -9,8 +9,10 @@ import usePostAJobStore, {
 } from "@/shared/store/postAJobStore";
 import { getDurationString } from "@/utils";
 import { getMonthList, getOrdinalList } from "@/utils/scheduleFuntions";
-import { validateDateRange } from "@/utils/validate";
-import { validateCurrentOrFutureDate } from "../../../post_job/Validates";
+import {
+  validateCurrentOrFutureDate,
+  validateEndDate,
+} from "../../../post_job/Validates";
 import { useEffect, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -244,7 +246,6 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
           <InputField
             disabled={true}
             name={"jobDuration"}
-            required
             label={"Job Duration"}
             placeholder={"Enter Job Duration"}
           />
@@ -347,7 +348,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <div className="w-full">
                       <SelectField
                         disabled={isDisable}
-                        label="Repeat Year"
+                        label="Repeat on Month ( For Every year selection )"
                         name="repeatedByYear"
                         required
                         options={getMonthList()}
@@ -377,7 +378,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     value: OccurrenceEndType.onDate,
                   },
                   {
-                    label: "After particular date",
+                    label: "After Particular Occurrence",
                     value: OccurrenceEndType.afterDate,
                   },
                 ]}
@@ -387,11 +388,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                   <Controller
                     name="JobOccurrenceEndDate"
                     rules={{
-                      validate: (value) =>
-                        validateDateRange(
-                          value,
-                          ctx.getValues("JobOccurrenceEndDate"),
-                        ),
+                      validate: (value) => validateCurrentOrFutureDate(value),
                     }}
                     control={ctx.control}
                     render={({ field }) => (
@@ -431,10 +428,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                         name="startDate"
                         rules={{
                           validate: (value) =>
-                            validateDateRange(
-                              value,
-                              ctx.getValues("startDate"),
-                            ),
+                            validateCurrentOrFutureDate(value),
                         }}
                         control={ctx.control}
                         render={({ field }) => (
@@ -505,8 +499,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                     <Controller
                       name="startDate"
                       rules={{
-                        validate: (value) =>
-                          validateDateRange(value, ctx.getValues("startDate")),
+                        validate: (value) => validateCurrentOrFutureDate(value),
                       }}
                       control={ctx.control}
                       disabled={isDisable}
@@ -525,7 +518,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       )}
                     />
                   </div>
-                  <div className="w-full">
+                  <div className="relative w-full">
                     <CustomTimePicker
                       label="Start Time"
                       name="startTime"
@@ -542,7 +535,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       name="endDate"
                       rules={{
                         validate: (value) =>
-                          validateDateRange(value, ctx.getValues("endDate")),
+                          validateEndDate(value, ctx.getValues("startDate")),
                       }}
                       control={ctx.control}
                       render={({ field }) => (
@@ -566,7 +559,7 @@ const SchedulingPage = ({ isDisable }: { isDisable: boolean }) => {
                       )}
                     />
                   </div>
-                  <div className="w-full">
+                  <div className="relative w-full">
                     <CustomTimePicker
                       label="End Time"
                       name="endTime"

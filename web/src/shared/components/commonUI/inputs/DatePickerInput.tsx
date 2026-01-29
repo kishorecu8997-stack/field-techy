@@ -44,10 +44,11 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
       name={name}
       control={control}
       rules={validationRules}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
+      render={({ field, fieldState: { error } }) => (
         <DatePickerRender
-          onChange={onChange}
-          value={value}
+          name={name}
+          onChange={(date) => field.onChange(date)}
+          value={field.value}
           error={error}
           triggerField={() => trigger(name)}
           minDate={minDate}
@@ -87,6 +88,7 @@ const isDateValid = (date: Date, minDate?: Date, maxDate?: Date): boolean => {
 };
 
 const DatePickerRender: FC<{
+  name: string;
   onChange: (date: Date | null) => void;
   value: Date | null;
   error?: FieldError;
@@ -101,6 +103,7 @@ const DatePickerRender: FC<{
   isShowLabel: boolean;
   required: boolean | string;
 }> = ({
+  // name,
   onChange,
   value,
   error,
@@ -115,6 +118,7 @@ const DatePickerRender: FC<{
   required,
   triggerField,
 }) => {
+  // const { trigger } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
   const [currentMonth, setCurrentMonth] = useState(value || new Date());

@@ -47,8 +47,8 @@ export const TagSelectField = ({
   disabled = false,
 }: TagSelectFieldProps) => {
   const { control } = useFormContext();
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [position, setPosition] = useState<"bottom" | "top">("bottom");
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [position, setPosition] = useState<"top" | "bottom">("bottom");
 
   const validationRules: RegisterOptions = {
     required: required ? `${label || name} is required` : false,
