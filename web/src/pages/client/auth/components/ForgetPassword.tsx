@@ -10,8 +10,6 @@ import Popup from "@/shared/components/Popup";
 import { useState } from "react";
 import OTPPage from "./OTPPage";
 
-
-
 /**
  * Type representing the data structure for the Login form.
  * @typedef {Object} LoginFormData

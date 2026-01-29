@@ -23,6 +23,12 @@ interface RequirementsSectionProps {
   toolOptions: { label: string; value: string }[];
 }
 
+/**
+ * Requirements Section Component
+ * This component renders the requirements section of the job posting form.
+ * @param {RequirementsSectionProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered RequirementsSection component.
+ */
 const RequirementsSection = ({
   isDisable,
   skillOptions,

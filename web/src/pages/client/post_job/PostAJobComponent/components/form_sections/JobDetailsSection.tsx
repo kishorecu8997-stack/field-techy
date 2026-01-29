@@ -2,6 +2,12 @@ import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SectionHeader from "../../SectionHeader";
 import { validateDescription } from "@/pages/engineer/home/validation";
 
+/**
+ * Job Details Section Component
+ * This component renders the job details section of the job posting form.
+ * @param {boolean} isDisable - A boolean flag to disable the form fields.
+ * @returns {React.ReactElement} The rendered JobDetailsSection component.
+ */
 const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
   return (
     <div className="space-y-3">

@@ -12,6 +12,12 @@ interface BillSummaryProps {
   defaultConsent?: boolean;
 }
 
+/** 
+ * Bill Summary Component 
+ * This component renders a summary of the job posting data and allows the user to consent to the data sharing.
+ * @param {BillSummaryProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered BillSummary component.
+ */
 export const BillSummary = ({
   data,
   onConsentChange,

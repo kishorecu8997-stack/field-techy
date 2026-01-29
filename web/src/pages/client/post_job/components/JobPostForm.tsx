@@ -3,16 +3,10 @@ import { FormProvider, useFormContext } from "react-hook-form";
 import FormSection from "./FormSection";
 
 import {
-  JOB_TYPES,
-  COUNTRIES,
-  STATES,
-  CITIES,
   VACANCIES,
-  SKILLS,
-  EXPERIENCE_LEVELS,
-  ENGAGEMENT_MODELS,
   JOB_VISIBILITY,
 } from "@/dummy_data/jobFormOptions";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
@@ -49,6 +43,89 @@ const JobPostForm: React.FC = () => {
    */
   const inputClass = () =>
     "w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500";
+
+  const selectedCountry = methods.watch("country");
+  const selectedState = methods.watch("state");
+
+  const { data: jobTypesData } = useLookupData("employmentTypes");
+  const { data: countriesData } = useLookupData("countries");
+  const { data: statesData } = useLookupData("states", selectedCountry);
+  const { data: citiesData } = useLookupData("cities", selectedState);
+  const { data: skillsData } = useLookupData("skills");
+  const { data: experienceLevelsData } = useLookupData("educationLevels");
+  const { data: engagementModelsData } = useLookupData("engagementModels");
+
+  const jobTypeOptions = React.useMemo(
+    () =>
+      jobTypesData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [jobTypesData],
+  );
+
+  const countryOptions = React.useMemo(
+    () =>
+      countriesData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [countriesData],
+  );
+
+  const stateOptions = React.useMemo(
+    () =>
+      statesData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [statesData],
+  );
+
+  const cityOptions = React.useMemo(
+    () =>
+      citiesData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [citiesData],
+  );
+
+  const skillOptions = React.useMemo(
+    () =>
+      skillsData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [skillsData],
+  );
+
+  const experienceLevelOptions = React.useMemo(
+    () =>
+      experienceLevelsData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [experienceLevelsData],
+  );
+
+  const engagementModelOptions = React.useMemo(
+    () =>
+      engagementModelsData?.map((item) => ({
+        label: item.name,
+        value: String(item.id),
+      })) || [],
+    [engagementModelsData],
+  );
+
+  React.useEffect(() => {
+    methods.setValue("state", "");
+    methods.setValue("city", "");
+  }, [selectedCountry, methods]);
+
+  React.useEffect(() => {
+    methods.setValue("city", "");
+  }, [selectedState, methods]);
 
   React.useEffect(() => {
     const date = methods.watch("startDate");
@@ -112,7 +189,7 @@ const JobPostForm: React.FC = () => {
                   label="Job Type"
                   name="jobType"
                   placeholder="Select Job Type"
-                  options={JOB_TYPES}
+                  options={jobTypeOptions}
                   required
                 />
               </div>
@@ -122,7 +199,7 @@ const JobPostForm: React.FC = () => {
                   label="Country"
                   name="country"
                   placeholder="Select a Country"
-                  options={COUNTRIES}
+                  options={countryOptions}
                   required
                 />
               </div>
@@ -132,7 +209,7 @@ const JobPostForm: React.FC = () => {
                   label="State"
                   name="state"
                   placeholder="Select a State"
-                  options={STATES}
+                  options={stateOptions}
                   required
                 />
               </div>
@@ -142,7 +219,7 @@ const JobPostForm: React.FC = () => {
                   label="City"
                   name="city" // ✅ lowercase to match formData
                   placeholder="Select a City"
-                  options={CITIES}
+                  options={cityOptions}
                   required
                 />
               </div>
@@ -314,7 +391,7 @@ const JobPostForm: React.FC = () => {
                 label="Skill"
                 name="skillsRequired"
                 placeholder="Select a Skill"
-                options={SKILLS}
+                options={skillOptions}
                 required
               />
 
@@ -322,7 +399,7 @@ const JobPostForm: React.FC = () => {
                 label="Experience Level"
                 name="experienceLevel"
                 placeholder="Experience Level"
-                options={EXPERIENCE_LEVELS}
+                options={experienceLevelOptions}
                 required
               />
 
@@ -330,7 +407,7 @@ const JobPostForm: React.FC = () => {
                 label="Engagement Model"
                 name="engagementModel"
                 placeholder="Engagement Model"
-                options={ENGAGEMENT_MODELS}
+                options={engagementModelOptions}
                 required
               />
 

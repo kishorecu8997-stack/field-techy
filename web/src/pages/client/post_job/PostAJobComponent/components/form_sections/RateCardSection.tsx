@@ -11,6 +11,12 @@ interface RateCardSectionProps {
   rate: string | null;
 }
 
+/**
+ * Rate Card Section Component
+ * This component renders the rate card section of the job posting form.
+ * @param {RateCardSectionProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered RateCardSection component.
+ */
 const RateCardSection = ({
   isDisable,
   serviceCategoryOptions,

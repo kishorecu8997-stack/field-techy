@@ -9,19 +9,31 @@ interface LocationSectionProps {
   countryOptions: { label: string; value: string }[];
   stateOptions: { label: string; value: string }[];
   cityOptions: { label: string; value: string }[];
+  locationTypeOptions: { label: string; value: string }[];
 }
-
+/**
+ * Location Section Component
+ * This component renders the location section of the job posting form.
+ * @param {LocationSectionProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered LocationSection component.
+ */
 const LocationSection = ({
   isDisable,
   countryOptions,
   stateOptions,
   cityOptions,
+  locationTypeOptions,
 }: LocationSectionProps) => {
   const {
     watch,
     formState: { errors },
   } = useFormContext();
   const locationType = watch("locationType");
+
+  const isRemote =
+    locationTypeOptions
+      ?.find((opt) => opt.value === locationType)
+      ?.label.toLowerCase() === "remote";
 
   return (
     <div className="space-y-3">
@@ -33,20 +45,15 @@ const LocationSection = ({
             <span className="text-red-500">*</span>
           </label>
           <div
-            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${
-              errors.locationType
+            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${errors.locationType
                 ? "border-red-500"
                 : "border-gray-300 dark:border-gray-600"
-            }`}
+              }`}
           >
             <RadioField
               name="locationType"
               direction="horizontal"
-              options={[
-                { label: "On-site", value: "onsite" },
-                { label: "Remote", value: "remote" },
-                { label: "Hybrid", value: "hybrid" },
-              ]}
+              options={locationTypeOptions}
               isShowLabel={false}
               rules={{ required: "Service Type is required" }}
               containerClassName="w-full [&_p.mt-1]:hidden"
@@ -95,7 +102,7 @@ const LocationSection = ({
           />
         </div>
       </div>
-      {locationType !== "remote" && (
+      {!isRemote && (
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
           <div className="p-3">
             <SectionHeader title="Work Location" />
@@ -110,3 +117,4 @@ const LocationSection = ({
 };
 
 export default LocationSection;
+

@@ -34,6 +34,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   const { data: toolsData } = useLookupData("tools");
   const { data: statesData } = useLookupData("states", selectedCountry);
   const { data: citiesData } = useLookupData("cities", selectedState);
+  const { data: workLocationsData } = useLookupData("workLocations");
 
   const countryOptions = useMemo(
     () =>
@@ -51,6 +52,13 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
     () =>
       citiesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
     [citiesData],
+  );
+
+  const locationTypeOptions = useMemo(
+    () =>
+      workLocationsData?.map((w) => ({ label: w.name, value: String(w.id) })) ||
+      [],
+    [workLocationsData],
   );
 
   const serviceCategoryOptions = useMemo(
@@ -145,6 +153,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
           countryOptions={countryOptions}
           stateOptions={stateOptions}
           cityOptions={cityOptions}
+          locationTypeOptions={locationTypeOptions}
         />
         <SchedulingSection isDisable={isDisable} />
         <RequirementsSection

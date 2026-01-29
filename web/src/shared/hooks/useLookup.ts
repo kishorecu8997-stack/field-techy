@@ -22,7 +22,8 @@ export type LookupTable =
   | "serviceCategories"
   | "workLocations"
   | "educationLevels"
-  | "courses";
+  | "courses"
+  | "engagementModels";
 
 type QueryKey = readonly unknown[];
 type LookupQueryOptions = UseQueryOptions<
@@ -115,3 +116,5 @@ export const useEducationLevels = (options?: LookupCallOptions) =>
   useLookup("educationLevels", undefined, options);
 export const useCourses = (options?: LookupCallOptions) =>
   useLookup("courses", undefined, options);
+export const useEngagementModels = (options?: LookupCallOptions) =>
+  useLookup("engagementModels", undefined, options);

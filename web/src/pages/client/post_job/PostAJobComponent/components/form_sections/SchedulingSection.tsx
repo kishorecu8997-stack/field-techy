@@ -3,6 +3,12 @@ import { useFormContext } from "react-hook-form";
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import SectionHeader from "../../SectionHeader";
 
+/**
+ * Scheduling Section Component
+ * This component renders the scheduling section of the job posting form.
+ * @param {Object} props - The props for the component.
+ * @returns {React.ReactElement} The rendered SchedulingSection component.
+ */
 const SchedulingSection = ({ isDisable }: { isDisable: boolean }) => {
   const { watch } = useFormContext();
   const startDateValue = watch("startDate") as Date | null;
