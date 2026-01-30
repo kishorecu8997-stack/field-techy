@@ -3,14 +3,13 @@ import skills from "@/dummy_data/skills";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
   validateAddress,
   validateName,
-  validatePhone,
-  validatePricePerHour,
+  validatePricePerHour
 } from "@/utils/validate";
 
 /**
@@ -58,12 +57,7 @@ export default function BasicInformation() {
             required
             rules={{ validate: (v: string) => validateName(v) }}
           />
-          <PhoneInputField
-            name="phoneNumber"
-            label="Mobile Number"
-            required
-             rules={{ validate: (v: string) => validatePhone(v) }}
-          />
+          <PhoneInputWithValidation />
           <TagSelectField
             name="skills"
             label="Skills"
