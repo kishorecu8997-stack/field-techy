@@ -205,28 +205,42 @@ export const ImageUploaderField = ({
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const nameLc = file.name.toLowerCase();
-            const hasAllowedExt =
-              nameLc.endsWith(".jpeg") ||
-              nameLc.endsWith(".jpg") ||
-              nameLc.endsWith(".png");
-            if (!hasAllowedExt) {
-              toast.error("Only .jpeg, .jpg, or .png extensions are allowed.");
-              return;
-            }
-
-            const { valid } = await validateImageFile(file);
-            if (!valid) {
+            const { valid, type: detectedType } = await validateImageFile(file);
+            if (!valid || !detectedType) {
               toast.error("Uploaded file is corrupted or not a valid image.");
               return;
             }
 
-            if (file.size < 10 * 1024 || file.size > maxSize) {
+            // Check if extension matches the detected type
+            const nameLc = file.name.toLowerCase();
+            const isJpeg = detectedType === "jpeg";
+            const isPng = detectedType === "png";
+
+            const hasJpegExt = nameLc.endsWith(".jpg") || nameLc.endsWith(".jpeg");
+            const hasPngExt = nameLc.endsWith(".png");
+
+            let finalFile = file;
+
+            // Mismatch detection
+            if ((isJpeg && !hasJpegExt) || (isPng && !hasPngExt)) {
+              const correctExt = isJpeg ? "jpg" : "png";
+              const baseName =
+                file.name.lastIndexOf(".") !== -1
+                  ? file.name.substring(0, file.name.lastIndexOf("."))
+                  : file.name;
+              const newName = `${baseName}.${correctExt}`;
+              const correctMime = isJpeg ? "image/jpeg" : "image/png";
+
+              // Create new File with correct attributes
+              finalFile = new File([file], newName, { type: correctMime });
+            }
+
+            if (finalFile.size < 10 * 1024 || finalFile.size > maxSize) {
               toast.error("File size must be between 10 KB and 350 KB.");
               return;
             }
 
-            onChange(file);
+            onChange(finalFile);
             setIsPopupOpen(false);
           };
 
@@ -237,7 +251,16 @@ export const ImageUploaderField = ({
             try {
               const response = await fetch(avatar.url);
               const blob = await response.blob();
-              const file = new File([blob], `avatar-${avatar.id}.png`, {
+              
+              // Determine correct extension from blob type
+              let extension = "png";
+              if (blob.type === "image/jpeg") {
+                extension = "jpg";
+              } else if (blob.type === "image/png") {
+                extension = "png";
+              }
+
+              const file = new File([blob], `avatar-${avatar.id}.${extension}`, {
                 type: blob.type,
               });
               onChange(file);
