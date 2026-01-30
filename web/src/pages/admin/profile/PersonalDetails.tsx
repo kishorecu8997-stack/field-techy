@@ -40,7 +40,7 @@ export default function PersonalDetails() {
       });
     };
     getAdmin();
-  }, [adminPersonalInfo]);
+  }, []);
 
   /* ---------- Update admin profile ---------- */
   const updateAdminProfile = useAdminUpdatePersonalInfo({
@@ -69,6 +69,18 @@ export default function PersonalDetails() {
     },
   });
   const profileImage = methods.watch("profilePicture");
+
+  /* ---------- Reset Form on Data Load ---------- */
+  useEffect(() => {
+    if (adminPersonalInfo) {
+      methods.reset({
+        fullName: adminPersonalInfo.name,
+        email: adminPersonalInfo.email,
+        phoneNumber: adminPersonalInfo.phoneNumber,
+        profilePicture: methods.getValues("profilePicture"),
+      });
+    }
+  }, [adminPersonalInfo, methods]);
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
