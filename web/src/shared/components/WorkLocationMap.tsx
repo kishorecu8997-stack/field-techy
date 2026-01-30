@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { IoLocationSharp } from "react-icons/io5";
+import { MAP_DEFAULTS } from "@/shared/constants/mapDefaults";
 
 interface WorkLocationMapProps {
   latitude?: number;
@@ -11,10 +12,10 @@ interface WorkLocationMapProps {
 }
 
 const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
-  latitude = 13.0827, // Tamil Nadu center
-  longitude = 80.2707, // Tamil Nadu center
-  locationName = "Work Location",
-  address = "Chennai, Tamil Nadu, India",
+  latitude = MAP_DEFAULTS.latitude,
+  longitude = MAP_DEFAULTS.longitude,
+  locationName = MAP_DEFAULTS.locationName,
+  address = MAP_DEFAULTS.address,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
@@ -30,7 +31,7 @@ const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
       );
 
       // Add OpenStreetMap tiles
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      L.tileLayer(MAP_DEFAULTS.tileUrl, {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
@@ -46,10 +47,8 @@ const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
 
     // Add marker at the location
     const customIcon = L.icon({
-      iconUrl:
-        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-      shadowUrl:
-        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+      iconUrl: MAP_DEFAULTS.markerIconUrl,
+      shadowUrl: MAP_DEFAULTS.markerShadowUrl,
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       popupAnchor: [1, -34],

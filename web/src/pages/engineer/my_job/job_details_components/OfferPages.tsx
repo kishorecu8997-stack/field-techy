@@ -2,6 +2,7 @@ import {
   client as dummyClient,
   jobHeaderData as dummyJobHeader,
 } from "@/dummy_data/jobDetails";
+import { offerPageDummy } from "@/dummy_data/offerPageDummy";
 import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState, useMemo } from "react";
@@ -25,29 +26,12 @@ const OfferPages = () => {
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isJobAccepted, setIsJobAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
 
   const jobData = useMemo(() => {
     // Handle dummy job
     if (isDummyJob) {
-      return {
-        title: "Network Engineer",
-        client: "-",
-        duration: "5 weeks",
-        type: "ON_SITE",
-        status: "NEW",
-        jobDescription: `Created on 10-Feb-2024, 09:00 AM
-Tentative Start on: 12-Feb-2024.
-Review feedback and make necessary adjustments by 15-Feb-2024
-Implementation phase begins on 16-Feb-2024
-Conduct user acceptance testing and finalize documentation`,
-        documents: [
-          { name: "Documents.doc", type: "file" },
-          { name: "Documents.doc", type: "file" },
-          { name: "Document.jpg", type: "image" },
-        ],
-      };
+      return offerPageDummy;
     }
     
     if (!apiJob) return null;
@@ -79,14 +63,12 @@ Conduct user acceptance testing and finalize documentation`,
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
-              setIsJobAccepted={setIsJobAccepted}
               setActiveTab={setActiveTab}
             />
             <JobTabSection
               status={jobData?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted}
               activeTab={activeTab}
             />
           </div>

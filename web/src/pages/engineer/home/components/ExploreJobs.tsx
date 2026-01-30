@@ -13,23 +13,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
-
-// Dummy job card - always displayed at the top
-const dummyJob: JobItem = {
-  id: "dummy-j1",
-  jobTitle: "Network Engineer",
-  jobDescription: "We are looking for a skilled Network Engineer to manage, maintain, and optimize our network infrastructure. The role involves troubleshooting network issues, ensuring system security, and supporting smooth business operations.",
-  location: "Chennai, Tamil Nadu, India",
-  experience: "L3",
-  salary: "3000",
-  postedTime: "Just now",
-  jobDuration: "5 weeks",
-  status: "NEW",
-  numberOfVacancy: 4,
-  client: {
-    companyName: "teceze",
-  },
-} as JobItem;
+import { exploreJobsDummy } from "@/dummy_data/engineerJobOverview";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -62,7 +46,7 @@ const ExploreJobs: React.FC = () => {
   const allNewJobs = useMemo(() => {
     const apiNewJobs = (apiJobs || []).filter((job) => job.status === "NEW");
     // Add dummy job to the beginning of the list
-    return [dummyJob, ...apiNewJobs];
+    return [exploreJobsDummy as JobItem, ...apiNewJobs];
   }, [apiJobs]);
 
   // Step 2: Apply filters

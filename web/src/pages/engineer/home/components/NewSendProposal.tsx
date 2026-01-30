@@ -7,19 +7,17 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateDescription } from "../validation";
 
-interface DummyProposalTypes {
+interface ProposalFormValues {
   description: string;
   attachment: FileList | null;
 }
 
-interface DummySendProposalProps {
+interface NewSendProposalProps {
   onCancel?: () => void;
 }
 
-const DummySendProposal: React.FC<DummySendProposalProps> = ({
-  onCancel,
-}) => {
-  const formCtx = useForm<DummyProposalTypes>({
+const NewSendProposal: React.FC<NewSendProposalProps> = ({ onCancel }) => {
+  const formCtx = useForm<ProposalFormValues>({
     mode: "onChange",
     defaultValues: {
       description: "",
@@ -28,14 +26,14 @@ const DummySendProposal: React.FC<DummySendProposalProps> = ({
   });
 
   const handleSubmit = async () => {
-try {
-toast.success("Proposal submitted successfully!");
-if (onCancel) onCancel();
-} catch (error) {
-console.error("Proposal submission failed:", error);
-toast.error("Failed to submit proposal. Please try again.");
-}
-};
+    try {
+      toast.success("Proposal submitted successfully!");
+      if (onCancel) onCancel();
+    } catch (error) {
+      console.error("Proposal submission failed:", error);
+      toast.error("Failed to submit proposal. Please try again.");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -92,4 +90,4 @@ toast.error("Failed to submit proposal. Please try again.");
   );
 };
 
-export default DummySendProposal;
+export default NewSendProposal;

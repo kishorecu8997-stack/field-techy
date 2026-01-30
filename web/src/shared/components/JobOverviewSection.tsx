@@ -5,6 +5,8 @@ import React from "react";
  * Displays comprehensive job details including description, skills, work details, and earnings
  */
 
+type Attachment = { name: string; url: string };
+
 export interface JobOverviewProps {
   jobTitle: string;
   jobDescription: string;
@@ -19,7 +21,7 @@ export interface JobOverviewProps {
   totalPayment?: string;
   weeklyPayNote?: string;
   additionalDetails?: string[];
-  attachments?: string[];
+  attachments?: Array<Attachment | string>;
 }
 
 const JobOverviewSection: React.FC<JobOverviewProps> = ({
@@ -38,6 +40,10 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   additionalDetails = [],
   attachments = [],
 }) => {
+  const attachmentItems: Attachment[] = attachments.map((item) =>
+    typeof item === "string" ? { name: item, url: "#" } : item
+  );
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
       {/* Job Details Section */}
@@ -261,15 +267,19 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
           )}
 
           {/* Attachments */}
-          {attachments.length > 0 && (
+          {attachmentItems.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {attachments.map((attachment, idx) => (
-                <button
+              {attachmentItems.map((attachment, idx) => (
+                <a
                   key={idx}
-                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  href={attachment.url || "#"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
-                  {attachment}
-                </button>
+                  <span aria-hidden>📎</span>
+                  <span className="truncate max-w-xs">{attachment.name}</span>
+                </a>
               ))}
             </div>
           )}

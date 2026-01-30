@@ -1,4 +1,5 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
+import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -100,18 +101,18 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <div>
             <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
             {jobLocation && (
-              <p className="text-sm mt-1">Location: {jobLocation}</p>
+              <p className="text-sm mt-1">{JOB_HEADER_COPY.locationLabel} {jobLocation}</p>
             )}
             {(numberOfVacancy !== undefined || numberOfApplicants !== undefined) && (
               <p className="text-sm mt-1">
                 {numberOfVacancy !== undefined && (
-                  <span>No of Vacancies: {numberOfVacancy}</span>
+                  <span>{JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}</span>
                 )}
                 {numberOfVacancy !== undefined && numberOfApplicants !== undefined && (
-                  <span> | </span>
+                  <span>{JOB_HEADER_COPY.separator}</span>
                 )}
                 {numberOfApplicants !== undefined && (
-                  <span>No of Applicants: {numberOfApplicants}</span>
+                  <span>{JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}</span>
                 )}
               </p>
             )}
@@ -122,7 +123,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
                 onClick={handleBreakDetails}
               >
-                <span>Break Details</span>
+                <span>{JOB_HEADER_COPY.breakDetails}</span>
                 <div className="relative">
                   <FaBell size={20} />
                   <span className="absolute bottom-4 left-3 flex justify-center items-center size-1 p-1 rounded-full bg-red-600"></span>
@@ -162,8 +163,8 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         </div>
         {!hideDurationAndClient && (
           <div className="mt-3 flex flex-wrap gap-4 text-sm justify-start items-start">
-            <span className="flex items-center gap-1">🕒 {duration || "-"}</span>
-            <span>Client: {client || "-"}</span>
+            <span className="flex items-center gap-1">{JOB_HEADER_COPY.clockIcon} {duration || "-"}</span>
+            <span>{JOB_HEADER_COPY.clientLabel} {client || "-"}</span>
           </div>
         )}
         {isClient ? (
