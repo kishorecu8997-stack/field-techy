@@ -14,6 +14,7 @@ import {
   useEngineerProfile,
   useEngineerStore,
 } from "../store/useEngineerStore";
+import IconWithTheme from "./IconWithTheme";
 
 /**
  * Header component with navigation, search bar, and user profile.
@@ -62,11 +63,12 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
   const engineerProfile = useEngineerProfile();
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-300 ">
+    <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <img
-          src={assetsConfig.logos.ftLogo}
-          alt="FT Logo"
+        <IconWithTheme
+          darkLogo={assetsConfig.logos.ftLogoWhite}
+          lightLogo={assetsConfig.logos.ftLogo}
+          header
           className="h-12 w-auto cursor-pointer"
           onClick={() => {
             navigate(absoluteUrls.engineer.home.dashboard);
@@ -77,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           <Tooltip text="View your applied and active jobs">
             <NavLink
               to={absoluteUrls.engineer.home.my_jobs}
-              className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400 "
               aria-label="View your applied and active jobs"
             >
               My Jobs
@@ -92,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
                 onDrawerToggle();
                 setActiveKey("myEarning");
               }}
-              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer"
+              className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400 "
             >
               Earning
             </div>
@@ -150,9 +152,12 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               >
                 <div className="flex items-center space-x-3">My Account</div>
               </div>
-              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
+              <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer ">
                 <div className="flex items-center space-x-3">
-                  <FaBell className="mr-3" size={18} />
+                  <FaBell
+                    className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    size={18}
+                  />
                   <div
                     onClick={() => {
                       onDrawerToggle();
@@ -171,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
 
               <div className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-100 cursor-pointer">
                 <div className="flex items-center space-x-3">
-                  <FaComment className="mr-3" size={18} />
+                  <FaComment className="" size={18} />
                   <div
                     onClick={() => {
                       navigate(absoluteUrls.engineer.home.chat);
@@ -197,7 +202,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
           className="relative p-2 text-gray-600 hover:text-gray-900 cursor-pointer"
           onClick={() => navigate(absoluteUrls.engineer.home.chat)}
         >
-          <FaComment size={20} />
+          <FaComment
+            className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
+            size={20}
+          />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
             3
           </span>
@@ -209,7 +217,10 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
             setActiveKey("notification");
           }}
         >
-          <FaBell size={20} />
+          <FaBell
+            className="text-gray-600 dark:text-gray-300 hover:text-teal-800 dark:hover:text-teal-800"
+            size={20}
+          />
           <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
             {notificationCount}
           </span>

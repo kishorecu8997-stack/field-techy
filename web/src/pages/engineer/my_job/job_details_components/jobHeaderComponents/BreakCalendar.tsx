@@ -25,6 +25,7 @@ type RawBreak = {
   type: DurationType;
   status: StatusType;
 };
+
 /**
  * StatusLegendItem
  *
@@ -80,8 +81,8 @@ const BreakCalendar: React.FC = () => {
       border: "#f59e0b",
       text: "#92400e",
       label: "Pending",
-      iconColor: "text-amber-600",
-      textColor: "text-amber-800",
+      iconColor: "text-amber-600 dark:text-amber-400",
+      textColor: "text-amber-800 dark:text-amber-300",
     },
     Approved: {
       Icon: icons.check,
@@ -89,8 +90,8 @@ const BreakCalendar: React.FC = () => {
       border: "#10b981",
       text: "#065f46",
       label: "Approved",
-      iconColor: "text-green-600",
-      textColor: "text-green-800",
+      iconColor: "text-green-600 dark:text-green-400",
+      textColor: "text-green-800 dark:text-green-300",
     },
     Active: {
       Icon: icons.active,
@@ -98,8 +99,8 @@ const BreakCalendar: React.FC = () => {
       border: "#3b82f6",
       text: "#1e40af",
       label: "Active",
-      iconColor: "text-blue-600",
-      textColor: "text-blue-800",
+      iconColor: "text-blue-600 dark:text-blue-400",
+      textColor: "text-blue-800 dark:text-blue-300",
     },
     Rejected: {
       Icon: icons.close,
@@ -107,8 +108,8 @@ const BreakCalendar: React.FC = () => {
       border: "#f87171",
       text: "#b91c1c",
       label: "Rejected",
-      iconColor: "text-red-600",
-      textColor: "text-red-800",
+      iconColor: "text-red-600 dark:text-red-400",
+      textColor: "text-red-800 dark:text-red-300",
     },
   };
 
@@ -147,8 +148,8 @@ const BreakCalendar: React.FC = () => {
   const statusArray = Object.values(statusConfig);
 
   return (
-    <div className="py-5 px-4">
-      <div className="rounded-2xl overflow-hidden shadow-lg bg-white">
+    <div className="py-5 px-4 bg-white dark:bg-gray-900">
+      <div className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <div className="p-4">
           <FullCalendar
             plugins={[dayGridPlugin]}
@@ -162,8 +163,8 @@ const BreakCalendar: React.FC = () => {
             events={events}
             dayCellClassNames={(arg) =>
               arg.date.getDay() === 0 || arg.date.getDay() === 6
-                ? "bg-gray-100"
-                : ""
+                ? "bg-gray-100 dark:bg-gray-800/60"
+                : "dark:bg-gray-800"
             }
             eventContent={(arg) => {
               const IconComponent = (
@@ -180,7 +181,7 @@ const BreakCalendar: React.FC = () => {
             }}
           />
         </div>
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div className="bg-gray-50 dark:bg-gray-800/70 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap justify-center gap-8 text-sm">
             {statusArray.map((status) => (
               <StatusLegendItem

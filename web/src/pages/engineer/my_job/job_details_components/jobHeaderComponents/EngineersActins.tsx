@@ -52,7 +52,7 @@ const EngineersActions = ({
         {
           label: "Cancel",
           value: null,
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, accept",
@@ -76,7 +76,7 @@ const EngineersActions = ({
         {
           label: "Cancel",
           value: null,
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, start",
@@ -100,7 +100,7 @@ const EngineersActions = ({
         {
           label: "Cancel",
           value: null,
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, check in",
@@ -124,7 +124,7 @@ const EngineersActions = ({
         {
           label: "Cancel",
           value: null,
-          variant: "outline",
+          variant: "danger",
         },
         {
           label: "Yes, view",

@@ -42,7 +42,7 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
       onClick={onClick}
     >
       <div className="flex items-center gap-4 flex-1">
-        <div className="h-12 w-12 rounded-full bg-emerald-800 flex items-center justify-center text-white text-sm font-semibold">
+        <div className="h-12 w-12 rounded-full bg-teal-800 flex items-center justify-center text-white text-sm font-semibold">
           {getInitials(conversation.name)}
         </div>
 
@@ -60,11 +60,11 @@ export const ConversationListItem: React.FC<ConversationListItemProps> = ({
               {conversation.lastMessage}
             </p>
             {conversation.unreadCount ? (
-              <div className="h-6 w-6 rounded-full bg-emerald-800 text-white text-xs flex items-center justify-center">
+              <div className="h-6 w-6 rounded-full bg-teal-800 text-white text-xs flex items-center justify-center">
                 {conversation.unreadCount}
               </div>
             ) : (
-              <span className="text-emerald-700 dark:text-emerald-500 text-lg leading-none">
+              <span className="text-teal-700 dark:text-teal-500 text-lg leading-none">
                 ✓✓
               </span>
             )}

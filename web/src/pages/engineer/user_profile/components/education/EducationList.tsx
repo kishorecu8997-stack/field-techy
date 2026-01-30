@@ -1,5 +1,6 @@
 import React from "react";
 import { FiEdit2 } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface EducationItem {
@@ -29,12 +30,14 @@ const EducationList: React.FC<EducationListProps> = ({
   return (
     <div className="rounded-lg p-4 shadow-sm h-fit">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+          {title}
+        </h2>
         <button
           onClick={onAddAction}
-          className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
+          className={`flex !flex-row !items-center gap-2 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
         >
-          <span>+</span> Add {title}
+          <FaPlus className="h-3 w-3 " /> Add {title}
         </button>
       </div>
 
@@ -42,17 +45,19 @@ const EducationList: React.FC<EducationListProps> = ({
 
       <div className="overflow-y-auto space-y-2">
         {items.length === 0 ? (
-          <p className="text-gray-500 text-center py-6">No records yet.</p>
+          <p className="text-gray-500 text-center py-6 dark:text-gray-300">
+            No records yet.
+          </p>
         ) : (
           <div className="space-y-4">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white px-4 py-3 rounded-lg shadow"
+                className="bg-white px-4 py-3 rounded-lg shadow border border-gray-200 dark:bg-gray-700 dark:border-gray-700"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                       {item.educationLevel || "Untitled Education"}
                     </h3>
                   </div>
@@ -60,20 +65,20 @@ const EducationList: React.FC<EducationListProps> = ({
                   <div className="flex items-center space-x-3 text-gray-500">
                     <button
                       onClick={() => onEditAction?.(item.id)}
-                      className="hover:text-blue-600 transition-colors"
+                      className="text-gray-300 hover:text-blue-600 transition-colors dark:hover:text-blue-400"
                     >
                       <FiEdit2 />
                     </button>
                     <button
                       onClick={() => onDeleteAction?.(item.id)}
-                      className="hover:text-red-600 transition-colors"
+                      className="text-gray-300 hover:text-red-600 transition-colors"
                     >
                       <RiDeleteBin6Line />
                     </button>
                   </div>
                 </div>
 
-                <div className="mt-2 text-sm text-gray-600">
+                <div className="mt-2 text-sm text-gray-600 dark:text-white">
                   <p>
                     <span className="font-medium">Level:</span>{" "}
                     {item.educationLevel || "N/A"}

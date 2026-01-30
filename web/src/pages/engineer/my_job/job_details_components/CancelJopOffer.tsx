@@ -92,7 +92,7 @@ export default function CancelJopOffer() {
         {/* Buttons */}
         <div className="flex flex-row gap-4">
           <Button
-            variant="secondary"
+            variant="danger"
             className="flex-1  py-3 rounded-lg font-medium"
             onClick={() => setISOpenSidebar(false)}
           >

@@ -157,7 +157,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
       title: "Confirm Break Request",
       body: "Are you sure you want to submit this break request?",
       actionButtons: [
-        { label: "Cancel", value: null, variant: "outline" },
+        { label: "Cancel", value: null, variant: "danger" },
         {
           label: "Yes, Submit",
           value: "yes",

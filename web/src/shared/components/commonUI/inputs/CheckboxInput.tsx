@@ -53,14 +53,14 @@ export const CheckboxInput = ({
         rules={validationRules}
         render={({ field, fieldState: { error } }) => (
           <div className="flex flex-col">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 dark:bg-gray-800 dark:border-gray-700">
               <input
                 {...field}
                 type="checkbox"
                 id={name}
                 checked={field.value || false}
                 aria-controls="endDateSection"
-                className="accent-primary mt-[2px]"
+                className="mt-[2px] accent-primary dark:accent-gray-400"
                 disabled={disabled}
                 onBlur={(e) => {
                   field.onBlur();

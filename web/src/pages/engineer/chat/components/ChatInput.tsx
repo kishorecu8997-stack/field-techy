@@ -61,7 +61,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       >
         <div className="h-16 w-16 rounded-full bg-white dark:bg-gray-700 shadow-lg flex items-center justify-center">
           <Button
-            className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
+            className="h-11 w-11 rounded-full bg-teal-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
           >
             📄
@@ -70,7 +70,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         <div className="h-16 w-16 rounded-full bg-white dark:bg-gray-700 shadow-lg flex items-center justify-center">
           <Button
-            className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center text-lg"
+            className="h-11 w-11 rounded-full bg-teal-800 text-white flex items-center justify-center text-lg"
             onClick={() => fileInputRef.current?.click()}
           >
             🖼️
@@ -106,14 +106,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         {/* ⭐ PLUS Button (toggles floating menu) */}
         <div
-          className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center cursor-pointer justify-center text-2xl"
+          className="h-11 w-11 rounded-full bg-teal-800 text-white flex items-center cursor-pointer justify-center text-2xl"
           onClick={() => setShowActions((prev) => !prev)}
         >
           {showActions ? "×" : "+"}
         </div>
         {/* send */}
         <div
-          className="h-11 w-11 rounded-full bg-emerald-800 text-white flex items-center justify-center cursor-pointer text-xl"
+          className="h-11 w-11 rounded-full bg-teal-800 text-white flex items-center justify-center cursor-pointer text-xl"
           onClick={handleSend}
         >
           ➤
