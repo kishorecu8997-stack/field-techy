@@ -9,6 +9,7 @@ import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
   validateAddress,
   validateName,
+  validatePortfolioLink,
   validatePricePerHour
 } from "@/utils/validate";
 
@@ -95,6 +96,7 @@ export default function BasicInformation() {
             label="Portfolio Link"
             type="text"
             placeholder="Portfolio Link"
+             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
           <InputField
             name="price"
