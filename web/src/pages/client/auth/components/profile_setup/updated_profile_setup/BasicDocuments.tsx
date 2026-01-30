@@ -2,14 +2,14 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
-import { useState } from "react";
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -31,13 +31,7 @@ interface DocumentFormData {
  */
 const BasicDocuments = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const clientId = searchParams.get("id");
-
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
-  );
 
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
@@ -49,39 +43,13 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore } = useClientRegistrationStore();
-  const { updateDocuments } = useClientRegistrationStore();
-
-  const { mutateAsync: uploadFileAsync } = useUploadClientFile({
-    // @ts-ignore - The types from react-query/clientService might be slightly off regarding the second argument 'variables'
-    onSuccess: (data: any, variables: any) => {
-      console.log("File uploaded:", data);
-
-      // Map document type to store key
-      switch (variables.documentType) {
-        case "PROFILE_PICTURE":
-          updateDocuments({ profileImageUrl: data.fileId });
-          break;
-        case "GOVERNMENT_ID":
-          updateDocuments({ governmentIdUrl: data.fileId });
-          break;
-        case "CERTIFICATE":
-          updateDocuments({ certificateUrl: data.fileId });
-          break;
-      }
-
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({
+    onSuccess: () => {
+      toast.success("Upload successful");
+      // update store if needed (res contains mark-upload response)
     },
-    onError: (error) => {
-      console.error("Upload failed:", error);
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-    onProgress: (progress) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
+    onError: () => {
+      toast.error("Upload failed");
     },
   });
 
@@ -110,11 +78,6 @@ const BasicDocuments = () => {
   };
 
   const handleSubmit = async (data: DocumentFormData) => {
-    if (!clientId) {
-      toast.error("Client ID not found. Please restart registration.");
-      return;
-    }
-
     // Check if at least one document is selected
     const hasAtLeastOne =
       data.profileImage || data.governmentId || data.certificate;
@@ -129,19 +92,11 @@ const BasicDocuments = () => {
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
+      // hook handles presign + PUT + mark
       uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.profileImage,
-          documentType: "PROFILE_PICTURE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                PROFILE_PICTURE: progress.percentage!,
-              }));
-            }
-          },
+        uploadProfileFile(data.profileImage, "profilePicture").catch((e) => {
+          console.error("profile upload failed", e);
+          throw e;
         }),
       );
     }
@@ -149,18 +104,9 @@ const BasicDocuments = () => {
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
       uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.governmentId[0],
-          documentType: "GOVERNMENT_ID",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                GOVERNMENT_ID: progress.percentage!,
-              }));
-            }
-          },
+        uploadProfileFile(data.governmentId[0], "govIdDoc").catch((e) => {
+          console.error("gov id upload failed", e);
+          throw e;
         }),
       );
     }
@@ -168,18 +114,9 @@ const BasicDocuments = () => {
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
       uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.certificate[0],
-          documentType: "CERTIFICATE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                CERTIFICATE: progress.percentage!,
-              }));
-            }
-          },
+        uploadProfileFile(data.certificate[0], "certificateDoc").catch((e) => {
+          console.error("certificate upload failed", e);
+          throw e;
         }),
       );
     }
@@ -209,8 +146,6 @@ const BasicDocuments = () => {
     }
   };
 
-  const isUploading = uploadingDoc !== null;
-
   return (
     <FormContainer
       methods={formCtx}
@@ -238,14 +173,15 @@ const BasicDocuments = () => {
                 <p className="text-sm font-medium text-blue-800">
                   Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
-                {uploadProgress[uploadingDoc] && (
+                {/* here we can use after onProgress add useProfileFileUpload */}
+                {/* {uploadProgress[uploadingDoc] && (
                   <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-blue-600 h-full transition-all duration-300"
                       style={{ width: `${uploadProgress[uploadingDoc]}%` }}
                     />
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>

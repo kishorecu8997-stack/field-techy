@@ -1,28 +1,21 @@
 import { absoluteUrls } from "@/config/urls";
+import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { toast } from "react-toastify";
-import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
-import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
-import type { FileUploadResponse } from "@/shared/apiServices/engineer/engineerTypes";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface DocumentFormData {
   profileImage: File | string | null;
   resume: FileList | null;
   governmentId: FileList | null;
   certificate: FileList | null;
-}
-
-interface UploadProgress {
-  percentage?: number;
-  loaded?: number;
-  total?: number;
 }
 
 /**
@@ -39,12 +32,7 @@ interface UploadProgress {
  */
 const BasicDocuments = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const engineerId = searchParams.get("id");
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
-  );
 
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
@@ -56,25 +44,14 @@ const BasicDocuments = () => {
   });
 
   const { showPopup } = usePopupStore();
-  const { clearStore, updateDocuments } = useEngineerRegistrationStore();
-
-  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
+  const { clearStore } = useEngineerRegistrationStore();
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => {
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
+      toast.success("Upload successful");
+      // update store if needed (res contains mark-upload response)
     },
     onError: () => {
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-
-    onProgress: (progress: UploadProgress) => {
-      if (!uploadingDoc || !progress.percentage) return;
-
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc]: progress.percentage!,
-      }));
+      toast.error("Upload failed");
     },
   });
 
@@ -103,12 +80,6 @@ const BasicDocuments = () => {
   };
 
   const handleSubmit = async (data: DocumentFormData) => {
-    if (!engineerId) {
-      toast.error("Engineer ID not found. Please restart registration.");
-      return;
-    }
-
-    // Check if at least one document is selected
     const hasAtLeastOne =
       data.profileImage || data.resume || data.governmentId || data.certificate;
 
@@ -118,26 +89,15 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<FileUploadResponse>[] = [];
+    const uploads: Promise<any>[] = [];
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
+      // hook handles presign + PUT + mark
       uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.profileImage,
-          documentType: "PROFILE_PICTURE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                PROFILE_PICTURE: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ profileImageUrl: res.fileId });
-          return res;
+        uploadProfileFile(data.profileImage, "profilePicture").catch((e) => {
+          console.error("profile upload failed", e);
+          throw e;
         }),
       );
     }
@@ -145,43 +105,9 @@ const BasicDocuments = () => {
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
       uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.governmentId[0],
-          documentType: "GOVERNMENT_ID",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                GOVERNMENT_ID: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ governmentIdUrl: res.fileId });
-          return res;
-        }),
-      );
-    }
-
-    if (data.resume && data.resume.length > 0) {
-      setUploadingDoc("RESUME");
-      uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.resume[0],
-          documentType: "RESUME",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                RESUME: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ resumeUrl: res.fileId });
-          return res;
+        uploadProfileFile(data.governmentId[0], "govIdDoc").catch((e) => {
+          console.error("gov id upload failed", e);
+          throw e;
         }),
       );
     }
@@ -189,21 +115,19 @@ const BasicDocuments = () => {
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
       uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.certificate[0],
-          documentType: "CERTIFICATE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                CERTIFICATE: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ certificateUrl: res.fileId });
-          return res;
+        uploadProfileFile(data.certificate[0], "certificateDoc").catch((e) => {
+          console.error("certificate upload failed", e);
+          throw e;
+        }),
+      );
+    }
+
+    if (data.resume && data.resume.length > 0) {
+      setUploadingDoc("RESUME");
+      uploads.push(
+        uploadProfileFile(data.resume[0], "resumeFile").catch((e) => {
+          console.error("certificate upload failed", e);
+          throw e;
         }),
       );
     }
@@ -233,8 +157,6 @@ const BasicDocuments = () => {
     }
   };
 
-  const isUploading = uploadingDoc !== null;
-
   return (
     <FormContainer
       methods={formCtx}
@@ -263,14 +185,15 @@ const BasicDocuments = () => {
                 <p className="text-sm font-medium text-blue-800">
                   Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
-                {uploadProgress[uploadingDoc] && (
+                {/* here we can use after onProgress add useProfileFileUpload */}
+                {/* {uploadProgress[uploadingDoc] && (
                   <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-blue-600 h-full transition-all duration-300"
                       style={{ width: `${uploadProgress[uploadingDoc]}%` }}
                     />
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>
