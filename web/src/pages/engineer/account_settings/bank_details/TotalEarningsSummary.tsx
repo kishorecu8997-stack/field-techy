@@ -1,7 +1,8 @@
 import { transactions } from "@/dummy_data/bankDetails";
 import { formatCurrency } from "@/shared/libs/utils";
-import React from "react";
+import React, { useState } from "react";
 import { BiTrendingUp } from "react-icons/bi";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 /**
  * TotalEarningsSummary
  *
@@ -14,6 +15,7 @@ import { BiTrendingUp } from "react-icons/bi";
  * All values are derived from the `transactions` data source.
  */
 const TotalEarningsSummary: React.FC = () => {
+  const [showBalance, setShowBalance] = useState<boolean>(false);
   const totalEarnings = transactions
     .filter((tx) => tx.amount > 0)
     .reduce((sum, tx) => sum + tx.amount, 0);
@@ -37,16 +39,51 @@ const TotalEarningsSummary: React.FC = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4">
-        <h2 className="text-xl font-bold text-white">Total Earnings Summary</h2>
-        <p className="text-teal-100 text-sm mt-1">
-          As of{" "}
-          {now.toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
+      <div className="bg-gradient-to-r flex justify-between items-center from-teal-600 to-emerald-600 px-6 py-4">
+        <div>
+          <h2 className="text-xl font-bold text-white">
+            Total Earnings Summary
+          </h2>
+          <p className="text-teal-100 text-sm mt-1">
+            As of{" "}
+            {now.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+        <div>
+          {!showBalance ? (
+            <BsEyeSlashFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(true)}
+              role="button"
+              aria-label="Show balance"
+              tabIndex={0}
+              onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setShowBalance((prev) => !prev);
+                }
+              }}
+            />
+          ) : (
+            <BsEyeFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(false)}
+              role="button"
+              aria-label="Show balance"
+              tabIndex={0}
+              onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setShowBalance((prev) => !prev);
+                }
+              }}
+            />
+          )}
+        </div>
       </div>
 
       {/* Main Balance */}
@@ -55,7 +92,7 @@ const TotalEarningsSummary: React.FC = () => {
           Available Balance
         </p>
         <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-          {formatCurrency(availableBalance)}
+          {showBalance ? formatCurrency(availableBalance) : "******"}
         </p>
       </div>
 
@@ -69,7 +106,7 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {formatCurrency(totalEarnings)}
+            {showBalance ? formatCurrency(totalEarnings) : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             All time
@@ -84,7 +121,7 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {formatCurrency(thisMonthEarnings)}
+            {showBalance ? formatCurrency(thisMonthEarnings) : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {now.toLocaleDateString("en-US", {
@@ -103,7 +140,7 @@ const TotalEarningsSummary: React.FC = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {formatCurrency(totalWithdrawn)}
+            {showBalance ? formatCurrency(totalWithdrawn) : "******"}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Completed withdrawals
