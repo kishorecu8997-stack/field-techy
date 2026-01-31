@@ -20,6 +20,7 @@ import {
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../queryKeys";
 
 export const LookupTable = {
   Countries: "countries",
@@ -36,6 +37,8 @@ export const LookupTable = {
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
+
+export type ClientType = "home" | "corporate";
 
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
@@ -64,13 +67,17 @@ export function useAdminLogin(options?: {
 }
 
 export function useGetAdminPersonalInfo(token: string) {
+  if (!token) {
+    throw new Error("Admin token is missing. Please login again.");
+  }
+
   return useQuery({
-    queryKey: ["adminPersonalInfo", token],
+    queryKey: [queryKeys.admin.all, token],
     queryFn: async () => {
       const response = await adminGetPersonalInfo({
         client: apiClient,
         throwOnError: true,
-        headers: { authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     },
@@ -190,7 +197,7 @@ export function useAppGetLookupData(
   },
 ) {
   return useQuery({
-    queryKey: ["adminLookupData", table],
+    queryKey: [queryKeys.admin.all, "lookupData", table],
     queryFn: async () => {
       const response = await appGetLookupData({
         client: apiClient,

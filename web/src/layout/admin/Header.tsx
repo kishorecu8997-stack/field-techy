@@ -42,20 +42,19 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   //New API
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
-  
-    /* ---------- File Download (Profile Pic) ---------- */
-    const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
-    
-    // Create object URL when blob is received
-    const [profilePicUrl, setProfilePicUrl] = useState<string>("");
-    
-    useEffect(() => {
-      if (downloadData && 'downloadUrl' in (downloadData as any)) {
-         const url = (downloadData as any).downloadUrl;
-         setProfilePicUrl(url);
-      } 
-    }, [downloadData]);
-  
+
+  /* ---------- File Download (Profile Pic) ---------- */
+  const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
+
+  // Create object URL when blob is received
+  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+
+  useEffect(() => {
+    if (downloadData && "downloadUrl" in downloadData) {
+      const url = downloadData.downloadUrl;
+      setProfilePicUrl(url);
+    }
+  }, [downloadData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,8 +104,8 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           className="w-36"
           options={
             adminLookupData?.map((item) => ({
-              value: item.name,
-              label: item.name,
+              value: item.name ?? "",
+              label: item.name ?? "",
             })) ?? []
           }
           value={region}

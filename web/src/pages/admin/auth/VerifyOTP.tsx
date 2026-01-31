@@ -29,12 +29,12 @@ export default function AdminVerifyOTP() {
     mode: "onChange",
   });
 
-  const { mutateAsync: adminRewsetPassword, isPending: isResettingPassword } =
+  const { mutateAsync: adminResetPassword, isPending: isResettingPassword } =
     useAppResetPassword();
 
   const handleSubmit = async (data: VerifyOtpFormData) => {
     try {
-      await adminRewsetPassword(
+      await adminResetPassword(
         {
           email: email as string,
           code: data.otp,

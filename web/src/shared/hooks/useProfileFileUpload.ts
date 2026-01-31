@@ -71,8 +71,12 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
 
     try {
       // 1. Initiate Upload
-      const initiate = isEngineer ? initiateEngineerUpload : (isAdmin ? initiateCommonUpload : initiateClientUpload);
-      const { fileId,   uploadUrl } = await initiate({
+      const initiate = isEngineer
+        ? initiateEngineerUpload
+        : isAdmin
+          ? initiateCommonUpload
+          : initiateClientUpload;
+      const { fileId, uploadUrl } = await initiate({
         body: {
           fileType: fileType,
           filename: file.name,
@@ -95,7 +99,11 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       if (!uploadResponse.ok) throw new Error("Failed to upload to S3");
 
       // 3. Mark as Uploaded
-      const markUploaded = isEngineer ? markEngineerUploaded : (isAdmin ? markCommonUploaded : markClientUploaded);
+      const markUploaded = isEngineer
+        ? markEngineerUploaded
+        : isAdmin
+          ? markCommonUploaded
+          : markClientUploaded;
       const response = await markUploaded({
         body: { fileId },
         headers: { authorization: "" },
@@ -111,7 +119,11 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       }
 
       // Invalidate relevant queries to refresh UI
-      const baseKey = isEngineer ? queryKeys.engineer.all : (isAdmin ? queryKeys.admin.all : queryKeys.client.all);
+      const baseKey = isEngineer
+        ? queryKeys.engineer.all
+        : isAdmin
+          ? queryKeys.admin.all
+          : queryKeys.client.all;
       queryClient.invalidateQueries({ queryKey: baseKey });
 
       // Invalidate the download query to get the fresh URL
@@ -128,9 +140,6 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         const previewUrl = URL.createObjectURL(file);
         if (isEngineer) {
           useEngineerStore.getState().setProfileImageUrl(previewUrl);
-        } else if (path.pathname.includes("admin")) {
-          // Admin store update if applicable, though PersonalDetails might handle its own state locally
-          // For now, we rely on invalidation or local state if store doesn't support it directly in the same way
         } else {
           useClientStore.getState().setProfileImageUrl(previewUrl);
         }
