@@ -20,7 +20,7 @@ const MyEarning = () => {
 
   const BankSection = () => {
     return (
-      <div className="">
+      <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Current Balance
         </p>
@@ -54,7 +54,7 @@ const MyEarning = () => {
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(false)}
               role="button"
-              aria-label="Show balance"
+              aria-label="Hide balance"
               tabIndex={0}
               onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
                 if (event.key === "Enter" || event.key === " ") {

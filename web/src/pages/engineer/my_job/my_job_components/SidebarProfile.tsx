@@ -129,13 +129,13 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
           <div className="flex justify-between items-center">
             {showBalance ? (
-              <>
+              <span>
                 {getCurrencyFromStorage()}
                 {balance.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
-              </>
+              </span>
             ) : (
               "******"
             )}
@@ -159,7 +159,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(false)}
                 role="button"
-                aria-label="Show balance"
+                aria-label="Hide balance"
                 tabIndex={0}
                 onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
                   if (event.key === "Enter" || event.key === " ") {

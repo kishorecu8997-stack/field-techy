@@ -73,7 +73,7 @@ const TotalEarningsSummary: React.FC = () => {
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(false)}
               role="button"
-              aria-label="Show balance"
+              aria-label="Hide balance"
               tabIndex={0}
               onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
                 if (event.key === "Enter" || event.key === " ") {
