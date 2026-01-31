@@ -24,8 +24,6 @@ import {
   useClientDisplayName,
 } from "@/shared/store/useClientStore";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
-import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
-
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
   onClose: () => void;
@@ -66,8 +64,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { profileImageUrl, clearClientProfile, setProfileImageUrl } =
-    useClientStore();
+  const { profileImageUrl, clearClientProfile } = useClientStore();
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
@@ -80,7 +77,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const methods = useForm({
     defaultValues: {
-      profileImage: profileImageUrl || assetsConfig.images.users.user,
+      profileImage: profileImageUrl,
     },
   });
 
@@ -122,19 +119,6 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
     };
   }, [clientFiles]);
 
-  const { data: profileDownloadData } =
-    useAppDownloadProfileFile("profilePicture");
-  const profileUrlFromApi = profileDownloadData?.downloadUrl;
-
-  // Sync profile URL to global store
-  useEffect(() => {
-    if (profileUrlFromApi) {
-      setProfileImageUrl(profileUrlFromApi);
-    }
-  }, [profileUrlFromApi, setProfileImageUrl]);
-
-  // Prepare context value
-  // Prepare context value
   const filesContextValue = useMemo(
     () => ({
       files: documentFiles,
@@ -186,7 +170,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={profileImageUrl || assetsConfig.images.users.user}
+            avatarUrl={profileImageUrl ?? assetsConfig.images.users.user}
             name={displayName}
             title={
               clientProfile?.clientType === "CORPORATE"

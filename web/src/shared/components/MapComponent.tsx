@@ -47,7 +47,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   initialPosition = [51.505, -0.09],
   initialZoom = 13,
   markers = [],
-  onMapClick = () => { },
+  onMapClick = () => {},
 }) => {
   const [position, setPosition] = useState<[number, number]>(initialPosition);
 

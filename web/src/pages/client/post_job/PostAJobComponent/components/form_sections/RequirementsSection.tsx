@@ -168,7 +168,7 @@ const RequirementsSection = ({
           required
           rules={{
             min: { value: 1, message: "Minimum 1 vacancy" },
-            max: { value: 9999, message: "Too many vacancies" },
+            max: { value: 20, message: "Too many vacancies" },
           }}
           disabled={isDisable}
         />
@@ -212,8 +212,15 @@ const RequirementsSection = ({
           validate: (val) => {
             if (val === undefined || val === null || val === "") return true;
             const num = Number(val);
-            if (Number.isNaN(num)) return "Enter a valid amount";
-            if (num > 10_000_000) return "Max allowed amount is 10000000";
+
+            if (Number.isNaN(num) || num <= 0) {
+              return "Enter a valid amount (minimum 1)";
+            }
+
+            if (num > 10_000_000) {
+              return "Max allowed amount is 10,000,000";
+            }
+
             return true;
           },
         }}

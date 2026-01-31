@@ -2,6 +2,7 @@ import type { ClientPostJobData } from "@/api";
 import { absoluteUrls } from "@/config/urls";
 import { TemplateData } from "@/dummy_data/client";
 import {
+  useClientGetJobs,
   useClientMarkJobFileUploaded,
   useClientPostJob,
 } from "@/shared/apiServices/client/clientOpenApiService";
@@ -38,6 +39,7 @@ const PostJobPage = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
   const { currentLocation } = usePostAJobStore();
+  const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
 
@@ -60,7 +62,7 @@ const PostJobPage = () => {
       tools: [],
       safetyWears: [],
       task: "",
-      description: ".",
+      description: "",
       backFills: backFillsType.required,
       budget: "",
       primaryLanguage: "",
@@ -275,14 +277,14 @@ const PostJobPage = () => {
                 }
               });
             }
-
             await Promise.all(uploadPromises);
 
             if (uploadPromises.length > 0) {
               await markUploaded({ body: { jobId: response.id } });
             }
+            toast.success(`Your job has been successfully posted!`);
+            refetchJobs();
 
-            toast.success(`Job posted! Code: ${response.jobCode}`);
             navigate(absoluteUrls.client.home.my_jobs);
           } catch (error) {
             console.error("Upload error:", error);

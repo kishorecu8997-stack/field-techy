@@ -2,10 +2,7 @@ import React from "react";
 import { FormProvider, useFormContext } from "react-hook-form";
 import FormSection from "./FormSection";
 
-import {
-  VACANCIES,
-  JOB_VISIBILITY,
-} from "@/dummy_data/jobFormOptions";
+import { VACANCIES, JOB_VISIBILITY } from "@/dummy_data/jobFormOptions";
 import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";

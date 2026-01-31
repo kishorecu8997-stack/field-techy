@@ -42,7 +42,7 @@ export const TagSelectField = ({
   leftIcon,
   containerClassName = "flex flex-col py-1",
   inputClassName = "w-full rounded-md border text-base py-3 pl-5 pr-10 flex items-center justify-start text-left bg-white dark:bg-gray-800 transition",
-  maxTags = 10,
+  maxTags = 20,
   options = [],
   disabled = false,
 }: TagSelectFieldProps) => {
@@ -66,30 +66,6 @@ export const TagSelectField = ({
     } else {
       setPosition("bottom");
     }
-  };
-
-  const handleToggleTag = (
-    tagValue: string,
-    onChange: (value: string[]) => void,
-    currentValues: string[],
-  ) => {
-    const stringTagValue = String(tagValue);
-    const existingValues = currentValues.map(String);
-
-    if (existingValues.includes(stringTagValue)) {
-      // Remove it if clicked again (toggle behavior)
-      const newValue = existingValues.filter((v) => v !== stringTagValue);
-      onChange(newValue);
-      return;
-    }
-
-    if (existingValues.length >= maxTags) {
-      toast.error(`You can select up to ${maxTags} tags only.`);
-      return;
-    }
-
-    const newValue = [...existingValues, stringTagValue];
-    onChange(newValue);
   };
 
   const removeTag = (
@@ -119,15 +95,24 @@ export const TagSelectField = ({
         render={({ field, fieldState: { error } }) => {
           const { onChange, value = [] } = field;
           const currentValues = Array.isArray(value) ? value : [];
+          const selectedOptions = options.filter((opt) =>
+            currentValues.map(String).includes(String(opt.value)),
+          )
 
           return (
             <>
               <Listbox
-                value={undefined} // We handle selection manually to support tagging
-                onChange={(val: TagOption) =>
-                  handleToggleTag(String(val.value), onChange, currentValues)
-                }
+                value={selectedOptions} // We handle selection manually to support tagging
+                onChange={(vals: TagOption[]) => {
+                  const newValues = vals.map((v) => String(v.value));
+                  if (newValues.length > maxTags) {
+                    toast.error(`You can select up to ${maxTags} tags only.`);
+                    return;
+                  }
+                  onChange(newValues);
+                }}
                 disabled={disabled}
+                multiple
               >
                 {({ open }) => {
                   if (open) {
@@ -138,13 +123,11 @@ export const TagSelectField = ({
                     <div className="relative">
                       <Listbox.Button
                         ref={buttonRef}
-                        className={`${inputClassName} ${
-                          leftIcon ? "pl-10" : ""
-                        } ${
-                          error && !disabled
+                        className={`${inputClassName} ${leftIcon ? "pl-10" : ""
+                          } ${error && !disabled
                             ? "border-red-500 focus:ring-1 focus:ring-red-400"
                             : "border-gray-300 dark:border-gray-600"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center w-full space-x-2">
                           {leftIcon && (
@@ -173,11 +156,10 @@ export const TagSelectField = ({
                         leaveTo="opacity-0 scale-95"
                       >
                         <Listbox.Options
-                          className={`absolute z-30 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 ${
-                            position === "top"
-                              ? "bottom-full mb-1"
-                              : "top-full mt-1"
-                          }`}
+                          className={`absolute z-30 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 ${position === "top"
+                            ? "bottom-full mb-1"
+                            : "top-full mt-1"
+                            }`}
                         >
                           {options.map((option) => {
                             const isSelected = currentValues
@@ -188,12 +170,11 @@ export const TagSelectField = ({
                                 key={option.value}
                                 value={option}
                                 className={({ active }) =>
-                                  `relative cursor-pointer select-none py-2.5 pl-4 pr-4 transition-colors ${
-                                    isSelected
-                                      ? "bg-teal-50 dark:bg-teal-900/30 text-teal-900 dark:text-teal-200"
-                                      : active
-                                        ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-                                        : "text-gray-700 dark:text-gray-300"
+                                  `relative cursor-pointer select-none py-2.5 pl-4 pr-4 transition-colors ${isSelected
+                                    ? "bg-teal-50 dark:bg-teal-900/30 text-teal-900 dark:text-teal-200"
+                                    : active
+                                      ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                                      : "text-gray-700 dark:text-gray-300"
                                   }`
                                 }
                               >

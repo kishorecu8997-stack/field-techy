@@ -29,7 +29,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
 
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
-  const { data: experienceLevelsData } = useLookupData("educationLevels");
+  const { data: experienceLevelsData } = useLookupData("experienceLevels");
   const { data: skillsData } = useLookupData("skills");
   const { data: toolsData } = useLookupData("tools");
   const { data: statesData } = useLookupData("states", selectedCountry);

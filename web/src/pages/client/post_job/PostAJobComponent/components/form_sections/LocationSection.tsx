@@ -38,16 +38,16 @@ const LocationSection = ({
   return (
     <div className="space-y-3">
       <SectionHeader title="Location" />
-      <div className="flex flex-row w-full gap-4 items-start">
-        <div className="w-1/2">
+      <div className="flex flex-col md:flex-row w-full gap-4 items-start">
+        <div className="w-full md:w-1/2">
           <label className="text-sm font-medium text-gray-800 dark:text-gray-100 flex items-center gap-1 mb-1">
             Service Type
             <span className="text-red-500">*</span>
           </label>
           <div
             className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${errors.locationType
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
+              ? "border-red-500"
+              : "border-gray-300 dark:border-gray-600"
               }`}
           >
             <RadioField
@@ -66,7 +66,7 @@ const LocationSection = ({
             </p>
           )}
         </div>
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           <label className="text-sm font-medium text-gray-800 dark:text-gray-100 flex items-center gap-1 mb-1">
             Country
             <span className="text-red-500">*</span>
@@ -117,4 +117,3 @@ const LocationSection = ({
 };
 
 export default LocationSection;
-
