@@ -48,10 +48,9 @@ const BasicDocuments = () => {
   const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => {
       toast.success("Upload successful");
-      // update store if needed (res contains mark-upload response)
     },
     onError: () => {
-      toast.error("Upload failed");
+      toast.error("File could not be uploaded");
     },
   });
 
@@ -93,7 +92,7 @@ const BasicDocuments = () => {
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
-      // hook handles presign + PUT + mark
+
       uploads.push(
         uploadProfileFile(data.profileImage, "profilePicture").catch((e) => {
           console.error("profile upload failed", e);
