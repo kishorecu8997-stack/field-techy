@@ -45,10 +45,11 @@ const LocationSection = ({
             <span className="text-red-500">*</span>
           </label>
           <div
-            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${errors.locationType
-              ? "border-red-500"
-              : "border-gray-300 dark:border-gray-600"
-              }`}
+            className={`w-full rounded-md px-4 py-2 flex items-center gap-4 border text-base ${
+              errors.locationType
+                ? "border-red-500"
+                : "border-gray-300 dark:border-gray-600"
+            }`}
           >
             <RadioField
               name="locationType"

@@ -1,10 +1,7 @@
 ﻿import { absoluteUrls } from "@/config/urls";
-import {
-  useLookupData,
-  useClientGetRateCard,
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "react-hook-form";
 import JobDetailsSection from "./form_sections/JobDetailsSection";
@@ -20,9 +17,17 @@ import OtherDetailsSection from "./form_sections/OtherDetailsSection";
  * @returns {JSX.Element} The rendered PostAJobFields
  * @constructor
  */
-const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
+const PostAJobFields = ({
+  isDisable,
+  rate,
+}: {
+  isDisable: boolean;
+  rate: string;
+}) => {
   const navigate = useNavigate();
   const { setValue, watch } = useFormContext();
+
+  console.log(rate, "rate");
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");
@@ -30,6 +35,9 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
+  const { data: engagementModelsData } = useLookupData("engagementModels");
+
+  console.log(engagementModelsData, "engagementModelsData");
   const { data: skillsData } = useLookupData("skills");
   const { data: toolsData } = useLookupData("tools");
   const { data: statesData } = useLookupData("states", selectedCountry);
@@ -78,6 +86,14 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
       })) || [],
     [experienceLevelsData],
   );
+  const engagementModelOptions = useMemo(
+    () =>
+      engagementModelsData?.map((e) => ({
+        label: e.name,
+        value: String(e.id),
+      })) || [],
+    [engagementModelsData],
+  );
 
   const skillOptions = useMemo(
     () =>
@@ -98,51 +114,6 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
   useEffect(() => {
     setValue("city", "");
   }, [selectedState, setValue]);
-
-  const { mutate: getRateCard } = useClientGetRateCard();
-  const [rate, setRate] = useState<string | null>(null);
-
-  const serviceCategory = watch("serviceCategory");
-  const experienceLevel = watch("experienceLevel");
-  const engagementModel = watch("engagementModel");
-  // selectedCountry is already watched
-
-  useEffect(() => {
-    if (
-      serviceCategory &&
-      experienceLevel &&
-      engagementModel &&
-      selectedCountry
-    ) {
-      getRateCard(
-        {
-          query: {
-            serviceCategoryId: Number(serviceCategory),
-            experienceLevelId: Number(experienceLevel),
-            engagementModelId: Number(engagementModel) || 1,
-            countryId: Number(selectedCountry),
-          },
-        },
-        {
-          onSuccess: (response) => {
-            // @ts-ignore
-            setRate(String(response.rate));
-          },
-          onError: () => {
-            setRate(null);
-          },
-        },
-      );
-    } else {
-      setRate(null);
-    }
-  }, [
-    serviceCategory,
-    experienceLevel,
-    engagementModel,
-    selectedCountry,
-    getRateCard,
-  ]);
 
   return (
     <div className="flex gap-4 flex-row p-2">
@@ -165,6 +136,7 @@ const PostAJobFields = ({ isDisable }: { isDisable: boolean }) => {
           isDisable={isDisable}
           serviceCategoryOptions={serviceCategoryOptions}
           experienceLevelOptions={experienceLevelOptions}
+          engagmentModelOptions={engagementModelOptions}
           countryOptions={countryOptions}
           rate={rate}
         />

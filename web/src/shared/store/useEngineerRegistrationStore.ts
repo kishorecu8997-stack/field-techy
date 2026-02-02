@@ -175,6 +175,13 @@ const initialState = {
   registrationComplete: false,
   token: null,
 };
+const getLabel = (
+  val: string | number | { label?: string } | null | undefined,
+): string => {
+  if (val === null || val === undefined) return "";
+  if (typeof val === "object") return val.label ?? "";
+  return String(val);
+};
 
 export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
   persist(
@@ -236,7 +243,6 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
 
       getApiData: () => {
         const state = get();
-
         return {
           password: state.password,
           phoneNumber: state.phone || state.signupPhone || "",
@@ -258,7 +264,8 @@ export const useEngineerRegistrationStore = create<EngineerRegistrationState>()(
 
           preferredWorkType: "REMOTE HYBRID",
           enableNotifications: state.isEnableNotifications,
-          location: `${typeof state.city === "object" ? state.city?.label : state.city}, ${typeof state.state === "object" ? state.state?.label : state.state}, ${typeof state.country === "object" ? state.country?.label : state.country}`,
+          location: `${getLabel(state.city)}, ${getLabel(state.state)}, ${getLabel(state.country)}`,
+
           averageRating: 0.0,
           status: "PENDING",
 

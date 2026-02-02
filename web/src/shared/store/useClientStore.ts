@@ -39,44 +39,41 @@ export const useClientStore = create<ClientStore>((set, get) => ({
     set({ loading: true });
     try {
       const profile = await getClientCompanyInfo();
-      if (profile) {
-        // Map API response to ClientData structure
-        const mappedProfile: ClientData = {
-          id: String(profile.id),
-          email: profile.email,
-          phoneNumber: profile.phoneNumber,
-          clientType: profile.clientType.toUpperCase(),
-          contactPersonName:
-            profile.clientType === "corporate"
-              ? profile.personName || profile.name
-              : profile.name,
-          companyName:
-            profile.clientType === "corporate"
-              ? profile.companyName || profile.name
-              : profile.name,
-          address:
-            profile.clientType === "corporate" ? profile.address : undefined,
-          profilePicture: profile.profilePictureUrl,
-        };
+      if (!profile) throw new Error("Profile data not found");
 
-        let profilePicUrl = profile.profilePictureUrl || null;
-
-        // If we have a relative path and need to fetch download URL
-        if (profilePicUrl && !profilePicUrl.startsWith("http")) {
-          try {
-            const picData = await getDownloadUrl("profilePicture");
-            profilePicUrl = picData?.downloadUrl || profilePicUrl;
-          } catch (e) {
-            console.error("Failed to get profile picture download URL", e);
-          }
+      let profilePicUrl = profile.profilePictureUrl;
+      if (!profilePicUrl?.startsWith("http")) {
+        try {
+          const picData = await getDownloadUrl("profilePicture");
+          profilePicUrl = picData?.downloadUrl ?? profilePicUrl;
+        } catch (e) {
+          console.error("Failed to fetch profile picture URL", e);
         }
-
-        set({
-          clientProfile: mappedProfile,
-          profileFetched: true,
-          profileImageUrl: profilePicUrl,
-        });
       }
+
+      const mappedProfile: ClientData = {
+        id: String(profile.id),
+        email: profile.email,
+        phoneNumber: profile.phoneNumber,
+        clientType: profile.clientType?.toUpperCase() ?? "CLIENT",
+        contactPersonName:
+          profile.clientType === "corporate"
+            ? (profile.personName ?? profile.name)
+            : profile.name,
+        companyName:
+          profile.clientType === "corporate"
+            ? (profile.companyName ?? profile.name)
+            : profile.name,
+        address:
+          profile.clientType === "corporate" ? profile.address : undefined,
+        profilePicture: profilePicUrl ?? null,
+      };
+
+      set({
+        clientProfile: mappedProfile,
+        profileFetched: true,
+        profileImageUrl: profilePicUrl ?? null,
+      });
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
     } finally {

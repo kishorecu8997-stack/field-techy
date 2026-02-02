@@ -47,8 +47,6 @@ const RequirementsSection = ({
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
 
-  // const selectedToolFiles = watch("toolImages") as FileList | undefined;
-
   useEffect(() => {
     register("toolEntriesCount", {
       validate: (val) => {
@@ -83,8 +81,14 @@ const RequirementsSection = ({
       toast.error("Please select a tool before adding");
       return;
     }
-
-    // Find tool name from options
+    if (!files || files.length === 0) {
+      toast.error("Tool image is required");
+      return;
+    }
+    if (!budget || Number(budget) <= 0) {
+      toast.error("Valid tool cost is required");
+      return;
+    }
     const toolOption = toolOptions.find((opt) => opt.value === toolId);
     const name = toolOption?.label || "Unknown Tool";
 
@@ -195,7 +199,6 @@ const RequirementsSection = ({
           accept=".png,.jpeg,.jpg,.pdf"
           placeholder="Upload tool files"
           disabled={isDisable}
-          // Manually handling key to reset component
           key={toolImageInputKey}
         />
       </div>
@@ -224,7 +227,7 @@ const RequirementsSection = ({
             return true;
           },
         }}
-        required={!toolEntries.length}
+        required
         disabled={isDisable}
       />
       <div className="flex justify-end">

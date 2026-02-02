@@ -16,10 +16,6 @@ const LocationDisplay = ({
   workLocationName,
   fallback,
 }: LocationDisplayProps) => {
-  // If we have a specific work location name, use it (assumed to be fully descriptive or "On Site" logic might handle it)
-  // However, usually workLocationName might be null.
-
-  // Conditionally fetch data only if we have the IDs
   const { data: countries } = useLookupData("countries");
 
   // We can only fetch states if we have a countryId

@@ -1,8 +1,10 @@
 import type { ClientPostJobData } from "@/api";
 import { absoluteUrls } from "@/config/urls";
+import { JOB_TYPES } from "@/constants/jobTypes";
 import { TemplateData } from "@/dummy_data/client";
 import {
   useClientGetJobs,
+  useClientGetRateCard,
   useClientMarkJobFileUploaded,
   useClientPostJob,
 } from "@/shared/apiServices/client/clientOpenApiService";
@@ -13,7 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -38,7 +40,8 @@ import JobPostDropdown from "./JobPostDropdown";
 const PostJobPage = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
-  const { currentLocation } = usePostAJobStore();
+  const { currentLocation, rate, currencyId, setRateAndCurrency } =
+    usePostAJobStore();
   const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
@@ -49,7 +52,7 @@ const PostJobPage = () => {
       jobName: "",
       jobTitle: "",
       serviceCategory: "",
-      locationType: "",
+      locationType: JOB_TYPES.onsite,
       location: "",
       engagementModel: "",
       country: "",
@@ -90,6 +93,52 @@ const PostJobPage = () => {
     },
     mode: "onSubmit",
   });
+  const selectedCountry = formCtx.watch("country");
+  const serviceCategory = formCtx.watch("serviceCategory");
+  const experienceLevel = formCtx.watch("experienceLevel");
+  const engagementModel = formCtx.watch("engagementModel");
+  const { mutate: getRateCard } = useClientGetRateCard();
+
+  useEffect(() => {
+    if (
+      !serviceCategory ||
+      !experienceLevel ||
+      !engagementModel ||
+      !selectedCountry
+    ) {
+      console.log("here");
+      setRateAndCurrency("", 0);
+      return;
+    }
+
+    getRateCard(
+      {
+        query: {
+          serviceCategoryId: Number(serviceCategory),
+          experienceLevelId: Number(experienceLevel),
+          engagementModelId: Number(engagementModel),
+          countryId: Number(selectedCountry),
+        },
+      },
+      {
+        onSuccess: (response) => {
+          console.log(response, "response");
+          setRateAndCurrency(
+            `${response.rate}${response.currencySymbol}`,
+            response.currencyId,
+          );
+        },
+        onError: () => setRateAndCurrency("0", 0),
+      },
+    );
+  }, [
+    serviceCategory,
+    experienceLevel,
+    engagementModel,
+    selectedCountry,
+    getRateCard,
+    setRateAndCurrency,
+  ]);
 
   const getTemplateData = () => {
     return TemplateData.map((item) => ({
@@ -183,112 +232,119 @@ const PostJobPage = () => {
   const { mutate: postJob, isPending: isPosting } = useClientPostJob();
   const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
 
-  const handlePostAJob = async (data: PostAJobFieldsProps) => {
-    // Map form data to API payload
-    const payload: ClientPostJobData["body"] = {
-      jobTitle: data.jobTitle,
-      jobDescription: data.description,
-      jobType:
-        data.locationType === "onsite"
-          ? "On site"
-          : data.locationType === "remote"
-            ? "Remote"
-            : "Hybrid",
-      countryId: Number(data.country) || 1,
-      stateId: Number(data.state) || 1,
-      cityId: Number(data.city) || 1,
-      startDate: data.startDate ? data.startDate.toISOString() : undefined,
-      endDate: data.endDate ? data.endDate.toISOString() : undefined,
-      vacancies: Number(data.numberOfVacancy) || 1,
-      serviceCategoryId: Number(data.serviceCategory) || 1,
-      experienceLevelId: Number(data.experienceLevel) || 1,
-      engagementModelId: Number(data.engagementModel) || 1,
-      additionalDetails: data.otherInfo,
-      currencyId: 1,
-      skills: (data.skills || [])
-        .map((s) => Number(s))
-        .filter((n) => !isNaN(n)),
-      tools: (data.toolsData || []).map((t) => ({
-        toolId: Number(t.id) || 0, // Using the selected tool ID
-        budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
-        image:
-          t.images && t.images.length > 0 && t.images[0].file
-            ? {
-                filename: t.images[0].file.name,
-                size: t.images[0].file.size,
-                mimeType: t.images[0].file.type,
-              }
-            : undefined,
-      })),
-      attachment:
-        data.attachment && data.attachment.length > 0
+  const getRequiredNumber = (val: unknown, fieldName: string): number => {
+    const num = Number(val);
+    if (!num) throw new Error(`${fieldName} is required`);
+    return num;
+  };
+  const uploadFile = (file: File, url: string) =>
+    fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+  const uploadAttachmentsAndTools = async (
+    response: any,
+    data: PostAJobFieldsProps,
+  ) => {
+    const uploadPromises: Promise<unknown>[] = [];
+    data.attachment?.[0] &&
+      response.uploadUrls.attachment &&
+      uploadPromises.push(
+        uploadFile(data.attachment[0], response.uploadUrls.attachment),
+      );
+    (data.toolsData ?? [])
+      .filter((t) => t.images?.[0]?.file)
+      .forEach((tool, index) => {
+        const url = response.uploadUrls.tools?.[index];
+        if (url && tool.images?.[0]?.file)
+          uploadPromises.push(uploadFile(tool.images[0].file, url));
+      });
+    await Promise.all(uploadPromises);
+    if (uploadPromises.length > 0) {
+      await markUploaded({ body: { jobId: response.id } });
+    }
+  };
+  const createJobPayload = (
+    data: PostAJobFieldsProps,
+  ): ClientPostJobData["body"] => ({
+    jobTitle: data.jobTitle,
+    jobDescription: data.description,
+    jobType: data.locationType,
+    countryId: getRequiredNumber(data.country, "Country"),
+    stateId: getRequiredNumber(data.state, "State"),
+    cityId: getRequiredNumber(data.city, "City"),
+    startDate: data.startDate ? data.startDate.toISOString() : undefined,
+    endDate: data.endDate ? data.endDate.toISOString() : undefined,
+    vacancies: Number(data.numberOfVacancy) || 1,
+    serviceCategoryId: getRequiredNumber(
+      data.serviceCategory,
+      "Service Category",
+    ),
+    experienceLevelId: getRequiredNumber(
+      data.experienceLevel,
+      "Experience Level",
+    ),
+    engagementModelId: getRequiredNumber(
+      data.engagementModel,
+      "Engagement Model",
+    ),
+    additionalDetails: data.otherInfo,
+    currencyId: currencyId,
+    skills: (data.skills || []).map((s) => Number(s)).filter((n) => !isNaN(n)),
+    tools: (data.toolsData || []).map((t) => ({
+      toolId: Number(t.id) || 0,
+      budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
+      image:
+        t.images && t.images.length > 0 && t.images[0].file
           ? {
-              filename: data.attachment[0].name,
-              size: data.attachment[0].size,
-              mimeType: data.attachment[0].type,
+              filename: t.images[0].file.name,
+              size: t.images[0].file.size,
+              mimeType: t.images[0].file.type,
             }
           : undefined,
-    };
+    })),
+    attachment:
+      data.attachment && data.attachment.length > 0
+        ? {
+            filename: data.attachment[0].name,
+            size: data.attachment[0].size,
+            mimeType: data.attachment[0].type,
+          }
+        : undefined,
+  });
+  const handlePostAJob = async (data: PostAJobFieldsProps) => {
+    let payload: ClientPostJobData["body"];
+
+    try {
+      payload = createJobPayload(data);
+    } catch (error: any) {
+      console.error("Payload creation error:", error);
+      return toast.error(error.message);
+    }
 
     postJob(
       { body: payload },
       {
         onSuccess: async (response) => {
           try {
-            const uploadPromises: Promise<unknown>[] = [];
-
-            // Upload Attachment
-            if (
-              response.uploadUrls.attachment &&
-              data.attachment &&
-              data.attachment.length > 0
-            ) {
-              uploadPromises.push(
-                fetch(response.uploadUrls.attachment, {
-                  method: "PUT",
-                  body: data.attachment[0],
-                  headers: {
-                    "Content-Type": data.attachment[0].type,
-                  },
-                }),
-              );
-            }
-
-            // Upload Tool Images
-            if (
-              response.uploadUrls.tools &&
-              response.uploadUrls.tools.length > 0
-            ) {
-              const toolsWithImages = (data.toolsData || []).filter(
-                (t) => t.images && t.images.length > 0 && t.images[0].file,
-              );
-
-              toolsWithImages.forEach((tool, index) => {
-                if (response.uploadUrls.tools[index] && tool.images[0].file) {
-                  uploadPromises.push(
-                    fetch(response.uploadUrls.tools[index], {
-                      method: "PUT",
-                      body: tool.images[0].file,
-                      headers: {
-                        "Content-Type": tool.images[0].file.type,
-                      },
-                    }),
-                  );
-                }
-              });
-            }
-            await Promise.all(uploadPromises);
-
-            if (uploadPromises.length > 0) {
-              await markUploaded({ body: { jobId: response.id } });
-            }
-            toast.success(`Your job has been successfully posted!`);
+            await uploadAttachmentsAndTools(response, data);
+            toast.success("Your job has been successfully posted!");
             refetchJobs();
-
             navigate(absoluteUrls.client.home.my_jobs);
           } catch (error) {
-            console.error("Upload error:", error);
-            toast.error("Job posted but failed to upload files");
+            console.error("File upload error:", error);
+            const hasFilesToUpload =
+              (data.attachment?.length ?? 0) > 0 ||
+              (data.toolsData?.some((t) => t.images?.length > 0) ?? false);
+            if (hasFilesToUpload) {
+              toast.info(
+                "Job created, but some file uploads failed. Please verify the job and re-attach files if needed.",
+              );
+            } else {
+              toast.success("Your job has been successfully posted!");
+            }
+
             navigate(absoluteUrls.client.home.my_jobs);
           }
         },
@@ -322,9 +378,8 @@ const PostJobPage = () => {
             )
           }
         />
-
         {currentLocation && (
-          <PostAJobFields isDisable={isDisable || isPosting} />
+          <PostAJobFields rate={rate} isDisable={isDisable || isPosting} />
         )}
       </FormContainer>
     </div>

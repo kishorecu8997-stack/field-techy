@@ -54,7 +54,6 @@ const BasicDetails = () => {
       city: city || "",
       postalCode: postalCode || "",
       address: address || "",
-
       skills: skills || [],
       portfolioLink: portfolioLink || "",
       serviceCategory: serviceCategory,
@@ -62,7 +61,6 @@ const BasicDetails = () => {
       designation: designation || "",
       company: company || "",
       experienceYears: experienceYears || "",
-
       password: "",
       confirmPassword: "",
     },
@@ -134,19 +132,19 @@ const BasicDetails = () => {
     });
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
-
   const handleSubmit = async (data: EngineerBasicDetails) => {
+    type ValWithValue = { value: unknown };
     // Extract IDs from select objects - OpenAPI expects number IDs
     const getIdValue = (val: unknown): number | undefined => {
-      if (!val) return undefined;
+      if (val === null || val === undefined) return undefined;
       if (typeof val === "object" && val !== null && "value" in val) {
-        return Number((val as { value: string | number }).value);
+        const maybeValue = (val as ValWithValue).value;
+        return maybeValue !== undefined ? Number(maybeValue) : undefined;
       }
       if (typeof val === "number") return val;
       if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
       return undefined;
     };
-
     // Format data to match OpenAPI AppRegisterEngineerData body schema
     const apiData = {
       name: data.fullName,

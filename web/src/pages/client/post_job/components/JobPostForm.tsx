@@ -43,7 +43,6 @@ const JobPostForm: React.FC = () => {
 
   const selectedCountry = methods.watch("country");
   const selectedState = methods.watch("state");
-
   const { data: jobTypesData } = useLookupData("employmentTypes");
   const { data: countriesData } = useLookupData("countries");
   const { data: statesData } = useLookupData("states", selectedCountry);

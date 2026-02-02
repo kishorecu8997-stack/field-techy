@@ -2,10 +2,7 @@ import { absoluteUrls } from "@/config/urls";
 import { jobOverviewData, serviceCategoriesData } from "@/dummy_data/dashboard";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
-import {
-  useAppDownloadProfileFile,
-  useClientGetCompanyInfo,
-} from "@/shared/apiServices/client/clientOpenApiService";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import AllowAccessPopup from "@/shared/components/commonUI/AllowAccessPopup";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useFCM } from "@/shared/hooks/useFCM";
@@ -19,8 +16,6 @@ import type { Job } from "../search_result/types";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
-import { useClientStore } from "@/shared/store/useClientStore";
-
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
  * It displays an overview of jobs, service categories, and in-progress jobs.
@@ -33,15 +28,6 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
   const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
-
-  const { data } = useAppDownloadProfileFile("profilePicture");
-  const { profileImageUrl, setProfileImageUrl } = useClientStore();
-
-  useEffect(() => {
-    if (data?.downloadUrl) {
-      setProfileImageUrl(data.downloadUrl);
-    }
-  }, [data, profileImageUrl]);
   useEffect(() => {
     if (clientInfo && !companyInfo) {
       setCompanyInfo(clientInfo);
@@ -52,7 +38,6 @@ const Dashboard: React.FC = () => {
     () => sampleJobs.filter((job) => job.status === "inprogress"),
     [],
   );
-
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();

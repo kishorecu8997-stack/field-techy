@@ -1,3 +1,4 @@
+import type { JobType } from "@/constants/jobTypes";
 import type React from "react";
 
 export interface PaymentCardOption {
@@ -110,7 +111,7 @@ export interface PostAJobFieldsProps {
   jobName: string;
   jobTitle: string;
   serviceCategory?: string;
-  locationType: locationTypeType;
+  locationType: JobType;
   location: string;
   engagementModel?: string;
   country?: string;

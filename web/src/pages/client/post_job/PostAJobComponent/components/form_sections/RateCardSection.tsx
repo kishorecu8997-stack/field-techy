@@ -1,13 +1,13 @@
 import { useFormContext } from "react-hook-form";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import SectionHeader from "../../SectionHeader";
-import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
-
 interface RateCardSectionProps {
   isDisable: boolean;
   serviceCategoryOptions: { label: string; value: string }[];
   experienceLevelOptions: { label: string; value: string }[];
+  engagmentModelOptions: { label: string; value: string }[];
   countryOptions: { label: string; value: string }[];
+
   rate: string | null;
 }
 
@@ -21,6 +21,7 @@ const RateCardSection = ({
   isDisable,
   serviceCategoryOptions,
   experienceLevelOptions,
+  engagmentModelOptions,
   countryOptions,
   rate,
 }: RateCardSectionProps) => {
@@ -30,7 +31,7 @@ const RateCardSection = ({
   const summaryExperienceLevel = watch("experienceLevel");
   const summaryEngagementModel = watch("engagementModel");
   const summaryCountry = watch("country");
-  const summaryRate = rate ? `₹${rate}/Week` : "-";
+  const summaryRate = rate ? `${rate}` : "-";
 
   const getLabel = (
     options: { value: string; label: string }[],
@@ -68,7 +69,7 @@ const RateCardSection = ({
               label="Engagement Model"
               name="engagementModel"
               placeholder="Select Engagement Model"
-              options={ENGAGEMENT_MODELS}
+              options={engagmentModelOptions}
               required
               disabled={isDisable}
             />
@@ -89,7 +90,7 @@ const RateCardSection = ({
             <div>
               {getLabel(experienceLevelOptions, summaryExperienceLevel)}
             </div>
-            <div>{getLabel(ENGAGEMENT_MODELS, summaryEngagementModel)}</div>
+            <div>{getLabel(engagmentModelOptions, summaryEngagementModel)}</div>
             <div>{getLabel(countryOptions, summaryCountry)}</div>
             <div>{summaryRate}</div>
           </div>

@@ -22,10 +22,9 @@ export const useUserSessionStore = create<UserSessionStore>()(
       session: null,
       setSession: (session) => set({ session }),
       logout: () => {
-        set({ session: null })
+        set({ session: null });
         localStorage.clear();
       },
-
     }),
     { name: "generic-user-session" },
   ),

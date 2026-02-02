@@ -1,6 +1,6 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 import {
   MapContainer,
@@ -26,18 +26,16 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
   viewOnly,
 }) => {
   const map = useMap();
-  const [zoomControl, setZoomControl] = useState<L.Control.Zoom | null>(null);
+  const zoomControlRef = useRef<L.Control.Zoom | null>(null);
 
   useEffect(() => {
-    if (!viewOnly && !zoomControl) {
-      // Create and add zoom control if it doesn't exist and we are not in viewOnly
+    if (!viewOnly && !zoomControlRef.current) {
       const zc = L.control.zoom({ position: "topleft" });
       zc.addTo(map);
-      setZoomControl(zc);
-    } else if (viewOnly && zoomControl) {
-      // Remove zoom control if we are in viewOnly
-      zoomControl.remove();
-      setZoomControl(null);
+      zoomControlRef.current = zc;
+    } else if (viewOnly && zoomControlRef.current) {
+      zoomControlRef.current.remove();
+      zoomControlRef.current = null;
     }
 
     // Handle interactions
@@ -56,16 +54,13 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.keyboard.enable();
       map.touchZoom.enable();
     }
-  }, [viewOnly, map, zoomControl]);
-
-  // Cleanup on unmount
-  useEffect(() => {
     return () => {
-      if (zoomControl) {
-        zoomControl.remove();
+      if (zoomControlRef.current) {
+        zoomControlRef.current.remove();
+        zoomControlRef.current = null;
       }
     };
-  }, [zoomControl]);
+  }, [viewOnly, map]);
 
   return null;
 };

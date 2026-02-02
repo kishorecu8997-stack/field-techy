@@ -2,7 +2,6 @@ import {
   useLookupData,
   useClientGetRateCard,
 } from "@/shared/apiServices/client/clientOpenApiService";
-import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
 import { type PostAJobFieldsProps } from "../../../types";
 import { useEffect, useState, useMemo } from "react";
 
@@ -27,6 +26,7 @@ export const BillSummary = ({
   const { data: countriesData } = useLookupData("countries");
   const { data: serviceCategoriesData } = useLookupData("serviceCategories");
   const { data: experienceLevelsData } = useLookupData("educationLevels");
+  const { data: engagementModelsData } = useLookupData("engagementModels");
 
   const countries = useMemo(
     () =>
@@ -49,11 +49,18 @@ export const BillSummary = ({
       })) || [],
     [experienceLevelsData],
   );
-
+  const engagementModels = useMemo(
+    () =>
+      engagementModelsData?.map((e) => ({
+        label: e.name,
+        value: String(e.id),
+      })) || [],
+    [engagementModelsData],
+  );
   const { mutate: getRateCard } = useClientGetRateCard();
   const [ratePerWeek, setRatePerWeek] = useState<number>(0);
-
   useEffect(() => {
+    const token = localStorage.getItem("auth_token");
     if (
       data.serviceCategory &&
       data.experienceLevel &&
@@ -65,11 +72,14 @@ export const BillSummary = ({
           query: {
             serviceCategoryId: Number(data.serviceCategory),
             experienceLevelId: Number(data.experienceLevel),
-            engagementModelId: Number(data.engagementModel) || 1,
+            engagementModelId:
+              data.engagementModel === "" || data.engagementModel == null
+                ? 1
+                : Number(data.engagementModel),
             countryId: Number(data.country),
           },
           headers: {
-            authorization: "",
+            authorization: `Bearer ${token}`,
           },
         },
         {
@@ -111,10 +121,11 @@ export const BillSummary = ({
     const s = new Date(start).getTime();
     const e = new Date(end).getTime();
     if (Number.isNaN(s) || Number.isNaN(e) || e < s)
-      return { days: 1, weeks: 1 };
-    const diffDays = Math.max(1, Math.ceil((e - s) / 86400000));
-    const weeks = Math.max(1, Math.ceil(diffDays / 7));
-    return { days: diffDays, weeks };
+      return { days: 0, weeks: 0 };
+    const diffDays = Math.ceil((e - s) / 86400000);
+    const days = Math.max(1, diffDays);
+    const weeks = Math.ceil(days / 7);
+    return { days, weeks };
   };
 
   const duration = getDuration(data.startDate, data.endDate);
@@ -152,7 +163,7 @@ export const BillSummary = ({
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Engagement Model</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            {getLabel(ENGAGEMENT_MODELS, data.engagementModel)}
+            {getLabel(engagementModels, data.engagementModel)}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
@@ -174,7 +185,7 @@ export const BillSummary = ({
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
           <span className="font-medium">Number of Vacancies</span>
           <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-            {data.numberOfVacancy || "-"}
+            {data.numberOfVacancy}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">

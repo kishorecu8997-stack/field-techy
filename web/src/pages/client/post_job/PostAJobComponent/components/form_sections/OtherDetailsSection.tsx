@@ -22,6 +22,7 @@ const OtherDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
           name="attachment"
           label="Additional Attachments (Guidelines, Docs)"
           disabled={isDisable}
+          required
         />
       </div>
     </div>

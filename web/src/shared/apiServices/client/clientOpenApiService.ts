@@ -192,7 +192,11 @@ export function useClientGetRateCard(options?: {
   onSuccess?: (data: ClientGetRateCardResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  return useMutation({
+  return useMutation<
+    ClientGetRateCardResponse,
+    unknown,
+    Omit<ClientGetRateCardData, "url">
+  >({
     mutationFn: async (args: Omit<ClientGetRateCardData, "url">) => {
       const { data } = await clientGetRateCard({
         client: apiClient,

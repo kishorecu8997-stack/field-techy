@@ -88,7 +88,7 @@ export function useAppUploadProfileFile(options?: {
  */
 export function useAppDownloadProfileFile(
   fileType: ProfileFileType | null | undefined,
-  enabled: boolean = true
+  enabled: boolean = true,
 ) {
   return useQuery({
     ...appDownloadProfileFileOptions({
