@@ -67,11 +67,7 @@ export function useAdminLogin(options?: {
 }
 
 export function useGetAdminPersonalInfo(token: string) {
-  if (!token) {
-    throw new Error("Admin token is missing. Please login again.");
-  }
-
-  return useQuery({
+   return useQuery({
     queryKey: [queryKeys.admin.all, token],
     queryFn: async () => {
       const response = await adminGetPersonalInfo({
