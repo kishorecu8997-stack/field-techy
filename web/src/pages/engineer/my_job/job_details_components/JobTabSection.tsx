@@ -31,6 +31,7 @@ import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ProposalInfoTab from "./tab_components/ProposalInfoTab";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "react-toastify";
+import { IoClose } from "react-icons/io5";
 
 /**
  * Renders a tabbed section for job details based on the current job status.
@@ -428,7 +429,7 @@ const ProposalForm = ({
                         className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-400"
                         aria-label="Remove attachment"
                       >
-                        ×
+                        <IoClose size={16} />
                       </button>
                     </div>
                   ))}
