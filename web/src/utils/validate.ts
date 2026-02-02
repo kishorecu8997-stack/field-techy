@@ -1,4 +1,3 @@
-import { PHONE_COUNTRIES } from "@/dummy_data/phoneInput";
 import type {
   PricingField,
   PricingRelations,
@@ -30,43 +29,6 @@ export const validateName = (value: string) => {
   return true;
 };
 
-export const validatePhone = (fullValue: string): true | string => {
-  const parts = fullValue.trim().split(" ");
-  if (parts.length < 2) {
-    return "Please enter a valid phone number";
-  }
-
-  const countryCode = parts[0];
-  const phoneNumber = parts.slice(1).join("").trim();
-
-  const selectedCountry = PHONE_COUNTRIES.find((c) => c.code === countryCode);
-  if (!selectedCountry) {
-    return "Invalid country code";
-  }
-
-  if (!/^\d+$/.test(phoneNumber)) {
-    return "Phone number must contain only digits (0-9)";
-  }
-
-  const { validationKey } = selectedCountry;
-  if (validationKey === "india") {
-    if (phoneNumber.length !== 10) {
-      return "Indian phone number must be exactly 10 digits long";
-    }
-    if (!/^[6-9]/.test(phoneNumber)) {
-      return "Indian mobile numbers must start with 6, 7, 8, or 9";
-    }
-  } else if (validationKey === "uk") {
-    if (phoneNumber.length !== 10) {
-      return "UK phone number must be exactly 10 digits long";
-    }
-    if (!/^[789]/.test(phoneNumber)) {
-      return "UK mobile numbers must start with 7, 8, or 9";
-    }
-  }
-
-  return true;
-};
 
 /**
  * Validate email address - based on a more secure regex pattern.
