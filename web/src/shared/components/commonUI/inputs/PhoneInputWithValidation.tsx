@@ -353,7 +353,7 @@ export const PhoneInputWithValidation = ({
               </div>
 
               {/* Error and status messages - consolidated to avoid clashing */}
-              <div className="min-h-[20px]">
+              <div>
                 {error && (
                   <span className="text-red-500 text-xs">{error.message}</span>
                 )}
