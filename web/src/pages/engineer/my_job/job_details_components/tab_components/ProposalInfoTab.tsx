@@ -5,10 +5,10 @@ import type { ProposalInfoTabProps } from "../../types.d";
 
 /**
  * ProposalInfoTab Component
- * 
+ *
  * Displays submitted proposal information including description and attachments.
  * Shows the proposal content in a styled container with timestamp and file attachments.
- * 
+ *
  * <ProposalInfoTab submittedProposal={submittedProposal} />
  */
 const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({

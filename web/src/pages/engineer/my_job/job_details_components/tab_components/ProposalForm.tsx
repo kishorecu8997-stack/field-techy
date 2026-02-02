@@ -3,7 +3,11 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
-import { JOB_TAB_COPY, JOB_TAB_CONFIG, JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import {
+  JOB_TAB_COPY,
+  JOB_TAB_CONFIG,
+  JOB_TAB_LABELS,
+} from "@/shared/constants/jobTabs";
 import { IoClose } from "react-icons/io5";
 import type { ProposalFormData } from "../../types.d";
 import type { UseFormReturn } from "react-hook-form";
@@ -36,7 +40,9 @@ const ProposalForm = ({
   showReview: boolean;
   setShowReview: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubmittedProposal?: React.Dispatch<React.SetStateAction<ProposalFormData | null>>;
+  setSubmittedProposal?: React.Dispatch<
+    React.SetStateAction<ProposalFormData | null>
+  >;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
   reviewData: ProposalFormData | null;
@@ -46,8 +52,14 @@ const ProposalForm = ({
     {!showReview ? (
       <div className="rounded-lg overflow-hidden border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-6 text-teal-900 dark:text-teal-100">{JOB_TAB_COPY.sectionTitle}</h3>
-          <FormContainer methods={methods} onSubmit={onSubmit} className="space-y-6">
+          <h3 className="text-lg font-semibold mb-6 text-teal-900 dark:text-teal-100">
+            {JOB_TAB_COPY.sectionTitle}
+          </h3>
+          <FormContainer
+            methods={methods}
+            onSubmit={onSubmit}
+            className="space-y-6"
+          >
             <div className="space-y-6">
               <TextareaInput
                 name="proposalDescription"
@@ -94,17 +106,25 @@ const ProposalForm = ({
     ) : (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-[420px] max-w-[90vw] mx-4 p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{JOB_TAB_COPY.sendProposalTitle}</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+            {JOB_TAB_COPY.sendProposalTitle}
+          </h2>
 
           <div className="space-y-6 mb-6">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{JOB_TAB_COPY.proposalDescriptionLabel}</h3>
-              <div className="whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100">{reviewData?.proposalDescription}</div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                {JOB_TAB_COPY.proposalDescriptionLabel}
+              </h3>
+              <div className="whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100">
+                {reviewData?.proposalDescription}
+              </div>
             </div>
 
             {attachmentFiles.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{JOB_TAB_COPY.attachmentsTitle}</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  {JOB_TAB_COPY.attachmentsTitle}
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {attachmentFiles.map((fileName, idx) => (
                     <div
@@ -155,7 +175,8 @@ const ProposalForm = ({
                   const data = reviewData || methods.getValues();
                   if (setSubmittedProposal) setSubmittedProposal(data);
                   if (setSendProposal) setSendProposal(false);
-                  if (isDummyNetworkEngineer && setSelectedTab) setSelectedTab(JOB_TAB_LABELS.proposalInfo);
+                  if (isDummyNetworkEngineer && setSelectedTab)
+                    setSelectedTab(JOB_TAB_LABELS.proposalInfo);
                   methods.reset();
                 }, JOB_TAB_CONFIG.successDelayMs);
               }}

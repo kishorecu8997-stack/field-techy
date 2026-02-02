@@ -28,7 +28,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   attachments = [],
 }) => {
   const attachmentItems: Attachment[] = attachments.map((item) =>
-    typeof item === "string" ? { name: item, url: "" } : item
+    typeof item === "string" ? { name: item, url: "" } : item,
   );
 
   return (
@@ -123,7 +123,10 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
       )}
 
       {/* Work Details Section */}
-      {(duration || engagementModel || experienceLevel || numberOfVacancies) && (
+      {(duration ||
+        engagementModel ||
+        experienceLevel ||
+        numberOfVacancies) && (
         <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Work Details
@@ -266,7 +269,10 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
                   >
-                    <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                    <IoAttach
+                      className="w-4 h-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="truncate max-w-xs">{attachment.name}</span>
                   </a>
                 ) : (
@@ -278,7 +284,10 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     title="Attachment URL not available"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg text-sm cursor-not-allowed opacity-60"
                   >
-                    <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                    <IoAttach
+                      className="w-4 h-4 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="truncate max-w-xs">{attachment.name}</span>
                   </Button>
                 );

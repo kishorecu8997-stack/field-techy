@@ -168,50 +168,50 @@ const JobCard: React.FC<{
   const [showWhyPopover, setShowWhyPopover] = useState(false);
   const { address: resolvedAddress } = useReverseGeocoding(job.location);
 
-    const jobData = useMemo(() => {
-      const jobRecord = job as unknown as Record<string, unknown>;
+  const jobData = useMemo(() => {
+    const jobRecord = job as unknown as Record<string, unknown>;
 
-      const getString = (key: string): string | undefined => {
-        const value = jobRecord[key];
-        return typeof value === "string" ? value : undefined;
-      };
+    const getString = (key: string): string | undefined => {
+      const value = jobRecord[key];
+      return typeof value === "string" ? value : undefined;
+    };
 
-      const clientName = job.client?.companyName || "-";
+    const clientName = job.client?.companyName || "-";
 
-      const location =
-        [job.client?.city, job.client?.country].filter(Boolean).join(", ") || "-";
+    const location =
+      [job.client?.city, job.client?.country].filter(Boolean).join(", ") || "-";
 
-      return {
-        id: job.id,
-        title: job.jobTitle || getString("title") || "",
-        clientName,
-        location: location || job.location,
-        salary: job.salary || getString("pay") || "-",
-        status: job.status,
-        skills: job.skills,
-        tools: job.tools,
-        description: job.jobDescription || getString("description") || "",
-        postedTime: job.postedTime,
-        experience: job.experience,
-        duration: job.jobDuration || getString("duration"),
-        projectDeadline: job.projectDeadline || getString("projectDeadline"),
-        startDate: job.startDate || getString("startDate") || "",
-      };
-    }, [job]);
+    return {
+      id: job.id,
+      title: job.jobTitle || getString("title") || "",
+      clientName,
+      location: location || job.location,
+      salary: job.salary || getString("pay") || "-",
+      status: job.status,
+      skills: job.skills,
+      tools: job.tools,
+      description: job.jobDescription || getString("description") || "",
+      postedTime: job.postedTime,
+      experience: job.experience,
+      duration: job.jobDuration || getString("duration"),
+      projectDeadline: job.projectDeadline || getString("projectDeadline"),
+      startDate: job.startDate || getString("startDate") || "",
+    };
+  }, [job]);
 
-    const matchScore = useMemo(() => {
-      return calculateMatchScore(
-        [...(jobData.skills || []), ...(jobData.tools || [])],
-        [...userSkills, ...userTools].map(String),
-      );
-    }, [jobData.skills, jobData.tools, userSkills, userTools]);
+  const matchScore = useMemo(() => {
+    return calculateMatchScore(
+      [...(jobData.skills || []), ...(jobData.tools || [])],
+      [...userSkills, ...userTools].map(String),
+    );
+  }, [jobData.skills, jobData.tools, userSkills, userTools]);
 
-    // Sync bookmark state on mount and when job.id changes
-    useEffect(() => {
-      if (jobData.id) {
-        setIsBookmarked(isJobSaved(jobData.id));
-      }
-    }, [jobData.id]);
+  // Sync bookmark state on mount and when job.id changes
+  useEffect(() => {
+    if (jobData.id) {
+      setIsBookmarked(isJobSaved(jobData.id));
+    }
+  }, [jobData.id]);
 
   // Listen for bookmark changes
   useEffect(() => {
@@ -242,7 +242,6 @@ const JobCard: React.FC<{
     }
   };
 
-    
   const STATUS_VARIANT_MAP = {
     new: "green",
     offer: "blue",
@@ -262,16 +261,16 @@ const JobCard: React.FC<{
     closed: "gray",
   } as const;
 
-const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
-    const statusKey = (statusKeyRaw in STATUS_VARIANT_MAP
-      ? statusKeyRaw
-      : undefined) as keyof typeof STATUS_VARIANT_MAP | undefined;
-    const statusLabel = statusKey
-      ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
-      : job.status;
+  const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
+  const statusKey = (
+    statusKeyRaw in STATUS_VARIANT_MAP ? statusKeyRaw : undefined
+  ) as keyof typeof STATUS_VARIANT_MAP | undefined;
+  const statusLabel = statusKey
+    ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
+    : job.status;
 
-    const salaryDisplay = jobData.salary ?? "-";
-    const hasSalary = Boolean(jobData.salary);
+  const salaryDisplay = jobData.salary ?? "-";
+  const hasSalary = Boolean(jobData.salary);
 
   const getDuration = getDurationString({
     startDateStr: job.startDate as string,
@@ -318,25 +317,25 @@ const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
                   </>
                 )}
                 {jobData.duration && <span>| {jobData.duration}</span>}
-              {/* Right-aligned: Match score & help button */}
-              <div className="flex items-center gap-2">
-                {matchScore > 0 && <MatchScoreRing score={matchScore} />}
-                {matchScore > 0 && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowWhyPopover(true);
-                    }}
-                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                    aria-label="Why is this job recommended?"
-                  >
-                    <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
-                  </button>
-                )}
+                {/* Right-aligned: Match score & help button */}
+                <div className="flex items-center gap-2">
+                  {matchScore > 0 && <MatchScoreRing score={matchScore} />}
+                  {matchScore > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowWhyPopover(true);
+                      }}
+                      className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                      aria-label="Why is this job recommended?"
+                    >
+                      <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
             {/* Job metadata */}
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -393,14 +392,14 @@ const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
           </div>
         )}
 
-              {hasSalary ? (
-                <div className="flex items-center gap-1.5">
-                  <BiDollar className="h-4 w-4 text-gray-500" />
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {salaryDisplay}
-                  </span>
-                </div>
-              ) : null}
+        {hasSalary ? (
+          <div className="flex items-center gap-1.5">
+            <BiDollar className="h-4 w-4 text-gray-500" />
+            <span className="text-gray-800 dark:text-gray-200">
+              {salaryDisplay}
+            </span>
+          </div>
+        ) : null}
         {/* FOOTER BAR */}
         <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
           <div className="flex flex-wrap items-center gap-5">
@@ -421,7 +420,7 @@ const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
                 </span>
               </div>
             )}
-            
+
             {jobData.salary && (
               <div className="flex items-center gap-1.5">
                 <BiDollar className="h-4 w-4 text-gray-500" />

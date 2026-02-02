@@ -102,18 +102,26 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <div>
             <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
             {jobLocation && (
-              <p className="text-sm mt-1">{JOB_HEADER_COPY.locationLabel} {jobLocation}</p>
+              <p className="text-sm mt-1">
+                {JOB_HEADER_COPY.locationLabel} {jobLocation}
+              </p>
             )}
-            {(numberOfVacancy !== undefined || numberOfApplicants !== undefined) && (
+            {(numberOfVacancy !== undefined ||
+              numberOfApplicants !== undefined) && (
               <p className="text-sm mt-1">
                 {numberOfVacancy !== undefined && (
-                  <span>{JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}</span>
+                  <span>
+                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                  </span>
                 )}
-                {numberOfVacancy !== undefined && numberOfApplicants !== undefined && (
-                  <span>{JOB_HEADER_COPY.separator}</span>
-                )}
+                {numberOfVacancy !== undefined &&
+                  numberOfApplicants !== undefined && (
+                    <span>{JOB_HEADER_COPY.separator}</span>
+                  )}
                 {numberOfApplicants !== undefined && (
-                  <span>{JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}</span>
+                  <span>
+                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                  </span>
                 )}
               </p>
             )}
@@ -164,8 +172,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         </div>
         {!hideDurationAndClient && (
           <div className="mt-3 flex flex-wrap gap-4 text-sm justify-start items-start">
-            <span className="flex items-center gap-1">{JOB_HEADER_COPY.clockIcon} {duration || "-"}</span>
-            <span>{JOB_HEADER_COPY.clientLabel} {client || "-"}</span>
+            <span className="flex items-center gap-1">
+              {JOB_HEADER_COPY.clockIcon} {duration || "-"}
+            </span>
+            <span>
+              {JOB_HEADER_COPY.clientLabel} {client || "-"}
+            </span>
           </div>
         )}
         {isClient ? (

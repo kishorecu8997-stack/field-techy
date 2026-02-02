@@ -28,7 +28,7 @@ const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
     if (!map.current) {
       map.current = L.map(mapContainer.current).setView(
         [latitude, longitude],
-        10
+        10,
       );
 
       // Add OpenStreetMap tiles

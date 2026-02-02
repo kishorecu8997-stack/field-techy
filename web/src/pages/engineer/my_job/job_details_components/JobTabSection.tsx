@@ -79,11 +79,15 @@ const JobTabSection = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const [reviewData, setReviewData] = useState<ProposalFormData | null>(null);
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
-  const [submittedProposal, setSubmittedProposal] = useState<ProposalFormData | null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>(activeTab || JOB_TAB_LABELS.jobOverview);
+  const [submittedProposal, setSubmittedProposal] =
+    useState<ProposalFormData | null>(null);
+  const [selectedTab, setSelectedTab] = useState<string>(
+    activeTab || JOB_TAB_LABELS.jobOverview,
+  );
 
   useEffect(() => {
-    document.body.style.overflow = showSuccess || showReview ? "hidden" : "unset";
+    document.body.style.overflow =
+      showSuccess || showReview ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -112,7 +116,10 @@ const JobTabSection = ({
 
   // Network Engineer dummy flow
   if (isDummyNetworkEngineer) {
-    const remainingProposals = Math.max(networkEngineerProposals.length - acceptedProposals.length, 0);
+    const remainingProposals = Math.max(
+      networkEngineerProposals.length - acceptedProposals.length,
+      0,
+    );
 
     const networkEngineerTabs = [
       {
@@ -134,7 +141,9 @@ const JobTabSection = ({
         ? [
             {
               label: JOB_TAB_LABELS.proposalInfo,
-              content: <ProposalInfoTab submittedProposal={submittedProposal} />,
+              content: (
+                <ProposalInfoTab submittedProposal={submittedProposal} />
+              ),
             },
           ]
         : []),
@@ -147,7 +156,9 @@ const JobTabSection = ({
                   <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">{`${JOB_TAB_COPY.totalProposalsLabel} (${remainingProposals})`}</h3>
 
                   {networkEngineerProposals
-                    .filter((proposal) => !acceptedProposals.includes(proposal.id))
+                    .filter(
+                      (proposal) => !acceptedProposals.includes(proposal.id),
+                    )
                     .map((proposal, idx) => (
                       <div
                         key={proposal.id}
@@ -156,16 +167,25 @@ const JobTabSection = ({
                         <div className="flex justify-between items-start mb-4">
                           <div>
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{`Proposal ${idx + 1}`}</p>
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{proposal.name}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{proposal.role}</p>
+                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {proposal.name}
+                            </h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {proposal.role}
+                            </p>
                           </div>
                           <span className="text-xs text-gray-500 dark:text-gray-400">{`${JOB_TAB_COPY.receivedOnPrefix}${proposal.receivedOn}`}</span>
                         </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">{proposal.description}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
+                          {proposal.description}
+                        </p>
                         {proposal.attachmentName && (
                           <div className="mb-4">
                             <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
-                              <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                              <IoAttach
+                                className="w-4 h-4 flex-shrink-0"
+                                aria-hidden="true"
+                              />
                               {proposal.attachmentName}
                             </div>
                           </div>
@@ -186,8 +206,13 @@ const JobTabSection = ({
                           <Button
                             variant="no_style"
                             onClick={() => {
-                              setAcceptedProposals([...acceptedProposals, proposal.id]);
-                              toast.success(JOB_TAB_COPY.proposalAccepted, { position: "top-right" });
+                              setAcceptedProposals([
+                                ...acceptedProposals,
+                                proposal.id,
+                              ]);
+                              toast.success(JOB_TAB_COPY.proposalAccepted, {
+                                position: "top-right",
+                              });
                             }}
                             className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium"
                           >
@@ -197,9 +222,12 @@ const JobTabSection = ({
                       </div>
                     ))}
 
-                  {acceptedProposals.length >= networkEngineerProposals.length && (
+                  {acceptedProposals.length >=
+                    networkEngineerProposals.length && (
                     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg text-center">
-                      <p className="text-gray-600 dark:text-gray-400">{JOB_TAB_COPY.allProcessed}</p>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {JOB_TAB_COPY.allProcessed}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -212,7 +240,10 @@ const JobTabSection = ({
     return (
       <div>
         {!isSendProposal ? (
-          <TabComponent tabs={networkEngineerTabs} defaultActiveTab={selectedTab} />
+          <TabComponent
+            tabs={networkEngineerTabs}
+            defaultActiveTab={selectedTab}
+          />
         ) : (
           <ProposalForm
             methods={methods}
@@ -228,7 +259,9 @@ const JobTabSection = ({
             isDummyNetworkEngineer
           />
         )}
-        {showSuccess && <SuccessOverlay onClose={() => setShowSuccess(false)} />}
+        {showSuccess && (
+          <SuccessOverlay onClose={() => setShowSuccess(false)} />
+        )}
       </div>
     );
   }
@@ -242,7 +275,12 @@ const JobTabSection = ({
     },
     {
       label: JOB_TAB_LABELS.workSubmissions,
-      content: <WorkSubmissionComponent workSubmissions={workSubmissions} isWorkSubmitted={isWorkSubmitted} />,
+      content: (
+        <WorkSubmissionComponent
+          workSubmissions={workSubmissions}
+          isWorkSubmitted={isWorkSubmitted}
+        />
+      ),
       hide: shouldHideLogs,
     },
     ...(submittedProposal
@@ -278,7 +316,12 @@ const JobTabSection = ({
           },
           {
             label: JOB_TAB_LABELS.requirement,
-            content: <Proposal jobTitle={requirements.jobTitle} terms={requirements.terms} />,
+            content: (
+              <Proposal
+                jobTitle={requirements.jobTitle}
+                terms={requirements.terms}
+              />
+            ),
           },
           {
             label: JOB_TAB_LABELS.spocDetails,
@@ -286,11 +329,18 @@ const JobTabSection = ({
           },
           {
             label: JOB_TAB_LABELS.other,
-            content: <Proposal jobTitle={otherProposal.jobTitle} terms={otherProposal.terms} />,
+            content: (
+              <Proposal
+                jobTitle={otherProposal.jobTitle}
+                terms={otherProposal.terms}
+              />
+            ),
           },
           {
             label: JOB_TAB_LABELS.terms,
-            content: <Proposal jobTitle={termsData.jobTitle} terms={termsData.terms} />,
+            content: (
+              <Proposal jobTitle={termsData.jobTitle} terms={termsData.terms} />
+            ),
           },
         ]),
   ];
@@ -298,10 +348,15 @@ const JobTabSection = ({
   return (
     <div>
       {!isSendProposal ? (
-          <TabComponent
-            tabs={tabs}
-            defaultActiveTab={activeTab || (isDummyJob ? JOB_TAB_LABELS.jobOverview : JOB_TAB_LABELS.jobInformation)}
-          />
+        <TabComponent
+          tabs={tabs}
+          defaultActiveTab={
+            activeTab ||
+            (isDummyJob
+              ? JOB_TAB_LABELS.jobOverview
+              : JOB_TAB_LABELS.jobInformation)
+          }
+        />
       ) : (
         <ProposalForm
           methods={methods}

@@ -1,14 +1,13 @@
-import React from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { JOB_TAB_COPY } from "@/shared/constants/jobTabs";
 import { IoCheckmarkDone } from "react-icons/io5";
 
 /**
  * SuccessOverlay Component
- * 
+ *
  * Displays a modal overlay with a success message after a proposal is submitted successfully.
  * The overlay includes a checkmark icon and a close button to dismiss the modal.
- * 
+ *
  * @param {Object} props - Component props
  * @param {() => void} props.onClose - Callback function to close the overlay modal
  * @returns {JSX.Element} A fixed modal overlay with success message and close button
@@ -27,9 +26,14 @@ const SuccessOverlay = ({ onClose }: { onClose: () => void }) => (
         ×
       </Button>
       <div className="mx-auto mb-4 flex items-center justify-center">
-        <IoCheckmarkDone className="w-12 h-12 text-teal-700" aria-hidden="true" />
+        <IoCheckmarkDone
+          className="w-12 h-12 text-teal-700"
+          aria-hidden="true"
+        />
       </div>
-      <div className="text-gray-900 dark:text-gray-100 font-medium">{JOB_TAB_COPY.successMessage}</div>
+      <div className="text-gray-900 dark:text-gray-100 font-medium">
+        {JOB_TAB_COPY.successMessage}
+      </div>
     </div>
   </div>
 );

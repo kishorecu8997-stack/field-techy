@@ -20,7 +20,7 @@ import JobTabSection from "./JobTabSection";
  */
 const OfferPages = () => {
   const { jobId } = useParams();
-  
+
   // Skip API call for dummy job
   const isDummyJob = isDummyNetworkEngineerJob(jobId);
   const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
@@ -34,7 +34,7 @@ const OfferPages = () => {
     if (isDummyJob) {
       return offerPageDummy;
     }
-    
+
     if (!apiJob) return null;
     return {
       title: apiJob.jobTitle || "Untitled Job",

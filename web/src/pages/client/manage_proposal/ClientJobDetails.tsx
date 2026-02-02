@@ -60,9 +60,9 @@ const ClientJobDetails = () => {
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">
         <div className="w-full sticky top-[60px] z-10 bg-gray-100 dark:bg-gray-900">
-          <MyJobsHeader 
-            title="Job Details" 
-            isShowBreadcrumb 
+          <MyJobsHeader
+            title="Job Details"
+            isShowBreadcrumb
             customLabels={{
               [params.jobId || ""]: matchedJob?.title || "Job",
             }}
@@ -84,7 +84,9 @@ const ClientJobDetails = () => {
               OfferJobStatus={OfferJobStatus}
               hideBreakDetails={isDummyNetworkEngineer}
               hideDurationAndClient={isDummyNetworkEngineer}
-              jobLocation={isDummyNetworkEngineer ? matchedJob?.location : undefined}
+              jobLocation={
+                isDummyNetworkEngineer ? matchedJob?.location : undefined
+              }
               numberOfVacancy={numberOfVacancy}
               numberOfApplicants={numberOfApplicants}
             />

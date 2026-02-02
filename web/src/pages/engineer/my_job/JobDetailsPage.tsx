@@ -27,15 +27,15 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    isDummyJob ? "Job Overview" : "Job Information"
+    isDummyJob ? "Job Overview" : "Job Information",
   );
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
-  
+
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : params.jobId ?? ""
+    isDummyJob ? "" : (params.jobId ?? ""),
   );
   const { data: client } = useClientGetById(jobs?.clientId ?? "", {
     enabled: !!jobs?.clientId && !isDummyJob,
@@ -125,7 +125,9 @@ const JobDetailsPage = () => {
         startDateStr: jobs?.startDate as string,
         endDateStr: jobs?.projectDeadline as string,
       });
-  const engagementType = isDummyJob ? "ON_SITE" : (jobs?.engagementModel as string);
+  const engagementType = isDummyJob
+    ? "ON_SITE"
+    : (jobs?.engagementModel as string);
   const jobStatus = isDummyJob ? "NEW" : (jobs?.status as JobStatus);
 
   return (
@@ -136,7 +138,9 @@ const JobDetailsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
           isReport
-          customLabels={isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined}
+          customLabels={
+            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
+          }
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">

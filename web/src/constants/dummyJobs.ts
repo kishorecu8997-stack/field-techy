@@ -14,7 +14,7 @@ export const DUMMY_JOB_IDS = {
  * @returns true if the job is the dummy Network Engineer job
  */
 export const isDummyNetworkEngineerJob = (
-  jobId: number | string | undefined
+  jobId: number | string | undefined,
 ): boolean => {
   if (jobId === undefined) return false;
   return (

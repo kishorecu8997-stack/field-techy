@@ -6,7 +6,11 @@ export const engineerJobOverview = {
   jobTitle: "Network Engineer",
   jobDescription:
     "We are looking for a skilled Network Engineer to manage, maintain, and optimize our network infrastructure. The role involves troubleshooting network issues, ensuring system security, and supporting smooth business operations.",
-  skills: ["Cable Routing & Termination", "NVR Configuration", "IP Camera Installation"],
+  skills: [
+    "Cable Routing & Termination",
+    "NVR Configuration",
+    "IP Camera Installation",
+  ],
   tools: [
     { name: "Drill Machine", price: "₹2,000", image: drillMachineImg },
     { name: "Crimping Tool", price: "₹300", image: crimpingToolImg },
