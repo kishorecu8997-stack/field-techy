@@ -50,7 +50,11 @@ const MyJobsPage = () => {
     }
   })();
 
-  const { data: jobs, isLoading, isError } = useEngineerGetJobs(jobStatus, jobType);
+  const {
+    data: jobs,
+    isLoading,
+    isError,
+  } = useEngineerGetJobs(jobStatus, jobType);
 
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,
@@ -71,7 +75,7 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
         />
         <div className="flex items-center justify-between mt-4">

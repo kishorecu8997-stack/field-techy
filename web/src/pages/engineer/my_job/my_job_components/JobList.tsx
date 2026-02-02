@@ -23,7 +23,12 @@ interface JobListProps {
  * @param {boolean} props.isError Error state.
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
-const JobList = ({ activeFilter, jobs: jobsAll, isLoading, isError }: JobListProps) => {
+const JobList = ({
+  activeFilter,
+  jobs: jobsAll,
+  isLoading,
+  isError,
+}: JobListProps) => {
   const filteredJobs = useMemo(() => {
     const jobs = (jobsAll || []).filter(
       (job) => job.status !== "NEW" && job.status !== "OFFER",
