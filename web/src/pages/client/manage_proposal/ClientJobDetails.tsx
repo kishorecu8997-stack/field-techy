@@ -2,11 +2,12 @@ import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import { earningsData } from "@/dummy_data/jobDetails";
 import { sampleJobs } from "@/dummy_data/searchDataClient";
 import { sampleJobs as sampleJobs1 } from "@/dummy_data/searchData";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTabSection";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { type JobStatus } from "../search_result/types";
 
@@ -36,7 +37,14 @@ const ClientJobDetails = () => {
       : null;
 
   // Check if this is the dummy Network Engineer job
-  const isDummyNetworkEngineer = matchedJob?.id === 12;
+  const isDummyNetworkEngineer = isDummyNetworkEngineerJob(matchedJob?.id);
+
+  // Set default tab based on job type - moved to useEffect to avoid setState during render
+  useEffect(() => {
+    if (isDummyNetworkEngineer && activeTab === "Job Information") {
+      setActiveTab("Job Overview");
+    }
+  }, [isDummyNetworkEngineer, activeTab]);
 
   const numberOfVacancy =
     isDummyNetworkEngineer && matchedJob && "numberOfVacancy" in matchedJob
@@ -47,11 +55,6 @@ const ClientJobDetails = () => {
     isDummyNetworkEngineer && matchedJob && "numberOfApplicants" in matchedJob
       ? (matchedJob as { numberOfApplicants?: number }).numberOfApplicants
       : undefined;
-  
-  // Set default tab based on job type
-  if (isDummyNetworkEngineer && activeTab === "Job Information") {
-    setActiveTab("Job Overview");
-  }
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

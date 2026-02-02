@@ -1,4 +1,5 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
@@ -40,7 +41,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const params = useParams();
-  const isDummyJob = params.jobId === "dummy-j1";
+  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -92,9 +93,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
         className={`${
           isSendProposal
             ? isDummyJob
-              ? "bg-teal-800 text-white mt-4"
-              : "text-gray-800 bg-yellow-50 mt-4"
-            : "bg-teal-800 text-white mt-4"
+              ? "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+              : "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
         } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-start">

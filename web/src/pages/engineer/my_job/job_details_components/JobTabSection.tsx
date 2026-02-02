@@ -28,9 +28,24 @@ import LogComponent from "./tab_components/LogComponent";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
+import ProposalInfoTab from "./tab_components/ProposalInfoTab";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "react-toastify";
 
+/**
+ * Renders a tabbed section for job details based on the current job status.
+ *
+ * This component conditionally displays various tabs such as Logs, Work Submissions,
+ * Job Information, Requirements, SPOC Details, Other Proposals, and Terms & Conditions.
+ * Certain tabs (e.g., Logs and Work Submissions) are hidden when the job status is 'applied'.
+ *
+ * @param {Object} props - The component props.
+ * @param {JobStatus} props.status - The current status of the job (e.g., 'applied', 'in_progress').
+ * @returns {JSX.Element} A tabbed interface containing job-related information sections.
+ *
+ * @example
+ * <JobTabSection status={JOB_STATUSES.in_progress} />
+ */
 interface ProposalFormData {
   proposalDescription: string;
   attachments: FileList | null;
@@ -125,28 +140,7 @@ const JobTabSection = ({
         ? [
             {
               label: JOB_TAB_LABELS.proposalInfo,
-              content: (
-                <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg break-words">
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700 break-words">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-white">{JOB_TAB_COPY.proposalDescriptionAndAttachments}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{`${JOB_TAB_COPY.sentOnPrefix}${JOB_TAB_CONFIG.defaultSentOn}`}</p>
-                    </div>
-
-                    <p className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">
-                      {submittedProposal.proposalDescription}
-                    </p>
-
-                    {submittedProposal.attachments && submittedProposal.attachments.length > 0 && (
-                      <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                        <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 max-w-full break-all">
-                          📎 {Array.from(submittedProposal.attachments)[0].name}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ),
+              content: <ProposalInfoTab submittedProposal={submittedProposal} />,
             },
           ]
         : []),
@@ -260,28 +254,7 @@ const JobTabSection = ({
       ? [
           {
             label: JOB_TAB_LABELS.proposalInfo,
-            content: (
-              <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg break-words">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4 border border-gray-200 dark:border-gray-700 break-words">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-white">{JOB_TAB_COPY.proposalDescriptionAndAttachments}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{`${JOB_TAB_COPY.sentOnPrefix}${JOB_TAB_CONFIG.defaultSentOn}`}</p>
-                  </div>
-
-                  <p className="text-sm leading-relaxed text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">
-                    {submittedProposal.proposalDescription}
-                  </p>
-
-                  {submittedProposal.attachments && submittedProposal.attachments.length > 0 && (
-                    <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                      <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 max-w-full break-all">
-                        📎 {Array.from(submittedProposal.attachments)[0].name}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ),
+            content: <ProposalInfoTab submittedProposal={submittedProposal} />,
           },
         ]
       : []),

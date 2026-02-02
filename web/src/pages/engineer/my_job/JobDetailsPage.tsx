@@ -2,6 +2,7 @@ import {
   useClientGetById,
   useClientGetJobsById,
 } from "@/shared/apiServices/client/clientService";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -21,7 +22,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
  */
 const JobDetailsPage = () => {
   const params = useParams();
-  const isDummyJob = params.jobId === "dummy-j1";
+  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);

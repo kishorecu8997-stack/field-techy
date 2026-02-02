@@ -7,6 +7,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateDescription } from "../validation";
 
+/**
+ * NewSendProposal Component
+ *
+ * This component renders a form for submitting a new proposal.
+ * It allows users to enter a proposal description and upload an optional PDF attachment.
+ * The form uses react-hook-form for state management and validation.
+ * On successful submission, a success message is shown and the form can be cancelled.
+ *
+ * @component
+ */
 interface ProposalFormValues {
   description: string;
   attachment: FileList | null;

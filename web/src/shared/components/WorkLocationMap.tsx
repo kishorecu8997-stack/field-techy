@@ -61,14 +61,22 @@ const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
 
     // Center map on marker
     map.current.setView([latitude, longitude], 10);
+
+    // Cleanup function to prevent memory leaks
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
   }, [latitude, longitude, locationName, address]);
 
   return (
     <div className="space-y-3 text-sm text-gray-900 dark:text-gray-100">
       <div
         ref={mapContainer}
-        className="rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm p-4"
-        style={{ width: "100%", height: "400px" }}
+        className="relative z-0 rounded-lg overflow-hidden border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm p-4"
+        style={{ width: "100%", height: "400px", zIndex: 0 }}
       />
       <div className="flex items-start gap-2 text-gray-900 dark:text-gray-100">
         <IoLocationSharp className="mt-0.5 h-4 w-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />

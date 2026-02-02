@@ -5,6 +5,7 @@ import {
   IoCalendarOutline,
   IoConstructOutline,
 } from "react-icons/io5";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
@@ -62,13 +63,11 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
   };
 
-  const getWorkModeColor = (mode: string) => {
-    void mode; // keep signature while avoiding unused parameter warnings
+  const getWorkModeColor = () => {
     return "bg-indigo-600 text-white"; // both use same style per your code
   };
-
   const isOnsite = type === WORKING_TYPES.onsite;
-  const isDummyNetworkEngineer = id === 12; // Check if this is the dummy Network Engineer job
+  const isDummyNetworkEngineer = isDummyNetworkEngineerJob(id);
 
   return (
     <Link
@@ -80,9 +79,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           {title}
         </h3>
         <span
-          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
-            type,
-          )}`}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor()}`}
         >
           {isOnsite
             ? WORKING_TYPES_PROPERTY.onsite

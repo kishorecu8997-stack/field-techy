@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "./commonUI/Buttons";
 
 /**
  * Reusable Job Overview Component
@@ -41,7 +42,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
   attachments = [],
 }) => {
   const attachmentItems: Attachment[] = attachments.map((item) =>
-    typeof item === "string" ? { name: item, url: "#" } : item
+    typeof item === "string" ? { name: item, url: "" } : item
   );
 
   return (
@@ -269,18 +270,33 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
           {/* Attachments */}
           {attachmentItems.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {attachmentItems.map((attachment, idx) => (
-                <a
-                  key={idx}
-                  href={attachment.url || "#"}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                  <span aria-hidden>📎</span>
-                  <span className="truncate max-w-xs">{attachment.name}</span>
-                </a>
-              ))}
+              {attachmentItems.map((attachment, idx) => {
+                const hasUrl = attachment.url && attachment.url.trim() !== "";
+                return hasUrl ? (
+                  <a
+                    key={idx}
+                    href={attachment.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+                  >
+                    <span aria-hidden>📎</span>
+                    <span className="truncate max-w-xs">{attachment.name}</span>
+                  </a>
+                ) : (
+                  <Button
+                    key={idx}
+                    variant="no_style"
+                    type="button"
+                    disabled
+                    title="Attachment URL not available"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg text-sm cursor-not-allowed opacity-60"
+                  >
+                    <span aria-hidden>📎</span>
+                    <span className="truncate max-w-xs">{attachment.name}</span>
+                  </Button>
+                );
+              })}
             </div>
           )}
         </div>

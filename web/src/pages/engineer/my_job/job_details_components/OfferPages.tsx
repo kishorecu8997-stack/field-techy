@@ -3,6 +3,7 @@ import {
   jobHeaderData as dummyJobHeader,
 } from "@/dummy_data/jobDetails";
 import { offerPageDummy } from "@/dummy_data/offerPageDummy";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState, useMemo } from "react";
@@ -21,7 +22,7 @@ const OfferPages = () => {
   const { jobId } = useParams();
   
   // Skip API call for dummy job
-  const isDummyJob = jobId === "dummy-j1";
+  const isDummyJob = isDummyNetworkEngineerJob(jobId);
   const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
