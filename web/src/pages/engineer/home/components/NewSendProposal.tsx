@@ -6,26 +6,25 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { validateDescription } from "../validation";
+import type { ProposalFormValues, NewSendProposalProps } from "../types";
 
 /**
  * NewSendProposal Component
  *
- * This component renders a form for submitting a new proposal.
- * It allows users to enter a proposal description and upload an optional PDF attachment.
- * The form uses react-hook-form for state management and validation.
- * On successful submission, a success message is shown and the form can be cancelled.
+ * Renders a form for submitting a new proposal.
+ * Allows users to enter a proposal description and upload an optional PDF attachment.
+ * Uses react-hook-form for state management and validation.
+ * Shows a success message on successful submission and triggers the onCancel callback.
  *
  * @component
+ * @example
+ * const handleCancel = () => console.log("Cancelled");
+ * return <NewSendProposal onCancel={handleCancel} />;
+ *
+ * @param {NewSendProposalProps} props - Component props
+ * @param {() => void} [props.onCancel] - Optional callback function when proposal submission is cancelled
+ * @returns {React.ReactElement} The proposal form component
  */
-interface ProposalFormValues {
-  description: string;
-  attachment: FileList | null;
-}
-
-interface NewSendProposalProps {
-  onCancel?: () => void;
-}
-
 const NewSendProposal: React.FC<NewSendProposalProps> = ({ onCancel }) => {
   const formCtx = useForm<ProposalFormValues>({
     mode: "onChange",

@@ -19,19 +19,18 @@ import TabComponent from "@/shared/components/TabComponent";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
 import WorkLocationMap from "@/shared/components/WorkLocationMap";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { MAP_DEFAULTS } from "@/shared/constants/mapDefaults";
-import { JOB_TAB_COPY, JOB_TAB_CONFIG, JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
+import { JOB_TAB_COPY, JOB_TAB_LABELS } from "@/shared/constants/jobTabs";
 import LogComponent from "./tab_components/LogComponent";
 import JobInfoSection from "./tab_components/JobInfoSection";
 import LocationMap from "./tab_components/LocationMap";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ProposalInfoTab from "./tab_components/ProposalInfoTab";
-import { useForm, type UseFormReturn } from "react-hook-form";
+import ProposalForm from "./tab_components/ProposalForm";
+import SuccessOverlay from "./tab_components/SuccessOverlay";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { IoClose } from "react-icons/io5";
+import type { ProposalFormData } from "../types.d";
 
 /**
  * Renders a tabbed section for job details based on the current job status.
@@ -47,11 +46,6 @@ import { IoClose } from "react-icons/io5";
  * @example
  * <JobTabSection status={JOB_STATUSES.in_progress} />
  */
-interface ProposalFormData {
-  proposalDescription: string;
-  attachments: FileList | null;
-}
-
 const JobTabSection = ({
   status,
   isWorkSubmitted,
@@ -325,183 +319,5 @@ const JobTabSection = ({
     </div>
   );
 };
-
-const ProposalForm = ({
-  methods,
-  onSubmit,
-  attachmentFiles,
-  showReview,
-  setShowReview,
-  setShowSuccess,
-  setSubmittedProposal,
-  setSendProposal,
-  setSelectedTab,
-  reviewData,
-  isDummyNetworkEngineer = false,
-}: {
-  methods: UseFormReturn<ProposalFormData>;
-  onSubmit: (data: ProposalFormData) => void;
-  attachmentFiles: string[];
-  showReview: boolean;
-  setShowReview: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSuccess: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubmittedProposal?: React.Dispatch<React.SetStateAction<ProposalFormData | null>>;
-  setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
-  reviewData: ProposalFormData | null;
-  isDummyNetworkEngineer?: boolean;
-}) => (
-  <>
-    {!showReview ? (
-      <div className="rounded-lg overflow-hidden border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold mb-6 text-teal-900 dark:text-teal-100">{JOB_TAB_COPY.sectionTitle}</h3>
-          <FormContainer methods={methods} onSubmit={onSubmit} className="space-y-6">
-            <div className="space-y-6">
-              <TextareaInput
-                name="proposalDescription"
-                label={JOB_TAB_COPY.proposalDescriptionLabel}
-                placeholder={JOB_TAB_COPY.proposalDescriptionPlaceholder}
-                required
-                rules={{
-                  required: JOB_TAB_COPY.proposalDescriptionRequired,
-                }}
-              />
-
-              <FileUpload
-                name="attachments"
-                label={JOB_TAB_COPY.attachmentsLabel}
-                placeholder={JOB_TAB_COPY.attachmentsLabel}
-                accept={JOB_TAB_CONFIG.fileUpload.accept}
-                required={false}
-                maxPages={JOB_TAB_CONFIG.fileUpload.maxPages}
-              />
-            </div>
-
-            <div className="flex gap-3 justify-end mt-8">
-              <Button
-                variant="no_style"
-                type="button"
-                onClick={() => {
-                  if (setSendProposal) setSendProposal(false);
-                }}
-                className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-              >
-                {JOB_TAB_COPY.cancel}
-              </Button>
-              <Button
-                variant="no_style"
-                type="submit"
-                className="px-6 py-2 bg-teal-700 text-white rounded hover:bg-teal-800 transition"
-              >
-                {JOB_TAB_COPY.reviewProposal}
-              </Button>
-            </div>
-          </FormContainer>
-        </div>
-      </div>
-    ) : (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-[420px] max-w-[90vw] mx-4 p-6">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{JOB_TAB_COPY.sendProposalTitle}</h2>
-
-          <div className="space-y-6 mb-6">
-            <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{JOB_TAB_COPY.proposalDescriptionLabel}</h3>
-              <div className="whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100">{reviewData?.proposalDescription}</div>
-            </div>
-
-            {attachmentFiles.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{JOB_TAB_COPY.attachmentsTitle}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {attachmentFiles.map((fileName, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2"
-                    >
-                      {fileName}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          // optional file removal placeholder
-                        }}
-                        className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-400"
-                        aria-label="Remove attachment"
-                      >
-                        <IoClose size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 flex gap-2 justify-end">
-            <Button
-              variant="no_style"
-              type="button"
-              onClick={() => setShowReview(false)}
-              className="px-4 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            >
-              {JOB_TAB_COPY.cancel}
-            </Button>
-            <Button
-              variant="no_style"
-              type="button"
-              onClick={() => setShowReview(false)}
-              className="px-4 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-            >
-              {JOB_TAB_COPY.editDetails}
-            </Button>
-            <Button
-              variant="no_style"
-              type="button"
-              onClick={() => {
-                setShowReview(false);
-                setShowSuccess(true);
-                setTimeout(() => {
-                  setShowSuccess(false);
-                  const data = reviewData || methods.getValues();
-                  if (setSubmittedProposal) setSubmittedProposal(data);
-                  if (setSendProposal) setSendProposal(false);
-                  if (isDummyNetworkEngineer && setSelectedTab) setSelectedTab(JOB_TAB_LABELS.proposalInfo);
-                  methods.reset();
-                }, JOB_TAB_CONFIG.successDelayMs);
-              }}
-              className="px-4 py-1.5 bg-teal-700 text-sm text-white rounded-md hover:bg-teal-800 transition"
-            >
-              {JOB_TAB_COPY.submitProposal}
-            </Button>
-          </div>
-        </div>
-      </div>
-    )}
-  </>
-);
-
-const SuccessOverlay = ({ onClose }: { onClose: () => void }) => (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg w-[380px] max-w-[92vw] mx-4 p-6 text-center">
-      <Button
-        variant="no_style"
-        type="button"
-        onClick={onClose}
-        className="absolute right-3 top-3 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 text-2xl"
-        aria-label="Close"
-      >
-        ×
-      </Button>
-      <div className="mx-auto mb-4 flex items-center justify-center">
-        <svg viewBox="0 0 24 24" className="w-12 h-12 text-teal-700" fill="currentColor" aria-hidden="true">
-          <path d="M12 2.25a.75.75 0 01.53.22l1.72 1.72 2.34-.2a.75.75 0 01.8.57l.62 2.26 2.12 1.04a.75.75 0 01.36.97l-.95 2.14 1.14 2.05a.75.75 0 01-.28.99l-2 1.2-.24 2.34a.75.75 0 01-.72.66l-2.33.1-1.54 1.75a.75.75 0 01-1.12 0l-1.54-1.75-2.33-.1a.75.75 0 01-.72-.66l-.24-2.34-2-1.2a.75.75 0 01-.28-.99l1.14-2.05-.95-2.14a.75.75 0 01.36-.97l2.12-1.04.62-2.26a.75.75 0 01.8-.57l2.34.2 1.72-1.72a.75.75 0 01.53-.22z" />
-          <path d="M9.53 12.47a.75.75 0 011.06 0l1.41 1.41 3.03-3.03a.75.75 0 111.06 1.06l-3.56 3.56a.75.75 0 01-1.06 0l-1.94-1.94a.75.75 0 010-1.06z" fill="white" />
-        </svg>
-      </div>
-      <div className="text-gray-900 dark:text-gray-100 font-medium">{JOB_TAB_COPY.successMessage}</div>
-    </div>
-  </div>
-);
 
 export default JobTabSection;

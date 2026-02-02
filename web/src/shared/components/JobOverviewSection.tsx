@@ -1,29 +1,36 @@
 import React from "react";
 import { Button } from "./commonUI/Buttons";
+import type { Attachment, JobOverviewProps } from "./types";
 
 /**
  * Reusable Job Overview Component
  * Displays comprehensive job details including description, skills, work details, and earnings
+ *
+ * @param {Object} props - The component props.
+ * @param {string} props.jobTitle - The title of the job.
+ * @param {string} props.jobDescription - The detailed description of the job.
+ * @param {string[]} [props.skills] - Optional array of required skills.
+ * @param {Array<{name: string; price: string; image?: string}>} [props.tools] - Optional array of tools with prices.
+ * @param {string} [props.duration] - Optional job duration (e.g., '3 months').
+ * @param {string} [props.engagementModel] - Optional engagement model (e.g., 'Full-time', 'Contract').
+ * @param {string} [props.experienceLevel] - Optional experience level required.
+ * @param {number} [props.numberOfVacancies] - Optional number of available positions.
+ * @param {string} [props.weeklyPay] - Optional weekly payment amount.
+ * @param {string} [props.toolAllowance] - Optional tool allowance.
+ * @param {string} [props.totalPayment] - Optional total payment amount.
+ * @param {string} [props.weeklyPayNote] - Optional note about weekly pay.
+ * @param {string[]} [props.additionalDetails] - Optional additional details array.
+ * @param {Array<{name: string; url: string} | string>} [props.attachments] - Optional attachments (objects or strings).
+ * @returns {JSX.Element} A formatted job overview section with all job details.
+ *
+ * @example
+ * <JobOverviewSection
+ *   jobTitle="Senior React Developer"
+ *   jobDescription="Build scalable web applications..."
+ *   skills={['React', 'TypeScript']}
+ *   weeklyPay="$1500"
+ * />
  */
-
-type Attachment = { name: string; url: string };
-
-export interface JobOverviewProps {
-  jobTitle: string;
-  jobDescription: string;
-  skills?: string[];
-  tools?: Array<{ name: string; price: string; image?: string }>;
-  duration?: string;
-  engagementModel?: string;
-  experienceLevel?: string;
-  numberOfVacancies?: number;
-  weeklyPay?: string;
-  toolAllowance?: string;
-  totalPayment?: string;
-  weeklyPayNote?: string;
-  additionalDetails?: string[];
-  attachments?: Array<Attachment | string>;
-}
 
 const JobOverviewSection: React.FC<JobOverviewProps> = ({
   jobTitle,

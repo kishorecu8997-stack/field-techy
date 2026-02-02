@@ -215,3 +215,14 @@ export interface WorkInfoItem {
   label: string;
   value: string;
 }
+
+/**
+ * Form data structure for proposal submission
+ * @interface ProposalFormData
+ * @property {string} proposalDescription - The proposal description/message
+ * @property {FileList | null} attachments - Optional file attachments (PDF)
+ */
+export interface ProposalFormData {
+  proposalDescription: string;
+  attachments: FileList | null;
+}
