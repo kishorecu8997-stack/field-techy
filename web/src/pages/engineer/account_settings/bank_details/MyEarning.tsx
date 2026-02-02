@@ -27,7 +27,7 @@ const MyEarning = () => {
         <div className="mt-4 flex gap-3 justify-center">
           <Button
             onClick={() => setActiveKey("manageBankAccounts")}
-            className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition"
+            className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition dark:bg-transparent dark:border dark:border-teal-600 dark:text-white"
           >
             Bank Details
           </Button>

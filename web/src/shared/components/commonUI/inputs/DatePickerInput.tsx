@@ -275,7 +275,7 @@ const DatePickerRender: FC<{
             onBlur={handleInputBlur}
             className="flex-1 bg-transparent outline-none text-gray-800 dark:text-gray-200"
           />
-          <FiCalendar className="w-5 h-5 text-gray-400" />
+          <FiCalendar className="w-5 h-5 text-gray-500 dark:text-gray-300 ml-2" />
         </div>
 
         {/* DROPDOWN WITH AUTO-POSITION */}

@@ -108,7 +108,7 @@ const NotificationPreferences = () => {
             <icons.notifications className="h-8 w-8 text-gray-100" />
           </div>
           <h1 className="text-2xl font-bold">Notification Preferences</h1>
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-400 font-bold">
             Control how and when you receive job notifications.
           </p>
         </div>

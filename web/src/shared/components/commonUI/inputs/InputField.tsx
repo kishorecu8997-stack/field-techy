@@ -49,7 +49,7 @@ export const InputField = ({
   isShowLabel = true,
   leftIcon,
   containerClassName = "flex flex-col py-1 w-full",
-  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition",
+  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition  dark:focus:ring-teal-400/50",
   showValidationCheck = false,
   disabled = false,
   onChange,

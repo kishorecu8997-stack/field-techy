@@ -26,7 +26,7 @@ export const PasswordInput = ({
   rules,
   disabled = false,
   containerClassName = "flex flex-col py-1",
-  inputClassName = "w-full rounded-md border py-3 px-5 text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none transition",
+  inputClassName = "w-full rounded-md border border-gray-300 dark:border-gray-600 py-3 px-5  text-base text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-primary transition  dark:focus:ring-teal-400/50",
   leftIcon,
 }: PasswordInputProps) => {
   const { control } = useFormContext();
