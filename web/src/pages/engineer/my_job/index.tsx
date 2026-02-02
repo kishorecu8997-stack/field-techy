@@ -10,6 +10,7 @@ import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -20,6 +21,37 @@ const MyJobsPage = () => {
     JOB_FILTERS.ALL_JOBS,
   );
   const navigate = useNavigate();
+
+  const jobStatus = (() => {
+    switch (activeFilter) {
+      case JOB_FILTERS.APPLIED:
+        return "Posted";
+      case JOB_FILTERS.IN_PROGRESS:
+        return "In Progress";
+      case JOB_FILTERS.COMPLETED:
+        return "Closed";
+      case JOB_FILTERS.CANCELLED:
+        return "Cancelled";
+      default:
+        return undefined;
+    }
+  })();
+
+  const jobType = (() => {
+    switch (activeFilter) {
+      case JOB_FILTERS.ON_SITE:
+        return "On site";
+      case JOB_FILTERS.REMOTE:
+        return "Remote";
+      case JOB_FILTERS.HYBRID:
+        return "Hybrid";
+      default:
+        return undefined;
+    }
+  })();
+
+  const { data: jobs, isLoading, isError } = useEngineerGetJobs(jobStatus, jobType);
+
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,
     JOB_FILTERS.APPLIED,
@@ -39,7 +71,7 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
         />
         <div className="flex items-center justify-between mt-4">
@@ -67,7 +99,12 @@ const MyJobsPage = () => {
           onFilterChange={setActiveFilter as (filter: string) => void}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <JobList activeFilter={activeFilter} />
+          <JobList
+            activeFilter={activeFilter}
+            jobs={jobs || []}
+            isLoading={isLoading}
+            isError={isError}
+          />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarProfile user={userData} earnings={earningsData} />
