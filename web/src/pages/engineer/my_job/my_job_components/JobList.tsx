@@ -2,11 +2,12 @@ import JobCard from "@/shared/components/JobCard";
 import { useMemo } from "react";
 import type { JobFilter } from "../../search_result/types";
 import { JOB_FILTERS } from "../../search_result/types";
+import type { EngineerGetMyJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 interface JobListProps {
   activeFilter: JobFilter;
-  jobs: any[];
+  jobs: EngineerGetMyJobsResponse;
   isLoading: boolean;
   isError: boolean;
 }
@@ -30,10 +31,7 @@ const JobList = ({
   isError,
 }: JobListProps) => {
   const filteredJobs = useMemo(() => {
-    const jobs = (jobsAll || []).filter(
-      (job) => job.status !== "NEW" && job.status !== "OFFER",
-    );
-
+    const jobs = jobsAll || [];
     if (activeFilter === JOB_FILTERS.ALL_JOBS) {
       return jobs;
     } else if (activeFilter === JOB_FILTERS.APPLIED) {
@@ -43,11 +41,11 @@ const JobList = ({
     } else if (activeFilter === JOB_FILTERS.COMPLETED) {
       return jobs.filter((job) => job.status === "Closed");
     } else if (activeFilter === JOB_FILTERS.REMOTE) {
-      return jobs.filter((job) => job.engagementModel === "REMOTE");
+      return jobs.filter((job) => job.jobType === "Remote");
     } else if (activeFilter === JOB_FILTERS.ON_SITE) {
-      return jobs.filter((job) => job.engagementModel === "ON_SITE");
+      return jobs.filter((job) => job.jobType === "On site");
     } else if (activeFilter === JOB_FILTERS.HYBRID) {
-      return jobs.filter((job) => job.engagementModel === "HYBRID");
+      return jobs.filter((job) => job.jobType === "Hybrid");
     } else {
       return jobs;
     }
@@ -72,7 +70,9 @@ const JobList = ({
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredJobs.length > 0 ? (
-          filteredJobs.map((job: any) => <JobCard key={job.id} {...job} />)
+          filteredJobs.map((job) => (
+            <JobCard key={job.id} {...job} status={job.status ?? undefined} />
+          ))
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500 dark:text-gray-400">
             No jobs found.
