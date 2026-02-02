@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps } from "../types";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -103,6 +104,8 @@ const ProfileCard = () => {
 const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
   const { balance } = earnings;
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+  const [showBalance, setShowBalance] = useState<boolean>(false);
+
   return (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-center mb-4">
@@ -119,16 +122,54 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
           View all
         </div>
       </div>
-      <div className="text-center mb-4">
+      <div className="mb-4">
         <div className="text-xs text-gray-500 dark:text-gray-400">
           Current Balance
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white">
-          {getCurrencyFromStorage()}
-          {balance.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          <div className="flex justify-between items-center">
+            {showBalance ? (
+              <span>
+                {getCurrencyFromStorage()}
+                {balance.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            ) : (
+              "******"
+            )}
+
+            {!showBalance ? (
+              <BsEyeFill
+                className="cursor-pointer text-lg"
+                onClick={() => setShowBalance(true)}
+                role="button"
+                aria-label="Show balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance((prev) => !prev);
+                  }
+                }}
+              />
+            ) : (
+              <BsEyeSlashFill
+                className="cursor-pointer text-lg"
+                onClick={() => setShowBalance(false)}
+                role="button"
+                aria-label="Hide balance"
+                tabIndex={0}
+                onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setShowBalance((prev) => !prev);
+                  }
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
