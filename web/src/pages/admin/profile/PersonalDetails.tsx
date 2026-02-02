@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -19,14 +18,13 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { queryClient } from "@/main";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
-import { getUserId } from "@/utils";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 export default function PersonalDetails() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const session = useUserSessionStore((s) => s.session);
-  const userId = getUserId();
 
   /* ---------- Get admin by id ---------- */
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(
@@ -34,8 +32,8 @@ export default function PersonalDetails() {
   );
 
   /* ---------- File Download (Profile Pic) ---------- */
-  const { data: downloadData, isLoading: isLoadingProfilePicture } = useAppDownloadProfileFile("profilePicture");
-
+  const { data: downloadData, isLoading: isLoadingProfilePicture } =
+    useAppDownloadProfileFile("profilePicture");
 
   /* ---------- Update admin profile ---------- */
   const updateAdminProfile = useAdminUpdatePersonalInfo({
@@ -43,7 +41,7 @@ export default function PersonalDetails() {
       toast.success("Profile details updated successfully!");
       // Invalidate both personal info and the generic admin query key if needed
       await queryClient.invalidateQueries({
-        queryKey: ["adminPersonalInfo", session?.accessToken || ""],
+        queryKey: [queryKeys.admin.all, session?.accessToken || ""],
       });
       navigate(absoluteUrls.admin.home.dashboard);
     },
@@ -59,7 +57,10 @@ export default function PersonalDetails() {
     fullName: adminPersonalInfo?.name || "",
     email: adminPersonalInfo?.email || "",
     phoneNumber: adminPersonalInfo?.phoneNumber || "+91",
-    profilePicture: downloadData && 'downloadUrl' in downloadData ? (downloadData.downloadUrl as string) : "",
+    profilePicture:
+      downloadData && "downloadUrl" in downloadData
+        ? (downloadData.downloadUrl as string)
+        : "",
   };
 
   /* ---------- Form ---------- */
@@ -70,8 +71,6 @@ export default function PersonalDetails() {
       keepDirtyValues: true, // User edits take precedence over background refetches
     },
   });
-  
-  const profileImage = methods.watch("profilePicture");
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
@@ -86,6 +85,10 @@ export default function PersonalDetails() {
           variant: "primary",
           action: async (close) => {
             try {
+              if (data.profilePicture instanceof File) {
+                await uploadProfileFile(data.profilePicture, "profilePicture");
+              }
+
               await updateAdminProfile.mutateAsync({
                 body: {
                   name: data.fullName,
@@ -107,22 +110,10 @@ export default function PersonalDetails() {
   /* ---------- File Upload ---------- */
   const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => {
-      toast.success("Profile picture updated successfully!");
+      // toast.success("Profile picture updated successfully!"); // Toast is handled generally or we can keep it
     },
     onError: () => toast.error("Failed to update profile picture."),
   });
-
-  const lastUploadedFileRef = useRef<File | null>(null);
-
-  useEffect(() => {
-    if (userId && profileImage instanceof File) {
-       // Prevent duplicate uploads of the same file
-       if (profileImage === lastUploadedFileRef.current) return;
-       
-       lastUploadedFileRef.current = profileImage;
-       uploadProfileFile(profileImage, "profilePicture");
-    }
-  }, [userId, profileImage, uploadProfileFile]);
 
   return (
     <FormContainer
@@ -131,9 +122,9 @@ export default function PersonalDetails() {
       className="flex flex-col gap-3 mt-2 px-2 pb-4 w-full"
     >
       <div className="flex">
-        <ImageUploaderField 
-          label="Profile Image" 
-          name="profilePicture" 
+        <ImageUploaderField
+          label="Profile Image"
+          name="profilePicture"
           initialImageUrl={downloadData?.downloadUrl || ""}
           isLoading={isUploading || isLoadingProfilePicture}
         />

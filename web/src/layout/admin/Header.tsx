@@ -7,7 +7,6 @@ import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
-
 import {
   LookupTable,
   useAppGetLookupData,
