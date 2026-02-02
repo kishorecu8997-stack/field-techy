@@ -29,8 +29,10 @@ const ProfileCompletionCard = () => {
       <h2 className="text-xl font-semibold">Complete Your Profile</h2>
 
       {/* Priority Guide */}
-      <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2">
-        <h4 className="font-semibold text-gray-700">Priority Guide</h4>
+      <div className="rounded-xl border bg-gray-50 p-4 text-sm space-y-2 dark:bg-gray-700">
+        <h4 className="font-semibold text-gray-700 dark:text-gray-300">
+          Priority Guide
+        </h4>
         <ul className="space-y-1">
           {profilePriorityGuide.map((item) => (
             <li key={item.label}>
@@ -63,12 +65,16 @@ const ProfileCompletionCard = () => {
         return (
           <div
             key={section.key}
-            className="border rounded-xl p-4 bg-white shadow-sm"
+            className="border rounded-xl p-4 bg-white shadow-sm dark:bg-gray-700"
           >
             {/* Section Header */}
             <div className="flex justify-between items-center mb-2">
-              <h3 className="font-semibold">{section.title}</h3>
-              <span className="text-sm font-medium">{percentage}%</span>
+              <h3 className="font-semibold dark:text-gray-300">
+                {section.title}
+              </h3>
+              <span className="text-sm font-medium dark:text-gray-300">
+                {percentage}%
+              </span>
             </div>
 
             {/* Progress Bar Showing Status With Percentage */}

@@ -76,7 +76,7 @@ const SendProposal = () => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "secondary",
+          variant: "danger",
           action: async (close) => {
             close(true);
           },

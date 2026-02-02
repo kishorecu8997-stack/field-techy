@@ -51,7 +51,7 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({
   return (
     <div className="mt-2">
       <div className="flex justify-between items-center mb-1">
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Strength:{" "}
           <strong className={strengthTextColor}>{strengthText}</strong>
         </span>

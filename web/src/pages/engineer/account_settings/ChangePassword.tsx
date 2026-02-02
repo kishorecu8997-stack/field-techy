@@ -42,7 +42,7 @@ const ChangePassword = () => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "outline",
+          variant: "danger",
           action: async (close) => close(true),
         },
         {

@@ -146,7 +146,7 @@ const LoginWithNumber = ({
             Don’t have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.signup}
-              className="text-teal-900 hover:underline font-semibold"
+              className="text-teal-900 hover:underline font-semibold dark:text-teal-200"
             >
               Sign Up
             </NavLink>

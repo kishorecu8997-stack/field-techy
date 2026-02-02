@@ -39,7 +39,7 @@ const Education: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
         {
           label: "Cancel",
           value: "cancel",
-          variant: "secondary",
+          variant: "danger",
           action: (close) => close(true),
         },
         {

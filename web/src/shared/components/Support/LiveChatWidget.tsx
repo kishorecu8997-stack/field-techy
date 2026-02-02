@@ -56,11 +56,7 @@ const LiveChatWidget = () => {
           <div className="flex justify-between items-center p-3 border-b border-gray-200 dark:border-gray-700 font-semibold text-gray-800 dark:text-gray-100">
             <span>Live Support</span>
             <Tooltip text="Close Chat">
-              <Button
-                onClick={() => setIsOpen(false)}
-                variant="closeChat"
-                
-              >
+              <Button onClick={() => setIsOpen(false)} variant="closeChat">
                 <FiX className="w-5 h-5" />
               </Button>
             </Tooltip>
@@ -97,11 +93,7 @@ const LiveChatWidget = () => {
               }}
             />
             <Tooltip text="Send Message">
-              <Button
-                onClick={sendMessage}
-                variant="liveChatSend"
-                size="md"
-              >
+              <Button onClick={sendMessage} variant="liveChatSend" size="md">
                 Send
               </Button>
             </Tooltip>

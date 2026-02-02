@@ -220,9 +220,9 @@ const BasicDetails = () => {
               <label htmlFor="termsAndConditions" className="cursor-pointer">
                 I agree to the
               </label>
-              <button
+              <Button
                 type="button"
-                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0 dark:text-blue-300"
                 onClick={async (e) => {
                   e.stopPropagation();
                   try {
@@ -268,7 +268,7 @@ const BasicDetails = () => {
                 }}
               >
                 Terms and Conditions
-              </button>
+              </Button>
             </div>
           </div>
           {errors?.termsAndConditions && (

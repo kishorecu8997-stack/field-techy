@@ -34,7 +34,7 @@ const RecommendedJobs: React.FC<RecommendedJobsProps> = ({
         {onViewAll && jobsToShowCount > 5 && (
           <div
             onClick={onViewAll}
-            className="text-teal-600 hover:text-teal-800 font-medium text-sm cursor-pointer hover:underline dark:text-teal-400 dark:hover:text-teal-300"
+            className="text-teal-600 hover:text-teal-800 font-medium text-sm hover:underline dark:text-teal-400 dark:hover:text-teal-300 cursor-pointer"
           >
             View all
           </div>
