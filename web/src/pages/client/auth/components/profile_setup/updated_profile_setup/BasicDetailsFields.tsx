@@ -34,12 +34,12 @@ import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailF
 const BasicDetailsFields = () => {
   const ctx = useFormContext();
   const { watch, setValue } = ctx;
-  const watchedRole = watch("accountType");
+  const watchedRole = watch("clientType");
   // Default to URL role if set, otherwise fallback to watched value or "home"
   const urlRole = window.location.pathname.includes("corporate")
-    ? "CORPORATE"
+    ? ClientTypeEnum.CORPORATE
     : undefined;
-  const role = urlRole || watchedRole || "HOME";
+  const role = urlRole || watchedRole || ClientTypeEnum.HOME;
   const country = watch("country");
   const selectedState = watch("state");
   const countryValue =
@@ -101,11 +101,11 @@ const BasicDetailsFields = () => {
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
-        role === "HOME"
+        role === ClientTypeEnum.HOME
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("accountType", "HOME")}
+            onClick={() => setValue("clientType", ClientTypeEnum.HOME)}
           >
             Home Client
           </div>
@@ -113,11 +113,11 @@ const BasicDetailsFields = () => {
           <div
             className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm dark:border dark:border-[#4a5565] font-medium transition-all duration-200
       ${
-        role === "CORPORATE"
+        role === ClientTypeEnum.CORPORATE
           ? "bg-gradient-to-r from-teal-100 to-teal-200 text-teal-900 border border-teal-300 dark:from-teal-900/30 dark:to-teal-800/30 dark:text-teal-300 dark:border-teal-700"
           : "text-gray-600 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-900 hover:border hover:border-teal-200 dark:text-gray-400 dark:hover:from-teal-900/20 dark:hover:to-teal-800/20"
       }`}
-            onClick={() => setValue("accountType", "CORPORATE")}
+            onClick={() => setValue("clientType", ClientTypeEnum.CORPORATE)}
           >
             Corporate Client
           </div>
