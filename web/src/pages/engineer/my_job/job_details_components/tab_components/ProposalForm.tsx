@@ -9,36 +9,13 @@ import type { ProposalFormData } from "../../types.d";
 import type { UseFormReturn } from "react-hook-form";
 
 /**
- * Proposal form component for submitting job proposals with review functionality
+ * Form component for submitting job proposals with description and file attachments.
+ * Includes a review modal before final submission.
  *
- * Renders a form for engineers to submit job proposals with description and file attachments.
- * Includes a conditional review modal for confirming proposal details before submission.
- * Handles form validation, file uploads, and success state management.
- *
- * @param {Object} props - The component props.
- * @param {UseFormReturn<ProposalFormData>} props.methods - React Hook Form methods for form management.
- * @param {Function} props.onSubmit - Callback function triggered when form is submitted.
- * @param {string[]} props.attachmentFiles - Array of attachment file names.
- * @param {boolean} props.showReview - Whether to display the review modal instead of form.
- * @param {Function} props.setShowReview - Function to toggle review modal visibility.
- * @param {Function} props.setShowSuccess - Function to show success overlay after submission.
- * @param {Function} [props.setSubmittedProposal] - Optional function to store submitted proposal data.
- * @param {Function} [props.setSendProposal] - Optional function to control proposal sending state.
- * @param {Function} [props.setSelectedTab] - Optional function to switch active tab after submission.
- * @param {ProposalFormData | null} props.reviewData - Proposal data to display in review modal.
- * @param {boolean} [props.isDummyNetworkEngineer] - Optional flag for dummy network engineer flow (defaults to false).
- * @returns {JSX.Element} A form component or review modal depending on showReview state.
- *
- * @example
- * <ProposalForm
- *   methods={useForm<ProposalFormData>()}
- *   onSubmit={handleSubmit}
- *   attachmentFiles={files}
- *   showReview={isReviewMode}
- *   setShowReview={setIsReviewMode}
- *   setShowSuccess={setSuccess}
- *   reviewData={formData}
- * />
+ * @param {UseFormReturn<ProposalFormData>} methods - React Hook Form methods
+ * @param {Function} onSubmit - Callback when form is submitted
+ * @param {boolean} showReview - Whether to show review modal
+ * @param {ProposalFormData | null} reviewData - Data to display in review modal
  */
 const ProposalForm = ({
   methods,
@@ -135,13 +112,14 @@ const ProposalForm = ({
                       className="bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-full text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2"
                     >
                       {fileName}
-                      <button
+                      <Button
+                        variant="no_style"
                         type="button"
                         className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-400"
                         aria-label="Remove attachment"
                       >
                         <IoClose size={16} />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>

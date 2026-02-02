@@ -32,8 +32,6 @@ const JobDetailsPage = () => {
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
-
-  // Skip API call for dummy job
   
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(

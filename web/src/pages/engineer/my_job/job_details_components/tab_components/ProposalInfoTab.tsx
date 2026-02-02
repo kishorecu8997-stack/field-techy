@@ -1,18 +1,15 @@
 import React from "react";
 import { JOB_TAB_COPY, JOB_TAB_CONFIG } from "@/shared/constants/jobTabs";
-
-interface ProposalFormData {
-  proposalDescription: string;
-  attachments: FileList | null;
-}
-
-interface ProposalInfoTabProps {
-  submittedProposal: ProposalFormData;
-}
+import { IoAttach } from "react-icons/io5";
+import type { ProposalInfoTabProps } from "../../types.d";
 
 /**
- * Reusable component to display submitted proposal information
- * Renders proposal description and attachments in a styled container
+ * ProposalInfoTab Component
+ * 
+ * Displays submitted proposal information including description and attachments.
+ * Shows the proposal content in a styled container with timestamp and file attachments.
+ * 
+ * <ProposalInfoTab submittedProposal={submittedProposal} />
  */
 const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
   submittedProposal,
@@ -34,7 +31,8 @@ const ProposalInfoTab: React.FC<ProposalInfoTabProps> = ({
         submittedProposal.attachments.length > 0 && (
           <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
             <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 max-w-full break-all">
-              📎 {Array.from(submittedProposal.attachments)[0].name}
+              <IoAttach className="w-4 h-4" aria-hidden="true" />
+              {Array.from(submittedProposal.attachments)[0].name}
             </div>
           </div>
         )}

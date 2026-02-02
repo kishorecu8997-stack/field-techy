@@ -226,3 +226,12 @@ export interface ProposalFormData {
   proposalDescription: string;
   attachments: FileList | null;
 }
+
+/**
+ * Props for the ProposalInfoTab component
+ * @interface ProposalInfoTabProps
+ * @property {ProposalFormData} submittedProposal - The submitted proposal data to display
+ */
+export interface ProposalInfoTabProps {
+  submittedProposal: ProposalFormData;
+}

@@ -3,38 +3,15 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { IoLocationSharp } from "react-icons/io5";
 import { MAP_DEFAULTS } from "@/shared/constants/mapDefaults";
+import type { WorkLocationMapProps } from "./types";
 
 /**
- * Props for the WorkLocationMap component
+ * Renders an interactive Leaflet map with a marker at the specified coordinates.
+ * Displays location name and address in a popup when marker is clicked.
+ *
+ * @param {WorkLocationMapProps} props - Component props
+ * @returns {JSX.Element} Interactive map with location marker
  */
-/**
- * Interactive map component displaying a work location with marker and details
- *
- * Renders an interactive Leaflet map centered on the provided coordinates with a custom marker,
- * along with location name and address information below the map.
- *
- * @param {Object} props - The component props.
- * @param {number} [props.latitude] - Latitude coordinate of the location (defaults to MAP_DEFAULTS.latitude).
- * @param {number} [props.longitude] - Longitude coordinate of the location (defaults to MAP_DEFAULTS.longitude).
- * @param {string} [props.locationName] - Name of the work location (defaults to MAP_DEFAULTS.locationName).
- * @param {string} [props.address] - Address of the work location (defaults to MAP_DEFAULTS.address).
- * @returns {JSX.Element} A div containing the interactive map and location details with dark mode support.
- *
- * @example
- * <WorkLocationMap
- *   latitude={40.7128}
- *   longitude={-74.0060}
- *   locationName="New York Office"
- *   address="123 Main Street, New York, NY 10001"
- * />
- */
-interface WorkLocationMapProps {
-  latitude?: number;
-  longitude?: number;
-  locationName?: string;
-  address?: string;
-}
-
 const WorkLocationMap: React.FC<WorkLocationMapProps> = ({
   latitude = MAP_DEFAULTS.latitude,
   longitude = MAP_DEFAULTS.longitude,

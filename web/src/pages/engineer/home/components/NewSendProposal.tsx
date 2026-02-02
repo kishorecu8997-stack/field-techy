@@ -39,8 +39,9 @@ const NewSendProposal: React.FC<NewSendProposalProps> = ({ onCancel }) => {
       toast.success("Proposal submitted successfully!");
       if (onCancel) onCancel();
     } catch (error) {
-      console.error("Proposal submission failed:", error);
-      toast.error("Failed to submit proposal. Please try again.");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to submit proposal. Please try again.";
+      toast.error(errorMessage);
     }
   };
 

@@ -9,6 +9,7 @@
 import { engineerJobOverview } from "@/dummy_data/engineerJobOverview";
 import { networkEngineerProposals } from "@/dummy_data/jobTabs/networkEngineerProposals";
 import { useEffect, useState } from "react";
+import { IoAttach } from "react-icons/io5";
 import {
   JOB_STATUSES,
   type JobStatus,
@@ -38,11 +39,9 @@ import type { ProposalFormData } from "../types.d";
  * This component conditionally displays various tabs such as Logs, Work Submissions,
  * Job Information, Requirements, SPOC Details, Other Proposals, and Terms & Conditions.
  * Certain tabs (e.g., Logs and Work Submissions) are hidden when the job status is 'applied'.
- *
  * @param {Object} props - The component props.
  * @param {JobStatus} props.status - The current status of the job (e.g., 'applied', 'in_progress').
  * @returns {JSX.Element} A tabbed interface containing job-related information sections.
- *
  * @example
  * <JobTabSection status={JOB_STATUSES.in_progress} />
  */
@@ -165,8 +164,9 @@ const JobTabSection = ({
                         <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">{proposal.description}</p>
                         {proposal.attachmentName && (
                           <div className="mb-4">
-                            <div className="inline-block bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
-                              📎 {proposal.attachmentName}
+                            <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
+                              <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                              {proposal.attachmentName}
                             </div>
                           </div>
                         )}

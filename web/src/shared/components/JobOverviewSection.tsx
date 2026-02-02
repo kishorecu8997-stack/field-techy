@@ -1,35 +1,14 @@
 import React from "react";
+import { IoAttach } from "react-icons/io5";
 import { Button } from "./commonUI/Buttons";
 import type { Attachment, JobOverviewProps } from "./types";
 
 /**
- * Reusable Job Overview Component
- * Displays comprehensive job details including description, skills, work details, and earnings
- *
- * @param {Object} props - The component props.
- * @param {string} props.jobTitle - The title of the job.
- * @param {string} props.jobDescription - The detailed description of the job.
- * @param {string[]} [props.skills] - Optional array of required skills.
- * @param {Array<{name: string; price: string; image?: string}>} [props.tools] - Optional array of tools with prices.
- * @param {string} [props.duration] - Optional job duration (e.g., '3 months').
- * @param {string} [props.engagementModel] - Optional engagement model (e.g., 'Full-time', 'Contract').
- * @param {string} [props.experienceLevel] - Optional experience level required.
- * @param {number} [props.numberOfVacancies] - Optional number of available positions.
- * @param {string} [props.weeklyPay] - Optional weekly payment amount.
- * @param {string} [props.toolAllowance] - Optional tool allowance.
- * @param {string} [props.totalPayment] - Optional total payment amount.
- * @param {string} [props.weeklyPayNote] - Optional note about weekly pay.
- * @param {string[]} [props.additionalDetails] - Optional additional details array.
- * @param {Array<{name: string; url: string} | string>} [props.attachments] - Optional attachments (objects or strings).
- * @returns {JSX.Element} A formatted job overview section with all job details.
- *
- * @example
- * <JobOverviewSection
- *   jobTitle="Senior React Developer"
- *   jobDescription="Build scalable web applications..."
- *   skills={['React', 'TypeScript']}
- *   weeklyPay="$1500"
- * />
+ * Displays comprehensive job details with skills, tools, earnings, and attachments.
+ * Renders job title, description, required skills, tools with pricing, duration,
+ * engagement model, experience level, vacancies, weekly/total pay, and additional details.
+ * @param {JobOverviewProps} props - Job details including title, description, skills, tools, earnings info, and optional attachments.
+ * @returns {JSX.Element} Formatted job overview section with all job information displayed.
  */
 
 const JobOverviewSection: React.FC<JobOverviewProps> = ({
@@ -287,7 +266,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
                   >
-                    <span aria-hidden>📎</span>
+                    <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
                     <span className="truncate max-w-xs">{attachment.name}</span>
                   </a>
                 ) : (
@@ -299,7 +278,7 @@ const JobOverviewSection: React.FC<JobOverviewProps> = ({
                     title="Attachment URL not available"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border border-gray-300 dark:border-gray-600 rounded-lg text-sm cursor-not-allowed opacity-60"
                   >
-                    <span aria-hidden>📎</span>
+                    <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
                     <span className="truncate max-w-xs">{attachment.name}</span>
                   </Button>
                 );

@@ -23,3 +23,17 @@ export interface JobOverviewProps {
   additionalDetails?: string[];
   attachments?: Array<Attachment | string>;
 }
+
+/**
+ * Props for WorkLocationMap component
+ * @property {number} [latitude] - Latitude coordinate for map center
+ * @property {number} [longitude] - Longitude coordinate for map center
+ * @property {string} [locationName] - Name of the location to display
+ * @property {string} [address] - Full address to display in marker popup
+ */
+export interface WorkLocationMapProps {
+  latitude?: number;
+  longitude?: number;
+  locationName?: string;
+  address?: string;
+}
