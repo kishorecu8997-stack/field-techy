@@ -6,6 +6,7 @@ import {
   appGetLookupData,
   appLogin,
   appResetPassword,
+  getAdminManageClients,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -17,6 +18,7 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
+  type GetAdminManageClientsData,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -36,6 +38,7 @@ export const LookupTable = {
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
+export type ClientType = "home" | "corporate";
 
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
@@ -196,6 +199,34 @@ export function useAppGetLookupData(
         client: apiClient,
         throwOnError: true,
         query: { table },
+      });
+      return response.data;
+    },
+    ...options,
+  });
+}
+
+export type AdminManageClientsResponse = NonNullable<
+  GetAdminManageClientsData["body"]
+>;
+
+export function useAdminManageClients(options?: {
+  clientType: ClientType;
+  onSuccess?: (data: AdminManageClientsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useQuery({
+    queryKey: ["adminManageClients", options?.clientType],
+    queryFn: async () => {
+      const response = await getAdminManageClients({
+        client: apiClient,
+        throwOnError: true,
+        query: {
+          clientType: options?.clientType,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
       });
       return response.data;
     },

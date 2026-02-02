@@ -17,6 +17,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { toast } from "react-toastify";
+import { useAdminManageClients } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * CorporateClient Component
@@ -38,15 +39,18 @@ const CorporateClient: React.FC = () => {
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
 
-  const filteredData = manageClient.filter((e) => {
-    const query = search.toLowerCase();
+  const { data: manageClient } = useAdminManageClients({clientType: "corporate"});
+  console.log("val...", manageClient)
 
-    return (
-      e.clientID.toLowerCase().includes(query) ||
-      e.details.toLowerCase().includes(query) ||
-      e.location.toLowerCase().includes(query)
-    );
-  });
+  // const filteredData = manageClient?.filter((e) => {
+  //   const query = search.toLowerCase();
+
+  //   return (
+  //     e.clientID.toLowerCase().includes(query) ||
+  //     e.details.toLowerCase().includes(query) ||
+  //     e.location.toLowerCase().includes(query)
+  //   );
+  // });
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -62,8 +66,7 @@ const CorporateClient: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting client:", client.id);
             // TODO: call your delete API here
             // await deleteClient(client.id);
@@ -206,7 +209,7 @@ const CorporateClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          data={filteredData}
+          // data={filteredData}
           initialPageSize={10}
         />
       </div>
