@@ -278,14 +278,14 @@ const BasicDetails = () => {
         </div>
       </div>
       <div className="flex-shrink-0 pl-0 pr-4 py-4">
-      <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
-        <Button
-          type="submit"
-          className="w-full bg-gradient-to-r mb-3 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
-          loading={registerMutation.isPending}
-        >
-          Save and Continue
-        </Button>
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-r mb-3 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+            loading={registerMutation.isPending}
+          >
+            Save and Continue
+          </Button>
           <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
             Already have an account?{" "}
             <NavLink
