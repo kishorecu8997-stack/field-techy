@@ -141,7 +141,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
             )}
 
             {!showBalance ? (
-              <BsEyeSlashFill
+              <BsEyeFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(true)}
                 role="button"
@@ -155,7 +155,7 @@ const EarningsCard = ({ earnings }: { earnings: EarningsData }) => {
                 }}
               />
             ) : (
-              <BsEyeFill
+              <BsEyeSlashFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(false)}
                 role="button"

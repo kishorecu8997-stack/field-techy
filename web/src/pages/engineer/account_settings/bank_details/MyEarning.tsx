@@ -36,7 +36,7 @@ const MyEarning = () => {
             )}
           </p>
           {!showBalance ? (
-            <BsEyeSlashFill
+            <BsEyeFill
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(true)}
               role="button"
@@ -50,7 +50,7 @@ const MyEarning = () => {
               }}
             />
           ) : (
-            <BsEyeFill
+            <BsEyeSlashFill
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(false)}
               role="button"

@@ -55,7 +55,7 @@ const TotalEarningsSummary: React.FC = () => {
         </div>
         <div>
           {!showBalance ? (
-            <BsEyeSlashFill
+            <BsEyeFill
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(true)}
               role="button"
@@ -69,7 +69,7 @@ const TotalEarningsSummary: React.FC = () => {
               }}
             />
           ) : (
-            <BsEyeFill
+            <BsEyeSlashFill
               className="cursor-pointer text-lg"
               onClick={() => setShowBalance(false)}
               role="button"
