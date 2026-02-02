@@ -10,7 +10,7 @@ import {
   validateAddress,
   validateName,
   validatePortfolioLink,
-  validatePricePerHour
+  validatePricePerHour,
 } from "@/utils/validate";
 
 /**
@@ -58,7 +58,7 @@ export default function BasicInformation() {
             required
             rules={{ validate: (v: string) => validateName(v) }}
           />
-          <PhoneInputWithValidation />
+          <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
           <TagSelectField
             name="skills"
             label="Skills"
@@ -96,7 +96,7 @@ export default function BasicInformation() {
             label="Portfolio Link"
             type="text"
             placeholder="Portfolio Link"
-             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
+            rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
           <InputField
             name="price"
