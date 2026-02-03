@@ -75,7 +75,7 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
         />
         <div className="flex items-center justify-between mt-4">
@@ -104,7 +104,6 @@ const MyJobsPage = () => {
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <JobList
-            activeFilter={activeFilter}
             jobs={jobs || []}
             isLoading={isLoading}
             isError={isError}

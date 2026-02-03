@@ -1,12 +1,8 @@
 import JobCard from "@/shared/components/JobCard";
-import { useMemo } from "react";
-import type { JobFilter } from "../../search_result/types";
-import { JOB_FILTERS } from "../../search_result/types";
 import type { EngineerGetMyJobsResponse } from "@/api";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 interface JobListProps {
-  activeFilter: JobFilter;
   jobs: EngineerGetMyJobsResponse;
   isLoading: boolean;
   isError: boolean;
@@ -18,39 +14,12 @@ interface JobListProps {
  * 2 columns on medium screens and up). If no jobs are available, shows a "No jobs found"
  * message. Each job is rendered using the `JobCard` component.
  * @param {JobListProps} props The properties for the component.
- * @param {string} props.activeFilter The currently selected filter string.
  * @param {Array} props.jobs The list of jobs.
  * @param {boolean} props.isLoading Loading state.
  * @param {boolean} props.isError Error state.
  * @returns {JSX.Element} A grid layout containing job cards or a fallback message.
  */
-const JobList = ({
-  activeFilter,
-  jobs: jobsAll,
-  isLoading,
-  isError,
-}: JobListProps) => {
-  const filteredJobs = useMemo(() => {
-    const jobs = jobsAll || [];
-    if (activeFilter === JOB_FILTERS.ALL_JOBS) {
-      return jobs;
-    } else if (activeFilter === JOB_FILTERS.APPLIED) {
-      return jobs.filter((job) => job.status === "Posted");
-    } else if (activeFilter === JOB_FILTERS.IN_PROGRESS) {
-      return jobs.filter((job) => job.status === "In Progress");
-    } else if (activeFilter === JOB_FILTERS.COMPLETED) {
-      return jobs.filter((job) => job.status === "Closed");
-    } else if (activeFilter === JOB_FILTERS.REMOTE) {
-      return jobs.filter((job) => job.jobType === "Remote");
-    } else if (activeFilter === JOB_FILTERS.ON_SITE) {
-      return jobs.filter((job) => job.jobType === "On site");
-    } else if (activeFilter === JOB_FILTERS.HYBRID) {
-      return jobs.filter((job) => job.jobType === "Hybrid");
-    } else {
-      return jobs;
-    }
-  }, [activeFilter, jobsAll]);
-
+const JobList = ({ jobs, isLoading, isError }: JobListProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -69,8 +38,8 @@ const JobList = ({
   return (
     <div className="lg:col-span-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredJobs.length > 0 ? (
-          filteredJobs.map((job) => (
+        {jobs && jobs.length > 0 ? (
+          jobs.map((job) => (
             <JobCard key={job.id} {...job} status={job.status ?? undefined} />
           ))
         ) : (
