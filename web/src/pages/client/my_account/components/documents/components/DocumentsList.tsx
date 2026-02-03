@@ -167,7 +167,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       return;
     }
 
-     showPopup({
+    showPopup({
       title: "Delete Document",
       body: "Are you sure you want to delete this document?",
       actionButtons: [
