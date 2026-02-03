@@ -206,7 +206,7 @@ const BasicDetails = () => {
 
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <BasicDetailsFields />
-        <div className="flex flex-col gap-1 w-full max-w-md mx-auto mt-4">
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
           <SetPassword />
           <div className="mt-4 flex items-center gap-2">
             <CheckboxInput
@@ -220,9 +220,8 @@ const BasicDetails = () => {
               <label htmlFor="termsAndConditions" className="cursor-pointer">
                 I agree to the
               </label>
-              <Button
-                type="button"
-                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0 dark:text-blue-300"
+              <span
+                className="text-blue-600 underline cursor-pointer bg-transparent border-none p-0"
                 onClick={async (e) => {
                   e.stopPropagation();
                   try {
@@ -268,7 +267,7 @@ const BasicDetails = () => {
                 }}
               >
                 Terms and Conditions
-              </Button>
+              </span>
             </div>
           </div>
           {errors?.termsAndConditions && (
@@ -279,7 +278,7 @@ const BasicDetails = () => {
         </div>
       </div>
       <div className="flex-shrink-0 p-4">
-        <div className="flex flex-col gap-1 w-full max-w-md mx-auto">
+        <div className="flex flex-col gap-1 w-full max-w-md mx-auto -translate-x-2 transform">
           <Button
             type="submit"
             className="w-full bg-gradient-to-r mb-8 from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
@@ -287,7 +286,7 @@ const BasicDetails = () => {
           >
             Save and Continue
           </Button>
-          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 mt-6 mb-4">
+          <h2 className="text-md text-center font-extralight text-gray-700 dark:text-gray-300 -mt-6 mb-4">
             Already have an account?{" "}
             <NavLink
               to={absoluteUrls.engineer.auth.login}
