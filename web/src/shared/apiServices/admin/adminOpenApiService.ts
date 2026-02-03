@@ -44,15 +44,6 @@ export const LookupTable = {
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
 
 export type ClientType = "home" | "corporate";
-// Map UI status to backend API status
-// export const UI_TO_API_STATUS = {
-//   approve: "verified",
-//   reject: "rejected",
-//   pending: "pending",
-// } as const;
-
-// export type ApiEngineerStatus =
-//   (typeof UI_TO_API_STATUS)[keyof typeof UI_TO_API_STATUS];
 
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
@@ -81,7 +72,7 @@ export function useAdminLogin(options?: {
 }
 
 export function useGetAdminPersonalInfo(token: string) {
-   return useQuery({
+  return useQuery({
     queryKey: [queryKeys.admin.all, token],
     queryFn: async () => {
       const response = await adminGetPersonalInfo({
@@ -221,19 +212,26 @@ export function useAppGetLookupData(
 }
 
 export function useUpdateEngineerProfileStatus(options?: {
-  onSuccess?: (data: PutAdminUsersByUserIdStatusResponses[200]) => void;
+  onSuccess?: (
+    data: PutAdminUsersByUserIdStatusResponses[200],
+    variables: {
+      userId: number;
+      profileStatus: EngineerStatusType;
+      token: string;
+    },
+  ) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation<
-    PutAdminUsersByUserIdStatusResponses[200], 
-    PutAdminUsersByUserIdStatusErrors | unknown, 
-    { userId: number; profileStatus: EngineerStatusType; token: string } 
+    PutAdminUsersByUserIdStatusResponses[200],
+    PutAdminUsersByUserIdStatusErrors | unknown,
+    { userId: number; profileStatus: EngineerStatusType; token: string }
   >({
     mutationFn: async ({ userId, profileStatus, token }) => {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
         path: { userId },
-        body: { profileStatus } as unknown as PutAdminUsersByUserIdStatusData["body"],
+        body: { profileStatus } as PutAdminUsersByUserIdStatusData["body"],
         headers: {
           Authorization: `Bearer ${token}`,
         },

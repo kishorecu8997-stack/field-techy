@@ -586,7 +586,7 @@ export const Employement = [
 
 export const JobStatus = [
   {
-    value: "approve",
+    value: "approved",
     label: "Approve",
     bg: "bg-green-100 text-green-700",
     icon: icons.check,
@@ -598,7 +598,7 @@ export const JobStatus = [
     icon: icons.pending,
   },
   {
-    value: "reject",
+    value: "rejected",
     label: "Reject",
     bg: "bg-red-100 text-red-700",
     icon: icons.close,
