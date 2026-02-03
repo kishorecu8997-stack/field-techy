@@ -88,7 +88,7 @@ export const validateEmail = (value: string): true | string => {
   }
 
   if (!tldMatched) {
-    return "Please enter a valid email with a supported top-level domain (e.g., .com, .org, .co.in)";
+    return "Please enter a valid email with a supported top-level domain (e.g., .com, .org, .co.in, .co.uk)";
   }
 
   // Additional: if 3 labels and matched 1-part TLD, reject (e.g., a.b.com → but b is not co)

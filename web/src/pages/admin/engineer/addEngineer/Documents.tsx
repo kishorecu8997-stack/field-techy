@@ -30,7 +30,7 @@ import FileUpload from "@/shared/components/commonUI/inputs/FileUpload";
 export default function Documents() {
   return (
     <div>
-      <div className="grid md:flex mb-6 mt-2 md:w-8/12 gap-8 justify-between">
+      <div className="grid md:flex mb-6 mt-2 md:w-8/12 gap-5">
         <div className="w-60">
           <FileUpload
             name="governmentId"

@@ -3,7 +3,7 @@ import skills from "@/dummy_data/skills";
 import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
+import PhoneInputWithValidation from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import TagSelectField from "@/shared/components/commonUI/inputs/TagSelectField";
 import {
@@ -56,10 +56,9 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Name"
             required
-            allowedCharacters="string"
             rules={{ validate: (v: string) => validateName(v) }}
           />
-          <PhoneInputField name="phoneNumber" label="Mobile Number" required />
+          <PhoneInputWithValidation name="phoneNumber" label="Mobile Number" />
           <TagSelectField
             name="skills"
             label="Skills"
@@ -97,7 +96,6 @@ export default function BasicInformation() {
             label="Portfolio Link"
             type="text"
             placeholder="Portfolio Link"
-            required
             rules={{ validate: (v: string) => validatePortfolioLink(v) }}
           />
           <InputField
@@ -106,7 +104,6 @@ export default function BasicInformation() {
             type="text"
             placeholder="Enter Price per/hour"
             required
-            allowedCharacters="currency"
             rules={{ validate: (v: string) => validatePricePerHour(v) }}
           />
         </div>
