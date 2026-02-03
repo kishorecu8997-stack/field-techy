@@ -125,7 +125,7 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
                 key={code}
                 className="flex items-center justify-between pb-3 text-gray-700"
               >
-                <div className="flex items-center font-medium">
+                <div className="flex items-center font-medium dark:text-gray-300">
                   <span>{code}</span>
                 </div>
 
@@ -134,7 +134,7 @@ const SecurityPage: React.FC<DrawerMenuProps> = () => {
                     toast.success("Copied Successfully");
                     navigator.clipboard.writeText(`${code}`);
                   }}
-                  className="text-xl cursor-pointer"
+                  className="text-xl cursor-pointer text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
                 />
               </li>
             ))}

@@ -1,6 +1,7 @@
 import formatKeyToLabel from "@/utils/formatKeyToLabel";
 import React from "react";
 import { FiEdit2 } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 /**
@@ -70,7 +71,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
           onClick={onAddAction}
           className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
         >
-          <span>+</span> Add {title}
+          <FaPlus className="h-3 w-3 shrink-0 pr-2" />
         </button>
       </div>
 
@@ -90,7 +91,7 @@ const DrawerCard: React.FC<DrawerCardProps> = ({
                 <div className="flex space-x-2">
                   <button
                     onClick={() => onEditAction?.(item.id as number)}
-                    className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
+                    className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer dark:hover:text-blue-400"
                     aria-label="Edit"
                   >
                     <FiEdit2 />

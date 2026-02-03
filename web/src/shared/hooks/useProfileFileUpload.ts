@@ -11,6 +11,10 @@ import {
   useAppUploadProfileFile as useClientUploadProfileFile,
   useAppMarkProfileFileUploaded as useClientMarkProfileFileUploaded,
 } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useAppUploadProfileFile,
+  useAppMarkProfileFileUploaded,
+} from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
 
@@ -45,6 +49,10 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
     (state) => state.fetchEngineerProfile,
   );
 
+  // Common/Admin Hooks
+  const { mutateAsync: initiateCommonUpload } = useAppUploadProfileFile();
+  const { mutateAsync: markCommonUploaded } = useAppMarkProfileFileUploaded();
+
   // Engineer Hooks
   const { mutateAsync: initiateEngineerUpload } =
     useEngineerUploadProfileFile();
@@ -59,12 +67,15 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
   const uploadProfileFile = async (file: File, fileType: ProfileFileType) => {
     setIsUploading(true);
     const isEngineer = path.pathname.includes("engineer");
+    const isAdmin = path.pathname.includes("admin");
 
     try {
       // 1. Initiate Upload
       const initiate = isEngineer
         ? initiateEngineerUpload
-        : initiateClientUpload;
+        : isAdmin
+          ? initiateCommonUpload
+          : initiateClientUpload;
       const { fileId, uploadUrl } = await initiate({
         body: {
           fileType: fileType,
@@ -90,7 +101,9 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       // 3. Mark as Uploaded
       const markUploaded = isEngineer
         ? markEngineerUploaded
-        : markClientUploaded;
+        : isAdmin
+          ? markCommonUploaded
+          : markClientUploaded;
       const response = await markUploaded({
         body: { fileId },
         headers: { authorization: "" },
@@ -108,7 +121,9 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       // Invalidate relevant queries to refresh UI
       const baseKey = isEngineer
         ? queryKeys.engineer.all
-        : queryKeys.client.all;
+        : isAdmin
+          ? queryKeys.admin.all
+          : queryKeys.client.all;
       queryClient.invalidateQueries({ queryKey: baseKey });
 
       // Invalidate the download query to get the fresh URL

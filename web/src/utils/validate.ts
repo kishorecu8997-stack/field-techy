@@ -9,22 +9,22 @@ export const validateName = (value: string) => {
   const raw = value || "";
 
   // Reject leading or trailing spaces
-  if (raw !== raw.trim()) return `${value} must not have first or last spaces`;
+  if (raw !== raw.trim()) return `must not have first or last spaces`;
 
   // Reject consecutive spaces
-  if (/ {2,}/.test(raw)) return `${value} must not contain consecutive spaces`;
+  if (/ {2,}/.test(raw)) return `must not contain consecutive spaces`;
 
   // Reject if contains anything other than letters and single spaces
   if (!/^[A-Za-z ]+$/.test(raw))
-    return `${value} must contain only alphabetic characters and single spaces`;
+    return `must contain only alphabetic characters and single spaces`;
 
   // Reject if more than 10 spaces
   const spaceCount = (raw.match(/ /g) || []).length;
-  if (spaceCount > 10) return `${value} must not contain more than 10 spaces`;
+  if (spaceCount > 10) return `must not contain more than 10 spaces`;
 
   // Length requirement: 2 to 50 characters
-  if (raw.length < 2) return `${value} must be at least 2 characters`;
-  if (raw.length > 50) return `${value} must not exceed 50 characters`;
+  if (raw.length < 2) return `must be at least 2 characters`;
+  if (raw.length > 50) return `must not exceed 50 characters`;
 
   return true;
 };
@@ -97,6 +97,11 @@ export const validateAddress = (value: string) => {
   // Allow only letters, numbers, spaces, and / , . - #
   if (!/^[A-Za-z0-9\s/,.\-#]+$/.test(v)) {
     return "Address may contain only letters, numbers, spaces, and / , . - #";
+  }
+
+  const digitCount = (v.match(/\d/g) || []).length;
+  if (digitCount > 6) {
+    return "Address may contain at most 6 numbers";
   }
 
   return true;
@@ -669,6 +674,11 @@ export const validatePricePerHour = (value: string) => {
   const num = parseFloat(raw);
   if (num <= 0) {
     return "Price must be greater than 0";
+  }
+
+  // Maximum price limit
+  if (num > 99999) {
+    return "Price must not exceed 99,999";
   }
 
   return true;

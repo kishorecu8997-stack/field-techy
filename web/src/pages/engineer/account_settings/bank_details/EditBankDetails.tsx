@@ -39,7 +39,7 @@ const EditBankDetails = () => {
         {
           label: "Cancel",
           value: "no",
-          variant: "secondary",
+          variant: "danger",
           action: async (close) => {
             console.log("No button clicked");
             close(true);

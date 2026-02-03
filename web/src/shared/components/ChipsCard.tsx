@@ -1,5 +1,6 @@
 import React from "react";
 import { FiEdit2 } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface ChipsCardProps {
@@ -18,18 +19,21 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
   onDeleteAction,
 }) => {
   return (
-    <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
+    <div className="bg-white px-4 py-3 rounded-lg shadow border border-gray-200 dark:bg-gray-700 dark:border-gray-700">
       {/* Header with Actions */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+          {title}
+        </h2>
 
         <div className="flex items-center gap-3">
           {onAddAction && (
             <button
               onClick={onAddAction}
-              className="text-teal-700 hover:underline font-light transition-colors cursor-pointer flex items-center gap-1"
+              className={`flex !flex-row !items-center gap-2 text-teal-600 hover:text-teal-800 hover:underline font-medium transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
             >
-              <span>+</span> Add {title.slice(0, -1)}
+              <FaPlus className="h-3 w-3" />
+              Add {title.slice(0, -1)}
             </button>
           )}
         </div>
@@ -41,7 +45,7 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
         {onEditAction && (
           <button
             onClick={onEditAction}
-            className="text-gray-500 hover:text-blue-600 transition-colors cursor-pointer"
+            className="text-gray-300 hover:text-blue-600 transition-colors cursor-pointer dark:hover:text-blue-400"
             aria-label={`Edit`}
           >
             <FiEdit2 />
@@ -67,7 +71,7 @@ const ChipsCard: React.FC<ChipsCardProps> = ({
           {chips.map((chip, index) => (
             <span
               key={index}
-              className="bg-white px-3 py-1.5 rounded-full border border-gray-300 shadow-sm text-sm text-gray-800"
+              className="bg-white px-3 py-1.5 rounded-full border border-gray-300 shadow-sm text-sm text-gray-800 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             >
               {chip}
             </span>
