@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -19,28 +18,22 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { queryClient } from "@/main";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
-import { getUserId } from "@/utils";
+import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 export default function PersonalDetails() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const session = useUserSessionStore((s) => s.session);
-  const userId = getUserId();
 
   /* ---------- Get admin by id ---------- */
   const { data: adminPersonalInfo } = useGetAdminPersonalInfo(
     session?.accessToken || "",
   );
 
-  useEffect(() => {
-    const getAdmin = async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["adminPersonalInfo"],
-      });
-    };
-    getAdmin();
-  }, [adminPersonalInfo]);
+  /* ---------- File Download (Profile Pic) ---------- */
+  const { data: downloadData, isLoading: isLoadingProfilePicture } =
+    useAppDownloadProfileFile("profilePicture");
 
   /* ---------- Update admin profile ---------- */
   const updateAdminProfile = useAdminUpdatePersonalInfo({
@@ -48,7 +41,7 @@ export default function PersonalDetails() {
       toast.success("Profile details updated successfully!");
       // Invalidate both personal info and the generic admin query key if needed
       await queryClient.invalidateQueries({
-        queryKey: ["adminPersonalInfo"],
+        queryKey: [queryKeys.admin.all, session?.accessToken || ""],
       });
       navigate(absoluteUrls.admin.home.dashboard);
     },
@@ -59,16 +52,25 @@ export default function PersonalDetails() {
     },
   });
 
+  /* ---------- Compute Form Values ---------- */
+  const defaultValues: ProfileFormData = {
+    fullName: adminPersonalInfo?.name || "",
+    email: adminPersonalInfo?.email || "",
+    phoneNumber: adminPersonalInfo?.phoneNumber || "+91",
+    profilePicture:
+      downloadData && "downloadUrl" in downloadData
+        ? (downloadData.downloadUrl as string)
+        : "",
+  };
+
   /* ---------- Form ---------- */
   const methods = useForm<ProfileFormData>({
-    defaultValues: {
-      fullName: adminPersonalInfo?.name || "",
-      email: adminPersonalInfo?.email || "",
-      phoneNumber: adminPersonalInfo?.phoneNumber || "+91",
-      profilePicture: "",
+    defaultValues,
+    values: defaultValues,
+    resetOptions: {
+      keepDirtyValues: true, // User edits take precedence over background refetches
     },
   });
-  const profileImage = methods.watch("profilePicture");
 
   /* ---------- Submit ---------- */
   const handleSubmit = async (data: ProfileFormData) => {
@@ -83,6 +85,10 @@ export default function PersonalDetails() {
           variant: "primary",
           action: async (close) => {
             try {
+              if (data.profilePicture instanceof File) {
+                await uploadProfileFile(data.profilePicture, "profilePicture");
+              }
+
               await updateAdminProfile.mutateAsync({
                 body: {
                   name: data.fullName,
@@ -104,30 +110,10 @@ export default function PersonalDetails() {
   /* ---------- File Upload ---------- */
   const { uploadProfileFile, isUploading } = useProfileFileUpload({
     onSuccess: () => {
-      toast.success("Profile picture updated successfully!");
+      // toast.success("Profile picture updated successfully!"); // Toast is handled generally or we can keep it
     },
     onError: () => toast.error("Failed to update profile picture."),
   });
-
-  useEffect(() => {
-    if (userId && profileImage instanceof File) {
-      uploadProfileFile(profileImage, "profilePicture");
-    }
-  }, [userId, profileImage]);
-
-  /* ---------- File Download (Profile Pic) ---------- */
-  const { data: downloadData, isLoading: isLoadingProfilePicture } = useAppDownloadProfileFile("profilePicture");
-  
-  // Create object URL when blob is received
-  const [, setProfilePicUrl] = useState<string>("");
-  
-  useEffect(() => {
-    if (downloadData && 'downloadUrl' in (downloadData)) {
-       const url = (downloadData).downloadUrl;
-       setProfilePicUrl(url);
-       methods.setValue("profilePicture", url);
-    } 
-  }, [downloadData, methods]);
 
   return (
     <FormContainer
@@ -136,9 +122,9 @@ export default function PersonalDetails() {
       className="flex flex-col gap-3 mt-2 px-2 pb-4 w-full"
     >
       <div className="flex">
-        <ImageUploaderField 
-          label="Profile Image" 
-          name="profilePicture" 
+        <ImageUploaderField
+          label="Profile Image"
+          name="profilePicture"
           initialImageUrl={downloadData?.downloadUrl || ""}
           isLoading={isUploading || isLoadingProfilePicture}
         />

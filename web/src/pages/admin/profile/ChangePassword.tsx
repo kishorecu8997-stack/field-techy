@@ -44,7 +44,7 @@ export default function ChangePassword() {
     onSuccess: () => {
       toast.success("Password changed successfully");
       logout();
-      navigate(absoluteUrls.admin.home.dashboard);
+      navigate(absoluteUrls.admin.auth.login);
     },
     onError: (error) => {
       console.error(error);

@@ -50,7 +50,8 @@ export default function AdminLogin() {
 
   const { mutateAsync: loginMutation, isPending: isLoggingIn } = useAdminLogin({
     onSuccess: async (resp) => {
-      // Store the token
+      // Token is intentionally stored in localStorage in addition to the
+      // persisted session store to support consumers outside Zustand
       if (resp.token) {
         localStorage.setItem("auth_token", resp.token);
       }
@@ -66,7 +67,7 @@ export default function AdminLogin() {
       toast.success("Logged in successfully");
     },
     onError: (error) => {
-      console.error(error);
+      // 401 (unauthorized) responses are handled globally by an Axios interceptor
       if (error instanceof AxiosError && error.response?.status === 401) {
         return;
       }

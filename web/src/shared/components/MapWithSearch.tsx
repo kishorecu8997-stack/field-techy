@@ -74,11 +74,11 @@ const MapSearchBar: React.FC<{
   const [, setLoading] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
 
-  const handleClear = () => {
-    setQuery("");
-    setSuggestions([]);
-    setUserTyping(false);
-  };
+  // const handleClear = () => {
+  //   setQuery("");
+  //   setSuggestions([]);
+  //   setUserTyping(false);
+  // };
 
   useEffect(() => {
     if (!userTyping || !query.trim()) {

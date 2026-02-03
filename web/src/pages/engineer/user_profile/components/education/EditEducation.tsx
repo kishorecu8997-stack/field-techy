@@ -84,7 +84,7 @@ const EditEducation = () => {
         {
           label: "Cancel",
           value: "no",
-          variant: "secondary",
+          variant: "danger",
           action: async (close) => close(true),
         },
         {
@@ -205,7 +205,7 @@ const EditEducation = () => {
       <div className="bg-white">
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
+          className="w-full bg-teal-800 hover:bg-teal-900 text-white px-6 py-2 rounded-none shadow-none border-none"
         >
           {selectedId ? "Update" : "Add"} Education
         </Button>

@@ -6,6 +6,8 @@ import BestPayingJobs from "./BestPayingJobs";
 import TotalEarningsSummary from "./TotalEarningsSummary";
 import EarningHistoryChart from "./EarningHistoryChart";
 import MonthlyComparison from "./MonthlyComparison";
+import { useState } from "react";
+import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 
 /**
  * Displays the user's current balance with quick actions (Bank Details, Withdraw) and a transaction history dashboard.
@@ -14,20 +16,59 @@ import MonthlyComparison from "./MonthlyComparison";
 const MyEarning = () => {
   const { setActiveKey } = useDrawerStore();
   const currentBalance = 1000;
+  const [showBalance, setShowBalance] = useState<boolean>(false);
+
   const BankSection = () => {
     return (
-      <div className="text-center">
+      <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Current Balance
         </p>
-        <h1 className="text-4xl font-bold mt-1">
-          {getCurrencyFromStorage()}
-          {currentBalance.toFixed(2)}
-        </h1>
+        <div className="flex justify-between items-center">
+          <p className="text-2xl md:text-3xl items-center font-extrabold text-gray-900 dark:text-white">
+            {showBalance ? (
+              <>
+                {getCurrencyFromStorage()}
+                {currentBalance.toFixed(2)}
+              </>
+            ) : (
+              "******"
+            )}
+          </p>
+          {!showBalance ? (
+            <BsEyeFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(true)}
+              role="button"
+              aria-label="Show balance"
+              tabIndex={0}
+              onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setShowBalance((prev) => !prev);
+                }
+              }}
+            />
+          ) : (
+            <BsEyeSlashFill
+              className="cursor-pointer text-lg"
+              onClick={() => setShowBalance(false)}
+              role="button"
+              aria-label="Hide balance"
+              tabIndex={0}
+              onKeyDown={(event: React.KeyboardEvent<SVGElement>) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setShowBalance((prev) => !prev);
+                }
+              }}
+            />
+          )}
+        </div>
         <div className="mt-4 flex gap-3 justify-center">
           <Button
             onClick={() => setActiveKey("manageBankAccounts")}
-            className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition"
+            className="px-6 py-3 bg-gray-800 text-white rounded-full font-medium hover:bg-gray-700 transition dark:bg-transparent dark:border dark:border-teal-600 dark:text-white"
           >
             Bank Details
           </Button>
