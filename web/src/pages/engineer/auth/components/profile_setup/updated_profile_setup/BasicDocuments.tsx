@@ -95,7 +95,7 @@ const BasicDocuments = () => {
 
       uploads.push(
         uploadProfileFile(data.profileImage, "profilePicture").catch((e) => {
-          console.error("profile upload failed", e);
+          toast.error("profile upload failed");
           throw e;
         }),
       );
@@ -105,7 +105,7 @@ const BasicDocuments = () => {
       setUploadingDoc("GOVERNMENT_ID");
       uploads.push(
         uploadProfileFile(data.governmentId[0], "govIdDoc").catch((e) => {
-          console.error("gov id upload failed", e);
+          toast.error("gov id upload failed");
           throw e;
         }),
       );
@@ -115,7 +115,7 @@ const BasicDocuments = () => {
       setUploadingDoc("CERTIFICATE");
       uploads.push(
         uploadProfileFile(data.certificate[0], "certificateDoc").catch((e) => {
-          console.error("certificate upload failed", e);
+          toast.error("certificate upload failed");
           throw e;
         }),
       );
@@ -125,7 +125,7 @@ const BasicDocuments = () => {
       setUploadingDoc("RESUME");
       uploads.push(
         uploadProfileFile(data.resume[0], "resumeFile").catch((e) => {
-          console.error("certificate upload failed", e);
+          toast.error("certificate upload failed");
           throw e;
         }),
       );
@@ -184,15 +184,6 @@ const BasicDocuments = () => {
                 <p className="text-sm font-medium text-blue-800">
                   Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
-                {/* here we can use after onProgress add useProfileFileUpload */}
-                {/* {uploadProgress[uploadingDoc] && (
-                  <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-blue-600 h-full transition-all duration-300"
-                      style={{ width: `${uploadProgress[uploadingDoc]}%` }}
-                    />
-                  </div>
-                )} */}
               </div>
             )}
           </div>
