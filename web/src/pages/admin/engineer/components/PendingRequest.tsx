@@ -56,7 +56,7 @@ export default function PendingRequest() {
   const [engineers, setEngineers] = useState(manageEngineer);
 
   const filteredData = engineers
-    .filter((e) => e.kycStatus === "Pending")
+    .filter((e) => e.kycStatus === EngineerStatus.PENDING)
     .filter((e) => {
       const query = search.toLowerCase();
       return (
@@ -70,9 +70,9 @@ export default function PendingRequest() {
 const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
   onSuccess: (_data, variables) => {
     // Only show toasts for approved or rejected
-    if (variables.profileStatus === "approved")
+    if (variables.profileStatus === EngineerStatus.APPROVE)
       toast.success("Engineer approved successfully!");
-    else if (variables.profileStatus === "rejected")
+    else if (variables.profileStatus === EngineerStatus.REJECT)
       toast.error("Engineer rejected successfully!");
 
     // Update local row status
@@ -82,7 +82,7 @@ const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
     }));
 
     // Remove engineer from pending list if status is not pending
-    if (variables.profileStatus !== "pending") {
+    if (variables.profileStatus !== EngineerStatus.PENDING) {
       setEngineers((prev) =>
         prev.filter((eng) => eng.id !== variables.userId)
       );
