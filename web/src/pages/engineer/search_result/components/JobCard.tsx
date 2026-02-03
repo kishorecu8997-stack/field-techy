@@ -169,26 +169,33 @@ const JobCard: React.FC<{
   const { address: resolvedAddress } = useReverseGeocoding(job.location);
 
   const jobData = useMemo(() => {
-    const clientName =
-      typeof job.client === "string"
-        ? job.client
-        : job.client?.companyName || "-";
+    const jobRecord = job as unknown as Record<string, unknown>;
+
+    const getString = (key: string): string | undefined => {
+      const value = jobRecord[key];
+      return typeof value === "string" ? value : undefined;
+    };
+
+    const clientName = job.client?.companyName || "-";
+
+    const location =
+      [job.client?.city, job.client?.country].filter(Boolean).join(", ") || "-";
 
     return {
       id: job.id,
-      title: (job as any).jobTitle || (job as any).title || "",
+      title: job.jobTitle || getString("title") || "",
       clientName,
-      location: job.location,
-      salary: job.salary || (job as any).pay || "-",
+      location: location || job.location,
+      salary: job.salary || getString("pay") || "-",
       status: job.status,
       skills: job.skills,
       tools: job.tools,
-      description: (job as any).jobDescription || (job as any).description,
+      description: job.jobDescription || getString("description") || "",
       postedTime: job.postedTime,
       experience: job.experience,
-      duration: (job as any).jobDuration || (job as any).duration,
-      projectDeadline: (job as any).projectDeadline,
-      startDate: job.startDate as string,
+      duration: job.jobDuration || getString("duration"),
+      projectDeadline: job.projectDeadline || getString("projectDeadline"),
+      startDate: job.startDate || getString("startDate") || "",
     };
   }, [job]);
 
@@ -254,6 +261,17 @@ const JobCard: React.FC<{
     closed: "gray",
   } as const;
 
+  const statusKeyRaw = (job.status ?? "").toString().toLowerCase();
+  const statusKey = (
+    statusKeyRaw in STATUS_VARIANT_MAP ? statusKeyRaw : undefined
+  ) as keyof typeof STATUS_VARIANT_MAP | undefined;
+  const statusLabel = statusKey
+    ? JOB_STATUSES[statusKey as keyof typeof JOB_STATUSES]
+    : job.status;
+
+  const salaryDisplay = jobData.salary ?? "-";
+  const hasSalary = Boolean(jobData.salary);
+
   const getDuration = getDurationString({
     startDateStr: job.startDate as string,
     endDateStr: job.projectDeadline as string,
@@ -276,22 +294,46 @@ const JobCard: React.FC<{
                 {jobData.title}
               </h3>
 
-              {/* Right-aligned: Match score & help button */}
-              <div className="flex items-center gap-2">
-                {matchScore > 0 && <MatchScoreRing score={matchScore} />}
-                {matchScore > 0 && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowWhyPopover(true);
-                    }}
-                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                    aria-label="Why is this job recommended?"
-                  >
-                    <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
-                  </button>
+              {/* Job metadata */}
+              <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600 dark:text-gray-300">
+                {jobData.clientName && (
+                  <span>
+                    Client:{" "}
+                    <strong className="text-gray-900 dark:text-white">
+                      {jobData.clientName}
+                    </strong>
+                  </span>
                 )}
+                {jobData.status && (
+                  <>
+                    <span>|</span>
+                    <Badge
+                      variant={
+                        statusKey ? STATUS_VARIANT_MAP[statusKey] : "gray"
+                      }
+                    >
+                      {statusLabel ?? job.status}
+                    </Badge>
+                  </>
+                )}
+                {jobData.duration && <span>| {jobData.duration}</span>}
+                {/* Right-aligned: Match score & help button */}
+                <div className="flex items-center gap-2">
+                  {matchScore > 0 && <MatchScoreRing score={matchScore} />}
+                  {matchScore > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowWhyPopover(true);
+                      }}
+                      className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                      aria-label="Why is this job recommended?"
+                    >
+                      <IoHelpCircleOutline className="w-6 h-6 text-gray-500" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -350,6 +392,14 @@ const JobCard: React.FC<{
           </div>
         )}
 
+        {hasSalary ? (
+          <div className="flex items-center gap-1.5">
+            <BiDollar className="h-4 w-4 text-gray-500" />
+            <span className="text-gray-800 dark:text-gray-200">
+              {salaryDisplay}
+            </span>
+          </div>
+        ) : null}
         {/* FOOTER BAR */}
         <div className="flex flex-wrap items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
           <div className="flex flex-wrap items-center gap-5">
@@ -371,11 +421,11 @@ const JobCard: React.FC<{
               </div>
             )}
 
-            {(jobData.salary || "-") && (
+            {jobData.salary && (
               <div className="flex items-center gap-1.5">
                 <BiDollar className="h-4 w-4 text-gray-500" />
                 <span className="text-gray-800 dark:text-gray-200">
-                  {jobData.salary || "-"}
+                  {jobData.salary}
                 </span>
               </div>
             )}

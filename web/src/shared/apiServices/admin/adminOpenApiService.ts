@@ -67,7 +67,7 @@ export function useAdminLogin(options?: {
 }
 
 export function useGetAdminPersonalInfo(token: string) {
-   return useQuery({
+  return useQuery({
     queryKey: [queryKeys.admin.all, token],
     queryFn: async () => {
       const response = await adminGetPersonalInfo({

@@ -39,7 +39,7 @@ export const useClientStore = create<ClientStore>((set, get) => ({
     try {
       // Fetch profile and files in parallel
       const profilePicData = await getDownloadUrl("profilePicture").catch(
-        () => null
+        () => null,
       );
 
       set({

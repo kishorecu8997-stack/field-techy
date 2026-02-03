@@ -189,7 +189,7 @@ const EngineersActions = ({
               </Button>
             ) : (
               <div
-                className="text-green-700 hover:underline cursor-pointer"
+                className="text-white hover:underline cursor-pointer"
                 onClick={() => handleViewJobPosting()}
               >
                 View Job posting
