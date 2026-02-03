@@ -1,4 +1,4 @@
-import type { ClientPostJobData } from "@/api";
+import type { ClientPostJobData, ClientPostJobResponse } from "@/api";
 import { absoluteUrls } from "@/config/urls";
 import { JOB_TYPES } from "@/constants/jobTypes";
 import { TemplateData } from "@/dummy_data/client";
@@ -242,15 +242,15 @@ const PostJobPage = () => {
       headers: { "Content-Type": file.type },
     });
   const uploadAttachmentsAndTools = async (
-    response: any,
+    response: ClientPostJobResponse,
     data: PostAJobFieldsProps,
   ) => {
     const uploadPromises: Promise<unknown>[] = [];
-    data.attachment?.[0] &&
-      response.uploadUrls.attachment &&
+    if (data.attachment?.[0] && response.uploadUrls.attachment) {
       uploadPromises.push(
         uploadFile(data.attachment[0], response.uploadUrls.attachment),
       );
+    }
     (data.toolsData ?? [])
       .filter((t) => t.images?.[0]?.file)
       .forEach((tool, index) => {
@@ -326,8 +326,8 @@ const PostJobPage = () => {
 
     try {
       payload = createJobPayload(data);
-    } catch (error: any) {
-      return toast.error(error.message);
+    } catch (error: unknown) {
+      return toast.error((error as Error).message);
     }
 
     postJob(
@@ -339,7 +339,7 @@ const PostJobPage = () => {
             toast.success("Your job has been successfully posted!");
             refetchJobs();
             navigate(absoluteUrls.client.home.my_jobs);
-          } catch (error) {
+          } catch  {
             const hasFilesToUpload =
               (data.attachment?.length ?? 0) > 0 ||
               (data.toolsData?.some((t) => t.images?.length > 0) ?? false);
