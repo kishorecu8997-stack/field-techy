@@ -2,6 +2,8 @@ import {
   client as dummyClient,
   jobHeaderData as dummyJobHeader,
 } from "@/dummy_data/jobDetails";
+import { offerPageDummy } from "@/dummy_data/offerPageDummy";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState, useMemo } from "react";
@@ -18,14 +20,21 @@ import JobTabSection from "./JobTabSection";
  */
 const OfferPages = () => {
   const { jobId } = useParams();
-  const { data: apiJob } = useClientGetJobsById(jobId || "");
+
+  // Skip API call for dummy job
+  const isDummyJob = isDummyNetworkEngineerJob(jobId);
+  const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
-  const [isJobAccepted, setIsJobAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
 
   const jobData = useMemo(() => {
+    // Handle dummy job
+    if (isDummyJob) {
+      return offerPageDummy;
+    }
+
     if (!apiJob) return null;
     return {
       title: apiJob.jobTitle || "Untitled Job",
@@ -34,7 +43,7 @@ const OfferPages = () => {
       type: apiJob.engagementModel || "ON_SITE",
       status: apiJob.status || "NEW",
     };
-  }, [apiJob]);
+  }, [apiJob, isDummyJob]);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -55,22 +64,28 @@ const OfferPages = () => {
               setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
-              setIsJobAccepted={setIsJobAccepted}
               setActiveTab={setActiveTab}
             />
             <JobTabSection
               status={jobData?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              isJobAccepted={isJobAccepted}
               activeTab={activeTab}
             />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
-              name={apiJob?.client?.companyName || dummyClient.name}
+              name={
+                isDummyJob
+                  ? "-"
+                  : apiJob?.client?.companyName || dummyClient.name
+              }
               memberSince={dummyClient.memberSince}
-              location={apiJob?.location || dummyClient.location}
+              location={
+                isDummyJob
+                  ? "Chennai, Tamil Nadu, India"
+                  : apiJob?.location || dummyClient.location
+              }
               rating={dummyClient.rating}
               reviews={dummyClient.reviews}
               verifications={dummyClient.verifications}
