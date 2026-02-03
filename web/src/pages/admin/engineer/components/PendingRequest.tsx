@@ -27,6 +27,23 @@ export const EngineerStatus = {
 export type EngineerStatusType =
   (typeof EngineerStatus)[keyof typeof EngineerStatus];
 
+  /**
+ * PendingRequest Component
+ *
+ * Displays a management dashboard for engineers, including:
+ * - A search input for filtering results.
+ * - A customizable table for viewing detailed engineer data.
+ * - Actionable buttons for viewing document details.
+ *
+ * @component
+ * @example
+ * return (
+ *   <PendingRequest />
+ * );
+ *
+ * @returns {JSX.Element} The rendered PendingRequest component.
+ */
+
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
