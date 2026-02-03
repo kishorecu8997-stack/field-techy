@@ -89,7 +89,7 @@ const Footer = () => {
                   onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
-                  Explore Jobs
+                  {isClient ? "Explore Engineers" : "Explore Jobs"}
                 </NavLink>
               </li>
               <li>
@@ -100,7 +100,7 @@ const Footer = () => {
                   }}
                   className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
-                  My Earning
+                  {isClient ? "My Wallet" : "My Earning"}
                 </div>
               </li>
               <li>
