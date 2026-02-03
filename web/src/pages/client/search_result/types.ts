@@ -63,6 +63,8 @@ export interface Job {
   stateId?: number;
   cityId?: number;
   workLocationName?: string | null;
+  numberOfVacancy?: number;
+  numberOfApplicants?: number;
 }
 
 /**

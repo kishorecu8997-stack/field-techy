@@ -216,7 +216,8 @@ export const ImageUploaderField = ({
             const isJpeg = detectedType === "jpeg";
             const isPng = detectedType === "png";
 
-            const hasJpegExt = nameLc.endsWith(".jpg") || nameLc.endsWith(".jpeg");
+            const hasJpegExt =
+              nameLc.endsWith(".jpg") || nameLc.endsWith(".jpeg");
             const hasPngExt = nameLc.endsWith(".png");
 
             let finalFile = file;
@@ -251,7 +252,7 @@ export const ImageUploaderField = ({
             try {
               const response = await fetch(avatar.url);
               const blob = await response.blob();
-              
+
               // Determine correct extension from blob type
               let extension = "png";
               if (blob.type === "image/jpeg") {
@@ -260,9 +261,13 @@ export const ImageUploaderField = ({
                 extension = "png";
               }
 
-              const file = new File([blob], `avatar-${avatar.id}.${extension}`, {
-                type: blob.type,
-              });
+              const file = new File(
+                [blob],
+                `avatar-${avatar.id}.${extension}`,
+                {
+                  type: blob.type,
+                },
+              );
               onChange(file);
               setIsPopupOpen(false);
             } catch (error) {
