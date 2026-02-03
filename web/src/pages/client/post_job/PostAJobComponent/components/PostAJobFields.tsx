@@ -27,8 +27,6 @@ const PostAJobFields = ({
   const navigate = useNavigate();
   const { setValue, watch } = useFormContext();
 
-  console.log(rate, "rate");
-
   const selectedCountry = watch("country");
   const selectedState = watch("state");
 
@@ -37,7 +35,6 @@ const PostAJobFields = ({
   const { data: experienceLevelsData } = useLookupData("experienceLevels");
   const { data: engagementModelsData } = useLookupData("engagementModels");
 
-  console.log(engagementModelsData, "engagementModelsData");
   const { data: skillsData } = useLookupData("skills");
   const { data: toolsData } = useLookupData("tools");
   const { data: statesData } = useLookupData("states", selectedCountry);

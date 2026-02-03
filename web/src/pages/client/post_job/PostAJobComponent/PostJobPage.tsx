@@ -106,7 +106,6 @@ const PostJobPage = () => {
       !engagementModel ||
       !selectedCountry
     ) {
-      console.log("here");
       setRateAndCurrency("", 0);
       return;
     }
@@ -122,7 +121,6 @@ const PostJobPage = () => {
       },
       {
         onSuccess: (response) => {
-          console.log(response, "response");
           setRateAndCurrency(
             `${response.rate}${response.currencySymbol}`,
             response.currencyId,
@@ -267,59 +265,68 @@ const PostJobPage = () => {
   };
   const createJobPayload = (
     data: PostAJobFieldsProps,
-  ): ClientPostJobData["body"] => ({
-    jobTitle: data.jobTitle,
-    jobDescription: data.description,
-    jobType: data.locationType,
-    countryId: getRequiredNumber(data.country, "Country"),
-    stateId: getRequiredNumber(data.state, "State"),
-    cityId: getRequiredNumber(data.city, "City"),
-    startDate: data.startDate ? data.startDate.toISOString() : undefined,
-    endDate: data.endDate ? data.endDate.toISOString() : undefined,
-    vacancies: Number(data.numberOfVacancy) || 1,
-    serviceCategoryId: getRequiredNumber(
-      data.serviceCategory,
-      "Service Category",
-    ),
-    experienceLevelId: getRequiredNumber(
-      data.experienceLevel,
-      "Experience Level",
-    ),
-    engagementModelId: getRequiredNumber(
-      data.engagementModel,
-      "Engagement Model",
-    ),
-    additionalDetails: data.otherInfo,
-    currencyId: currencyId,
-    skills: (data.skills || []).map((s) => Number(s)).filter((n) => !isNaN(n)),
-    tools: (data.toolsData || []).map((t) => ({
-      toolId: Number(t.id) || 0,
-      budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
-      image:
-        t.images && t.images.length > 0 && t.images[0].file
-          ? {
-              filename: t.images[0].file.name,
-              size: t.images[0].file.size,
-              mimeType: t.images[0].file.type,
-            }
-          : undefined,
-    })),
-    attachment:
-      data.attachment && data.attachment.length > 0
-        ? {
-            filename: data.attachment[0].name,
-            size: data.attachment[0].size,
-            mimeType: data.attachment[0].type,
-          }
-        : undefined,
-  });
+  ): ClientPostJobData["body"] => {
+    if (!data.attachment || data.attachment.length === 0) {
+      throw new Error("Attachment is required");
+    }
+
+    const tools = (data.toolsData || []).map((t) => {
+      if (!t.images || t.images.length === 0 || !t.images[0].file) {
+        throw new Error(`Image is required for tool: ${t.name}`);
+      }
+      return {
+        toolId: Number(t.id) || 0,
+        budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
+        image: {
+          filename: t.images[0].file.name,
+          size: t.images[0].file.size,
+          mimeType: t.images[0].file.type,
+        },
+      };
+    });
+
+    return {
+      jobTitle: data.jobTitle,
+      jobDescription: data.description,
+      jobType: data.locationType,
+      countryId: getRequiredNumber(data.country, "Country"),
+      stateId: getRequiredNumber(data.state, "State"),
+      cityId: getRequiredNumber(data.city, "City"),
+      startDate: data.startDate ? data.startDate.toISOString() : undefined,
+      endDate: data.endDate ? data.endDate.toISOString() : undefined,
+      vacancies: Number(data.numberOfVacancy) || 1,
+      serviceCategoryId: getRequiredNumber(
+        data.serviceCategory,
+        "Service Category",
+      ),
+      experienceLevelId: getRequiredNumber(
+        data.experienceLevel,
+        "Experience Level",
+      ),
+      engagementModelId: getRequiredNumber(
+        data.engagementModel,
+        "Engagement Model",
+      ),
+      additionalDetails: data.otherInfo,
+      currencyId: currencyId,
+      skills: (data.skills || [])
+        .map((s) => Number(s))
+        .filter((n) => !isNaN(n)),
+      tools,
+      attachment: {
+        filename: data.attachment[0].name,
+        size: data.attachment[0].size,
+        mimeType: data.attachment[0].type,
+      },
+    };
+  };
+
   const handlePostAJob = async (data: PostAJobFieldsProps) => {
     let payload: ClientPostJobData["body"];
 
     try {
       payload = createJobPayload(data);
     } catch (error: any) {
-      console.error("Payload creation error:", error);
       return toast.error(error.message);
     }
 
@@ -333,7 +340,6 @@ const PostJobPage = () => {
             refetchJobs();
             navigate(absoluteUrls.client.home.my_jobs);
           } catch (error) {
-            console.error("File upload error:", error);
             const hasFilesToUpload =
               (data.attachment?.length ?? 0) > 0 ||
               (data.toolsData?.some((t) => t.images?.length > 0) ?? false);
@@ -349,7 +355,6 @@ const PostJobPage = () => {
           }
         },
         onError: (error: unknown) => {
-          console.error("Post job error:", error);
           toast.error(GlobalApiErrorHandler.handle(error).message);
         },
       },

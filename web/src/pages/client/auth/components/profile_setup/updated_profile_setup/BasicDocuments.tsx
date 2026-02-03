@@ -110,9 +110,8 @@ const BasicDocuments = () => {
 
         toast.success(`${docKey.replace("_", " ")} linked successfully`);
       }
-    } catch (error) {
-      console.error(`Error uploading ${type}:`, error);
-      throw error;
+    } catch {
+      toast.error(`Error uploading ${type}`);
     } finally {
       setUploadingDoc(null);
     }

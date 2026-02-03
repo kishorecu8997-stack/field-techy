@@ -9,6 +9,11 @@ interface LocationDisplayProps {
   fallback?: string;
 }
 
+/**
+ * Displays the location of the job.
+ * @param {LocationDisplayProps} props - The props for the component.
+ * @returns {React.ReactElement} The rendered location display.
+ */
 const LocationDisplay = ({
   countryId,
   stateId,
@@ -18,13 +23,10 @@ const LocationDisplay = ({
 }: LocationDisplayProps) => {
   const { data: countries } = useLookupData("countries");
 
-  // We can only fetch states if we have a countryId
   const { data: states } = useLookupData(
     "states",
     countryId ? String(countryId) : undefined,
   );
-
-  // We can only fetch cities if we have a stateId
   const { data: cities } = useLookupData(
     "cities",
     stateId ? String(stateId) : undefined,
@@ -52,19 +54,11 @@ const LocationDisplay = ({
   const parts = [];
   if (cityName) parts.push(cityName);
   if (stateName) parts.push(stateName);
-  else if (!cityName && cityId) parts.push(String(cityId)); // Fallback ID if name not found yet
+  else if (!cityName && cityId) parts.push(String(cityId));
 
   if (countryName) parts.push(countryName);
 
-  // Fallback to IDs if names are not loaded yet or not found, but only if we don't have ANY names.
   if (parts.length === 0) {
-    // If data is loading, maybe show "Loading..." or just the IDs?
-    // IDs look bad. let's show nothing or IDs.
-    // Screenshot showed "20, 1".
-    // If we have IDs we should try to show them if lookups fail?
-    // Or maybe simpler: if we have cityId/countryId but no names, it implies loading or error.
-    // Retain old behavior (ids) as last resort or while loading?
-    // Actually, standard is usually to show IDs if name lookup fails completely.
     const idParts = [];
     if (cityId) idParts.push(cityId);
     if (countryId) idParts.push(countryId);

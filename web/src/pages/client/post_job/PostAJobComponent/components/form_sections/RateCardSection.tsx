@@ -7,7 +7,6 @@ interface RateCardSectionProps {
   experienceLevelOptions: { label: string; value: string }[];
   engagmentModelOptions: { label: string; value: string }[];
   countryOptions: { label: string; value: string }[];
-
   rate: string | null;
 }
 

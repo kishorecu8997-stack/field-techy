@@ -29,9 +29,7 @@ export interface Document {
   uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
-  // TODO: Implement expiry date functionality
   expiryDate?: string;
-  // TODO: Implement status functionality (Pending | Approved | Rejected)
   status?: "Pending" | "Approved" | "Rejected";
 }
 
@@ -40,14 +38,10 @@ interface DocumentsListProps {
   onEditDocument?: (id: number) => void;
 }
 
-/**
- * Maps ClientFile fileType to Document fileType
- */
 const mapFileType = (
   fileType: ClientFile["fileType"],
   mimeType: string,
 ): Document["fileType"] => {
-  // Check mime type first for more accurate detection
   if (mimeType.includes("pdf")) return "PDF";
   if (mimeType.includes("png")) return "PNG";
   if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "JPEG";
@@ -65,11 +59,10 @@ const mapFileType = (
   )
     return "XLSX";
 
-  // Fallback to fileType enum
   if (fileType === "GOVERNMENT_ID" || fileType === "CERTIFICATE") return "PDF";
   if (fileType === "PROFILE_PICTURE") return "JPEG";
 
-  return "PDF"; // Default fallback
+  return "PDF";
 };
 
 /**
@@ -190,10 +183,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           action: async (close) => {
             try {
               await deleteFileMutation.mutateAsync(fileId);
-              // Notification usually handled by mutation onSuccess,
-              // but we are using mutateAsync here for cleaner modal closing
             } catch (error) {
-              console.error("Delete error:", error);
+              toast.error("Failed to delete document");
             }
             close(true);
           },
@@ -206,7 +197,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     const doc = documents[id];
     const originalType = doc?.metadata?.originalFileType;
 
-    // Determine the profile file type for the download API
     let profileFileType: ProfileFileType | null = null;
     if (originalType === "GOVERNMENT_ID") profileFileType = "govIdDoc";
     else if (originalType === "CERTIFICATE") profileFileType = "certificateDoc";
@@ -234,7 +224,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       }
     } catch (error) {
       toast.error("Failed to get download URL");
-      console.error("Download error:", error);
     }
   };
 
