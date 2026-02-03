@@ -6,6 +6,7 @@ import {
   appGetLookupData,
   appLogin,
   appResetPassword,
+  putAdminUsersByUserIdStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -17,10 +18,14 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
+  type PutAdminUsersByUserIdStatusData,
+  type PutAdminUsersByUserIdStatusResponses,
+  type PutAdminUsersByUserIdStatusErrors,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
+import type { EngineerStatusType } from "@/pages/admin/engineer/components/PendingRequest";
 
 export const LookupTable = {
   Countries: "countries",
@@ -39,6 +44,15 @@ export const LookupTable = {
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
 
 export type ClientType = "home" | "corporate";
+// Map UI status to backend API status
+// export const UI_TO_API_STATUS = {
+//   approve: "verified",
+//   reject: "rejected",
+//   pending: "pending",
+// } as const;
+
+// export type ApiEngineerStatus =
+//   (typeof UI_TO_API_STATUS)[keyof typeof UI_TO_API_STATUS];
 
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
@@ -203,5 +217,32 @@ export function useAppGetLookupData(
       return response.data;
     },
     ...options,
+  });
+}
+
+export function useUpdateEngineerProfileStatus(options?: {
+  onSuccess?: (data: PutAdminUsersByUserIdStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation<
+    PutAdminUsersByUserIdStatusResponses[200], 
+    PutAdminUsersByUserIdStatusErrors | unknown, 
+    { userId: number; profileStatus: EngineerStatusType; token: string } 
+  >({
+    mutationFn: async ({ userId, profileStatus, token }) => {
+      const response = await putAdminUsersByUserIdStatus({
+        client: apiClient,
+        path: { userId },
+        body: { profileStatus } as unknown as PutAdminUsersByUserIdStatusData["body"],
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        throwOnError: true,
+      });
+
+      return response.data;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
