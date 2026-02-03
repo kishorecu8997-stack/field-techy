@@ -60,7 +60,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   const menuItems: MenuItems[] = [
     { label: "My Profile", icon: FaUser, key: "profile" },
     { label: "My Jobs", icon: FaBriefcase, key: "jobs" },
-    { label: "My Earning", icon: FaWallet, key: "earning" },
+    { label: "My Earnings", icon: FaWallet, key: "earning" },
     { label: "Saved Jobs", icon: FaBookmark, key: "saved" },
     { label: "Settings", icon: FaCog, key: "settings" },
     {
