@@ -11,6 +11,7 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 import { useClientFilesContext } from "../../../context/useClientFilesContext";
 import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
+import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -78,6 +79,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   onEditDocument,
 }) => {
   // Always call hooks (React rules)
+  const { showPopup } = usePopupStore();
   const contextData = useClientFilesContext();
   const { data: clientProfile } = useCurrentClientProfile();
   const clientId = clientProfile?.id || "";
@@ -165,9 +167,26 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       return;
     }
 
-    if (window.confirm("Are you sure you want to delete this document?")) {
-      deleteFileMutation.mutate(fileId);
-    }
+    showPopup({
+      title: "Delete Document",
+      body: "Are you sure you want to delete this document?",
+      actionButtons: [
+        {
+          label: "Cancel",
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: "Delete",
+          value: "delete",
+          variant: "danger",
+          action: async (close) => {
+            deleteFileMutation.mutate(fileId);
+            close(true);
+          },
+        },
+      ],
+    });
   };
 
   if (isLoadingFiles) {
