@@ -90,7 +90,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
             required
             disabled
           />
-          <InputField
+          {/* <InputField
             name="otp"
             label="OTP"
             type="number"
@@ -105,7 +105,7 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
                 message: "OTP must be 6 digits",
               },
             }}
-          />
+          /> */}
           <AuthPasswordSection />
           <div className="pt-6">
             <Button
