@@ -114,7 +114,7 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         if (isEngineer) {
           fetchEngineerProfile(userId);
         } else {
-          fetchClientProfile(userId);
+          fetchClientProfile();
         }
       }
 
