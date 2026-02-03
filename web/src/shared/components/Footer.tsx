@@ -1,6 +1,11 @@
 import { IoMdMail, IoLogoWhatsapp } from "react-icons/io";
 import { MdLocalPhone } from "react-icons/md";
-import { FaFacebook, FaInstagramSquare, FaTwitter, FaLinkedin } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagramSquare,
+  FaTwitter,
+  FaLinkedin,
+} from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import ReportPage from "@/pages/engineer/report";
