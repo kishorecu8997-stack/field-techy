@@ -16,6 +16,7 @@ import type { Job } from "../search_result/types";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
+import { scrollToTop } from "@/utils";
 
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
@@ -84,6 +85,7 @@ const Dashboard: React.FC = () => {
                 <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   <NavLink
                     to={absoluteUrls.client.home.client_Explore_engineers}
+                    onClick={() => scrollToTop()}
                     className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                   >
                     <Button
@@ -110,6 +112,7 @@ const Dashboard: React.FC = () => {
                 <h2 className="text-xl font-bold">In-Progress Jobs</h2>
                 <NavLink
                   to={absoluteUrls.client.home.my_jobs}
+                  onClick={() => scrollToTop()}
                   className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
                 >
                   <Button

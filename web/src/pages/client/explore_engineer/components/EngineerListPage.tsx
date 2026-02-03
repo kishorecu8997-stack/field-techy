@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EngineerCard from "./EngineerCard";
 import { mockEngineers } from "@/dummy_data/engineers";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
@@ -15,6 +15,9 @@ const EngineerListPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Engineer");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
   const itemsPerPage = 8;
 
   // Categories

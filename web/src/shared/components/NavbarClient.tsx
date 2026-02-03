@@ -12,6 +12,7 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import IconWithTheme from "./IconWithTheme";
 import { JobSearchBarClient } from "./jobSearchBarClient";
+import { scrollToTop } from "@/utils";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -96,6 +97,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </span>
 
         <NavLink
+          onClick={scrollToTop}
           to={absoluteUrls.client.home.my_projects}
           className={`${
             location.pathname.startsWith(absoluteUrls.client.home.my_projects)
@@ -106,6 +108,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           My Projects
         </NavLink>
         <NavLink
+          onClick={scrollToTop}
           to={absoluteUrls.client.home.my_jobs}
           className={`${
             location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
@@ -199,6 +202,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
+            scrollToTop();
             navigate(absoluteUrls.client.home.chat);
           }}
         >
