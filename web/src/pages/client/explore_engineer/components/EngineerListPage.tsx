@@ -3,6 +3,7 @@ import EngineerCard from "./EngineerCard";
 import { mockEngineers } from "@/dummy_data/engineers";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import Pagination from "../../search_result/components/Pagination";
+import { scrollToTop } from "@/utils";
 
 /**
  * `EngineerListPage` is a component that displays a paginated list of engineers.
@@ -16,7 +17,7 @@ const EngineerListPage: React.FC = () => {
     useState<string>("All Engineer");
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   }, [currentPage]);
   const itemsPerPage = 8;
 

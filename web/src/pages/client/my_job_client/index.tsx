@@ -4,7 +4,7 @@ import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import jobFilters, { SORT_OPTIONS, type Job } from "../search_result/types";
 import JobCard from "./components/JobCard";
 import { scrollToTop } from "@/utils";
@@ -38,6 +38,9 @@ const MyJobsClient: React.FC = () => {
   }, [activeFilter]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+  useEffect(() => {
+      scrollToTop();
+    }, [currentPage]);
   const itemsPerPage = 8;
 
   const handlePageChange = (page: number) => {
