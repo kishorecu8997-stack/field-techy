@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import {
   validateAddress,
   validateIsPhoneVerified,
@@ -139,9 +140,9 @@ const PersonalInformation = () => {
               } else {
                 setActiveKey("profile");
               }
-            } catch (error: any) {
+            } catch (error: unknown) {
               console.error("Failed to update profile:", error);
-              toast.error("Failed to update profile. Please try again.");
+              toast.error(GlobalApiErrorHandler.handle(error).message);
               close(true);
             }
           },

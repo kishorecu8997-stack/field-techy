@@ -21,10 +21,6 @@ export const ClientResetPassword = React.lazy(
 export const ClientAccountType = React.lazy(
   () => import("@/pages/client/auth/components/AccountType"),
 );
-export const ClientBackgroundVerification = React.lazy(
-  () =>
-    import("@/pages/client/auth/components/profile_setup/BackgroundVerification"),
-);
 export const ClientSetPassword = React.lazy(
   () => import("@/pages/client/auth/components/profile_setup/SetPassword"),
 );

@@ -18,10 +18,6 @@ export const EngineerForgetPassword = React.lazy(
 export const EngineerResetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/ResetPassword"),
 );
-export const EngineerBackgroundVerification = React.lazy(
-  () =>
-    import("@/pages/engineer/auth/components/profile_setup/BackgroundVerification"),
-);
 export const EngineerSetPassword = React.lazy(
   () => import("@/pages/engineer/auth/components/profile_setup/SetPassword"),
 );

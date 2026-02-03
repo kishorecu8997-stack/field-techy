@@ -118,7 +118,6 @@ const DatePickerRender: FC<{
   required,
   triggerField,
 }) => {
-  // const { trigger } = useFormContext();
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
   const [currentMonth, setCurrentMonth] = useState(value || new Date());

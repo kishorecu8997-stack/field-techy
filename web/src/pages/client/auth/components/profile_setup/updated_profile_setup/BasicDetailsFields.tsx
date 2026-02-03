@@ -1,19 +1,16 @@
-import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
+import { businessTypes } from "@/dummy_data/adminClientData";
 import {
   validateAddress,
   validateName,
   validateVatNumber,
   validateZipcode,
 } from "@/pages/client/my_account/Validate";
-import { InputField } from "@/shared/components/commonUI/inputs";
-import SelectField from "@/shared/components/commonUI/inputs/SelectField";
-import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
-import { useFormContext } from "react-hook-form";
-import { FaRegUser } from "react-icons/fa";
-import { TbFileText } from "react-icons/tb";
+import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
 import { useVatOptions } from "@/shared/apiServices/client/clientService";
-import { useEffect } from "react";
-import { businessTypes } from "@/dummy_data/adminClientData";
+import { InputField } from "@/shared/components/commonUI/inputs";
+import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
+import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";
+import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import {
   useCities,
   useCountries,
@@ -21,9 +18,11 @@ import {
   useStates,
   type LookupItem,
 } from "@/shared/hooks/useLookup";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useFormContext } from "react-hook-form";
+import { FaRegUser } from "react-icons/fa";
+import { TbFileText } from "react-icons/tb";
 import { ClientTypeEnum } from "./types";
-import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
 
 /**
  * Email field component with real-time availability validation
@@ -49,12 +48,14 @@ const BasicDetailsFields = () => {
     setValue("city", undefined);
   }, [country, setValue]);
 
+  // Fetch dropdown data from API
   const countriesQuery = useCountries();
   const parentCountryId = country?.value ?? country;
   const statesQuery = useStates(parentCountryId);
   const parentStateId = selectedState?.value ?? selectedState;
   const citiesQuery = useCities(parentStateId);
   const industryQuery = useIndustries();
+  const vatQuery = useVatOptions();
 
   const countries = useMemo(
     () =>
@@ -89,10 +90,11 @@ const BasicDetailsFields = () => {
     [industryQuery.data],
   );
 
+  const vatOptions = vatQuery.data || [];
+
   const statesLoading = statesQuery.isLoading;
   const citiesLoading = citiesQuery.isLoading;
-
-  const { data: vatOptions = [], isLoading: vatLoading } = useVatOptions();
+  const vatLoading = vatQuery.isLoading;
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mx-auto">
       {/* Account Type Selection (if not fixed by URL) */}

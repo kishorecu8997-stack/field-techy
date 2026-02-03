@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import SetPassword from "../SetPassword"; // Resuing existing
 import BasicDetailsFields from "./BasicDetailsFields";
 import type { EngineerBasicDetails } from "./types";
@@ -53,7 +54,6 @@ const BasicDetails = () => {
       city: city || "",
       postalCode: postalCode || "",
       address: address || "",
-
       skills: skills || [],
       portfolioLink: portfolioLink || "",
       serviceCategory: serviceCategory,
@@ -61,7 +61,6 @@ const BasicDetails = () => {
       designation: designation || "",
       company: company || "",
       experienceYears: experienceYears || "",
-
       password: "",
       confirmPassword: "",
     },
@@ -83,8 +82,8 @@ const BasicDetails = () => {
       markStepCompleted(3);
       navigate(absoluteUrls.engineer.auth.verification);
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Registration failed. Please try again.");
+    onError: (error: unknown) => {
+      toast.error(GlobalApiErrorHandler.handle(error).message);
     },
   });
   // Check for existing registration session
@@ -116,7 +115,12 @@ const BasicDetails = () => {
         postalCode: data.postalCode,
         address: data.address,
         skills: (data.skills || []).filter(
-          (s): s is string | number => s !== undefined,
+          (
+            s,
+          ): s is
+            | string
+            | number
+            | { value?: string | number; label?: string } => s !== undefined,
         ),
         portfolioLink: data.portfolioLink,
         serviceCategory: data.serviceCategory ?? "",
@@ -128,17 +132,19 @@ const BasicDetails = () => {
     });
     return () => subscription.unsubscribe();
   }, [formCtx, updateProfileData]);
-
   const handleSubmit = async (data: EngineerBasicDetails) => {
+    type ValWithValue = { value: unknown };
     // Extract IDs from select objects - OpenAPI expects number IDs
-    const getIdValue = (val: any): number | undefined => {
-      if (!val) return undefined;
-      if (typeof val === "object" && "value" in val) return Number(val.value);
+    const getIdValue = (val: unknown): number | undefined => {
+      if (val === null || val === undefined) return undefined;
+      if (typeof val === "object" && val !== null && "value" in val) {
+        const maybeValue = (val as ValWithValue).value;
+        return maybeValue !== undefined ? Number(maybeValue) : undefined;
+      }
       if (typeof val === "number") return val;
       if (typeof val === "string" && !isNaN(Number(val))) return Number(val);
       return undefined;
     };
-
     // Format data to match OpenAPI AppRegisterEngineerData body schema
     const apiData = {
       name: data.fullName,
@@ -152,9 +158,10 @@ const BasicDetails = () => {
       postalCode: data.postalCode,
       skills: Array.isArray(data.skills)
         ? data.skills
-            .map((s: any) =>
-              typeof s === "object" ? Number(s.value) : Number(s),
-            )
+            .map((s: unknown) => {
+              const val = getIdValue(s);
+              return val !== undefined ? val : NaN;
+            })
             .filter((n) => !isNaN(n))
         : [],
       serviceCategoryId: getIdValue(data.serviceCategory),

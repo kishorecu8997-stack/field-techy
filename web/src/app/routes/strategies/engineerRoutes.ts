@@ -66,10 +66,6 @@ export class EngineerRouteStrategy implements RouteStrategy {
             path: urls.engineer.auth.set_password,
             element: withSuspense(Components.EngineerSetPassword),
           },
-          {
-            path: urls.engineer.auth.background_verification,
-            element: withSuspense(Components.EngineerBackgroundVerification),
-          },
         ],
       },
     ];
@@ -136,26 +132,6 @@ export class EngineerRouteStrategy implements RouteStrategy {
           {
             path: urls.engineer.home.privacy_policy,
             element: withSuspense(Components.EngineerPrivacyPolicy),
-          },
-          {
-            path: urls.engineer.video_guidance,
-            element: withSuspense(Components.EngineerVideoGuidance),
-          },
-          {
-            path: urls.engineer.home.terms_and_conditions,
-            element: withSuspense(Components.EngineerTermsAndConditions),
-          },
-          {
-            path: urls.engineer.home.faq,
-            element: withSuspense(Components.EngineerFAQ),
-          },
-          {
-            path: urls.engineer.home.about_app,
-            element: withSuspense(Components.EngineerAboutApp),
-          },
-          {
-            path: urls.engineer.video_guidance,
-            element: withSuspense(Components.EngineerVideoGuidance),
           },
           {
             path: urls.engineer.home.chat,

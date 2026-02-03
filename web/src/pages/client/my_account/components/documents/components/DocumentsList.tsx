@@ -10,7 +10,11 @@ import type { ClientFile } from "@/shared/apiServices/client/clientTypes";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { toast } from "react-toastify";
 import { useClientFilesContext } from "../../../context/useClientFilesContext";
-import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
+import {
+  useAppDownloadProfileFile,
+  getDownloadUrl,
+  type ProfileFileType,
+} from "@/shared/apiServices/commonOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
@@ -25,9 +29,7 @@ export interface Document {
   uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
-  // TODO: Implement expiry date functionality
   expiryDate?: string;
-  // TODO: Implement status functionality (Pending | Approved | Rejected)
   status?: "Pending" | "Approved" | "Rejected";
 }
 
@@ -36,14 +38,10 @@ interface DocumentsListProps {
   onEditDocument?: (id: number) => void;
 }
 
-/**
- * Maps ClientFile fileType to Document fileType
- */
 const mapFileType = (
   fileType: ClientFile["fileType"],
   mimeType: string,
 ): Document["fileType"] => {
-  // Check mime type first for more accurate detection
   if (mimeType.includes("pdf")) return "PDF";
   if (mimeType.includes("png")) return "PNG";
   if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "JPEG";
@@ -61,11 +59,10 @@ const mapFileType = (
   )
     return "XLSX";
 
-  // Fallback to fileType enum
   if (fileType === "GOVERNMENT_ID" || fileType === "CERTIFICATE") return "PDF";
   if (fileType === "PROFILE_PICTURE") return "JPEG";
 
-  return "PDF"; // Default fallback
+  return "PDF";
 };
 
 /**
@@ -79,7 +76,6 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   onEditDocument,
 }) => {
   // Always call hooks (React rules)
-  const { showPopup } = usePopupStore();
   const contextData = useClientFilesContext();
   const { data: clientProfile } = useCurrentClientProfile();
   const clientId = clientProfile?.id || "";
@@ -114,6 +110,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     },
   });
 
+  const { showPopup } = usePopupStore();
+
   const { data: govIdData } = useAppDownloadProfileFile("govIdDoc");
   const { data: certificateData } = useAppDownloadProfileFile("certificateDoc");
 
@@ -139,6 +137,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         clientId: file.clientId,
         mimeType: file.mimeType,
         size: file.size.toString(),
+        originalFileType: file.fileType,
       };
 
       return {
@@ -159,34 +158,73 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     onEditDocument?.(id);
   };
 
-  const handleDelete = (id: number) => {
-    const document = documents[id];
-    const fileId = document?.metadata?.fileId;
+  const handleDelete = async (id: number) => {
+    const doc = documents[id];
+    const fileId = doc?.metadata?.fileId;
     if (!fileId) {
       toast.error("Cannot delete: File ID not found");
       return;
     }
 
-    showPopup({
+    await showPopup({
       title: "Delete Document",
-      body: "Are you sure you want to delete this document?",
+      body: `Are you sure you want to delete ${doc.title}?`,
       actionButtons: [
         {
           label: "Cancel",
-          value: null,
-          variant: "outline",
+          value: "cancel",
+          variant: "secondary",
+          action: (close) => close(true),
         },
         {
           label: "Delete",
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            deleteFileMutation.mutate(fileId);
+            try {
+              await deleteFileMutation.mutateAsync(fileId);
+            } catch  {
+              toast.error("Failed to delete document");
+            }
             close(true);
           },
         },
       ],
     });
+  };
+
+  const handleDownload = async (id: number) => {
+    const doc = documents[id];
+    const originalType = doc?.metadata?.originalFileType;
+
+    let profileFileType: ProfileFileType | null = null;
+    if (originalType === "GOVERNMENT_ID") profileFileType = "govIdDoc";
+    else if (originalType === "CERTIFICATE") profileFileType = "certificateDoc";
+    else if (originalType === "PROFILE_PICTURE")
+      profileFileType = "profilePicture";
+
+    if (!profileFileType) {
+      toast.error("Download failed: Unsupported document type for download");
+      return;
+    }
+
+    try {
+      const data = await getDownloadUrl(profileFileType);
+      if (data?.downloadUrl) {
+        const link = window.document.createElement("a");
+        link.href = data.downloadUrl;
+        link.target = "_blank";
+        link.setAttribute("download", doc?.fileName || "download");
+        window.document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success("Download started");
+      } else {
+        throw new Error("No download URL returned");
+      }
+    } catch  {
+      toast.error("Failed to get download URL");
+    }
   };
 
   if (isLoadingFiles) {
@@ -221,6 +259,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
               document={doc}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onDownload={handleDownload}
               id={doc.id}
             />
           ))}
