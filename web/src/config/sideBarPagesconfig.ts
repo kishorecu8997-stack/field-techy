@@ -293,7 +293,7 @@ export const sectionConfig: Record<
   jobs: { component: () => "job", title: "My Jobs" },
   earning: {
     component: MyEarning,
-    title: "My Earning",
+    title: "My Earnings",
     parent: "myAccount",
   },
   saved: { component: () => "test", title: "Saved Jobs" },
@@ -328,7 +328,7 @@ export const sectionConfig: Record<
     title: "Notification",
     parent: "settings",
   },
-  myEarning: { component: MyEarning, title: "My Earning" },
+  myEarning: { component: MyEarning, title: "My Earnings" },
   withdraw: { component: Withdraw, title: "Withdraw", parent: "myEarning" },
   notification: {
     component: NotificationPage,

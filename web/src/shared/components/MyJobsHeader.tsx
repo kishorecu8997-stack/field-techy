@@ -24,6 +24,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
   isShowButton = false,
   buttonText,
   onClick,
+  customLabels: propCustomLabels,
 }) => {
   const [isShowReport, setIsShowReport] = React.useState(false);
   const location = useLocation();
@@ -69,6 +70,7 @@ const MyJobsHeader: React.FC<MyJobsHeaderProps> = ({
                       "in-progress": "In Progress",
                       "application-history": "Application History",
                       home: "Home",
+                      ...propCustomLabels,
                     }}
                   />
                 )}

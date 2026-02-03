@@ -83,3 +83,23 @@ export interface Client {
 
   password: string | null;
 }
+
+/**
+ * Form values for proposal submission
+ * @interface ProposalFormValues
+ * @property {string} description - The proposal description text
+ * @property {FileList | null} attachment - Optional PDF file attachment
+ */
+export interface ProposalFormValues {
+  description: string;
+  attachment: FileList | null;
+}
+
+/**
+ * Props for NewSendProposal component
+ * @interface NewSendProposalProps
+ * @property {() => void} [onCancel] - Optional callback function when proposal submission is cancelled
+ */
+export interface NewSendProposalProps {
+  onCancel?: () => void;
+}

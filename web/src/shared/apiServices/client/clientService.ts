@@ -25,7 +25,7 @@ export const CLIENT_QUERY_KEYS = {
 
 export function useClientSignup(options?: {
   onSuccess?: (data: ClientData) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (data: ClientData) => ClientAdapter.signup(data),
@@ -41,8 +41,8 @@ export function useClientSignup(options?: {
 // useRegisterClient moved to clientOpenApiService.ts
 
 export function useClientSignin(options?: {
-  onSuccess?: (data: any) => void;
-  onError?: (error: any) => void;
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (data: LoginFormData) => ClientAdapter.signin(data),
@@ -53,7 +53,7 @@ export function useClientSignin(options?: {
 
 export function useClientUpdate(options?: {
   onSuccess?: (data: ClientData) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -74,7 +74,7 @@ export function useClientUpdate(options?: {
 
 export function useClientDelete(options?: {
   onSuccess?: () => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -114,7 +114,7 @@ export function useClientGetAll(
 
 export function useSendEmailOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (email: string) => ClientAdapter.sendEmailOTP(email),
@@ -125,7 +125,7 @@ export function useSendEmailOTP(options?: {
 
 export function useSendPhoneOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (phoneNumber: string) =>
@@ -137,7 +137,7 @@ export function useSendPhoneOTP(options?: {
 
 export function useVerifyOtp(options?: {
   onSuccess?: (data: { message: string; verified: boolean }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: ({
@@ -154,7 +154,7 @@ export function useVerifyOtp(options?: {
 
 export function useVerifyPhoneOTP(options?: {
   onSuccess?: (data: { message: string; verified: boolean }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: ({ phoneNumber, otp }: { phoneNumber: string; otp: string }) =>

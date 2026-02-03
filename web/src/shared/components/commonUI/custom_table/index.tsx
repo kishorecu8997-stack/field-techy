@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
@@ -143,7 +142,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row)
-                                : (row as any)[col.key]}
+                                : ((row as Record<string, unknown>)[
+                                    col.key as string
+                                  ] as React.ReactNode)}
                             </td>
                           ))}
                         </tr>
@@ -180,7 +181,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row)
-                                : (row as any)[col.key]}
+                                : ((row as Record<string, unknown>)[
+                                    col.key as string
+                                  ] as React.ReactNode)}
                             </div>
                           ) : (
                             <div
@@ -193,7 +196,9 @@ export function CustomTable<T>({
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
                                   ? col.renderCell(row)
-                                  : (row as any)[col.key]}
+                                  : ((row as Record<string, unknown>)[
+                                      col.key as string
+                                    ] as React.ReactNode)}
                               </span>
                             </div>
                           );

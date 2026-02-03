@@ -30,7 +30,6 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
   const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
-
   useEffect(() => {
     if (clientInfo && !companyInfo) {
       setCompanyInfo(clientInfo);
@@ -41,7 +40,6 @@ const Dashboard: React.FC = () => {
     () => sampleJobs.filter((job) => job.status === "inprogress"),
     [],
   );
-
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();

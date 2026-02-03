@@ -5,6 +5,7 @@ import {
   IoCalendarOutline,
   IoConstructOutline,
 } from "react-icons/io5";
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import {
   WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
@@ -12,6 +13,7 @@ import {
 } from "../../search_result/types";
 import { Link } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import LocationDisplay from "./LocationDisplay";
 
 interface JobCardProps {
   job: Job;
@@ -62,11 +64,11 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
     }
   };
 
-  const getWorkModeColor = (_: string) => {
+  const getWorkModeColor = () => {
     return "bg-indigo-600 text-white"; // both use same style per your code
   };
-
   const isOnsite = type === WORKING_TYPES.onsite;
+  const isDummyNetworkEngineer = isDummyNetworkEngineerJob(id);
 
   return (
     <Link
@@ -78,9 +80,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           {title}
         </h3>
         <span
-          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor(
-            type,
-          )}`}
+          className={`px-3 py-1 rounded-md text-xs font-medium ${getWorkModeColor()}`}
         >
           {isOnsite
             ? WORKING_TYPES_PROPERTY.onsite
@@ -103,13 +103,21 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          {location}
+          <LocationDisplay
+            countryId={job.countryId}
+            stateId={job.stateId}
+            cityId={job.cityId}
+            workLocationName={job.workLocationName}
+            fallback={location}
+          />
         </div>
 
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <IoCalendarOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          {duration}
-        </div>
+        {!isDummyNetworkEngineer && (
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <IoCalendarOutline className="w-4 h-4 mr-2 flex-shrink-0" />
+            {duration}
+          </div>
+        )}
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoConstructOutline className="w-4 h-4 mr-2 flex-shrink-0" />

@@ -19,6 +19,7 @@ import { CiLocationOn } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { TbFileText } from "react-icons/tb";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import {
   validateAddress,
   validateIsPhoneVerified,
@@ -47,8 +48,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
       toast.success("Profile Updated Successfully");
       onMenuItemClick("clientAccount");
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Failed to update profile");
+    onError: (error: unknown) => {
+      toast.error(GlobalApiErrorHandler.handle(error).message);
     },
   });
 

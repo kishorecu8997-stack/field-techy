@@ -59,6 +59,12 @@ export interface Job {
   engineers?: string;
   engineerAvatars?: string[];
   serviceType?: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  workLocationName?: string | null;
+  numberOfVacancy?: number;
+  numberOfApplicants?: number;
 }
 
 /**
