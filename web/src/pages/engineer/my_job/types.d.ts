@@ -38,6 +38,7 @@ export interface MyJobsHeaderProps {
   isShowButton?: boolean;
   buttonText?: string;
   onClick?: () => void;
+  customLabels?: Record<string, string>;
 }
 
 /**
@@ -98,6 +99,11 @@ export interface JobHeaderCardProps {
     | "started"
     | "checked-in"
     | undefined;
+  hideBreakDetails?: boolean;
+  jobLocation?: string;
+  numberOfVacancy?: number;
+  numberOfApplicants?: number;
+  hideDurationAndClient?: boolean;
 }
 
 export interface JobTabsProps {
@@ -208,4 +214,24 @@ export interface WorkSubmissionComponentProps {
 export interface WorkInfoItem {
   label: string;
   value: string;
+}
+
+/**
+ * Form data structure for proposal submission
+ * @interface ProposalFormData
+ * @property {string} proposalDescription - The proposal description/message
+ * @property {FileList | null} attachments - Optional file attachments (PDF)
+ */
+export interface ProposalFormData {
+  proposalDescription: string;
+  attachments: FileList | null;
+}
+
+/**
+ * Props for the ProposalInfoTab component
+ * @interface ProposalInfoTabProps
+ * @property {ProposalFormData} submittedProposal - The submitted proposal data to display
+ */
+export interface ProposalInfoTabProps {
+  submittedProposal: ProposalFormData;
 }

@@ -22,14 +22,7 @@ import type { ResetPasswordFormData } from "./types";
  */
 
 const ResetPassword = () => {
-  /**
-   * React Router navigation function.
-   */
   const navigate = useNavigate();
-
-  /**
-   * React Hook Form methods for managing form state and validation.
-   */
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
       password: "",
@@ -37,10 +30,6 @@ const ResetPassword = () => {
     },
   });
 
-  /**
-   * Handles form submission. Navigates to the login page after successful password reset.
-   * @returns {void}
-   */
   const handleSubmit = () => {
     navigate(absoluteUrls.admin.auth.login);
   };
