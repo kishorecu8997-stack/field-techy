@@ -183,7 +183,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           action: async (close) => {
             try {
               await deleteFileMutation.mutateAsync(fileId);
-            } catch (error) {
+            } catch {
               toast.error("Failed to delete document");
             }
             close(true);
