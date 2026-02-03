@@ -1,4 +1,5 @@
 ﻿import { absoluteUrls } from "@/config/urls";
+import type { ClientPostJobData } from "@/api";
 import { useLookupData } from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { useEffect, useMemo } from "react";
@@ -39,7 +40,7 @@ const PostAJobFields = ({
   const { data: toolsData } = useLookupData("tools");
   const { data: statesData } = useLookupData("states", selectedCountry);
   const { data: citiesData } = useLookupData("cities", selectedState);
-  const { data: workLocationsData } = useLookupData("workLocations");
+
 
   const countryOptions = useMemo(
     () =>
@@ -59,12 +60,14 @@ const PostAJobFields = ({
     [citiesData],
   );
 
-  const locationTypeOptions = useMemo(
-    () =>
-      workLocationsData?.map((w) => ({ label: w.name, value: String(w.id) })) ||
-      [],
-    [workLocationsData],
-  );
+  const locationTypeOptions: {
+    label: string;
+    value: NonNullable<ClientPostJobData["body"]>["jobType"];
+  }[] = [
+      { label: "On site", value: "On site" },
+      { label: "Remote", value: "Remote" },
+      { label: "Hybrid", value: "Hybrid" },
+    ];
 
   const serviceCategoryOptions = useMemo(
     () =>
