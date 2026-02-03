@@ -16,13 +16,31 @@ interface UserSessionStore {
   logout: () => void;
 }
 
+interface ForgotSessionStore {
+  token: { token: string | null };
+  setToken: (token: { token: string | null }) => void;
+}
+
 export const useUserSessionStore = create<UserSessionStore>()(
   persist(
     (set) => ({
       session: null,
       setSession: (session) => set({ session }),
-      logout: () => set({ session: null }),
+      logout: () => {
+        set({ session: null });
+        localStorage.clear();
+      },
     }),
     { name: "generic-user-session" },
+  ),
+);
+
+export const forgotSession = create<ForgotSessionStore>()(
+  persist(
+    (set) => ({
+      token: { token: null },
+      setToken: (token) => set({ token }),
+    }),
+    { name: "forgot-user-session" },
   ),
 );

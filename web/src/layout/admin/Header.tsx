@@ -5,11 +5,15 @@ import { FaRegBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { notifications, type NavbarProps } from "./types";
 import { absoluteUrls } from "@/config/urls";
-import { countries } from "@/dummy_data/adminDashboard";
 import NotificationDropdown from "@/shared/components/NotitficationPopover";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useAdminFileStream } from "@/shared/apiServices/admin/adminService";
-import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
+import {
+  LookupTable,
+  useAppGetLookupData,
+  useGetAdminPersonalInfo,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Header
@@ -32,28 +36,24 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const token = useUserSessionStore((state) => state.session?.accessToken);
 
-  const { adminProfile } = useAdminProfileStore();
-  const [adminProfilePic, setAdminProfilePic] = useState<string>("");
+  //New API
+  const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
+  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
 
-  // File stream for profile picture
-  const { data: adminProfileStream } = useAdminFileStream(
-    adminProfile?.profilePicture,
-  );
+  /* ---------- File Download (Profile Pic) ---------- */
+  const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
+
+  // Create object URL when blob is received
+  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
 
   useEffect(() => {
-    if (!adminProfileStream?.blob) {
-      setAdminProfilePic(assetsConfig.images.profile.defaultProfileImage);
-      return;
+    if (downloadData && "downloadUrl" in downloadData) {
+      const url = downloadData.downloadUrl;
+      setProfilePicUrl(url);
     }
-
-    const url = URL.createObjectURL(adminProfileStream.blob);
-    setAdminProfilePic(url);
-
-    return () => {
-      URL.revokeObjectURL(url);
-    };
-  }, [adminProfileStream]);
+  }, [downloadData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -101,7 +101,12 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
         <SelectMenu
           placeholder="Select Region"
           className="w-36"
-          options={countries}
+          options={
+            adminLookupData?.map((item) => ({
+              value: item.name ?? "",
+              label: item.name ?? "",
+            })) ?? []
+          }
           value={region}
           onChange={setRegion}
         />
@@ -118,23 +123,25 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
-                {adminProfile?.profilePicture && adminProfilePic ? (
+                {profilePicUrl ? (
                   <img
-                    src={adminProfilePic}
+                    src={profilePicUrl}
                     alt="profile"
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  (adminProfile?.email?.charAt(0) || "A").toLocaleUpperCase()
+                  (
+                    adminPersonalInfo?.name?.charAt(0) || "A"
+                  ).toLocaleUpperCase()
                 )}
               </span>
             </div>
 
             <div className="hidden sm:block">
               <div className="font-semibold text-md">
-                {adminProfile?.fullName
-                  ? adminProfile.fullName
-                  : adminProfile?.email?.split("@")[0]}
+                {adminPersonalInfo?.name
+                  ? adminPersonalInfo.name
+                  : adminPersonalInfo?.email?.split("@")[0]}
               </div>
             </div>
           </div>

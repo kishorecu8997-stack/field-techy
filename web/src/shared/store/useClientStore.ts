@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 import type { ClientData } from "../apiServices/client/clientTypes";
-import { ClientAdapter } from "../apiServices/client/clientAdapter";
+import { getClientCompanyInfo } from "../apiServices/client/clientOpenApiService";
 import { useUserSessionStore } from "./useUserSessionStore";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
@@ -12,7 +12,7 @@ interface ClientStore {
   profileFetched: boolean; // Add this
   setClientProfile: (profile: ClientData | null) => void;
   clearClientProfile: () => void;
-  fetchClientProfile: (id: string) => Promise<void>;
+  fetchClientProfile: () => Promise<void>;
   setProfileImageUrl: (url: string | null) => void;
 }
 
@@ -34,20 +34,45 @@ export const useClientStore = create<ClientStore>((set, get) => ({
       URL.revokeObjectURL(currentUrl);
     set({ clientProfile: null, profileImageUrl: null, profileFetched: false });
   },
-  fetchClientProfile: async (id: string) => {
+  fetchClientProfile: async () => {
     if (get().loading) return;
     set({ loading: true });
     try {
-      // Fetch profile and files in parallel
-      const [profile, profilePicData] = await Promise.all([
-        ClientAdapter.getById(id),
-        getDownloadUrl("profilePicture").catch(() => null),
-      ]);
+      const profile = await getClientCompanyInfo();
+      if (!profile) throw new Error("Profile data not found");
+
+      let profilePicUrl = profile.profilePictureUrl;
+      if (!profilePicUrl?.startsWith("http")) {
+        try {
+          const picData = await getDownloadUrl("profilePicture");
+          profilePicUrl = picData?.downloadUrl ?? profilePicUrl;
+        } catch (e) {
+          console.error("Failed to fetch profile picture URL", e);
+        }
+      }
+
+      const mappedProfile: ClientData = {
+        id: String(profile.id),
+        email: profile.email,
+        phoneNumber: profile.phoneNumber,
+        clientType: profile.clientType?.toUpperCase() ?? "CLIENT",
+        contactPersonName:
+          profile.clientType === "corporate"
+            ? (profile.personName ?? profile.name)
+            : profile.name,
+        companyName:
+          profile.clientType === "corporate"
+            ? (profile.companyName ?? profile.name)
+            : profile.name,
+        address:
+          profile.clientType === "corporate" ? profile.address : undefined,
+        profilePicture: profilePicUrl ?? null,
+      };
 
       set({
-        clientProfile: profile,
+        clientProfile: mappedProfile,
         profileFetched: true,
-        profileImageUrl: profilePicData?.downloadUrl || null,
+        profileImageUrl: profilePicUrl ?? null,
       });
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
@@ -71,13 +96,29 @@ export const useClientProfile = () => {
 
   useEffect(() => {
     const userId = session?.userId;
+    const role = session?.role;
+
     // Verify user role is CLIENT to avoid incorrect fetches
-    if (userId && session?.role === "CLIENT") {
+    if (userId && (role === "CLIENT" || role === "client")) {
       if (!profileFetched && !loading) {
-        fetchProfile(userId);
+        fetchProfile();
       }
     }
   }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
+};
+
+/**
+ * Custom hook to get the derived display name for the client.
+ * Handles fallback and corporate vs home client logic.
+ */
+export const useClientDisplayName = () => {
+  const profile = useClientProfile();
+  if (!profile) return "Guest";
+
+  if (profile.clientType === "CORPORATE") {
+    return profile.companyName || profile.contactPersonName || "Client";
+  }
+  return profile.contactPersonName || "Client";
 };

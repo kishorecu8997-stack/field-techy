@@ -52,6 +52,7 @@ const BasicDocuments = () => {
     },
   });
 
+
   const handleSkip = () => {
     showPopup({
       title: "Skip Document Upload?",
@@ -98,7 +99,6 @@ const BasicDocuments = () => {
         }),
       );
     }
-
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
       uploads.push(
@@ -108,7 +108,6 @@ const BasicDocuments = () => {
         }),
       );
     }
-
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
       uploads.push(

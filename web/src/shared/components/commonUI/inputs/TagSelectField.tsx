@@ -42,7 +42,7 @@ export const TagSelectField = ({
   leftIcon,
   containerClassName = "flex flex-col py-1",
   inputClassName = "w-full rounded-md border text-base py-3 pl-5 pr-10 flex items-center justify-start text-left bg-white dark:bg-gray-800 transition",
-  maxTags = 10,
+  maxTags = 20,
   options = [],
   disabled = false,
 }: TagSelectFieldProps) => {
@@ -66,30 +66,6 @@ export const TagSelectField = ({
     } else {
       setPosition("bottom");
     }
-  };
-
-  const handleToggleTag = (
-    tagValue: string,
-    onChange: (value: string[]) => void,
-    currentValues: string[],
-  ) => {
-    const stringTagValue = String(tagValue);
-    const existingValues = currentValues.map(String);
-
-    if (existingValues.includes(stringTagValue)) {
-      // Remove it if clicked again (toggle behavior)
-      const newValue = existingValues.filter((v) => v !== stringTagValue);
-      onChange(newValue);
-      return;
-    }
-
-    if (existingValues.length >= maxTags) {
-      toast.error(`You can select up to ${maxTags} tags only.`);
-      return;
-    }
-
-    const newValue = [...existingValues, stringTagValue];
-    onChange(newValue);
   };
 
   const removeTag = (
@@ -119,15 +95,24 @@ export const TagSelectField = ({
         render={({ field, fieldState: { error } }) => {
           const { onChange, value = [] } = field;
           const currentValues = Array.isArray(value) ? value : [];
+          const selectedOptions = options.filter((opt) =>
+            currentValues.map(String).includes(String(opt.value)),
+          );
 
           return (
             <>
               <Listbox
-                value={null} // We handle selection manually to support tagging
-                onChange={(val: any) =>
-                  handleToggleTag(val.value, onChange, currentValues)
-                }
+                value={selectedOptions} // We handle selection manually to support tagging
+                onChange={(vals: TagOption[]) => {
+                  const newValues = vals.map((v) => String(v.value));
+                  if (newValues.length > maxTags) {
+                    toast.error(`You can select up to ${maxTags} tags only.`);
+                    return;
+                  }
+                  onChange(newValues);
+                }}
                 disabled={disabled}
+                multiple
               >
                 {({ open }) => {
                   if (open) {

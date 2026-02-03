@@ -14,8 +14,12 @@ export type currentLocationType =
 type PostAJobStoreStore = {
   isPostAJobOpen: boolean;
   currentLocation: currentLocationType | null;
+  rate: string;
+  currencyId: number;
   setCurrentLocation: (location: currentLocationType) => void;
   setIsPostAJobOpen: (isOpen: boolean) => void;
+  setRateAndCurrency: (rate: string, currencyId: number) => void;
+  clearRateAndCurrency: () => void;
 };
 
 const usePostAJobStore = create<PostAJobStoreStore>()(
@@ -23,9 +27,14 @@ const usePostAJobStore = create<PostAJobStoreStore>()(
     (set) => ({
       isPostAJobOpen: false,
       currentLocation: null,
+      rate: "",
+      currencyId: 0,
       setCurrentLocation: (location: currentLocationType) =>
         set({ currentLocation: location }),
       setIsPostAJobOpen: (isOpen: boolean) => set({ isPostAJobOpen: isOpen }),
+      setRateAndCurrency: (rate: string, currencyId: number) =>
+        set({ rate, currencyId }),
+      clearRateAndCurrency: () => set({ rate: "", currencyId: 0 }),
     }),
     {
       name: "post-a-job-store",

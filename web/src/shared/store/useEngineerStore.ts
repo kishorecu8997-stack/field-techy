@@ -87,10 +87,10 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
         serviceCategory: workPref.serviceCategoryId,
         rate: workPref.hourlyRate,
         portfolioLink: workPref.portfolioLink,
-        jobSkills: skillsTools.skills.map((s: any) => s.name),
-        tools: skillsTools.tools.map((t: any) => t.name),
+        jobSkills: skillsTools.skills.map((s: { name: string }) => s.name),
+        tools: skillsTools.tools.map((t: { name: string }) => t.name),
         preferredWorkType: workPref.employmentTypeId?.toString(),
-        educations: educationList.map((edu: any) => ({
+        educations: educationList.map((edu) => ({
           id: edu.id.toString(),
           educationLevel: edu.level.toString(),
           course: edu.course,
@@ -98,7 +98,7 @@ export const useEngineerStore = create<EngineerStore>((set, get) => ({
           majorSubject: edu.majorSubject,
           passingYear: edu.passingYear,
         })),
-        experiences: experienceList.map((exp: any) => ({
+        experiences: experienceList.map((exp) => ({
           id: exp.id.toString(),
           designation: exp.designation || "",
           employer: exp.employer || "",
@@ -137,10 +137,15 @@ export const useEngineerProfile = () => {
 
   useEffect(() => {
     const userId = session?.userId;
-    if (userId && !profileFetched && !loading) {
+    if (
+      userId &&
+      session?.role?.toUpperCase() === "ENGINEER" &&
+      !profileFetched &&
+      !loading
+    ) {
       fetchProfile(userId);
     }
-  }, [session?.userId, profileFetched, loading, fetchProfile]);
+  }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
 };

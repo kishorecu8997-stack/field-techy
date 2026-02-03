@@ -9,8 +9,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useAdminChangePasswordMutation } from "@/shared/apiServices/admin/adminService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useAppChangePassword } from "@/shared/apiServices/admin/adminOpenApiService";
+import { AxiosError } from "axios";
 
 /**
  * ChangePassword component renders a form for users to change their password.
@@ -23,7 +24,6 @@ export default function ChangePassword() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const logout = useUserSessionStore((s) => s.logout);
-  const adminChangePasswordMutation = useAdminChangePasswordMutation();
   const session = useUserSessionStore((s) => s.session);
 
   const methods = useForm<ChangePasswordFormData>({
@@ -36,6 +36,26 @@ export default function ChangePassword() {
 
   const watch = methods.watch;
   const currentPassword = watch("currentPassword");
+
+  const {
+    mutateAsync: adminChangePasswordMutation,
+    isPending: isChangingPassword,
+  } = useAppChangePassword({
+    onSuccess: () => {
+      toast.success("Password changed successfully");
+      logout();
+      navigate(absoluteUrls.admin.auth.login);
+    },
+    onError: (error) => {
+      console.error(error);
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return;
+      }
+      const errorMessage =
+        error instanceof Error ? error.message : "Change Password failed";
+      toast.error(errorMessage);
+    },
+  });
 
   const handleSubmit = async (data: ChangePasswordFormData) => {
     await showPopup({
@@ -52,26 +72,15 @@ export default function ChangePassword() {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            await adminChangePasswordMutation.mutateAsync(
-              {
-                phoneOrEmail: session?.email || "",
-                oldPassword: data.currentPassword,
+            if (isChangingPassword) return;
+            await adminChangePasswordMutation({
+              body: {
+                oldPassword: currentPassword,
                 newPassword: data.password,
               },
-              {
-                onSuccess: () => {
-                  close(true);
-                  toast.success("Password Changed Successfully!");
-                  logout();
-                  navigate(absoluteUrls.admin.auth.login);
-                },
-                onError: (error: unknown) => {
-                  toast.error(
-                    (error as Error)?.message || "Password change failed",
-                  );
-                },
-              },
-            );
+              token: session?.accessToken || "",
+            });
+            close(true);
           },
         },
       ],
@@ -122,6 +131,8 @@ export default function ChangePassword() {
         <div className="flex justify-end mt-2">
           <Button
             type="submit"
+            loading={isChangingPassword}
+            disabled={isChangingPassword}
             className="w-fit bg-gradient-to-r bg-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
             Save

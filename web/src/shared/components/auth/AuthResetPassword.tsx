@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { useResetPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import { type AppResetPasswordError } from "@/api";
 import AuthPasswordSection from "./AuthPasswordSection";
 
 export type ResetPasswordFormData = {
@@ -44,8 +45,8 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
           : absoluteUrls.engineer.auth.login;
       navigate(loginUrl);
     },
-    onError: (err: any) => {
-      toastError(err?.body?.error || "Failed to reset password");
+    onError: (err: AppResetPasswordError) => {
+      toastError(err?.error || "Failed to reset password");
     },
   });
 

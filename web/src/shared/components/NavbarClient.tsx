@@ -1,10 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import {
-  useClientProfile,
-  useClientStore,
-} from "@/shared/store/useClientStore";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaBars, FaBell, FaComment } from "react-icons/fa";
 import { TbAlignLeft } from "react-icons/tb";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -12,6 +8,11 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import IconWithTheme from "./IconWithTheme";
 import { JobSearchBarClient } from "./jobSearchBarClient";
+import {
+  useClientStore,
+  useClientProfile,
+  useClientDisplayName,
+} from "@/shared/store/useClientStore";
 
 interface NavbarClientProps {
   onDrawerToggle: () => void;
@@ -47,8 +48,8 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
 
   const { profileImageUrl, loading: isLoadingProfile } = useClientStore();
 
-  // Use custom hook to ensure profile is fetched
-  const clientProfile = useClientProfile();
+  // Ensure profile is fetched when component mounts
+  useClientProfile();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -70,19 +71,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Get display name from client profile
-  const displayName = useMemo(() => {
-    if (!clientProfile) return "Guest";
-
-    // For corporate clients, prefer company name, fallback to contact person name
-    // For home clients, use contact person name
-    if (clientProfile.clientType === "CORPORATE") {
-      return (
-        clientProfile.companyName || clientProfile.contactPersonName || "Client"
-      );
-    }
-    return clientProfile.contactPersonName || "Client";
-  }, [clientProfile]);
+  const displayName = useClientDisplayName();
 
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
@@ -237,7 +226,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           ) : (
             <img
               src={profileImageUrl || assetsConfig.images.users.user}
-              alt={clientProfile?.contactPersonName || "User"}
+              alt={displayName}
               className="h-8 w-8 rounded-full bg-white object-cover"
               onError={(e) => {
                 // Fallback to default image if profile picture fails to load
