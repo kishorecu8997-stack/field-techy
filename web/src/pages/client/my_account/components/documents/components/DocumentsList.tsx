@@ -183,7 +183,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           action: async (close) => {
             try {
               await deleteFileMutation.mutateAsync(fileId);
-            } catch {
+            } catch  {
               toast.error("Failed to delete document");
             }
             close(true);
@@ -222,7 +222,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
       } else {
         throw new Error("No download URL returned");
       }
-    } catch (error) {
+    } catch  {
       toast.error("Failed to get download URL");
     }
   };
