@@ -8,6 +8,10 @@ phases:
       - echo Installing dependencies...
       - cd web
       - npm ci
+  pre_build:
+    commands:
+      - echo Generating API client...
+      - npm run openapi:client
   build:
     commands:
       - echo Build started on `date`
