@@ -1,14 +1,51 @@
 export interface ManageClientProps {
-  id: number;
-  clientID: string;
-  details: string;
-  documents: string;
-  location: string;
-  registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  approvalStatus: string;
-  requiredType: string;
+      id: number;
+    userId: number;
+    clientType: string;
+    companyName: string;
+    personName: string;
+    address: string;
+    countryId: number;
+    stateId: number;
+    cityId: number;
+    postalCode: string;
+    industryId: number;
+    documentType: string;
+    documentNumber: string;
+    profilePictureId: number | null;
+    govIdDocId: number | null;
+    certificateDocId: number | null;
+    profileStatus: string;
+    user: {
+      id: number;
+      name: string;
+      email: string;
+      phone_number: string;
+      status: string;
+      user_role: string;
+      email_verified: boolean;
+      phone_verified: boolean;
+      updated_at: string;
+      created_at: string;
+    };
+    city: {
+      id: number;
+      name: string;
+      state_id: number;
+    };
+    country: {
+      id: number;
+      name: string;
+    };
+    balance: number;
+    statusHistory: any[];
+    clientCode: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    location: string;
+    registrationDate: string;
+    userStatus: string;
 }
 
 export interface walletViewData {

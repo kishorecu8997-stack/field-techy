@@ -41,8 +41,6 @@ export const LookupTable = {
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
 export type ClientType = "home" | "corporate";
 
-export type ClientType = "home" | "corporate";
-
 const apiClient = createClient({
   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
 });

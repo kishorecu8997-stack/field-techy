@@ -7,7 +7,7 @@ export interface Column<T> {
   label: string | React.ReactNode;
   align?: "left" | "center" | "right";
   dataCellAlign?: "left" | "center" | "right";
-  renderCell?: (row: T) => React.ReactNode;
+  renderCell?: (row: T, index: number) => React.ReactNode;
 }
 
 export interface CustomTableProps<T> {
@@ -142,7 +142,7 @@ export function CustomTable<T>({
                               )} text-gray-800 dark:text-gray-100`}
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
+                                ? col.renderCell(row, i)
                                 : (row as any)[col.key]}
                             </td>
                           ))}
@@ -179,7 +179,7 @@ export function CustomTable<T>({
                               className="flex justify-end"
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
+                                ? col.renderCell(row, i)
                                 : (row as any)[col.key]}
                             </div>
                           ) : (
@@ -192,7 +192,7 @@ export function CustomTable<T>({
                               </span>
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
-                                  ? col.renderCell(row)
+                                  ? col.renderCell(row, i)
                                   : (row as any)[col.key]}
                               </span>
                             </div>

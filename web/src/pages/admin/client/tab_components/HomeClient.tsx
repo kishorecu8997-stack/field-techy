@@ -1,4 +1,3 @@
-import { manageClient } from "@/dummy_data/admin/manageClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
@@ -18,6 +17,8 @@ import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { toast } from "react-toastify";
 import { useAdminManageClients } from "@/shared/apiServices/admin/adminOpenApiService";
+import dayjs from "dayjs";
+
 /**
  * HomeClient Component
  *
@@ -36,8 +37,12 @@ const HomeClient: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
-  const { data: manageClient } = useAdminManageClients({clientType: "home"});
-  console.log("val home...", manageClient?.data)
+  
+  const { data: manageClient } = useAdminManageClients({
+    clientType: "home"
+  });
+
+  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
 
   // const filteredData = manageClient.filter((e) => {
   //   const query = search.toLowerCase();
@@ -77,15 +82,15 @@ const HomeClient: React.FC = () => {
   };
 
   const columns: Column<ManageClientProps>[] = [
-    { key: "id", label: "Sr.No." },
+    { key: "", label: "Sr.No.", renderCell: (row: ManageClientProps, index: number) => index + 1 },
     {
-      key: "clientID",
+      key: "clientCode",
       label: "Client ID",
       renderCell: (row: ManageClientProps) => {
-        const name = row.clientID || "N/A";
+        const name = row.clientCode || "N/A";
         return (
           <span className="flex-nowrap text-nowrap">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
+            {name.toUpperCase()}
           </span>
         );
       },
@@ -94,57 +99,81 @@ const HomeClient: React.FC = () => {
       key: "details",
       label: "Details",
       renderCell: (row: ManageClientProps) => {
-        const name = row.details || "N/A";
         return (
-          <span className="flex w-[200px]">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </span>
+          <div className="flex gap-2 items-center w-[200px]">
+             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0">
+              {(row.name || "C").charAt(0).toUpperCase()}
+            </div>
+            <div className="flex flex-col overflow-hidden">
+               <span className="font-medium text-gray-900 dark:text-gray-100 truncate" title={row.name}>
+                {row.name}
+              </span>
+              <span className="text-xs text-gray-500 truncate" title={row.email}>
+                {row.email}
+              </span>
+              <span className="text-xs text-gray-500">
+                {row.phoneNumber}
+              </span>
+            </div>
+          </div>
         );
       },
     },
     {
       key: "location",
       label: "Location",
+      renderCell: (row: ManageClientProps) => row.location || "N/A",
     },
     {
       key: "registrationDate",
       label: "Registration Date",
+      renderCell: (row: ManageClientProps) => 
+        row.registrationDate ? dayjs(row.registrationDate).format("DD/MM/YYYY") : "N/A",
     },
     {
       key: "documents",
       label: "View Documents",
       renderCell: (row: ManageClientProps) => {
-        const name = row.documents || "N/A";
         return (
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white"
             onClick={() => setIsOpen(true)}
           >
-            {name}
+            View Doc
           </Button>
         );
       },
     },
     {
-      key: "walletBalance",
+      key: "balance",
       label: "Wallet Balance",
+      renderCell: (row: ManageClientProps) => `₹${row.balance || 0}`,
     },
     {
-      key: "kycStatus",
+      key: "profileStatus",
       label: "KYC Status",
+      renderCell: (row: ManageClientProps) => (
+        <span className={`capitalize ${
+          row.profileStatus === 'approved' ? 'text-green-600' : 
+          row.profileStatus === 'pending' ? 'text-yellow-600' : 'text-red-600'
+        }`}>
+          {row.profileStatus || "N/A"}
+        </span>
+      ),
     },
     {
-      key: "requiredType",
+      key: "clientType",
       label: "Required Type",
+      renderCell: (row: ManageClientProps) => <span className="capitalize">{row.clientType}</span>,
     },
     {
-      key: "approvalStatus",
+      key: "userStatus",
       label: "Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
             placeholder="Select"
-            value={rowStatuses[row.id] ?? row.approvalStatus ?? ""}
+            value={rowStatuses[row.id] ?? row.userStatus ?? ""}
             onChange={(value: string | null) => {
               setRowStatuses((prev) => ({
                 ...prev,
@@ -203,8 +232,7 @@ const HomeClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          // data={filteredData}
-          // data={manageClient?.data?.data}
+          data={clientData}
           initialPageSize={10}
         />
       </div>
