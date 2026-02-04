@@ -140,6 +140,8 @@ const BasicDocuments = () => {
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Some documents failed to upload. Please try again.");
+    } finally {
+      setUploadingDoc(null);
     }
   };
 

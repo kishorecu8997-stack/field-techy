@@ -125,7 +125,7 @@ const BasicDocuments = () => {
       setUploadingDoc("RESUME");
       uploads.push(
         uploadProfileFile(data.resume[0], "resumeFile").catch((e) => {
-          toast.error("certificate upload failed");
+          toast.error("resume upload failed");
           throw e;
         }),
       );
@@ -153,6 +153,8 @@ const BasicDocuments = () => {
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Some documents failed to upload. Please try again.");
+    } finally {
+      setUploadingDoc(null);
     }
   };
 
