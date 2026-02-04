@@ -20,6 +20,7 @@ export const useClientStatusChange = () => {
     _row: ManageClientProps,
     status: string | null,
     showPopup: (config: PopupConfig) => Promise<void>,
+    onConfirm?: (row: ManageClientProps, status: string) => Promise<void>
   ) => {
     if (!status) return;
 
@@ -42,6 +43,9 @@ export const useClientStatusChange = () => {
                 ? "warning"
                 : "danger",
           action: async (close: (v: boolean) => void) => {
+            if (onConfirm && status) {
+              await onConfirm(_row, status);
+            }
             if (status === "approve") {
               toast.success("Client approved successfully!");
             } else if (status === "pending") {

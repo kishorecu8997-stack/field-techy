@@ -16,7 +16,10 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { toast } from "react-toastify";
-import { useAdminManageClients } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminManageClients,
+  useAdminClientsByUserIdStatus,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 
 /**
@@ -37,12 +40,17 @@ const HomeClient: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
-  
-  const { data: manageClient } = useAdminManageClients({
-    clientType: "home"
-  });
 
-  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    {
+      clientType: "home",
+    },
+  );
+
+  const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
+
+  const clientData = (manageClient?.data ||
+    []) as unknown as ManageClientProps[];
 
   // const filteredData = manageClient.filter((e) => {
   //   const query = search.toLowerCase();
@@ -82,16 +90,18 @@ const HomeClient: React.FC = () => {
   };
 
   const columns: Column<ManageClientProps>[] = [
-    { key: "", label: "Sr.No.", renderCell: (row: ManageClientProps, index: number) => index + 1 },
+    {
+      key: "",
+      label: "Sr.No.",
+      renderCell: (row: ManageClientProps, index: number) => index + 1,
+    },
     {
       key: "clientCode",
       label: "Client ID",
       renderCell: (row: ManageClientProps) => {
         const name = row.clientCode || "N/A";
         return (
-          <span className="flex-nowrap text-nowrap">
-            {name.toUpperCase()}
-          </span>
+          <span className="flex-nowrap text-nowrap">{name.toUpperCase()}</span>
         );
       },
     },
@@ -101,19 +111,23 @@ const HomeClient: React.FC = () => {
       renderCell: (row: ManageClientProps) => {
         return (
           <div className="flex gap-2 items-center w-[200px]">
-             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0">
+            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0">
               {(row.name || "C").charAt(0).toUpperCase()}
             </div>
             <div className="flex flex-col overflow-hidden">
-               <span className="font-medium text-gray-900 dark:text-gray-100 truncate" title={row.name}>
+              <span
+                className="font-medium text-gray-900 dark:text-gray-100 truncate"
+                title={row.name}
+              >
                 {row.name}
               </span>
-              <span className="text-xs text-gray-500 truncate" title={row.email}>
+              <span
+                className="text-xs text-gray-500 truncate"
+                title={row.email}
+              >
                 {row.email}
               </span>
-              <span className="text-xs text-gray-500">
-                {row.phoneNumber}
-              </span>
+              <span className="text-xs text-gray-500">{row.phoneNumber}</span>
             </div>
           </div>
         );
@@ -127,13 +141,15 @@ const HomeClient: React.FC = () => {
     {
       key: "registrationDate",
       label: "Registration Date",
-      renderCell: (row: ManageClientProps) => 
-        row.registrationDate ? dayjs(row.registrationDate).format("DD/MM/YYYY") : "N/A",
+      renderCell: (row: ManageClientProps) =>
+        row.registrationDate
+          ? dayjs(row.registrationDate).format("DD/MM/YYYY")
+          : "N/A",
     },
     {
       key: "documents",
       label: "View Documents",
-      renderCell: (row: ManageClientProps) => {
+      renderCell: () => {
         return (
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white"
@@ -153,10 +169,15 @@ const HomeClient: React.FC = () => {
       key: "profileStatus",
       label: "KYC Status",
       renderCell: (row: ManageClientProps) => (
-        <span className={`capitalize ${
-          row.profileStatus === 'approved' ? 'text-green-600' : 
-          row.profileStatus === 'pending' ? 'text-yellow-600' : 'text-red-600'
-        }`}>
+        <span
+          className={`capitalize ${
+            row.profileStatus === "approved"
+              ? "text-green-600"
+              : row.profileStatus === "pending"
+                ? "text-yellow-600"
+                : "text-red-600"
+          }`}
+        >
           {row.profileStatus || "N/A"}
         </span>
       ),
@@ -164,11 +185,13 @@ const HomeClient: React.FC = () => {
     {
       key: "clientType",
       label: "Required Type",
-      renderCell: (row: ManageClientProps) => <span className="capitalize">{row.clientType}</span>,
+      renderCell: (row: ManageClientProps) => (
+        <span className="capitalize">{row.clientType}</span>
+      ),
     },
     {
       key: "userStatus",
-      label: "Status",
+      label: "user Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
@@ -179,7 +202,21 @@ const HomeClient: React.FC = () => {
                 ...prev,
                 [row.id]: value ?? "",
               }));
-              handleStatusChange(row, value, showPopup);
+              handleStatusChange(row, value, showPopup, async (row, status) => {
+                try {
+                  const payload = {
+                    userStatus: status,
+                  };
+
+                  await updateClientStatus({
+                    userId: row.userId || row.id,
+                    body: payload,
+                  });
+                  refetchClients();
+                } catch (error) {
+                  toast.error(error as string || "Failed to update status");
+                }
+              });
             }}
             options={JobStatus}
             badge

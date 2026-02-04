@@ -15,7 +15,10 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { toast } from "react-toastify";
-import { useAdminManageClients } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useAdminManageClients,
+  useAdminClientsByUserIdStatus,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import type { ManageClientProps } from "../types";
 
@@ -39,9 +42,11 @@ const CorporateClient: React.FC = () => {
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
 
-  const { data: manageClient } = useAdminManageClients({
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients({
     clientType: "corporate",
   });
+
+  const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
   const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
 
@@ -123,7 +128,7 @@ const CorporateClient: React.FC = () => {
     {
       key: "documentType",
       label: "View Documents",
-      renderCell: (row: ManageClientProps) => {
+      renderCell: () => {
         return (
           <Button
             className="w-fit bg-gradient-to-r bg-teal-900 text-white"
@@ -158,7 +163,7 @@ const CorporateClient: React.FC = () => {
     },
     {
       key: "userStatus",
-      label: "Status",
+      label: "User Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
@@ -169,7 +174,26 @@ const CorporateClient: React.FC = () => {
                 ...prev,
                 [row.id]: value ?? "",
               }));
-              handleStatusChange(row, value, showPopup);
+              handleStatusChange(
+                row,
+                value,
+                showPopup,
+                async (row, status) => {
+                  try {
+                    const payload = {
+                      profileStatus: status,
+                    };
+                    
+                    await updateClientStatus({ 
+                      userId: row.userId || row.id,
+                      body: payload 
+                    });
+                    refetchClients();
+                  } catch (error) {
+                    toast.error(error as string || "Failed to update status");
+                  }
+                }
+              );
             }}
             options={JobStatus}
             badge

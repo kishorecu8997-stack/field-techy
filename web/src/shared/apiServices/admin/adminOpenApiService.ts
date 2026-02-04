@@ -7,6 +7,7 @@ import {
   appLogin,
   appResetPassword,
   getAdminManageClients,
+  putAdminUsersByUserIdStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -19,6 +20,7 @@ import {
   type AppResetPasswordData,
   type AppResetPasswordResponse,
   type GetAdminManageClientsData,
+  type PutAdminUsersByUserIdStatusData,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -229,6 +231,39 @@ export function useAdminManageClients(options?: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         },
       });
+      return response.data;
+    },
+    ...options,
+  });
+}
+
+export type AdminClientsByUserIdStatusBody = NonNullable<
+  PutAdminUsersByUserIdStatusData["body"]
+>;
+
+export function useAdminClientsByUserIdStatus(options?: {
+  onSuccess?: (data: any) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      body,
+    }: {
+      userId: string | number;
+      body: any;
+    }) => {
+      const response = await putAdminUsersByUserIdStatus({
+        client: apiClient,
+        throwOnError: true,
+        path: {
+          userId: Number(userId),
+        },
+        body: body,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+      } as any);
       return response.data;
     },
     ...options,
