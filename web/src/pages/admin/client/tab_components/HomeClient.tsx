@@ -205,7 +205,7 @@ const HomeClient: React.FC = () => {
               handleStatusChange(row, value, showPopup, async (row, status) => {
                 try {
                   const payload = {
-                    userStatus: status,
+                    profileStatus: status,
                   };
 
                   await updateClientStatus({
