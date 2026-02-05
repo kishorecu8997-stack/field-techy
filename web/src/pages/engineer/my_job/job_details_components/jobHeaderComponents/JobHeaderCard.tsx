@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
-import UpdateStatus from "./UpdateStatus";
+import UpdateLogForm from "./UpdateLogForm";
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
@@ -37,7 +37,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   numberOfVacancy,
   numberOfApplicants,
   hideDurationAndClient = false,
-}) => {
+  activeTab,
+  onAddProgressUpdate,
+  onOpenFinalStatement,
+  }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const params = useParams();
@@ -192,11 +195,18 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             setOpen={setOpen}
             status={status}
             setSendProposal={setSendProposal}
+            activeTab={activeTab}
+            isDummyJob={isDummyJob}
+            onAddProgressUpdate={onAddProgressUpdate}
+            onOpenFinalStatement={onOpenFinalStatement}
           />
         )}
       </div>
       <Popup open={open} onClose={() => setOpen(false)}>
-        <UpdateStatus onClose={() => setOpen(false)} />
+        <UpdateLogForm
+          onClose={() => setOpen(false)}
+          onAddProgressUpdate={onAddProgressUpdate}
+        />
       </Popup>
       <Popup open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
         <ConfirmationModal

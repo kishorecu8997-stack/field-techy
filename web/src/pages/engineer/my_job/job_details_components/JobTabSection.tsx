@@ -29,9 +29,12 @@ import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ProposalInfoTab from "./tab_components/ProposalInfoTab";
 import ProposalForm from "./tab_components/ProposalForm";
 import SuccessOverlay from "./tab_components/SuccessOverlay";
+import TimelineSection from "./tab_components/TimelineSection";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import type { ProposalFormData } from "../types.d";
+import { usePopupStore } from "@/shared/store/popupStore";
+import type { ProgressUpdate } from "../types.d";
 
 /**
  * Renders a tabbed section for job details based on the current job status.
@@ -51,22 +54,30 @@ const JobTabSection = ({
   isSendProposal,
   setSendProposal,
   activeTab,
+  setActiveTab,
   OfferJobStatus,
   isDummyJob,
   workLocation,
   isDummyNetworkEngineer = false,
   showManageProposals = true,
+  progressUpdates = [],
+  onAddProgressUpdate,
+  hideTimelineContent = false,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab?: string;
+  setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
   OfferJobStatus?: OfferedJobStatusType;
   isDummyJob?: boolean;
   workLocation?: string;
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
+  progressUpdates?: ProgressUpdate[];
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  hideTimelineContent?: boolean;
 }) => {
   const methods = useForm<ProposalFormData>({
     defaultValues: {
@@ -79,11 +90,14 @@ const JobTabSection = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const [reviewData, setReviewData] = useState<ProposalFormData | null>(null);
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
+  const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
   const [submittedProposal, setSubmittedProposal] =
     useState<ProposalFormData | null>(null);
   const [selectedTab, setSelectedTab] = useState<string>(
     activeTab || JOB_TAB_LABELS.jobOverview,
   );
+
+  const { showPopup } = usePopupStore();
 
   useEffect(() => {
     document.body.style.overflow =
@@ -99,6 +113,13 @@ const JobTabSection = ({
     }
   }, [submittedProposal, isSendProposal, isDummyNetworkEngineer]);
 
+  // Sync local selectedTab to parent's activeTab
+  useEffect(() => {
+    if (selectedTab !== activeTab) {
+      setActiveTab?.(selectedTab);
+    }
+  }, [selectedTab, activeTab, setActiveTab]);
+
   const onSubmit = (data: ProposalFormData) => {
     setReviewData(data);
     setShowReview(true);
@@ -108,20 +129,101 @@ const JobTabSection = ({
     ? Array.from(reviewData.attachments).map((file) => file.name)
     : [];
 
+  const neutralActiveTabClass =
+    "bg-white border border-gray-300 text-gray-800 dark:bg-gray-800 dark:border-gray-600 dark:text-white";
+  const neutralInactiveTabClass =
+    "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700";
+
   const shouldHideLogs = !(
     status === JOB_STATUSES.inprogress ||
     status === JOB_STATUSES.completed ||
     OfferJobStatus === "checked-in"
   );
 
+  const activeTabClassName = hideTimelineContent
+    ? neutralActiveTabClass
+    : undefined;
+  const inactiveTabClassName = hideTimelineContent
+    ? neutralInactiveTabClass
+    : undefined;
+
   // Network Engineer dummy flow
   if (isDummyNetworkEngineer) {
     const remainingProposals = Math.max(
-      networkEngineerProposals.length - acceptedProposals.length,
+      networkEngineerProposals.length -
+        acceptedProposals.length -
+        rejectedProposals.length,
       0,
     );
 
+    const handleAcceptProposal = async (proposalId: string) => {
+      await showPopup({
+        title: JOB_TAB_COPY.acceptProposalTitle,
+        body: JOB_TAB_COPY.acceptProposalBody,
+        actionButtons: [
+          {
+            label: JOB_TAB_COPY.cancel,
+            value: "cancel",
+            variant: "secondary",
+            action: async (close) => close(true),
+          },
+          {
+            label: JOB_TAB_COPY.accept,
+            value: "accept",
+            variant: "primary",
+            action: async (close) => {
+              setAcceptedProposals([...acceptedProposals, proposalId]);
+              toast.success(JOB_TAB_COPY.proposalAccepted, {
+                position: "top-right",
+              });
+              close(true);
+            },
+          },
+        ],
+      });
+    };
+
+    const handleRejectProposal = async (proposalId: string) => {
+      await showPopup({
+        title: JOB_TAB_COPY.rejectProposalTitle,
+        body: JOB_TAB_COPY.rejectProposalBody,
+        actionButtons: [
+          {
+            label: JOB_TAB_COPY.cancel,
+            value: "cancel",
+            variant: "secondary",
+            action: async (close) => close(true),
+          },
+          {
+            label: JOB_TAB_COPY.reject,
+            value: "reject",
+            variant: "danger",
+            action: async (close) => {
+              setRejectedProposals([...rejectedProposals, proposalId]);
+              toast.error(JOB_TAB_COPY.proposalRejected, {
+                position: "top-right",
+              });
+              close(true);
+            },
+          },
+        ],
+      });
+    };
+
     const networkEngineerTabs = [
+      {
+        label: JOB_TAB_LABELS.timeline,
+        content:
+          hideTimelineContent && selectedTab === JOB_TAB_LABELS.timeline ? (
+            <div className="h-1" aria-hidden />
+          ) : (
+            <TimelineSection
+              OfferJobStatus={OfferJobStatus}
+              progressUpdates={progressUpdates}
+              onAddProgressUpdate={onAddProgressUpdate}
+            />
+          ),
+      },
       {
         label: JOB_TAB_LABELS.jobOverview,
         content: <JobOverviewSection {...engineerJobOverview} />,
@@ -157,7 +259,9 @@ const JobTabSection = ({
 
                   {networkEngineerProposals
                     .filter(
-                      (proposal) => !acceptedProposals.includes(proposal.id),
+                      (proposal) =>
+                        !acceptedProposals.includes(proposal.id) &&
+                        !rejectedProposals.includes(proposal.id),
                     )
                     .map((proposal, idx) => (
                       <div
@@ -193,6 +297,7 @@ const JobTabSection = ({
                         <div className="flex gap-3 justify-end">
                           <Button
                             variant="no_style"
+                            onClick={() => handleRejectProposal(proposal.id)}
                             className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                           >
                             {JOB_TAB_COPY.reject}
@@ -205,15 +310,7 @@ const JobTabSection = ({
                           </Button>
                           <Button
                             variant="no_style"
-                            onClick={() => {
-                              setAcceptedProposals([
-                                ...acceptedProposals,
-                                proposal.id,
-                              ]);
-                              toast.success(JOB_TAB_COPY.proposalAccepted, {
-                                position: "top-right",
-                              });
-                            }}
+                            onClick={() => handleAcceptProposal(proposal.id)}
                             className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium"
                           >
                             {JOB_TAB_COPY.accept}
@@ -222,7 +319,7 @@ const JobTabSection = ({
                       </div>
                     ))}
 
-                  {acceptedProposals.length >=
+                  {acceptedProposals.length + rejectedProposals.length >=
                     networkEngineerProposals.length && (
                     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg text-center">
                       <p className="text-gray-600 dark:text-gray-400">
@@ -243,6 +340,12 @@ const JobTabSection = ({
           <TabComponent
             tabs={networkEngineerTabs}
             defaultActiveTab={selectedTab}
+            activeClassName={activeTabClassName}
+            inactiveClassName={inactiveTabClassName}
+            onTabChange={(tabLabel) => {
+              setSelectedTab(tabLabel);
+              setActiveTab?.(tabLabel);
+            }}
           />
         ) : (
           <ProposalForm
@@ -356,6 +459,12 @@ const JobTabSection = ({
               ? JOB_TAB_LABELS.jobOverview
               : JOB_TAB_LABELS.jobInformation)
           }
+          activeClassName={activeTabClassName}
+          inactiveClassName={inactiveTabClassName}
+          onTabChange={(tabLabel) => {
+            setSelectedTab(tabLabel);
+            setActiveTab?.(tabLabel);
+          }}
         />
       ) : (
         <ProposalForm

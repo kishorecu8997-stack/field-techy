@@ -1213,6 +1213,109 @@ export const formatExpiryDate = (val: string) => {
   return formatted;
 };
 
+/**
+ * Basic time format validation for time pickers.
+ * @param timeString - Time in format "HH:MM AM/PM"
+ * @returns true if valid, error message if invalid
+ */
+export const validateTimeNotPast = (timeString: string) => {
+  if (!timeString) return true;
+
+  try {
+    const [time, modifier] = timeString.split(" ");
+    const [rawHours, minutes] = time.split(":").map(Number);
+
+    if (!modifier || Number.isNaN(rawHours) || Number.isNaN(minutes)) {
+      return "Invalid time format";
+    }
+
+    return true;
+  } catch {
+    return "Invalid time format";
+  }
+};
+
+/**
+ * Validate that end time is after start time
+ * @param startTime - Start time in format "HH:MM AM/PM"
+ * @param endTime - End time in format "HH:MM AM/PM"
+ * @returns true if valid, error message if invalid
+ */
+export const validateEndTimeAfterStart = (
+  startTime: string,
+  endTime: string
+) => {
+  if (!startTime || !endTime) return true;
+
+  try {
+    const parseTime = (timeStr: string) => {
+      const [time, modifier] = timeStr.split(" ");
+      const [rawHours, minutes] = time.split(":").map(Number);
+      let hours = rawHours;
+      if (modifier === "PM" && hours !== 12) hours += 12;
+      if (modifier === "AM" && hours === 12) hours = 0;
+      return hours * 60 + minutes;
+    };
+
+    const startMinutes = parseTime(startTime);
+    const endMinutes = parseTime(endTime);
+
+    if (endMinutes <= startMinutes) {
+      return "End time must be after start time";
+    }
+
+    return true;
+  } catch {
+    return "Invalid time format";
+  }
+};
+
+/**
+ * Calculate duration between start and end times
+ * @param startTime - Start time in format "HH:MM AM/PM"
+ * @param endTime - End time in format "HH:MM AM/PM"
+ * @returns Duration string in human-readable format (e.g., "1 hour 30 minutes")
+ */
+export const calculateTimeDuration = (
+  startTime: string,
+  endTime: string
+): string => {
+  if (!startTime || !endTime) return "";
+
+  try {
+    const parseTime = (timeStr: string) => {
+      const [time, modifier] = timeStr.split(" ");
+      const [rawHours, minutes] = time.split(":").map(Number);
+      let hours = rawHours;
+      if (modifier === "PM" && hours !== 12) hours += 12;
+      if (modifier === "AM" && hours === 12) hours = 0;
+      return hours * 60 + minutes;
+    };
+
+    const startMinutes = parseTime(startTime);
+    const endMinutes = parseTime(endTime);
+    let diffMinutes = endMinutes - startMinutes;
+
+    if (diffMinutes < 0) {
+      diffMinutes += 24 * 60; // Handle overnight duration
+    }
+
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+
+    let durationText = "";
+    if (hours > 0) durationText += `${hours} hour${hours > 1 ? "s" : ""}`;
+    if (minutes > 0) {
+      if (durationText) durationText += " ";
+      durationText += `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    }
+
+    return durationText || "0 minutes";
+  } catch {
+    return "";
+  }
+};
+
 export default {
   validateName,
   validateEmail,
@@ -1250,4 +1353,7 @@ export default {
   validateSiteId,
   validateSiteName,
   validateBusinessHours,
+  validateTimeNotPast,
+  validateEndTimeAfterStart,
+  calculateTimeDuration,
 };

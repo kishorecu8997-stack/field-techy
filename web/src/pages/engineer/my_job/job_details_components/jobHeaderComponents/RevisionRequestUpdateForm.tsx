@@ -1,0 +1,131 @@
+import { useForm } from "react-hook-form";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { usePopupStore } from "@/shared/store/popupStore";
+import { toast } from "react-toastify";
+import type { ProgressUpdate } from "../../types.d";
+import {
+  REVISION_UPDATE_COLORS,
+  REVISION_UPDATE_DEFAULTS,
+  REVISION_UPDATE_LABELS,
+  REVISION_UPDATE_MESSAGES,
+  REVISION_UPDATE_STATUS,
+} from "@/dummy_data/engineerRevisionUpdateDummyData";
+
+interface RevisionRequestUpdateFormProps {
+  onClose: () => void;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+}
+
+interface RevisionUpdateFields {
+  notes: string;
+  attachments: FileList | null;
+}
+
+/**
+ * Revision request/update form for engineers to send notes and optional attachments.
+ * Uses react-hook-form with shared inputs for validation and file uploads.
+ * Shows a confirmation popup before emitting progress updates to the timeline.
+ * Emits waiting/approved status updates with timestamps and accent colors.
+ * Surfaces success toast and supports optional onClose callback to dismiss.
+ */
+const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionRequestUpdateFormProps) => {
+  const formCtx = useForm<RevisionUpdateFields>({
+    defaultValues: REVISION_UPDATE_DEFAULTS,
+  });
+
+  const { showPopup } = usePopupStore();
+
+  const formatNow = () =>
+    new Date().toLocaleString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+  const handleSubmit = async (_data: RevisionUpdateFields) => {
+    void _data;
+    await showPopup({
+      title: REVISION_UPDATE_LABELS.title,
+      body: REVISION_UPDATE_MESSAGES.modalBody,
+      actionButtons: [
+        {
+          label: REVISION_UPDATE_LABELS.modalCancel,
+          value: null,
+          variant: "outline",
+        },
+        {
+          label: REVISION_UPDATE_LABELS.modalSubmit,
+          value: "submit",
+          variant: "primary",
+          action: async (close) => {
+            const attachmentName = formCtx.getValues().attachments?.[0]?.name;
+            const notes = formCtx.getValues().notes;
+            toast.success(REVISION_UPDATE_MESSAGES.submitSuccess);
+            onAddProgressUpdate?.({
+              title: REVISION_UPDATE_LABELS.title,
+              description: notes,
+              attachmentName,
+              timestamp: formatNow(),
+              statusText: REVISION_UPDATE_STATUS.approved,
+              statusColor: REVISION_UPDATE_COLORS.approved,
+              accentColor: REVISION_UPDATE_COLORS.accent,
+            });
+            onAddProgressUpdate?.({
+              title: REVISION_UPDATE_LABELS.title,
+              description: notes,
+              attachmentName,
+              timestamp: formatNow(),
+              statusText: REVISION_UPDATE_STATUS.waiting,
+              statusColor: REVISION_UPDATE_COLORS.waiting,
+              accentColor: REVISION_UPDATE_COLORS.accent,
+            });
+            close(true);
+            onClose();
+          },
+        },
+      ],
+    });
+  };
+
+  return (
+    <div className="flex flex-col p-6 gap-4">
+      <h2 className="text-xl font-semibold text-gray-900">{REVISION_UPDATE_LABELS.title}</h2>
+      <FormContainer methods={formCtx} onSubmit={handleSubmit}>
+        <div className="mb-2">
+          <TextareaInput
+            name="notes"
+            label={REVISION_UPDATE_LABELS.notesLabel}
+            required
+            placeholder={REVISION_UPDATE_LABELS.notesPlaceholder}
+            rules={{ required: REVISION_UPDATE_LABELS.notesRequiredMessage }}
+          />
+        </div>
+        <FileUpload
+          name="attachments"
+          label={REVISION_UPDATE_LABELS.attachmentLabel}
+          accept=".pdf,.jpeg,.jpg,.png"
+        />
+        <div className="flex justify-end gap-3 pt-2">
+          <Button
+            variant="outline"
+            className="px-4"
+            onClick={onClose}
+            type="button"
+          >
+            {REVISION_UPDATE_LABELS.cancel}
+          </Button>
+          <Button className="bg-teal-800 hover:bg-teal-900 text-white px-5" type="submit">
+            {REVISION_UPDATE_LABELS.submit}
+          </Button>
+        </div>
+      </FormContainer>
+    </div>
+  );
+};
+
+export default RevisionRequestUpdateForm;
