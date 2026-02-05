@@ -70,7 +70,6 @@ const isEngineerStatus = (value: string | null): value is EngineerStatusType => 
 
 const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
   onSuccess: (_data, variables) => {
-    // Only show toasts for approved or rejected
     if (variables.profileStatus === EngineerStatus.APPROVE)
       toast.success("Engineer approved successfully!");
     else if (variables.profileStatus === EngineerStatus.REJECT)
@@ -244,7 +243,7 @@ const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
             value={current}
             onChange={(value) => {
               if (!isEngineerStatus(value) || value === current) return;
-              handleStatusChange(row, value); // safe now
+              handleStatusChange(row, value);
             }}
             options={preparedOptions}
             badge
