@@ -104,3 +104,12 @@ export interface ActionMenuProps {
   setIsBlock: (v: boolean) => void;
 }
 export type DropdownDirection = "up" | "down";
+
+export const EngineerStatus = {
+  APPROVE: "approved",
+  REJECT: "rejected",
+  PENDING: "pending",
+} as const;
+
+export type EngineerStatusType =
+  (typeof EngineerStatus)[keyof typeof EngineerStatus];

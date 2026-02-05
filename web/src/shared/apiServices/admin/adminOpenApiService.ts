@@ -18,14 +18,13 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
-  type PutAdminUsersByUserIdStatusData,
   type PutAdminUsersByUserIdStatusResponses,
   type PutAdminUsersByUserIdStatusErrors,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
-import type { EngineerStatusType } from "@/pages/admin/engineer/components/PendingRequest";
+import type { EngineerStatusType } from "@/pages/admin/engineer/types";
 
 export const LookupTable = {
   Countries: "countries",
@@ -231,7 +230,7 @@ export function useUpdateEngineerProfileStatus(options?: {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
         path: { userId },
-        body: { profileStatus } as PutAdminUsersByUserIdStatusData["body"],
+        body: { profileStatus },
         headers: {
           Authorization: `Bearer ${token}`,
         },

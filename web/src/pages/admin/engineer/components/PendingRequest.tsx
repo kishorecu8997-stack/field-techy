@@ -17,17 +17,12 @@ import type { ManageEngineerProps } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { EngineerStatusType } from "../types";
+import { EngineerStatus } from "../types";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
-export const EngineerStatus = {
-  APPROVE: "approved",
-  REJECT: "rejected",
-  PENDING: "pending",
-} as const;
 
-export type EngineerStatusType =
-  (typeof EngineerStatus)[keyof typeof EngineerStatus];
-
-  /**
+/**
  * PendingRequest Component
  *
  * Displays a management dashboard for engineers, including:
@@ -54,6 +49,7 @@ export default function PendingRequest() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [engineers, setEngineers] = useState(manageEngineer);
+  const session = useUserSessionStore((s) => s.session);
 
   const filteredData = engineers
     .filter((e) => e.kycStatus === EngineerStatus.PENDING)
@@ -66,6 +62,11 @@ export default function PendingRequest() {
         e.location.toLowerCase().includes(query)
       );
     });
+
+  
+const isEngineerStatus = (value: string | null): value is EngineerStatusType => {
+  return value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
+};
 
 const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
   onSuccess: (_data, variables) => {
@@ -123,7 +124,7 @@ const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
               await updateEngineerStatus({
                 userId: data.id,
                 profileStatus: status,
-                token: localStorage.getItem("auth_token") || "",
+                token: session?.accessToken || "",
               });
               close(true);
             } catch {
@@ -242,8 +243,8 @@ const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
             placeholder="Select"
             value={current}
             onChange={(value) => {
-              if (!value || value === current) return;
-              handleStatusChange(row, value as EngineerStatusType);
+              if (!isEngineerStatus(value) || value === current) return;
+              handleStatusChange(row, value); // safe now
             }}
             options={preparedOptions}
             badge
