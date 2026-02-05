@@ -339,7 +339,7 @@ const PostJobPage = () => {
             toast.success("Your job has been successfully posted!");
             refetchJobs();
             navigate(absoluteUrls.client.home.my_jobs);
-          } catch  {
+          } catch {
             const hasFilesToUpload =
               (data.attachment?.length ?? 0) > 0 ||
               (data.toolsData?.some((t) => t.images?.length > 0) ?? false);

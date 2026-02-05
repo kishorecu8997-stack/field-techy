@@ -5,6 +5,7 @@ import { FormContainer } from "./commonUI/inputs/FormContainer";
 import { absoluteUrls } from "@/config/urls";
 import { Button } from "./commonUI/Buttons";
 import { useNavigate } from "react-router-dom";
+import { scrollToTop } from "@/utils";
 
 /**
  * JobSearchBar component provides a dual-input search form for jobs and location.
@@ -37,7 +38,10 @@ export const JobSearchBarClient = () => {
         {/* Analytics Button/Icon */}
         <Button
           type="button"
-          onClick={() => navigate(absoluteUrls.client.home.search_analytics)}
+          onClick={() => {
+            scrollToTop();
+            navigate(absoluteUrls.client.home.search_analytics);
+          }}
           className="p-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors"
           title="View Search Analytics"
           aria-label="View Search Analytics"
