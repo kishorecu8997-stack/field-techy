@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import type { ManageClientProps } from "../types";
+import { documentType, type ManageClientProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
@@ -19,8 +19,13 @@ import { toast } from "react-toastify";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
+  type AdminClientsByUserIdStatusBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
+import {
+  useAppDownloadProfileFile,
+  type ProfileFileType,
+} from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * HomeClient Component
@@ -40,6 +45,8 @@ const HomeClient: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(null);
 
   const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
     {
@@ -48,6 +55,8 @@ const HomeClient: React.FC = () => {
   );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
+  const { data: downloadData } = useAppDownloadProfileFile(selectedType);
+  console.log("downloadData :", downloadData);
 
   const clientData = (manageClient?.data ||
     []) as unknown as ManageClientProps[];
@@ -149,14 +158,24 @@ const HomeClient: React.FC = () => {
     {
       key: "documents",
       label: "View Documents",
-      renderCell: () => {
+      renderCell: (row: ManageClientProps) => {
         return (
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() => setIsOpen(true)}
-          >
-            View Doc
-          </Button>
+          <SelectMenu
+            placeholder="Select Document"
+            className="w-36"
+            options={
+              documentType?.map((item) => ({
+                value: item.value ?? "",
+                label: item.label ?? "",
+              })) ?? []
+            }
+            value={activeRowId === row.id ? selectedType : null}
+            onChange={(value) => {
+              setActiveRowId(row.id);
+              setSelectedType(value as ProfileFileType | null);
+              setIsOpen(true);
+            }}
+          />
         );
       },
     },
@@ -167,7 +186,7 @@ const HomeClient: React.FC = () => {
     },
     {
       key: "profileStatus",
-      label: "KYC Status",
+      label: "Profile Status",
       renderCell: (row: ManageClientProps) => (
         <span
           className={`capitalize ${
@@ -191,12 +210,12 @@ const HomeClient: React.FC = () => {
     },
     {
       key: "userStatus",
-      label: "user Status",
+      label: "User Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
             placeholder="Select"
-            value={rowStatuses[row.id] ?? row.userStatus ?? ""}
+            value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
             onChange={(value: string | null) => {
               setRowStatuses((prev) => ({
                 ...prev,
@@ -204,8 +223,8 @@ const HomeClient: React.FC = () => {
               }));
               handleStatusChange(row, value, showPopup, async (row, status) => {
                 try {
-                  const payload = {
-                    profileStatus: status,
+                  const payload: AdminClientsByUserIdStatusBody = {
+                    profileStatus: status as AdminClientsByUserIdStatusBody["profileStatus"],
                   };
 
                   await updateClientStatus({
@@ -214,7 +233,7 @@ const HomeClient: React.FC = () => {
                   });
                   refetchClients();
                 } catch (error) {
-                  toast.error(error as string || "Failed to update status");
+                  toast.error((error as string) || "Failed to update status");
                 }
               });
             }}

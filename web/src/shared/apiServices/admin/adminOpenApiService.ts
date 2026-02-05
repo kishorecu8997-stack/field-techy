@@ -21,6 +21,7 @@ import {
   type AppResetPasswordResponse,
   type GetAdminManageClientsData,
   type PutAdminUsersByUserIdStatusData,
+  type PutAdminUsersByUserIdStatusResponses,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -241,8 +242,12 @@ export type AdminClientsByUserIdStatusBody = NonNullable<
   PutAdminUsersByUserIdStatusData["body"]
 >;
 
+export type AdminClientsByUserIdStatusResponse = NonNullable<
+  PutAdminUsersByUserIdStatusResponses[200]
+>;
+
 export function useAdminClientsByUserIdStatus(options?: {
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: AdminClientsByUserIdStatusResponse) => void;
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
@@ -251,7 +256,7 @@ export function useAdminClientsByUserIdStatus(options?: {
       body,
     }: {
       userId: string | number;
-      body: any;
+      body: AdminClientsByUserIdStatusBody;
     }) => {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
@@ -263,8 +268,8 @@ export function useAdminClientsByUserIdStatus(options?: {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         },
-      } as any);
-      return response.data;
+      });
+      return response.data as AdminClientsByUserIdStatusResponse;
     },
     ...options,
   });

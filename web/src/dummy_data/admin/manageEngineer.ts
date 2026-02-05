@@ -598,7 +598,7 @@ export const JobStatus = [
     icon: icons.pending,
   },
   {
-    value: "reject",
+    value: "rejected",
     label: "Reject",
     bg: "bg-red-100 text-red-700",
     icon: icons.close,

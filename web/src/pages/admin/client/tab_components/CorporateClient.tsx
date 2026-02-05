@@ -18,9 +18,14 @@ import { toast } from "react-toastify";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
+  type AdminClientsByUserIdStatusBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
-import type { ManageClientProps } from "../types";
+import { documentType, type ManageClientProps } from "../types";
+import {
+  useAppDownloadProfileFile,
+  type ProfileFileType,
+} from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * CorporateClient Component
@@ -38,17 +43,23 @@ const CorporateClient: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(null);
 
-  const { data: manageClient, refetch: refetchClients } = useAdminManageClients({
-    clientType: "corporate",
-  });
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    {
+      clientType: "corporate",
+    },
+  );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
+  const { data: downloadData } = useAppDownloadProfileFile(selectedType);
+  console.log("downloadData :", downloadData);
 
-  const clientData = (manageClient?.data || []) as unknown as ManageClientProps[];
+  const clientData = (manageClient?.data ||
+    []) as unknown as ManageClientProps[];
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -77,16 +88,18 @@ const CorporateClient: React.FC = () => {
   };
 
   const columns: Column<ManageClientProps>[] = [
-    { key: "", label: "Sr.No.", renderCell: (row: ManageClientProps, index: number) => index + 1 },
+    {
+      key: "",
+      label: "Sr.No.",
+      renderCell: (row: ManageClientProps, index: number) => index + 1,
+    },
     {
       key: "clientCode",
       label: "Client ID",
       renderCell: (row: ManageClientProps) => {
         const name = row.clientCode || "N/A";
         return (
-          <span className="flex-nowrap text-nowrap">
-            {name.toUpperCase()}
-          </span>
+          <span className="flex-nowrap text-nowrap">{name.toUpperCase()}</span>
         );
       },
     },
@@ -100,15 +113,19 @@ const CorporateClient: React.FC = () => {
               {(row.companyName || row.name || "C").charAt(0).toUpperCase()}
             </div>
             <div className="flex flex-col overflow-hidden">
-              <span className="font-medium text-gray-900 dark:text-gray-100 truncate" title={row.companyName || row.name}>
+              <span
+                className="font-medium text-gray-900 dark:text-gray-100 truncate"
+                title={row.companyName || row.name}
+              >
                 {row.companyName || row.name}
               </span>
-              <span className="text-xs text-gray-500 truncate" title={row.email}>
+              <span
+                className="text-xs text-gray-500 truncate"
+                title={row.email}
+              >
                 {row.email}
               </span>
-              <span className="text-xs text-gray-500">
-                {row.phoneNumber}
-              </span>
+              <span className="text-xs text-gray-500">{row.phoneNumber}</span>
             </div>
           </div>
         );
@@ -122,20 +139,32 @@ const CorporateClient: React.FC = () => {
     {
       key: "registrationDate",
       label: "Registration Date",
-      renderCell: (row: ManageClientProps) => 
-        row.registrationDate ? dayjs(row.registrationDate).format("DD/MM/YYYY") : "N/A",
+      renderCell: (row: ManageClientProps) =>
+        row.registrationDate
+          ? dayjs(row.registrationDate).format("DD/MM/YYYY")
+          : "N/A",
     },
     {
       key: "documentType",
       label: "View Documents",
-      renderCell: () => {
+      renderCell: (row: ManageClientProps) => {
         return (
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() => setIsOpen(true)}
-          >
-            View Doc
-          </Button>
+          <SelectMenu
+            placeholder="Select Document"
+            className="w-36"
+            options={
+              documentType?.map((item) => ({
+                value: item.value ?? "",
+                label: item.label ?? "",
+              })) ?? []
+            }
+            value={activeRowId === row.id ? selectedType : null}
+            onChange={(value) => {
+              setActiveRowId(row.id);
+              setSelectedType(value as ProfileFileType | null);
+              setIsOpen(true);
+            }}
+          />
         );
       },
     },
@@ -146,12 +175,17 @@ const CorporateClient: React.FC = () => {
     },
     {
       key: "profileStatus",
-      label: "KYC Status",
+      label: "Profile Status",
       renderCell: (row: ManageClientProps) => (
-        <span className={`capitalize ${
-          row.profileStatus === 'approved' ? 'text-green-600' : 
-          row.profileStatus === 'pending' ? 'text-yellow-600' : 'text-red-600'
-        }`}>
+        <span
+          className={`capitalize ${
+            row.profileStatus === "approved"
+              ? "text-green-600"
+              : row.profileStatus === "pending"
+                ? "text-yellow-600"
+                : "text-red-600"
+          }`}
+        >
           {row.profileStatus || "N/A"}
         </span>
       ),
@@ -159,7 +193,9 @@ const CorporateClient: React.FC = () => {
     {
       key: "clientType",
       label: "Required Type",
-      renderCell: (row: ManageClientProps) => <span className="capitalize">{row.clientType}</span>,
+      renderCell: (row: ManageClientProps) => (
+        <span className="capitalize">{row.clientType}</span>
+      ),
     },
     {
       key: "userStatus",
@@ -168,32 +204,27 @@ const CorporateClient: React.FC = () => {
         return (
           <SelectMenu
             placeholder="Select"
-            value={rowStatuses[row.id] ?? row.userStatus ?? ""}
+            value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
             onChange={(value: string | null) => {
               setRowStatuses((prev) => ({
                 ...prev,
                 [row.id]: value ?? "",
               }));
-              handleStatusChange(
-                row,
-                value,
-                showPopup,
-                async (row, status) => {
-                  try {
-                    const payload = {
-                      profileStatus: status,
-                    };
-                    
-                    await updateClientStatus({ 
-                      userId: row.userId || row.id,
-                      body: payload 
-                    });
-                    refetchClients();
-                  } catch (error) {
-                    toast.error(error as string || "Failed to update status");
-                  }
+              handleStatusChange(row, value, showPopup, async (row, status) => {
+                try {
+                  const payload: AdminClientsByUserIdStatusBody = {
+                    profileStatus: status as AdminClientsByUserIdStatusBody["profileStatus"],
+                  };
+
+                  await updateClientStatus({
+                    userId: row.userId || row.id,
+                    body: payload,
+                  });
+                  refetchClients();
+                } catch (error) {
+                  toast.error((error as string) || "Failed to update status");
                 }
-              );
+              });
             }}
             options={JobStatus}
             badge
