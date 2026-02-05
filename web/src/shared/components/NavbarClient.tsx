@@ -8,6 +8,7 @@ import useDrawerStore from "../store/useDrawerStore";
 import Drawer from "./drawer/Drawer";
 import IconWithTheme from "./IconWithTheme";
 import { JobSearchBarClient } from "./jobSearchBarClient";
+import { scrollToTop } from "@/utils";
 import {
   useClientStore,
   useClientProfile,
@@ -76,7 +77,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <span onClick={() => navigate(absoluteUrls.client.home.dashboard)}>
+        <span
+          onClick={() => {
+            scrollToTop();
+            navigate(absoluteUrls.client.home.dashboard);
+          }}
+        >
           <IconWithTheme
             lightLogo={assetsConfig.logos.ftLogo}
             darkLogo={assetsConfig.logos.ftLogoWhite}
@@ -85,6 +91,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         </span>
 
         <NavLink
+          onClick={scrollToTop}
           to={absoluteUrls.client.home.my_projects}
           className={`${
             location.pathname.startsWith(absoluteUrls.client.home.my_projects)
@@ -95,6 +102,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
           My Projects
         </NavLink>
         <NavLink
+          onClick={scrollToTop}
           to={absoluteUrls.client.home.my_jobs}
           className={`${
             location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
@@ -188,6 +196,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         <div
           className="relative p-2 text-gray-600 hover:text-gray-900 dark:hover:text-gray-600 cursor-pointer"
           onClick={() => {
+            scrollToTop();
             navigate(absoluteUrls.client.home.chat);
           }}
         >

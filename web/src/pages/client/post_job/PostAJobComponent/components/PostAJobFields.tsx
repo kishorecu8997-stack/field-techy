@@ -41,7 +41,6 @@ const PostAJobFields = ({
   const { data: statesData } = useLookupData("states", selectedCountry);
   const { data: citiesData } = useLookupData("cities", selectedState);
 
-
   const countryOptions = useMemo(
     () =>
       countriesData?.map((c) => ({ label: c.name, value: String(c.id) })) || [],
@@ -64,10 +63,10 @@ const PostAJobFields = ({
     label: string;
     value: NonNullable<ClientPostJobData["body"]>["jobType"];
   }[] = [
-      { label: "On site", value: "On site" },
-      { label: "Remote", value: "Remote" },
-      { label: "Hybrid", value: "Hybrid" },
-    ];
+    { label: "On site", value: "On site" },
+    { label: "Remote", value: "Remote" },
+    { label: "Hybrid", value: "Hybrid" },
+  ];
 
   const serviceCategoryOptions = useMemo(
     () =>
