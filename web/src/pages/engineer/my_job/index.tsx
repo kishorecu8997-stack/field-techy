@@ -76,7 +76,7 @@ const MyJobsPage = () => {
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
           // todo: implement sort functionality later
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
         />
         <div className="flex items-center justify-between mt-4">
