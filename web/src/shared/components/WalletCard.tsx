@@ -59,7 +59,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
           </p>
 
           {!showBalance ? (
-            <BsEyeSlashFill
+            <BsEyeFill
               className="cursor-pointer text-lg"
               role="button"
               tabIndex={0}
@@ -73,7 +73,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({ earnings }) => {
               }}
             />
           ) : (
-            <BsEyeFill
+            <BsEyeSlashFill
               className="cursor-pointer text-lg"
               role="button"
               tabIndex={0}

@@ -24,6 +24,7 @@ import {
   useClientDisplayName,
 } from "@/shared/store/useClientStore";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
+import { scrollToTop } from "@/utils";
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
   onClose: () => void;
@@ -136,6 +137,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
       key: "proposal",
       onClick: () => {
         onClose();
+        scrollToTop();
         navigate(absoluteUrls.client.home.manage_proposal);
       },
     },

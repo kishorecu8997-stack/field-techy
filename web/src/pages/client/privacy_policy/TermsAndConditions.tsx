@@ -1,11 +1,16 @@
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 import { clientTermsAndCondition } from "@/dummy_data/clientPolicyDatas";
+import { scrollToTop } from "@/utils";
+import { useEffect } from "react";
 
 /**
  * Terms & Conditions page displaying static policy content from dummy data.
  */
 const TermsAndConditions = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-6 md:px-6">

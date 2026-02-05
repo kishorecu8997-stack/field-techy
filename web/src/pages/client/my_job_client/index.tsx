@@ -3,7 +3,7 @@ import Pagination from "@/pages/engineer/search_result/components/Pagination";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import jobFilters, {
   SORT_OPTIONS,
   type Job,
@@ -74,11 +74,13 @@ const MyJobsClient: React.FC = () => {
   }, [activeFilter, allJobs]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
+  useEffect(() => {
+    scrollToTop();
+  }, [currentPage]);
   const itemsPerPage = 6;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    scrollToTop();
   };
 
   const handleFilterChange = (filter: string) => {
