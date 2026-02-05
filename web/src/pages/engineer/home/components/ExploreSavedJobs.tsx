@@ -10,6 +10,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getSavedJobs } from "@/utils/bookmarkUtils";
 import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../types";
+import { scrollToTop } from "@/utils";
 
 /**
  * explore jobs page component
@@ -38,6 +39,7 @@ const ExploreSavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState<JobItem[]>([]);
 
   useEffect(() => {
+    scrollToTop();
     setSavedJobs(getSavedJobs());
   }, []);
   const refreshSavedJobs = () => {
