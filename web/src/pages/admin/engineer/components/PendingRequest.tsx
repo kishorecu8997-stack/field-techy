@@ -73,7 +73,7 @@ const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
     if (variables.profileStatus === EngineerStatus.APPROVE)
       toast.success("Engineer approved successfully!");
     else if (variables.profileStatus === EngineerStatus.REJECT)
-      toast.error("Engineer rejected successfully!");
+      toast.success("Engineer rejected successfully!");
 
     // Update local row status
     setRowStatuses((prev) => ({
