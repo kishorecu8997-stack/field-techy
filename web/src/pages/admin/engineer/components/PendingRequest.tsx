@@ -21,7 +21,6 @@ import type { EngineerStatusType } from "../types";
 import { EngineerStatus } from "../types";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
-
 /**
  * PendingRequest Component
  *
@@ -63,34 +62,37 @@ export default function PendingRequest() {
       );
     });
 
-  
-const isEngineerStatus = (value: string | null): value is EngineerStatusType => {
-  return value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
-};
+  const isEngineerStatus = (
+    value: string | null,
+  ): value is EngineerStatusType => {
+    return (
+      value !== null &&
+      Object.values(EngineerStatus).includes(value as EngineerStatusType)
+    );
+  };
 
-const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
-  onSuccess: (_data, variables) => {
-    if (variables.profileStatus === EngineerStatus.APPROVE)
-      toast.success("Engineer approved successfully!");
-    else if (variables.profileStatus === EngineerStatus.REJECT)
-      toast.success("Engineer rejected successfully!");
+  const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
+    onSuccess: (_data, variables) => {
+      if (variables.profileStatus === EngineerStatus.APPROVE)
+        toast.success("Engineer approved successfully!");
+      else if (variables.profileStatus === EngineerStatus.REJECT)
+        toast.success("Engineer rejected successfully!");
 
-    // Update local row status
-    setRowStatuses((prev) => ({
-      ...prev,
-      [variables.userId]: variables.profileStatus,
-    }));
+      // Update local row status
+      setRowStatuses((prev) => ({
+        ...prev,
+        [variables.userId]: variables.profileStatus,
+      }));
 
-    // Remove engineer from pending list if status is not pending
-    if (variables.profileStatus !== EngineerStatus.PENDING) {
-      setEngineers((prev) =>
-        prev.filter((eng) => eng.id !== variables.userId)
-      );
-    }
-  },
-  onError: () => toast.error("Failed to update engineer status"),
-});
-
+      // Remove engineer from pending list if status is not pending
+      if (variables.profileStatus !== EngineerStatus.PENDING) {
+        setEngineers((prev) =>
+          prev.filter((eng) => eng.id !== variables.userId),
+        );
+      }
+    },
+    onError: () => toast.error("Failed to update engineer status"),
+  });
 
   const handleStatusChange = async (
     data: ManageEngineerProps,
