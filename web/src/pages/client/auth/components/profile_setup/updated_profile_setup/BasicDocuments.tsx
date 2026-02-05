@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
+import type { AppMarkProfileFileUploadedResponse } from "@/api";
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -43,15 +44,7 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore } = useClientRegistrationStore();
-  const { uploadProfileFile, isUploading } = useProfileFileUpload({
-    onSuccess: () => {
-      toast.success("Upload successful");
-    },
-    onError: () => {
-      toast.error("File could not be uploaded");
-    },
-  });
-
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({});
 
   const handleSkip = () => {
     showPopup({
@@ -88,38 +81,34 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<AppUploadProfileFileResponse>[] = [];
+    const uploads: Promise<AppMarkProfileFileUploadedResponse>[] = [];
+
+    // Show a single persistent toast for the whole upload process
+    const uploadingToastId = toast.loading("Uploading documents...");
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
-      uploads.push(
-        uploadProfileFile(data.profileImage, "profilePicture").catch((e) => {
-          toast.error("profile upload failed");
-          throw e;
-        }),
-      );
+      uploads.push(uploadProfileFile(data.profileImage, "profilePicture"));
     }
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
-      uploads.push(
-        uploadProfileFile(data.governmentId[0], "govIdDoc").catch((e) => {
-          toast.error("gov id upload failed");
-          throw e;
-        }),
-      );
+      uploads.push(uploadProfileFile(data.governmentId[0], "govIdDoc"));
     }
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
-      uploads.push(
-        uploadProfileFile(data.certificate[0], "certificateDoc").catch((e) => {
-          toast.error("certificate upload failed");
-          throw e;
-        }),
-      );
+      uploads.push(uploadProfileFile(data.certificate[0], "certificateDoc"));
     }
 
     try {
       await Promise.all(uploads);
+
+      // Update the single toast to success before showing the popup
+      toast.update(uploadingToastId, {
+        render: "Documents uploaded successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
 
       showPopup({
         title: "Documents Uploaded Successfully!",
@@ -139,7 +128,12 @@ const BasicDocuments = () => {
       });
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Some documents failed to upload. Please try again.");
+      toast.update(uploadingToastId, {
+        render: "Some documents failed to upload. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
     } finally {
       setUploadingDoc(null);
     }
