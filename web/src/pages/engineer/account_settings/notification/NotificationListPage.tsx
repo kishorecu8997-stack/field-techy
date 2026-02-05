@@ -16,6 +16,7 @@ import type { NotificationProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import { scrollToTop } from "@/utils";
+
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
  * Provides tab-based filtering and search functionality.
