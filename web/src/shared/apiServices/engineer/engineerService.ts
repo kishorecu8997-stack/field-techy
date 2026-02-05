@@ -222,7 +222,7 @@ export function useUpdatePassword(options?: {
 
 export function useSendEmailOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (email: string) => EngineerAdapter.sendEmailOTP(email),
@@ -233,7 +233,7 @@ export function useSendEmailOTP(options?: {
 
 export function useSendPhoneOTP(options?: {
   onSuccess?: (data: { message: string }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (phoneNumber: string) =>
@@ -245,7 +245,7 @@ export function useSendPhoneOTP(options?: {
 
 export function useVerifyEmailOTP(options?: {
   onSuccess?: (data: { message: string; verified: boolean }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: ({ email, otp }: { email: string; otp: string }) =>
@@ -257,7 +257,7 @@ export function useVerifyEmailOTP(options?: {
 
 export function useVerifyPhoneOTP(options?: {
   onSuccess?: (data: { message: string; verified: boolean }) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: ({ phoneNumber, otp }: { phoneNumber: string; otp: string }) =>
@@ -291,7 +291,7 @@ export function useDeleteEngineerFile(options?: {
 
 export function useSendProposalJob(options?: {
   onSuccess?: (data: JobAssignment) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (data: ProposalJobData) =>
@@ -305,7 +305,7 @@ export function useGetProposalJobsById(
   id: string,
   options?: {
     onSuccess?: (data: JobAssignment) => void;
-    onError?: (error: any) => void;
+    onError?: (error: unknown) => void;
     enabled?: boolean;
   },
 ) {
@@ -320,7 +320,7 @@ export function useGetProposalAll(
   id: string,
   options?: {
     onSuccess?: (data: JobAssignment) => void;
-    onError?: (error: any) => void;
+    onError?: (error: unknown) => void;
     enabled?: boolean;
   },
 ) {
@@ -335,7 +335,7 @@ export function useGetEngineerProposals(
   id: string,
   options?: {
     onSuccess?: (data: JobAssignment) => void;
-    onError?: (error: any) => void;
+    onError?: (error: unknown) => void;
     enabled?: boolean;
   },
 ) {
@@ -348,7 +348,7 @@ export function useGetEngineerProposals(
 
 export function useUpdateProposalById(options?: {
   onSuccess?: (data: JobAssignment) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: ProposalJobData }) =>
@@ -360,7 +360,7 @@ export function useUpdateProposalById(options?: {
 
 export function useDeleteProposalById(options?: {
   onSuccess?: (data: JobAssignment) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }) {
   return useMutation({
     mutationFn: (id: string) => EngineerAdapter.deleteProposalById(id),
@@ -374,7 +374,7 @@ export function useGetJobsById(
   id: string,
   options?: {
     onSuccess?: (data: JobAssignment) => void;
-    onError?: (error: any) => void;
+    onError?: (error: unknown) => void;
     enabled?: boolean;
   },
 ) {
@@ -411,7 +411,7 @@ export function useGetJobsByEngineerId(
   id: string,
   options?: {
     onSuccess?: (data: JobAssignment) => void;
-    onError?: (error: any) => void;
+    onError?: (error: unknown) => void;
     enabled?: boolean;
   },
 ) {

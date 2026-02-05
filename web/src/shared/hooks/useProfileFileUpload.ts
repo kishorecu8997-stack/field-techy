@@ -25,7 +25,7 @@ export type ProfileFileType =
   | "certificateDoc";
 
 export interface UseProfileFileUploadOptions {
-  onSuccess?: (data?: any) => void;
+  onSuccess?: (data?: unknown) => void;
   onError?: (error: unknown) => void;
 }
 

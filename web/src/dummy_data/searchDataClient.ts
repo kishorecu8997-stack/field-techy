@@ -2,6 +2,35 @@ import type { Job } from "@/pages/client/search_result/types";
 
 export const sampleJobs: Job[] = [
   {
+    id: 12,
+    title: "Network Engineer",
+    client: "Network Solutions Ltd",
+    time: "40 Hours of Work",
+    description:
+      "We are looking for a skilled Network Engineer to manage, maintain, and optimize our network infrastructure. The role involves troubleshooting network issues, ensuring system security, and supporting smooth business operations.",
+    location: "Chennai, Tamil Nadu, India",
+    salary: "400",
+    postedTime: "05 Jan, 2025, 06:32 PM",
+    category: "IT",
+    rating: 4,
+    experience: 3,
+    budgetType: "fixed",
+    skills: ["Network Configuration", "Cisco", "Security"],
+    status: "posted",
+    type: "on-site",
+    startDate: "05 Jan, 2025, 06:32 PM",
+    duration: "40 Hours of Work",
+    pay: "400",
+    engineers: "2",
+    engineerAvatars: [
+      "https://randomuser.me/api/portraits/men/45.jpg",
+      "https://randomuser.me/api/portraits/women/50.jpg",
+    ],
+    serviceType: "Web Development",
+    numberOfVacancy: 4,
+    numberOfApplicants: 2,
+  },
+  {
     id: 8,
     title: "Posted -8",
     category: "IT",

@@ -4,7 +4,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaChevronRight,
@@ -21,8 +21,9 @@ import { ClientFilesProvider } from "./context/ClientFilesProvider";
 import {
   useClientStore,
   useClientProfile,
+  useClientDisplayName,
 } from "@/shared/store/useClientStore";
-
+import { useEngineerStore } from "@/shared/store/useEngineerStore";
 interface ClientDrawerMenuProps {
   onMenuItemClick: (key: string) => void;
   onClose: () => void;
@@ -63,7 +64,10 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { profileImageUrl } = useClientStore();
+  const { profileImageUrl, clearClientProfile } = useClientStore();
+  const clearEngineerProfile = useEngineerStore(
+    (state) => state.clearEngineerProfile,
+  );
 
   // Use the custom hook to get/fetch profile
   const clientProfile = useClientProfile();
@@ -73,7 +77,7 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const methods = useForm({
     defaultValues: {
-      profileImage: profileImageUrl || assetsConfig.images.users.user,
+      profileImage: profileImageUrl,
     },
   });
 
@@ -102,25 +106,27 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
   } = useClientFiles(clientId);
 
   // Filter out non-profile-pic files for the context
-  const { documentFiles } = useMemo(() => {
+  const { documentFiles, profilePictureFile } = useMemo(() => {
     const documents = clientFiles.filter(
       (file) => file.fileType !== "PROFILE_PICTURE",
     );
+    const profilePic = clientFiles.find(
+      (file) => file.fileType === "PROFILE_PICTURE",
+    );
     return {
       documentFiles: documents,
+      profilePictureFile: profilePic || null,
     };
   }, [clientFiles]);
 
-  // Prepare context value
-  // Prepare context value
   const filesContextValue = useMemo(
     () => ({
       files: documentFiles,
-      profilePictureFile: null, // Managed by store now
+      profilePictureFile: profilePictureFile,
       isLoading: isLoadingFiles,
       refetch: refetchFiles,
     }),
-    [documentFiles, isLoadingFiles, refetchFiles],
+    [documentFiles, profilePictureFile, isLoadingFiles, refetchFiles],
   );
 
   const menuItems: ClientMenuItems[] = [
@@ -151,36 +157,30 @@ const ClientAccountDrawerMenu: React.FC<ClientDrawerMenuProps> = ({
 
   const handleConfirmationLogout = () => {
     logoutTrigger();
+    clearClientProfile();
+    clearEngineerProfile();
+    onClose();
     navigate(absoluteUrls.root);
   };
 
-  // Get display name from client profile
-  const displayName = useMemo(() => {
-    if (!clientProfile) return "Guest";
-    if (clientProfile.clientType === "CORPORATE") {
-      return (
-        clientProfile.companyName || clientProfile.contactPersonName || "Client"
-      );
-    }
-    return clientProfile.contactPersonName || "Client";
-  }, [clientProfile]);
+  const displayName = useClientDisplayName();
 
   return (
     <ClientFilesProvider value={filesContextValue}>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={profileImageUrl || assetsConfig.images.users.user}
+            avatarUrl={profileImageUrl ?? assetsConfig.images.users.user}
             name={displayName}
             title={
               clientProfile?.clientType === "CORPORATE"
                 ? "Corporate Client"
                 : "Home Client"
             }
-            rating={4}
-            reviewCount={10}
-            completionPercentage={39}
-            isLoadingProfilePicture={false} // Store handles internal loading if needed, or we can use loading from store
+            rating={clientProfile?.rating || 0}
+            reviewCount={clientProfile?.reviewCount || 0}
+            completionPercentage={0}
+            isLoadingProfilePicture={false}
           />
         </div>
         <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800 p-px">

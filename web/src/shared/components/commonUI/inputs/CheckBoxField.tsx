@@ -74,8 +74,7 @@ export const CheckboxField = ({
           const handleSelect = (val: string | number) => {
             if (disabled) return;
             if (value.includes(val)) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onChange(value.filter((v: any) => v !== val));
+              onChange(value.filter((v: string | number) => v !== val));
             } else {
               onChange([...value, val]);
             }

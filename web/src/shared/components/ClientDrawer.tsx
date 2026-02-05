@@ -136,7 +136,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose }) => {
     jobs: { component: () => <div>Jobs Section</div>, title: "My Jobs" },
     earning: {
       component: () => <div>Earning Section</div>,
-      title: "My Earning",
+      title: "My Earnings",
     },
     saved: { component: () => <div>Saved Section</div>, title: "Saved Jobs" },
   };

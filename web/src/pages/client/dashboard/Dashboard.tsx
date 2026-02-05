@@ -16,7 +16,6 @@ import type { Job } from "../search_result/types";
 import InProgressJobCard from "./components/InProgressJobCard";
 import JobOverviewCard from "./components/JobOverview";
 import ServiceCategoryCard from "./components/ServiceCategoryCard";
-
 /**
  * `Dashboard` component serves as the main dashboard for the client user.
  * It displays an overview of jobs, service categories, and in-progress jobs.
@@ -29,7 +28,6 @@ const Dashboard: React.FC = () => {
   const { checkPermission: checkNotificationPermission } = useFCM();
   const { companyInfo, setCompanyInfo } = useClientCompanyInfoStore();
   const { data: clientInfo } = useClientGetCompanyInfo(!companyInfo);
-
   useEffect(() => {
     if (clientInfo && !companyInfo) {
       setCompanyInfo(clientInfo);
@@ -40,7 +38,6 @@ const Dashboard: React.FC = () => {
     () => sampleJobs.filter((job) => job.status === "inprogress"),
     [],
   );
-
   // Check actual browser permission states on mount and sync with store
   useEffect(() => {
     checkLocationPermission();

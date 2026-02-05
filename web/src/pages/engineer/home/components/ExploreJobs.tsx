@@ -13,6 +13,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
+import { exploreJobsDummy } from "@/dummy_data/engineerJobOverview";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
@@ -41,9 +42,11 @@ const ExploreJobs: React.FC = () => {
     slaLevel: "",
   });
 
-  // Filter jobs by status NEW
+  // Filter jobs by status NEW and add dummy job at the top
   const allNewJobs = useMemo(() => {
-    return (apiJobs || []).filter((job) => job.status === "NEW");
+    const apiNewJobs = (apiJobs || []).filter((job) => job.status === "NEW");
+    // Add dummy job to the beginning of the list
+    return [exploreJobsDummy as JobItem, ...apiNewJobs];
   }, [apiJobs]);
 
   // Step 2: Apply filters
@@ -152,7 +155,7 @@ const ExploreJobs: React.FC = () => {
           (a, b) => extractSalaryNumber(b) - extractSalaryNumber(a),
         );
 
-      case SORT_OPTIONS.DISTANCE:
+      case SORT_OPTIONS.DISTANCE: {
         const isRemote = (job: JobItem) => {
           const loc = (job.location || "").toLowerCase();
           const type = (job.engagementModel || "").toLowerCase();
@@ -237,6 +240,7 @@ const ExploreJobs: React.FC = () => {
             haversine(userCoords, CITY_COORDS[cityB])
           );
         });
+      }
 
       default:
         return jobsCopy;
@@ -307,8 +311,8 @@ const ExploreJobs: React.FC = () => {
                   <JobCard
                     key={job.id}
                     job={job}
-                    userSkills={(profile?.jobSkills as string[]) || []}
-                    userTools={(profile?.tools as string[]) || []}
+                    userSkills={profile?.jobSkills || []}
+                    userTools={profile?.tools || []}
                     navigateToJob={`${absoluteUrls.engineer.home.my_jobs}/${job.id}`}
                   />
                 ))

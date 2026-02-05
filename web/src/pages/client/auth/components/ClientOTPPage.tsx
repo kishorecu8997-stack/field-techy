@@ -8,6 +8,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 interface ClientOTPPageProps {
   header?: string;
@@ -83,10 +84,10 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
         await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
       }
       handleNavigate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
-        message: error?.message || "Invalid OTP. Please try again.",
+        message: GlobalApiErrorHandler.handle(error).message,
       });
     }
   };
