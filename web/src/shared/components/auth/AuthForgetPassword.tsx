@@ -45,13 +45,8 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
-      const resetUrl =
-        role === "client"
-          ? absoluteUrls.client.auth.reset_password
-          : absoluteUrls.engineer.auth.reset_password;
-
-      const tokenQuery = "";
-      navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
+      // Open OTP popup and let OTPPage's onSubmit perform navigation after verification
+      setIsOpen(true);
     },
     onError: (err: AppForgotPasswordError) => {
       toastError(err?.error || "Failed to send OTP");
@@ -114,9 +109,14 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            onSubmit={() =>
-              navigate(absoluteUrls.engineer.auth.reset_password)
-            }
+            onSubmit={() => {
+              const resetUrl =
+                role === "client"
+                  ? absoluteUrls.client.auth.reset_password
+                  : absoluteUrls.engineer.auth.reset_password;
+              const tokenQuery = "";
+              navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
+            }}
           />
         </Popup>
       </div>
