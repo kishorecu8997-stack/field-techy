@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HiCheckCircle } from "react-icons/hi";
 import { HiArrowUturnRight, HiXMark } from "react-icons/hi2";
 import TimelineList from "@/shared/components/TimelineList";
+import { formatDateTime } from "@/utils/formatDateTime";
 import type { OfferedJobStatusType } from "@/pages/engineer/search_result/types";
 import type { ProgressUpdate } from "../../types.d";
 import Popup from "@/shared/components/Popup";
@@ -25,14 +26,7 @@ import {
  * Status chips/icons and accent colors visually communicate state changes per entry.
  * Designed as a presentational component; network calls are simulated via props.
  */
-const formatNow = () =>
-  new Date().toLocaleString("en-US", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
+const formatNow = () => formatDateTime();
 
 const TimelineSection: React.FC<{
   OfferJobStatus?: OfferedJobStatusType;

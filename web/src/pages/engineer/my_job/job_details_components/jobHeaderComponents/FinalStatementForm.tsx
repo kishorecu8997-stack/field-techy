@@ -7,6 +7,7 @@ import { icons } from "@/config/icons";
 import { toast } from "react-toastify";
 import type { ProgressUpdate } from "../../types.d";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { formatDateTime } from "@/utils/formatDateTime";
 import {
   FINAL_STATEMENT_COLORS,
   FINAL_STATEMENT_DEFAULTS,
@@ -40,15 +41,6 @@ const FinalStatementForm = ({
     defaultValues: FINAL_STATEMENT_DEFAULTS,
   });
 
-  const formatNow = () =>
-    new Date().toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-
   const handleSubmit = (data: FinalStatementFields) => {
     const submitFinalStatement = () => {
       const taskFileName = data.completedTaskFile?.[0]?.name;
@@ -64,7 +56,7 @@ const FinalStatementForm = ({
         title: FINAL_STATEMENT_LABELS.title,
         description: data.notes,
         attachmentName: attachmentName || undefined,
-        timestamp: formatNow(),
+        timestamp: formatDateTime(),
         accentColor: FINAL_STATEMENT_COLORS.accent,
       };
 

@@ -5,6 +5,7 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
+import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import {
   REVISION_UPDATE_COLORS,
@@ -38,15 +39,6 @@ const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionReq
 
   const { showPopup } = usePopupStore();
 
-  const formatNow = () =>
-    new Date().toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-
   const handleSubmit = async (_data: RevisionUpdateFields) => {
     void _data;
     await showPopup({
@@ -70,7 +62,7 @@ const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionReq
               title: REVISION_UPDATE_LABELS.title,
               description: notes,
               attachmentName,
-              timestamp: formatNow(),
+              timestamp: formatDateTime(),
               statusText: REVISION_UPDATE_STATUS.approved,
               statusColor: REVISION_UPDATE_COLORS.approved,
               accentColor: REVISION_UPDATE_COLORS.accent,
@@ -79,7 +71,7 @@ const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionReq
               title: REVISION_UPDATE_LABELS.title,
               description: notes,
               attachmentName,
-              timestamp: formatNow(),
+              timestamp: formatDateTime(),
               statusText: REVISION_UPDATE_STATUS.waiting,
               statusColor: REVISION_UPDATE_COLORS.waiting,
               accentColor: REVISION_UPDATE_COLORS.accent,

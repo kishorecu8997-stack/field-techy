@@ -1,5 +1,5 @@
 import React from "react";
-import { HiCheckCircle } from "react-icons/hi";
+import { HiCheckCircle, HiClock } from "react-icons/hi";
 import { cn } from "./../libs/utils";
 import { TIMELINE_LIST_DEFAULTS } from "@/dummy_data/timelineListDummyData";
 
@@ -58,7 +58,7 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
                   {isApproved ? (
                     <HiCheckCircle aria-hidden />
                   ) : (
-                    <span aria-hidden>⏱</span>
+                    <HiClock aria-hidden />
                   )}
                   {item.statusText}
                 </span>

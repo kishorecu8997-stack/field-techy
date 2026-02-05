@@ -46,10 +46,8 @@ const TimelineSection: React.FC = () => {
   const [finalStatementStatus, setFinalStatementStatus] = useState<"pending" | "approved" | "rejected">("pending");
   const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [showRevisionConfirm, setShowRevisionConfirm] = useState(false);
-  const [pendingRevisionData, setPendingRevisionData] = useState<RevisionFormData | null>(null);
   const [showRevisionUpdateModal, setShowRevisionUpdateModal] = useState(false);
   const [showRevisionUpdateConfirm, setShowRevisionUpdateConfirm] = useState(false);
-  const [pendingRevisionUpdateData, setPendingRevisionUpdateData] = useState<RevisionFormData | null>(null);
   const [showShortBreakApprovalModal, setShowShortBreakApprovalModal] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
 
@@ -143,17 +141,14 @@ const TimelineSection: React.FC = () => {
     setShowRevisionModal(true);
   };
 
-  const handleRevisionSubmit = (data: RevisionFormData) => {
-    // Store data and show confirmation popup
-    setPendingRevisionData(data);
+  const handleRevisionSubmit = () => {
+    // Form data submitted—trigger confirmation
     setShowRevisionModal(false);
     setShowRevisionConfirm(true);
   };
 
   const handleRevisionConfirmSubmit = () => {
-    console.log("Revision data:", pendingRevisionData);
     setShowRevisionConfirm(false);
-    setPendingRevisionData(null);
     revisionFormMethods.reset();
     setProgressStatus("revision");
     setIsProgressCollapsed(true);
@@ -162,7 +157,6 @@ const TimelineSection: React.FC = () => {
 
   const handleRevisionConfirmCancel = () => {
     setShowRevisionConfirm(false);
-    setPendingRevisionData(null);
     // Re-open the revision form modal
     setShowRevisionModal(true);
   };
@@ -189,16 +183,14 @@ const TimelineSection: React.FC = () => {
     setShowRevisionUpdateModal(true);
   };
 
-  const handleRevisionUpdateSubmit = (data: RevisionFormData) => {
-    setPendingRevisionUpdateData(data);
+  const handleRevisionUpdateSubmit = () => {
+    // Form data submitted—trigger confirmation
     setShowRevisionUpdateModal(false);
     setShowRevisionUpdateConfirm(true);
   };
 
   const handleRevisionUpdateConfirmSubmit = () => {
-    console.log("Revision update data:", pendingRevisionUpdateData);
     setShowRevisionUpdateConfirm(false);
-    setPendingRevisionUpdateData(null);
     revisionUpdateFormMethods.reset();
     setRevisionUpdateStatus("revision");
     setIsRevisionUpdateCollapsed(true);
@@ -207,7 +199,6 @@ const TimelineSection: React.FC = () => {
 
   const handleRevisionUpdateConfirmCancel = () => {
     setShowRevisionUpdateConfirm(false);
-    setPendingRevisionUpdateData(null);
     setShowRevisionUpdateModal(true);
   };
 
@@ -222,7 +213,6 @@ const TimelineSection: React.FC = () => {
   };
 
   const handleShortBreakApprovalSubmit = () => {
-    console.log("Short break approval notes:", shortBreakNotes);
     setShowShortBreakApprovalModal(false);
     setShortBreakNotes("");
     setShortBreakStatus("approved");
@@ -928,7 +918,7 @@ const TimelineSection: React.FC = () => {
                     onChange={(e) => setShortBreakNotes(e.target.value)}
                     className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
                     rows={4}
-                    placeholder="Complete you work and you may take Break"
+                    placeholder="Complete your work and then take a break"
                   />
                 </div>
               </div>

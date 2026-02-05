@@ -4,6 +4,7 @@ import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import { toast } from "react-toastify";
 import {
@@ -31,14 +32,6 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
 
   const { showPopup } = usePopupStore();
 
-  const formatNow = () =>
-    new Date().toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
 
   const handleSubmit = async (data: UpdateLogFields) => {
     await showPopup({
@@ -60,7 +53,7 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
               title: UPDATE_LOG_LABELS.title,
               description: data.notes,
               attachmentName,
-              timestamp: formatNow(),
+              timestamp: formatDateTime(),
               accentColor: UPDATE_LOG_COLORS.accent,
             };
 

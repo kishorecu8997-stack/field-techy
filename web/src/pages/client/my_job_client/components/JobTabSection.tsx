@@ -45,6 +45,14 @@ type JobTabSectionProps = {
   showManageProposals?: boolean;
 };
 
+/**
+ * Client job tab section with conditional rendering for real jobs vs. dummy network engineer flows.
+ * Supports proposal accept/reject popups with centralized copy and toasts.
+ * Renders different tab layouts (baseTabs for real jobs, dummyTabs for dummy engineers).
+ * Tracks accepted/rejected proposals and manages remaining proposal count per session.
+ * Uses dummy data for tabs, proposals, overviews, and location/map defaults.
+ * Integrates with shared popup store and react-toastify for UX feedback.
+ */
 const JobTabSection: React.FC<JobTabSectionProps> = ({
   status,
   isWorkSubmitted,

@@ -8,6 +8,7 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { icons } from "@/config/icons";
 import { calculateTimeDuration } from "@/utils/validate";
+import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import {
   BREAK_REQUEST_COLORS,
@@ -47,15 +48,6 @@ const BreakRequestForm = ({
     setValue("duration", duration);
   }, [startTime, endTime, setValue]);
 
-  const formatNow = () =>
-    new Date().toLocaleString("en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-
   const handleSubmit = (data: BreakRequestFormFields) => {
     const descriptionParts = [] as string[];
     if (data.reason?.trim()) descriptionParts.push(data.reason.trim());
@@ -67,7 +59,7 @@ const BreakRequestForm = ({
     const baseUpdate: ProgressUpdate = {
       title: data.requestType || BREAK_REQUEST_LABELS.fallbackTitle,
       description: descriptionParts.join(": "),
-      timestamp: formatNow(),
+      timestamp: formatDateTime(),
       detailsType: "break",
       detailsLabel: BREAK_REQUEST_LABELS.detailsLabel,
       accentColor: BREAK_REQUEST_COLORS.accent,
@@ -78,14 +70,14 @@ const BreakRequestForm = ({
       requestType: data.requestType,
     };
 
-    // Pending/Waiting card
+// TEMP: Adding both statuses for UI demo until API integration
     onAddProgressUpdate?.({
       ...baseUpdate,
       statusText: BREAK_REQUEST_STATUS.waiting,
       statusColor: BREAK_REQUEST_COLORS.waiting,
     });
 
-    // Approved card
+// TEMP: Adding both statuses for UI demo until API integration
     onAddProgressUpdate?.({
       ...baseUpdate,
       statusText: BREAK_REQUEST_STATUS.approved,
@@ -117,7 +109,7 @@ const BreakRequestForm = ({
             name="requestType"
             placeholder={BREAK_REQUEST_LABELS.requestTypePlaceholder}
             required
-            options={BREAK_REQUEST_OPTIONS as unknown as { label: string; value: string }[]}
+            options={BREAK_REQUEST_OPTIONS}
           />
         </div>
 

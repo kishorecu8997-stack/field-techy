@@ -4,10 +4,10 @@
 
 import { TIMELINE_COLORS } from "@/dummy_data/engineerTimelineDummyData";
 
-export const BREAK_REQUEST_OPTIONS = [
+export const BREAK_REQUEST_OPTIONS: { label: string; value: string }[] = [
   { label: "Short Term Break", value: "Short Term Break" },
   { label: "Long Term Break", value: "Long Term Break" },
-] as const;
+];
 
 export const BREAK_REQUEST_DEFAULTS = {
   requestType: "Short Term Break" as const,
