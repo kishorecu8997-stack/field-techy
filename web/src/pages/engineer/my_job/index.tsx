@@ -75,6 +75,7 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
+          // todo: implement sort functionality later
           onSortChange={() => { }}
           isReport
         />
