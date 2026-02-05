@@ -10,6 +10,8 @@ import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { scrollToTop } from "@/utils";  
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -32,6 +34,9 @@ const MyJobsPage = () => {
     JOB_FILTERS.REMOTE,
     JOB_FILTERS.HYBRID,
   ];
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

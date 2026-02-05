@@ -5,6 +5,7 @@ import { ChatModeToggle } from "./components/ChatModeToggle";
 import { ChatSidebar } from "./components/ChatSidebar";
 import { ChatWindow } from "./components/ChatWindow";
 import type { ChatMode, Conversation } from "./types";
+import { scrollToTop } from "@/utils";
 
 /*
  * ChatLayout
@@ -18,6 +19,9 @@ import type { ChatMode, Conversation } from "./types";
 const ChatLayout: React.FC = () => {
   const [mode, setMode] = useState<ChatMode>("personal");
 
+  React.useEffect(() => {
+    scrollToTop();
+  }, []);
   const initialConversation = useMemo(
     () => conversations.find((c) => c.type === mode) ?? null,
     [mode],
