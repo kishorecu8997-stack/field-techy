@@ -77,10 +77,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
   return (
     <header className="flex items-center justify-between px-6 py-4 dark:bg-gray-900 ">
       <div className="flex items-center space-x-8 ">
-        <span onClick={() => {
-          navigate(absoluteUrls.client.home.dashboard);
-          scrollToTop();
-        }}>
+        <span
+          onClick={() => {
+            scrollToTop();
+            navigate(absoluteUrls.client.home.dashboard);
+          }}
+        >
           <IconWithTheme
             lightLogo={assetsConfig.logos.ftLogo}
             darkLogo={assetsConfig.logos.ftLogoWhite}

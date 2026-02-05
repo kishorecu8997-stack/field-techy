@@ -75,13 +75,12 @@ const MyJobsClient: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   useEffect(() => {
-      scrollToTop();
-    }, [currentPage]);
+    scrollToTop();
+  }, [currentPage]);
   const itemsPerPage = 6;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    scrollToTop();
   };
 
   const handleFilterChange = (filter: string) => {

@@ -8,7 +8,7 @@ import { useEffect } from "react";
  * Terms & Conditions page displaying static policy content from dummy data.
  */
 const TermsAndConditions = () => {
-   useEffect(() => {
+  useEffect(() => {
     scrollToTop();
   }, []);
   return (

@@ -9,7 +9,7 @@ import { useEffect } from "react";
  * Renders a header and content section via reusable components.
  */
 const FAQ = () => {
-   useEffect(() => {
+  useEffect(() => {
     scrollToTop();
   }, []);
   return (
