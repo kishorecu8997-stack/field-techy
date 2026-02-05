@@ -59,7 +59,7 @@ export interface EngineerData {
   tools?: string[];
   experiences?: Experience[];
   educations?: Education[];
-  files?: any;
+  files?: EngineerFile[];
 }
 
 export interface Sort {

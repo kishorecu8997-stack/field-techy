@@ -1,10 +1,11 @@
-import { IoMdMail } from "react-icons/io";
+import { IoMdMail, IoLogoWhatsapp } from "react-icons/io";
 import { MdLocalPhone } from "react-icons/md";
-import { IoLogoWhatsapp } from "react-icons/io";
-import { FaFacebook } from "react-icons/fa";
-import { FaInstagramSquare } from "react-icons/fa";
-import { FaTwitter } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagramSquare,
+  FaTwitter,
+  FaLinkedin,
+} from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
 import ReportPage from "@/pages/engineer/report";
@@ -31,11 +32,6 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row gap-12">
           <div className="md:w-1/3">
             <div className="mb-6">
-              {/* <img
-                src={assetsConfig.logos.ftLogo}
-                alt="Field Techy Logo"
-                className="h-12 w-auto"
-              /> */}
               <IconWithTheme
                 darkLogo={assetsConfig.logos.ftLogoWhite}
                 lightLogo={assetsConfig.logos.ftLogo}
@@ -89,7 +85,7 @@ const Footer = () => {
                   onClick={() => scrollToTop()}
                   className="text-gray-600 dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
-                  Explore Jobs
+                  {isClient ? "Explore Engineers" : "Explore Jobs"}
                 </NavLink>
               </li>
               <li>
@@ -100,7 +96,7 @@ const Footer = () => {
                   }}
                   className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-green-800 dark:hover:text-green-500 transition-colors"
                 >
-                  My Earning
+                  {isClient ? "My Wallet" : "My Earnings"}
                 </div>
               </li>
               <li>

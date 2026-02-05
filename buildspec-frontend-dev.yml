@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo Installing dependencies...
+      - cd web
+      - npm ci
+  pre_build:
+    commands:
+      - echo Generating API client...
+      - npm run openapi:client
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo "Environment - DEV"
+      - echo "Building with API URL - $VITE_API_URL"
+      - npm run build
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo Deploying to S3...
+      - aws s3 sync dist/ s3://$S3_BUCKET --delete
+      - echo Invalidating CloudFront cache...
+      - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'web/dist'

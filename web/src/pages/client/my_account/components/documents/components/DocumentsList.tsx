@@ -27,9 +27,7 @@ export interface Document {
   uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
-  // TODO: Implement expiry date functionality
   expiryDate?: string;
-  // TODO: Implement status functionality (Pending | Approved | Rejected)
   status?: "Pending" | "Approved" | "Rejected";
   allowMultiple?: boolean;
 }
@@ -148,9 +146,9 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
     const doc = documents.find((d) => d.id === id);
     if (!doc) return;
 
-    showPopup({
+    await showPopup({
       title: "Delete Document",
-      body: "Are you sure you want to delete this document?",
+      body: `Are you sure you want to delete ${doc.title}?`,
       actionButtons: [
         {
           label: "Cancel",

@@ -8,6 +8,7 @@ import {
   useVerifyEmailOTP,
   useVerifyPhoneOTP,
 } from "@/shared/apiServices/engineer/engineerService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 interface EngineerOTPPageProps {
   header?: string;
@@ -83,10 +84,10 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
         await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
       }
       handleNavigate?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
       method.setError("otp", {
         type: "manual",
-        message: error?.message || "Invalid OTP. Please try again.",
+        message: GlobalApiErrorHandler.handle(error).message,
       });
     }
   };

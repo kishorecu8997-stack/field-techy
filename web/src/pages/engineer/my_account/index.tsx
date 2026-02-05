@@ -93,7 +93,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
       },
     },
     {
-      label: "My Earning",
+      label: "My Earnings",
       icon: FaWallet,
       id: "earning",
       onClick: () => onMenuItemClick("earning"),

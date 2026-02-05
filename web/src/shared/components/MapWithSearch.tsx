@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 import {
   MapContainer,
   Marker,
@@ -11,20 +11,13 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { MapComponentProps } from "./type";
-import { AiOutlineClose } from "react-icons/ai"; // Example close icon
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Button } from "@/shared/components/commonUI/Buttons";
 
+import { fixLeafletIcon } from "@/utils/leafletSetup";
+
 // Fix default icon issue
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+fixLeafletIcon();
 
 /* ===========================================================
    DYNAMIC MAP INTERACTION CONTROLLER (IMPORTANT)
@@ -33,8 +26,19 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
   viewOnly,
 }) => {
   const map = useMap();
+  const zoomControlRef = useRef<L.Control.Zoom | null>(null);
 
   useEffect(() => {
+    if (!viewOnly && !zoomControlRef.current) {
+      const zc = L.control.zoom({ position: "topleft" });
+      zc.addTo(map);
+      zoomControlRef.current = zc;
+    } else if (viewOnly && zoomControlRef.current) {
+      zoomControlRef.current.remove();
+      zoomControlRef.current = null;
+    }
+
+    // Handle interactions
     if (viewOnly) {
       map.dragging.disable();
       map.scrollWheelZoom.disable();
@@ -42,10 +46,6 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.boxZoom.disable();
       map.keyboard.disable();
       map.touchZoom.disable();
-
-      // Remove zoom control visually
-
-      map.zoomControl?.remove();
     } else {
       map.dragging.enable();
       map.scrollWheelZoom.enable();
@@ -53,15 +53,26 @@ const MapInteractionController: React.FC<{ viewOnly: boolean }> = ({
       map.boxZoom.enable();
       map.keyboard.enable();
       map.touchZoom.enable();
-
-      // Re-enable zoom control
-
-      map.zoomControl?.addTo(map);
     }
+    return () => {
+      if (zoomControlRef.current) {
+        zoomControlRef.current.remove();
+        zoomControlRef.current = null;
+      }
+    };
   }, [viewOnly, map]);
 
   return null;
 };
+
+interface NominatimResult {
+  lat: string;
+  lon: string;
+  display_name: string;
+  address?: {
+    [key: string]: string;
+  };
+}
 
 /* ===========================================================
    SEARCH BAR COMPONENT
@@ -70,15 +81,9 @@ const MapSearchBar: React.FC<{
   onSelect: (latlng: L.LatLng, name: string) => void;
 }> = ({ onSelect }) => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
   const [, setLoading] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-
-  // const handleClear = () => {
-  //   setQuery("");
-  //   setSuggestions([]);
-  //   setUserTyping(false);
-  // };
 
   useEffect(() => {
     if (!userTyping || !query.trim()) {
@@ -106,7 +111,7 @@ const MapSearchBar: React.FC<{
     return () => clearTimeout(timeout);
   }, [query, userTyping]);
 
-  const handleSelect = (place: any) => {
+  const handleSelect = (place: NominatimResult) => {
     const lat = parseFloat(place.lat);
     const lon = parseFloat(place.lon);
 
@@ -275,7 +280,7 @@ const MapSearch: React.FC<MapComponentProps> = ({
       <MapContainer
         center={initialPosition}
         zoom={initialZoom}
-        zoomControl={!viewOnly}
+        zoomControl={false}
         dragging={!viewOnly}
         scrollWheelZoom={!viewOnly}
         doubleClickZoom={!viewOnly}
