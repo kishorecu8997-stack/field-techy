@@ -14,12 +14,9 @@ import { useState } from "react";
 import OTPPage from "../../../pages/engineer/auth/components/OTPPage";
 import type { AppForgotPasswordError } from "@/api";
 
-
 export type ForgetPasswordFormData = {
   email: string;
 };
-
-
 
 interface AuthForgetPasswordProps {
   role: "client" | "engineer";
@@ -31,6 +28,7 @@ interface AuthForgetPasswordProps {
  * @param {"client" | "engineer"} props.role - The role of the user.
  * @returns {JSX.Element} The AuthForgetPassword component.
  */
+
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -41,11 +39,9 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
   });
   const { success, error: toastError } = useToast();
 
-
   const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
-      // Open OTP popup and let OTPPage's onSubmit perform navigation after verification
       setIsOpen(true);
     },
     onError: (err: AppForgotPasswordError) => {
