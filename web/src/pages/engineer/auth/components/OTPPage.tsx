@@ -71,6 +71,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
   initialTimerSeconds = 60,
   maxResendAttempts = Infinity,
   onResend,
+  handleNavigate,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(initialTimerSeconds);
   const [resendCount, setResendCount] = useState<number>(0);

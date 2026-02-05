@@ -9,11 +9,17 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import Popup from "@/shared/components/Popup";
+import { useState } from "react";
+import OTPPage from "../../../pages/engineer/auth/components/OTPPage";
 import type { AppForgotPasswordError } from "@/api";
+
 
 export type ForgetPasswordFormData = {
   email: string;
 };
+
+
 
 interface AuthForgetPasswordProps {
   role: "client" | "engineer";
@@ -26,14 +32,15 @@ interface AuthForgetPasswordProps {
  * @returns {JSX.Element} The AuthForgetPassword component.
  */
 const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { success, error: toastError } = useToast();
-
   const methods = useForm<ForgetPasswordFormData>({
     defaultValues: {
       email: "",
     },
   });
+  const { success, error: toastError } = useToast();
+
 
   const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
@@ -73,7 +80,7 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-base font-normal text-gray-700 dark:text-gray-300 ">
-            Enter your email id address to reset your password.
+            Enter your email address to reset your password.
           </h2>
         </div>
         <FormContainer
@@ -101,6 +108,17 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             Submit
           </Button>
         </FormContainer>
+
+        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+          <OTPPage
+            header="Enter the OTP"
+            description="We sent you an OTP code"
+            onClose={() => setIsOpen(false)}
+            onSubmit={() =>
+              navigate(absoluteUrls.engineer.auth.reset_password)
+            }
+          />
+        </Popup>
       </div>
     </div>
   );
