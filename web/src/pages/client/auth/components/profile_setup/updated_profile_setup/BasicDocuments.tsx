@@ -88,7 +88,7 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<any>[] = [];
+    const uploads: Promise<AppUploadProfileFileResponse>[] = [];
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
