@@ -29,7 +29,6 @@ export const validateName = (value: string) => {
   return true;
 };
 
-
 /**
  * Validate email address - based on a more secure regex pattern.
  */

@@ -1,6 +1,6 @@
 export const ClientTypeEnum = {
-  HOME: "home",
-  CORPORATE: "corporate",
+  HOME: "HOME",
+  CORPORATE: "CORPORATE",
 } as const;
 
 export type ClientTypeEnum =

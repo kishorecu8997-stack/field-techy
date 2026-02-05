@@ -1,4 +1,5 @@
 import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
 import type { VerifiedEmailInputFieldProps } from "@/shared/components/commonUI/inputs/type";
@@ -63,14 +64,12 @@ export const PasswordOTPVerification = ({
       clearErrors(name); // Clear any previous errors
       setVerified(true);
       trigger(name);
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        "Failed to send OTP. Please try again.";
-      toast.error(errorMessage);
+    } catch (error: unknown) {
+      const errorObj = GlobalApiErrorHandler.handle(error);
+      toast.error(errorObj.message);
       setError(name, {
         type: "manual",
-        message: errorMessage,
+        message: errorObj.message,
       });
     }
   };

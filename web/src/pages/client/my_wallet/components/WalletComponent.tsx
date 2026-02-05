@@ -117,7 +117,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
               {showBalance ? formatCurrency(data.currentBalance) : "******"}
             </p>
             {!showBalance ? (
-              <BsEyeSlashFill
+              <BsEyeFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(true)}
                 role="button"
@@ -131,7 +131,7 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
                 }}
               />
             ) : (
-              <BsEyeFill
+              <BsEyeSlashFill
                 className="cursor-pointer text-lg"
                 onClick={() => setShowBalance(false)}
                 role="button"

@@ -47,10 +47,6 @@ export class ClientRouteStrategy implements RouteStrategy {
             element: withSuspense(Components.ClientSetPassword),
           },
           {
-            path: urls.client.auth.background_verification,
-            element: withSuspense(Components.ClientBackgroundVerification),
-          },
-          {
             path: urls.client.auth.account_type,
             element: withSuspense(Components.ClientAccountType),
           },

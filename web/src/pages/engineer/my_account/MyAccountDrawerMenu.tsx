@@ -5,6 +5,10 @@ import ProfileCard from "@/shared/components/commonUI/ProfileCard";
 import LogoutConfirmationPopup from "@/shared/components/LogoutConfirmationPopup";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
+  useClientProfile,
+  useClientStore,
+} from "@/shared/store/useClientStore";
+import {
   useEngineerProfile,
   useEngineerStore,
 } from "@/shared/store/useEngineerStore";
@@ -60,7 +64,7 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   const menuItems: MenuItems[] = [
     { label: "My Profile", icon: FaUser, key: "profile" },
     { label: "My Jobs", icon: FaBriefcase, key: "jobs" },
-    { label: "My Earning", icon: FaWallet, key: "earning" },
+    { label: "My Earnings", icon: FaWallet, key: "earning" },
     { label: "Saved Jobs", icon: FaBookmark, key: "saved" },
     { label: "Settings", icon: FaCog, key: "settings" },
     {
@@ -75,26 +79,58 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
   ];
 
   const logout = useUserSessionStore((state) => state.logout);
+  const session = useUserSessionStore((state) => state.session);
+  const navigate = useNavigate();
+
+  // Engineer Data
   const engineerProfile = useEngineerProfile();
-  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfileImageUrl = useEngineerStore(
+    (state) => state.profileImageUrl,
+  );
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
-  const navigate = useNavigate();
+
+  // Client Data
+  const clientProfile = useClientProfile();
+  const clientProfileImageUrl = useClientStore(
+    (state) => state.profileImageUrl,
+  );
+  const clearClientProfile = useClientStore(
+    (state) => state.clearClientProfile,
+  );
+
+  const isClient = session?.role === "CLIENT";
+
+  const displayName = isClient
+    ? (clientProfile?.clientType === "CORPORATE"
+        ? clientProfile?.companyName
+        : clientProfile?.contactPersonName) || "Client"
+    : engineerProfile?.fullName || "";
+
+  const displayTitle = isClient
+    ? clientProfile?.clientType === "CORPORATE"
+      ? "Corporate Client"
+      : "Home Client"
+    : String(engineerProfile?.serviceCategory || "");
+
+  const displayImage = isClient
+    ? clientProfileImageUrl || assetsConfig.images.profile.defaultProfileImage
+    : engineerProfileImageUrl ||
+      assetsConfig.images.profile.defaultProfileImage;
+
   return (
     <>
       <FormContainer methods={methods}>
         <div>
           <ProfileCard
-            avatarUrl={
-              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
-            }
-            name={engineerProfile?.fullName || ""}
-            title={String(engineerProfile?.serviceCategory || "")}
-            rating={engineerProfile?.averageRating || 0}
+            avatarUrl={displayImage}
+            name={displayName}
+            title={displayTitle}
+            rating={isClient ? 4.0 : engineerProfile?.averageRating || 0} // Placeholder for Client
             reviewCount={10}
-            completionPercentage={39}
-            engineerId={engineerProfile?.id}
+            completionPercentage={isClient ? 100 : 39} // Placeholder for Client
+            engineerId={!isClient ? engineerProfile?.id : undefined}
           />
         </div>
         {menuItems.map((item, index, array) => (
@@ -160,8 +196,13 @@ const MyAccountDrawerMenu: React.FC<DrawerMenuProps> = ({
           onConfirm={() => {
             logout();
             clearEngineerProfile();
+            clearClientProfile();
             onClose();
-            navigate(absoluteUrls.engineer.auth.login);
+            if (session?.role === "CLIENT") {
+              navigate(absoluteUrls.client.auth.login);
+            } else {
+              navigate(absoluteUrls.engineer.auth.login);
+            }
           }}
           onCancel={() => setIsOpen(false)}
         />
