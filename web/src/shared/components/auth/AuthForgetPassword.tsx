@@ -107,16 +107,16 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             onClose={() => setIsOpen(false)}
             onSubmit={(otpData) => {
               const resetUrl =
-              role === "client"
-              ? absoluteUrls.client.auth.reset_password
-              : absoluteUrls.engineer.auth.reset_password;
+                role === "client"
+                  ? absoluteUrls.client.auth.reset_password
+                  : absoluteUrls.engineer.auth.reset_password;
               const otpQuery =
-              otpData && otpData.otp
-              ? `&otp=${encodeURIComponent(otpData.otp)}`
-              : "";
+                otpData && otpData.otp
+                  ? `&otp=${encodeURIComponent(otpData.otp)}`
+                  : "";
               navigate(
                 `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`,
-                 );
+              );
             }}
           />
         </Popup>
