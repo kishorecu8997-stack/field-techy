@@ -2,7 +2,7 @@ import { AboutAppSection } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import ContentPage from "./ContentPage";
 import { useEffect } from "react";
-import { scrollToTop } from "@/utils";  
+import { scrollToTop } from "@/utils";
 
 /**
  * About App page displaying information about the application using static dummy data.

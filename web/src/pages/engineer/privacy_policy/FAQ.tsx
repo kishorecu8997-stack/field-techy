@@ -1,7 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FAQData } from "@/dummy_data/policyDatas";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useEffect } from "react";
 import { scrollToTop } from "@/utils";
 
 /**

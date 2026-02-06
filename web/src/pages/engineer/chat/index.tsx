@@ -1,6 +1,6 @@
 import { conversations, messages } from "@/dummy_data/client";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChatModeToggle } from "./components/ChatModeToggle";
 import { ChatSidebar } from "./components/ChatSidebar";
 import { ChatWindow } from "./components/ChatWindow";
@@ -19,7 +19,7 @@ import { scrollToTop } from "@/utils";
 const ChatLayout: React.FC = () => {
   const [mode, setMode] = useState<ChatMode>("personal");
 
-  React.useEffect(() => {
+  useEffect(() => {
     scrollToTop();
   }, []);
   const initialConversation = useMemo(
@@ -32,7 +32,7 @@ const ChatLayout: React.FC = () => {
   >(initialConversation?.id ?? null);
 
   // When mode changes, move selection to first conv in that mode
-  React.useEffect(() => {
+  useEffect(() => {
     const firstInMode = conversations.find((c) => c.type === mode) ?? null;
     setSelectedConversationId(firstInMode?.id ?? null);
   }, [mode]);
