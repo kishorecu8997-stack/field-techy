@@ -13,6 +13,7 @@ import {
 } from "../../search_result/types";
 import { Link } from "react-router-dom";
 import { absoluteUrls } from "@/config/urls";
+import LocationDisplay from "./LocationDisplay";
 
 interface JobCardProps {
   job: Job;
@@ -102,7 +103,13 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
           <IoLocationOutline className="w-4 h-4 mr-2 flex-shrink-0" />
-          {location}
+          <LocationDisplay
+            countryId={job.countryId}
+            stateId={job.stateId}
+            cityId={job.cityId}
+            workLocationName={job.workLocationName}
+            fallback={location}
+          />
         </div>
 
         {!isDummyNetworkEngineer && (

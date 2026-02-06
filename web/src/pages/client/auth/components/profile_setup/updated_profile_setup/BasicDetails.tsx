@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import BasicDetailsFields from "./BasicDetailsFields";
 import { type ClientBasicDetails, ClientTypeEnum } from "./types";
 import { absoluteUrls } from "@/config/urls";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 /**
  * A component that represents the first step of the user registration process, focusing on profile setup.
@@ -102,9 +103,7 @@ const BasicDetails = () => {
       navigate("/client/auth/verification");
     },
     onError: (error: unknown) => {
-      toast.error(
-        (error as Error)?.message || "Registration failed. Please try again.",
-      );
+      toast.error(GlobalApiErrorHandler.handle(error).message);
     },
   });
 

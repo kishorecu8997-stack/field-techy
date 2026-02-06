@@ -22,7 +22,8 @@ export type LookupTable =
   | "serviceCategories"
   | "workLocations"
   | "educationLevels"
-  | "courses";
+  | "courses"
+  | "engagementModels";
 
 type QueryKey = readonly unknown[];
 type LookupQueryOptions = UseQueryOptions<
@@ -37,7 +38,8 @@ type LookupQueryOptions = UseQueryOptions<
  */
 export const useApiClient = () => {
   const baseUrl =
-    (import.meta as any).env?.VITE_API_URL_NEW ?? "http://localhost:3000";
+    (import.meta.env as { VITE_API_URL_NEW?: string }).VITE_API_URL_NEW ??
+    "http://localhost:3000";
   return useMemo(() => createClient({ baseUrl }), [baseUrl]);
 };
 
@@ -66,7 +68,7 @@ export function useLookup(
       query,
       responseStyle: "data",
     });
-    return Array.isArray(res) ? res : (res && res.data) || [];
+    return Array.isArray(res) ? res : (res && (res as any).data) || [];
   };
 
   // Safely merge options but exclude `queryKey` to avoid type conflicts
@@ -114,3 +116,5 @@ export const useEducationLevels = (options?: LookupCallOptions) =>
   useLookup("educationLevels", undefined, options);
 export const useCourses = (options?: LookupCallOptions) =>
   useLookup("courses", undefined, options);
+export const useEngagementModels = (options?: LookupCallOptions) =>
+  useLookup("engagementModels", undefined, options);

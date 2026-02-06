@@ -1,15 +1,22 @@
+import type { ClientPostJobData, ClientPostJobResponse } from "@/api";
 import { absoluteUrls } from "@/config/urls";
-import { TemplateData, experienceLevel } from "@/dummy_data/client";
-import { countries } from "@/dummy_data/countries";
-import { serviceCategories } from "@/dummy_data/serviceCategories";
+import { JOB_TYPES } from "@/constants/jobTypes";
+import { TemplateData } from "@/dummy_data/client";
+import {
+  useClientGetJobs,
+  useClientGetRateCard,
+  useClientMarkJobFileUploaded,
+  useClientPostJob,
+} from "@/shared/apiServices/client/clientOpenApiService";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { usePopupStore } from "@/shared/store/popupStore";
 import usePostAJobStore, {
   CurrentLocation,
 } from "@/shared/store/postAJobStore";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -17,11 +24,10 @@ import {
   OccurrenceEndType,
   OccurrenceFields,
   RepeatByFields,
-  type locationTypeType,
   type PostAJobFieldsProps,
   type PostOption,
 } from "../types";
-import { ENGAGEMENT_MODELS } from "@/dummy_data/jobFormOptions";
+import BillSummary from "./components/form_sections/BillSummary";
 import PostAJobFields from "./components/PostAJobFields";
 import JobPostDropdown from "./JobPostDropdown";
 
@@ -34,7 +40,9 @@ import JobPostDropdown from "./JobPostDropdown";
 const PostJobPage = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
-  const { currentLocation } = usePostAJobStore();
+  const { currentLocation, rate, currencyId, setRateAndCurrency } =
+    usePostAJobStore();
+  const { refetch: refetchJobs } = useClientGetJobs();
   const billConsentRef = useRef(false);
   const isDisable = false;
 
@@ -44,7 +52,7 @@ const PostJobPage = () => {
       jobName: "",
       jobTitle: "",
       serviceCategory: "",
-      locationType: "" as unknown as locationTypeType,
+      locationType: JOB_TYPES.onsite,
       location: "",
       engagementModel: "",
       country: "",
@@ -85,6 +93,50 @@ const PostJobPage = () => {
     },
     mode: "onSubmit",
   });
+  const selectedCountry = formCtx.watch("country");
+  const serviceCategory = formCtx.watch("serviceCategory");
+  const experienceLevel = formCtx.watch("experienceLevel");
+  const engagementModel = formCtx.watch("engagementModel");
+  const { mutate: getRateCard } = useClientGetRateCard();
+
+  useEffect(() => {
+    if (
+      !serviceCategory ||
+      !experienceLevel ||
+      !engagementModel ||
+      !selectedCountry
+    ) {
+      setRateAndCurrency("", 0);
+      return;
+    }
+
+    getRateCard(
+      {
+        query: {
+          serviceCategoryId: Number(serviceCategory),
+          experienceLevelId: Number(experienceLevel),
+          engagementModelId: Number(engagementModel),
+          countryId: Number(selectedCountry),
+        },
+      },
+      {
+        onSuccess: (response) => {
+          setRateAndCurrency(
+            `${response.rate}${response.currencySymbol}`,
+            response.currencyId,
+          );
+        },
+        onError: () => setRateAndCurrency("0", 0),
+      },
+    );
+  }, [
+    serviceCategory,
+    experienceLevel,
+    engagementModel,
+    selectedCountry,
+    getRateCard,
+    setRateAndCurrency,
+  ]);
 
   const getTemplateData = () => {
     return TemplateData.map((item) => ({
@@ -129,129 +181,14 @@ const PostJobPage = () => {
 
   const handleSubmit = async (data: PostAJobFieldsProps) => {
     billConsentRef.current = false;
-    const ratePerWeek = 2000;
-
-    const getLabel = (opts: { value: string; label: string }[], v?: string) =>
-      opts.find((o) => o.value === v)?.label || "-";
-
-    const formatDate = (value?: Date | null): string => {
-      if (!value) return "-";
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return "-";
-      return d.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    };
-
-    const getDuration = (start?: Date | null, end?: Date | null) => {
-      if (!start || !end) return { days: 1, weeks: 1 };
-      const s = new Date(start).getTime();
-      const e = new Date(end).getTime();
-      if (Number.isNaN(s) || Number.isNaN(e) || e < s)
-        return { days: 1, weeks: 1 };
-      const diffDays = Math.max(1, Math.ceil((e - s) / 86400000));
-      const weeks = Math.max(1, Math.ceil(diffDays / 7));
-      return { days: diffDays, weeks };
-    };
-
-    const duration = getDuration(data.startDate, data.endDate);
-    const weeks = duration.weeks;
-    const toolBudget = data.toolBudgetTotal || 0;
-    const totalBill =
-      ratePerWeek * weeks * Number(data.numberOfVacancy || 1) + toolBudget;
-    const currency = new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(totalBill);
-
     const body = (
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Service Category</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(serviceCategories, data.serviceCategory)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Country</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(countries, data.country)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Engineer Experience Level</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(experienceLevel, data.experienceLevel)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Engagement Model</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {getLabel(ENGAGEMENT_MODELS, data.engagementModel)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Rate</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              ₹{ratePerWeek}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Duration</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs text-right">
-              {formatDate(data.startDate)} – {formatDate(data.endDate)} (
-              {duration.days < 7
-                ? `${duration.days} ${duration.days === 1 ? "day" : "days"}`
-                : `${weeks} ${weeks === 1 ? "week" : "weeks"}`}
-              )
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Number of Vacancies</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {data.numberOfVacancy || "-"}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Tools Cost</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              {data.toolBudgetTotal
-                ? `₹${data.toolBudgetTotal.toLocaleString("en-IN")}`
-                : "-"}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Service Charge</span>
-            <span className="px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs">
-              Free
-            </span>
-          </div>
-        </div>
-        <hr className="border-gray-200 dark:border-gray-600" />
-        <div className="flex items-center justify-between text-lg font-semibold text-gray-900 dark:text-gray-100 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 rounded px-3 py-2">
-          <span>Total Bill</span>
-          <span>{currency}</span>
-        </div>
-
-        <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 dark:bg-gray-700 dark:border-gray-600"
-            defaultChecked={billConsentRef.current}
-            onChange={(e) => {
-              billConsentRef.current = e.target.checked;
-            }}
-          />
-          <span>
-            By continuing, you agree to share this data within the selected
-            region
-          </span>
-        </label>
-      </div>
+      <BillSummary
+        data={data}
+        defaultConsent={billConsentRef.current}
+        onConsentChange={(checked) => {
+          billConsentRef.current = checked;
+        }}
+      />
     );
 
     await showPopup({
@@ -284,16 +221,144 @@ const PostJobPage = () => {
             }
             await handlePostAJob(data);
             close(true);
-            navigate(absoluteUrls.client.home.my_jobs);
           },
         },
       ],
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePostAJob = async (_data: PostAJobFieldsProps) => {
-    toast.success("Job Posted successfully");
+  const { mutate: postJob, isPending: isPosting } = useClientPostJob();
+  const { mutateAsync: markUploaded } = useClientMarkJobFileUploaded();
+
+  const getRequiredNumber = (val: unknown, fieldName: string): number => {
+    const num = Number(val);
+    if (!num) throw new Error(`${fieldName} is required`);
+    return num;
+  };
+  const uploadFile = (file: File, url: string) =>
+    fetch(url, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+  const uploadAttachmentsAndTools = async (
+    response: ClientPostJobResponse,
+    data: PostAJobFieldsProps,
+  ) => {
+    const uploadPromises: Promise<unknown>[] = [];
+    if (data.attachment?.[0] && response.uploadUrls.attachment) {
+      uploadPromises.push(
+        uploadFile(data.attachment[0], response.uploadUrls.attachment),
+      );
+    }
+    (data.toolsData ?? [])
+      .filter((t) => t.images?.[0]?.file)
+      .forEach((tool, index) => {
+        const url = response.uploadUrls.tools?.[index];
+        if (url && tool.images?.[0]?.file)
+          uploadPromises.push(uploadFile(tool.images[0].file, url));
+      });
+    await Promise.all(uploadPromises);
+    if (uploadPromises.length > 0) {
+      await markUploaded({ body: { jobId: response.id } });
+    }
+  };
+  const createJobPayload = (
+    data: PostAJobFieldsProps,
+  ): ClientPostJobData["body"] => {
+    if (!data.attachment || data.attachment.length === 0) {
+      throw new Error("Attachment is required");
+    }
+
+    const tools = (data.toolsData || []).map((t) => {
+      if (!t.images || t.images.length === 0 || !t.images[0].file) {
+        throw new Error(`Image is required for tool: ${t.name}`);
+      }
+      return {
+        toolId: Number(t.id) || 0,
+        budget: Number(t.budget.replace(/[^0-9.]/g, "")) || 0,
+        image: {
+          filename: t.images[0].file.name,
+          size: t.images[0].file.size,
+          mimeType: t.images[0].file.type,
+        },
+      };
+    });
+
+    return {
+      jobTitle: data.jobTitle,
+      jobDescription: data.description,
+      jobType: data.locationType,
+      countryId: getRequiredNumber(data.country, "Country"),
+      stateId: getRequiredNumber(data.state, "State"),
+      cityId: getRequiredNumber(data.city, "City"),
+      startDate: data.startDate ? data.startDate.toISOString() : undefined,
+      endDate: data.endDate ? data.endDate.toISOString() : undefined,
+      vacancies: Number(data.numberOfVacancy) || 1,
+      serviceCategoryId: getRequiredNumber(
+        data.serviceCategory,
+        "Service Category",
+      ),
+      experienceLevelId: getRequiredNumber(
+        data.experienceLevel,
+        "Experience Level",
+      ),
+      engagementModelId: getRequiredNumber(
+        data.engagementModel,
+        "Engagement Model",
+      ),
+      additionalDetails: data.otherInfo,
+      currencyId: currencyId,
+      skills: (data.skills || [])
+        .map((s) => Number(s))
+        .filter((n) => !isNaN(n)),
+      tools,
+      attachment: {
+        filename: data.attachment[0].name,
+        size: data.attachment[0].size,
+        mimeType: data.attachment[0].type,
+      },
+    };
+  };
+
+  const handlePostAJob = async (data: PostAJobFieldsProps) => {
+    let payload: ClientPostJobData["body"];
+
+    try {
+      payload = createJobPayload(data);
+    } catch (error: unknown) {
+      return toast.error((error as Error).message);
+    }
+
+    postJob(
+      { body: payload },
+      {
+        onSuccess: async (response) => {
+          try {
+            await uploadAttachmentsAndTools(response, data);
+            toast.success("Your job has been successfully posted!");
+            refetchJobs();
+            navigate(absoluteUrls.client.home.my_jobs);
+          } catch {
+            const hasFilesToUpload =
+              (data.attachment?.length ?? 0) > 0 ||
+              (data.toolsData?.some((t) => t.images?.length > 0) ?? false);
+            if (hasFilesToUpload) {
+              toast.info(
+                "Job created, but some file uploads failed. Please verify the job and re-attach files if needed.",
+              );
+            } else {
+              toast.success("Your job has been successfully posted!");
+            }
+
+            navigate(absoluteUrls.client.home.my_jobs);
+          }
+        },
+        onError: (error: unknown) => {
+          toast.error(GlobalApiErrorHandler.handle(error).message);
+        },
+      },
+    );
   };
 
   return (
@@ -301,17 +366,11 @@ const PostJobPage = () => {
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <MyJobsHeader
           title={
-            currentLocation === CurrentLocation.dedicated
-              ? "Post a Job - Dedicated Service"
-              : currentLocation === CurrentLocation.dispatch
-                ? "Post a Job - Dispatch Service"
-                : currentLocation === CurrentLocation.scheduled
-                  ? "Post a Job - Scheduled Service"
-                  : currentLocation === CurrentLocation.fullTime
-                    ? "Post a Job - Full Time"
-                    : currentLocation === CurrentLocation.onDemand
-                      ? "Post a Job - On Demand"
-                      : "Post a Job"
+            currentLocation === CurrentLocation.fullTime
+              ? "Post a Job - Full Time"
+              : currentLocation === CurrentLocation.onDemand
+                ? "Post a Job - On Demand"
+                : "Post a Job"
           }
           isReport={false}
           isShowSort={false}
@@ -324,8 +383,9 @@ const PostJobPage = () => {
             )
           }
         />
-
-        {currentLocation && <PostAJobFields isDisable={isDisable} />}
+        {currentLocation && (
+          <PostAJobFields rate={rate} isDisable={isDisable || isPosting} />
+        )}
       </FormContainer>
     </div>
   );

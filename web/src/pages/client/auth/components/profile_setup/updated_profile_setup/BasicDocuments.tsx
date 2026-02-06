@@ -8,7 +8,11 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
+import {
+  useUploadClientFile,
+  useAppMarkProfileFileUploaded,
+} from "@/shared/apiServices/client/clientOpenApiService";
+import { type ClientDocumentType } from "@/shared/apiServices/client/clientTypes";
 import { useState } from "react";
 
 interface DocumentFormData {
@@ -51,39 +55,67 @@ const BasicDocuments = () => {
   const { clearStore } = useClientRegistrationStore();
   const { updateDocuments } = useClientRegistrationStore();
 
+  const { mutateAsync: markUploadedAsync } = useAppMarkProfileFileUploaded();
+
   const { mutateAsync: uploadFileAsync } = useUploadClientFile({
-    // @ts-ignore - The types from react-query/clientService might be slightly off regarding the second argument 'variables'
-    onSuccess: (data: any, variables: any) => {
-      console.log("File uploaded:", data);
-
-      // Map document type to store key
-      switch (variables.documentType) {
-        case "PROFILE_PICTURE":
-          updateDocuments({ profileImageUrl: data.fileId });
-          break;
-        case "GOVERNMENT_ID":
-          updateDocuments({ governmentIdUrl: data.fileId });
-          break;
-        case "CERTIFICATE":
-          updateDocuments({ certificateUrl: data.fileId });
-          break;
+    onProgress: (progress: { percentage?: number }) => {
+      if (progress.percentage && uploadingDoc) {
+        setUploadProgress((prev) => ({
+          ...prev,
+          [uploadingDoc]: progress.percentage!,
+        }));
       }
-
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
-    },
-    onError: (error) => {
-      console.error("Upload failed:", error);
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-    onProgress: (progress) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
     },
   });
+
+  const handleUploadProcess = async (
+    file: File,
+    type: "profilePicture" | "govIdDoc" | "certificateDoc",
+  ) => {
+    const docKey: ClientDocumentType =
+      type === "profilePicture"
+        ? "PROFILE_PICTURE"
+        : type === "govIdDoc"
+          ? "GOVERNMENT_ID"
+          : "CERTIFICATE";
+
+    setUploadingDoc(docKey);
+    try {
+      const uploadResponse = await uploadFileAsync({
+        clientId: clientId!,
+        file,
+        documentType: docKey,
+      });
+
+      if (uploadResponse?.fileId) {
+        await markUploadedAsync({
+          body: {
+            fileId: Number(uploadResponse.fileId),
+          },
+          headers: { authorization: "" },
+        });
+
+        // Update local store with the resulting ID if needed
+        switch (type) {
+          case "profilePicture":
+            updateDocuments({ profileImageUrl: uploadResponse.fileId });
+            break;
+          case "govIdDoc":
+            updateDocuments({ governmentIdUrl: uploadResponse.fileId });
+            break;
+          case "certificateDoc":
+            updateDocuments({ certificateUrl: uploadResponse.fileId });
+            break;
+        }
+
+        toast.success(`${docKey.replace("_", " ")} linked successfully`);
+      }
+    } catch {
+      toast.error(`Error uploading ${type}`);
+    } finally {
+      setUploadingDoc(null);
+    }
+  };
 
   const handleSkip = () => {
     showPopup({
@@ -125,63 +157,16 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<any>[] = [];
+    const uploads: Promise<void>[] = [];
 
     if (data.profileImage && data.profileImage instanceof File) {
-      setUploadingDoc("PROFILE_PICTURE");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.profileImage,
-          documentType: "PROFILE_PICTURE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                PROFILE_PICTURE: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(handleUploadProcess(data.profileImage, "profilePicture"));
     }
-
     if (data.governmentId && data.governmentId.length > 0) {
-      setUploadingDoc("GOVERNMENT_ID");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.governmentId[0],
-          documentType: "GOVERNMENT_ID",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                GOVERNMENT_ID: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(handleUploadProcess(data.governmentId[0], "govIdDoc"));
     }
-
     if (data.certificate && data.certificate.length > 0) {
-      setUploadingDoc("CERTIFICATE");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.certificate[0],
-          documentType: "CERTIFICATE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                CERTIFICATE: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(handleUploadProcess(data.certificate[0], "certificateDoc"));
     }
 
     try {
