@@ -11,6 +11,7 @@ import Pagination from "./components/Pagination";
 import SearchHistory from "./components/SearchHistory";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
+import { scrollToTop } from "@/utils";
 
 /**
  * Main application component for job search results
@@ -18,6 +19,9 @@ import { SORT_OPTIONS, type Filters, type SortOption } from "./types";
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   const profile = useEngineerProfile();
   const { data: jobs } = useGetJobs();
 
@@ -163,6 +167,7 @@ const SearchResult = () => {
    */
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    scrollToTop();
   };
   /**
    * Handle sort change
