@@ -2,14 +2,15 @@ import { absoluteUrls } from "@/config/urls";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BackgroundVerificationFields } from "../BackgroundVerificationFields";
-import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
-import { useUploadClientFile } from "@/shared/apiServices/client/clientService";
-import { useState } from "react";
+import type { AppMarkProfileFileUploadedResponse } from "@/api";
 
 interface DocumentFormData {
   profileImage: File | string | null;
@@ -31,13 +32,7 @@ interface DocumentFormData {
  */
 const BasicDocuments = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const clientId = searchParams.get("id");
-
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
-  );
 
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
@@ -49,41 +44,7 @@ const BasicDocuments = () => {
 
   const { showPopup } = usePopupStore();
   const { clearStore } = useClientRegistrationStore();
-  const { updateDocuments } = useClientRegistrationStore();
-
-  const { mutateAsync: uploadFileAsync } = useUploadClientFile({
-    // @ts-ignore - The types from react-query/clientService might be slightly off regarding the second argument 'variables'
-    onSuccess: (data: any, variables: any) => {
-      console.log("File uploaded:", data);
-
-      // Map document type to store key
-      switch (variables.documentType) {
-        case "PROFILE_PICTURE":
-          updateDocuments({ profileImageUrl: data.fileId });
-          break;
-        case "GOVERNMENT_ID":
-          updateDocuments({ governmentIdUrl: data.fileId });
-          break;
-        case "CERTIFICATE":
-          updateDocuments({ certificateUrl: data.fileId });
-          break;
-      }
-
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
-    },
-    onError: (error) => {
-      console.error("Upload failed:", error);
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-    onProgress: (progress) => {
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc!]: progress.percentage!,
-      }));
-    },
-  });
+  const { uploadProfileFile, isUploading } = useProfileFileUpload({});
 
   const handleSkip = () => {
     showPopup({
@@ -110,11 +71,6 @@ const BasicDocuments = () => {
   };
 
   const handleSubmit = async (data: DocumentFormData) => {
-    if (!clientId) {
-      toast.error("Client ID not found. Please restart registration.");
-      return;
-    }
-
     // Check if at least one document is selected
     const hasAtLeastOne =
       data.profileImage || data.governmentId || data.certificate;
@@ -125,67 +81,34 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<any>[] = [];
+    const uploads: Promise<AppMarkProfileFileUploadedResponse>[] = [];
+
+    // Show a single persistent toast for the whole upload process
+    const uploadingToastId = toast.loading("Uploading documents...");
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.profileImage,
-          documentType: "PROFILE_PICTURE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                PROFILE_PICTURE: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(uploadProfileFile(data.profileImage, "profilePicture"));
     }
-
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.governmentId[0],
-          documentType: "GOVERNMENT_ID",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                GOVERNMENT_ID: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(uploadProfileFile(data.governmentId[0], "govIdDoc"));
     }
-
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
-      uploads.push(
-        uploadFileAsync({
-          clientId,
-          file: data.certificate[0],
-          documentType: "CERTIFICATE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                CERTIFICATE: progress.percentage!,
-              }));
-            }
-          },
-        }),
-      );
+      uploads.push(uploadProfileFile(data.certificate[0], "certificateDoc"));
     }
 
     try {
       await Promise.all(uploads);
+
+      // Update the single toast to success before showing the popup
+      toast.update(uploadingToastId, {
+        render: "Documents uploaded successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
 
       showPopup({
         title: "Documents Uploaded Successfully!",
@@ -205,11 +128,16 @@ const BasicDocuments = () => {
       });
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Some documents failed to upload. Please try again.");
+      toast.update(uploadingToastId, {
+        render: "Some documents failed to upload. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    } finally {
+      setUploadingDoc(null);
     }
   };
-
-  const isUploading = uploadingDoc !== null;
 
   return (
     <FormContainer
@@ -238,14 +166,6 @@ const BasicDocuments = () => {
                 <p className="text-sm font-medium text-blue-800">
                   Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
-                {uploadProgress[uploadingDoc] && (
-                  <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-blue-600 h-full transition-all duration-300"
-                      style={{ width: `${uploadProgress[uploadingDoc]}%` }}
-                    />
-                  </div>
-                )}
               </div>
             )}
           </div>

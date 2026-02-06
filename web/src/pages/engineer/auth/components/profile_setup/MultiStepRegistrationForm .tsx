@@ -9,6 +9,7 @@ import type { CompleteRegistrationData } from "../types";
 import BackgroundVerification from "./BackgroundVerification";
 import SetPassword from "./SetPassword";
 import { toast } from "react-toastify";
+import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 /**
  * Multi-step Registration Form
@@ -32,9 +33,9 @@ const MultiStepRegistrationForm = () => {
       toast.success("Completed registration successfully");
       navigate("/engineer/auth");
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Submit error:", error);
-      toast.error("Registration failed. Please try again.");
+      toast.error(GlobalApiErrorHandler.handle(error).message);
     },
   });
 

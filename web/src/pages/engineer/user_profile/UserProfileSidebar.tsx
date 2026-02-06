@@ -6,6 +6,11 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import type { DrawerMenuProps } from "@/shared/components/drawer/Drawer";
 import DrawerMenuSection from "@/shared/components/drawer/DrawerMenuSection";
 import {
+  useClientProfile,
+  useClientStore,
+  useClientDisplayName,
+} from "@/shared/store/useClientStore";
+import {
   useEngineerProfile,
   useEngineerStore,
 } from "@/shared/store/useEngineerStore";
@@ -98,26 +103,67 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
     },
   ];
 
+  const session = useUserSessionStore((state) => state.session);
   const logout = useUserSessionStore((state) => state.logout);
+  const isClient = session?.role === "CLIENT";
+
+  // Engineer data
   const engineerProfile = useEngineerProfile();
-  const profileImageUrl = useEngineerStore((state) => state.profileImageUrl);
+  const engineerProfileImageUrl = useEngineerStore(
+    (state) => state.profileImageUrl,
+  );
   const clearEngineerProfile = useEngineerStore(
     (state) => state.clearEngineerProfile,
   );
+
+  // Client data
+  const clientProfile = useClientProfile();
+  const clientProfileImageUrl = useClientStore(
+    (state) => state.profileImageUrl,
+  );
+  const clearClientProfile = useClientStore(
+    (state) => state.clearClientProfile,
+  );
+
   const navigate = useNavigate();
 
   // Fetch service categories to find the label for the category ID
   const { data: serviceCategories } = useServiceCategories();
 
-  const categoryName = useMemo(() => {
-    if (!engineerProfile?.serviceCategory || !serviceCategories) return "";
-    // Find category by ID (comparing as strings for safety)
+  const clientDisplayName = useClientDisplayName();
+
+  const displayName = useMemo(() => {
+    if (isClient) return clientDisplayName;
+    return engineerProfile?.fullName || "";
+  }, [isClient, clientDisplayName, engineerProfile]);
+
+  const displayTitle = useMemo(() => {
+    if (isClient) {
+      if (!clientProfile) return "Client";
+      return clientProfile.clientType === "CORPORATE"
+        ? "Corporate Client"
+        : "Home Client";
+    }
+    if (!engineerProfile?.serviceCategory || !serviceCategories)
+      return "Engineer";
     const category = serviceCategories.find(
       (cat: LookupItem) =>
         String(cat.id) === String(engineerProfile.serviceCategory),
     );
-    return category ? category.name : "";
-  }, [engineerProfile?.serviceCategory, serviceCategories]);
+    return category ? category.name : "Engineer";
+  }, [
+    isClient,
+    clientProfile,
+    engineerProfile?.serviceCategory,
+    serviceCategories,
+  ]);
+
+  const displayImageUrl = isClient
+    ? clientProfileImageUrl
+    : engineerProfileImageUrl;
+  const displayRating = isClient
+    ? clientProfile?.rating || 0
+    : engineerProfile?.averageRating || 0;
 
   return (
     <>
@@ -125,12 +171,12 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
         <div>
           <ProfileCard
             avatarUrl={
-              profileImageUrl || assetsConfig.images.profile.defaultProfileImage
+              displayImageUrl || assetsConfig.images.profile.defaultProfileImage
             }
-            name={engineerProfile?.fullName || ""}
-            title={categoryName || "Engineer"}
-            rating={engineerProfile?.averageRating || 0}
-            reviewCount={0}
+            name={displayName}
+            title={displayTitle}
+            rating={displayRating}
+            reviewCount={isClient ? clientProfile?.reviewCount || 0 : 0}
             completionPercentage={0}
             flex="col"
           />
@@ -142,8 +188,13 @@ const UserProfileSidebar: React.FC<DrawerMenuProps> = ({
             onConfirm={() => {
               logout();
               clearEngineerProfile();
+              clearClientProfile();
               onClose();
-              navigate(absoluteUrls.engineer.auth.login);
+              if (isClient) {
+                navigate(absoluteUrls.client.auth.login);
+              } else {
+                navigate(absoluteUrls.engineer.auth.login);
+              }
             }}
             onCancel={() => setIsOpen(false)}
           />

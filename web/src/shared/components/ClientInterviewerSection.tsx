@@ -3,7 +3,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export interface InfoItem {
   label: string;
-  value: any;
+  value: React.ReactNode;
 }
 
 export interface SectionData {

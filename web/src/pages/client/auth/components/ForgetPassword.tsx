@@ -1,17 +1,14 @@
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { Button } from "@/shared/components/commonUI/Buttons";
+import type { ForgetPasswordFormData } from "@/shared/components/auth/AuthForgetPassword";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import OTPPage from "./OTPPage";
-
-export type ForgetPasswordFormData = {
-  email: string;
-};
 
 /**
  * Type representing the data structure for the Login form.

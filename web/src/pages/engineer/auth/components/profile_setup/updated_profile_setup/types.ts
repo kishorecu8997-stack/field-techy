@@ -3,15 +3,35 @@ export interface EngineerBasicDetails {
   email: string;
   phone: string;
   address: string;
-  country: any; // Select option or string
-  state: any;
-  city: any;
+  country:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
+  state:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
+  city:
+    | string
+    | number
+    | { value?: string | number; label?: string }
+    | null
+    | undefined;
   postalCode: string;
 
   // Professional
-  skills: (string | number)[]; // TagSelect options - IDs can be string or number
+  skills: (string | number | { value: string | number; label?: string })[]; // TagSelect options
   portfolioLink: string;
-  serviceCategory: string | number; // Select option - ID can be string or number
+  serviceCategory:
+    | string
+    | number
+    | { value: string | number; label?: string }
+    | null
+    | undefined; // Select option
   amount: string; // Rate/Budget
   designation: string;
   company: string;

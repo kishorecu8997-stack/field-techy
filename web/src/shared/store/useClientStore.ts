@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useEffect } from "react";
 import type { ClientData } from "../apiServices/client/clientTypes";
+import { getClientCompanyInfo } from "../apiServices/client/clientOpenApiService";
 import { useUserSessionStore } from "./useUserSessionStore";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
@@ -37,14 +38,41 @@ export const useClientStore = create<ClientStore>((set, get) => ({
     if (get().loading) return;
     set({ loading: true });
     try {
-      // Fetch profile and files in parallel
-      const profilePicData = await getDownloadUrl("profilePicture").catch(
-        () => null,
-      );
+      const profile = await getClientCompanyInfo();
+      if (!profile) throw new Error("Profile data not found");
+
+      let profilePicUrl = profile.profilePictureUrl;
+      if (!profilePicUrl?.startsWith("http")) {
+        try {
+          const picData = await getDownloadUrl("profilePicture");
+          profilePicUrl = picData?.downloadUrl ?? profilePicUrl;
+        } catch (e) {
+          console.error("Failed to fetch profile picture URL", e);
+        }
+      }
+
+      const mappedProfile: ClientData = {
+        id: String(profile.id),
+        email: profile.email,
+        phoneNumber: profile.phoneNumber,
+        clientType: profile.clientType?.toUpperCase() ?? "CLIENT",
+        contactPersonName:
+          profile.clientType === "corporate"
+            ? (profile.personName ?? profile.name)
+            : profile.name,
+        companyName:
+          profile.clientType === "corporate"
+            ? (profile.companyName ?? profile.name)
+            : profile.name,
+        address:
+          profile.clientType === "corporate" ? profile.address : undefined,
+        profilePicture: profilePicUrl ?? null,
+      };
 
       set({
+        clientProfile: mappedProfile,
         profileFetched: true,
-        profileImageUrl: profilePicData?.downloadUrl || null,
+        profileImageUrl: profilePicUrl ?? null,
       });
     } catch (error) {
       console.error("Failed to fetch client profile:", error);
@@ -68,8 +96,10 @@ export const useClientProfile = () => {
 
   useEffect(() => {
     const userId = session?.userId;
+    const role = session?.role;
+
     // Verify user role is CLIENT to avoid incorrect fetches
-    if (userId && session?.role === "CLIENT") {
+    if (userId && (role === "CLIENT" || role === "client")) {
       if (!profileFetched && !loading) {
         fetchProfile();
       }
@@ -77,4 +107,18 @@ export const useClientProfile = () => {
   }, [session?.userId, session?.role, profileFetched, loading, fetchProfile]);
 
   return profile;
+};
+
+/**
+ * Custom hook to get the derived display name for the client.
+ * Handles fallback and corporate vs home client logic.
+ */
+export const useClientDisplayName = () => {
+  const profile = useClientProfile();
+  if (!profile) return "Guest";
+
+  if (profile.clientType === "CORPORATE") {
+    return profile.companyName || profile.contactPersonName || "Client";
+  }
+  return profile.contactPersonName || "Client";
 };
