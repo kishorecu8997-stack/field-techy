@@ -11,7 +11,7 @@ import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import Popup from "@/shared/components/Popup";
 import { useState } from "react";
-import OTPPage from "../../../pages/engineer/auth/components/OTPPage";
+import OTPPage from "@/pages/engineer/auth/components/OTPPage";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -105,13 +105,18 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             header="Enter the OTP"
             description="We sent you an OTP code"
             onClose={() => setIsOpen(false)}
-            onSubmit={() => {
+            onSubmit={(otpData) => {
               const resetUrl =
-                role === "client"
-                  ? absoluteUrls.client.auth.reset_password
-                  : absoluteUrls.engineer.auth.reset_password;
-              const tokenQuery = "";
-              navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
+              role === "client"
+              ? absoluteUrls.client.auth.reset_password
+              : absoluteUrls.engineer.auth.reset_password;
+              const otpQuery =
+              otpData && otpData.otp
+              ? `&otp=${encodeURIComponent(otpData.otp)}`
+              : "";
+              navigate(
+                `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`,
+                 );
             }}
           />
         </Popup>
