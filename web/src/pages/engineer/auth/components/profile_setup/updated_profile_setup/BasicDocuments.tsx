@@ -1,28 +1,22 @@
+import type { AppMarkProfileFileUploadedResponse } from "@/api";
 import { absoluteUrls } from "@/config/urls";
+import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploaderField";
-import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { toast } from "react-toastify";
-import { BackgroundVerificationFields } from "@/pages/engineer/auth/components/profile_setup/BackgroundVerificationFields";
 import { useEngineerRegistrationStore } from "@/shared/store/useEngineerRegistrationStore";
-import { useEngineerFileUpload } from "@/shared/apiServices/engineer/engineerService";
-import type { FileUploadResponse } from "@/shared/apiServices/engineer/engineerTypes";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface DocumentFormData {
   profileImage: File | string | null;
   resume: FileList | null;
   governmentId: FileList | null;
   certificate: FileList | null;
-}
-
-interface UploadProgress {
-  percentage?: number;
-  loaded?: number;
-  total?: number;
 }
 
 /**
@@ -39,12 +33,7 @@ interface UploadProgress {
  */
 const BasicDocuments = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const engineerId = searchParams.get("id");
   const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
-  );
 
   const formCtx = useForm<DocumentFormData>({
     defaultValues: {
@@ -56,27 +45,8 @@ const BasicDocuments = () => {
   });
 
   const { showPopup } = usePopupStore();
-  const { clearStore, updateDocuments } = useEngineerRegistrationStore();
-
-  const { mutateAsync: uploadFileAsync } = useEngineerFileUpload({
-    onSuccess: () => {
-      setUploadingDoc(null);
-      toast.success("File uploaded successfully!");
-    },
-    onError: () => {
-      setUploadingDoc(null);
-      toast.error("Failed to upload file");
-    },
-
-    onProgress: (progress: UploadProgress) => {
-      if (!uploadingDoc || !progress.percentage) return;
-
-      setUploadProgress((prev) => ({
-        ...prev,
-        [uploadingDoc]: progress.percentage!,
-      }));
-    },
-  });
+  const { clearStore } = useEngineerRegistrationStore();
+  const { uploadProfileFile, isUploading } = useProfileFileUpload();
 
   const handleSkip = () => {
     showPopup({
@@ -103,12 +73,6 @@ const BasicDocuments = () => {
   };
 
   const handleSubmit = async (data: DocumentFormData) => {
-    if (!engineerId) {
-      toast.error("Engineer ID not found. Please restart registration.");
-      return;
-    }
-
-    // Check if at least one document is selected
     const hasAtLeastOne =
       data.profileImage || data.resume || data.governmentId || data.certificate;
 
@@ -118,98 +82,42 @@ const BasicDocuments = () => {
     }
 
     // Upload files
-    const uploads: Promise<FileUploadResponse>[] = [];
+    const uploads: Promise<AppMarkProfileFileUploadedResponse>[] = [];
+
+    // Show a single persistent toast for the whole upload process
+    const uploadingToastId = toast.loading("Uploading documents...");
 
     if (data.profileImage && data.profileImage instanceof File) {
       setUploadingDoc("PROFILE_PICTURE");
-      uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.profileImage,
-          documentType: "PROFILE_PICTURE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                PROFILE_PICTURE: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ profileImageUrl: res.fileId });
-          return res;
-        }),
-      );
+
+      uploads.push(uploadProfileFile(data.profileImage, "profilePicture"));
     }
 
     if (data.governmentId && data.governmentId.length > 0) {
       setUploadingDoc("GOVERNMENT_ID");
-      uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.governmentId[0],
-          documentType: "GOVERNMENT_ID",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                GOVERNMENT_ID: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ governmentIdUrl: res.fileId });
-          return res;
-        }),
-      );
-    }
-
-    if (data.resume && data.resume.length > 0) {
-      setUploadingDoc("RESUME");
-      uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.resume[0],
-          documentType: "RESUME",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                RESUME: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ resumeUrl: res.fileId });
-          return res;
-        }),
-      );
+      uploads.push(uploadProfileFile(data.governmentId[0], "govIdDoc"));
     }
 
     if (data.certificate && data.certificate.length > 0) {
       setUploadingDoc("CERTIFICATE");
-      uploads.push(
-        uploadFileAsync({
-          engineerId,
-          file: data.certificate[0],
-          documentType: "CERTIFICATE",
-          onUploadProgress: (progress) => {
-            if (progress.percentage) {
-              setUploadProgress((prev) => ({
-                ...prev,
-                CERTIFICATE: progress.percentage!,
-              }));
-            }
-          },
-        }).then((res) => {
-          updateDocuments({ certificateUrl: res.fileId });
-          return res;
-        }),
-      );
+      uploads.push(uploadProfileFile(data.certificate[0], "certificateDoc"));
+    }
+
+    if (data.resume && data.resume.length > 0) {
+      setUploadingDoc("RESUME");
+      uploads.push(uploadProfileFile(data.resume[0], "resumeFile"));
     }
 
     try {
       await Promise.all(uploads);
+
+      // Update the single toast to success before showing the popup
+      toast.update(uploadingToastId, {
+        render: "Documents uploaded successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
 
       showPopup({
         title: "Documents Uploaded Successfully!",
@@ -220,7 +128,6 @@ const BasicDocuments = () => {
             value: true,
             action: (close) => {
               clearStore();
-              toast.success("Registration completed successfully!");
               navigate(absoluteUrls.engineer.auth.login);
               close(true);
             },
@@ -229,11 +136,16 @@ const BasicDocuments = () => {
       });
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Some documents failed to upload. Please try again.");
+      toast.update(uploadingToastId, {
+        render: "Some documents failed to upload. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    } finally {
+      setUploadingDoc(null);
     }
   };
-
-  const isUploading = uploadingDoc !== null;
 
   return (
     <FormContainer
@@ -263,14 +175,6 @@ const BasicDocuments = () => {
                 <p className="text-sm font-medium text-blue-800">
                   Uploading {uploadingDoc?.replace("_", " ")}...
                 </p>
-                {uploadProgress[uploadingDoc] && (
-                  <div className="mt-2 bg-blue-200 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-blue-600 h-full transition-all duration-300"
-                      style={{ width: `${uploadProgress[uploadingDoc]}%` }}
-                    />
-                  </div>
-                )}
               </div>
             )}
           </div>
