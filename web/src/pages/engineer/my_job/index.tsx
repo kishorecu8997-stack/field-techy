@@ -4,13 +4,14 @@ import { SORT_OPTIONS, JOB_FILTERS } from "../search_result/types";
 import type { JobFilter } from "../search_result/types";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { scrollToTop } from "@/utils";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -68,6 +69,9 @@ const MyJobsPage = () => {
     JOB_FILTERS.REMOTE,
     JOB_FILTERS.HYBRID,
   ];
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

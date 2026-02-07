@@ -23,6 +23,9 @@ import type { JobItem } from "./types";
  * @returns {JSX.Element} The home page UI.
  */
 const Home = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   const navigate = useNavigate();
   const { data: jobs } = useGetJobs();
   const profile = useEngineerProfile();
