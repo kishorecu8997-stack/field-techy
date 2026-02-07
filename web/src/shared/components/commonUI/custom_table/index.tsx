@@ -97,7 +97,7 @@ export function CustomTable<T>({
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
-        <div className="flex-1 overflow-y-auto overflow-x-auto">
+        <div className="flex-1 overflow-auto min-h-[250px] max-h-[600px]">
           {loading && (
             <div className="text-center py-10 text-gray-500 dark:text-gray-300">
               Loading...

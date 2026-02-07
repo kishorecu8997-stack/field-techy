@@ -22,10 +22,12 @@ import {
   type GetAdminManageClientsData,
   type PutAdminUsersByUserIdStatusData,
   type PutAdminUsersByUserIdStatusResponses,
+  type PutAdminUsersByUserIdStatusErrors,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
+import type { EngineerStatusType } from "@/pages/admin/engineer/types";
 
 export const LookupTable = {
   Countries: "countries",
@@ -207,6 +209,40 @@ export function useAppGetLookupData(
       return response.data;
     },
     ...options,
+  });
+}
+
+export function useUpdateEngineerProfileStatus(options?: {
+  onSuccess?: (
+    data: PutAdminUsersByUserIdStatusResponses[200],
+    variables: {
+      userId: number;
+      profileStatus: EngineerStatusType;
+      token: string;
+    },
+  ) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation<
+    PutAdminUsersByUserIdStatusResponses[200],
+    PutAdminUsersByUserIdStatusErrors | unknown,
+    { userId: number; profileStatus: EngineerStatusType; token: string }
+  >({
+    mutationFn: async ({ userId, profileStatus, token }) => {
+      const response = await putAdminUsersByUserIdStatus({
+        client: apiClient,
+        path: { userId },
+        body: { profileStatus },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        throwOnError: true,
+      });
+
+      return response.data;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
   });
 }
 

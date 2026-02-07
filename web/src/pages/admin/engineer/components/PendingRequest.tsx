@@ -15,17 +15,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import type { ManageEngineerProps } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
-import type { adminJobsStatus } from "../../jobs/types";
 import { toast } from "react-toastify";
-
-export const EngineerStatus = {
-  APPROVE: "approve",
-  REJECT: "reject",
-  PENDING: "pending",
-} as const;
-
-export type EngineerStatusType =
-  (typeof EngineerStatus)[keyof typeof EngineerStatus];
+import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { EngineerStatusType } from "../types";
+import { EngineerStatus } from "../types";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
 /**
  * PendingRequest Component
@@ -47,16 +41,19 @@ export type EngineerStatusType =
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const [rowStatuses, setRowStatuses] = useState<
+    Record<number, EngineerStatusType>
+  >({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
+  const [engineers, setEngineers] = useState(manageEngineer);
+  const session = useUserSessionStore((s) => s.session);
 
-  const filteredData = manageEngineer
-    .filter((e) => e.kycStatus === "Pending")
+  const filteredData = engineers
+    .filter((e) => e.kycStatus === EngineerStatus.PENDING)
     .filter((e) => {
       const query = search.toLowerCase();
-
       return (
         e.engineerID.toLowerCase().includes(query) ||
         e.details.name.toLowerCase().includes(query) ||
@@ -65,46 +62,55 @@ export default function PendingRequest() {
       );
     });
 
-  const handleStatusChange = async (data: ManageEngineerProps) => {
-    if (!data.status) return;
+  const isEngineerStatus = (
+    value: string | null,
+  ): value is EngineerStatusType => {
+    return (
+      value !== null &&
+      Object.values(EngineerStatus).includes(value as EngineerStatusType)
+    );
+  };
 
-    const status = data.status.toLowerCase();
-    let toastMessage = "";
+  const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
+    onSuccess: (_data, variables) => {
+      if (variables.profileStatus === EngineerStatus.APPROVE)
+        toast.success("Engineer approved successfully!");
+      else if (variables.profileStatus === EngineerStatus.REJECT)
+        toast.success("Engineer rejected successfully!");
 
-    switch (status) {
-      case EngineerStatus.APPROVE:
-        toastMessage = "Engineer approved successfully!";
-        break;
-      case EngineerStatus.REJECT:
-        toastMessage = "Engineer rejected successfully!";
-        break;
-      case EngineerStatus.PENDING:
-        toastMessage = "Engineer marked as pending successfully!";
-        break;
-      default:
-        toastMessage = `Engineer status updated to ${data.status}`;
-        break;
-    }
-    let bodyMessage = "";
+      // Update local row status
+      setRowStatuses((prev) => ({
+        ...prev,
+        [variables.userId]: variables.profileStatus,
+      }));
 
-    if (data.status.toLowerCase() === "pending") {
-      bodyMessage = "Are you sure you want to set this engineer to pending?";
-    } else {
-      const formattedStatus =
-        data.status.charAt(0).toUpperCase() +
-        data.status.slice(1).toLowerCase();
-      bodyMessage = `Are you sure you want to ${formattedStatus} this engineer?`;
-    }
+      // Remove engineer from pending list if status is not pending
+      if (variables.profileStatus !== EngineerStatus.PENDING) {
+        setEngineers((prev) =>
+          prev.filter((eng) => eng.id !== variables.userId),
+        );
+      }
+    },
+    onError: () => toast.error("Failed to update engineer status"),
+  });
+
+  const handleStatusChange = async (
+    data: ManageEngineerProps,
+    status: EngineerStatusType,
+  ) => {
+    if (!status) return;
+
+    const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
+    const bodyMessage =
+      status === EngineerStatus.PENDING
+        ? "Are you sure you want to set this engineer to pending?"
+        : `Are you sure you want to ${formattedStatus} this engineer?`;
 
     await showPopup({
-      title: `${data.status.charAt(0).toUpperCase() + data.status.slice(1)} Engineer`,
+      title: `${formattedStatus} Engineer`,
       body: bodyMessage,
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Yes",
           value: "yes",
@@ -113,41 +119,36 @@ export default function PendingRequest() {
               ? "primary"
               : status === EngineerStatus.REJECT
                 ? "danger"
-                : status === EngineerStatus.PENDING
-                  ? "warning"
-                  : "secondary",
+                : "warning",
           action: async (close) => {
-            if (status === EngineerStatus.REJECT) {
-              toast.error(toastMessage);
-            } else if (status === EngineerStatus.APPROVE) {
-              toast.success(toastMessage);
-            } else {
-              toast.warning(toastMessage);
+            try {
+              await updateEngineerStatus({
+                userId: data.id,
+                profileStatus: status,
+                token: session?.accessToken || "",
+              });
+              close(true);
+            } catch {
+              close(true);
             }
-            close(true);
           },
         },
       ],
     });
   };
 
-  //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Delete",
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            console.log("Deleting engineer:", job.id);
+            setEngineers((prev) => prev.filter((eng) => eng.id !== job.id));
             toast.success("Engineer deleted successfully!");
             close(true);
           },
@@ -158,105 +159,77 @@ export default function PendingRequest() {
 
   const columns: Column<ManageEngineerProps>[] = [
     { key: "id", label: "Sr.No." },
-    {
-      key: "engineerID",
-      label: "Engineer ID",
-    },
+    { key: "engineerID", label: "Engineer ID" },
     {
       key: "details",
       label: "Details",
-      renderCell: (row: ManageEngineerProps) => {
-        return (
-          <div className="text-sm flex items-center gap-2">
-            <div>
-              <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+      renderCell: (row) => (
+        <div className="text-sm flex items-center gap-2">
+          <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
+          <div>
+            <div className="font-semibold">{row.details.name}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.phone}
             </div>
-            <div>
-              <div className="font-semibold">{row.details.name}</div>
-              <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.phone}
-              </div>
-              <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                {row.details.email}
-              </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.email}
             </div>
           </div>
-        );
-      },
+        </div>
+      ),
     },
     {
       key: "submittedDocuments",
       label: "Submitted Documents",
-      renderCell: (row: ManageEngineerProps) => {
-        const documents = row.submittedDocuments;
-        return (
-          <div className="text-sm flex flex-col gap-1">
-            {documents.map((doc, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
-              >
-                {doc}
-              </span>
-            ))}
-          </div>
-        );
-      },
+      renderCell: (row) => (
+        <div className="text-sm flex flex-col gap-1">
+          {row.submittedDocuments.map((doc, idx) => (
+            <span
+              key={idx}
+              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
+            >
+              {doc}
+            </span>
+          ))}
+        </div>
+      ),
     },
     {
       key: "documents",
       label: "View Documents",
       align: "center",
-      renderCell: (row: ManageEngineerProps) => {
-        const name = row.documents || "N/A";
-        return (
-          <div className="mx-auto text-center">
-            <Button
-              className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-              onClick={() => {
-                setIsModalOpen(true);
-                setSelectedRowId(row.id);
-              }}
-            >
-              {name}
-            </Button>
-          </div>
-        );
-      },
+      renderCell: (row) => (
+        <div className="mx-auto text-center">
+          <Button
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
+            onClick={() => {
+              setIsModalOpen(true);
+              setSelectedRowId(row.id);
+            }}
+          >
+            {row.documents || "N/A"}
+          </Button>
+        </div>
+      ),
     },
-    {
-      key: "location",
-      label: "Location",
-    },
+    { key: "location", label: "Location" },
     {
       key: "registrationDate",
       label: "Registration Date",
       dataCellAlign: "center",
     },
-    {
-      key: "walletBalance",
-      label: "Wallet Balance",
-      dataCellAlign: "center",
-    },
-    {
-      key: "kycStatus",
-      label: "KYC Status",
-      dataCellAlign: "center",
-    },
+    { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center" },
+    { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
     {
       key: "employmentStatus",
       label: "Employment Status",
       dataCellAlign: "center",
     },
-    {
-      key: "avgRating",
-      label: "Avg Rating",
-      dataCellAlign: "center",
-    },
+    { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
     {
       key: "approvalStatus",
       label: "Approve/Reject",
-      renderCell: (row: ManageEngineerProps) => {
+      renderCell: (row) => {
         const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
         const preparedOptions = [
           ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
@@ -267,27 +240,16 @@ export default function PendingRequest() {
         ];
 
         return (
-          <div className="relative w-full">
-            <SelectMenu
-              placeholder="Select"
-              value={current}
-              onChange={(value: string | null) => {
-                if (!value || value === current) return;
-
-                setRowStatuses((prev) => ({
-                  ...prev,
-                  [row.id]: value,
-                }));
-
-                handleStatusChange({
-                  ...row,
-                  status: value as adminJobsStatus,
-                });
-              }}
-              options={preparedOptions}
-              badge
-            />
-          </div>
+          <SelectMenu
+            placeholder="Select"
+            value={current}
+            onChange={(value) => {
+              if (!isEngineerStatus(value) || value === current) return;
+              handleStatusChange(row, value);
+            }}
+            options={preparedOptions}
+            badge
+          />
         );
       },
     },
@@ -295,7 +257,7 @@ export default function PendingRequest() {
       key: "action",
       label: "Actions",
       align: "center",
-      renderCell: (row: ManageEngineerProps) => (
+      renderCell: (row) => (
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
@@ -332,7 +294,7 @@ export default function PendingRequest() {
         <div className="flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>
-        <div className="h-full flex-1 overflow-y-auto ">
+        <div className="h-full flex-1 overflow-y-auto">
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
@@ -340,6 +302,7 @@ export default function PendingRequest() {
           />
         </div>
       </div>
+
       {isModalOpen && (
         <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <div className="p-4">
