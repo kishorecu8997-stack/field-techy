@@ -188,7 +188,8 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
                   Array.isArray(query.queryKey) &&
                   query.queryKey[0] &&
                   typeof query.queryKey[0] === "object" &&
-                  (query.queryKey[0] as { _id?: string })._id === "appDownloadProfileFile",
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "appDownloadProfileFile",
               });
             } catch (error) {
               toast.error("Failed to delete document.");
