@@ -293,7 +293,11 @@ const HomeClient: React.FC = () => {
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent onClose={() => setIsOpen(false)} />
+        <ViewFileComponent 
+          onClose={() => setIsOpen(false)} 
+          downloadUrl={downloadData?.downloadUrl}
+          documentType={selectedType}
+        />
       </Popup>
     </div>
   );

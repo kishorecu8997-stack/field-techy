@@ -47,6 +47,7 @@ const CorporateClient: React.FC = () => {
   const [search, setSearch] = useState("");
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(null);
+  // console.log('selectedType :', selectedType);
 
   const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
     {
@@ -285,7 +286,11 @@ const CorporateClient: React.FC = () => {
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent onClose={() => setIsOpen(false)} />
+        <ViewFileComponent 
+          onClose={() => setIsOpen(false)} 
+          downloadUrl={downloadData?.downloadUrl}
+          documentType={selectedType}
+        />
       </Popup>
     </div>
   );
