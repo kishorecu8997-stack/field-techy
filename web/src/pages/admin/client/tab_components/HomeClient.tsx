@@ -102,7 +102,7 @@ const HomeClient: React.FC = () => {
     {
       key: "",
       label: "Sr.No.",
-      renderCell: (row: ManageClientProps, index: number) => index + 1,
+      renderCell: (_row: ManageClientProps, index: number) => index + 1,
     },
     {
       key: "clientCode",

@@ -75,7 +75,7 @@ export interface walletViewData {
   status: string;
 }
 
-interface ClientFormData {
+export interface ClientFormData {
   profileImage?: string | null;
   companyName: string;
   phoneNumber: string;
@@ -93,7 +93,7 @@ interface ClientFormData {
   qualificationCertificate: string | null;
 }
 
-interface CompanyInfo {
+export interface CompanyInfo {
   profileImage?: string;
   companyName: string;
   businessType: string;
