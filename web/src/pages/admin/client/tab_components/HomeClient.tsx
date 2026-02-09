@@ -209,34 +209,53 @@ const HomeClient: React.FC = () => {
           <SelectMenu
             placeholder="Select"
             value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
-            onChange={(value: string | null) => {
+            onChange={async (value: string | null) => {
+              if (!value) return;
+              const previousStatus =
+                rowStatuses[row.id] ?? row.profileStatus ?? "";
+
               setRowStatuses((prev) => ({
                 ...prev,
-                [row.id]: value ?? "",
+                [row.id]: value,
               }));
-              handleStatusChange(row, value, showPopup, async (row, status) => {
-                try {
-                  const payload: AdminClientsByUserIdStatusBody = {
-                    profileStatus:
-                      status as AdminClientsByUserIdStatusBody["profileStatus"],
-                  };
 
-                  await updateClientStatus({
-                    userId: row.userId || row.id,
-                    body: payload,
-                    token: token,
-                  });
-                  refetchClients();
-                } catch (error) {
-                  toast.error(
-                    error instanceof Error
-                      ? error.message
-                      : typeof error === "string"
-                        ? error
-                        : "Failed to update status",
-                  );
-                }
-              });
+              let isSuccess = false;
+              const result = await handleStatusChange(
+                row,
+                value,
+                showPopup,
+                async (row, status) => {
+                  try {
+                    const payload: AdminClientsByUserIdStatusBody = {
+                      profileStatus:
+                        status as AdminClientsByUserIdStatusBody["profileStatus"],
+                    };
+
+                    await updateClientStatus({
+                      userId: row.userId || row.id,
+                      body: payload,
+                      token: token,
+                    });
+                    isSuccess = true;
+                    refetchClients();
+                  } catch (error) {
+                    toast.error(
+                      error instanceof Error
+                        ? error.message
+                        : typeof error === "string"
+                          ? error
+                          : "Failed to update status",
+                    );
+                  }
+                },
+              );
+
+              if (result !== true || !isSuccess) {
+                setRowStatuses((prev) => ({
+                  ...prev,
+                  [row.id]: previousStatus,
+                }));
+              }
             }}
             options={JobStatus}
             badge

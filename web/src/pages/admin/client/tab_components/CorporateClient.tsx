@@ -23,9 +23,7 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import { documentType, type ManageClientProps } from "../types";
-import {
-  type ProfileFileType,
-} from "@/shared/apiServices/commonOpenApiService";
+import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * CorporateClient Component
@@ -62,8 +60,7 @@ const CorporateClient: React.FC = () => {
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
-  const clientData = (manageClient?.data ||
-    []) as unknown as ManageClientProps[];
+  const clientData = (manageClient?.data || []) as ManageClientProps[];
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -208,34 +205,53 @@ const CorporateClient: React.FC = () => {
           <SelectMenu
             placeholder="Select"
             value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
-            onChange={(value: string | null) => {
+            onChange={async (value: string | null) => {
+              if (!value) return;
+              const previousStatus =
+                rowStatuses[row.id] ?? row.profileStatus ?? "";
+
               setRowStatuses((prev) => ({
                 ...prev,
-                [row.id]: value ?? "",
+                [row.id]: value,
               }));
-              handleStatusChange(row, value, showPopup, async (row, status) => {
-                try {
-                  const payload: AdminClientsByUserIdStatusBody = {
-                    profileStatus:
-                      status as AdminClientsByUserIdStatusBody["profileStatus"],
-                  };
 
-                  await updateClientStatus({
-                    userId: row.userId || row.id,
-                    body: payload,
-                    token: token,
-                  });
-                  refetchClients();
-                } catch (error) {
-                  toast.error(
-                    error instanceof Error
-                      ? error.message
-                      : typeof error === "string"
-                        ? error
-                        : "Failed to update status",
-                  );
-                }
-              });
+              let isSuccess = false;
+              const result = await handleStatusChange(
+                row,
+                value,
+                showPopup,
+                async (row, status) => {
+                  try {
+                    const payload: AdminClientsByUserIdStatusBody = {
+                      profileStatus:
+                        status as AdminClientsByUserIdStatusBody["profileStatus"],
+                    };
+
+                    await updateClientStatus({
+                      userId: row.userId || row.id,
+                      body: payload,
+                      token: token,
+                    });
+                    isSuccess = true;
+                    refetchClients();
+                  } catch (error) {
+                    toast.error(
+                      error instanceof Error
+                        ? error.message
+                        : typeof error === "string"
+                          ? error
+                          : "Failed to update status",
+                    );
+                  }
+                },
+              );
+
+              if (result !== true || !isSuccess) {
+                setRowStatuses((prev) => ({
+                  ...prev,
+                  [row.id]: previousStatus,
+                }));
+              }
             }}
             options={JobStatus}
             badge
