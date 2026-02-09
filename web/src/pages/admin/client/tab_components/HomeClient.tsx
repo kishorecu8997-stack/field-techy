@@ -24,7 +24,6 @@ import {
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
 import {
-  useAppDownloadProfileFile,
   type ProfileFileType,
 } from "@/shared/apiServices/commonOpenApiService";
 
@@ -47,6 +46,7 @@ const HomeClient: React.FC = () => {
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [activeUserId, setActiveUserId] = useState<number | null>(null);
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
@@ -61,7 +61,6 @@ const HomeClient: React.FC = () => {
   );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
-  const { data: downloadData } = useAppDownloadProfileFile(selectedType);
 
   const clientData = (manageClient?.data ||
     []) as unknown as ManageClientProps[];
@@ -165,6 +164,7 @@ const HomeClient: React.FC = () => {
             value={activeRowId === row.id ? selectedType : null}
             onChange={(value) => {
               setActiveRowId(row.id);
+              setActiveUserId(row.userId);
               setSelectedType(value as ProfileFileType | null);
               setIsOpen(true);
             }}
@@ -296,8 +296,8 @@ const HomeClient: React.FC = () => {
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
         <ViewFileComponent
           onClose={() => setIsOpen(false)}
-          downloadUrl={downloadData?.downloadUrl}
-          documentType={selectedType}
+          userId={activeUserId}
+          fileType={selectedType}
         />
       </Popup>
     </div>
