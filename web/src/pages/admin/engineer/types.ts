@@ -60,6 +60,7 @@ export interface DetailsTypes {
 }
 export interface ManageEngineerProps {
   id: number;
+  userId: number;
   engineerID: string;
   details: DetailsTypes;
   documents: string;

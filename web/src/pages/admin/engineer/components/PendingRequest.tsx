@@ -20,8 +20,8 @@ import { toast } from "react-toastify";
 import { useGetManageEngineers, useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useQueryClient } from "@tanstack/react-query";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
-// --- Define API response type
 export type EngineerApiResponse = {
   id: number;
   userId: number;
@@ -34,7 +34,7 @@ export type EngineerApiResponse = {
   countryName: string;
   registrationDate: string;
   balance: number;
-  profileStatus: string; // pending / approved / rejected
+  profileStatus: string;
   isEmployed: boolean;
   averageRating: number;
   user?: {
@@ -42,7 +42,25 @@ export type EngineerApiResponse = {
     email: string;
     phone_number: string;
   };
+  isLoading?: boolean;
 };
+
+/**
+ * PendingRequest Component
+ *
+ * Displays a management dashboard for engineers, including:
+ * - A search input for filtering results.
+ * - A customizable table for viewing detailed engineer data.
+ * - Actionable buttons for viewing document details.
+ *
+ * @component
+ * @example
+ * return (
+ *   <PendingRequest />
+ * );
+ *
+ * @returns {JSX.Element} The rendered PendingRequest component.
+ */
 
 export default function PendingRequest() {
   const navigate = useNavigate();
@@ -55,36 +73,33 @@ export default function PendingRequest() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-  // --- Fetch engineers
-  const { data: engineerResponse } = useGetManageEngineers({
+  const { data: engineerResponse, isLoading, isFetching } = useGetManageEngineers({
     token: session?.accessToken || "",
     profileStatus: "pending",
     page: 1,
     limit: 10,
   });
 
-  // --- Map API response to ManageEngineerProps
 const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as EngineerApiResponse[]).map((e: EngineerApiResponse) => ({
   id: e.id,
+  userId: e.userId,
   engineerID: e.engineerCode,
   details: {
     name: e.name || e.user?.name || "N/A",
     email: e.email || e.user?.email || "N/A",
     phone: e.phoneNumber || e.user?.phone_number || "N/A",
   },
-  submittedDocuments: [], // placeholder
+  submittedDocuments: [],
   documents: "View",
   location: e.location || `${e.cityName}, ${e.countryName}`,
   registrationDate: new Date(e.registrationDate).toLocaleDateString(),
-  walletBalance: (e.balance ?? 0).toString(), // <-- convert number to string
+  walletBalance: (e.balance ?? 0).toString(),
   kycStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
   employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
   avgRating: e.averageRating ?? 0,
   approvalStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
 }));
 
-
-  // --- Filter by search
   const filteredData = engineers.filter((e) => {
     const query = search.toLowerCase();
     return (
@@ -95,11 +110,9 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
     );
   });
 
-  // --- Type guard for status
   const isEngineerStatus = (value: string | null): value is EngineerStatusType =>
     value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
 
-  // --- Update engineer status mutation
   const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
     onSuccess: (_data, variables) => {
       toast.success(
@@ -144,7 +157,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
           action: async (close) => {
             try {
               await updateEngineerStatus({
-                userId: data.id,
+                userId: data.userId,
                 profileStatus: status,
                 token: session?.accessToken || "",
               });
@@ -158,7 +171,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
     });
   };
 
-  const handleDeleteEngineer = async (_engineer: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -171,6 +184,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
           action: async (close) => {
             queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
             toast.success("Engineer deleted successfully!");
+            console.log("Deleted engineer:", engineer);
             close(true);
           },
         },
@@ -214,7 +228,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
       align: "center",
       renderCell: (row) => (
         <div className="mx-auto text-center">
-          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white" onClick={() => { setIsModalOpen(true); setSelectedRowId(row.id); }}>
+          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white" onClick={() => { setIsModalOpen(true); setSelectedRowId(row.userId); }}>
             {row.documents || "N/A"}
           </Button>
         </div>
@@ -230,7 +244,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
       key: "approvalStatus",
       label: "Approve/Reject",
       renderCell: (row) => {
-        const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
+        const current = rowStatuses[row.userId] ?? EngineerStatus.PENDING;
         const preparedOptions = [
           ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({ ...opt, disabled: true })),
           ...JobStatus.filter((opt) => opt.value !== current),
@@ -258,7 +272,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
           <div className="p-2 bg-yellow-100 rounded-md cursor-pointer" onClick={() => navigate(absoluteUrls.admin.home.manage_engineer_view)}>
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`)}>
+          <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.userId}`)}>
             <CiEdit className="text-blue-600" />
           </div>
           <div className="p-2 bg-red-100 rounded-md cursor-pointer" onClick={() => handleDeleteEngineer(row)}>
@@ -276,16 +290,28 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
           <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto">
-          <CustomTable<ManageEngineerProps> columns={columns} data={filteredData} initialPageSize={10} />
+          {isLoading || isFetching ? (
+            <div className="flex items-center justify-center py-10">
+              <LoaderComponent />
+            </div>
+          ) : (
+            <CustomTable<ManageEngineerProps>
+              columns={columns}
+              data={filteredData}
+              initialPageSize={10}
+            />
+          )}
         </div>
       </div>
-
       {isModalOpen && (
         <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <div className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-bold">View File {selectedRowId}</span>
-              <div className="text-xl font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>
+              <div
+                className="text-xl font-semibold cursor-pointer"
+                onClick={() => setIsModalOpen(false)}
+              >
                 <IoCloseSharp />
               </div>
             </div>
