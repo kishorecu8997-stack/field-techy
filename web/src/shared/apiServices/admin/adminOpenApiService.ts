@@ -7,6 +7,7 @@ import {
   appLogin,
   appResetPassword,
   putAdminUsersByUserIdStatus,
+  getAdminManageEngineers,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -241,5 +242,51 @@ export function useUpdateEngineerProfileStatus(options?: {
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+type ProfileStatusType = "pending" | "approved" | "rejected";
+type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
+
+interface UseGetManageEngineersParams {
+  token: string;
+  page?: number;
+  limit?: number;
+  status?: UserStatusType;
+  profileStatus?: ProfileStatusType;
+  enabled?: boolean;
+}
+
+export function useGetManageEngineers({
+  token,
+  page = 1,
+  limit = 10,
+  status,
+  profileStatus,
+  enabled = true,
+}: UseGetManageEngineersParams) {
+  return useQuery({
+    queryKey: [
+      "admin-manage-engineers",
+      { page, limit, status, profileStatus },
+    ],
+    queryFn: async () => {
+      const response = await getAdminManageEngineers({
+        client: apiClient,
+        query: {
+          page,
+          limit,
+          status,
+          profileStatus,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        throwOnError: true,
+      });
+
+      return response.data;
+    },
+    enabled: enabled && !!token,
   });
 }

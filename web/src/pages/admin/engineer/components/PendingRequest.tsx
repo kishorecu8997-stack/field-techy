@@ -1,5 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import { JobStatus, manageEngineer } from "@/dummy_data/admin/manageEngineer";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
@@ -13,91 +13,112 @@ import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, EngineerStatusType } from "../types";
+import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
-import type { EngineerStatusType } from "../types";
-import { EngineerStatus } from "../types";
+import { useGetManageEngineers, useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
+import { useQueryClient } from "@tanstack/react-query";
 
-/**
- * PendingRequest Component
- *
- * Displays a management dashboard for engineers, including:
- * - A search input for filtering results.
- * - A customizable table for viewing detailed engineer data.
- * - Actionable buttons for viewing document details.
- *
- * @component
- * @example
- * return (
- *   <PendingRequest />
- * );
- *
- * @returns {JSX.Element} The rendered PendingRequest component.
- */
+// --- Define API response type
+export type EngineerApiResponse = {
+  id: number;
+  userId: number;
+  engineerCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string;
+  cityName: string;
+  countryName: string;
+  registrationDate: string;
+  balance: number;
+  profileStatus: string; // pending / approved / rejected
+  isEmployed: boolean;
+  averageRating: number;
+  user?: {
+    name: string;
+    email: string;
+    phone_number: string;
+  };
+};
 
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const [rowStatuses, setRowStatuses] = useState<
-    Record<number, EngineerStatusType>
-  >({});
+  const queryClient = useQueryClient();
+  const session = useUserSessionStore((s) => s.session);
+
+  const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
-  const [engineers, setEngineers] = useState(manageEngineer);
-  const session = useUserSessionStore((s) => s.session);
 
-  const filteredData = engineers
-    .filter((e) => e.kycStatus === EngineerStatus.PENDING)
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
-    });
+  // --- Fetch engineers
+  const { data: engineerResponse } = useGetManageEngineers({
+    token: session?.accessToken || "",
+    profileStatus: "pending",
+    page: 1,
+    limit: 10,
+  });
 
-  const isEngineerStatus = (
-    value: string | null,
-  ): value is EngineerStatusType => {
+  // --- Map API response to ManageEngineerProps
+const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as EngineerApiResponse[]).map((e: EngineerApiResponse) => ({
+  id: e.id,
+  engineerID: e.engineerCode,
+  details: {
+    name: e.name || e.user?.name || "N/A",
+    email: e.email || e.user?.email || "N/A",
+    phone: e.phoneNumber || e.user?.phone_number || "N/A",
+  },
+  submittedDocuments: [], // placeholder
+  documents: "View",
+  location: e.location || `${e.cityName}, ${e.countryName}`,
+  registrationDate: new Date(e.registrationDate).toLocaleDateString(),
+  walletBalance: (e.balance ?? 0).toString(), // <-- convert number to string
+  kycStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
+  employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+  avgRating: e.averageRating ?? 0,
+  approvalStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
+}));
+
+
+  // --- Filter by search
+  const filteredData = engineers.filter((e) => {
+    const query = search.toLowerCase();
     return (
-      value !== null &&
-      Object.values(EngineerStatus).includes(value as EngineerStatusType)
+      e.engineerID.toLowerCase().includes(query) ||
+      e.details.name.toLowerCase().includes(query) ||
+      e.details.email.toLowerCase().includes(query) ||
+      e.location.toLowerCase().includes(query)
     );
-  };
+  });
 
+  // --- Type guard for status
+  const isEngineerStatus = (value: string | null): value is EngineerStatusType =>
+    value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
+
+  // --- Update engineer status mutation
   const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
     onSuccess: (_data, variables) => {
-      if (variables.profileStatus === EngineerStatus.APPROVE)
-        toast.success("Engineer approved successfully!");
-      else if (variables.profileStatus === EngineerStatus.REJECT)
-        toast.success("Engineer rejected successfully!");
+      toast.success(
+        variables.profileStatus === EngineerStatus.APPROVE
+          ? "Engineer approved successfully!"
+          : "Engineer rejected successfully!"
+      );
 
-      // Update local row status
       setRowStatuses((prev) => ({
         ...prev,
         [variables.userId]: variables.profileStatus,
       }));
 
-      // Remove engineer from pending list if status is not pending
-      if (variables.profileStatus !== EngineerStatus.PENDING) {
-        setEngineers((prev) =>
-          prev.filter((eng) => eng.id !== variables.userId),
-        );
-      }
+      queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
     },
     onError: () => toast.error("Failed to update engineer status"),
   });
 
-  const handleStatusChange = async (
-    data: ManageEngineerProps,
-    status: EngineerStatusType,
-  ) => {
+  const handleStatusChange = async (data: ManageEngineerProps, status: EngineerStatusType) => {
     if (!status) return;
 
     const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
@@ -118,8 +139,8 @@ export default function PendingRequest() {
             status === EngineerStatus.APPROVE
               ? "primary"
               : status === EngineerStatus.REJECT
-                ? "danger"
-                : "warning",
+              ? "danger"
+              : "warning",
           action: async (close) => {
             try {
               await updateEngineerStatus({
@@ -137,7 +158,7 @@ export default function PendingRequest() {
     });
   };
 
-  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
+  const handleDeleteEngineer = async (_engineer: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -148,7 +169,7 @@ export default function PendingRequest() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            setEngineers((prev) => prev.filter((eng) => eng.id !== job.id));
+            queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
             toast.success("Engineer deleted successfully!");
             close(true);
           },
@@ -168,12 +189,8 @@ export default function PendingRequest() {
           <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
           <div>
             <div className="font-semibold">{row.details.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.details.phone}
-            </div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {row.details.email}
-            </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.phone}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.email}</div>
           </div>
         </div>
       ),
@@ -184,10 +201,7 @@ export default function PendingRequest() {
       renderCell: (row) => (
         <div className="text-sm flex flex-col gap-1">
           {row.submittedDocuments.map((doc, idx) => (
-            <span
-              key={idx}
-              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
-            >
+            <span key={idx} className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200">
               {doc}
             </span>
           ))}
@@ -200,31 +214,17 @@ export default function PendingRequest() {
       align: "center",
       renderCell: (row) => (
         <div className="mx-auto text-center">
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() => {
-              setIsModalOpen(true);
-              setSelectedRowId(row.id);
-            }}
-          >
+          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white" onClick={() => { setIsModalOpen(true); setSelectedRowId(row.id); }}>
             {row.documents || "N/A"}
           </Button>
         </div>
       ),
     },
     { key: "location", label: "Location" },
-    {
-      key: "registrationDate",
-      label: "Registration Date",
-      dataCellAlign: "center",
-    },
+    { key: "registrationDate", label: "Registration Date", dataCellAlign: "center" },
     { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center" },
     { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
-    {
-      key: "employmentStatus",
-      label: "Employment Status",
-      dataCellAlign: "center",
-    },
+    { key: "employmentStatus", label: "Employment Status", dataCellAlign: "center" },
     { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
     {
       key: "approvalStatus",
@@ -232,13 +232,9 @@ export default function PendingRequest() {
       renderCell: (row) => {
         const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
         const preparedOptions = [
-          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
-            ...opt,
-            disabled: true,
-          })),
+          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({ ...opt, disabled: true })),
           ...JobStatus.filter((opt) => opt.value !== current),
         ];
-
         return (
           <SelectMenu
             placeholder="Select"
@@ -259,28 +255,13 @@ export default function PendingRequest() {
       align: "center",
       renderCell: (row) => (
         <div className="flex items-center gap-2">
-          <div
-            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() =>
-              navigate(absoluteUrls.admin.home.manage_engineer_view)
-            }
-          >
+          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer" onClick={() => navigate(absoluteUrls.admin.home.manage_engineer_view)}>
             <FiEye className="text-yellow-600" />
           </div>
-          <div
-            className="p-2 bg-blue-100 rounded-md cursor-pointer"
-            onClick={() =>
-              navigate(
-                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`,
-              )
-            }
-          >
+          <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`)}>
             <CiEdit className="text-blue-600" />
           </div>
-          <div
-            className="p-2 bg-red-100 rounded-md cursor-pointer"
-            onClick={() => handleDeleteEngineer(row)}
-          >
+          <div className="p-2 bg-red-100 rounded-md cursor-pointer" onClick={() => handleDeleteEngineer(row)}>
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -295,11 +276,7 @@ export default function PendingRequest() {
           <SearchInput value={search} onChange={setSearch} />
         </div>
         <div className="h-full flex-1 overflow-y-auto">
-          <CustomTable<ManageEngineerProps>
-            columns={columns}
-            data={filteredData}
-            initialPageSize={10}
-          />
+          <CustomTable<ManageEngineerProps> columns={columns} data={filteredData} initialPageSize={10} />
         </div>
       </div>
 
@@ -308,10 +285,7 @@ export default function PendingRequest() {
           <div className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-bold">View File {selectedRowId}</span>
-              <div
-                className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <div className="text-xl font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>
                 <IoCloseSharp />
               </div>
             </div>
