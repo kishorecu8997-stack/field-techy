@@ -15,6 +15,7 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { toast } from "react-toastify";
+import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
@@ -46,10 +47,14 @@ const CorporateClient: React.FC = () => {
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(null);
-  // console.log('selectedType :', selectedType);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
+    null,
+  );
+  const session = useUserSessionStore((s) => s.session);
+  const token = session?.accessToken || "";
 
   const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    token,
     {
       clientType: "corporate",
     },
@@ -57,7 +62,6 @@ const CorporateClient: React.FC = () => {
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
   const { data: downloadData } = useAppDownloadProfileFile(selectedType);
-  console.log("downloadData :", downloadData);
 
   const clientData = (manageClient?.data ||
     []) as unknown as ManageClientProps[];
@@ -78,8 +82,6 @@ const CorporateClient: React.FC = () => {
           variant: "danger",
           action: async (close) => {
             console.log("Deleting client:", client.id);
-            // TODO: call your delete API here
-            // await deleteClient(client.id);
             toast.success("Client deleted successfully");
             close(true);
           },
@@ -214,16 +216,24 @@ const CorporateClient: React.FC = () => {
               handleStatusChange(row, value, showPopup, async (row, status) => {
                 try {
                   const payload: AdminClientsByUserIdStatusBody = {
-                    profileStatus: status as AdminClientsByUserIdStatusBody["profileStatus"],
+                    profileStatus:
+                      status as AdminClientsByUserIdStatusBody["profileStatus"],
                   };
 
                   await updateClientStatus({
                     userId: row.userId || row.id,
                     body: payload,
+                    token: token,
                   });
                   refetchClients();
                 } catch (error) {
-                  toast.error((error as string) || "Failed to update status");
+                  toast.error(
+                    error instanceof Error
+                      ? error.message
+                      : typeof error === "string"
+                        ? error
+                        : "Failed to update status",
+                  );
                 }
               });
             }}
@@ -286,8 +296,8 @@ const CorporateClient: React.FC = () => {
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent 
-          onClose={() => setIsOpen(false)} 
+        <ViewFileComponent
+          onClose={() => setIsOpen(false)}
           downloadUrl={downloadData?.downloadUrl}
           documentType={selectedType}
         />

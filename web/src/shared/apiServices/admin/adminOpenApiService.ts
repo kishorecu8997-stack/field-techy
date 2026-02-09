@@ -250,27 +250,33 @@ export type AdminManageClientsResponse = NonNullable<
   GetAdminManageClientsData["body"]
 >;
 
-export function useAdminManageClients(options?: {
-  clientType: ClientType;
-  onSuccess?: (data: AdminManageClientsResponse) => void;
-  onError?: (error: unknown) => void;
-}) {
+export function useAdminManageClients(
+  token: string,
+  options?: {
+    clientType: ClientType;
+    onSuccess?: (data: AdminManageClientsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  const { clientType, ...queryOptions } = options ?? {};
+
   return useQuery({
-    queryKey: ["adminManageClients", options?.clientType],
+    queryKey: ["adminManageClients", clientType, token],
     queryFn: async () => {
       const response = await getAdminManageClients({
         client: apiClient,
         throwOnError: true,
         query: {
-          clientType: options?.clientType,
+          clientType,
         },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       return response.data;
     },
-    ...options,
+    enabled: !!token,
+    ...queryOptions,
   });
 }
 
@@ -290,9 +296,11 @@ export function useAdminClientsByUserIdStatus(options?: {
     mutationFn: async ({
       userId,
       body,
+      token,
     }: {
       userId: string | number;
       body: AdminClientsByUserIdStatusBody;
+      token: string;
     }) => {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
@@ -302,7 +310,7 @@ export function useAdminClientsByUserIdStatus(options?: {
         },
         body: body,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       return response.data as AdminClientsByUserIdStatusResponse;

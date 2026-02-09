@@ -21,6 +21,7 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.target = "_blank";
+      link.rel = "noopener noreferrer";
       link.setAttribute("download", documentType || "document");
       document.body.appendChild(link);
       link.click();
@@ -42,11 +43,13 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     }
 
     // Check if it's an image type based on URL extension or documentType
-    const isImage = downloadUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i) || 
+    const isImage =
+      downloadUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i) ||
       ["profilePicture"].includes(documentType || "");
 
     // Check if it's a PDF
-    const isPdf = downloadUrl.match(/\.pdf(\?|$)/i) || 
+    const isPdf =
+      downloadUrl.match(/\.pdf(\?|$)/i) ||
       ["resumeFile"].includes(documentType || "");
 
     if (isImage) {
@@ -65,6 +68,8 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
           src={downloadUrl}
           title="PDF Preview"
           className="w-full h-full min-h-[400px]"
+          sandbox="allow-same-origin allow-downloads"
+          referrerPolicy="no-referrer"
         />
       );
     }
@@ -73,13 +78,13 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
     return (
       <div className="flex flex-col items-center justify-center p-8 text-gray-500 dark:text-gray-400">
         <p className="mb-4">Preview not available for this file type</p>
-        <button
+        <div
           onClick={handleDownload}
           className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
         >
           <FiDownload className="h-5 w-5" />
           Download File
-        </button>
+        </div>
       </div>
     );
   };
