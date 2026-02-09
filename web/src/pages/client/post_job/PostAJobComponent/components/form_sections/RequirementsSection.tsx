@@ -46,6 +46,8 @@ const RequirementsSection = ({
   const [toolEntries, setToolEntries] = useState<ToolEntry[]>([]);
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
+  const [hasToolContent, setHasToolContent] = useState(false);
+  const toolDetailsSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     register("toolEntriesCount", {
@@ -69,6 +71,17 @@ const RequirementsSection = ({
     setValue("toolEntriesCount", toolEntries.length, { shouldValidate: true });
     setValue("toolsData", toolEntries);
   }, [setValue, toolEntries]);
+
+  useEffect(() => {
+    const tools = watch("tools");
+    const budget = watch("toolBudgetNotes");
+    const images = watch("toolImages");
+    setHasToolContent(
+      (tools && tools !== "") ||
+      (budget && budget !== "") ||
+      (images instanceof FileList && images.length > 0)
+    );
+  }, [watch("tools"), watch("toolBudgetNotes"), watch("toolImages")]);
 
   const handleAddToolEntry = () => {
     const toolId = (watch("tools") as string | undefined)?.trim();
@@ -126,6 +139,7 @@ const RequirementsSection = ({
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
     clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    setHasToolContent(false);
   };
 
   const handleRemoveToolEntry = (index: number) => {
@@ -146,6 +160,25 @@ const RequirementsSection = ({
     setValue("toolBudgetNotes", entry.budget === "-" ? "" : entry.budget);
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
+    toolDetailsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingToolIndex(null);
+    setValue("tools", "");
+    setValue("toolBudgetNotes", "");
+    setValue("toolImages", undefined);
+    setToolImageInputKey((key) => key + 1);
+    clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+  };
+
+  const handleClearToolFields = () => {
+    setValue("tools", "");
+    setValue("toolBudgetNotes", "");
+    setValue("toolImages", undefined);
+    setToolImageInputKey((key) => key + 1);
+    clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    setHasToolContent(false);
   };
 
   // Sync tool budget total to form whenever toolEntries change
@@ -160,7 +193,7 @@ const RequirementsSection = ({
   return (
     <div className="space-y-3">
       <SectionHeader title="Requirements" />
-      <div className="flex flex-col w-full gap-3">
+      <div className="flex flex-col w-full gap-3" ref={toolDetailsSectionRef}>
         <InputField
           name="numberOfVacancy"
           label="Number of Vacancies"
@@ -200,6 +233,7 @@ const RequirementsSection = ({
           placeholder="Upload tool files"
           disabled={isDisable}
           key={toolImageInputKey}
+          required={!toolEntries.length}
         />
       </div>
       <InputField
@@ -227,10 +261,30 @@ const RequirementsSection = ({
             return true;
           },
         }}
-        required
+        required={!toolEntries.length}
         disabled={isDisable}
       />
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+         {hasToolContent && editingToolIndex === null && (
+          <Button
+            variant="secondary"
+            className="rounded-md"
+            onClick={handleClearToolFields}
+            disabled={isDisable}
+          >
+            Clear
+          </Button>
+        )}
+        {editingToolIndex !== null && (
+          <Button
+            variant="danger"
+            className="rounded-md"
+            onClick={handleCancelEdit}
+            disabled={isDisable}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
           variant="outline"
           className="rounded-md"

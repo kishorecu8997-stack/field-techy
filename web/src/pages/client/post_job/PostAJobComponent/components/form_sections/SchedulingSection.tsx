@@ -40,7 +40,7 @@ const SchedulingSection = ({ isDisable }: { isDisable: boolean }) => {
             placeholder="Select End Date"
             minDate={startDateValue || today}
             required
-            disabled={isDisable}
+            disabled={isDisable || !startDateValue}
           />
         </div>
       </div>
