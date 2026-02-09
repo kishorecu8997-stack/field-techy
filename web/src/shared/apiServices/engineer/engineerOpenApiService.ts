@@ -16,15 +16,15 @@ import {
   type EngineerGetEducationResponse,
   type EngineerGetExperienceResponse,
   type EngineerGetPersonalInfoResponse,
+  type EngineerGetSkillsAndToolsResponse,
+  type EngineerGetWorkPreferenceResponse,
   type EngineerUpdateEducationResponse,
   type EngineerUpdateExperienceResponse,
   type EngineerUpdatePersonalInfoResponse,
   type EngineerUpdateSkillsAndToolsResponse,
   type EngineerUpdateWorkPreferenceResponse,
-  type EngineerGetSkillsAndToolsResponse,
-  type EngineerGetWorkPreferenceResponse,
+  type EngineerGetMyJobsData,
 } from "@/api";
-import { type EngineerData } from "./engineerTypes";
 import {
   appChangePasswordMutation,
   appDeleteProfileFileMutation,
@@ -45,11 +45,13 @@ import {
   engineerUpdatePersonalInfoMutation,
   engineerUpdateSkillsAndToolsMutation,
   engineerUpdateWorkPreferenceMutation,
+  engineerGetMyJobsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEngineerStore } from "../../store/useEngineerStore";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
+import { type EngineerData } from "./engineerTypes";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -356,6 +358,20 @@ export function useEngineerChangePassword(options?: {
     }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+export function useEngineerGetJobs(
+  jobStatus?: NonNullable<EngineerGetMyJobsData["query"]>["jobStatus"],
+  jobType?: NonNullable<EngineerGetMyJobsData["query"]>["jobType"],
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    ...engineerGetMyJobsOptions({
+      client: apiClient,
+      query: { jobStatus, jobType },
+    }),
+    enabled: options?.enabled ?? true,
   });
 }
 
