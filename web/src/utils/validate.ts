@@ -1316,6 +1316,52 @@ export const calculateTimeDuration = (
   }
 };
 
+/**
+ * Validate start date for break request - cannot select past dates
+ * @param value - Start date string (YYYY-MM-DD format)
+ * @returns true if valid, error message if invalid
+ */
+export const validateStartDate = (value: string) => {
+  if (!value) return true; // Allow empty (will be caught by required validation)
+
+  const selectedDate = new Date(value);
+  const today = new Date();
+  
+  // Reset time part to compare only dates
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate < today) {
+    return "Start date cannot be in the past";
+  }
+
+  return true;
+};
+
+/**
+ * Validate end date for break request - must be on or after start date
+ * @param value - End date string (YYYY-MM-DD format)
+ * @param startDate - Start date string (YYYY-MM-DD format)
+ * @returns true if valid, error message if invalid
+ */
+export const validateEndDate = (value: string, startDate: string) => {
+  if (!value || !startDate) return true; // Allow empty (will be caught by required validation)
+
+  const endDateObj = new Date(value);
+  const startDateObj = new Date(startDate);
+
+  // Reset time part to compare only dates
+  endDateObj.setHours(0, 0, 0, 0);
+  startDateObj.setHours(0, 0, 0, 0);
+
+  // Require end date to be strictly after the start date
+  if (endDateObj <= startDateObj) {
+    return "End date must be after the start date";
+  }
+
+  return true;
+};
+
 export default {
   validateName,
   validateEmail,
@@ -1356,4 +1402,6 @@ export default {
   validateTimeNotPast,
   validateEndTimeAfterStart,
   calculateTimeDuration,
+  validateStartDate,
+  validateEndDate,
 };

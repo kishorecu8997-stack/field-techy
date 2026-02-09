@@ -27,8 +27,8 @@ export const BREAK_REQUEST_LABELS = {
 } as const;
 
 export const BREAK_REQUEST_STATUS = {
-  waiting: "Waiting for Approval",
-  approved: "Approved",
+  waiting: "Waiting for Client Approval",
+  approved: "Approved by Client",
 } as const;
 
 export const BREAK_REQUEST_COLORS = {

@@ -26,13 +26,13 @@ export const BASE_TIMELINE_ITEMS: TimelineItem[] = [
 export const JOB_STARTED_TEMPLATE: Omit<TimelineItem, "timestamp">[] = [
   {
     title: "Job Started",
-    statusText: "Waiting for Approval",
+    statusText: "Waiting for Client Approval",
     statusColor: TIMELINE_COLORS.waiting,
     accentColor: TIMELINE_COLORS.accentGreen,
   },
   {
     title: "Job Started",
-    statusText: "Approved",
+    statusText: "Approved by Client",
     statusColor: TIMELINE_COLORS.approved,
     accentColor: TIMELINE_COLORS.accentGreen,
   },
@@ -56,4 +56,11 @@ export const LABELS = {
   progressUpdateFallback: "Progress Update",
   breakDetailsFallback: "Break Request Details",
   breakTitleFallback: "Short Term Break",
+} as const;
+
+export const REVISION_LABELS = {
+  numberPrefix: "Revision",
+  clientLabel: "Client:",
+  engineerLabel: "Engineer:",
+  updateButton: "Update",
 } as const;

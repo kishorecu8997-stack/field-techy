@@ -188,6 +188,8 @@ export interface ProgressUpdate {
   detailsLabel?: string;
   startTime?: string;
   endTime?: string;
+  startDate?: string;
+  endDate?: string;
   duration?: string;
   reason?: string;
   requestType?: string;

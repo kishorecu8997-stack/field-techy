@@ -5,12 +5,18 @@
 import { TIMELINE_COLORS } from "@/dummy_data/engineerTimelineDummyData";
 
 export const UPDATE_LOG_DEFAULTS = {
+  title: "",
   notes: "",
   attachments: null as FileList | null,
 };
 
 export const UPDATE_LOG_LABELS = {
-  title: "Update Log",
+  title: "Create Log",
+  jobIdLabel: "Job ID:",
+  jobId: "001",
+  titleLabel: "Title",
+  titlePlaceholder: "Enter title",
+  titleRequiredMessage: "Title is required",
   notesLabel: "Your Notes",
   notesPlaceholder: "Add your notes here",
   notesRequiredMessage: "Notes are required",
@@ -28,14 +34,14 @@ export const UPDATE_LOG_MESSAGES = {
 } as const;
 
 export const UPDATE_LOG_STATUS = {
-  waiting: "Waiting for Approval",
-  approved: "Approved",
-  revision: "Revision Requested",
+  waiting: "Waiting for Client Approval",
+  approved: "Approved by Client",
+  revision: "Revision Requested by Client",
 } as const;
 
 export const UPDATE_LOG_COLORS = {
   accent: TIMELINE_COLORS.approved,
-  waiting: TIMELINE_COLORS.defaultStatus,
+  waiting: TIMELINE_COLORS.waiting,
   approved: TIMELINE_COLORS.approved,
   revision: TIMELINE_COLORS.defaultStatus,
 } as const;

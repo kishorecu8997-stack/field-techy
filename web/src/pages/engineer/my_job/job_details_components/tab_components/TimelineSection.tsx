@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { HiCheckCircle } from "react-icons/hi";
-import { HiArrowUturnRight, HiXMark } from "react-icons/hi2";
+import { HiCheckCircle, HiClock } from "react-icons/hi";
+import { HiArrowUturnRight, HiChevronDown, HiXMark } from "react-icons/hi2";
 import TimelineList from "@/shared/components/TimelineList";
+import { Button } from "@/shared/components/commonUI/Buttons";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { OfferedJobStatusType } from "@/pages/engineer/search_result/types";
 import type { ProgressUpdate } from "../../types.d";
@@ -16,7 +17,10 @@ import {
   MODAL_MESSAGES,
   ATTACHMENT_ALT,
   LABELS,
+  REVISION_LABELS,
 } from "@/dummy_data/engineerTimelineDummyData";
+import { REVISION_UPDATE_LABELS } from "@/dummy_data/engineerRevisionUpdateDummyData";
+import { FINAL_STATEMENT_LABELS } from "@/dummy_data/engineerFinalStatementDummyData";
 
 /**
  * Engineer job timeline tab that renders milestones, progress updates, and revision/break details.
@@ -27,6 +31,15 @@ import {
  * Designed as a presentational component; network calls are simulated via props.
  */
 const formatNow = () => formatDateTime();
+
+const formatDateToMMDDYYYY = (dateString?: string) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+};
 
 const TimelineSection: React.FC<{
   OfferJobStatus?: OfferedJobStatusType;
@@ -39,11 +52,7 @@ const TimelineSection: React.FC<{
   const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] = useState(false);
   const [isBreakDetailsOpen, setIsBreakDetailsOpen] = useState(false);
   const [activeBreak, setActiveBreak] = useState<ProgressUpdate | null>(null);
-
-  const handleOpenRevision = (update: ProgressUpdate) => {
-    setActiveRevision(update);
-    setIsRevisionOpen(true);
-  };
+  const [collapsedUpdates, setCollapsedUpdates] = useState<Record<string, boolean>>({});
 
   const handleCloseRevision = () => {
     setIsRevisionOpen(false);
@@ -52,6 +61,11 @@ const TimelineSection: React.FC<{
 
   const handleOpenRevisionUpdateForm = () => {
     setIsRevisionOpen(false);
+    setIsRevisionUpdateFormOpen(true);
+  };
+
+  const handleStartRevisionUpdate = (update: ProgressUpdate) => {
+    setActiveRevision(update);
     setIsRevisionUpdateFormOpen(true);
   };
 
@@ -78,17 +92,33 @@ const TimelineSection: React.FC<{
     OfferJobStatus === "started"
       ? [...jobStartedItems, ...BASE_TIMELINE_ITEMS]
       : BASE_TIMELINE_ITEMS;
+  const revisionUpdateEntry = progressUpdates.find(
+    (entry) => entry.title === REVISION_UPDATE_LABELS.title,
+  );
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
       {progressUpdates.length > 0 && (
         <div className="space-y-3 mb-4">
           {progressUpdates.map((update, idx) => {
-            const isApproved = update.statusText?.toLowerCase() === "approved";
+            if (update.title === REVISION_UPDATE_LABELS.title) return null;
+            const updateKey = `${update.title || "update"}-${idx}`;
+            const isCollapsed = collapsedUpdates[updateKey] ?? false;
+            const updateTitle = update.title === REVISION_UPDATE_LABELS.title
+              ? update.title
+              : update.title === FINAL_STATEMENT_LABELS.title
+                ? update.title
+                : update.detailsType === "break"
+                  ? update.title
+                  : update.title
+                    ? `${LABELS.progressUpdateFallback} - ${update.title}`
+                    : LABELS.progressUpdateFallback;
+            const isApproved = update.statusText?.toLowerCase().startsWith("approved");
             const isRevisionRequested =
-              update.statusText?.toLowerCase() === "revision requested";
+              update.statusText?.toLowerCase().startsWith("revision requested");
             const hasBreakDetails =
               update.detailsType === "break" && isApproved;
+            const isBreakUpdate = update.detailsType === "break";
             return (
               <div
                 key={`${update.title}-${idx}`}
@@ -102,20 +132,39 @@ const TimelineSection: React.FC<{
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-800 leading-5">
-                      {update.title || LABELS.progressUpdateFallback}
+                      {updateTitle}
                     </p>
-                    {update.description && (
+                    {!isCollapsed && update.description && (
                       <p className="text-sm text-gray-700 mt-1 whitespace-pre-line leading-5">
                         {update.description}
                       </p>
                     )}
-                    {update.attachmentName && (
+                    {!isCollapsed && update.attachmentName && (
                       <span className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
                         {update.attachmentName}
                       </span>
                     )}
                   </div>
                   <div className="flex flex-col items-end gap-1 whitespace-nowrap">
+                    {!isBreakUpdate && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-7 w-7 min-w-0 p-0 rounded-full border-gray-200 text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-100"
+                        aria-label={isCollapsed ? "Expand progress update" : "Collapse progress update"}
+                        onClick={() =>
+                          setCollapsedUpdates((prev) => ({
+                            ...prev,
+                            [updateKey]: !isCollapsed,
+                          }))
+                        }
+                      >
+                        <HiChevronDown
+                          className={`h-4 w-4 transition-transform ${isCollapsed ? "-rotate-90" : "rotate-0"}`}
+                          aria-hidden
+                        />
+                      </Button>
+                    )}
                     <span className="text-xs text-gray-500 leading-4">
                       {update.timestamp}
                     </span>
@@ -129,19 +178,10 @@ const TimelineSection: React.FC<{
                         ) : isRevisionRequested ? (
                           <HiArrowUturnRight aria-hidden />
                         ) : (
-                          <span aria-hidden>⏱</span>
+                          <HiClock aria-hidden />
                         )}
                         {update.statusText}
                       </span>
-                    )}
-                    {isRevisionRequested && (
-                      <button
-                        type="button"
-                        className="text-xs font-semibold text-teal-700 underline underline-offset-2 mt-1 cursor-pointer"
-                        onClick={() => handleOpenRevision(update)}
-                      >
-                        Revision Request Details
-                      </button>
                     )}
                     {hasBreakDetails && (
                       <button
@@ -154,6 +194,70 @@ const TimelineSection: React.FC<{
                     )}
                   </div>
                 </div>
+                {!isCollapsed && isRevisionRequested && (
+                  <div className="mt-3 pl-4 border-l border-gray-200">
+                    <p className="text-xs font-semibold text-gray-800">
+                      {REVISION_LABELS.numberPrefix} 1 - {update.title}
+                    </p>
+                    <div className="mt-2">
+                      <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-3 w-full">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <p className="text-xs font-semibold text-amber-600">{REVISION_LABELS.clientLabel}</p>
+                            <p className="text-sm text-gray-800 mt-1">
+                              {update.description || MODAL_MESSAGES.revisionFallback}
+                            </p>
+                            {update.attachmentName && (
+                              <div className="mt-2">
+                                <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                                  {update.attachmentName}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <span className="text-xs text-gray-500 leading-4">
+                              {update.timestamp}
+                            </span>
+                            {!revisionUpdateEntry && (
+                              <Button
+                                type="button"
+                                className="bg-teal-800 hover:bg-teal-900 text-white px-2 py-0.5 text-xs mt-auto"
+                                onClick={() => handleStartRevisionUpdate(update)}
+                              >
+                                {REVISION_LABELS.updateButton}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {revisionUpdateEntry && (
+                        <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50/70 p-3 w-full">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold text-blue-700">{REVISION_LABELS.engineerLabel}</p>
+                              <p className="text-sm text-gray-800 mt-1">
+                                {revisionUpdateEntry.description}
+                              </p>
+                              {revisionUpdateEntry.attachmentName && (
+                                <div className="mt-2">
+                                  <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                                    {revisionUpdateEntry.attachmentName}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              <span className="text-xs text-gray-500 leading-4">
+                                {revisionUpdateEntry.timestamp}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -226,7 +330,9 @@ const TimelineSection: React.FC<{
                 {activeBreak?.title || LABELS.breakTitleFallback}
               </p>
               <div className="inline-flex items-center px-3 py-1 rounded-full bg-amber-400 text-white text-xs font-semibold mb-2">
-                {(activeBreak?.startTime || "-") + " to " + (activeBreak?.endTime || "-")}
+                {activeBreak?.requestType === "Long Term Break" || activeBreak?.startDate || activeBreak?.endDate
+                  ? `${formatDateToMMDDYYYY(activeBreak?.startDate)} to ${formatDateToMMDDYYYY(activeBreak?.endDate)}`
+                  : `${activeBreak?.startTime || "-"} to ${activeBreak?.endTime || "-"}`}
                 {activeBreak?.duration ? ` - ${activeBreak.duration}` : ""}
               </div>
               {activeBreak?.reason && (

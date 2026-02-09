@@ -27,8 +27,8 @@ export const FINAL_STATEMENT_LABELS = {
 } as const;
 
 export const FINAL_STATEMENT_STATUS = {
-  waiting: "Waiting for Approval",
-  approved: "Approved",
+  waiting: "Waiting for Client Approval",
+  approved: "Approved by Client",
 } as const;
 
 export const FINAL_STATEMENT_COLORS = {

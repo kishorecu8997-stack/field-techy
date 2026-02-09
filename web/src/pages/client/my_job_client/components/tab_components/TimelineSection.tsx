@@ -7,10 +7,11 @@ import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
-import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import {
   progressUpdateCardData,
   revisionRequestUpdateCardData,
+  createRevisionUpdateCardData,
   shortTermBreakCardData,
   finalStatementCardData,
   jobStartedCardData,
@@ -22,6 +23,7 @@ import {
 } from "@/dummy_data/clientTimelineDummyData";
 
 interface RevisionFormData {
+  title: string;
   notes: string;
   attachment: FileList;
 }
@@ -49,11 +51,25 @@ const TimelineSection: React.FC = () => {
   const [showRevisionUpdateModal, setShowRevisionUpdateModal] = useState(false);
   const [showRevisionUpdateConfirm, setShowRevisionUpdateConfirm] = useState(false);
   const [showShortBreakApprovalModal, setShowShortBreakApprovalModal] = useState(false);
+  const [showJobApproveConfirm, setShowJobApproveConfirm] = useState(false);
+  const [showJobRejectConfirm, setShowJobRejectConfirm] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
+  const [keepProgressExpanded, setKeepProgressExpanded] = useState(false);
+  const [revisionRequestDetails, setRevisionRequestDetails] = useState<{
+    title: string;
+    notes: string;
+    attachmentName?: string;
+    timestamp: string;
+  } | null>(null);
+  // State for revision update card data - setter can be used when API integration is added
+  const [revisionUpdateCardData] = useState(
+    createRevisionUpdateCardData()
+  );
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
     defaultValues: {
+      title: "",
       notes: "",
       attachment: undefined,
     },
@@ -69,7 +85,7 @@ const TimelineSection: React.FC = () => {
 
   const accentColor = jobStatus === "rejected" ? TIMELINE_CARD_COLORS.red : TIMELINE_CARD_COLORS.green;
   const progressAccentColor = progressStatus === "rejected" ? TIMELINE_CARD_COLORS.red : progressStatus === "revision" ? TIMELINE_CARD_COLORS.orange : TIMELINE_CARD_COLORS.green;
-  const revisionUpdateAccentColor = TIMELINE_CARD_COLORS.orange;
+  // const revisionUpdateAccentColor = TIMELINE_CARD_COLORS.orange; // COMMENTED OUT - Revision Request Update Card is hidden
   const shortBreakAccentColor = TIMELINE_CARD_COLORS.red;
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
@@ -110,30 +126,36 @@ const TimelineSection: React.FC = () => {
       </span>
     ) : null;
 
-  const revisionUpdateStatusNode =
-    revisionUpdateStatus === "approved" ? (
-      <span className="flex items-center gap-1 text-xs font-semibold text-green-700">
-        <HiCheckCircle className="h-4 w-4" aria-hidden /> Approved
-      </span>
-    ) : revisionUpdateStatus === "rejected" ? (
-      <span className="flex items-center gap-1 text-xs font-semibold text-red-600">
-        <HiXMark className="h-4 w-4" aria-hidden /> Rejected
-      </span>
-    ) : revisionUpdateStatus === "revision" ? (
-      <span className="flex items-center gap-1 text-xs font-semibold text-amber-600">
-        Request Revision
-      </span>
-    ) : null;
+  // const revisionUpdateStatusNode = // COMMENTED OUT - Revision Request Update Card is hidden
+  //   revisionUpdateStatus === "approved" ? (
+  //     <span className="flex items-center gap-1 text-xs font-semibold text-green-700">
+  //       <HiCheckCircle className="h-4 w-4" aria-hidden /> Approved
+  //     </span>
+  //   ) : revisionUpdateStatus === "rejected" ? (
+  //     <span className="flex items-center gap-1 text-xs font-semibold text-red-600">
+  //       <HiXMark className="h-4 w-4" aria-hidden /> Rejected
+  //     </span>
+  //   ) : revisionUpdateStatus === "revision" ? (
+  //     <span className="flex items-center gap-1 text-xs font-semibold text-amber-600">
+  //       Request Revision
+  //     </span>
+  //   ) : null;
 
-  const handleProgressApprove = () => {
+  const handleProgressApprove = (keepExpanded = false) => {
+    setKeepProgressExpanded(keepExpanded);
     setProgressStatus("approved");
-    setIsProgressCollapsed(true);
+    if (!keepExpanded) {
+      setIsProgressCollapsed(true);
+    }
     toast.success(TOAST_MESSAGES.progressApproved, { position: "top-right" });
   };
 
-  const handleProgressReject = () => {
+  const handleProgressReject = (keepExpanded = false) => {
+    setKeepProgressExpanded(keepExpanded);
     setProgressStatus("rejected");
-    setIsProgressCollapsed(true);
+    if (!keepExpanded) {
+      setIsProgressCollapsed(true);
+    }
     toast.error(TOAST_MESSAGES.progressRejected, { position: "top-right" });
   };
 
@@ -148,10 +170,25 @@ const TimelineSection: React.FC = () => {
   };
 
   const handleRevisionConfirmSubmit = () => {
+    const { title, notes, attachment } = revisionFormMethods.getValues();
+    const attachmentName = attachment?.[0]?.name;
+    const timestamp = new Date().toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
     setShowRevisionConfirm(false);
     revisionFormMethods.reset();
     setProgressStatus("revision");
-    setIsProgressCollapsed(true);
+    setIsProgressCollapsed(false);
+    setRevisionRequestDetails({
+      title,
+      notes,
+      attachmentName,
+      timestamp,
+    });
     toast.success(TOAST_MESSAGES.revisionSubmitted, { position: "top-right" });
   };
 
@@ -166,18 +203,18 @@ const TimelineSection: React.FC = () => {
     revisionFormMethods.reset();
   };
 
-  // Revision Update Card handlers
-  const handleRevisionUpdateApprove = () => {
-    setRevisionUpdateStatus("approved");
-    setIsRevisionUpdateCollapsed(true);
-    toast.success(TOAST_MESSAGES.revisionUpdateApproved, { position: "top-right" });
-  };
-
-  const handleRevisionUpdateReject = () => {
-    setRevisionUpdateStatus("rejected");
-    setIsRevisionUpdateCollapsed(true);
-    toast.error(TOAST_MESSAGES.revisionUpdateRejected, { position: "top-right" });
-  };
+  // Revision Update Card handlers - COMMENTED OUT - Revision Request Update Card is hidden
+  // const handleRevisionUpdateApprove = () => {
+  //   setRevisionUpdateStatus("approved");
+  //   setIsRevisionUpdateCollapsed(true);
+  //   toast.success(TOAST_MESSAGES.revisionUpdateApproved, { position: "top-right" });
+  // };
+  //
+  // const handleRevisionUpdateReject = () => {
+  //   setRevisionUpdateStatus("rejected");
+  //   setIsRevisionUpdateCollapsed(true);
+  //   toast.error(TOAST_MESSAGES.revisionUpdateRejected, { position: "top-right" });
+  // };
 
   const handleRevisionUpdateRequestRevision = () => {
     setShowRevisionUpdateModal(true);
@@ -260,23 +297,45 @@ const TimelineSection: React.FC = () => {
         : null;
 
   const handleApprove = () => {
+    setShowJobApproveConfirm(true);
+  };
+
+  const handleJobApproveConfirmSubmit = () => {
+    setShowJobApproveConfirm(false);
     setJobStatus("approved");
     setIsJobCollapsed(true);
     toast.success(TOAST_MESSAGES.jobApproved, { position: "top-right" });
   };
 
+  const handleJobApproveConfirmCancel = () => {
+    setShowJobApproveConfirm(false);
+  };
+
   const handleReject = () => {
+    setShowJobRejectConfirm(true);
+  };
+
+  const handleJobRejectConfirmSubmit = () => {
+    setShowJobRejectConfirm(false);
     setJobStatus("rejected");
     setIsJobCollapsed(true);
     toast.error(TOAST_MESSAGES.jobRejected, { position: "top-right" });
   };
 
+  const handleJobRejectConfirmCancel = () => {
+    setShowJobRejectConfirm(false);
+  };
+
   // Auto-collapse Progress card once a decision is made
   useEffect(() => {
-    if (progressStatus !== "pending") {
-      setIsProgressCollapsed(true);
+    if (progressStatus === "approved" || progressStatus === "rejected") {
+      if (!keepProgressExpanded) {
+        setIsProgressCollapsed(true);
+      }
+    } else if (progressStatus === "revision") {
+      setIsProgressCollapsed(false);
     }
-  }, [progressStatus]);
+  }, [keepProgressExpanded, progressStatus]);
 
   // Auto-collapse Revision Update card once a decision is made
   useEffect(() => {
@@ -391,7 +450,7 @@ const TimelineSection: React.FC = () => {
                   <div className="flex gap-3">
                     <Button
                       variant="no_style"
-                      onClick={handleProgressReject}
+                      onClick={() => handleProgressReject()}
                       className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
                       Reject
@@ -404,7 +463,7 @@ const TimelineSection: React.FC = () => {
                       Request Revision
                     </Button>
                     <Button
-                      onClick={handleProgressApprove}
+                      onClick={() => handleProgressApprove()}
                       className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
                     >
                       Approve
@@ -413,11 +472,86 @@ const TimelineSection: React.FC = () => {
                 )}
               </div>
             </div>
+            {progressStatus === "revision" && revisionRequestDetails && (
+              <div className="mt-4 pl-4 border-l border-gray-200">
+                <p className="text-xs font-semibold text-gray-800">
+                  Revision 1 - {revisionRequestDetails.title}
+                </p>
+                <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50/70 p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-amber-600">Client:</p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {revisionRequestDetails.notes}
+                      </p>
+                      {revisionRequestDetails.attachmentName && (
+                        <div className="mt-2">
+                          <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                            {revisionRequestDetails.attachmentName}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="text-xs text-gray-500 leading-4">
+                        {revisionRequestDetails.timestamp}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50/70 p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-blue-700">Engineer:</p>
+                      <p className="text-sm text-gray-800 mt-1">
+                        {revisionUpdateCardData.description}
+                      </p>
+                      {revisionUpdateCardData.attachments?.[0]?.name && (
+                        <div className="mt-2">
+                          <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border border-gray-300 text-xs text-gray-700 bg-white">
+                            {revisionUpdateCardData.attachments[0].name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="text-xs text-gray-500 leading-4">
+                        {revisionRequestUpdateCardData.timestamp}
+                      </span>
+                    </div>
+                  </div>
+                  {revisionUpdateStatus === "pending" && (
+                    <div className="mt-3 flex justify-end gap-3">
+                      <Button
+                        variant="no_style"
+                        onClick={() => handleProgressReject(true)}
+                        className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="no_style"
+                        onClick={handleRevisionUpdateRequestRevision}
+                        className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      >
+                        Request Revision
+                      </Button>
+                      <Button
+                        onClick={() => handleProgressApprove(true)}
+                        className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
+                      >
+                        Approve
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Revision Request Update Card */}
-        {isRevisionUpdateCollapsed ? (
+        {/* Revision Request Update Card - COMMENTED OUT */}
+        {/* {progressStatus === "revision" ? null : isRevisionUpdateCollapsed ? (
           <div
             className="relative rounded-lg border bg-white dark:bg-gray-800 px-4 py-2.5 shadow-sm flex items-center justify-between"
             style={{ borderColor: revisionUpdateAccentColor }}
@@ -429,12 +563,12 @@ const TimelineSection: React.FC = () => {
             />
             <div className="flex items-center gap-3 pl-2">
               <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                {revisionRequestUpdateCardData.title}
+                {revisionUpdateCardData.title}
               </span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs text-gray-500 dark:text-gray-400">
-                {revisionRequestUpdateCardData.timestamp}
+                {revisionUpdateCardData.timestamp}
               </span>
               {revisionUpdateStatusNode}
             </div>
@@ -452,21 +586,21 @@ const TimelineSection: React.FC = () => {
             <div className="flex items-start justify-between gap-4 pl-2">
               <div className="flex-1">
                 <p className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                  {revisionRequestUpdateCardData.title}
+                  {revisionUpdateCardData.title}
                 </p>
                 <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-                  {revisionRequestUpdateCardData.description}
+                  {revisionUpdateCardData.description}
                 </p>
                 <div className="mt-3">
                   <span className="inline-flex items-center px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800">
-                    {revisionRequestUpdateCardData.attachments?.[0]?.name}
+                    {revisionUpdateCardData.attachments?.[0]?.name}
                   </span>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-3">
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {revisionRequestUpdateCardData.timestamp}
+                    {revisionUpdateCardData.timestamp}
                   </span>
                   {revisionUpdateStatusNode}
                 </div>
@@ -497,7 +631,8 @@ const TimelineSection: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        ) */}
+        {/* END Revision Request Update Card */}
 
         {/* Short Term Break Card */}
         {isShortBreakCollapsed ? (
@@ -743,6 +878,12 @@ const TimelineSection: React.FC = () => {
                 onSubmit={handleRevisionSubmit}
                 className="space-y-4"
               >
+                <InputField
+                  name="title"
+                  label="Title"
+                  placeholder="Enter title"
+                  required
+                />
                 <TextareaInput
                   name="notes"
                   label="Your Notes"
@@ -807,6 +948,74 @@ const TimelineSection: React.FC = () => {
                   className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
                 >
                   Submit
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Job Approval Confirmation Modal */}
+      {showJobApproveConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-sm mx-4">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                {MODAL_TITLES.jobApproval}
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                {MODAL_MESSAGES.jobApproveConfirm}
+              </p>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="no_style"
+                  type="button"
+                  onClick={handleJobApproveConfirmCancel}
+                  className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleJobApproveConfirmSubmit}
+                  className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
+                >
+                  Approve
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Job Rejection Confirmation Modal */}
+      {showJobRejectConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-sm mx-4">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                {MODAL_TITLES.jobRejection}
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                {MODAL_MESSAGES.jobRejectConfirm}
+              </p>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="no_style"
+                  type="button"
+                  onClick={handleJobRejectConfirmCancel}
+                  className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleJobRejectConfirmSubmit}
+                  className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
+                >
+                  Reject
                 </Button>
               </div>
             </div>

@@ -150,7 +150,7 @@ const EngineersActions = ({
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
         onClick={() => setOpen?.(true)}
       >
-        Update Log
+        Create Log
       </Button>
     </div>
   );
@@ -170,7 +170,7 @@ const EngineersActions = ({
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
               onClick={() => setOpen?.(true)}
             >
-              Update Log
+              Create Log
             </Button>
             <Button
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -266,7 +266,7 @@ const EngineersActions = ({
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                   onClick={() => setOpen?.(true)}
                 >
-                  Update Log
+                  Create Log
                 </Button>
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
