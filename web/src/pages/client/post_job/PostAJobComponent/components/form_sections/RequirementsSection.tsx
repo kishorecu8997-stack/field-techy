@@ -29,6 +29,15 @@ interface RequirementsSectionProps {
  * @param {RequirementsSectionProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered RequirementsSection component.
  */
+
+// Helper to create FileList from existing images
+const createFileListFromImages = (images: { name: string; url: string; file: File }[]): FileList => {
+  const files = images.map((img) => img.file);
+  const dataTransfer = new DataTransfer();
+  files.forEach((file) => dataTransfer.items.add(file));
+  return dataTransfer.files;
+};
+
 const RequirementsSection = ({
   isDisable,
   skillOptions,
@@ -72,16 +81,17 @@ const RequirementsSection = ({
     setValue("toolsData", toolEntries);
   }, [setValue, toolEntries]);
 
+  const tools = watch("tools");
+  const budget = watch("toolBudgetNotes");
+  const images = watch("toolImages");
+
   useEffect(() => {
-    const tools = watch("tools");
-    const budget = watch("toolBudgetNotes");
-    const images = watch("toolImages");
     setHasToolContent(
       (tools && tools !== "") ||
       (budget && budget !== "") ||
       (images instanceof FileList && images.length > 0)
     );
-  }, [watch("tools"), watch("toolBudgetNotes"), watch("toolImages")]);
+  }, [tools, budget, images]);
 
   const handleAddToolEntry = () => {
     const toolId = (watch("tools") as string | undefined)?.trim();
@@ -118,11 +128,14 @@ const RequirementsSection = ({
       setToolEntries((prev) => {
         const next = [...prev];
         const existingImages = prev[editingToolIndex]?.images || [];
+        // Use new images if provided, otherwise keep existing
+        const imagesToUse =
+          newImages && newImages.length > 0 ? newImages : existingImages;
         next[editingToolIndex] = {
           id: toolId,
           name,
           budget: budget || "-",
-          images: newImages ?? existingImages,
+          images: imagesToUse,
         };
         return next;
       });
@@ -158,7 +171,12 @@ const RequirementsSection = ({
     setEditingToolIndex(index);
     setValue("tools", entry.id); // Set ID for select field
     setValue("toolBudgetNotes", entry.budget === "-" ? "" : entry.budget);
-    setValue("toolImages", undefined);
+    // Set existing images so FileUpload displays them with Preview/Re-upload
+    if (entry.images.length > 0) {
+      setValue("toolImages", createFileListFromImages(entry.images));
+    } else {
+      setValue("toolImages", undefined);
+    }
     setToolImageInputKey((key) => key + 1);
     toolDetailsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -257,7 +275,7 @@ const RequirementsSection = ({
             if (num > 10_000_000) {
               return "Max allowed amount is 10,000,000";
             }
-
+            
             return true;
           },
         }}
@@ -265,7 +283,7 @@ const RequirementsSection = ({
         disabled={isDisable}
       />
       <div className="flex justify-end gap-2">
-         {hasToolContent && editingToolIndex === null && (
+        {hasToolContent && editingToolIndex === null && (
           <Button
             variant="secondary"
             className="rounded-md"
