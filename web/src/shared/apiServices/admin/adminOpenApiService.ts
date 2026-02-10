@@ -1,4 +1,5 @@
 import {
+  adminGetJobs,
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
   appChangePassword,
@@ -6,7 +7,7 @@ import {
   appGetLookupData,
   appLogin,
   appResetPassword,
-  putAdminUsersByUserIdStatus,
+  type AdminGetJobsData,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -241,5 +242,37 @@ export function useUpdateEngineerProfileStatus(options?: {
     },
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+}
+
+export type AppGetJobsResponse = NonNullable<
+  Awaited<ReturnType<typeof adminGetJobs>>["data"]
+>;
+
+export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]>;
+
+export function useAdminGetJobs(
+  token: string,
+  query?: AdminGetJobsQuery,
+  options?: {
+    onSuccess?: (data: AppGetJobsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    queryKey: [queryKeys.admin.all, "jobs", query, token],
+    queryFn: async () => {
+      const response = await adminGetJobs({
+        client: apiClient,
+        throwOnError: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        query,
+      });
+      return response.data as AppGetJobsResponse;
+    },
+    enabled: !!token,
+    ...options,
   });
 }
