@@ -10,10 +10,8 @@ import {
 } from "@/dummy_data/jobDetailsClient";
 import { engineerJobOverview } from "@/dummy_data/engineerJobOverview";
 import { networkEngineerProposals } from "@/dummy_data/jobTabs/networkEngineerProposals";
-import {
-  JOB_STATUSES,
-  type JobStatus,
-} from "@/pages/client/search_result/types";
+import { JOB_STATUSES } from "@/pages/client/search_result/types";
+import type { JobTabSectionProps } from "../types";
 import SendProposal from "@/pages/engineer/home/components/SendProposal";
 import Proposal from "@/shared/components/Proposal";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
@@ -35,15 +33,6 @@ import {
 } from "@/dummy_data/clientProposalActions";
 import { DUMMY_TABS_LABELS } from "@/dummy_data/clientDummyTabs";
 
-type JobTabSectionProps = {
-  status: JobStatus;
-  isWorkSubmitted?: boolean;
-  isSendProposal?: boolean;
-  activeTab?: string;
-  OfferJobStatus?: string;
-  isDummyNetworkEngineer?: boolean;
-  showManageProposals?: boolean;
-};
 
 /**
  * Client job tab section with conditional rendering for real jobs vs. dummy network engineer flows.

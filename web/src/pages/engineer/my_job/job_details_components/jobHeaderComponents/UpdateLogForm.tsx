@@ -5,7 +5,7 @@ import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { formatDateTime } from "@/utils/formatDateTime";
-import type { ProgressUpdate } from "../../types.d";
+import type { ProgressUpdate, UpdateLogFormFields } from "../../types.d";
 import { toast } from "react-toastify";
 import {
   UPDATE_LOG_COLORS,
@@ -20,21 +20,16 @@ interface UpdateLogFormProps {
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
 }
 
-interface UpdateLogFields {
-  title: string;
-  notes: string;
-  attachments: FileList | null;
-}
 
 const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => {
-  const formCtx = useForm<UpdateLogFields>({
+  const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
 
   const { showPopup } = usePopupStore();
 
 
-  const handleSubmit = async (data: UpdateLogFields) => {
+  const handleSubmit = async (data: UpdateLogFormFields) => {
     await showPopup({
       title: UPDATE_LOG_LABELS.title,
       body: UPDATE_LOG_MESSAGES.modalBody,

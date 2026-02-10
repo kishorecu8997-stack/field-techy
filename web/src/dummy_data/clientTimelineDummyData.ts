@@ -3,12 +3,15 @@
  * This file contains all hardcoded timeline card data for the client job timeline
  */
 
-export type TimelineCardType =
-  | "progressUpdate"
-  | "revisionRequestUpdate"
-  | "shortTermBreak"
-  | "finalStatement"
-  | "jobStarted";
+export const TIMELINE_CARD_TYPE = {
+  ProgressUpdate: "progressUpdate",
+  RevisionRequestUpdate: "revisionRequestUpdate",
+  ShortTermBreak: "shortTermBreak",
+  FinalStatement: "finalStatement",
+  JobStarted: "jobStarted",
+} as const;
+
+export type TimelineCardType = typeof TIMELINE_CARD_TYPE[keyof typeof TIMELINE_CARD_TYPE];
 
 export type CardButtonType = "approve" | "reject" | "requestRevision";
 
@@ -54,10 +57,11 @@ export const progressUpdateCardData: TimelineCardData = {
 };
 
 // Factory function to create Revision Request Update Card Data
+// Allow callers to override only non-critical fields (prevent id/type changes)
 export function createRevisionUpdateCardData(
-  overrides?: Partial<TimelineCardData>
+  overrides?: Partial<Omit<TimelineCardData, "id" | "type">>
 ): TimelineCardData {
-  return {
+  const base: TimelineCardData = {
     id: "revision-update-1",
     type: "revisionRequestUpdate",
     title: "Revision Request Update",
@@ -66,7 +70,10 @@ export function createRevisionUpdateCardData(
     attachments: [{ name: "lights105 fixed.jpg" }],
     accentColor: TIMELINE_CARD_COLORS.orange,
     buttons: ["reject", "requestRevision", "approve"],
-    ...overrides,
+  };
+  return {
+    ...base,
+    ...(overrides || {}),
   };
 }
 
@@ -146,7 +153,7 @@ export const MODAL_TITLES = {
 // Modal Confirmation Messages
 export const MODAL_MESSAGES = {
   requestRevisionConfirm: "Are you sure you want to request this revision?",
-  shortBreakPlaceholder: "Complete you work and you may take Break",
+  shortBreakPlaceholder: "Complete your work, then you may take a break.",
   jobApproveConfirm: "Are you sure you want to approve this job?",
   jobRejectConfirm: "Are you sure you want to reject this job?",
 } as const;

@@ -11,6 +11,7 @@ import { icons } from "@/config/icons";
 import { calculateTimeDuration, validateStartDate, validateEndDate } from "@/utils/validate";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
+import type { BreakRequestFormFields } from "@/pages/engineer/my_job/types";
 import {
   BREAK_REQUEST_COLORS,
   BREAK_REQUEST_DEFAULTS,
@@ -20,15 +21,6 @@ import {
   BREAK_REQUEST_STATUS,
 } from "@/dummy_data/engineerBreakRequestDummyData";
 
-interface BreakRequestFormFields {
-  requestType: "Short Term Break" | "Long Term Break" | "";
-  startTime: string;
-  endTime: string;
-  startDate: string;
-  endDate: string;
-  duration: string;
-  reason: string;
-}
 
 const BreakRequestForm = ({
   onClose,

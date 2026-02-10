@@ -131,3 +131,14 @@ export interface EngineerInviteCardProps {
   onInviteClick?: (id?: number) => void; // for invite button
   selected?: boolean;
 }
+
+// Props for JobTabSection component
+export type JobTabSectionProps = {
+  status: JobStatus | string;
+  isWorkSubmitted?: boolean;
+  isSendProposal?: boolean;
+  activeTab?: string;
+  OfferJobStatus?: string;
+  isDummyNetworkEngineer?: boolean;
+  showManageProposals?: boolean;
+};

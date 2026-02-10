@@ -195,6 +195,24 @@ export interface ProgressUpdate {
   requestType?: string;
 }
 
+// Break request form fields used in break request modal/form
+export type BreakRequestFormFields = {
+  requestType: "Short Term Break" | "Long Term Break" | "";
+  startTime: string;
+  endTime: string;
+  startDate: string;
+  endDate: string;
+  duration: string;
+  reason: string;
+};
+
+// Update Log form fields
+export type UpdateLogFormFields = {
+  title: string;
+  notes: string;
+  attachments: FileList | null;
+};
+
 /**
  * Props for a component that renders a list of log entries.
  */
