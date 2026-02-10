@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 export interface Column<T> {
   key: keyof T | string;
@@ -103,8 +104,8 @@ export function CustomTable<T>({
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
         <div className="flex-1 overflow-auto min-h-[250px] max-h-[600px]">
           {loading && (
-            <div className="text-center py-10 text-gray-500 dark:text-gray-300">
-              Loading...
+            <div className="flex justify-center items-center py-10 w-full">
+              <LoaderComponent />
             </div>
           )}
 

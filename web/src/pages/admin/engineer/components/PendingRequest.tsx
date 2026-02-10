@@ -17,12 +17,9 @@ import type { ManageEngineerProps, EngineerStatusType } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useUpdateEngineerProfileStatus, fetchAdminManageEngineersPaged } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  fetchAdminManageEngineersPaged,
-} from "@/shared/apiServices/admin/adminOpenApiService";
 
 export type EngineerApiResponse = {
   id: number;
