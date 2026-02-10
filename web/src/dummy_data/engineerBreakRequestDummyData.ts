@@ -11,6 +11,8 @@ export const BREAK_REQUEST_OPTIONS: { label: string; value: string }[] = [
 
 export const BREAK_REQUEST_DEFAULTS = {
   requestType: "Short Term Break" as const,
+  startDate: "",
+  endDate: "",
   startTime: "",
   endTime: "",
   duration: "",

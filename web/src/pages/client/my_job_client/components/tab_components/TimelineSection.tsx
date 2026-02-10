@@ -5,6 +5,7 @@ import TimelineList from "@/shared/components/TimelineList";
 import { HiChevronUp, HiCheckCircle } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
+import { formatDateTime } from "@/utils/formatDateTime";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
@@ -172,13 +173,7 @@ const TimelineSection: React.FC = () => {
   const handleRevisionConfirmSubmit = () => {
     const { title, notes, attachment } = revisionFormMethods.getValues();
     const attachmentName = attachment?.[0]?.name;
-    const timestamp = new Date().toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
+    const timestamp = formatDateTime();
     setShowRevisionConfirm(false);
     revisionFormMethods.reset();
     setProgressStatus("revision");

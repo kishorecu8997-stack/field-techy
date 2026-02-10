@@ -1,7 +1,7 @@
 /**
  * Formats current date and time to standardized US locale string.
  * Used across forms and timeline components for consistent timestamp display.
- * @returns Formatted string (e.g., "05 Apr 2026, 1:05 PM")
+ * @returns Formatted string (e.g., "Apr 05, 2026, 1:05 PM")
  */
 export const formatDateTime = (): string =>
   new Date().toLocaleString("en-US", {

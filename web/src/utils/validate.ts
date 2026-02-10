@@ -1339,7 +1339,7 @@ export const validateStartDate = (value: string) => {
 };
 
 /**
- * Validate end date for break request - must be on or after start date
+ * Validate end date for break request - must be after start date
  * @param value - End date string (YYYY-MM-DD format)
  * @param startDate - Start date string (YYYY-MM-DD format)
  * @returns true if valid, error message if invalid
