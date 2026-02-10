@@ -7,13 +7,48 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate, UpdateLogFormFields } from "../../types.d";
 import { toast } from "react-toastify";
-import {
-  UPDATE_LOG_COLORS,
-  UPDATE_LOG_DEFAULTS,
-  UPDATE_LOG_LABELS,
-  UPDATE_LOG_MESSAGES,
-  UPDATE_LOG_STATUS,
-} from "@/dummy_data/engineerUpdateLogDummyData";
+
+const UPDATE_LOG_DEFAULTS = {
+  title: "",
+  notes: "",
+  attachments: null as FileList | null,
+};
+
+const UPDATE_LOG_LABELS = {
+  title: "Create Log",
+  jobIdLabel: "Job ID:",
+  jobId: "001",
+  titleLabel: "Title",
+  titlePlaceholder: "Enter title",
+  titleRequiredMessage: "Title is required",
+  notesLabel: "Your Notes",
+  notesPlaceholder: "Add your notes here",
+  notesRequiredMessage: "Notes are required",
+  attachmentLabel: "Attach File (Guidelines, Docs)",
+  cancel: "Cancel",
+  submit: "Submit",
+  modalCancel: "Cancel",
+  modalSubmit: "Submit",
+} as const;
+
+const UPDATE_LOG_MESSAGES = {
+  modalBody: "Are you sure you want to update the progress?",
+  submitSuccess: "Log submitted",
+  revisionFeedback: "The tool is not working . check it please , and correct it",
+} as const;
+
+const UPDATE_LOG_STATUS = {
+  waiting: "Waiting for Client Approval",
+  approved: "Approved by Client",
+  revision: "Revision Requested by Client",
+} as const;
+
+const UPDATE_LOG_COLORS = {
+  accent: "#22c55e",
+  waiting: "#f59e0b",
+  approved: "#22c55e",
+  revision: "#f97316",
+} as const;
 
 interface UpdateLogFormProps {
   onClose: () => void;

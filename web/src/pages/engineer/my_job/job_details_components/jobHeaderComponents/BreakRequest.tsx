@@ -85,7 +85,8 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
   const parseTime = (time: string | undefined, date: Date) => {
     if (!time) return new Date(date);
     const [timePart, modifier] = time.split(" ");
-    let [hours, minutes] = timePart.split(":").map(Number);
+    const [hoursPart, minutes] = timePart.split(":").map(Number);
+    let hours = hoursPart;
     if (modifier === "PM" && hours < 12) hours += 12;
     if (modifier === "AM" && hours === 12) hours = 0;
     const newDate = new Date(date);
@@ -93,7 +94,16 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     return newDate;
   };
 
-  const getJobEndDate = (job: any) => {
+  type JobLike = {
+    startDate?: string | Date | null;
+    jobDuration?: string | number | null;
+    duration?: string | number | null;
+    status?: string | null;
+    jobTitle?: string | null;
+    title?: string | null;
+  };
+
+  const getJobEndDate = (job: JobLike) => {
     const startDate = job.startDate;
     const duration = job.jobDuration || job.duration;
 
@@ -112,7 +122,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     if (!data.startDate || !data.endDate) return { jobConflicts: [] };
     const breakStartDate = new Date(data.startDate);
     const breakEndDate = new Date(data.endDate);
-    const jobConflicts = (apiJobs || []).filter((job: any) => {
+    const jobConflicts = (apiJobs || []).filter((job: JobLike) => {
       if (!job.startDate) return false;
       const jobStart = new Date(job.startDate);
       const jobEnd = getJobEndDate(job);
@@ -168,7 +178,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
             if (jobConflicts.length > 0) {
               toast.warn(
                 `Conflict detected with existing jobs: ${jobConflicts
-                  .map((j: any) => j.jobTitle || j.title)
+                  .map((j: JobLike) => j.jobTitle || j.title)
                   .join(", ")}`,
                 { autoClose: 10000 },
               );

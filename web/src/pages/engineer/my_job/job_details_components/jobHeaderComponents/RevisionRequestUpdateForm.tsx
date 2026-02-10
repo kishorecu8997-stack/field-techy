@@ -7,13 +7,39 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
-import {
-  REVISION_UPDATE_COLORS,
-  REVISION_UPDATE_DEFAULTS,
-  REVISION_UPDATE_LABELS,
-  REVISION_UPDATE_MESSAGES,
-  REVISION_UPDATE_STATUS,
-} from "@/dummy_data/engineerRevisionUpdateDummyData";
+
+const REVISION_UPDATE_DEFAULTS = {
+  notes: "",
+  attachments: null as FileList | null,
+};
+
+export const REVISION_UPDATE_LABELS = {
+  title: "Revision Request Update",
+  notesLabel: "Your Notes",
+  notesPlaceholder: "Add your updated notes here",
+  notesRequiredMessage: "Notes are required",
+  attachmentLabel: "Attach File (Guidelines, Docs)",
+  cancel: "Cancel",
+  submit: "Submit",
+  modalCancel: "Cancel",
+  modalSubmit: "Submit",
+} as const;
+
+const REVISION_UPDATE_MESSAGES = {
+  modalBody: "Are you sure you want to submit your revision update?",
+  submitSuccess: "Revision update submitted",
+} as const;
+
+const REVISION_UPDATE_STATUS = {
+  waiting: "Waiting for Approval",
+  approved: "Approved",
+} as const;
+
+const REVISION_UPDATE_COLORS = {
+  accent: "#f97316",
+  waiting: "#f97316",
+  approved: "#22c55e",
+} as const;
 
 interface RevisionRequestUpdateFormProps {
   onClose: () => void;

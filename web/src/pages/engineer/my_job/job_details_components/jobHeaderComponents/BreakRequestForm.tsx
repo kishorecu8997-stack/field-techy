@@ -12,15 +12,45 @@ import { calculateTimeDuration, validateStartDate, validateEndDate } from "@/uti
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import type { BreakRequestFormFields } from "@/pages/engineer/my_job/types";
-import {
-  BREAK_REQUEST_COLORS,
-  BREAK_REQUEST_DEFAULTS,
-  BREAK_REQUEST_LABELS,
-  BREAK_REQUEST_MESSAGES,
-  BREAK_REQUEST_OPTIONS,
-  BREAK_REQUEST_STATUS,
-} from "@/dummy_data/engineerBreakRequestDummyData";
 
+const BREAK_REQUEST_OPTIONS: { label: string; value: string }[] = [
+  { label: "Short Term Break", value: "Short Term Break" },
+  { label: "Long Term Break", value: "Long Term Break" },
+];
+
+const BREAK_REQUEST_DEFAULTS = {
+  requestType: "Short Term Break" as const,
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+  duration: "",
+  reason: "",
+};
+
+const BREAK_REQUEST_LABELS = {
+  title: "Break Request",
+  requestTypePlaceholder: "Select request type",
+  durationPlaceholder: "Duration will be calculated",
+  reasonPlaceholder: "Enter reason for break",
+  fallbackTitle: "Break Request",
+  detailsLabel: "Break Request Details",
+} as const;
+
+const BREAK_REQUEST_STATUS = {
+  waiting: "Waiting for Client Approval",
+  approved: "Approved by Client",
+} as const;
+
+const BREAK_REQUEST_COLORS = {
+  accent: "#ef4444",
+  waiting: "#f59e0b",
+  approved: "#22c55e",
+} as const;
+
+const BREAK_REQUEST_MESSAGES = {
+  submitSuccess: "Break request submitted",
+} as const;
 
 const BreakRequestForm = ({
   onClose,

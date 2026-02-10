@@ -3,46 +3,7 @@
  * This file contains all hardcoded timeline card data for the client job timeline
  */
 
-export const TIMELINE_CARD_TYPE = {
-  ProgressUpdate: "progressUpdate",
-  RevisionRequestUpdate: "revisionRequestUpdate",
-  ShortTermBreak: "shortTermBreak",
-  FinalStatement: "finalStatement",
-  JobStarted: "jobStarted",
-} as const;
-
-export type TimelineCardType = typeof TIMELINE_CARD_TYPE[keyof typeof TIMELINE_CARD_TYPE];
-
-export type CardButtonType = "approve" | "reject" | "requestRevision";
-
-export interface TimelineCardAttachment {
-  name: string;
-}
-
-export interface TimelineCardData {
-  id: string;
-  type: TimelineCardType;
-  title: string;
-  description: string;
-  timestamp: string;
-  attachments?: TimelineCardAttachment[];
-  accentColor: string;
-  buttons: CardButtonType[];
-}
-
-export interface ActivityTimelineItem {
-  title: string;
-  timestamp: string;
-  accentColor: string;
-}
-
-// Timeline Card Colors
-export const TIMELINE_CARD_COLORS = {
-  green: "#16a34a",
-  red: "#dc2626",
-  orange: "#f59e0b",
-  blue: "#2563eb",
-} as const;
+import type { ActivityTimelineItem, TimelineCardData } from "@/pages/client/my_job_client/types";
 
 // Progress Update Card Data
 export const progressUpdateCardData: TimelineCardData = {
@@ -52,7 +13,7 @@ export const progressUpdateCardData: TimelineCardData = {
   description: "Installed lights in Room 105",
   timestamp: "05 Apr 2026, 9:50 AM",
   attachments: [{ name: "lights105.jpg" }],
-  accentColor: TIMELINE_CARD_COLORS.green,
+  accentColor: "#16a34a",
   buttons: ["reject", "requestRevision", "approve"],
 };
 
@@ -68,7 +29,7 @@ export function createRevisionUpdateCardData(
     description: "I have checked and fixed the light",
     timestamp: "05 Apr 2026, 9:50 AM",
     attachments: [{ name: "lights105 fixed.jpg" }],
-    accentColor: TIMELINE_CARD_COLORS.orange,
+    accentColor: "#f59e0b",
     buttons: ["reject", "requestRevision", "approve"],
   };
   return {
@@ -88,7 +49,7 @@ export const shortTermBreakCardData: TimelineCardData = {
   title: "Short Term Break",
   description: "Lunch: 1:00 PM - 2:00PM (1 hour)",
   timestamp: "05 Apr 2026, 1:05PM",
-  accentColor: TIMELINE_CARD_COLORS.red,
+  accentColor: "#dc2626",
   buttons: ["reject", "approve"],
 };
 
@@ -104,7 +65,7 @@ export const finalStatementCardData: TimelineCardData = {
     { name: "Completion Report.pdf" },
     { name: "Engineer Signature.png" },
   ],
-  accentColor: TIMELINE_CARD_COLORS.green,
+  accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
 
@@ -115,7 +76,7 @@ export const jobStartedCardData: TimelineCardData = {
   title: "Job Started",
   description: "Engineer has started working on the job",
   timestamp: "05 Apr 2026, 9:40 AM",
-  accentColor: TIMELINE_CARD_COLORS.green,
+  accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
 
@@ -124,51 +85,12 @@ export const activityTimelineItems: ActivityTimelineItem[] = [
   {
     title: "Proposal Accepted",
     timestamp: "05 Apr 2026, 9:30 AM",
-    accentColor: TIMELINE_CARD_COLORS.blue,
+    accentColor: "#2563eb",
   },
   {
     title: "Proposal Received",
     timestamp: "05 Apr 2026, 9:20 AM",
-    accentColor: TIMELINE_CARD_COLORS.blue,
+    accentColor: "#2563eb",
   },
 ];
 
-// All Timeline Cards for Client Job
-export const clientTimelineCards: TimelineCardData[] = [
-  progressUpdateCardData,
-  revisionRequestUpdateCardData,
-  shortTermBreakCardData,
-  finalStatementCardData,
-  jobStartedCardData,
-];
-
-// Modal Titles
-export const MODAL_TITLES = {
-  requestRevision: "Request Revision",
-  shortBreakApproval: "Short Term Break Approval",
-  jobApproval: "Approve Job Start",
-  jobRejection: "Reject Job Start",
-} as const;
-
-// Modal Confirmation Messages
-export const MODAL_MESSAGES = {
-  requestRevisionConfirm: "Are you sure you want to request this revision?",
-  shortBreakPlaceholder: "Complete your work, then you may take a break.",
-  jobApproveConfirm: "Are you sure you want to approve this job?",
-  jobRejectConfirm: "Are you sure you want to reject this job?",
-} as const;
-
-// Toast Messages
-export const TOAST_MESSAGES = {
-  progressApproved: "Progress update approved",
-  progressRejected: "Progress update rejected",
-  revisionSubmitted: "Revision request submitted",
-  revisionUpdateApproved: "Revision update approved",
-  revisionUpdateRejected: "Revision update rejected",
-  shortBreakApproved: "Short term break approved",
-  shortBreakRejected: "Short term break rejected",
-  finalStatementApproved: "Final statement approved",
-  finalStatementRejected: "Final statement rejected",
-  jobApproved: "Job approved",
-  jobRejected: "Job rejected",
-} as const;

@@ -142,3 +142,36 @@ export type JobTabSectionProps = {
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
 };
+
+export const TIMELINE_CARD_TYPE: {
+  ProgressUpdate: "progressUpdate";
+  RevisionRequestUpdate: "revisionRequestUpdate";
+  ShortTermBreak: "shortTermBreak";
+  FinalStatement: "finalStatement";
+  JobStarted: "jobStarted";
+};
+
+export type TimelineCardType = typeof TIMELINE_CARD_TYPE[keyof typeof TIMELINE_CARD_TYPE];
+
+export type CardButtonType = "approve" | "reject" | "requestRevision";
+
+export interface TimelineCardAttachment {
+  name: string;
+}
+
+export interface TimelineCardData {
+  id: string;
+  type: TimelineCardType;
+  title: string;
+  description: string;
+  timestamp: string;
+  attachments?: TimelineCardAttachment[];
+  accentColor: string;
+  buttons: CardButtonType[];
+}
+
+export interface ActivityTimelineItem {
+  title: string;
+  timestamp: string;
+  accentColor: string;
+}

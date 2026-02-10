@@ -12,15 +12,39 @@ import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpd
 import {
   BASE_TIMELINE_ITEMS,
   JOB_STARTED_TEMPLATE,
-  TIMELINE_COLORS,
-  MODAL_TITLES,
   MODAL_MESSAGES,
-  ATTACHMENT_ALT,
-  LABELS,
-  REVISION_LABELS,
 } from "@/dummy_data/engineerTimelineDummyData";
-import { REVISION_UPDATE_LABELS } from "@/dummy_data/engineerRevisionUpdateDummyData";
-import { FINAL_STATEMENT_LABELS } from "@/dummy_data/engineerFinalStatementDummyData";
+import { REVISION_UPDATE_LABELS } from "../jobHeaderComponents/RevisionRequestUpdateForm";
+import { FINAL_STATEMENT_LABELS } from "../jobHeaderComponents/FinalStatementForm";
+
+const MODAL_TITLES = {
+  revisionRequest: "Revision Request",
+  breakRequestApproved: "Break Request Approved",
+} as const;
+
+const TIMELINE_COLORS = {
+  waiting: "#f59e0b",
+  approved: "#22c55e",
+  defaultStatus: "#f97316",
+  accentGreen: "#22c55e",
+} as const;
+
+const ATTACHMENT_ALT = {
+  revision: "Attachment",
+} as const;
+
+const LABELS = {
+  progressUpdateFallback: "Progress Update",
+  breakDetailsFallback: "Break Request Details",
+  breakTitleFallback: "Short Term Break",
+} as const;
+
+const REVISION_LABELS = {
+  numberPrefix: "Revision",
+  clientLabel: "Client:",
+  engineerLabel: "Engineer:",
+  updateButton: "Update",
+} as const;
 
 /**
  * Engineer job timeline tab that renders milestones, progress updates, and revision/break details.

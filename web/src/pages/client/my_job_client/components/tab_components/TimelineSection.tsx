@@ -9,19 +9,67 @@ import { formatDateTime } from "@/utils/formatDateTime";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
+import type { TimelineCardData } from "@/pages/client/my_job_client/types";
 import {
+  progressUpdateCardData as progressUpdateCardDataFromDummy,
+  revisionRequestUpdateCardData as revisionRequestUpdateCardDataFromDummy,
+  createRevisionUpdateCardData,
+  shortTermBreakCardData as shortTermBreakCardDataFromDummy,
+  finalStatementCardData as finalStatementCardDataFromDummy,
+  jobStartedCardData as jobStartedCardDataFromDummy,
+  activityTimelineItems,
+} from "@/dummy_data/clientTimelineDummyData";
+
+const TIMELINE_CARD_COLORS = {
+  green: "#16a34a",
+  red: "#dc2626",
+  orange: "#f59e0b",
+  blue: "#2563eb",
+} as const;
+
+const MODAL_TITLES = {
+  requestRevision: "Request Revision",
+  shortBreakApproval: "Short Term Break Approval",
+  jobApproval: "Approve Job Start",
+  jobRejection: "Reject Job Start",
+} as const;
+
+const MODAL_MESSAGES = {
+  requestRevisionConfirm: "Are you sure you want to request this revision?",
+  shortBreakPlaceholder: "Complete your work, then you may take a break.",
+  jobApproveConfirm: "Are you sure you want to approve this job?",
+  jobRejectConfirm: "Are you sure you want to reject this job?",
+} as const;
+
+const TOAST_MESSAGES = {
+  progressApproved: "Progress update approved",
+  progressRejected: "Progress update rejected",
+  revisionSubmitted: "Revision request submitted",
+  revisionUpdateApproved: "Revision update approved",
+  revisionUpdateRejected: "Revision update rejected",
+  shortBreakApproved: "Short term break approved",
+  shortBreakRejected: "Short term break rejected",
+  finalStatementApproved: "Final statement approved",
+  finalStatementRejected: "Final statement rejected",
+  jobApproved: "Job approved",
+  jobRejected: "Job rejected",
+} as const;
+
+const clientTimelineCards: TimelineCardData[] = [
+  progressUpdateCardDataFromDummy,
+  revisionRequestUpdateCardDataFromDummy,
+  shortTermBreakCardDataFromDummy,
+  finalStatementCardDataFromDummy,
+  jobStartedCardDataFromDummy,
+];
+
+const [
   progressUpdateCardData,
   revisionRequestUpdateCardData,
-  createRevisionUpdateCardData,
   shortTermBreakCardData,
   finalStatementCardData,
   jobStartedCardData,
-  activityTimelineItems,
-  TIMELINE_CARD_COLORS,
-  MODAL_TITLES,
-  MODAL_MESSAGES,
-  TOAST_MESSAGES,
-} from "@/dummy_data/clientTimelineDummyData";
+] = clientTimelineCards;
 
 interface RevisionFormData {
   title: string;

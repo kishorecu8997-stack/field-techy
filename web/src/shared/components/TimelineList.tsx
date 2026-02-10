@@ -1,7 +1,11 @@
 import React from "react";
 import { HiCheckCircle, HiClock } from "react-icons/hi";
 import { cn } from "./../libs/utils";
-import { TIMELINE_LIST_DEFAULTS } from "@/dummy_data/timelineListDummyData";
+
+const TIMELINE_LIST_DEFAULTS = {
+  accentColor: "#2f80ed",
+  statusColor: "#f59e0b",
+} as const;
 
 export type TimelineItem = {
   title: string;
