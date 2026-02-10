@@ -15,17 +15,15 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
+import { useStatusChange } from "@/shared/hooks/useStatusChange";
 import { toast } from "react-toastify";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
-  type AdminClientsByUserIdStatusBody,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import dayjs from "dayjs";
-import {
-  type ProfileFileType,
-} from "@/shared/apiServices/commonOpenApiService";
+import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * HomeClient Component
@@ -62,8 +60,17 @@ const HomeClient: React.FC = () => {
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
-  const clientData = (manageClient?.data ||
-    []) as unknown as ManageClientProps[];
+  const { onStatusChange } = useStatusChange({
+    rowStatuses,
+    setRowStatuses,
+    updateClientStatus,
+    token,
+    refetchClients,
+    showPopup,
+    handleStatusChange,
+  });
+
+  const clientData = (manageClient?.data || []) as ManageClientProps[];
 
   //Delete confirmation
   const handleDeleteClient = async (client: ManageClientProps) => {
@@ -209,54 +216,7 @@ const HomeClient: React.FC = () => {
           <SelectMenu
             placeholder="Select"
             value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
-            onChange={async (value: string | null) => {
-              if (!value) return;
-              const previousStatus =
-                rowStatuses[row.id] ?? row.profileStatus ?? "";
-
-              setRowStatuses((prev) => ({
-                ...prev,
-                [row.id]: value,
-              }));
-
-              let isSuccess = false;
-              const result = await handleStatusChange(
-                row,
-                value,
-                showPopup,
-                async (row, status) => {
-                  try {
-                    const payload: AdminClientsByUserIdStatusBody = {
-                      profileStatus:
-                        status as AdminClientsByUserIdStatusBody["profileStatus"],
-                    };
-
-                    await updateClientStatus({
-                      userId: row.userId || row.id,
-                      body: payload,
-                      token: token,
-                    });
-                    isSuccess = true;
-                    refetchClients();
-                  } catch (error) {
-                    toast.error(
-                      error instanceof Error
-                        ? error.message
-                        : typeof error === "string"
-                          ? error
-                          : "Failed to update status",
-                    );
-                  }
-                },
-              );
-
-              if (result !== true || !isSuccess) {
-                setRowStatuses((prev) => ({
-                  ...prev,
-                  [row.id]: previousStatus,
-                }));
-              }
-            }}
+            onChange={(value) => onStatusChange(row, value)}
             options={JobStatus}
             badge
           />

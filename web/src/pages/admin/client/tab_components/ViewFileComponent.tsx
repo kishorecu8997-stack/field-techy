@@ -10,7 +10,6 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import { Suspense } from "react";
 
 const PDFPreview = React.lazy(() => import("@/shared/components/PdfPreview"));
-
 interface ViewFileComponentProps {
   onClose: () => void;
   title?: string;
@@ -18,6 +17,14 @@ interface ViewFileComponentProps {
   userId?: number | null;
 }
 
+/**
+ * ViewFileComponent Component
+ *
+ * Renders a modal for viewing and downloading profile files.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered ViewFileComponent component.
+ */
 const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
@@ -32,17 +39,22 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
 
   const downloadUrl = downloadData?.downloadUrl;
 
-  const handleDownload = () => {
+  const handleDownload = async() => {
     if (downloadUrl) {
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.setAttribute("download", fileType || "document");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
+    const response = await fetch(downloadUrl);
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = fileType || "document";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(blobUrl);
+  }
   };
 
   const renderDocumentPreview = () => {
@@ -67,19 +79,16 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
       );
     }
 
-    // Detection logic
     const isPdfByExt = downloadUrl.match(/\.pdf(\?|$)/i);
     const isImageByExt = downloadUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i);
 
-    // Prioritize extension check
     if (isPdfByExt) return renderPdfPreview();
     if (isImageByExt) return renderImagePreview();
 
-    // Fallback based on fileType
     if (fileType === "resumeFile") return renderPdfPreview();
     if (fileType === "profilePicture") return renderImagePreview();
 
-    // For govIdDoc or certificateDoc without explicit extension, try PDF first
+    // Default to PDF for other document types without extension
     return renderPdfPreview();
   };
 
