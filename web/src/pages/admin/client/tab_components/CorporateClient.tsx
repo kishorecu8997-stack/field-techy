@@ -16,7 +16,6 @@ import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
 import { useStatusChange } from "@/shared/hooks/useStatusChange";
 import { toast } from "react-toastify";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import {
   useAdminManageClients,
   useAdminClientsByUserIdStatus,
@@ -48,15 +47,9 @@ const CorporateClient: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
-  const session = useUserSessionStore((s) => s.session);
-  const token = session?.accessToken || "";
-
-  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
-    token,
-    {
-      clientType: "corporate",
-    },
-  );
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients({
+    clientType: "corporate",
+  });
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
@@ -64,7 +57,6 @@ const CorporateClient: React.FC = () => {
     rowStatuses,
     setRowStatuses,
     updateClientStatus,
-    token,
     refetchClients,
     showPopup,
     handleStatusChange,

@@ -10,11 +10,9 @@ export interface UseStatusChangeProps {
   rowStatuses: Record<number, string>;
   setRowStatuses: React.Dispatch<React.SetStateAction<Record<number, string>>>;
   updateClientStatus: (variables: {
-    userId: string | number;
+    path: { userId: number };
     body: AdminClientsByUserIdStatusBody;
-    token: string;
   }) => Promise<AdminClientsByUserIdStatusResponse>;
-  token: string;
   refetchClients: () => void;
   showPopup: (config: PopupConfig) => Promise<unknown>;
   handleStatusChange: (
@@ -35,7 +33,6 @@ export const useStatusChange = ({
   rowStatuses,
   setRowStatuses,
   updateClientStatus,
-  token,
   refetchClients,
   showPopup,
   handleStatusChange,
@@ -63,9 +60,8 @@ export const useStatusChange = ({
           };
 
           await updateClientStatus({
-            userId: confirmedRow.userId || confirmedRow.id,
+            path: { userId: Number(confirmedRow.userId || confirmedRow.id) },
             body: payload,
-            token,
           });
 
           isSuccess = true;
