@@ -21,6 +21,7 @@ const ClientDocuments: React.FC<DrawerMenuProps> = ({ onMenuItemClick }) => {
       <div className="p-4 max-w-3xl mx-auto">
         <DocumentsList
           onEditDocument={() => onMenuItemClick(`clientEditDocument`)}
+          onAddDocument={() => onMenuItemClick(`clientEditDocument`)}
         />
       </div>
     </>
