@@ -274,7 +274,7 @@ export function useGetManageEngineers({
   const httpClient = client ?? apiClient;
 
   return useQuery({
-    queryKey: ["admin-manage-engineers", { page, limit, status, profileStatus }],
+    queryKey: ["admin-manage-engineers", { page, limit, status: status ?? null, profileStatus: profileStatus ?? null }],
     queryFn: async () => {
       const response = await getAdminManageEngineers({
         client: httpClient,
