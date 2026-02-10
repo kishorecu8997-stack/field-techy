@@ -57,6 +57,7 @@ const RequirementsSection = ({
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
   const [hasToolContent, setHasToolContent] = useState(false);
   const toolDetailsSectionRef = useRef<HTMLDivElement>(null);
+  const toolEntriesListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     register("toolEntriesCount", {
@@ -99,16 +100,17 @@ const RequirementsSection = ({
       ?.replace(/\D+/g, "")
       ?.trim();
     const files = watch("toolImages") as FileList | undefined;
+    const isFirstEntry = toolEntries.length === 0;
 
     if (!toolId) {
       toast.error("Please select a tool before adding");
       return;
     }
-    if (!files || files.length === 0) {
+    if (isFirstEntry && (!files || files.length === 0)) {
       toast.error("Tool image is required");
       return;
     }
-    if (!budget || Number(budget) <= 0) {
+    if (isFirstEntry && (!budget || Number(budget) <= 0)) {
       toast.error("Valid tool cost is required");
       return;
     }
@@ -119,7 +121,7 @@ const RequirementsSection = ({
       files && files.length > 0
         ? Array.from(files).map((file) => ({
             name: file.name,
-            url: URL.createObjectURL(file), // Note: Object URL memory management might be needed in real app
+            url: URL.createObjectURL(file),
             file: file,
           }))
         : undefined;
@@ -128,7 +130,6 @@ const RequirementsSection = ({
       setToolEntries((prev) => {
         const next = [...prev];
         const existingImages = prev[editingToolIndex]?.images || [];
-        // Use new images if provided, otherwise keep existing
         const imagesToUse =
           newImages && newImages.length > 0 ? newImages : existingImages;
         next[editingToolIndex] = {
@@ -188,6 +189,7 @@ const RequirementsSection = ({
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
     clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    toolEntriesListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleClearToolFields = () => {
@@ -199,7 +201,7 @@ const RequirementsSection = ({
     setHasToolContent(false);
   };
 
-  // Sync tool budget total to form whenever toolEntries change
+ // Sync tool budget total to form whenever toolEntries change
   useEffect(() => {
     const total = toolEntries.reduce((sum, entry) => {
       const num = Number(entry.budget.replace(/\D/g, ""));
@@ -237,7 +239,7 @@ const RequirementsSection = ({
         />
         <SectionHeader title="Tool Details" />
         <SelectField
-          required={!toolEntries.length}
+          required={toolEntries.length === 0}
           name="tools"
           label="Tool Name"
           placeholder="Select Tool"
@@ -251,7 +253,7 @@ const RequirementsSection = ({
           placeholder="Upload tool files"
           disabled={isDisable}
           key={toolImageInputKey}
-          required={!toolEntries.length}
+          required={toolEntries.length === 0}
         />
       </div>
       <InputField
@@ -266,7 +268,7 @@ const RequirementsSection = ({
         rules={{
           validate: (val) => {
             if (val === undefined || val === null || val === "") return true;
-            const num = Number(val);
+              const num = Number(val);
 
             if (Number.isNaN(num) || num <= 0) {
               return "Enter a valid amount (minimum 1)";
@@ -275,11 +277,10 @@ const RequirementsSection = ({
             if (num > 10_000_000) {
               return "Max allowed amount is 10,000,000";
             }
-            
             return true;
           },
         }}
-        required={!toolEntries.length}
+        required={toolEntries.length === 0}
         disabled={isDisable}
       />
       <div className="flex justify-end gap-2">
@@ -313,7 +314,7 @@ const RequirementsSection = ({
         </Button>
       </div>
       {toolEntries.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2" ref={toolEntriesListRef}>
           <SectionHeader title="Tool Details" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {toolEntries.map((entry, idx) => (
