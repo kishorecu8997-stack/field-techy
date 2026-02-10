@@ -47,9 +47,11 @@ const HomeClient: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
-  const { data: manageClient, refetch: refetchClients } = useAdminManageClients({
-    clientType: "home",
-  });
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    {
+      clientType: "home",
+    },
+  );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
@@ -91,7 +93,6 @@ const HomeClient: React.FC = () => {
 
   const columns: Column<ManageClientProps>[] = [
     {
-      key: "",
       label: "Sr.No.",
       renderCell: (_row: ManageClientProps, index: number) => index + 1,
     },

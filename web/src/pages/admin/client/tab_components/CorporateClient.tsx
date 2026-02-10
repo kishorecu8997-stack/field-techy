@@ -47,9 +47,11 @@ const CorporateClient: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
-  const { data: manageClient, refetch: refetchClients } = useAdminManageClients({
-    clientType: "corporate",
-  });
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    {
+      clientType: "corporate",
+    },
+  );
 
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
@@ -90,7 +92,6 @@ const CorporateClient: React.FC = () => {
 
   const columns: Column<ManageClientProps>[] = [
     {
-      key: "",
       label: "Sr.No.",
       renderCell: (_row: ManageClientProps, index: number) => index + 1,
     },

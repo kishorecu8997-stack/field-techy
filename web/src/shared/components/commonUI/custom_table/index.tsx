@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
 export interface Column<T> {
-  key: keyof T | string;
+  key?: keyof T | string;
   label: string | React.ReactNode;
   align?: "left" | "center" | "right";
   dataCellAlign?: "left" | "center" | "right";
