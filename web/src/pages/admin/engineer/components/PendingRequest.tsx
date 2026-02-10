@@ -17,10 +17,12 @@ import type { ManageEngineerProps, EngineerStatusType } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useGetManageEngineers, useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
+import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useQueryClient } from "@tanstack/react-query";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import {
+  fetchAdminManageEngineersPaged,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 export type EngineerApiResponse = {
   id: number;
@@ -73,43 +75,6 @@ export default function PendingRequest() {
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-  const { data: engineerResponse, isLoading, isFetching } = useGetManageEngineers({
-    token: session?.accessToken || "",
-    profileStatus: "pending",
-    page: 1,
-    limit: 10,
-  });
-
-const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as EngineerApiResponse[]).map((e: EngineerApiResponse) => ({
-  id: e.id,
-  userId: e.userId,
-  engineerID: e.engineerCode,
-  details: {
-    name: e.name || e.user?.name || "N/A",
-    email: e.email || e.user?.email || "N/A",
-    phone: e.phoneNumber || e.user?.phone_number || "N/A",
-  },
-  submittedDocuments: [],
-  documents: "View",
-  location: e.location || `${e.cityName}, ${e.countryName}`,
-  registrationDate: new Date(e.registrationDate).toLocaleDateString(),
-  walletBalance: (e.balance ?? 0).toString(),
-  kycStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
-  employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-  avgRating: e.averageRating ?? 0,
-  approvalStatus: e.profileStatus === "pending" ? EngineerStatus.PENDING : (e.profileStatus as EngineerStatusType),
-}));
-
-  const filteredData = engineers.filter((e) => {
-    const query = search.toLowerCase();
-    return (
-      e.engineerID.toLowerCase().includes(query) ||
-      e.details.name.toLowerCase().includes(query) ||
-      e.details.email.toLowerCase().includes(query) ||
-      e.location.toLowerCase().includes(query)
-    );
-  });
-
   const isEngineerStatus = (value: string | null): value is EngineerStatusType =>
     value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
 
@@ -118,14 +83,9 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
       toast.success(
         variables.profileStatus === EngineerStatus.APPROVE
           ? "Engineer approved successfully!"
-          : "Engineer rejected successfully!"
+          : "Engineer rejected successfully!",
       );
-
-      setRowStatuses((prev) => ({
-        ...prev,
-        [variables.userId]: variables.profileStatus,
-      }));
-
+      setRowStatuses((prev) => ({ ...prev, [variables.userId]: variables.profileStatus }));
       queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
     },
     onError: () => toast.error("Failed to update engineer status"),
@@ -133,7 +93,6 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
 
   const handleStatusChange = async (data: ManageEngineerProps, status: EngineerStatusType) => {
     if (!status) return;
-
     const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
     const bodyMessage =
       status === EngineerStatus.PENDING
@@ -183,8 +142,7 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
           variant: "danger",
           action: async (close) => {
             queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
-            toast.success("Engineer deleted successfully!");
-            console.log("Deleted engineer:", engineer);
+            toast.success(`${engineer.details.name} deleted successfully!`);
             close(true);
           },
         },
@@ -192,8 +150,8 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
     });
   };
 
-  const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+  const columns: Column<ManageEngineerProps & { srNo: number }>[] = [
+    { key: "srNo", label: "Sr.No." },
     { key: "engineerID", label: "Engineer ID" },
     {
       key: "details",
@@ -228,7 +186,13 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
       align: "center",
       renderCell: (row) => (
         <div className="mx-auto text-center">
-          <Button className="w-fit bg-gradient-to-r bg-teal-900 text-white" onClick={() => { setIsModalOpen(true); setSelectedRowId(row.userId); }}>
+          <Button
+            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
+            onClick={() => {
+              setIsModalOpen(true);
+              setSelectedRowId(row.userId);
+            }}
+          >
             {row.documents || "N/A"}
           </Button>
         </div>
@@ -283,35 +247,96 @@ const engineers: ManageEngineerProps[] = ((engineerResponse?.data ?? []) as Engi
     },
   ];
 
+  const tableApi = async ({
+    page,
+    pageSize,
+    filters,
+  }: {
+    page: number;
+    pageSize: number;
+    filters?: { [key: string]: string };
+  }): Promise<{ data: (ManageEngineerProps & { srNo: number })[]; total: number }> => {
+    const token = session?.accessToken || "";
+
+    const { data, total } = await fetchAdminManageEngineersPaged({
+      token,
+      page,
+      limit: pageSize,
+      profileStatus: "pending",
+    });
+
+    let rows = ((data ?? []) as EngineerApiResponse[]).map((e: EngineerApiResponse, idx: number) => {
+      const base: ManageEngineerProps = {
+        id: e.id,
+        userId: e.userId,
+        engineerID: e.engineerCode,
+        details: {
+          name: e.name || e.user?.name || "N/A",
+          email: e.email || e.user?.email || "N/A",
+          phone: e.phoneNumber || e.user?.phone_number || "N/A",
+        },
+        submittedDocuments: [],
+        documents: "View",
+        location: e.location || `${e.cityName}, ${e.countryName}`,
+        registrationDate: new Date(e.registrationDate).toLocaleDateString(),
+        walletBalance: (e.balance ?? 0).toString(),
+        kycStatus:
+          e.profileStatus === "pending"
+            ? EngineerStatus.PENDING
+            : (e.profileStatus as EngineerStatusType),
+        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+        avgRating: e.averageRating ?? 0,
+        approvalStatus:
+          e.profileStatus === "pending"
+            ? EngineerStatus.PENDING
+            : (e.profileStatus as EngineerStatusType),
+      };
+
+      return {
+        ...base,
+        srNo: (page - 1) * pageSize + (idx + 1),
+      };
+    });
+
+const q = (filters?.search ?? "").trim().toLowerCase();
+  if (q) {
+    rows = rows.filter((r) =>
+      r.engineerID.toLowerCase().includes(q) ||
+      r.details.name.toLowerCase().includes(q) ||
+      r.details.email.toLowerCase().includes(q) ||
+      r.location.toLowerCase().includes(q)
+    );
+
+    return { data: rows, total: rows.length };
+  }
+
+  return { data: rows, total: total ?? 0 };
+};
+
   return (
     <div>
       <div className="px-2 h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md gap-2">
         <div className="flex flex-wrap gap-4 items-center">
           <SearchInput value={search} onChange={setSearch} />
         </div>
+
         <div className="h-full flex-1 overflow-y-auto">
-          {isLoading || isFetching ? (
-            <div className="flex items-center justify-center py-10">
-              <LoaderComponent />
-            </div>
-          ) : (
-            <CustomTable<ManageEngineerProps>
-              columns={columns}
-              data={filteredData}
-              initialPageSize={10}
-            />
-          )}
+          <CustomTable<ManageEngineerProps & { srNo: number }>
+            columns={columns}
+            initialPageSize={10}
+            api={tableApi}
+            externalFilters={{ search }}
+            showPagination
+          />
         </div>
       </div>
+
       {isModalOpen && (
         <Popup open={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <div className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-bold">View File {selectedRowId}</span>
-              <div
-                className="text-xl font-semibold cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <div className="text-xl font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>
                 <IoCloseSharp />
               </div>
             </div>

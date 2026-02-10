@@ -41,6 +41,10 @@ export function CustomTable<T>({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    setCurrentPage(1); 
+  }, [externalFilters]);
+
   // ---------- Fetch (Server Pagination) ----------
   useEffect(() => {
     const fetchData = async () => {

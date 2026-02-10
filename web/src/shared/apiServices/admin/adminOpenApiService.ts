@@ -245,10 +245,11 @@ export function useUpdateEngineerProfileStatus(options?: {
   });
 }
 
-type ProfileStatusType = "pending" | "approved" | "rejected";
-type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
+export type ProfileStatusType = "pending" | "approved" | "rejected";
+export type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
 
-interface UseGetManageEngineersParams {
+export interface UseGetManageEngineersParams {
+  client?: ReturnType<typeof createClient>;
   token: string;
   page?: number;
   limit?: number;
@@ -256,8 +257,13 @@ interface UseGetManageEngineersParams {
   profileStatus?: ProfileStatusType;
   enabled?: boolean;
 }
+export interface PagedEngineersResponse<T = unknown> {
+  data: T[];
+  total: number;
+}
 
 export function useGetManageEngineers({
+  client,
   token,
   page = 1,
   limit = 10,
@@ -265,28 +271,68 @@ export function useGetManageEngineers({
   profileStatus,
   enabled = true,
 }: UseGetManageEngineersParams) {
+  const httpClient = client ?? apiClient;
+
   return useQuery({
-    queryKey: [
-      "admin-manage-engineers",
-      { page, limit, status, profileStatus },
-    ],
+    queryKey: ["admin-manage-engineers", { page, limit, status, profileStatus }],
     queryFn: async () => {
       const response = await getAdminManageEngineers({
-        client: apiClient,
-        query: {
-          page,
-          limit,
-          status,
-          profileStatus,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        client: httpClient,
+        query: { page, limit, status, profileStatus },
+        headers: { Authorization: `Bearer ${token}` },
         throwOnError: true,
       });
 
-      return response.data;
+      return response.data as PagedEngineersResponse;
     },
     enabled: enabled && !!token,
+    staleTime: 30_000,
+  });
+}
+
+export async function fetchAdminManageEngineersPaged<T = unknown>({
+  client,
+  token,
+  page,
+  limit,
+  status,
+  profileStatus,
+}: {
+  client?: ReturnType<typeof createClient>;
+  token: string;
+  page: number;
+  limit: number;
+  status?: UserStatusType;
+  profileStatus?: ProfileStatusType;
+}): Promise<PagedEngineersResponse<T>> {
+  const httpClient = client ?? apiClient;
+
+  const response = await getAdminManageEngineers({
+    client: httpClient,
+    query: { page, limit, status, profileStatus },
+    headers: { Authorization: `Bearer ${token}` },
+    throwOnError: true,
+  });
+
+  return response.data as PagedEngineersResponse<T>;
+}
+
+export async function fetchEngineersData<T = unknown>({
+  token,
+  page,
+  pageSize,
+  client,
+}: {
+  token: string;
+  page: number;
+  pageSize: number;
+  client?: ReturnType<typeof createClient>;
+}): Promise<PagedEngineersResponse<T>> {
+  return fetchAdminManageEngineersPaged<T>({
+    client,
+    token,
+    page,
+    limit: pageSize,
+    profileStatus: "pending",
   });
 }
