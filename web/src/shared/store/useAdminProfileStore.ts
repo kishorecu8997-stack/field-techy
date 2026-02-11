@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useUserSessionStore } from "./useUserSessionStore";
 import { getAdminPersonalInfo } from "../apiServices/admin/adminOpenApiService";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
+import { toast } from "react-toastify";
 
 interface AdminProfile {
   id: string;
@@ -67,7 +68,7 @@ export const useAdminProfileStore = create<AdminProfileState>((set, get) => ({
         profileFetched: true,
       });
     } catch (error) {
-      console.error("Failed to fetch admin profile:", error);
+      toast.error(error instanceof Error ? error.message : "Profile fetch failed");
     } finally {
       set({ loading: false });
     }

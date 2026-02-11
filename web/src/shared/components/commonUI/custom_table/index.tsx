@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
-export interface Column<T> {
+export interface Column<T extends object> {
   key?: keyof T | string;
   label: string | React.ReactNode;
   align?: "left" | "center" | "right";
@@ -9,7 +9,7 @@ export interface Column<T> {
   renderCell?: (row: T, index: number) => React.ReactNode;
 }
 
-export interface CustomTableProps<T> {
+export interface CustomTableProps<T extends object> {
   columns: Column<T>[];
   initialPageSize?: number;
   api?: (params: {
@@ -26,7 +26,7 @@ export interface CustomTableProps<T> {
  * @file CustomTable.tsx
  * @description Reusable, responsive data table with smart sticky header and pagination that never hides.
  */
-export function CustomTable<T>({
+export function CustomTable<T extends object>({
   columns,
   initialPageSize = 10,
   api,
@@ -142,7 +142,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row, i)
-                                : (row as any)[col.key]}
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </td>
                           ))}
                         </tr>
@@ -179,7 +181,9 @@ export function CustomTable<T>({
                             >
                               {col.renderCell
                                 ? col.renderCell(row, i)
-                                : (row as any)[col.key]}
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </div>
                           ) : (
                             <div
@@ -192,7 +196,9 @@ export function CustomTable<T>({
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
                                   ? col.renderCell(row, i)
-                                  : (row as any)[col.key]}
+                                  : col.key
+                                    ? (row[col.key as keyof T] as React.ReactNode)
+                                    : null}
                               </span>
                             </div>
                           );
