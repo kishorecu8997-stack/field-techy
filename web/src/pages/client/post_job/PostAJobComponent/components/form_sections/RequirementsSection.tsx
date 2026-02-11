@@ -88,8 +88,8 @@ const RequirementsSection = ({
 
   useEffect(() => {
     setHasToolContent(
-      (tools && tools !== "") ||
-      (budget && budget !== "") ||
+    (!!tools && tools.toString().trim() !== "") ||
+    (!!budget && budget.toString().trim() !== "") ||
       (images instanceof FileList && images.length > 0)
     );
   }, [tools, budget, images]);
@@ -305,7 +305,7 @@ const RequirementsSection = ({
           </Button>
         )}
         <Button
-          variant="outline"
+          variant="primary"
           className="rounded-md"
           onClick={handleAddToolEntry}
           disabled={isDisable}
