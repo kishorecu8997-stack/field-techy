@@ -111,6 +111,10 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   };
 
   const columns: Column<JobItem>[] = [
+    {
+      label: "Sr.No.",
+      renderCell: (_row: JobItem, index: number) => index + 1,
+    },
     { key: "jobCode", label: "Job ID" },
     {
       key: "postedBy",

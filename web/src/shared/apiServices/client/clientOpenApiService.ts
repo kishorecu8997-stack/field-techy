@@ -13,6 +13,9 @@ import {
   type AppUploadProfileFileResponse,
   clientGetRateCard,
   type ClientGetRateCardData,
+  type ClientMarksJobFileUploadedData,
+  type ClientMarksJobFileUploadedError,
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -216,7 +219,11 @@ export function useClientMarkJobFileUploaded(options?: {
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<
+    ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
+    ClientMarksJobFileUploadedError,
+    Options<ClientMarksJobFileUploadedData>
+  >({
     ...clientMarksJobFileUploadedMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });

@@ -259,6 +259,8 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
   return response.data as AdminUpdatePersonalInfoResponse;
 }
 
+export type { AdminGetJobsResponse };
+
 export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]>;
 
 export function useAdminGetJobs(
