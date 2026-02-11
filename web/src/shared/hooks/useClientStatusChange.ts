@@ -19,11 +19,12 @@ export const useClientStatusChange = () => {
   const handleStatusChange = async (
     _row: ManageClientProps,
     status: string | null,
-    showPopup: (config: PopupConfig) => Promise<void>,
+    showPopup: (config: PopupConfig) => Promise<unknown>,
+    onConfirm?: (row: ManageClientProps, status: string) => Promise<void>
   ) => {
     if (!status) return;
 
-    await showPopup({
+    return await showPopup({
       title: `${status.charAt(0).toUpperCase() + status.slice(1)} Client`,
       body: `Are you sure you want to ${status} this client?`,
       actionButtons: [
@@ -42,11 +43,14 @@ export const useClientStatusChange = () => {
                 ? "warning"
                 : "danger",
           action: async (close: (v: boolean) => void) => {
-            if (status === "approve") {
+            if (onConfirm && status) {
+              await onConfirm(_row, status);
+            }
+            if (status === "approved") {
               toast.success("Client approved successfully!");
             } else if (status === "pending") {
               toast.warning("Client marked as pending!");
-            } else if (status === "reject") {
+            } else if (status === "rejected") {
               toast.error("Client Status Rejected !");
             }
             close(true);

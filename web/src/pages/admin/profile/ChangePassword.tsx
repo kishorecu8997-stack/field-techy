@@ -75,10 +75,12 @@ export default function ChangePassword() {
             if (isChangingPassword) return;
             await adminChangePasswordMutation({
               body: {
-                oldPassword: currentPassword,
+                oldPassword: data.currentPassword,
                 newPassword: data.password,
               },
-              token: session?.accessToken || "",
+              headers: {
+                Authorization: `Bearer ${session?.accessToken}`,
+              },
             });
             close(true);
           },

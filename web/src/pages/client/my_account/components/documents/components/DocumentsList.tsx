@@ -1,21 +1,17 @@
-import { Button } from "@/shared/components/commonUI/Buttons";
-import DocumentCard from "@/shared/components/DocumentCard";
-import React, { useMemo } from "react";
 import {
-  useDeleteClientFile,
-  useClientFiles,
-} from "@/shared/apiServices/client/clientService";
-import { useCurrentClientProfile } from "@/shared/apiServices/profiles/client/clientProfileService";
-import type { ClientFile } from "@/shared/apiServices/client/clientTypes";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import { toast } from "react-toastify";
-import { useClientFilesContext } from "../../../context/useClientFilesContext";
-import {
-  useAppDownloadProfileFile,
   getDownloadUrl,
-  type ProfileFileType,
-} from "@/shared/apiServices/commonOpenApiService";
+  useAppDeleteProfileFile,
+  useAppDownloadProfileFile,
+} from "@/shared/apiServices/client/clientOpenApiService";
+import type { ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
+import { Button } from "@/shared/components/commonUI/Buttons";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import DocumentCard from "@/shared/components/DocumentCard";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useMemo, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 /**
  * Document interface matching DocumentCard expectations
@@ -24,13 +20,16 @@ export interface Document {
   id: number;
   title: string;
   fileName: string;
+  category?: string;
   fileType: "PDF" | "PNG" | "JPEG" | "JPG" | "GIF" | "DOCX" | "XLSX";
   previewUrl?: string;
+  fileId?: number;
   uploadDate?: string;
   description?: string;
   metadata?: Record<string, string>;
   expiryDate?: string;
   status?: "Pending" | "Approved" | "Rejected";
+  allowMultiple?: boolean;
 }
 
 interface DocumentsListProps {
@@ -38,133 +37,114 @@ interface DocumentsListProps {
   onEditDocument?: (id: number) => void;
 }
 
-const mapFileType = (
-  fileType: ClientFile["fileType"],
-  mimeType: string,
-): Document["fileType"] => {
-  if (mimeType.includes("pdf")) return "PDF";
-  if (mimeType.includes("png")) return "PNG";
-  if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "JPEG";
-  if (mimeType.includes("gif")) return "GIF";
-  if (
-    mimeType.includes("word") ||
-    mimeType.includes("document") ||
-    mimeType.includes("docx")
-  )
-    return "DOCX";
-  if (
-    mimeType.includes("excel") ||
-    mimeType.includes("spreadsheet") ||
-    mimeType.includes("xlsx")
-  )
-    return "XLSX";
-
-  if (fileType === "GOVERNMENT_ID" || fileType === "CERTIFICATE") return "PDF";
-  if (fileType === "PROFILE_PICTURE") return "JPEG";
-
-  return "PDF";
-};
-
 /**
  * Renders a list of documents with actions to add, edit, and delete.
- * Fetches files from API and displays them using DocumentCard.
- * @param {DocumentsListProps} props - The props for the component.
- * @returns {React.ReactElement} The rendered list of documents.
+ * Fetches files from OpenAPI and displays them using DocumentCard.
  */
 const DocumentsList: React.FC<DocumentsListProps> = ({
   onAddDocument,
   onEditDocument,
 }) => {
-  // Always call hooks (React rules)
-  const contextData = useClientFilesContext();
-  const { data: clientProfile } = useCurrentClientProfile();
-  const clientId = clientProfile?.id || "";
-  const filesQuery = useClientFiles(clientId);
-
-  // Use context if available, otherwise use direct query
-  const clientFiles = useMemo(() => {
-    if (contextData) {
-      return contextData.files; // Already filtered in context
-    }
-    // Filter out PROFILE_PICTURE if fetching directly
-    return (filesQuery.data || []).filter(
-      (file) => file.fileType !== "PROFILE_PICTURE",
-    );
-  }, [contextData, filesQuery.data]);
-
-  const isLoadingFiles = contextData
-    ? contextData.isLoading
-    : filesQuery.isLoading;
-
-  const refetchFiles = contextData ? contextData.refetch : filesQuery.refetch;
-
-  // Delete mutation
-  const deleteFileMutation = useDeleteClientFile({
-    onSuccess: () => {
-      toast.success("Document deleted successfully");
-      refetchFiles();
-    },
-    onError: (error) => {
-      toast.error("Failed to delete document");
-      console.error("Delete error:", error);
-    },
-  });
-
   const { showPopup } = usePopupStore();
+  const queryClient = useQueryClient();
 
-  const { data: govIdData } = useAppDownloadProfileFile("govIdDoc");
-  const { data: certificateData } = useAppDownloadProfileFile("certificateDoc");
+  // Specialized hooks for the 3 profile document types
+  // Note: We drive the list from these hooks because the legacy 'clientFiles' list
+  // currently doesn't capture the new profile-based file uploads.
+  const { data: resumeData, isLoading: isLoadingResume } =
+    useAppDownloadProfileFile("resumeFile");
+  const { data: govIdData, isLoading: isLoadingGovId } =
+    useAppDownloadProfileFile("govIdDoc");
+  const { data: certificateData, isLoading: isLoadingCertificate } =
+    useAppDownloadProfileFile("certificateDoc");
+
+  const { mutateAsync: deleteProfileFile } = useAppDeleteProfileFile();
+
+  const [manualPreviewUrls, setManualPreviewUrls] = useState<
+    Record<string, string>
+  >({});
+
+  /**
+   * Maps legacy DocumentType to the new ProfileFileType
+   */
+  const mapToProfileFileType = (type?: string): ProfileFileType | null => {
+    if (!type) return null;
+    switch (type) {
+      case "RESUME":
+        return "resumeFile";
+      case "GOVERNMENT_ID":
+        return "govIdDoc";
+      case "CERTIFICATE":
+        return "certificateDoc";
+      default:
+        return null;
+    }
+  };
 
   const previewUrlsMap = useMemo(() => {
-    const urls: Record<string, string> = {};
-    if (govIdData?.downloadUrl) urls["GOVERNMENT_ID"] = govIdData.downloadUrl;
+    const fileData: Record<string, { url: string; id?: number }> = {};
+    if (resumeData?.downloadUrl)
+      fileData["RESUME"] = {
+        url: resumeData.downloadUrl,
+      };
+    if (govIdData?.downloadUrl)
+      fileData["GOVERNMENT_ID"] = {
+        url: govIdData.downloadUrl,
+      };
     if (certificateData?.downloadUrl)
-      urls["CERTIFICATE"] = certificateData.downloadUrl;
-    return urls;
-  }, [govIdData, certificateData]);
+      fileData["CERTIFICATE"] = {
+        url: certificateData.downloadUrl,
+      };
 
-  // Map ClientFile to Document format
+    return fileData;
+  }, [resumeData, govIdData, certificateData]);
+
   const documents: Document[] = useMemo(() => {
-    return clientFiles.map((file, index) => {
-      const fileType = mapFileType(file.fileType, file.mimeType);
-      const uploadDate = file.createdAt
-        ? new Date(file.createdAt).toLocaleDateString()
-        : undefined;
+    const docMeta = [
+      { type: "RESUME", label: "Resume", fileName: "resume.pdf" },
+      {
+        type: "GOVERNMENT_ID",
+        label: "Government ID",
+        fileName: "government_id.pdf",
+      },
+      {
+        type: "CERTIFICATE",
+        label: "Certificate",
+        fileName: "certificate.pdf",
+      },
+    ];
 
-      const metadata: Record<string, string> = {
-        fileId: file.id,
-        fileKey: file.fileKey,
-        clientId: file.clientId,
-        mimeType: file.mimeType,
-        size: file.size.toString(),
-        originalFileType: file.fileType,
-      };
+    return docMeta
+      .map((dm, index) => {
+        const fileInfo = previewUrlsMap[dm.type];
+        const previewUrl = fileInfo?.url || manualPreviewUrls[dm.type];
+        if (!previewUrl) return null;
 
-      return {
-        id: index, // Use index as numeric ID for DocumentCard compatibility
-        title: file.fileName || `Document ${index + 1}`,
-        fileName: file.fileName,
-        fileType,
-        previewUrl: previewUrlsMap[file.fileType],
-        uploadDate,
-        metadata,
-        expiryDate: undefined,
-        status: undefined,
-      };
-    });
-  }, [clientFiles, previewUrlsMap]);
+        return {
+          id: index,
+          fileId: fileInfo?.id,
+          title: dm.label,
+          fileName: dm.fileName,
+          fileType: "PDF" as const,
+          previewUrl,
+          metadata: {
+            originalFileType: dm.type,
+          },
+        };
+      })
+      .filter(Boolean) as Document[];
+  }, [previewUrlsMap, manualPreviewUrls]);
+
+  const isLoadingFiles =
+    isLoadingResume || isLoadingGovId || isLoadingCertificate;
 
   const handleEdit = (id: number) => {
     onEditDocument?.(id);
   };
 
   const handleDelete = async (id: number) => {
-    const doc = documents[id];
-    const fileId = doc?.metadata?.fileId;
-    if (!fileId) {
-      toast.error("Cannot delete: File ID not found");
-      return;
-    }
+    const doc = documents.find((d) => d.id === id);
+    if (!doc) return;
 
     await showPopup({
       title: "Delete Document",
@@ -173,7 +153,7 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         {
           label: "Cancel",
           value: "cancel",
-          variant: "secondary",
+          variant: "danger",
           action: (close) => close(true),
         },
         {
@@ -182,9 +162,38 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
           variant: "danger",
           action: async (close) => {
             try {
-              await deleteFileMutation.mutateAsync(fileId);
-            } catch {
-              toast.error("Failed to delete document");
+              const originalType = doc.metadata?.originalFileType;
+              const fileType = mapToProfileFileType(originalType);
+              if (!fileType) throw new Error("Unsupported file type");
+
+              await deleteProfileFile({
+                body: { fileType },
+                headers: { authorization: "" },
+              });
+
+              toast.success(`${doc.title} deleted successfully.`);
+
+              // Clear manual preview URL if it exists
+              if (originalType) {
+                setManualPreviewUrls((prev) => {
+                  const newState = { ...prev };
+                  delete newState[originalType];
+                  return newState;
+                });
+              }
+
+              // Invalidate download queries to refresh the list
+              queryClient.invalidateQueries({
+                predicate: (query) =>
+                  Array.isArray(query.queryKey) &&
+                  query.queryKey[0] &&
+                  typeof query.queryKey[0] === "object" &&
+                  (query.queryKey[0] as { _id?: string })._id ===
+                    "appDownloadProfileFile",
+              });
+            } catch (error) {
+              toast.error("Failed to delete document.");
+              console.error("Delete error:", error);
             }
             close(true);
           },
@@ -194,17 +203,14 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   };
 
   const handleDownload = async (id: number) => {
-    const doc = documents[id];
+    const doc = documents.find((d) => d.id === id);
     const originalType = doc?.metadata?.originalFileType;
-
-    let profileFileType: ProfileFileType | null = null;
-    if (originalType === "GOVERNMENT_ID") profileFileType = "govIdDoc";
-    else if (originalType === "CERTIFICATE") profileFileType = "certificateDoc";
-    else if (originalType === "PROFILE_PICTURE")
-      profileFileType = "profilePicture";
+    const profileFileType = originalType
+      ? mapToProfileFileType(originalType)
+      : null;
 
     if (!profileFileType) {
-      toast.error("Download failed: Unsupported document type for download");
+      toast.error("Download failed: Unsupported file type");
       return;
     }
 
@@ -218,12 +224,22 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
         window.document.body.appendChild(link);
         link.click();
         link.remove();
+
+        // Update the manual preview URLs map to refresh UI if needed
+        if (originalType) {
+          setManualPreviewUrls((prev) => ({
+            ...prev,
+            [originalType]: data.downloadUrl!,
+          }));
+        }
+
         toast.success("Download started");
       } else {
         throw new Error("No download URL returned");
       }
-    } catch {
+    } catch (error) {
       toast.error("Failed to get download URL");
+      console.error("Download error:", error);
     }
   };
 
@@ -238,24 +254,30 @@ const DocumentsList: React.FC<DocumentsListProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg ">
+    <div className="bg-white rounded-lg dark:bg-gray-800 p-4 shadow-sm">
       {onAddDocument && (
-        <div className="flex justify-end items-center mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+            Documents
+          </h2>
           <Button
             variant="link"
             onClick={onAddDocument}
-            className="text-blue-600 hover:text-blue-800 font-medium flex gap-1"
+            className={`flex !flex-row !items-center text-teal-600 hover:text-teal-800 hover:underline font-medium text-base transition-colors cursor-pointer dark:text-teal-400 dark:hover:text-teal-200 [&>*]:flex [&>*]:items-center`}
           >
+            <FaPlus className="h-5 w-5 shrink-0 pr-2" />
             Add Document
           </Button>
         </div>
       )}
 
+      <hr className="border-gray-200 mb-4" />
+
       {documents.length > 0 ? (
         <div className="space-y-4">
-          {documents.map((doc, index) => (
+          {documents.map((doc) => (
             <DocumentCard
-              key={doc.metadata?.fileId || index}
+              key={doc.metadata?.originalFileType || doc.id}
               document={doc}
               onEdit={handleEdit}
               onDelete={handleDelete}
