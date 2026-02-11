@@ -5,7 +5,6 @@ import {
   useAdminGetJobs,
   type AdminGetJobsQuery,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import JobByCategory from "./JobByCategory";
 
 /**
@@ -32,9 +31,6 @@ export default function ManageJobs() {
   const [filterBy, setFilterBy] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
 
-  const session = useUserSessionStore((s) => s.session);
-  const token = session?.accessToken || "";
-
   const tabsConfig: Array<{
     label: string;
     status: AdminGetJobsQuery["status"] | undefined;
@@ -51,7 +47,7 @@ export default function ManageJobs() {
     (t) => t.label === activeTabLabel,
   )?.status;
 
-  const { data: jobsResponse } = useAdminGetJobs(token, {
+  const { data: jobsResponse } = useAdminGetJobs({
     status: currentStatus,
     jobType: filterType,
     serviceCategoryId: serviceCategoryId || undefined,

@@ -1,6 +1,6 @@
-import type { AdminGetJobsQuery, AppGetJobsResponse } from "@/shared/apiServices/admin/adminOpenApiService";
+import type { AdminGetJobsQuery, AdminGetJobsResponse } from "@/shared/apiServices/admin/adminOpenApiService";
 
-export type JobItem = AppGetJobsResponse["data"][number];
+export type JobItem = AdminGetJobsResponse["data"][number];
 export interface JobByCategoryProps {
   data: JobItem[];
   filterType: AdminGetJobsQuery["jobType"] | undefined;
