@@ -100,17 +100,20 @@ const RequirementsSection = ({
       ?.replace(/\D+/g, "")
       ?.trim();
     const files = watch("toolImages") as FileList | undefined;
-    const isFirstEntry = toolEntries.length === 0;
+    const hasAnyField = !!toolId || (!!budget && Number(budget) > 0) || (files && files.length > 0);
+    if (!hasAnyField) {
+      return;
+    }
 
     if (!toolId) {
       toast.error("Please select a tool before adding");
       return;
     }
-    if (isFirstEntry && (!files || files.length === 0)) {
+    if (!files || files.length === 0) {
       toast.error("Tool image is required");
       return;
     }
-    if (isFirstEntry && (!budget || Number(budget) <= 0)) {
+    if (!budget || Number(budget) <= 0) {
       toast.error("Valid tool cost is required");
       return;
     }
@@ -239,7 +242,7 @@ const RequirementsSection = ({
         />
         <SectionHeader title="Tool Details" />
         <SelectField
-          required={toolEntries.length === 0}
+          required={toolEntries.length === 0 || hasToolContent}
           name="tools"
           label="Tool Name"
           placeholder="Select Tool"
@@ -253,7 +256,7 @@ const RequirementsSection = ({
           placeholder="Upload tool files"
           disabled={isDisable}
           key={toolImageInputKey}
-          required={toolEntries.length === 0}
+          required={toolEntries.length === 0 || hasToolContent}
         />
       </div>
       <InputField
@@ -280,7 +283,7 @@ const RequirementsSection = ({
             return true;
           },
         }}
-        required={toolEntries.length === 0}
+        required={toolEntries.length === 0 || hasToolContent}
         disabled={isDisable}
       />
       <div className="flex justify-end gap-2">
