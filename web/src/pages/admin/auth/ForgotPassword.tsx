@@ -34,8 +34,10 @@ export default function ForgotPassword() {
   const handleSubmit = async (data: ForgotPasswordFormData) => {
     try {
       await forgotPasswordAdminMutation({
-        email: data.email,
-        userRole: UserRole.ADMIN,
+        body: {
+          email: data.email,
+          userRole: UserRole.ADMIN,
+        },
       });
 
       toast.success(
