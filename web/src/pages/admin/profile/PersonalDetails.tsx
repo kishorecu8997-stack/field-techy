@@ -10,26 +10,20 @@ import ImageUploaderField from "@/shared/components/commonUI/inputs/ImageUploade
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import type { ProfileFormData } from "./types";
 import {
   useAdminUpdatePersonalInfo,
-  useGetAdminPersonalInfo,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import { queryClient } from "@/main";
+import { useAdminProfile, useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
-import { queryKeys } from "@/shared/apiServices/queryKeys";
 import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 
 export default function PersonalDetails() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const session = useUserSessionStore((s) => s.session);
 
   /* ---------- Get admin by id ---------- */
-  const { data: adminPersonalInfo } = useGetAdminPersonalInfo(
-    session?.accessToken || "",
-  );
+  const adminPersonalInfo = useAdminProfile();
 
   /* ---------- File Download (Profile Pic) ---------- */
   const { data: downloadData, isLoading: isLoadingProfilePicture } =
@@ -39,10 +33,7 @@ export default function PersonalDetails() {
   const updateAdminProfile = useAdminUpdatePersonalInfo({
     onSuccess: async () => {
       toast.success("Profile details updated successfully!");
-      // Invalidate both personal info and the generic admin query key if needed
-      await queryClient.invalidateQueries({
-        queryKey: [queryKeys.admin.all, session?.accessToken || ""],
-      });
+      await useAdminProfileStore.getState().refetchProfile();
       navigate(absoluteUrls.admin.home.dashboard);
     },
     onError: (err) => {
@@ -54,7 +45,7 @@ export default function PersonalDetails() {
 
   /* ---------- Compute Form Values ---------- */
   const defaultValues: ProfileFormData = {
-    fullName: adminPersonalInfo?.name || "",
+    fullName: adminPersonalInfo?.fullName || "",
     email: adminPersonalInfo?.email || "",
     phoneNumber: adminPersonalInfo?.phoneNumber || "+91",
     profilePicture:
@@ -68,7 +59,7 @@ export default function PersonalDetails() {
     defaultValues,
     values: defaultValues,
     resetOptions: {
-      keepDirtyValues: true, // User edits take precedence over background refetches
+      keepDirtyValues: true,
     },
   });
 
@@ -95,7 +86,6 @@ export default function PersonalDetails() {
                   email: data.email,
                   phoneNumber: data.phoneNumber ?? "",
                 },
-                token: session?.accessToken ?? "",
               });
               close(true);
             } catch {
@@ -109,9 +99,6 @@ export default function PersonalDetails() {
 
   /* ---------- File Upload ---------- */
   const { uploadProfileFile, isUploading } = useProfileFileUpload({
-    onSuccess: () => {
-      // toast.success("Profile picture updated successfully!"); // Toast is handled generally or we can keep it
-    },
     onError: () => toast.error("Failed to update profile picture."),
   });
 

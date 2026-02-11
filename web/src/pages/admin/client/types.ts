@@ -1,16 +1,71 @@
 export interface ManageClientProps {
   id: number;
-  clientID: string;
-  details: string;
-  documents: string;
+  userId: number;
+  clientType: string;
+  companyName: string;
+  personName: string;
+  address: string;
+  countryId: number;
+  stateId: number;
+  cityId: number;
+  postalCode: string;
+  industryId: number;
+  documentType: string;
+  documentNumber: string;
+  profilePictureId: number | null;
+  govIdDocId: number | null;
+  certificateDocId: number | null;
+  profileStatus: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    status: string;
+    user_role: string;
+    email_verified: boolean;
+    phone_verified: boolean;
+    updated_at: string;
+    created_at: string;
+  };
+  city: {
+    id: number;
+    name: string;
+    state_id: number;
+  };
+  country: {
+    id: number;
+    name: string;
+  };
+  balance: number;
+  statusHistory: string[];
+  clientCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
   location: string;
   registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  approvalStatus: string;
-  requiredType: string;
+  userStatus: string;
 }
 
+export type DocumentType =
+  | "profilePicture"
+  | "resumeFile"
+  | "govIdDoc"
+  | "certificateDoc"
+  | null
+  | undefined;
+
+export interface DocumentOption {
+  value: string;
+  label: string;
+}
+
+export const documentType: DocumentOption[] = [
+  { value: "resumeFile", label: "Resume File" },
+  { value: "govIdDoc", label: "Government Document" },
+  { value: "certificateDoc", label: "Certificate Document" },
+];
 export interface walletViewData {
   id: number;
   dateTime: string;
@@ -20,7 +75,7 @@ export interface walletViewData {
   status: string;
 }
 
-interface ClientFormData {
+export interface ClientFormData {
   profileImage?: string | null;
   companyName: string;
   phoneNumber: string;
@@ -38,7 +93,7 @@ interface ClientFormData {
   qualificationCertificate: string | null;
 }
 
-interface CompanyInfo {
+export interface CompanyInfo {
   profileImage?: string;
   companyName: string;
   businessType: string;
