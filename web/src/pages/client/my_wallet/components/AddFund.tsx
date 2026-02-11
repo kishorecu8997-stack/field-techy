@@ -99,7 +99,7 @@ const AddFund = () => {
           </div>
         </div>
 
-        <div className="bg-white ">
+        <div>
           <Button
             type="submit"
             disabled={!selectedCardId}

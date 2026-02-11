@@ -74,7 +74,7 @@ const JobOverviewCard: React.FC<JobOverview> = ({
               className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
             >
               <button
-                className={`px-3 py-1 rounded-full text-xs font-medium ${buttonColor} transition-colors duration-200 hover:opacity-90 cursor-pointer`}
+                className={`px-3 py-1 rounded-full text-xs font-medium ${buttonColor} text-white transition-colors duration-200 hover:text-white/70 cursor-pointer`}
               >
                 View Jobs
               </button>
