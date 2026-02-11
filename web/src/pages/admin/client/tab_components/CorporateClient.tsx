@@ -1,4 +1,3 @@
-import { manageClient } from "@/dummy_data/admin/manageClient";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
@@ -7,7 +6,6 @@ import React, { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import type { ManageClientProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import Popup from "@/shared/components/Popup";
@@ -16,7 +14,15 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { useClientStatusChange } from "@/shared/hooks/useClientStatusChange";
+import { useStatusChange } from "@/shared/hooks/useStatusChange";
 import { toast } from "react-toastify";
+import {
+  useAdminManageClients,
+  useAdminClientsByUserIdStatus,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import dayjs from "dayjs";
+import { documentType, type ManageClientProps } from "../types";
+import { type ProfileFileType } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * CorporateClient Component
@@ -34,19 +40,31 @@ const CorporateClient: React.FC = () => {
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
+  const [activeRowId, setActiveRowId] = useState<number | null>(null);
+  const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
+    null,
+  );
+  const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
+    {
+      clientType: "corporate",
+    },
+  );
 
-  const filteredData = manageClient.filter((e) => {
-    const query = search.toLowerCase();
+  const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
-    return (
-      e.clientID.toLowerCase().includes(query) ||
-      e.details.toLowerCase().includes(query) ||
-      e.location.toLowerCase().includes(query)
-    );
+  const { onStatusChange } = useStatusChange({
+    rowStatuses,
+    setRowStatuses,
+    updateClientStatus,
+    refetchClients,
+    showPopup,
+    handleStatusChange,
   });
+
+  const clientData = (manageClient?.data || []) as ManageClientProps[];
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -62,11 +80,8 @@ const CorporateClient: React.FC = () => {
           label: "Delete",
           value: "delete",
           variant: "danger",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          action: async (close: any) => {
+          action: async (close) => {
             console.log("Deleting client:", client.id);
-            // TODO: call your delete API here
-            // await deleteClient(client.id);
             toast.success("Client deleted successfully");
             close(true);
           },
@@ -76,16 +91,17 @@ const CorporateClient: React.FC = () => {
   };
 
   const columns: Column<ManageClientProps>[] = [
-    { key: "id", label: "Sr.No." },
     {
-      key: "clientID",
+      label: "Sr.No.",
+      renderCell: (_row: ManageClientProps, index: number) => index + 1,
+    },
+    {
+      key: "clientCode",
       label: "Client ID",
       renderCell: (row: ManageClientProps) => {
-        const name = row.clientID || "N/A";
+        const name = row.clientCode || "N/A";
         return (
-          <span className="flex-nowrap text-nowrap">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </span>
+          <span className="flex-nowrap text-nowrap">{name.toUpperCase()}</span>
         );
       },
     },
@@ -93,72 +109,112 @@ const CorporateClient: React.FC = () => {
       key: "details",
       label: "Details",
       renderCell: (row: ManageClientProps) => {
-        const name = row.details || "N/A";
         return (
-          <span className="flex w-[200px]">
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </span>
+          <div className="flex gap-2 items-center w-[200px]">
+            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold shrink-0">
+              {(row.companyName || row.name || "C").charAt(0).toUpperCase()}
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span
+                className="font-medium text-gray-900 dark:text-gray-100 truncate"
+                title={row.companyName || row.name}
+              >
+                {row.companyName || row.name}
+              </span>
+              <span
+                className="text-xs text-gray-500 truncate"
+                title={row.email}
+              >
+                {row.email}
+              </span>
+              <span className="text-xs text-gray-500">{row.phoneNumber}</span>
+            </div>
+          </div>
         );
       },
     },
     {
       key: "location",
       label: "Location",
+      renderCell: (row: ManageClientProps) => row.location || "N/A",
     },
     {
       key: "registrationDate",
       label: "Registration Date",
+      renderCell: (row: ManageClientProps) =>
+        row.registrationDate
+          ? dayjs(row.registrationDate).format("DD/MM/YYYY")
+          : "N/A",
     },
     {
-      key: "documents",
+      key: "documentType",
       label: "View Documents",
       renderCell: (row: ManageClientProps) => {
-        const name = row.documents || "N/A";
         return (
-          <Button
-            className="w-fit bg-gradient-to-r bg-teal-900 text-white"
-            onClick={() => setIsOpen(true)}
-          >
-            {name}
-          </Button>
+          <SelectMenu
+            placeholder="Select Document"
+            className="w-36"
+            options={
+              documentType?.map((item) => ({
+                value: item.value ?? "",
+                label: item.label ?? "",
+              })) ?? []
+            }
+            value={activeRowId === row.id ? selectedType : null}
+            onChange={(value) => {
+              setActiveRowId(row.id);
+              setActiveUserId(row.userId);
+              setSelectedType(value as ProfileFileType | null);
+              setIsOpen(true);
+            }}
+          />
         );
       },
     },
     {
-      key: "walletBalance",
+      key: "balance",
       label: "Wallet Balance",
+      renderCell: (row: ManageClientProps) => `₹${row.balance || 0}`,
     },
     {
-      key: "kycStatus",
-      label: "KYC Status",
+      key: "profileStatus",
+      label: "Profile Status",
+      renderCell: (row: ManageClientProps) => (
+        <span
+          className={`capitalize ${
+            row.profileStatus === "approved"
+              ? "text-green-600"
+              : row.profileStatus === "pending"
+                ? "text-yellow-600"
+                : "text-red-600"
+          }`}
+        >
+          {row.profileStatus || "N/A"}
+        </span>
+      ),
     },
     {
-      key: "requiredType",
+      key: "clientType",
       label: "Required Type",
+      renderCell: (row: ManageClientProps) => (
+        <span className="capitalize">{row.clientType}</span>
+      ),
     },
-
     {
-      key: "approvalStatus",
-      label: "Status",
+      key: "userStatus",
+      label: "User Status",
       renderCell: (row: ManageClientProps) => {
         return (
           <SelectMenu
             placeholder="Select"
-            value={rowStatuses[row.id] || ""}
-            onChange={(value: string | null) => {
-              setRowStatuses((prev) => ({
-                ...prev,
-                [row.id]: value ?? "",
-              }));
-              handleStatusChange(row, value, showPopup);
-            }}
+            value={rowStatuses[row.id] ?? row.profileStatus ?? ""}
+            onChange={(value) => onStatusChange(row, value)}
             options={JobStatus}
             badge
           />
         );
       },
     },
-
     {
       key: "action",
       label: "Actions",
@@ -190,6 +246,7 @@ const CorporateClient: React.FC = () => {
       ),
     },
   ];
+
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-neutral-100 dark:bg-gray-700 rounded-md">
       <div className="mb-2 flex justify-between items-center gap-2">
@@ -206,12 +263,16 @@ const CorporateClient: React.FC = () => {
       <div className="h-full flex-1 overflow-y-auto ">
         <CustomTable<ManageClientProps>
           columns={columns}
-          data={filteredData}
+          data={clientData}
           initialPageSize={10}
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
-        <ViewFileComponent onClose={() => setIsOpen(false)} />
+        <ViewFileComponent
+          onClose={() => setIsOpen(false)}
+          userId={activeUserId}
+          fileType={selectedType}
+        />
       </Popup>
     </div>
   );

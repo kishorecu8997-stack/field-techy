@@ -36,9 +36,11 @@ export default function AdminVerifyOTP() {
     try {
       await adminResetPassword(
         {
-          email: email as string,
-          code: data.otp,
-          newPassword: data.password,
+          body: {
+            email: email as string,
+            code: data.otp,
+            newPassword: data.password,
+          },
         },
         {
           onSuccess: () => {
