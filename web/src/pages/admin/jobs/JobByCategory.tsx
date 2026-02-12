@@ -127,7 +127,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
       renderCell: (row: JobItem) => (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-700 font-bold">
-            {row.postedBy.name.charAt(0).toUpperCase()}
+            {row.postedBy.name.charAt(0).toUpperCase() ?? ""}
           </div>
           <div className="flex flex-col overflow-hidden">
             <p
@@ -225,14 +225,14 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     },
   ];
 
-  const hasSelectedFilters = !!(
-    filterType ||
-    serviceCategoryId ||
-    budget ||
-    search ||
-    filterBy ||
-    filterRegion
-  );
+  const hasSelectedFilters = [
+    filterType,
+    serviceCategoryId,
+    budget,
+    search,
+    filterBy,
+    filterRegion,
+  ].some(Boolean);
 
   return (
     <div className="w-full h-full flex flex-col p-3 gap-3">
