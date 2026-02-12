@@ -111,10 +111,10 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
               const file = data.attachment?.[0];
               const proposalAttachmentMeta = file
                 ? {
-                    filename: file.name,
-                    size: file.size,
-                    mimeType: file.type,
-                  }
+                  filename: file.name,
+                  size: file.size,
+                  mimeType: file.type,
+                }
                 : undefined;
 
               // Append extra fields to description as they are not in new API
@@ -142,10 +142,7 @@ const SendProposal = ({ jobId }: SendProposalProps) => {
                 await markUploaded({
                   body: {
                     jobId: Number(jobId),
-                    filename: file.name,
-                    size: file.size,
-                    mimeType: file.type,
-                  } as any,
+                  },
                 });
               }
 

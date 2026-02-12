@@ -39,12 +39,14 @@ const JobTabSection = ({
   isSendProposal,
   // isJobAccepted,
   activeTab,
+  jobID,
 }: {
   status: JobStatus;
   isWorkSubmitted?: boolean;
   isSendProposal?: boolean;
   isJobAccepted?: boolean;
   activeTab?: string;
+  jobID: string;
 }) => {
   const tabs = [
     {
@@ -96,7 +98,7 @@ const JobTabSection = ({
   return (
     <div className="">
       {isSendProposal ? (
-        <SendProposal jobId={0} />
+        <SendProposal jobId={Number(jobID)} />
       ) : (
         <TabComponent
           tabs={tabs}

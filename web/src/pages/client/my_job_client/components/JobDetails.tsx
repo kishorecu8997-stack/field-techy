@@ -15,15 +15,6 @@ import JobTabSection from "./JobTabSection";
  * @returns {React.ReactElement} The rendered job details page.
  */
 const JobsDetails: React.FC = () => {
-  // const jobFilters = [
-  //   "Engineers Logs",
-  //   "Work Submissions",
-  //   "Job Information",
-  //   "Requirement",
-  //   "SPOC",
-  //   "Other",
-  //   "Proposal's Terms & Conditions",
-  // ];
   const params = useParams();
   const [isWorkSubmitted] = useState(false);
   const [isSendProposal] = useState(false);
@@ -57,6 +48,7 @@ const JobsDetails: React.FC = () => {
                   isSendProposal={isSendProposal}
                   isJobAccepted={isJobAccepted}
                   activeTab={activeTab}
+                  jobID={String(params.jobId)}
                 />
               </div>
             </div>
