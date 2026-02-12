@@ -5,9 +5,10 @@ import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min?url";
 
 interface PDFPreviewProps {
   url: string;
+  className?: string;
 }
 
-const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
+const PDFPreview: React.FC<PDFPreviewProps> = ({ url, className }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderTaskRef = useRef<RenderTask | null>(null);
   const isMountedRef = useRef(true);
@@ -165,7 +166,7 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url }) => {
   }, [url, retryCount]);
 
   return (
-    <div className="relative w-full h-56 rounded-lg  bg-white">
+    <div className={`relative w-full rounded-lg bg-white ${className || "h-56"}`}>
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600" />

@@ -10,10 +10,8 @@ import SelectMenu from "@/shared/components/SelectMenu";
 import {
   LookupTable,
   useAppGetLookupData,
-  useGetAdminPersonalInfo,
 } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
+import { useAdminProfile } from "@/shared/store/useAdminProfileStore";
 
 /**
  * Header
@@ -36,24 +34,10 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const bellRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const token = useUserSessionStore((state) => state.session?.accessToken);
 
-  //New API
-  const { data: adminPersonalInfo } = useGetAdminPersonalInfo(token || "");
+  const adminProfile = useAdminProfile();
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
 
-  /* ---------- File Download (Profile Pic) ---------- */
-  const { data: downloadData } = useAppDownloadProfileFile("profilePicture");
-
-  // Create object URL when blob is received
-  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
-
-  useEffect(() => {
-    if (downloadData && "downloadUrl" in downloadData) {
-      const url = downloadData.downloadUrl;
-      setProfilePicUrl(url);
-    }
-  }, [downloadData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -123,15 +107,15 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
           <div className="flex items-center space-x-2 cursor-pointer">
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
-                {profilePicUrl ? (
-                  <img
-                    src={profilePicUrl}
+                {adminProfile?.profilePicture ? (
+                   <img
+                    src={adminProfile.profilePicture}
                     alt="profile"
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
                   (
-                    adminPersonalInfo?.name?.charAt(0) || "A"
+                    adminProfile?.fullName?.charAt(0) || "A"
                   ).toLocaleUpperCase()
                 )}
               </span>
@@ -139,9 +123,9 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
 
             <div className="hidden sm:block">
               <div className="font-semibold text-md">
-                {adminPersonalInfo?.name
-                  ? adminPersonalInfo.name
-                  : adminPersonalInfo?.email?.split("@")[0]}
+                {adminProfile?.fullName
+                  ? adminProfile.fullName
+                  : adminProfile?.email?.split("@")[0]}
               </div>
             </div>
           </div>
