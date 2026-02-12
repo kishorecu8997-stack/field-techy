@@ -15,7 +15,6 @@ import {
   REVISION_UPDATE_COLORS,
 } from "@/constants/revisionUpdateConstants";
 
-export { REVISION_UPDATE_LABELS };
 
 /**
  * Revision request/update form for engineers to send notes and optional attachments.

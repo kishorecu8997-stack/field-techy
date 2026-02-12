@@ -140,14 +140,15 @@ const BreakRequestForm = ({
     <div className="flex flex-col p-2 w-full max-w-2xl mx-auto -mb-3">
       <div className="relative mb-2">
         <h2 className="text-lg font-semibold text-gray-900">{BREAK_REQUEST_LABELS.title}</h2>
-        <button
+        <Button
           type="button"
-          className="absolute right-0 top-0 text-gray-500 hover:text-gray-700"
+          variant="headerClose"
+          className="absolute right-0 top-0"
           onClick={onClose}
           aria-label="Close"
         >
           <icons.close className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>

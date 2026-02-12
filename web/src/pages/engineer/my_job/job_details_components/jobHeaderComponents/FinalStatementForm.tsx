@@ -16,8 +16,6 @@ import {
   FINAL_STATEMENT_MESSAGES,
 } from "@/constants/finalStatementConstants";
 
-export { FINAL_STATEMENT_LABELS };
-
 interface FinalStatementFields {
   notes: string;
   completedTaskFile: FileList | null;

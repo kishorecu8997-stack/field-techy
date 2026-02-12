@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { MODAL_TITLES } from "@/constants/timelineConstants";
+import { TextareaInput } from "@/shared/components/commonUI/inputs";
+import { FormProvider, useForm } from "react-hook-form";
+
+type ShortBreakFormValues = {
+  notes: string;
+};
 
 interface ShortBreakApprovalModalProps {
   isOpen: boolean;
@@ -20,6 +26,27 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
   onCancel,
   onSubmit,
 }) => {
+  const formMethods = useForm<ShortBreakFormValues>({
+    defaultValues: {
+      notes,
+    },
+  });
+
+  useEffect(() => {
+    formMethods.setValue("notes", notes, { shouldDirty: false });
+  }, [formMethods, notes]);
+
+  useEffect(() => {
+    const subscription = formMethods.watch((value) => {
+      const nextNotes = value.notes ?? "";
+      if (nextNotes !== notes) {
+        onNotesChange(nextNotes);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [formMethods, notes, onNotesChange]);
+
   if (!isOpen) return null;
 
   return (
@@ -30,20 +57,15 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
             {MODAL_TITLES.shortBreakApproval}
           </h2>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Any Notes?
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => onNotesChange(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
-                rows={4}
+          <FormProvider {...formMethods}>
+            <div className="space-y-4">
+              <TextareaInput
+                name="notes"
+                label="Any Notes?"
                 placeholder="Complete your work and then take a break"
               />
             </div>
-          </div>
+          </FormProvider>
 
           <div className="flex justify-end gap-3 mt-6">
             <Button
