@@ -131,12 +131,14 @@ export function useAppDownloadProfileFile(
 export function useLookupData(
   table: AppGetLookupDataData["query"]["table"],
   parentId?: string,
+  enabled: boolean = true,
 ) {
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,
       query: { table, parentId },
     }),
+    enabled: enabled && (table !== "states" && table !== "cities" || !!parentId),
     staleTime: 1000 * 60 * 60,
   });
 }

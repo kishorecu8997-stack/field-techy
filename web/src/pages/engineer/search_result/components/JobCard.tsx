@@ -175,11 +175,13 @@ const JobCard: React.FC<{
     const { data: countries } = useLookupData("countries");
     const { data: states } = useLookupData(
       "states",
-      job.countryId ? String(job.countryId) : undefined
+      job.countryId ? String(job.countryId) : undefined,
+      !!job.countryId,
     );
     const { data: cities } = useLookupData(
       "cities",
-      job.stateId ? String(job.stateId) : undefined
+      job.stateId ? String(job.stateId) : undefined,
+      !!job.stateId,
     );
 
     const jobData = useMemo(() => {

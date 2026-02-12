@@ -155,6 +155,7 @@ const JobDetailsPage = () => {
     JOB_STATUSES.posted;
 
   // The type is missing in the new API. once the type is added, the type is fixed, and remove this `line @ts-ignore`
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const OfferJobStatus = jobData.assignmentStatus as AssignmentStatus;
   console.log('jobData :', jobData);

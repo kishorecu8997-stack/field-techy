@@ -8,6 +8,7 @@ import type { JobItem } from "../home/types";
  * @returns {JobItem} The mapped JobItem
  */
 export const mapApiJobToJobItem = (job: EngineerSearchJobsResponse[number]): JobItem => {
+  console.log("job form api", job);
   return {
     id: String(job.id),
     clientId: String(job.clientId),
@@ -22,6 +23,9 @@ export const mapApiJobToJobItem = (job: EngineerSearchJobsResponse[number]): Job
     experience: job.experienceLevelId,
     salary: job.totalPrice,
     budgetType: null,
+    cityId: job.cityId,
+    stateId: job.stateId,
+    countryId: job.countryId,
     skills: [],
     tools: [],
     toolImage: null,
@@ -31,7 +35,7 @@ export const mapApiJobToJobItem = (job: EngineerSearchJobsResponse[number]): Job
     jobDuration: "",
     client: {
       id: String(job.clientId),
-      companyName: "Loading...",
+      companyName: "client name ",
       contactPersonName: "N/A",
       email: "",
       phoneNumber: "",
