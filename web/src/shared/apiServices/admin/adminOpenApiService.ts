@@ -36,7 +36,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
 import type { EngineerStatusType } from "@/pages/admin/engineer/types";
 import { apiClient } from "../apiClient";
-import type { createClient } from "@/api/client";
 
 export const LookupTable = {
   Countries: "countries",
@@ -201,26 +200,19 @@ export interface PagedEngineersResponse<T = unknown> {
 }
 
 export async function fetchAdminManageEngineersPaged<T = unknown>({
-  client,
-  token,
   page,
   limit,
   status,
   profileStatus,
 }: {
-  client?: ReturnType<typeof createClient>;
-  token: string;
   page: number;
   limit: number;
   status?: UserStatusType;
   profileStatus?: ProfileStatusType;
 }): Promise<PagedEngineersResponse<T>> {
-  const httpClient = client ?? apiClient;
-
   const response = await getAdminManageEngineers({
-    client: httpClient,
+    client: apiClient,
     query: { page, limit, status, profileStatus },
-    headers: { Authorization: `Bearer ${token}` },
     throwOnError: true,
   });
 
