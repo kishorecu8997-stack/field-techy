@@ -3,7 +3,7 @@
  * This file contains all hardcoded timeline card data for the client job timeline
  */
 
-import type { ActivityTimelineItem, TimelineCardData } from "@/pages/client/my_job_client/types";
+import type { TimelineCardData } from "@/pages/client/my_job_client/types";
 
 // Progress Update Card Data
 export const progressUpdateCardData: TimelineCardData = {
@@ -68,29 +68,4 @@ export const finalStatementCardData: TimelineCardData = {
   accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
-
-// Job Started Card Data
-export const jobStartedCardData: TimelineCardData = {
-  id: "job-started-1",
-  type: "jobStarted",
-  title: "Job Started",
-  description: "Engineer has started working on the job",
-  timestamp: "05 Apr 2026, 9:40 AM",
-  accentColor: "#16a34a",
-  buttons: ["reject", "approve"],
-};
-
-// Activity Timeline Items
-export const activityTimelineItems: ActivityTimelineItem[] = [
-  {
-    title: "Proposal Accepted",
-    timestamp: "05 Apr 2026, 9:30 AM",
-    accentColor: "#2563eb",
-  },
-  {
-    title: "Proposal Received",
-    timestamp: "05 Apr 2026, 9:20 AM",
-    accentColor: "#2563eb",
-  },
-];
 

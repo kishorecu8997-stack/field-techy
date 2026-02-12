@@ -1,3 +1,5 @@
+import type { ActivityTimelineItem, TimelineCardData } from "@/pages/client/my_job_client/types";
+
 export const TIMELINE_CARD_COLORS = {
   green: "#16a34a",
   red: "#dc2626",
@@ -49,6 +51,11 @@ export const ENGINEER_MODAL_TITLES = {
   breakRequestApproved: "Break Request Approved",
 } as const;
 
+export const ENGINEER_TIMELINE_STATUS = {
+  APPROVED: "approved",
+  REVISION_REQUESTED: "revision requested",
+} as const;
+
 export const TIMELINE_COLORS = {
   waiting: "#f59e0b",
   approved: "#22c55e",
@@ -72,3 +79,26 @@ export const REVISION_LABELS = {
   engineerLabel: "Engineer:",
   updateButton: "Update",
 } as const;
+
+export const jobStartedCardData: TimelineCardData = {
+  id: "job-started-1",
+  type: "jobStarted",
+  title: "Job Started",
+  description: "Engineer has started working on the job",
+  timestamp: "05 Apr 2026, 9:40 AM",
+  accentColor: "#16a34a",
+  buttons: ["reject", "approve"],
+};
+
+export const activityTimelineItems: ActivityTimelineItem[] = [
+  {
+    title: "Proposal Accepted",
+    timestamp: "05 Apr 2026, 9:30 AM",
+    accentColor: "#2563eb",
+  },
+  {
+    title: "Proposal Received",
+    timestamp: "05 Apr 2026, 9:20 AM",
+    accentColor: "#2563eb",
+  },
+];

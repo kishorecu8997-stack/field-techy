@@ -12,13 +12,7 @@ import {
   JOB_STARTED_TEMPLATE,
 } from "@/dummy_data/engineerTimelineDummyData";
 import { REVISION_UPDATE_LABELS } from "@/constants/revisionUpdateConstants";
-/**
- * Status constants for type-safe status comparisons
- */
-const STATUS = {
-  APPROVED: "approved",
-  REVISION_REQUESTED: "revision requested",
-} as const;
+import { ENGINEER_TIMELINE_STATUS } from "@/constants/timelineConstants";
 
 /**
  * Engineer job timeline tab that renders milestones, progress updates, and revision/break details.
@@ -107,7 +101,7 @@ const TimelineSection: React.FC<{
                 onOpenBreakDetails={handleOpenBreakDetails}
                 onStartRevisionUpdate={handleStartRevisionUpdate}
                 revisionUpdateEntry={revisionUpdateEntry}
-                STATUS={STATUS}
+                STATUS={ENGINEER_TIMELINE_STATUS}
               />
             );
           })}

@@ -11,8 +11,6 @@ import {
   createRevisionUpdateCardData,
   shortTermBreakCardData as shortTermBreakCardDataFromDummy,
   finalStatementCardData as finalStatementCardDataFromDummy,
-  jobStartedCardData as jobStartedCardDataFromDummy,
-  activityTimelineItems,
 } from "@/dummy_data/clientTimelineDummyData";
 import {
   TIMELINE_STATUS,
@@ -20,6 +18,8 @@ import {
   MODAL_TITLES,
   MODAL_MESSAGES,
   TOAST_MESSAGES,
+  jobStartedCardData,
+  activityTimelineItems,
 } from "@/constants/timelineConstants";
 import type { TimelineStatus } from "@/constants/timelineConstants";
 import ProgressUpdateCard from "./ProgressUpdateCard";
@@ -41,7 +41,7 @@ const clientTimelineCards: TimelineCardData[] = [
   revisionRequestUpdateCardDataFromDummy,
   shortTermBreakCardDataFromDummy,
   finalStatementCardDataFromDummy,
-  jobStartedCardDataFromDummy,
+  jobStartedCardData,
 ];
 
 const [
@@ -49,7 +49,7 @@ const [
   revisionRequestUpdateCardData,
   shortTermBreakCardData,
   finalStatementCardData,
-  jobStartedCardData,
+  jobStartedCardDataForCard,
 ] = clientTimelineCards;
 
 const FormMode = {
@@ -304,7 +304,37 @@ const TimelineSection: React.FC = () => {
     setShowJobRejectConfirm(false);
   };
 
-  // Auto-collapse Progress card once a decision is made
+  const confirmModals = [
+    {
+      key: "revision",
+      isOpen: showFormConfirm && Boolean(formMode),
+      title: MODAL_TITLES.requestRevision,
+      message: MODAL_MESSAGES.requestRevisionConfirm,
+      confirmLabel: "Submit",
+      onConfirm: handleRevisionSubmit,
+      onCancel: handleFormConfirmCancel,
+    },
+    {
+      key: "job-approve",
+      isOpen: showJobApproveConfirm,
+      title: MODAL_TITLES.jobApproval,
+      message: MODAL_MESSAGES.jobApproveConfirm,
+      confirmLabel: "Approve",
+      onConfirm: handleJobApproveConfirmSubmit,
+      onCancel: handleJobApproveConfirmCancel,
+    },
+    {
+      key: "job-reject",
+      isOpen: showJobRejectConfirm,
+      title: MODAL_TITLES.jobRejection,
+      message: MODAL_MESSAGES.jobRejectConfirm,
+      confirmLabel: "Reject",
+      onConfirm: handleJobRejectConfirmSubmit,
+      onCancel: handleJobRejectConfirmCancel,
+    },
+  ];
+
+  // Auto-collapse cards once a decision is made
   useEffect(() => {
     if (progressStatus === TIMELINE_STATUS.approved || progressStatus === TIMELINE_STATUS.rejected) {
       if (!keepProgressExpanded) {
@@ -313,35 +343,30 @@ const TimelineSection: React.FC = () => {
     } else if (progressStatus === TIMELINE_STATUS.revision) {
       setIsProgressCollapsed(false);
     }
-  }, [keepProgressExpanded, progressStatus]);
 
-  // Auto-collapse Revision Update card once a decision is made
-  useEffect(() => {
     if (revisionUpdateStatus !== TIMELINE_STATUS.pending) {
       setIsRevisionUpdateCollapsed(true);
     }
-  }, [revisionUpdateStatus]);
 
-  // Auto-collapse Short Break card once a decision is made
-  useEffect(() => {
     if (shortBreakStatus !== TIMELINE_STATUS.pending) {
       setIsShortBreakCollapsed(true);
     }
-  }, [shortBreakStatus]);
 
-  // Auto-collapse Final Statement card once a decision is made
-  useEffect(() => {
     if (finalStatementStatus !== TIMELINE_STATUS.pending) {
       setIsFinalStatementCollapsed(true);
     }
-  }, [finalStatementStatus]);
 
-  // Auto-collapse Job card once a decision is made
-  useEffect(() => {
     if (jobStatus !== TIMELINE_STATUS.pending) {
       setIsJobCollapsed(true);
     }
-  }, [jobStatus]);
+  }, [
+    keepProgressExpanded,
+    progressStatus,
+    revisionUpdateStatus,
+    shortBreakStatus,
+    finalStatementStatus,
+    jobStatus,
+  ]);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
@@ -409,7 +434,7 @@ const TimelineSection: React.FC = () => {
         {/* Job Started Card */}
         <JobStartedCard
           isCollapsed={isJobCollapsed}
-          cardData={jobStartedCardData}
+          cardData={jobStartedCardDataForCard}
           accentColor={accentColor}
           jobStatus={jobStatus}
           statusNode={statusNode}
@@ -428,32 +453,17 @@ const TimelineSection: React.FC = () => {
         onCancel={handleFormCancel}
       />
 
-      <ConfirmModal
-        isOpen={showFormConfirm && Boolean(formMode)}
-        title={MODAL_TITLES.requestRevision}
-        message={MODAL_MESSAGES.requestRevisionConfirm}
-        confirmLabel="Submit"
-        onConfirm={handleRevisionSubmit}
-        onCancel={handleFormConfirmCancel}
-      />
-
-      <ConfirmModal
-        isOpen={showJobApproveConfirm}
-        title={MODAL_TITLES.jobApproval}
-        message={MODAL_MESSAGES.jobApproveConfirm}
-        confirmLabel="Approve"
-        onConfirm={handleJobApproveConfirmSubmit}
-        onCancel={handleJobApproveConfirmCancel}
-      />
-
-      <ConfirmModal
-        isOpen={showJobRejectConfirm}
-        title={MODAL_TITLES.jobRejection}
-        message={MODAL_MESSAGES.jobRejectConfirm}
-        confirmLabel="Reject"
-        onConfirm={handleJobRejectConfirmSubmit}
-        onCancel={handleJobRejectConfirmCancel}
-      />
+      {confirmModals.map((modal) => (
+        <ConfirmModal
+          key={modal.key}
+          isOpen={modal.isOpen}
+          title={modal.title}
+          message={modal.message}
+          confirmLabel={modal.confirmLabel}
+          onConfirm={modal.onConfirm}
+          onCancel={modal.onCancel}
+        />
+      ))}
 
       <ShortBreakApprovalModal
         isOpen={showShortBreakApprovalModal}
