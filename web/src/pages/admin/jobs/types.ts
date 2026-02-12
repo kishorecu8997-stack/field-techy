@@ -3,6 +3,8 @@ import type { AdminGetJobsQuery, AdminGetJobsResponse } from "@/shared/apiServic
 export type JobItem = AdminGetJobsResponse["data"][number];
 export interface JobByCategoryProps {
   data: JobItem[];
+  isLoading?: boolean;
+  error?: unknown;
   filterType: AdminGetJobsQuery["jobType"] | undefined;
   setFilterType: (value: AdminGetJobsQuery["jobType"] | undefined) => void;
   filterBy: string | null;

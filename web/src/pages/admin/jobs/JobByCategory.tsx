@@ -3,7 +3,6 @@ import {
   AllJobStatus,
   AllJobType,
   AllJobsFilterBy,
-  Region,
 } from "@/dummy_data/admin/manageJobs";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
@@ -18,7 +17,10 @@ import type { AdminGetJobsQuery } from "@/shared/apiServices/admin/adminOpenApiS
 import dayjs from "dayjs";
 import { InputOutline } from "@/shared/components/InputOutline";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useAppGetLookupData } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  LookupTable,
+  useAppGetLookupData,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 import type { JobByCategoryProps, JobItem } from "./types";
 
 /**
@@ -33,6 +35,8 @@ import type { JobByCategoryProps, JobItem } from "./types";
  */
 const JobByCategory: React.FC<JobByCategoryProps> = ({
   data,
+  isLoading,
+  error,
   filterType,
   setFilterType,
   filterBy,
@@ -54,6 +58,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
 
   const { data: categories } = useAppGetLookupData("serviceCategories");
+  const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
 
   const categoryOptions =
     categories?.map((cat) => ({
@@ -236,23 +241,28 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         {currentStatus !== "Flagged" && (
           <>
             <SelectMenu
-              className="absolute z-20"
+              className="z-20"
               placeholder="Filter by"
               value={filterBy}
               onChange={setFilterBy}
               options={AllJobsFilterBy}
             />
             <SelectMenu
-              className="absolute z-20"
               placeholder="Select Region"
+              className="z-20"
+              options={
+                adminLookupData?.map((item) => ({
+                  value: item.name ?? "",
+                  label: item.name ?? "",
+                })) ?? []
+              }
               value={filterRegion}
               onChange={setFilterRegion}
-              options={Region}
             />
 
             <SelectMenu
               placeholder="Category"
-              className="absolute z-20"
+              className="z-20"
               value={serviceCategoryId ? String(serviceCategoryId) : null}
               onChange={(val) => setServiceCategoryId(val ? Number(val) : null)}
               options={categoryOptions}
@@ -268,7 +278,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
               />
               <SelectMenu
                 placeholder="Job Type"
-                className="absolute z-20"
+                className="z-20"
                 value={filterType || null}
                 onChange={(val) =>
                   setFilterType(
@@ -291,6 +301,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           columns={columns}
           data={data}
           initialPageSize={10}
+          loading={isLoading}
+          error={error ? "An error occurred while fetching jobs." : null}
         />
       </div>
     </div>

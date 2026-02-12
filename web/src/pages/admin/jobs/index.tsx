@@ -47,10 +47,14 @@ export default function ManageJobs() {
     (t) => t.label === activeTabLabel,
   )?.status;
 
-  const { data: jobsResponse } = useAdminGetJobs({
+  const {
+    data: jobsResponse,
+    isLoading,
+    error,
+  } = useAdminGetJobs({
     status: currentStatus,
     jobType: filterType,
-    serviceCategoryId: serviceCategoryId || undefined,
+    serviceCategoryId: serviceCategoryId ?? undefined,
   });
 
   const allJobs = jobsResponse?.data || [];
@@ -62,7 +66,6 @@ export default function ManageJobs() {
     if (search) {
       const query = search.toLowerCase();
       matches =
-        matches &&
         (job.jobTitle.toLowerCase().includes(query) ||
           job.jobCode.toLowerCase().includes(query) ||
           job.postedBy.name.toLowerCase().includes(query) ||
@@ -72,6 +75,12 @@ export default function ManageJobs() {
 
     if (budget) {
       matches = matches && (job.totalPrice?.includes(budget) ?? false);
+    }
+
+    if (filterRegion) {
+      matches =
+        matches &&
+        job.countryName?.toLowerCase() === filterRegion.toLowerCase();
     }
 
     return matches;
@@ -91,6 +100,8 @@ export default function ManageJobs() {
     content: (
       <JobByCategory
         data={filteredJobs}
+        isLoading={isLoading}
+        error={error}
         filterType={filterType}
         setFilterType={setFilterType}
         serviceCategoryId={serviceCategoryId}
