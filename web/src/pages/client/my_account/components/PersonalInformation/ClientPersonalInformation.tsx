@@ -89,8 +89,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   const parentStateId =
     typeof selectedStateValue === "object" &&
-      selectedStateValue !== null &&
-      "value" in selectedStateValue
+    selectedStateValue !== null &&
+    "value" in selectedStateValue
       ? (selectedStateValue as any).value
       : selectedStateValue;
 

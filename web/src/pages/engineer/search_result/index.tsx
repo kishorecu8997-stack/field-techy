@@ -18,7 +18,9 @@ import { mapFiltersToApiQuery } from "./utils";
 /**
  * Parse filters from URL search params
  */
-const parseFiltersFromUrl = (searchParams: URLSearchParams): Partial<Filters> => {
+const parseFiltersFromUrl = (
+  searchParams: URLSearchParams,
+): Partial<Filters> => {
   const filters: Partial<Filters> = {};
 
   // Parse array fields
@@ -156,19 +158,20 @@ const SearchResult = () => {
 
     // Apply multiple job type filter (API only supports single jobType)
     // If more than one job type is selected, filter the rest client-side
-    const selectedJobTypes = filters.locationType.length > 0
-      ? filters.locationType
-      : filters.location;
+    const selectedJobTypes =
+      filters.locationType.length > 0 ? filters.locationType : filters.location;
 
     if (selectedJobTypes.length > 1) {
       // Normalize job types for comparison
-      const normalizedSelected = selectedJobTypes.map(jt =>
-        jt.toLowerCase().replace(/[-\s]/g, '')
+      const normalizedSelected = selectedJobTypes.map((jt) =>
+        jt.toLowerCase().replace(/[-\s]/g, ""),
       );
 
       filtered = filtered.filter((job) => {
         if (!job.jobType) return false;
-        const normalizedJobType = job.jobType.toLowerCase().replace(/[-\s]/g, '');
+        const normalizedJobType = job.jobType
+          .toLowerCase()
+          .replace(/[-\s]/g, "");
         return normalizedSelected.includes(normalizedJobType);
       });
     }
@@ -216,11 +219,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-        (item: { id: string; filters: Filters; timestamp: string }) => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }),
-      )
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }),
+        )
       : [];
   });
 
@@ -338,8 +341,9 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

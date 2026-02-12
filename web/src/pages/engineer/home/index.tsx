@@ -31,50 +31,52 @@ const Home = () => {
   // Use engineer search jobs to fetch available jobs
   const { data: jobsResponse } = useEngineerSearchJobs({});
 
-  console.log(jobsResponse, "Job Response")
+  console.log(jobsResponse, "Job Response");
 
   // Transform API response to UI model
   const jobs = useMemo(() => {
     if (!jobsResponse) return [];
 
-    return jobsResponse.map((job): JobItem => ({
-      id: job.id.toString(),
-      clientId: job.clientId.toString(),
-      jobTitle: job.jobTitle,
-      jobDescription: job.jobDescription || "",
-      category: "", // Not available in list response
-      jobType: job.jobType,
-      engagementModel: job.engagementModelId,
-      countryId: job.countryId,
-      stateId: job.stateId,
-      cityId: job.cityId,
-      location: job.workLocationName || null,
-      startDate: job.startDate || new Date().toISOString(),
-      numberOfVacancy: job.vacancies || 1,
-      experience: job.experienceLevelId || 0,
-      salary: job.totalPrice,
-      status: job.status || "NEW",
-      skills: [],
-      tools: [],
-      toolImage: null,
-      toolAdditionalBudget: null,
-      postedTime: job.createdAt || new Date().toISOString(),
-      jobDuration: "10 Days",
-      budgetType: null, // Add missing property
-      client: {
-        id: job.clientId.toString(),
-        clientType: "COMPANY",
-        companyName: "Client Company", // Placeholder
-        contactPersonName: "Contact Person", // Placeholder
-        email: "",
-        phoneNumber: "",
-        state: "",
-        city: "",
-        country: "",
-        postalCode: "",
-        address: "",
-      }
-    }));
+    return jobsResponse.map(
+      (job): JobItem => ({
+        id: job.id.toString(),
+        clientId: job.clientId.toString(),
+        jobTitle: job.jobTitle,
+        jobDescription: job.jobDescription || "",
+        category: "", // Not available in list response
+        jobType: job.jobType,
+        engagementModel: job.engagementModelId,
+        countryId: job.countryId,
+        stateId: job.stateId,
+        cityId: job.cityId,
+        location: job.workLocationName || null,
+        startDate: job.startDate || new Date().toISOString(),
+        numberOfVacancy: job.vacancies || 1,
+        experience: job.experienceLevelId || 0,
+        salary: job.totalPrice,
+        status: job.status || "NEW",
+        skills: [],
+        tools: [],
+        toolImage: null,
+        toolAdditionalBudget: null,
+        postedTime: job.createdAt || new Date().toISOString(),
+        jobDuration: "10 Days",
+        budgetType: null, // Add missing property
+        client: {
+          id: job.clientId.toString(),
+          clientType: "COMPANY",
+          companyName: "Client Company", // Placeholder
+          contactPersonName: "Contact Person", // Placeholder
+          email: "",
+          phoneNumber: "",
+          state: "",
+          city: "",
+          country: "",
+          postalCode: "",
+          address: "",
+        },
+      }),
+    );
   }, [jobsResponse]);
 
   console.log(jobs, "jobs");
@@ -88,7 +90,10 @@ const Home = () => {
   const jobsPerPage = 5;
 
   const findNewJobs = useMemo(() => {
-    return jobs?.filter((job) => job.status === "Posted" || job.status === "NEW") || [];
+    return (
+      jobs?.filter((job) => job.status === "Posted" || job.status === "NEW") ||
+      []
+    );
   }, [jobs]);
 
   const recommendedJobs = useMemo(() => {

@@ -130,7 +130,9 @@ const SignUpWithNumber = ({
   const handleResendOTP = () => {
     const phone = method.getValues("phone");
     sendPhoneOTP({
-      body: { type: "phone", phone } as AppSendOtpData["body"] & { phone: string },
+      body: { type: "phone", phone } as AppSendOtpData["body"] & {
+        phone: string;
+      },
       headers: { authorization: "" },
     });
   };
@@ -139,7 +141,9 @@ const SignUpWithNumber = ({
 
   const handleSubmit = (data: LoginFormData) => {
     sendPhoneOTP({
-      body: { type: "phone", phone: data.phone } as AppSendOtpData["body"] & { phone: string },
+      body: { type: "phone", phone: data.phone } as AppSendOtpData["body"] & {
+        phone: string;
+      },
       headers: { authorization: "" },
     });
   };
@@ -189,10 +193,11 @@ const SignUpWithNumber = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:opacity-90"
-              }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted || isSendingOTP
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
+            }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

@@ -143,7 +143,9 @@ const SignUp = ({
   const handleResendOTP = () => {
     const email = methods.getValues("email");
     sendEmailOTP({
-      body: { type: "email", email } as AppSendOtpData["body"] & { email: string },
+      body: { type: "email", email } as AppSendOtpData["body"] & {
+        email: string;
+      },
       headers: { authorization: "" },
     });
   };
@@ -152,7 +154,9 @@ const SignUp = ({
 
   const handleSubmit = (data: SignUpFormData) => {
     sendEmailOTP({
-      body: { type: "email", email: data.email } as AppSendOtpData["body"] & { email: string },
+      body: { type: "email", email: data.email } as AppSendOtpData["body"] & {
+        email: string;
+      },
       headers: { authorization: "" },
     });
   };
@@ -205,10 +209,11 @@ const SignUp = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:opacity-90"
-              }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
+              !termsAccepted || isSendingOTP
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:opacity-90"
+            }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

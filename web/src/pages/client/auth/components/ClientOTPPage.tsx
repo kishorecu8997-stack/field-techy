@@ -1,7 +1,5 @@
 import { icons } from "@/config/icons";
-import {
-  useVerifyOtp,
-} from "@/shared/apiServices/commonOpenApiService";
+import { useVerifyOtp } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
@@ -71,12 +69,17 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      const body = verificationType === "email"
-        ? { type: "email" as const, email: contact, otp: data.otp }
-        : { type: "phone" as const, phone: contact, otp: data.otp };
+      const body =
+        verificationType === "email"
+          ? { type: "email" as const, email: contact, otp: data.otp }
+          : { type: "phone" as const, phone: contact, otp: data.otp };
 
       await verifyOTP({
-        body: body as AppVerifyOtpData["body"] & { email?: string; phone?: string; otp: string },
+        body: body as AppVerifyOtpData["body"] & {
+          email?: string;
+          phone?: string;
+          otp: string;
+        },
         headers: { authorization: "" },
       });
       handleNavigate?.();
@@ -131,8 +134,9 @@ const ClientOTPPage: React.FC<ClientOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${
+                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Resend
               </button>

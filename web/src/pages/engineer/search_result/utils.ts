@@ -6,11 +6,17 @@ import type { Filters } from "./types";
  * @param value - The job type value from the filter
  * @returns Normalized job type value
  */
-function normalizeJobType(value: string): "On site" | "Remote" | "Hybrid" | null {
+function normalizeJobType(
+  value: string,
+): "On site" | "Remote" | "Hybrid" | null {
   const normalized = value.trim();
-  
+
   // Handle variations
-  if (normalized === "On-Site" || normalized === "On site" || normalized === "Onsite") {
+  if (
+    normalized === "On-Site" ||
+    normalized === "On site" ||
+    normalized === "Onsite"
+  ) {
     return "On site";
   }
   if (normalized === "Remote") {
@@ -19,7 +25,7 @@ function normalizeJobType(value: string): "On site" | "Remote" | "Hybrid" | null
   if (normalized === "Hybrid") {
     return "Hybrid";
   }
-  
+
   return null;
 }
 
@@ -33,21 +39,18 @@ export function mapFiltersToApiQuery(
 ): NonNullable<EngineerSearchJobsData["query"]> {
   const query: NonNullable<EngineerSearchJobsData["query"]> = {};
 
-
   // Map job type - API only supports single jobType parameter
   // When multiple job types are selected, send the first one to API
   // and filter the rest client-side in the search results page
-  const jobTypeSource = filters.locationType.length > 0 
-    ? filters.locationType 
-    : filters.location;
-    
+  const jobTypeSource =
+    filters.locationType.length > 0 ? filters.locationType : filters.location;
+
   if (jobTypeSource.length > 0) {
     const normalized = normalizeJobType(jobTypeSource[0]);
     if (normalized) {
       query.jobType = normalized;
     }
   }
-
 
   // Map service category IDs
   if (filters.category.length > 0) {
@@ -81,7 +84,7 @@ export function mapFiltersToApiQuery(
   // - countryId, stateId, cityId (actual location filters)
   // - startDate and endDate
 
-  console.log('Filter mapping:', { filters, query });
+  console.log("Filter mapping:", { filters, query });
 
   return query;
 }

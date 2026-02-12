@@ -54,7 +54,7 @@ const ProfileCard = () => {
   const serviceCategoryName = React.useMemo(() => {
     if (!engineerProfile?.serviceCategory || !serviceCategories) return "";
     const category = serviceCategories.find(
-      (c) => c.id === Number(engineerProfile.serviceCategory)
+      (c) => c.id === Number(engineerProfile.serviceCategory),
     );
     return category?.name || engineerProfile.serviceCategory;
   }, [engineerProfile?.serviceCategory, serviceCategories]);
@@ -74,9 +74,7 @@ const ProfileCard = () => {
               {engineerProfile?.fullName}
             </h3>
             <p className="text-sm opacity-90">{engineerProfile?.phoneNumber}</p>
-            <p className="text-xs opacity-80">
-              {serviceCategoryName}
-            </p>
+            <p className="text-xs opacity-80">{serviceCategoryName}</p>
           </div>
         </div>
         <button

@@ -26,9 +26,7 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(
-    "Job Information",
-  );
+  const [activeTab, setActiveTab] = useState("Job Information");
 
   // Always call hooks - pass 0 if jobId is missing or dummy
   /* const { data: jobData, isLoading } = useEngineerGetJobById(
@@ -62,7 +60,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -87,7 +85,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -106,7 +104,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -150,15 +148,15 @@ const JobDetailsPage = () => {
   };
 
   const jobStatus: JobStatus | AssignmentStatus =
-    statusMapping[(jobData.status) as string] ||
-    ((jobData.status) as AssignmentStatus) ||
+    statusMapping[jobData.status as string] ||
+    (jobData.status as AssignmentStatus) ||
     JOB_STATUSES.posted;
 
   // The type is missing in the new API. once the type is added, the type is fixed, and remove this `line @ts-ignore`
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const OfferJobStatus = jobData.assignmentStatus as AssignmentStatus;
-  console.log('jobData :', jobData);
+  console.log("jobData :", jobData);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -166,7 +164,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

@@ -23,7 +23,10 @@ const OfferPages = () => {
 
   // Skip API call for dummy job
   const isDummyJob = isDummyNetworkEngineerJob(jobId);
-  const { data: apiJob } = useClientGetJobsById(Number(jobId) || 0, !isDummyJob && !!jobId);
+  const { data: apiJob } = useClientGetJobsById(
+    Number(jobId) || 0,
+    !isDummyJob && !!jobId,
+  );
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
@@ -39,7 +42,10 @@ const OfferPages = () => {
     return {
       title: apiJob.jobTitle || "Untitled Job",
       client: "Client " + apiJob.clientId, // TODO: Fetch client details
-      duration: apiJob.startDate && apiJob.endDate ? `${apiJob.startDate} - ${apiJob.endDate}` : "Not specified",
+      duration:
+        apiJob.startDate && apiJob.endDate
+          ? `${apiJob.startDate} - ${apiJob.endDate}`
+          : "Not specified",
       type: "ON_SITE", // TODO: Map engagementModelId
       status: apiJob.status || "NEW",
     };
@@ -51,7 +57,7 @@ const OfferPages = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">

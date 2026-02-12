@@ -29,9 +29,12 @@ interface SkillItem {
  */
 const Filters: React.FC = () => {
   // Fetch lookup data
-  const { data: workLocations, isLoading: isLoadingLocations } = useLookupData("workLocations");
-  const { data: serviceCategories, isLoading: isLoadingCategories } = useLookupData("serviceCategories");
-  const { data: skillsData, isLoading: isLoadingSkills } = useLookupData("skills");
+  const { data: workLocations, isLoading: isLoadingLocations } =
+    useLookupData("workLocations");
+  const { data: serviceCategories, isLoading: isLoadingCategories } =
+    useLookupData("serviceCategories");
+  const { data: skillsData, isLoading: isLoadingSkills } =
+    useLookupData("skills");
 
   // State management
   const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
@@ -101,13 +104,16 @@ const Filters: React.FC = () => {
   };
 
   // Loading state
-  const isLoading = isLoadingLocations || isLoadingCategories || isLoadingSkills;
+  const isLoading =
+    isLoadingLocations || isLoadingCategories || isLoadingSkills;
 
   if (isLoading) {
     return (
       <div className="p-4 md:p-6 rounded-lg bg-gray-50 text-gray-800 dark:bg-gray-800 dark:text-white transition-colors duration-300">
         <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500 dark:text-gray-400">Loading filters...</div>
+          <div className="text-gray-500 dark:text-gray-400">
+            Loading filters...
+          </div>
         </div>
       </div>
     );
@@ -132,10 +138,11 @@ const Filters: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <Button
             onClick={() => setSelectedLocation(null)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedLocation === null
-              ? "bg-teal-800 dark:bg-teal text-white"
-              : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-              }`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedLocation === null
+                ? "bg-teal-800 dark:bg-teal text-white"
+                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+            }`}
           >
             All
           </Button>
@@ -143,10 +150,11 @@ const Filters: React.FC = () => {
             <Button
               key={location.id}
               onClick={() => setSelectedLocation(location.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedLocation === location.id
-                ? "bg-teal-800 dark:bg-teal text-white"
-                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                selectedLocation === location.id
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {location.name}
             </Button>
@@ -160,10 +168,11 @@ const Filters: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <Button
             onClick={() => setSelectedCategory(null)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedCategory === null
-              ? "bg-teal-800 dark:bg-teal text-white"
-              : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-              }`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedCategory === null
+                ? "bg-teal-800 dark:bg-teal text-white"
+                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+            }`}
           >
             All
           </Button>
@@ -171,10 +180,11 @@ const Filters: React.FC = () => {
             <Button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedCategory === category.id
-                ? "bg-teal-800 dark:bg-teal text-white"
-                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                selectedCategory === category.id
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {category.name}
             </Button>
@@ -190,10 +200,11 @@ const Filters: React.FC = () => {
             <Button
               key={option.value}
               onClick={() => setBudget(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${budget === option.value
-                ? "bg-teal-800 dark:bg-teal text-white"
-                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                budget === option.value
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {option.label}
             </Button>
@@ -209,10 +220,11 @@ const Filters: React.FC = () => {
             <Button
               key={option.value}
               onClick={() => setRating(option.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${rating === option.value
-                ? "bg-teal-800 dark:bg-teal text-white"
-                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                rating === option.value
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {option.label}
             </Button>
@@ -232,8 +244,9 @@ const Filters: React.FC = () => {
             onChange={(e) => setExperience(parseInt(e.target.value) || 0)}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-300 dark:bg-gray-600"
             style={{
-              background: `linear-gradient(to right, #059669 0%, #059669 ${(experience / 10) * 100
-                }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
+              background: `linear-gradient(to right, #059669 0%, #059669 ${
+                (experience / 10) * 100
+              }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
             }}
           />
           {/* Dynamic tooltip */}
@@ -258,10 +271,11 @@ const Filters: React.FC = () => {
             <Button
               key={skill.id}
               onClick={() => toggleSkill(skill.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${skill.selected
-                ? "bg-teal-800 dark:bg-teal text-white"
-                : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
-                }`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                skill.selected
+                  ? "bg-teal-800 dark:bg-teal text-white"
+                  : "dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-teal-500 dark:hover:bg-gray-700"
+              }`}
             >
               {skill.name}
             </Button>

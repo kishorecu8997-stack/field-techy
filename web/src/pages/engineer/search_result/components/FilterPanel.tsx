@@ -18,9 +18,12 @@ const FilterPanel: React.FC<{
   currentFilters: Filters;
 }> = ({ onFilterChange, onClearAll, currentFilters }) => {
   // Fetch lookup data
-  const { data: workLocations, isLoading: isLoadingLocations } = useLookupData("workLocations");
-  const { data: serviceCategories, isLoading: isLoadingCategories } = useLookupData("serviceCategories");
-  const { data: skillsData, isLoading: isLoadingSkills } = useLookupData("skills");
+  const { data: workLocations, isLoading: isLoadingLocations } =
+    useLookupData("workLocations");
+  const { data: serviceCategories, isLoading: isLoadingCategories } =
+    useLookupData("serviceCategories");
+  const { data: skillsData, isLoading: isLoadingSkills } =
+    useLookupData("skills");
 
   // Local state for filters
   const [selectedLocationType, setSelectedLocationType] = useState<string[]>(
@@ -149,13 +152,16 @@ const FilterPanel: React.FC<{
   };
 
   // Loading state
-  const isLoading = isLoadingLocations || isLoadingCategories || isLoadingSkills;
+  const isLoading =
+    isLoadingLocations || isLoadingCategories || isLoadingSkills;
 
   if (isLoading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 h-fit border border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500 dark:text-gray-400">Loading filters...</div>
+          <div className="text-gray-500 dark:text-gray-400">
+            Loading filters...
+          </div>
         </div>
       </div>
     );
@@ -189,13 +195,14 @@ const FilterPanel: React.FC<{
                   selectedLocationType,
                   location.name,
                   setSelectedLocationType,
-                  "locationType"
+                  "locationType",
                 )
               }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${selectedLocationType.includes(location.name)
-                ? "bg-green-700 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                }`}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                selectedLocationType.includes(location.name)
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               {location.name}
             </button>
@@ -217,13 +224,14 @@ const FilterPanel: React.FC<{
                   selectedCategory,
                   String(category.id),
                   setSelectedCategory,
-                  "category"
+                  "category",
                 )
               }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${selectedCategory.includes(String(category.id))
-                ? "bg-green-700 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                }`}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                selectedCategory.includes(String(category.id))
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               {category.name}
             </button>
@@ -241,10 +249,11 @@ const FilterPanel: React.FC<{
             <button
               key={rating}
               onClick={() => toggleRating(rating)}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${selectedRating.includes(rating)
-                ? "bg-green-700 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                }`}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                selectedRating.includes(rating)
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               {rating} Star
             </button>
@@ -272,8 +281,9 @@ const FilterPanel: React.FC<{
               });
             }}
             style={{
-              background: `linear-gradient(to right, #059669 0%, #059669 ${(experience / 10) * 100
-                }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
+              background: `linear-gradient(to right, #059669 0%, #059669 ${
+                (experience / 10) * 100
+              }%, #d1d5db ${(experience / 10) * 100}%, #d1d5db 100%)`,
             }}
             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider "
           />
@@ -302,11 +312,12 @@ const FilterPanel: React.FC<{
                   budgetType: type,
                 });
               }}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${budgetType ===
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                budgetType ===
                 (option.toLowerCase().includes("hourly") ? "hourly" : "fixed")
-                ? "bg-green-700 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                }`}
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               {option}
             </button>
@@ -328,13 +339,14 @@ const FilterPanel: React.FC<{
                   selectedSkills,
                   String(skill.id),
                   setSelectedSkills,
-                  "skills"
+                  "skills",
                 )
               }
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${selectedSkills.includes(String(skill.id))
-                ? "bg-green-700 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-                }`}
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                selectedSkills.includes(String(skill.id))
+                  ? "bg-green-700 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               {skill.name}
             </button>
@@ -349,4 +361,3 @@ const FilterPanel: React.FC<{
 };
 
 export default FilterPanel;
-

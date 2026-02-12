@@ -1,4 +1,8 @@
-import type { SortOption, JobStatus, AssignmentStatus } from "../search_result/types";
+import type {
+  SortOption,
+  JobStatus,
+  AssignmentStatus,
+} from "../search_result/types";
 
 /**
  * @file Centralized type definitions for the "My Jobs" feature.

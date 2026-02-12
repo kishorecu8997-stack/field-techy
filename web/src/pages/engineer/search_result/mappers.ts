@@ -3,11 +3,13 @@ import type { JobItem } from "../home/types";
 
 /**
  * Maps an EngineerSearchJobsResponse item to a JobItem.
- * 
+ *
  * @param job - The API job data
  * @returns {JobItem} The mapped JobItem
  */
-export const mapApiJobToJobItem = (job: EngineerSearchJobsResponse[number]): JobItem => {
+export const mapApiJobToJobItem = (
+  job: EngineerSearchJobsResponse[number],
+): JobItem => {
   console.log("job form api", job);
   return {
     id: String(job.id),
@@ -30,7 +32,7 @@ export const mapApiJobToJobItem = (job: EngineerSearchJobsResponse[number]): Job
     tools: [],
     toolImage: null,
     toolAdditionalBudget: null,
-    status: job.status === "Posted" ? "NEW" : (job.status || "NEW"),
+    status: job.status === "Posted" ? "NEW" : job.status || "NEW",
     postedTime: job.createdAt || "",
     jobDuration: "",
     client: {

@@ -286,14 +286,15 @@ export const PhoneInputWithValidation = ({
             <div className="flex flex-col gap-1">
               <div className="relative">
                 <div
-                  className={`flex w-full rounded-md border ${error
-                    ? "border-red-500"
-                    : isAvailable
-                      ? "border-green-500"
-                      : isUnavailable
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
+                  className={`flex w-full rounded-md border ${
+                    error
+                      ? "border-red-500"
+                      : isAvailable
+                        ? "border-green-500"
+                        : isUnavailable
+                          ? "border-red-500"
+                          : "border-gray-300 dark:border-gray-600"
+                  }`}
                 >
                   <CountrySelect
                     countries={phoneCountries}

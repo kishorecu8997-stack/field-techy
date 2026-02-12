@@ -14,7 +14,7 @@ import {
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
   clientGetCompanyInfo,
-  clientGetRateCard
+  clientGetRateCard,
 } from "@/api";
 import {
   appChangePasswordMutation,

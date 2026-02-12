@@ -117,7 +117,9 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
 
   const engagementModelName = useMemo(() => {
     if (!props.engagementModel || !engagementModels) return "";
-    const model = engagementModels.find((e) => e.id === Number(props.engagementModel));
+    const model = engagementModels.find(
+      (e) => e.id === Number(props.engagementModel),
+    );
     return model?.name || "";
   }, [props.engagementModel, engagementModels]);
 
@@ -165,8 +167,19 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
     const stateName = states?.find((s) => s.id === props.stateId)?.name;
 
     const parts = [stateName, countryName].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : resolvedAddress || props.location || "-";
-  }, [countries, states, cities, props.countryId, props.stateId, props.cityId, resolvedAddress, props.location]);
+    return parts.length > 0
+      ? parts.join(", ")
+      : resolvedAddress || props.location || "-";
+  }, [
+    countries,
+    states,
+    cities,
+    props.countryId,
+    props.stateId,
+    props.cityId,
+    resolvedAddress,
+    props.location,
+  ]);
 
   // Safely extract the first number from experience (handles "1, 2", "3+", etc.)
   const experienceValue = useMemo(() => {
@@ -366,8 +379,9 @@ const FeaturedJobs: React.FC<FeaturedJobsProps> = ({
             <div
               id="featuredJobs"
               key={job.id || index}
-              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${jobCardGradients[index % jobCardGradients.length]
-                }`}
+              className={`rounded-xl p-4 shadow-sm cursor-pointer transition-transform hover:scale-[1.01] ${
+                jobCardGradients[index % jobCardGradients.length]
+              }`}
               onClick={() => {
                 navigate(`${absoluteUrls.engineer.home.my_jobs}/${job.id}`);
               }}

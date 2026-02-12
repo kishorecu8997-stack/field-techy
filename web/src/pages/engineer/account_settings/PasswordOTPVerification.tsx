@@ -37,8 +37,7 @@ export const PasswordOTPVerification = ({
     verifiedRef.current = verified;
   }, [verified]);
 
-  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } =
-    useSendOtp();
+  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } = useSendOtp();
 
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
@@ -61,7 +60,9 @@ export const PasswordOTPVerification = ({
     if (!isValidEmail) return;
     try {
       await sendEmailOTP({
-        body: { type: "email", email: emailValue } as AppSendOtpData["body"] & { email: string },
+        body: { type: "email", email: emailValue } as AppSendOtpData["body"] & {
+          email: string;
+        },
         headers: { authorization: "" },
       });
       toast.success("OTP sent successfully to your email.");

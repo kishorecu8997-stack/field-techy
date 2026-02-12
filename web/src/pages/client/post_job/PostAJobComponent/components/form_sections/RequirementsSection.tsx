@@ -33,13 +33,7 @@ const RequirementsSection = ({
   skillOptions,
   toolOptions,
 }: RequirementsSectionProps) => {
-  const {
-    watch,
-    register,
-    setValue,
-    setError,
-    clearErrors,
-  } = useFormContext();
+  const { watch, register, setValue, setError, clearErrors } = useFormContext();
 
   const [toolEntries, setToolEntries] = useState<ToolEntry[]>([]);
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
@@ -73,14 +67,23 @@ const RequirementsSection = ({
       hasError = true;
     }
     if (!files || files.length === 0) {
-      setError("toolImages", { type: "manual", message: "Tool Image is required" });
+      setError("toolImages", {
+        type: "manual",
+        message: "Tool Image is required",
+      });
       hasError = true;
     }
     if (!budget || Number(budget) <= 0) {
-      setError("toolBudgetNotes", { type: "manual", message: "Tool Cost is required" });
+      setError("toolBudgetNotes", {
+        type: "manual",
+        message: "Tool Cost is required",
+      });
       hasError = true;
     } else if (Number(budget) > 10_000_000) {
-      setError("toolBudgetNotes", { type: "manual", message: "Max allowed amount is 10,000,000" });
+      setError("toolBudgetNotes", {
+        type: "manual",
+        message: "Max allowed amount is 10,000,000",
+      });
       hasError = true;
     }
 
@@ -95,10 +98,10 @@ const RequirementsSection = ({
     const newImages =
       files && files.length > 0
         ? Array.from(files).map((file) => ({
-          name: file.name,
-          url: URL.createObjectURL(file),
-          file: file,
-        }))
+            name: file.name,
+            url: URL.createObjectURL(file),
+            file: file,
+          }))
         : undefined;
 
     if (editingToolIndex !== null) {
@@ -117,7 +120,12 @@ const RequirementsSection = ({
     } else {
       setToolEntries((prev) => [
         ...prev,
-        { id: toolId || "", name, budget: budget || "-", images: newImages ?? [] },
+        {
+          id: toolId || "",
+          name,
+          budget: budget || "-",
+          images: newImages ?? [],
+        },
       ]);
     }
 

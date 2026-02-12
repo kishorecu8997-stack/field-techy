@@ -138,7 +138,8 @@ export function useLookupData(
       client: apiClient,
       query: { table, parentId },
     }),
-    enabled: enabled && (table !== "states" && table !== "cities" || !!parentId),
+    enabled:
+      enabled && ((table !== "states" && table !== "cities") || !!parentId),
     staleTime: 1000 * 60 * 60,
   });
 }

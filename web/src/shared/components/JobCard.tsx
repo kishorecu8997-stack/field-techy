@@ -1,7 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
-import {
-  WORKING_TYPES_PROPERTY,
-} from "@/pages/engineer/search_result/types";
+import { WORKING_TYPES_PROPERTY } from "@/pages/engineer/search_result/types";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";
 import { getDurationString, scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
@@ -42,13 +40,12 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     isError: isJobsError,
   } = useClientGetJobsById(Number(jobId) || 0, !!jobId);
   const { data: client } = useClientGetById(String(jobs?.clientId || ""));
-  const getDuration =
-    jobs?.startDate
-      ? getDurationString({
+  const getDuration = jobs?.startDate
+    ? getDurationString({
         startDateStr: jobs.startDate,
         endDateStr: jobs.endDate as string,
       })
-      : undefined;
+    : undefined;
   if (isJobsLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
@@ -106,9 +103,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <MdLocationPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">
-            {jobs?.workLocationName || "N/A"}
-          </span>
+          <span className="truncate">{jobs?.workLocationName || "N/A"}</span>
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">

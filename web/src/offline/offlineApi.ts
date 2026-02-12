@@ -28,23 +28,27 @@ export async function offlineAwareUpdateJobStatus(
   try {
     // Map status string to appropriate API call
     // note: this is a best-effort mapping based on common status transitions
-    if (status === 'In Progress') {
-        return await engineerRequestStart({
-            client: apiClient,
-            body: { assignmentId: Number(jobId) } // Assuming jobId is assignmentId for start
-        });
-    } else if (status === 'Completed') {
-        const placeholderFile = { filename: "placeholder", size: 0, mimeType: "application/octet-stream" };
-        return await engineerSubmitSignOff({
-            client: apiClient,
-             // Note: submitSignOff requires attachments. Using placeholders for offline fallback.
-            body: { 
-                assignmentId: Number(jobId), 
-                workAttachment: placeholderFile,
-                signatureAttachment: placeholderFile,
-                comments: "Offline auto-completion" 
-            } 
-        });
+    if (status === "In Progress") {
+      return await engineerRequestStart({
+        client: apiClient,
+        body: { assignmentId: Number(jobId) }, // Assuming jobId is assignmentId for start
+      });
+    } else if (status === "Completed") {
+      const placeholderFile = {
+        filename: "placeholder",
+        size: 0,
+        mimeType: "application/octet-stream",
+      };
+      return await engineerSubmitSignOff({
+        client: apiClient,
+        // Note: submitSignOff requires attachments. Using placeholders for offline fallback.
+        body: {
+          assignmentId: Number(jobId),
+          workAttachment: placeholderFile,
+          signatureAttachment: placeholderFile,
+          comments: "Offline auto-completion",
+        },
+      });
     }
 
     // Default or other statuses - simplistic implementation
@@ -52,7 +56,6 @@ export async function offlineAwareUpdateJobStatus(
     // Since EngineerAdapter is gone, we throw or return null if no matching SDK method found.
     console.warn(`No direct API mapping found for status: ${status}`);
     return null;
-
   } catch (err) {
     console.log("❌ API failed, saving to offline queue", err);
     addToQueue(action);
