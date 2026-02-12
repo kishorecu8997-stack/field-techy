@@ -62,7 +62,6 @@ interface OTPPageProps {
  * @param {() => void} [props.onResend] - Callback function triggered when the resend button is clicked.
  */
 
-
 const isUniformOtp = (value: string) => /^(\d)\1{5}$/.test(value);
 
 const OTPPage: React.FC<OTPPageProps> = ({
