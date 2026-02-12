@@ -91,7 +91,6 @@ const ClientJobDetails = () => {
               numberOfApplicants={numberOfApplicants}
             />
             <JobTabSection
-              //@ts-expect-er ror Unable to resolve to a known type, refer the right type of job status and fix the mismatch
               status={matchedJob?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}

@@ -1,24 +1,8 @@
 import React from "react";
 import { HiCheckCircle, HiClock } from "react-icons/hi";
 import { cn } from "./../libs/utils";
-
-const TIMELINE_LIST_DEFAULTS = {
-  accentColor: "#2f80ed",
-  statusColor: "#f59e0b",
-} as const;
-
-export type TimelineItem = {
-  title: string;
-  timestamp: string;
-  accentColor?: string;
-  statusText?: string;
-  statusColor?: string;
-};
-
-interface TimelineListProps {
-  items: TimelineItem[];
-  className?: string;
-}
+import type { TimelineListProps } from "./types";
+import { TIMELINE_LIST_DEFAULTS } from "./types";
 
 /**
  * Shared timeline list that renders compact status rows with accent bars.

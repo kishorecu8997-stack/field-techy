@@ -7,63 +7,30 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate, UpdateLogFormFields } from "../../types.d";
 import { toast } from "react-toastify";
-
-const UPDATE_LOG_DEFAULTS = {
-  title: "",
-  notes: "",
-  attachments: null as FileList | null,
-};
-
-const UPDATE_LOG_LABELS = {
-  title: "Create Log",
-  jobIdLabel: "Job ID:",
-  jobId: "001",
-  titleLabel: "Title",
-  titlePlaceholder: "Enter title",
-  titleRequiredMessage: "Title is required",
-  notesLabel: "Your Notes",
-  notesPlaceholder: "Add your notes here",
-  notesRequiredMessage: "Notes are required",
-  attachmentLabel: "Attach File (Guidelines, Docs)",
-  cancel: "Cancel",
-  submit: "Submit",
-  modalCancel: "Cancel",
-  modalSubmit: "Submit",
-} as const;
-
-const UPDATE_LOG_MESSAGES = {
-  modalBody: "Are you sure you want to update the progress?",
-  submitSuccess: "Log submitted",
-  revisionFeedback: "The tool is not working . check it please , and correct it",
-} as const;
-
-const UPDATE_LOG_STATUS = {
-  waiting: "Waiting for Client Approval",
-  approved: "Approved by Client",
-  revision: "Revision Requested by Client",
-} as const;
-
-const UPDATE_LOG_COLORS = {
-  accent: "#22c55e",
-  waiting: "#f59e0b",
-  approved: "#22c55e",
-  revision: "#f97316",
-} as const;
+import {
+  UPDATE_LOG_DEFAULTS,
+  UPDATE_LOG_LABELS,
+  UPDATE_LOG_MESSAGES,
+  UPDATE_LOG_STATUS,
+  UPDATE_LOG_COLORS,
+} from "@/constants/updateLogConstants";
 
 interface UpdateLogFormProps {
   onClose: () => void;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
 }
-
-
+/**
+ * UpdateLogForm component for submitting job update logs.
+ * Includes title, notes, and optional file attachments.
+ * Shows a confirmation popup before submitting the update.
+ * Sends multiple progress updates with different statuses for UI display.
+ * Uses react-hook-form for form handling and validation.
+ */
 const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
-
   const { showPopup } = usePopupStore();
-
-
   const handleSubmit = async (data: UpdateLogFormFields) => {
     await showPopup({
       title: UPDATE_LOG_LABELS.title,
@@ -89,8 +56,6 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
             };
 
             toast.success(UPDATE_LOG_MESSAGES.submitSuccess);
-            // Add three cards in order: Waiting -> Approved -> Revision Requested
-            // Revision Requested card shows client's feedback note
             onAddProgressUpdate?.({
               ...baseUpdate,
               description: UPDATE_LOG_MESSAGES.revisionFeedback,

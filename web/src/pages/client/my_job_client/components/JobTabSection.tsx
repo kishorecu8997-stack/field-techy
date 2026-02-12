@@ -10,6 +10,11 @@ import {
 } from "@/dummy_data/jobDetailsClient";
 import { engineerJobOverview } from "@/dummy_data/engineerJobOverview";
 import { networkEngineerProposals } from "@/dummy_data/jobTabs/networkEngineerProposals";
+import {
+  DUMMY_TABS_LABELS,
+  PROPOSAL_POPUP_COPY,
+  PROPOSAL_TOAST_MESSAGES,
+} from "@/dummy_data/jobTabs/jobsectiondummy";
 import { JOB_STATUSES } from "@/pages/client/search_result/types";
 import type { JobTabSectionProps } from "../types";
 import SendProposal from "@/pages/engineer/home/components/SendProposal";
@@ -27,36 +32,6 @@ import TimelineSection from "./tab_components/TimelineSection";
 import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import { IoAttach } from "react-icons/io5";
 import { toast } from "react-toastify";
-
-const DUMMY_TABS_LABELS = {
-  timeline: "Timeline",
-  jobOverview: "Job Overview",
-  workLocation: "Work Location",
-  manageProposals: "Manage Proposals",
-  proposalsHeading: "Total Proposals",
-  proposalPrefix: "Proposal",
-  receivedOn: "Received on:",
-  reject: "Reject",
-  viewProfile: "View Profile",
-  accept: "Accept",
-  allProcessed: "All proposals processed.",
-  defaultTab: "Job Overview",
-};
-
-const PROPOSAL_POPUP_COPY = {
-  acceptTitle: "Accept Proposal",
-  acceptBody: "Are you sure you want to accept this proposal?",
-  rejectTitle: "Reject Proposal",
-  rejectBody: "Are you sure you want to reject this proposal?",
-  cancelLabel: "Cancel",
-  acceptLabel: "Accept",
-  rejectLabel: "Reject",
-} as const;
-
-const PROPOSAL_TOAST_MESSAGES = {
-  accepted: "Proposal accepted successfully",
-  rejected: "Proposal rejected successfully",
-} as const;
 
 
 /**

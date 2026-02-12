@@ -15,6 +15,7 @@ import { useWatch } from "react-hook-form";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { useEffect } from "react";
 import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import type { JobLike } from "../../types";
 
 type BreakType = "Long Term Break" | "Short Term Break" | "";
 interface BreakRequestFormData {
@@ -92,15 +93,6 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     const newDate = new Date(date);
     newDate.setHours(hours, minutes, 0, 0);
     return newDate;
-  };
-
-  type JobLike = {
-    startDate?: string | Date | null;
-    jobDuration?: string | number | null;
-    duration?: string | number | null;
-    status?: string | null;
-    jobTitle?: string | null;
-    title?: string | null;
   };
 
   const getJobEndDate = (job: JobLike) => {

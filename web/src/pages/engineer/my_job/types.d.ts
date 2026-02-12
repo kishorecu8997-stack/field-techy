@@ -97,23 +97,8 @@ export interface JobHeaderCardProps {
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<
-    SetStateAction<
-      | "initial"
-      | "accepted"
-      | "declined"
-      | "started"
-      | "checked-in"
-      | undefined
-    >
-  >;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | undefined>>;
+  OfferJobStatus?: OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
@@ -214,6 +199,32 @@ export type UpdateLogFormFields = {
 };
 
 /**
+ * Represents the possible statuses for an offered job.
+ */
+export const OfferedJobStatus = {
+  initial: "initial",
+  accepted: "accepted",
+  declined: "declined",
+  started: "started",
+  checkedIn: "checked-in",
+} as const;
+
+export type OfferedJobStatusType =
+  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+
+/**
+ * Represents a job-like object with common job properties.
+ */
+export type JobLike = {
+  startDate?: string | Date | null;
+  jobDuration?: string | number | null;
+  duration?: string | number | null;
+  status?: string | null;
+  jobTitle?: string | null;
+  title?: string | null;
+};
+
+/**
  * Props for a component that renders a list of log entries.
  */
 export interface LogComponentProps {
@@ -310,4 +321,20 @@ export interface WorkSubmissionComponentProps {
   reviewerName: string;
   rating: number;
   reviewComment: string;
+}
+
+/**
+ * Props for the RevisionRequestUpdateForm component
+ */
+export interface RevisionRequestUpdateFormProps {
+  onClose: () => void;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+}
+
+/**
+ * Form fields for revision update submission
+ */
+export interface RevisionUpdateFields {
+  notes: string;
+  attachments: FileList | null;
 }

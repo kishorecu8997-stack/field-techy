@@ -13,8 +13,8 @@ import { IoAttach } from "react-icons/io5";
 import {
   JOB_STATUSES,
   type JobStatus,
-  type OfferedJobStatusType,
 } from "@/pages/engineer/search_result/types";
+import type { OfferedJobStatusType } from "@/pages/engineer/my_job/types.d";
 import Proposal from "@/shared/components/Proposal";
 import TabComponent from "@/shared/components/TabComponent";
 import JobOverviewSection from "@/shared/components/JobOverviewSection";
@@ -340,8 +340,8 @@ const JobTabSection = ({
           <TabComponent
             tabs={networkEngineerTabs}
             defaultActiveTab={selectedTab}
-            activeClassName={activeTabClassName}
-            inactiveClassName={inactiveTabClassName}
+            neutralActiveTabClass={neutralActiveTabClass}
+            neutralInactiveTabClass={neutralInactiveTabClass}
             onTabChange={(tabLabel) => {
               setSelectedTab(tabLabel);
               setActiveTab?.(tabLabel);

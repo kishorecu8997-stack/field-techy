@@ -9,7 +9,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
-import type { ProgressUpdate } from "../../types.d";
+import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 
 /**
  * EngineersActions Component
@@ -31,29 +31,14 @@ const EngineersActions = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
 }: {
-  setOfferJobStatus?: Dispatch<
-    SetStateAction<
-      | "initial"
-      | "accepted"
-      | "declined"
-      | "started"
-      | "checked-in"
-      | undefined
-    >
-  >;
+  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | undefined>>;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
   setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
   status?: JobStatus | string;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  OfferJobStatus?: OfferedJobStatusType | undefined;
   activeTab?: string;
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;

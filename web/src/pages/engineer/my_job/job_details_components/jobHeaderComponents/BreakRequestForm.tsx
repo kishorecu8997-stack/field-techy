@@ -12,45 +12,22 @@ import { calculateTimeDuration, validateStartDate, validateEndDate } from "@/uti
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import type { BreakRequestFormFields } from "@/pages/engineer/my_job/types";
+import {
+  BREAK_REQUEST_OPTIONS,
+  BREAK_REQUEST_DEFAULTS,
+  BREAK_REQUEST_LABELS,
+  BREAK_REQUEST_STATUS,
+  BREAK_REQUEST_COLORS,
+  BREAK_REQUEST_MESSAGES,
+} from "@/dummy_data/breakRequestDummy";
 
-const BREAK_REQUEST_OPTIONS: { label: string; value: string }[] = [
-  { label: "Short Term Break", value: "Short Term Break" },
-  { label: "Long Term Break", value: "Long Term Break" },
-];
-
-const BREAK_REQUEST_DEFAULTS = {
-  requestType: "Short Term Break" as const,
-  startDate: "",
-  endDate: "",
-  startTime: "",
-  endTime: "",
-  duration: "",
-  reason: "",
-};
-
-const BREAK_REQUEST_LABELS = {
-  title: "Break Request",
-  requestTypePlaceholder: "Select request type",
-  durationPlaceholder: "Duration will be calculated",
-  reasonPlaceholder: "Enter reason for break",
-  fallbackTitle: "Break Request",
-  detailsLabel: "Break Request Details",
-} as const;
-
-const BREAK_REQUEST_STATUS = {
-  waiting: "Waiting for Client Approval",
-  approved: "Approved by Client",
-} as const;
-
-const BREAK_REQUEST_COLORS = {
-  accent: "#ef4444",
-  waiting: "#f59e0b",
-  approved: "#22c55e",
-} as const;
-
-const BREAK_REQUEST_MESSAGES = {
-  submitSuccess: "Break request submitted",
-} as const;
+/**
+ * BreakRequestForm component for submitting engineer break requests.
+ * Supports short-term and long-term break types.
+ * Automatically calculates break duration based on time or date inputs.
+ * Uses react-hook-form for form state and validation.
+ * Sends break request updates to the job progress timeline.
+ */
 
 const BreakRequestForm = ({
   onClose,
@@ -71,10 +48,8 @@ const BreakRequestForm = ({
   const requestType = watch("requestType");
   const isLongTermBreak = requestType === "Long Term Break";
 
-  // Auto-calculate duration when times or dates change
   useEffect(() => {
     if (isLongTermBreak) {
-      // For long-term breaks, calculate days between dates
       if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
@@ -83,7 +58,6 @@ const BreakRequestForm = ({
         setValue("duration", diffDays > 0 ? `${diffDays} days` : "");
       }
     } else {
-      // For short-term breaks, calculate time duration
       const duration = calculateTimeDuration(startTime, endTime);
       setValue("duration", duration);
     }
@@ -146,14 +120,12 @@ const BreakRequestForm = ({
       requestType: data.requestType,
     };
 
-// TEMP: Adding both statuses for UI demo until API integration
     onAddProgressUpdate?.({
       ...baseUpdate,
       statusText: BREAK_REQUEST_STATUS.waiting,
       statusColor: BREAK_REQUEST_COLORS.waiting,
     });
 
-// TEMP: Adding both statuses for UI demo until API integration
     onAddProgressUpdate?.({
       ...baseUpdate,
       statusText: BREAK_REQUEST_STATUS.approved,

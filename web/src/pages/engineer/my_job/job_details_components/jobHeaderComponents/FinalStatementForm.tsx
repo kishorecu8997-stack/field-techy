@@ -8,44 +8,15 @@ import { toast } from "react-toastify";
 import type { ProgressUpdate } from "../../types.d";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { formatDateTime } from "@/utils/formatDateTime";
+import {
+  FINAL_STATEMENT_DEFAULTS,
+  FINAL_STATEMENT_LABELS,
+  FINAL_STATEMENT_STATUS,
+  FINAL_STATEMENT_COLORS,
+  FINAL_STATEMENT_MESSAGES,
+} from "@/constants/finalStatementConstants";
 
-const FINAL_STATEMENT_DEFAULTS = {
-  notes: "",
-  completedTaskFile: null as FileList | null,
-  signatureFile: null as FileList | null,
-};
-
-export const FINAL_STATEMENT_LABELS = {
-  title: "Final Statement",
-  subtitle: "Please fill these details",
-  notesLabel: "Your Notes",
-  notesPlaceholder: "Add your notes here",
-  notesRequiredMessage: "Notes are required",
-  completedTaskLabel: "Completed Task File",
-  completedTaskPlaceholder: "Upload file in PDF, JPEG, PNG",
-  signatureLabel: "Your Signature",
-  signaturePlaceholder: "Upload file in PDF, JPEG, PNG",
-  cancel: "Cancel",
-  submitCta: "Submit Work",
-  modalCancel: "Cancel",
-  modalSubmit: "Submit",
-} as const;
-
-const FINAL_STATEMENT_STATUS = {
-  waiting: "Waiting for Client Approval",
-  approved: "Approved by Client",
-} as const;
-
-const FINAL_STATEMENT_COLORS = {
-  accent: "#0f766e",
-  waiting: "#f59e0b",
-  approved: "#22c55e",
-} as const;
-
-const FINAL_STATEMENT_MESSAGES = {
-  submitSuccess: "Final statement submitted",
-  modalBody: "Are you sure you want to submit the final statement?",
-} as const;
+export { FINAL_STATEMENT_LABELS };
 
 interface FinalStatementFields {
   notes: string;
@@ -139,14 +110,14 @@ const FinalStatementForm = ({
           <h2 className="text-lg font-semibold text-gray-900">{FINAL_STATEMENT_LABELS.title}</h2>
           <p className="text-sm text-gray-600">{FINAL_STATEMENT_LABELS.subtitle}</p>
         </div>
-        <button
+        <Button
           type="button"
           className="text-gray-500 hover:text-gray-700"
           onClick={onClose}
           aria-label="Close"
         >
           <icons.close className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>

@@ -13,6 +13,8 @@ interface TabComponentProps {
   onTabChange?: (tabLabel: string) => void;
   activeClassName?: string;
   inactiveClassName?: string;
+  neutralActiveTabClass?: string;
+  neutralInactiveTabClass?: string;
 }
 
 /**
@@ -39,7 +41,11 @@ const TabComponent: React.FC<TabComponentProps> = ({
   activeClassName = "bg-teal-800 text-white",
   inactiveClassName =
     "bg-white border border-gray-300 dark:border-gray-600 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+  neutralActiveTabClass,
+  neutralInactiveTabClass,
 }) => {
+  const finalActiveClassName = neutralActiveTabClass || activeClassName;
+  const finalInactiveClassName = neutralInactiveTabClass || inactiveClassName;
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
 
   const visibleTabs = tabs.filter((tab) => !tab.hide);
@@ -71,7 +77,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
               key={tab.label}
               onClick={() => handleTabClick(tab.label)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === tab.label ? activeClassName : inactiveClassName
+                activeTab === tab.label ? finalActiveClassName : finalInactiveClassName
               }`}
             >
               {tab.label}
