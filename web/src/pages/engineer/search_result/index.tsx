@@ -1,8 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
-import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { mapApiJobToJobItem } from "./mappers";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { JobItem } from "../home/types";
 import AdvancedSearchBar from "./components/AdvancedSearchBar";
 import FilterPanel from "./components/FilterPanel";
@@ -23,10 +24,19 @@ const SearchResult = () => {
     scrollToTop();
   }, []);
   const profile = useEngineerProfile();
-  const { data: jobs } = useGetJobs();
+  const { data: rawJobs } = useEngineerSearchJobs({});
+
+  const jobs = useMemo(() => {
+    return (rawJobs || []).map(mapApiJobToJobItem);
+  }, [rawJobs]);
 
   // State management
-  const [filteredJobs, setFilteredJobs] = useState<JobItem[]>(jobs || []);
+  const [filteredJobs, setFilteredJobs] = useState<JobItem[]>([]);
+
+  // Update filteredJobs when jobs change
+  useEffect(() => {
+    setFilteredJobs(jobs);
+  }, [jobs]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -60,11 +70,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-          (item: { id: string; filters: Filters; timestamp: string }) => ({
-            ...item,
-            timestamp: new Date(item.timestamp),
-          }),
-        )
+        (item: { id: string; filters: Filters; timestamp: string }) => ({
+          ...item,
+          timestamp: new Date(item.timestamp),
+        }),
+      )
       : [];
   });
 
@@ -237,9 +247,8 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${
-                  showAdvancedSearch ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

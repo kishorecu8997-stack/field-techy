@@ -73,15 +73,37 @@ export function useVerifyOtp(options?: {
   });
 }
 
+/**
+ * React Query hook to initiate a profile file upload.
+ * Extended to support WORK_SCREEN_SHOT by wrapping the generated mutation.
+ */
 export function useAppUploadProfileFile(options?: {
   onSuccess?: (data: AppUploadProfileFileResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  return useMutation({
+  const mutation = useMutation({
     ...appUploadProfileFileMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
+
+  // Override mutateAsync to accept our extended ProfileFileType
+  const mutateAsync = async (params: {
+    body: {
+      fileType: ProfileFileType;
+      filename: string;
+      size: number;
+      mimeType: string;
+    };
+    headers: { authorization: string };
+  }) => {
+    return mutation.mutateAsync(params as any);
+  };
+
+  return {
+    ...mutation,
+    mutateAsync,
+  };
 }
 
 /**

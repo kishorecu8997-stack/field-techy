@@ -4,15 +4,17 @@ import {
   type AppLoginResponse,
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
+  type AppUploadProfileFileResponse,
+  type ClientCalculateJobPriceData,
+  type ClientGetCompanyInfoResponse,
+  type ClientGetRateCardData,
   type ClientGetRateCardResponse,
+  type ClientInviteEngineerResponse,
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
   clientGetCompanyInfo,
-  type ClientGetCompanyInfoResponse,
-  type AppUploadProfileFileResponse,
-  clientGetRateCard,
-  type ClientGetRateCardData,
+  clientGetRateCard
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -20,20 +22,26 @@ import {
   appLoginMutation,
   appMarkProfileFileUploadedMutation,
   appRegisterClientMutation,
+  appUploadProfileFileMutation,
+  clientActionOnAssignmentMutation,
+  clientActionOnBreakMutation,
+  clientActionOnWorkLogMutation,
+  clientCalculateJobPriceOptions,
+  clientCancelJobMutation,
+  clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
+  clientGetJobByIdOptions,
   clientGetJobsOptions,
+  clientGetJobsQueryKey,
+  clientInviteEngineerMutation,
   clientMarksJobFileUploadedMutation,
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
-  clientGetJobsQueryKey,
-  appUploadProfileFileMutation,
+  getJobLogsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
-import { useUploadClientFile } from "./clientService";
-
-export { useUploadClientFile };
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -177,7 +185,6 @@ export function useClientPostJob(options?: {
   });
 }
 
-// ... existing code ...
 export function useClientGetJobs(enabled: boolean = true) {
   return useQuery({
     ...clientGetJobsOptions({
@@ -226,6 +233,126 @@ export function useClientMarkJobFileUploaded(options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+}
+
+export function useClientGetJobById(jobId: number, enabled: boolean = true) {
+  return useQuery({
+    ...clientGetJobByIdOptions({
+      client: apiClient,
+      path: { jobId },
+    }),
+    enabled: enabled && !!jobId,
+  });
+}
+
+export function useClientInviteEngineer(options?: {
+  onSuccess?: (data: ClientInviteEngineerResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientInviteEngineerMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientGetAssignmentDetails(
+  // query params were removed as the generated type ClientGetAssignmentDetailsData defines query?: never
+  enabled: boolean = true,
+) {
+  return useQuery({
+    ...clientGetAssignmentDetailsOptions({
+      client: apiClient,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useClientActionOnAssignment(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnAssignmentMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientCancelJob(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientCancelJobMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientCalculateJobPrice(
+  query: ClientCalculateJobPriceData["query"],
+  enabled: boolean = false,
+) {
+  return useQuery({
+    ...clientCalculateJobPriceOptions({
+      client: apiClient,
+      query,
+    }),
+    enabled: enabled,
+  });
+}
+
+export function useClientActionOnWorkLog(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnWorkLogMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useClientActionOnBreak(options?: {
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...clientActionOnBreakMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useGetJobLogs(jobId: number, enabled: boolean = true) {
+  return useQuery({
+    ...getJobLogsOptions({
+      client: apiClient,
+      path: { jobId },
+    }),
+    enabled: enabled && !!jobId,
   });
 }
 

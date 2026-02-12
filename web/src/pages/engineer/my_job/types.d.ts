@@ -1,4 +1,4 @@
-import type { SortOption } from "../search_result/types";
+import type { SortOption, JobStatus, AssignmentStatus } from "../search_result/types";
 
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
@@ -12,11 +12,6 @@ import type { SortOption } from "../search_result/types";
  * Represents the available options for sorting job lists.
  */
 // export type SortOption = "Relevance" | "Date" | "Salary" | "Distance";
-
-/**
- * Represents the possible statuses for a job.
- */
-export type JobStatus = "active" | "completed" | "pending" | "cancelled";
 
 /**
  * Represents the type of work arrangement for a job.
@@ -85,20 +80,14 @@ export interface JobHeaderCardProps {
   client: string;
   duration: string;
   type?: string;
-  status?: StatusType | string;
+  status?: JobStatus | AssignmentStatus | string;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<SetStateAction<string>>;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  setOfferJobStatus?: Dispatch<SetStateAction<AssignmentStatus | undefined>>;
+  OfferJobStatus?: AssignmentStatus | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
@@ -175,17 +164,6 @@ export interface ProposalTermsProps {
     items: Array<{ text: string; subItems?: string[] }>;
   };
   element?: React.ReactNode;
-}
-
-/**
- * Props for the header card of a job, displaying summary information.
- */
-export interface JobHeaderCardProps {
-  title: string;
-  client: string;
-  duration: string;
-  type?: WorkingType | string;
-  status?: JobStatus | string;
 }
 
 /**

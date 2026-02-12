@@ -4,7 +4,7 @@ import {
 } from "@/dummy_data/jobDetails";
 import { offerPageDummy } from "@/dummy_data/offerPageDummy";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
+import { useEngineerGetJobById as useClientGetJobsById } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -23,7 +23,7 @@ const OfferPages = () => {
 
   // Skip API call for dummy job
   const isDummyJob = isDummyNetworkEngineerJob(jobId);
-  const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
+  const { data: apiJob } = useClientGetJobsById(Number(jobId) || 0, !isDummyJob && !!jobId);
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
@@ -51,7 +51,7 @@ const OfferPages = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">

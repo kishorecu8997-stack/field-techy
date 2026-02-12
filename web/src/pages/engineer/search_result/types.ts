@@ -5,22 +5,12 @@ export const BUDGET_TYPES = {
 export type BudgetType = (typeof BUDGET_TYPES)[keyof typeof BUDGET_TYPES];
 
 export const JOB_STATUSES = {
-  new: "NEW",
-  offer: "OFFER",
-  applied: "APPLIED",
-  inprogress: "IN_PROGRESS",
-  completed: "COMPLETED",
-  notified: "NOTIFIED",
-  unallocated: "UNALLOCATED",
-  partiallyAssigned: "PARTIALLY_ASSIGNED",
-  assigned: "ASSIGNED",
-  selected: "SELECTED",
-  hold: "HOLD",
-  draft: "DRAFT",
-  canceled: "CANCELED",
-  escalationInProgress: "ESCALATION_IN_PROGRESS",
-  workInProgress: "WORK_IN_PROGRESS",
-  closed: "CLOSED",
+  posted: "Posted",
+  inProgress: "In Progress",
+  cancelled: "Cancelled",
+  closed: "Closed",
+  hold: "Hold",
+  flagged: "Flagged",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -168,3 +158,17 @@ export const OfferedJobStatus = {
 
 export type OfferedJobStatusType =
   (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+
+export const ASSIGNMENT_STATUSES = {
+  assigned: "assigned",
+  accepted: "accepted",
+  rejected: "rejected",
+  applied: "applied",
+  started: "started",
+  startPendingApproval: "start_pending_approval",
+  submitted: "submitted",
+  submitPendingApproval: "submit_pending_approval",
+} as const;
+
+export type AssignmentStatus =
+  (typeof ASSIGNMENT_STATUSES)[keyof typeof ASSIGNMENT_STATUSES];

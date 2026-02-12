@@ -9,10 +9,8 @@ import { getCurrencyFromStorage } from "@/utils/currency";
 import { useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
-import {
-  useClientGetById,
-  useClientGetJobsById,
-} from "../apiServices/client/clientService";
+import { useEngineerGetJobById as useClientGetJobsById } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useClientProfileGetProfileById as useClientGetById } from "@/shared/apiServices/profiles/client/clientProfileService";
 import LoaderComponent from "./commonUI/LoaderComponent";
 
 interface JobCardProps {
@@ -43,14 +41,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     data: jobs,
     isLoading: isJobsLoading,
     isError: isJobsError,
-  } = useClientGetJobsById(jobId ?? "");
-  const { data: client } = useClientGetById(jobs?.clientId || "");
+  } = useClientGetJobsById(Number(jobId) || 0, !!jobId);
+  const { data: client } = useClientGetById(String(jobs?.clientId || ""));
   const getDuration =
-    jobs?.startDate && jobs?.projectDeadline
+    jobs?.startDate
       ? getDurationString({
-          startDateStr: jobs.startDate,
-          endDateStr: jobs.projectDeadline,
-        })
+        startDateStr: jobs.startDate,
+        endDateStr: jobs.endDate as string,
+      })
       : undefined;
   if (isJobsLoading) {
     return (
@@ -80,12 +78,12 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           className={`px-2.5 py-1 rounded-md text-xs font-medium bg-teal-800 text-white dark:bg-teal-700 whitespace-nowrap`}
         >
           {(() => {
-            switch (jobs?.engagementModel) {
-              case WORKING_TYPES.onsite:
+            switch (jobs?.jobType) {
+              case WORKING_TYPES_PROPERTY.onsite:
                 return WORKING_TYPES_PROPERTY.onsite;
-              case WORKING_TYPES.remote:
+              case WORKING_TYPES_PROPERTY.remote:
                 return WORKING_TYPES_PROPERTY.remote;
-              case WORKING_TYPES.hybrid:
+              case WORKING_TYPES_PROPERTY.hybrid:
                 return WORKING_TYPES_PROPERTY.hybrid;
               default:
                 return "Unknown"; // Fallback for unexpected types
@@ -96,11 +94,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
           <span className="font-medium">Client:</span>{" "}
-          {client?.companyName || "N/A"}
+          {client?.companyName || client?.contactPersonName || "N/A"}
         </p>
         <p>
           <span className="font-medium">Start: </span>
-          {[jobs?.startDate, jobs?.startTime].filter(Boolean).join(" , ")}
+          {jobs?.startDate || "N/A"}
         </p>
         <p>
           <span className="font-medium">Duration:</span> {getDuration}
@@ -110,20 +108,20 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <MdLocationPin className="h-4 w-4 flex-shrink-0" />
           <span className="truncate">
-            {[jobs?.city, jobs?.country].filter(Boolean).join(", ") || "N/A"}
+            {jobs?.workLocationName || "N/A"}
           </span>
         </div>
 
         <div className="flex items-center  text-sm font-semibold text-teal-800 dark:text-teal-400">
           <span>
             {getCurrencyFromStorage()}
-            {jobs?.salary}
+            {jobs?.totalPrice || "0.00"}
           </span>
         </div>
       </div>
 
       <div className="mt-3">
-        <JobStatusBadge status={status} />
+        <JobStatusBadge status={(jobs?.status || status) as any} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
           <span className="font-medium">Allocation:</span> {allocationType}
         </div>

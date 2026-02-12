@@ -14,7 +14,7 @@ import { icons } from "@/config/icons";
 import { useWatch } from "react-hook-form";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { useEffect } from "react";
-import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import { useClientGetJobs as useGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 
 type BreakType = "Long Term Break" | "Short Term Break" | "";
 interface BreakRequestFormData {

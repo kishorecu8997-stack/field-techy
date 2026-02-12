@@ -11,6 +11,7 @@ import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import type { EarningsData, SidebarProfileProps } from "../types";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Sidebar component displaying the user's profile summary and earnings overview.
@@ -47,6 +48,17 @@ const ProfileCard = () => {
   const profileCompletion = getProfileCompletion(profileData);
   const engineerProfile = useEngineerProfile();
 
+  // Fetch service categories to resolve ID to name
+  const { data: serviceCategories } = useLookupData("serviceCategories");
+
+  const serviceCategoryName = React.useMemo(() => {
+    if (!engineerProfile?.serviceCategory || !serviceCategories) return "";
+    const category = serviceCategories.find(
+      (c) => c.id === Number(engineerProfile.serviceCategory)
+    );
+    return category?.name || engineerProfile.serviceCategory;
+  }, [engineerProfile?.serviceCategory, serviceCategories]);
+
   return (
     <div
       id="completeProfile"
@@ -63,7 +75,7 @@ const ProfileCard = () => {
             </h3>
             <p className="text-sm opacity-90">{engineerProfile?.phoneNumber}</p>
             <p className="text-xs opacity-80">
-              {engineerProfile?.serviceCategory}
+              {serviceCategoryName}
             </p>
           </div>
         </div>

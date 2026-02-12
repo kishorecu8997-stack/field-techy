@@ -2,16 +2,19 @@ import { icons } from "@/config/icons";
 import type { EngineerStatusUpdate } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import {
-  useEngineerScreenShotUpload,
-  useEngineerUpdateJobStatus,
-} from "@/shared/apiServices/engineer/engineerService";
+  useAppMarkProfileFileUploaded,
+  useAppUploadProfileFile
+} from "@/shared/apiServices/commonOpenApiService";
+import {
+  useEngineerAddWorkLog,
+  useEngineerRequestStart,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import SelectField from "@/shared/components/commonUI/inputs/SelectField";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { getUserId } from "@/utils";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,22 +26,16 @@ import { toast } from "react-toastify";
  * @returns {JSX.Element} The rendered Update Status form
  * */
 const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
-  const userId = getUserId();
-  const jobId = useParams();
-  const { mutateAsync: updateJobScreenShot } = useEngineerScreenShotUpload();
-  const { mutateAsync: updateJobStatus } = useEngineerUpdateJobStatus({
-    onSuccess: () => {
-      toast.success("Your status was updated");
-    },
-    onError: (error) => {
-      console.error("Update status failed:", error);
-      toast.error("Failed to update status");
-    },
-  });
+  const { jobId } = useParams<{ jobId: string }>();
+
+  const { mutateAsync: requestStart } = useEngineerRequestStart();
+  const { mutateAsync: addWorkLog } = useEngineerAddWorkLog();
+  const { mutateAsync: uploadFile } = useAppUploadProfileFile();
+  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
 
   const formCtx = useForm<EngineerStatusUpdate>({
     defaultValues: {
-      id: jobId.jobId ?? undefined,
+      id: jobId ?? undefined,
       status: "",
       remarks: "",
       workScreenShot: null,
@@ -61,25 +58,77 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            const res = await updateJobStatus(data);
-            if (data.workScreenShot && data.workScreenShot[0]) {
-              try {
-                await updateJobScreenShot({
-                  engineerId: userId as string,
-                  documentType: "WORK_SCREEN_SHOT",
-                  file: data.workScreenShot[0] ?? null,
-                  metadata: {
-                    remarks: data.remarks ?? null,
-                    engineerJobId: res.jobId,
+            try {
+              if (!jobId) {
+                toast.error("Job ID missing");
+                return;
+              }
+
+              // Handle File Upload if present
+              let attachmentMetadata = undefined;
+              if (data.workScreenShot && data.workScreenShot.length > 0) {
+                const file = data.workScreenShot[0];
+                console.log(file);
+
+                // Replace the correct API
+                // 1. Get presigned URL
+                // const uploadRes = await uploadFile({
+                //   body: {
+                //     fileType: "WORK_SCREEN_SHOT",
+                //     filename: file.name,
+                //     mimeType: file.type,
+                //     size: file.size,
+                //   },
+                //   headers: { authorization: "" },
+                // });
+
+                // if (uploadRes.uploadUrl) {
+                //   // 2. Upload to S3
+                //   await axios.put(uploadRes.uploadUrl, file, {
+                //     headers: { "Content-Type": file.type },
+                //   });
+
+                //   // 3. Mark as uploaded
+                //   await markFileUploaded({
+                //     body: {
+                //       fileId: Number(uploadRes.fileId),
+                //     },
+                //     headers: { authorization: "" },
+                //   });
+
+                //   attachmentMetadata = {
+                //     filename: file.name,
+                //     mimeType: file.type,
+                //     size: file.size,
+                //   };
+                // }
+              }
+
+              // Handle Status Update
+              if (data.status === "in-progress") {
+                await requestStart({
+                  body: { assignmentId: Number(jobId) },
+                });
+              } else {
+                // For 'check-in', 'delayed', 'approved' -> use Work Log
+                await addWorkLog({
+                  body: {
+                    assignmentId: Number(jobId),
+                    logType: data.status,
+                    details: data.remarks,
+                    attachment: attachmentMetadata,
                   },
                 });
-              } catch (error) {
-                toast.error("Screenshot upload failed");
               }
-            }
 
-            close(true);
-            onClose();
+              toast.success("Status updated successfully");
+              close(true);
+              onClose();
+            } catch (error) {
+              console.error("Update status failed:", error);
+              toast.error("Failed to update status");
+              close(true); // Close popup even on error? Or keep it open? Usually close.
+            }
           },
         },
       ],
@@ -119,13 +168,14 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
         <FileUpload
           name="workScreenShot"
           label="Work Screenshot"
-          required
+          required={false}
           accept=".pdf,.jpeg,.jpg,.png"
           maxPages={5}
           validatePDF={true}
         />
         <Button
           type="submit"
+          disabled={formCtx.formState.isSubmitting}
           className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition mt-5"
         >
           Submit

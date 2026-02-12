@@ -1,19 +1,21 @@
-import {
-  useClientGetById,
-  useClientGetJobsById,
-} from "@/shared/apiServices/client/clientService";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { useClientProfileGetProfileById } from "@/shared/apiServices/profiles/client/clientProfileService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
+import { toast } from "react-toastify";
+import {
+  JOB_STATUSES,
+  SORT_OPTIONS,
+  type AssignmentStatus,
+  type JobStatus,
+} from "../search_result/types";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
-import JobTabSection from "./job_details_components/JobTabSection";
-import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import { toast } from "react-toastify";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import JobTabSection from "./job_details_components/JobTabSection";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -22,27 +24,31 @@ import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
  */
 const JobDetailsPage = () => {
   const params = useParams();
-  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
-  const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    isDummyJob ? "Job Overview" : "Job Information",
+    "Job Information",
   );
-  const [OfferJobStatus, setOfferJobStatus] = useState<
-    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
-  >("initial");
 
-  // Always call hooks - pass empty string if jobId is missing or dummy
-  const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : (params.jobId ?? ""),
+  // Always call hooks - pass 0 if jobId is missing or dummy
+  /* const { data: jobData, isLoading } = useEngineerGetJobById(
+    Number(params.jobId) || 0,
+    !isDummyJob && !!params.jobId,
+  ); */
+
+  const { data: searchResults, isLoading } = useEngineerSearchJobs({}, true);
+  const jobData = searchResults?.find((j) => String(j.id) === params.jobId);
+
+  const { data: client } = useClientProfileGetProfileById(
+    String(jobData?.clientId ?? ""),
+    {
+      enabled: !!jobData?.clientId,
+    },
   );
-  const { data: client } = useClientGetById(jobs?.clientId ?? "", {
-    enabled: !!jobs?.clientId && !isDummyJob,
-  });
-  const location = isDummyJob
-    ? "Chennai, Tamil Nadu, India"
-    : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+
+  const location =
+    [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -56,7 +62,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -74,14 +80,14 @@ const JobDetailsPage = () => {
   }
 
   // Handle loading state
-  if (isLoading && !isDummyJob) {
+  if (isLoading) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -93,14 +99,14 @@ const JobDetailsPage = () => {
   }
 
   // Handle case where job data is not found
-  if (!jobs && !isDummyJob) {
+  if (!jobData) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -116,19 +122,42 @@ const JobDetailsPage = () => {
     );
   }
 
-  // Prepare dummy job data
-  const jobTitle = isDummyJob ? "Network Engineer" : (jobs?.jobTitle as string);
-  const clientName = isDummyJob ? "-" : (client?.companyName as string);
-  const duration = isDummyJob
-    ? "5 weeks"
-    : getDurationString({
-        startDateStr: jobs?.startDate as string,
-        endDateStr: jobs?.projectDeadline as string,
-      });
-  const engagementType = isDummyJob
-    ? "ON_SITE"
-    : (jobs?.engagementModel as string);
-  const jobStatus = isDummyJob ? "NEW" : (jobs?.status as JobStatus);
+  // Prepare mapped job data
+  const jobTitle = jobData?.jobTitle || "";
+  const clientName = client?.companyName || client?.contactPersonName || "";
+  const duration = getDurationString({
+    startDateStr: jobData?.startDate || "",
+    endDateStr: jobData?.endDate || "",
+  });
+
+  const engagementTypeMapping: Record<string, string> = {
+    "On site": "ON_SITE",
+    Remote: "REMOTE",
+    Hybrid: "HYBRID",
+  };
+
+  const engagementType =
+    engagementTypeMapping[jobData?.jobType || ""] ||
+    (jobData?.jobType as string);
+
+  const statusMapping: Record<string, JobStatus> = {
+    Posted: JOB_STATUSES.posted,
+    "In Progress": JOB_STATUSES.inProgress,
+    Cancelled: JOB_STATUSES.cancelled,
+    Closed: JOB_STATUSES.closed,
+    Hold: JOB_STATUSES.hold,
+    Flagged: JOB_STATUSES.flagged,
+  };
+
+  const jobStatus: JobStatus | AssignmentStatus =
+    statusMapping[(jobData.status) as string] ||
+    ((jobData.status) as AssignmentStatus) ||
+    JOB_STATUSES.posted;
+
+  // The type is missing in the new API. once the type is added, the type is fixed, and remove this `line @ts-ignore`
+  //@ts-ignore
+  const OfferJobStatus = jobData.assignmentStatus as AssignmentStatus;
+  console.log('jobData :', jobData);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -136,11 +165,8 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
-          customLabels={
-            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
-          }
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
@@ -150,40 +176,29 @@ const JobDetailsPage = () => {
               duration={duration as string}
               type={engagementType}
               status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
               OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyJob}
-              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
-              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
-              numberOfApplicants={isDummyJob ? 20 : undefined}
-              hideDurationAndClient={isDummyJob}
+              jobLocation={location}
+              numberOfVacancy={jobData?.vacancies ?? undefined}
             />
 
             <JobTabSection
               status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
-              setSendProposal={setIsSendProposal}
               activeTab={activeTab}
               OfferJobStatus={OfferJobStatus}
-              isDummyJob={isDummyJob}
-              workLocation={location as string}
-              isDummyNetworkEngineer={isDummyJob}
-              showManageProposals={false}
             />
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={clientName}
-              memberSince={client?.memberSince as string}
+              memberSince={"-"} // Missing in new API
               location={location as string}
-              rating={client?.rating || 0}
-              reviews={client?.reviewCount ?? 0}
-              verifications={client?.verifications ?? []}
+              rating={0} // Missing in new API
+              reviews={0} // Missing in new API
+              verifications={[]} // Missing in new API
               onOpenReview={() => setIsReviewOpen(true)}
             />
           </div>
@@ -193,7 +208,7 @@ const JobDetailsPage = () => {
       <ReviewClientModal
         isOpen={isReviewOpen}
         onClose={() => setIsReviewOpen(false)}
-        clientName={(client?.companyName as string) ?? "Client"}
+        clientName={clientName || "Client"}
         onSubmit={handleSubmitReview}
       />
     </div>
