@@ -1,6 +1,6 @@
 import { assetsConfig } from "@/assets";
 import { absoluteUrls } from "@/config/urls";
-import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useSendOtp } from "@/shared/apiServices/commonOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { CheckboxInput, InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -52,7 +52,7 @@ const SignUpWithEmail = ({
   });
 
   // Send Email OTP mutation
-  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
+  const { mutate: sendOtp, isPending: isSendingOTP } = useSendOtp({
     onSuccess: (data) => {
       console.log("OTP sent successfully:", data);
       setIsOpen(true);
@@ -78,13 +78,19 @@ const SignUpWithEmail = ({
 
   const handleResendOTP = () => {
     const email = methods.getValues("email");
-    sendEmailOTP(email);
+    sendOtp({
+      body: { type: "email", email: email } as any,
+      headers: { authorization: "" },
+    });
   };
 
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = (data: SignUpFormData) => {
-    sendEmailOTP(data.email);
+    sendOtp({
+      body: { type: "email", email: data.email } as any,
+      headers: { authorization: "" },
+    });
   };
 
   const logo_light = assetsConfig.logos.ftLogo;
@@ -124,7 +130,7 @@ const SignUpWithEmail = ({
             leftIcon={
               <MdOutlineMailOutline className="text-lg text-gray-500" />
             }
-            // rules={validateEmailRules}
+          // rules={validateEmailRules}
           />
           <div className="flex items-center w-full flex-col md:flex-row">
             <CheckboxInput
@@ -141,11 +147,10 @@ const SignUpWithEmail = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted || isSendingOTP
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

@@ -10,10 +10,11 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuPhone } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import ClientOTPPage from "../ClientOTPPage";
-import { useSendEmailOTP } from "@/shared/apiServices/client/clientService";
+import { useSendOtp } from "@/shared/apiServices/client/clientOpenApiService";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import { usePopupStore } from "@/shared/store/popupStore";
 import IconWithTheme from "@/shared/components/IconWithTheme";
+import type { AppSendOtpData, AppSendOtpResponse } from "@/api";
 
 export interface SignUpFormData {
   email: string;
@@ -65,12 +66,12 @@ const SignUp = ({
     },
   });
 
-  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendEmailOTP({
-    onSuccess: (data) => {
+  const { mutate: sendEmailOTP, isPending: isSendingOTP } = useSendOtp({
+    onSuccess: (data: AppSendOtpResponse) => {
       console.log("OTP sent successfully:", data);
       setIsOpen(true);
     },
-    onError: (error) => {
+    onError: (error: unknown) => {
       console.error("Failed to send OTP:", error);
       methods.setError("email", {
         type: "manual",
@@ -141,13 +142,19 @@ const SignUp = ({
 
   const handleResendOTP = () => {
     const email = methods.getValues("email");
-    sendEmailOTP(email);
+    sendEmailOTP({
+      body: { type: "email", email } as AppSendOtpData["body"] & { email: string },
+      headers: { authorization: "" },
+    });
   };
 
   const termsAccepted = methods.watch("terms");
 
   const handleSubmit = (data: SignUpFormData) => {
-    sendEmailOTP(data.email);
+    sendEmailOTP({
+      body: { type: "email", email: data.email } as AppSendOtpData["body"] & { email: string },
+      headers: { authorization: "" },
+    });
   };
 
   return (
@@ -198,11 +205,10 @@ const SignUp = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted || isSendingOTP
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

@@ -6,7 +6,7 @@ import {
   appGetLookupData,
   appLogin,
   appResetPassword,
-  putAdminUsersByUserIdStatus,
+  adminUpdateUserStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -18,8 +18,8 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
-  type PutAdminUsersByUserIdStatusResponses,
-  type PutAdminUsersByUserIdStatusErrors,
+  type AdminUpdateUserStatusResponses,
+  type AdminUpdateUserStatusErrors,
 } from "@/api";
 import { createClient } from "@/api/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -212,7 +212,7 @@ export function useAppGetLookupData(
 
 export function useUpdateEngineerProfileStatus(options?: {
   onSuccess?: (
-    data: PutAdminUsersByUserIdStatusResponses[200],
+    data: AdminUpdateUserStatusResponses[200],
     variables: {
       userId: number;
       profileStatus: EngineerStatusType;
@@ -222,12 +222,12 @@ export function useUpdateEngineerProfileStatus(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation<
-    PutAdminUsersByUserIdStatusResponses[200],
-    PutAdminUsersByUserIdStatusErrors | unknown,
+    AdminUpdateUserStatusResponses[200],
+    AdminUpdateUserStatusErrors | unknown,
     { userId: number; profileStatus: EngineerStatusType; token: string }
   >({
     mutationFn: async ({ userId, profileStatus, token }) => {
-      const response = await putAdminUsersByUserIdStatus({
+      const response = await adminUpdateUserStatus({
         client: apiClient,
         path: { userId },
         body: { profileStatus },

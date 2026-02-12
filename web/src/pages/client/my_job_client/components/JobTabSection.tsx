@@ -96,7 +96,7 @@ const JobTabSection = ({
   return (
     <div className="">
       {isSendProposal ? (
-        <SendProposal />
+        <SendProposal jobId={0} />
       ) : (
         <TabComponent
           tabs={tabs}

@@ -1,6 +1,5 @@
 import { absoluteUrls } from "@/config/urls";
 import {
-  WORKING_TYPES,
   WORKING_TYPES_PROPERTY,
 } from "@/pages/engineer/search_result/types";
 import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadge";

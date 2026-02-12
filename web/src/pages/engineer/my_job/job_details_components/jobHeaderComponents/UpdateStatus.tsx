@@ -2,10 +2,6 @@ import { icons } from "@/config/icons";
 import type { EngineerStatusUpdate } from "@/pages/engineer/auth/components/profile_setup/updated_profile_setup/types";
 import { validateDescription } from "@/pages/engineer/home/validation";
 import {
-  useAppMarkProfileFileUploaded,
-  useAppUploadProfileFile
-} from "@/shared/apiServices/commonOpenApiService";
-import {
   useEngineerAddWorkLog,
   useEngineerRequestStart,
 } from "@/shared/apiServices/engineer/engineerOpenApiService";
@@ -30,8 +26,8 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const { mutateAsync: requestStart } = useEngineerRequestStart();
   const { mutateAsync: addWorkLog } = useEngineerAddWorkLog();
-  const { mutateAsync: uploadFile } = useAppUploadProfileFile();
-  const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
+  // const { mutateAsync: uploadFile } = useAppUploadProfileFile();
+  // const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
 
   const formCtx = useForm<EngineerStatusUpdate>({
     defaultValues: {

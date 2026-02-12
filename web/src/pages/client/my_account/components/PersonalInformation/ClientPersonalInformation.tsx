@@ -1,5 +1,5 @@
 import { useClientUpdateCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
-import { useVatOptions } from "@/shared/apiServices/client/clientService";
+import { useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
@@ -89,8 +89,8 @@ const ClientPersonalInformation: React.FC<ClientPersonalInformationProps> = ({
 
   const parentStateId =
     typeof selectedStateValue === "object" &&
-    selectedStateValue !== null &&
-    "value" in selectedStateValue
+      selectedStateValue !== null &&
+      "value" in selectedStateValue
       ? (selectedStateValue as any).value
       : selectedStateValue;
 

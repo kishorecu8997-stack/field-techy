@@ -1,8 +1,8 @@
 import { absoluteUrls } from "@/config/urls";
 import {
-  useEngineerFileUpload,
-  useSendProposalJob,
-} from "@/shared/apiServices/engineer/engineerService";
+  useEngineerApplyJob,
+  useEngineerMarkProposalFileUploaded,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { InputField, TextareaInput } from "@/shared/components/commonUI/inputs";
 import { FileUpload } from "@/shared/components/commonUI/inputs/FileUpload";
@@ -42,7 +42,28 @@ export interface proposalTypes {
  * @example
  * return <SendProposal />;
  */
-const SendProposal = () => {
+interface SendProposalProps {
+  jobId: number;
+}
+
+/**
+ * A form component for submitting a job proposal.
+ *
+ * This component renders a multi-field form that allows a user to:
+ * - Provide a job description/pitch
+ * - Specify expected pay and pay type (fixed or negotiable)
+ * - Upload an attachment
+ * - Indicate availability (in hours)
+ * - Answer screening questions about their fit and relevant experience
+ *
+ * The form uses `react-hook-form` for validation and state management,
+ * and is wrapped in a `FormContainer` that handles form submission.
+ *
+ * @component
+ * @example
+ * return <SendProposal jobId={123} />;
+ */
+const SendProposal = ({ jobId }: SendProposalProps) => {
   const { showPopup } = usePopupStore();
   const userId = getUserId();
 
@@ -60,8 +81,8 @@ const SendProposal = () => {
     },
   });
 
-  const { mutateAsync: uploadFile } = useEngineerFileUpload();
-  const { mutateAsync: sendProposal } = useSendProposalJob();
+  const { mutateAsync: applyJob } = useEngineerApplyJob();
+  const { mutateAsync: markUploaded } = useEngineerMarkProposalFileUploaded();
 
   const handleSubmit = async (data: proposalTypes) => {
     if (!userId) {
@@ -87,19 +108,44 @@ const SendProposal = () => {
           variant: "primary",
           action: async (close) => {
             try {
-              await sendProposal({
-                proposalDescription: data.description,
-                expectedPay: data.expected,
-                payType: data.type,
-                engineerId: userId as string,
-                availability: data.availability,
+              const file = data.attachment?.[0];
+              const proposalAttachmentMeta = file
+                ? {
+                  filename: file.name,
+                  size: file.size,
+                  mimeType: file.type,
+                }
+                : undefined;
+
+              // Append extra fields to description as they are not in new API
+              const fullDescription = `${data.description}\n\nExpected Pay: ${data.expected} (${data.type})\nAvailability: ${data.availability}\n\nScreening Question: ${data.question}\nSimilar Project: ${data.describe}`;
+
+              const response = await applyJob({
+                body: {
+                  jobId: Number(jobId),
+                  proposalDetail: fullDescription,
+                  proposalAttachment: proposalAttachmentMeta,
+                },
               });
 
-              if (data.attachment && data.attachment.length > 0) {
-                await uploadFile({
-                  engineerId: userId as string,
-                  file: data.attachment[0],
-                  documentType: "PROPOSAL",
+              if (file && response.uploadUrl) {
+                // Upload file
+                await fetch(response.uploadUrl, {
+                  method: "PUT",
+                  body: file,
+                  headers: {
+                    "Content-Type": file.type,
+                  },
+                });
+
+                // Mark uploaded
+                await markUploaded({
+                  body: {
+                    jobId: Number(jobId),
+                    filename: file.name,
+                    size: file.size,
+                    mimeType: file.type,
+                  } as any,
                 });
               }
 

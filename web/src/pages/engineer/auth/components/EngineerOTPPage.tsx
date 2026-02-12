@@ -5,9 +5,8 @@ import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
-  useVerifyEmailOTP,
-  useVerifyPhoneOTP,
-} from "@/shared/apiServices/engineer/engineerService";
+  useVerifyOtp,
+} from "@/shared/apiServices/commonOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 
 interface EngineerOTPPageProps {
@@ -49,7 +48,6 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   handleNavigate,
   buttonText,
   verificationType,
-  contact,
   onResendOTP,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -62,13 +60,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   });
 
   // Select appropriate verification hook based on type
-  const { mutateAsync: verifyEmailOTP, isPending: isVerifyingEmail } =
-    useVerifyEmailOTP();
-
-  const { mutateAsync: verifyPhoneOTP, isPending: isVerifyingPhone } =
-    useVerifyPhoneOTP();
-
-  const isPending = isVerifyingEmail || isVerifyingPhone;
+  const { mutateAsync: verifyOtp, isPending } = useVerifyOtp();
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -78,11 +70,13 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
-      if (verificationType === "email") {
-        await verifyEmailOTP({ email: contact, otp: data.otp });
-      } else {
-        await verifyPhoneOTP({ phoneNumber: contact, otp: data.otp });
-      }
+      await verifyOtp({
+        body: {
+          type: verificationType,
+          code: data.otp,
+        },
+        headers: { authorization: "" }, // Handled by interceptor, but required by type
+      });
       handleNavigate?.();
     } catch (error: unknown) {
       method.setError("otp", {
@@ -129,9 +123,8 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 Resend
               </Button>

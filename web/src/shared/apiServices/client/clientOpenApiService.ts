@@ -346,6 +346,18 @@ export function useClientActionOnBreak(options?: {
   });
 }
 
+import type { ClientFile } from "./clientTypes";
+
+// TODO: Hook needs proper investigation of API endpoint
+export function useClientFiles(_clientId: string | number) {
+  // Use correct API endpoint if available, for now return empty list
+  return {
+    data: [] as ClientFile[],
+    isLoading: false,
+    refetch: () => {},
+  };
+}
+
 export function useGetJobLogs(jobId: number, enabled: boolean = true) {
   return useQuery({
     ...getJobLogsOptions({
@@ -354,6 +366,17 @@ export function useGetJobLogs(jobId: number, enabled: boolean = true) {
     }),
     enabled: enabled && !!jobId,
   });
+}
+
+// TODO: Replace with actual lookup when available
+export function useVatOptions() {
+  return {
+    data: [
+      { label: "VAT", value: "VAT" },
+      { label: "GST", value: "GST" },
+    ],
+    isLoading: false,
+  };
 }
 
 /**

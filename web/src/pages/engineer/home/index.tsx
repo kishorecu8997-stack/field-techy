@@ -60,6 +60,7 @@ const Home = () => {
       toolAdditionalBudget: null,
       postedTime: job.createdAt || new Date().toISOString(),
       jobDuration: "10 Days",
+      budgetType: null, // Add missing property
       client: {
         id: job.clientId.toString(),
         clientType: "COMPANY",

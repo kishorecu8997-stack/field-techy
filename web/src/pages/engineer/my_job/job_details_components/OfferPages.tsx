@@ -38,9 +38,9 @@ const OfferPages = () => {
     if (!apiJob) return null;
     return {
       title: apiJob.jobTitle || "Untitled Job",
-      client: apiJob.client?.companyName || "Hidden Client",
-      duration: apiJob.jobDuration || "Not specified",
-      type: apiJob.engagementModel || "ON_SITE",
+      client: "Client " + apiJob.clientId, // TODO: Fetch client details
+      duration: apiJob.startDate && apiJob.endDate ? `${apiJob.startDate} - ${apiJob.endDate}` : "Not specified",
+      type: "ON_SITE", // TODO: Map engagementModelId
       status: apiJob.status || "NEW",
     };
   }, [apiJob, isDummyJob]);
@@ -78,13 +78,13 @@ const OfferPages = () => {
               name={
                 isDummyJob
                   ? "-"
-                  : apiJob?.client?.companyName || dummyClient.name
+                  : "Client " + apiJob?.clientId || dummyClient.name
               }
               memberSince={dummyClient.memberSince}
               location={
                 isDummyJob
                   ? "Chennai, Tamil Nadu, India"
-                  : apiJob?.location || dummyClient.location
+                  : apiJob?.workLocationName || dummyClient.location
               }
               rating={dummyClient.rating}
               reviews={dummyClient.reviews}

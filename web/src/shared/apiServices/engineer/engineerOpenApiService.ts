@@ -69,6 +69,9 @@ export {
   useLookupData,
   useForgotPassword,
   useResetPassword,
+  useAppUploadProfileFile,
+  useAppDownloadProfileFile,
+  getDownloadUrl,
 } from "../commonOpenApiService";
 
 /**

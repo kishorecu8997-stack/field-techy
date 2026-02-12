@@ -11,10 +11,11 @@ import { BiLogoLinkedin } from "react-icons/bi";
 import { LuMail } from "react-icons/lu";
 import { NavLink, useNavigate } from "react-router-dom";
 import ClientOTPPage from "../ClientOTPPage";
-import { useSendPhoneOTP } from "@/shared/apiServices/client/clientService";
+import { useSendOtp } from "@/shared/apiServices/client/clientOpenApiService";
 import { useClientRegistrationStore } from "@/shared/store/useClientRegistrationStore";
 import { usePopupStore } from "@/shared/store/popupStore";
 import IconWithTheme from "@/shared/components/IconWithTheme";
+import type { AppSendOtpData, AppSendOtpResponse } from "@/api";
 
 export type LoginFormData = {
   phone: string;
@@ -52,12 +53,12 @@ const SignUpWithNumber = ({
     },
   });
 
-  const { mutate: sendPhoneOTP, isPending: isSendingOTP } = useSendPhoneOTP({
-    onSuccess: (data) => {
+  const { mutate: sendPhoneOTP, isPending: isSendingOTP } = useSendOtp({
+    onSuccess: (data: AppSendOtpResponse) => {
       console.log("OTP sent successfully:", data);
       setIsOpen(true);
     },
-    onError: (error) => {
+    onError: (error: unknown) => {
       console.error("Failed to send OTP:", error);
       method.setError("phone", {
         type: "manual",
@@ -128,13 +129,19 @@ const SignUpWithNumber = ({
 
   const handleResendOTP = () => {
     const phone = method.getValues("phone");
-    sendPhoneOTP(phone);
+    sendPhoneOTP({
+      body: { type: "phone", phone } as AppSendOtpData["body"] & { phone: string },
+      headers: { authorization: "" },
+    });
   };
 
   const termsAccepted = method.watch("terms");
 
   const handleSubmit = (data: LoginFormData) => {
-    sendPhoneOTP(data.phone);
+    sendPhoneOTP({
+      body: { type: "phone", phone: data.phone } as AppSendOtpData["body"] & { phone: string },
+      headers: { authorization: "" },
+    });
   };
 
   const logo_light = assetsConfig.logos.companyLogo;
@@ -182,11 +189,10 @@ const SignUpWithNumber = ({
           <Button
             type="submit"
             disabled={!termsAccepted || isSendingOTP}
-            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${
-              !termsAccepted || isSendingOTP
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:opacity-90"
-            }`}
+            className={`w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg transition ${!termsAccepted || isSendingOTP
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+              }`}
           >
             {isSendingOTP ? "Sending OTP..." : "Create Account"}
           </Button>

@@ -1,5 +1,5 @@
 import { icons } from "@/config/icons";
-import { getDurationString, scrollToTop } from "@/utils";
+import { scrollToTop } from "@/utils";
 import {
   BOOKMARK_CHANGE_EVENT,
   isJobSaved,
