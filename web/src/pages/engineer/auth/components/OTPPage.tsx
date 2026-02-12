@@ -61,6 +61,10 @@ interface OTPPageProps {
  * @param {number} [props.maxResendAttempts=Infinity] - Maximum number of resend attempts allowed.
  * @param {() => void} [props.onResend] - Callback function triggered when the resend button is clicked.
  */
+
+
+const isUniformOtp = (value: string) => /^(\d)\1{5}$/.test(value);
+
 const OTPPage: React.FC<OTPPageProps> = ({
   header,
   description,
@@ -82,6 +86,16 @@ const OTPPage: React.FC<OTPPageProps> = ({
     },
   });
 
+  const otpValue = method.watch("otp");
+
+  useEffect(() => {
+    if (!otpValue || otpValue.length < 6) return;
+
+    if (!isUniformOtp(otpValue)) {
+      method.clearErrors("otp");
+    }
+  }, [otpValue, method]);
+
   useEffect(() => {
     if (timeLeft <= 0) return;
     const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -89,6 +103,22 @@ const OTPPage: React.FC<OTPPageProps> = ({
   }, [timeLeft]);
 
   const handleSubmit = (data: OTPValues) => {
+    if (!data.otp || data.otp.length !== 6) {
+      method.setError("otp", {
+        type: "validate",
+        message: "Please enter the 6-digit OTP",
+      });
+      return;
+    }
+
+    if (isUniformOtp(data.otp)) {
+      method.setError("otp", {
+        type: "validate",
+        message: "OTP can't be the same number",
+      });
+      return;
+    }
+
     onSubmit?.(data);
   };
 
@@ -99,7 +129,6 @@ const OTPPage: React.FC<OTPPageProps> = ({
     setTimeLeft(initialTimerSeconds);
     setResendCount((prev) => prev + 1);
 
-    // Attempt to focus if refs are available
     if (inputRefs.current && inputRefs.current[0]) {
       inputRefs.current[0].focus();
     }
@@ -117,6 +146,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
             className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
             onClick={onClose}
           />
+
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
               {header}
@@ -125,13 +155,16 @@ const OTPPage: React.FC<OTPPageProps> = ({
               {description}
             </p>
           </div>
+
           {!isSuccess && (
             <div className="p-1">
               <OTPInput name="otp" length={6} errorAlign="center" />
+
               <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
                 <span>
                   {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
                 </span>
+
                 <button
                   type="button"
                   onClick={handleResend}
@@ -147,6 +180,7 @@ const OTPPage: React.FC<OTPPageProps> = ({
               </div>
             </div>
           )}
+
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
