@@ -7,7 +7,7 @@ phases:
     commands:
       - echo Installing dependencies...
       - cd web
-      - npm ci
+      - npm ci --include=dev
   pre_build:
     commands:
       - echo Generating API client...

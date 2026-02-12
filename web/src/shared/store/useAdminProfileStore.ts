@@ -1,4 +1,9 @@
 import { create } from "zustand";
+import { useEffect } from "react";
+import { useUserSessionStore } from "./useUserSessionStore";
+import { getAdminPersonalInfo } from "../apiServices/admin/adminOpenApiService";
+import { getDownloadUrl } from "../apiServices/commonOpenApiService";
+import { toast } from "react-toastify";
 
 interface AdminProfile {
   id: string;
@@ -10,13 +15,20 @@ interface AdminProfile {
 
 interface AdminProfileState {
   adminProfile: AdminProfile | null;
-  setAdminProfile: (profile: AdminProfile) => void;
+  loading: boolean;
+  profileFetched: boolean;
+  setAdminProfile: (profile: AdminProfile | null) => void;
   updateAdminProfile: (updates: Partial<AdminProfile>) => void;
   clearAdminProfile: () => void;
+  syncProfile: (data: Partial<AdminProfile>) => void;
+  fetchAdminProfile: () => Promise<void>;
+  refetchProfile: () => Promise<void>;
 }
 
-export const useAdminProfileStore = create<AdminProfileState>((set) => ({
+export const useAdminProfileStore = create<AdminProfileState>((set, get) => ({
   adminProfile: null,
+  loading: false,
+  profileFetched: false,
   setAdminProfile: (profile) => set({ adminProfile: profile }),
   updateAdminProfile: (updates) =>
     set((state) => ({
@@ -24,5 +36,69 @@ export const useAdminProfileStore = create<AdminProfileState>((set) => ({
         ? { ...state.adminProfile, ...updates }
         : null,
     })),
-  clearAdminProfile: () => set({ adminProfile: null }),
+  clearAdminProfile: () => {
+    set({ adminProfile: null, profileFetched: false });
+  },
+  syncProfile: (data) => {
+    set((state) => ({
+      adminProfile: state.adminProfile
+        ? { ...state.adminProfile, ...data }
+        : (data as AdminProfile),
+    }));
+  },
+  fetchAdminProfile: async () => {
+    if (get().loading) return;
+    set({ loading: true });
+    try {
+      const [personalInfo, profilePicData] = await Promise.all([
+        getAdminPersonalInfo(),
+        getDownloadUrl("profilePicture").catch(() => null),
+      ]);
+
+      const profile: AdminProfile = {
+        id: "", 
+        fullName: personalInfo.name || "",
+        email: personalInfo.email || "",
+        phoneNumber: personalInfo.phoneNumber || "",
+        profilePicture: profilePicData?.downloadUrl || null,
+      };
+
+      set({
+        adminProfile: profile,
+        profileFetched: true,
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Profile fetch failed");
+    } finally {
+      set({ loading: false });
+    }
+  },
+  refetchProfile: async () => {
+    await get().fetchAdminProfile();
+  },
 }));
+
+/**
+ * Custom hook to get the admin profile.
+ * Automatically triggers a fetch from the API if the profile is missing.
+ */
+export const useAdminProfile = () => {
+  const session = useUserSessionStore((state) => state.session);
+  const profile = useAdminProfileStore((state) => state.adminProfile);
+  const profileFetched = useAdminProfileStore((state) => state.profileFetched);
+  const loading = useAdminProfileStore((state) => state.loading);
+  const fetchProfile = useAdminProfileStore((state) => state.fetchAdminProfile);
+
+  useEffect(() => {
+    if (
+      session?.accessToken &&
+      session?.role?.toUpperCase() === "ADMIN" &&
+      !profileFetched &&
+      !loading
+    ) {
+      fetchProfile();
+    }
+  }, [session?.accessToken, session?.role, profileFetched, loading, fetchProfile]);
+
+  return profile;
+};
