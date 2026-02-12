@@ -66,7 +66,6 @@ export default function PendingRequest() {
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
   const session = useUserSessionStore((s) => s.session);
-
   const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
@@ -79,8 +78,8 @@ export default function PendingRequest() {
     onSuccess: (_data, variables) => {
       toast.success(
         variables.profileStatus === EngineerStatus.APPROVE
-          ? "Engineer approved successfully!"
-          : "Engineer rejected successfully!",
+          ? "Engineer Approved Successfully!"
+          : "Engineer Rejected Successfully!",
       );
       setRowStatuses((prev) => ({ ...prev, [variables.userId]: variables.profileStatus }));
       queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
@@ -127,7 +126,7 @@ export default function PendingRequest() {
     });
   };
 
-  const handleDeleteEngineer = async (engineer: ManageEngineerProps) => {
+  const handleDeleteEngineer = async () => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -139,7 +138,7 @@ export default function PendingRequest() {
           variant: "danger",
           action: async (close) => {
             queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
-            toast.success(`${engineer.details.name} deleted successfully!`);
+            toast.success("Engineer deleted successfully!");
             close(true);
           },
         },
@@ -236,7 +235,7 @@ export default function PendingRequest() {
           <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.userId}`)}>
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer" onClick={() => handleDeleteEngineer(row)}>
+          <div className="p-2 bg-red-100 rounded-md cursor-pointer" onClick={() => handleDeleteEngineer()}>
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -303,10 +302,8 @@ const q = (filters?.search ?? "").trim().toLowerCase();
       r.details.email.toLowerCase().includes(q) ||
       r.location.toLowerCase().includes(q)
     );
-
     return { data: rows, total: rows.length };
   }
-
   return { data: rows, total: total ?? 0 };
 };
 
