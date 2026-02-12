@@ -18,7 +18,6 @@ import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { useUpdateEngineerProfileStatus, fetchAdminManageEngineersPaged } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 import { useQueryClient } from "@tanstack/react-query";
 
 export type EngineerApiResponse = {
@@ -65,7 +64,6 @@ export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
   const queryClient = useQueryClient();
-  const session = useUserSessionStore((s) => s.session);
   const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
@@ -114,7 +112,6 @@ export default function PendingRequest() {
               await updateEngineerStatus({
                 userId: data.userId,
                 profileStatus: status,
-                token: session?.accessToken || "",
               });
               close(true);
             } catch {
@@ -252,10 +249,8 @@ export default function PendingRequest() {
     pageSize: number;
     filters?: { [key: string]: string };
   }): Promise<{ data: (ManageEngineerProps & { srNo: number })[]; total: number }> => {
-    const token = session?.accessToken || "";
 
     const { data, total } = await fetchAdminManageEngineersPaged({
-      token,
       page,
       limit: pageSize,
       profileStatus: "pending",

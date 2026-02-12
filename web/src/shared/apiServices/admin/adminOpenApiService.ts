@@ -164,7 +164,6 @@ export function useUpdateEngineerProfileStatus(options?: {
     variables: {
       userId: number;
       profileStatus: EngineerStatusType;
-      token: string;
     },
   ) => void;
   onError?: (error: unknown) => void;
@@ -172,16 +171,13 @@ export function useUpdateEngineerProfileStatus(options?: {
   return useMutation<
     PutAdminUsersByUserIdStatusResponses[200],
     PutAdminUsersByUserIdStatusErrors | unknown,
-    { userId: number; profileStatus: EngineerStatusType; token: string }
+    { userId: number; profileStatus: EngineerStatusType;}
   >({
-    mutationFn: async ({ userId, profileStatus, token }) => {
+    mutationFn: async ({ userId, profileStatus,  }) => {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
         path: { userId },
         body: { profileStatus },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         throwOnError: true,
       });
 
