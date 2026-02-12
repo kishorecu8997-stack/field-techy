@@ -6,7 +6,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
@@ -18,7 +18,6 @@ import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { useUpdateEngineerProfileStatus, fetchAdminManageEngineersPaged } from "@/shared/apiServices/admin/adminOpenApiService";
-import { useQueryClient } from "@tanstack/react-query";
 
 export type EngineerApiResponse = {
   id: number;
@@ -63,12 +62,12 @@ export type EngineerApiResponse = {
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const queryClient = useQueryClient();
   const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
-
+  const externalFilters = useMemo(() => ({ search }), [search]);
+  
   const isEngineerStatus = (value: string | null): value is EngineerStatusType =>
     value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
 
@@ -80,7 +79,6 @@ export default function PendingRequest() {
           : "Engineer Rejected Successfully!",
       );
       setRowStatuses((prev) => ({ ...prev, [variables.userId]: variables.profileStatus }));
-      queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
     },
     onError: () => toast.error("Failed to update engineer status"),
   });
@@ -134,7 +132,6 @@ export default function PendingRequest() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            queryClient.invalidateQueries({ queryKey: ["admin-manage-engineers"] });
             toast.success("Engineer deleted successfully!");
             close(true);
           },
@@ -297,9 +294,9 @@ const q = (filters?.search ?? "").trim().toLowerCase();
       r.details.email.toLowerCase().includes(q) ||
       r.location.toLowerCase().includes(q)
     );
-    return { data: rows, total: rows.length };
+    
   }
-  return { data: rows, total: total ?? 0 };
+  return { data: rows, total: total ?? rows.length };
 };
 
   return (
@@ -314,7 +311,7 @@ const q = (filters?.search ?? "").trim().toLowerCase();
             columns={columns}
             initialPageSize={10}
             api={tableApi}
-            externalFilters={{ search }}
+            externalFilters={externalFilters}
             showPagination
           />
         </div>

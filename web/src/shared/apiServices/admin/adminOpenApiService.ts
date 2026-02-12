@@ -173,7 +173,7 @@ export function useUpdateEngineerProfileStatus(options?: {
     PutAdminUsersByUserIdStatusErrors | unknown,
     { userId: number; profileStatus: EngineerStatusType;}
   >({
-    mutationFn: async ({ userId, profileStatus,  }) => {
+    mutationFn: async ({ userId, profileStatus }) => {
       const response = await putAdminUsersByUserIdStatus({
         client: apiClient,
         path: { userId },
@@ -188,7 +188,7 @@ export function useUpdateEngineerProfileStatus(options?: {
   });
 }
 
-export type ProfileStatusType = "pending" | "approved" | "rejected";
+export type ProfileStatusType = EngineerStatusType;
 export type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
 export interface PagedEngineersResponse<T = unknown> {
   data: T[];
