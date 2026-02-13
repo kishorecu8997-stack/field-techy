@@ -1,4 +1,7 @@
-import type { ActivityTimelineItem, TimelineCardData } from "@/pages/client/my_job_client/types";
+import type {
+  ActivityTimelineItem,
+  TimelineCardData,
+} from "@/pages/client/my_job_client/types";
 
 export const TIMELINE_CARD_COLORS = {
   green: "#16a34a",
@@ -42,7 +45,8 @@ export const TIMELINE_STATUS = {
   revision: "revision",
 } as const;
 
-export type TimelineStatus = (typeof TIMELINE_STATUS)[keyof typeof TIMELINE_STATUS];
+export type TimelineStatus =
+  (typeof TIMELINE_STATUS)[keyof typeof TIMELINE_STATUS];
 /**
  * Engineer timeline section specific modals
  */

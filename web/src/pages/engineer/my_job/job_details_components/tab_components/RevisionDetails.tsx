@@ -29,7 +29,9 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
         <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-3 w-full">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
-              <p className="text-xs font-semibold text-amber-600">{REVISION_LABELS.clientLabel}</p>
+              <p className="text-xs font-semibold text-amber-600">
+                {REVISION_LABELS.clientLabel}
+              </p>
               <p className="text-sm text-gray-800 mt-1">
                 {update.description || MODAL_MESSAGES.revisionFallback}
               </p>
@@ -63,7 +65,9 @@ const RevisionDetails: React.FC<RevisionDetailsProps> = ({
           <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50/70 p-3 w-full">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <p className="text-xs font-semibold text-blue-700">{REVISION_LABELS.engineerLabel}</p>
+                <p className="text-xs font-semibold text-blue-700">
+                  {REVISION_LABELS.engineerLabel}
+                </p>
                 <p className="text-sm text-gray-800 mt-1">
                   {revisionUpdateEntry.description}
                 </p>

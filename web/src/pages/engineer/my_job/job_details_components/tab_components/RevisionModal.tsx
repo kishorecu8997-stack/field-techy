@@ -4,7 +4,10 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import Popup from "@/shared/components/Popup";
 import type { ProgressUpdate } from "../../types.d";
 import revisionImage from "@/assets/dummy/revision-request.jpg";
-import { ENGINEER_MODAL_TITLES, ATTACHMENT_ALT } from "@/constants/timelineConstants";
+import {
+  ENGINEER_MODAL_TITLES,
+  ATTACHMENT_ALT,
+} from "@/constants/timelineConstants";
 import { MODAL_MESSAGES } from "@/dummy_data/engineerTimelineDummyData";
 
 interface RevisionModalProps {

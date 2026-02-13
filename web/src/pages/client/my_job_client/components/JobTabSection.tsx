@@ -32,7 +32,6 @@ import WorkSubmissionComponent from "./tab_components/WorkSubmissionComponent";
 import ManageProposalsTab from "./tab_components/ManageProposalsTab";
 import { toast } from "react-toastify";
 
-
 /**
  * Client job tab section with conditional  rendering for real jobs vs. dummy network engineer flows.
  * Supports proposal accept/reject popups with centralized copy and toasts.

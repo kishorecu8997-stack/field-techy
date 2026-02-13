@@ -22,12 +22,23 @@ import type {
 /**
  * Represents the possible statuses for a job.
  */
-export type JobStatus = SearchJobStatus | "active" | "completed" | "pending" | "cancelled" | string;
+export type JobStatus =
+  | SearchJobStatus
+  | "active"
+  | "completed"
+  | "pending"
+  | "cancelled"
+  | string;
 
 /**
  * Represents the type of work arrangement for a job.
  */
-export type WorkingType = SearchWorkingType | "remote" | "on-site" | "hybrid" | string;
+export type WorkingType =
+  | SearchWorkingType
+  | "remote"
+  | "on-site"
+  | "hybrid"
+  | string;
 
 /**
  * Props for the header component on "My Jobs" pages.
@@ -97,7 +108,9 @@ export interface JobHeaderCardProps {
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | undefined>>;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | undefined>
+  >;
   OfferJobStatus?: OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;

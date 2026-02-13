@@ -29,9 +29,7 @@ const JobStartedCard: React.FC<JobStartedCardProps> = ({
   return (
     <div
       className={`relative rounded-lg border bg-white dark:bg-gray-800 shadow-sm ${
-        isCollapsed
-          ? "px-4 py-2.5 flex items-center justify-between"
-          : "p-4"
+        isCollapsed ? "px-4 py-2.5 flex items-center justify-between" : "p-4"
       }`}
       style={{ borderColor: accentColor }}
     >

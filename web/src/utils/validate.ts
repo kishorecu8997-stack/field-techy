@@ -1243,7 +1243,7 @@ export const validateTimeNotPast = (timeString: string) => {
  */
 export const validateEndTimeAfterStart = (
   startTime: string,
-  endTime: string
+  endTime: string,
 ) => {
   if (!startTime || !endTime) return true;
 
@@ -1278,7 +1278,7 @@ export const validateEndTimeAfterStart = (
  */
 export const calculateTimeDuration = (
   startTime: string,
-  endTime: string
+  endTime: string,
 ): string => {
   if (!startTime || !endTime) return "";
 
@@ -1326,7 +1326,7 @@ export const validateStartDate = (value: string) => {
 
   const selectedDate = new Date(value);
   const today = new Date();
-  
+
   // Reset time part to compare only dates
   today.setHours(0, 0, 0, 0);
   selectedDate.setHours(0, 0, 0, 0);

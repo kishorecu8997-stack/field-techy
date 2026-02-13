@@ -357,7 +357,8 @@ const DatePickerRender: FC<{
                 {/* Current month */}
                 {getDaysInMonth(currentMonth).map((d, i) => {
                   const selectedValue = isValidDateObj(value) ? value : null;
-                  const isSelected = selectedValue?.toDateString() === d.toDateString();
+                  const isSelected =
+                    selectedValue?.toDateString() === d.toDateString();
                   const isToday =
                     new Date().toDateString() === d.toDateString();
                   const invalid = !isDateValid(d, minDate, maxDate);

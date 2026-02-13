@@ -8,7 +8,9 @@ interface TimelineSectionHeaderProps {
 /**
  * TimelineSectionHeader - Renders the activity timeline header and list
  */
-const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({ items }) => {
+const TimelineSectionHeader: React.FC<TimelineSectionHeaderProps> = ({
+  items,
+}) => {
   return (
     <div>
       <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">

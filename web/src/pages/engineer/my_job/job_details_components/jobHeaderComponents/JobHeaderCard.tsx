@@ -40,7 +40,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
-  }) => {
+}) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const params = useParams();

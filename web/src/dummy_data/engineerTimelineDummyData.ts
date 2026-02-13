@@ -10,7 +10,6 @@ export interface TimelineItem {
   accentColor?: string;
 }
 
-
 export const BASE_TIMELINE_ITEMS: TimelineItem[] = [
   { title: "Proposal Accepted", timestamp: "05 Apr 2026, 9:00 AM" },
   { title: "Proposal Shared", timestamp: "05 Apr 2026, 9:00 AM" },
@@ -36,4 +35,3 @@ export const MODAL_MESSAGES = {
   revisionFallback: "Light is hanging. Check it please and correct it",
   breakReminder: "Complete your work and you may take break",
 } as const;
-

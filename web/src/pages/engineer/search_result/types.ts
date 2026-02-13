@@ -153,7 +153,7 @@ export const JOB_FILTERS = {
   HYBRID: "Hybrid",
   TODAY: "Today",
   DECLINED: "Declined",
-  CANCELLED: "Cancelled", 
+  CANCELLED: "Cancelled",
 } as const;
 
 export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];

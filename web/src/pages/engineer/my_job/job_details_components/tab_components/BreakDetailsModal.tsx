@@ -54,9 +54,7 @@ const BreakDetailsModal: React.FC<BreakDetailsModalProps> = ({
               {activeBreak?.duration ? ` - ${activeBreak.duration}` : ""}
             </div>
             {activeBreak?.reason && (
-              <p className="text-sm text-gray-800 mb-1">
-                {activeBreak.reason}
-              </p>
+              <p className="text-sm text-gray-800 mb-1">{activeBreak.reason}</p>
             )}
             {activeBreak?.timestamp && (
               <p className="text-xs text-gray-500">

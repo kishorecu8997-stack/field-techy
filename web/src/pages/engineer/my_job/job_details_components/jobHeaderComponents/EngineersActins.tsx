@@ -31,7 +31,9 @@ const EngineersActions = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
 }: {
-  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | undefined>>;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | undefined>
+  >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
   setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;

@@ -152,7 +152,8 @@ export const TIMELINE_CARD_TYPE: {
   JobStarted: "jobStarted";
 };
 
-export type TimelineCardType = typeof TIMELINE_CARD_TYPE[keyof typeof TIMELINE_CARD_TYPE];
+export type TimelineCardType =
+  (typeof TIMELINE_CARD_TYPE)[keyof typeof TIMELINE_CARD_TYPE];
 
 export type CardButtonType = "approve" | "reject" | "requestRevision";
 

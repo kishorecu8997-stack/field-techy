@@ -105,8 +105,12 @@ const FinalStatementForm = ({
     <div className="flex flex-col p-6 w-full">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">{FINAL_STATEMENT_LABELS.title}</h2>
-          <p className="text-sm text-gray-600">{FINAL_STATEMENT_LABELS.subtitle}</p>
+          <h2 className="text-lg font-semibold text-gray-900">
+            {FINAL_STATEMENT_LABELS.title}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {FINAL_STATEMENT_LABELS.subtitle}
+          </p>
         </div>
         <Button
           type="button"
@@ -158,7 +162,10 @@ const FinalStatementForm = ({
           >
             {FINAL_STATEMENT_LABELS.cancel}
           </Button>
-          <Button className="bg-teal-800 hover:bg-teal-900 text-white px-5" type="submit">
+          <Button
+            className="bg-teal-800 hover:bg-teal-900 text-white px-5"
+            type="submit"
+          >
             {FINAL_STATEMENT_LABELS.submitCta}
           </Button>
         </div>

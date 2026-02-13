@@ -8,7 +8,11 @@ import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePick
 import { DatePickerInput } from "@/shared/components/commonUI/inputs/DatePickerInput";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { icons } from "@/config/icons";
-import { calculateTimeDuration, validateStartDate, validateEndDate } from "@/utils/validate";
+import {
+  calculateTimeDuration,
+  validateStartDate,
+  validateEndDate,
+} from "@/utils/validate";
 import { formatDateTime } from "@/utils/formatDateTime";
 import type { ProgressUpdate } from "../../types.d";
 import type { BreakRequestFormFields } from "@/pages/engineer/my_job/types";
@@ -90,7 +94,7 @@ const BreakRequestForm = ({
   const handleSubmit = (data: BreakRequestFormFields) => {
     const descriptionParts = [] as string[];
     if (data.reason?.trim()) descriptionParts.push(data.reason.trim());
-    
+
     let dateRange = "";
     if (isLongTermBreak) {
       const formattedStartDate = formatDateToMMDDYYYY(data.startDate);
@@ -99,7 +103,7 @@ const BreakRequestForm = ({
     } else {
       dateRange = `${data.startTime || "-"} - ${data.endTime || "-"}`;
     }
-    
+
     descriptionParts.push(
       `${dateRange}${data.duration ? ` (${data.duration})` : ""}`,
     );
@@ -139,7 +143,9 @@ const BreakRequestForm = ({
   return (
     <div className="flex flex-col p-2 w-full max-w-2xl mx-auto -mb-3">
       <div className="relative mb-2">
-        <h2 className="text-lg font-semibold text-gray-900">{BREAK_REQUEST_LABELS.title}</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {BREAK_REQUEST_LABELS.title}
+        </h2>
         <Button
           type="button"
           variant="headerClose"
@@ -227,10 +233,18 @@ const BreakRequestForm = ({
         </div>
 
         <div className="flex justify-end gap-3 pt-0">
-          <Button variant="outline" className="px-6" type="button" onClick={onClose}>
+          <Button
+            variant="outline"
+            className="px-6"
+            type="button"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button className="bg-teal-800 hover:bg-teal-900 text-white px-6" type="submit">
+          <Button
+            className="bg-teal-800 hover:bg-teal-900 text-white px-6"
+            type="submit"
+          >
             Submit
           </Button>
         </div>

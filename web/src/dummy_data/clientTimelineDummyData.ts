@@ -20,7 +20,7 @@ export const progressUpdateCardData: TimelineCardData = {
 // Factory function to create Revision Request Update Card Data
 // Allow callers to override only non-critical fields (prevent id/type changes)
 export function createRevisionUpdateCardData(
-  overrides?: Partial<Omit<TimelineCardData, "id" | "type">>
+  overrides?: Partial<Omit<TimelineCardData, "id" | "type">>,
 ): TimelineCardData {
   const base: TimelineCardData = {
     id: "revision-update-1",
@@ -68,4 +68,3 @@ export const finalStatementCardData: TimelineCardData = {
   accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
-

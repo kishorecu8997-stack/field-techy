@@ -34,8 +34,12 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
   STATUS,
 }) => {
   const updateKey = `${update.title || "update"}-${index}`;
-  const isApproved = update.statusText?.toLowerCase().startsWith(STATUS.APPROVED);
-  const isRevisionRequested = update.statusText?.toLowerCase().startsWith(STATUS.REVISION_REQUESTED);
+  const isApproved = update.statusText
+    ?.toLowerCase()
+    .startsWith(STATUS.APPROVED);
+  const isRevisionRequested = update.statusText
+    ?.toLowerCase()
+    .startsWith(STATUS.REVISION_REQUESTED);
   const hasBreakDetails = update.detailsType === "break" && isApproved;
   const isBreakUpdate = update.detailsType === "break";
 
@@ -57,7 +61,9 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
     >
       <span
         className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
-        style={{ backgroundColor: update.accentColor || TIMELINE_COLORS.accentGreen }}
+        style={{
+          backgroundColor: update.accentColor || TIMELINE_COLORS.accentGreen,
+        }}
         aria-hidden
       />
       <div className="flex justify-between items-start gap-4">
@@ -82,7 +88,11 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
               type="button"
               variant="outline"
               className="h-7 w-7 min-w-0 p-0 rounded-full border-gray-200 text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-100"
-              aria-label={isCollapsed ? "Expand progress update" : "Collapse progress update"}
+              aria-label={
+                isCollapsed
+                  ? "Expand progress update"
+                  : "Collapse progress update"
+              }
               onClick={() => onToggleCollapse(updateKey, isCollapsed)}
             >
               <HiChevronDown
@@ -97,7 +107,9 @@ const ProgressUpdateItem: React.FC<ProgressUpdateItemProps> = ({
           {update.statusText && (
             <span
               className="text-xs font-medium flex items-center gap-1"
-              style={{ color: update.statusColor || TIMELINE_COLORS.defaultStatus }}
+              style={{
+                color: update.statusColor || TIMELINE_COLORS.defaultStatus,
+              }}
             >
               {isApproved ? (
                 <HiCheckCircle aria-hidden />

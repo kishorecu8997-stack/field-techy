@@ -57,7 +57,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             {proposal.attachmentName && (
               <div className="mb-4">
                 <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
-                  <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                  <IoAttach
+                    className="w-4 h-4 flex-shrink-0"
+                    aria-hidden="true"
+                  />
                   {proposal.attachmentName}
                 </div>
               </div>

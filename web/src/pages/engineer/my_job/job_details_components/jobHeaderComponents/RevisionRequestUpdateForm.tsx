@@ -6,7 +6,10 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
-import type { RevisionRequestUpdateFormProps, RevisionUpdateFields } from "../../types.d";
+import type {
+  RevisionRequestUpdateFormProps,
+  RevisionUpdateFields,
+} from "../../types.d";
 import {
   REVISION_UPDATE_DEFAULTS,
   REVISION_UPDATE_LABELS,
@@ -15,7 +18,6 @@ import {
   REVISION_UPDATE_COLORS,
 } from "@/constants/revisionUpdateConstants";
 
-
 /**
  * Revision request/update form for engineers to send notes and optional attachments.
  * Uses react-hook-form with shared inputs for validation and file uploads.
@@ -23,7 +25,10 @@ import {
  * Emits waiting/approved status updates with timestamps and accent colors.
  * Surfaces success toast and supports optional onClose callback to dismiss.
  */
-const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionRequestUpdateFormProps) => {
+const RevisionRequestUpdateForm = ({
+  onClose,
+  onAddProgressUpdate,
+}: RevisionRequestUpdateFormProps) => {
   const formCtx = useForm<RevisionUpdateFields>({
     defaultValues: REVISION_UPDATE_DEFAULTS,
   });
@@ -77,7 +82,9 @@ const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionReq
 
   return (
     <div className="flex flex-col p-6 gap-4">
-      <h2 className="text-xl font-semibold text-gray-900">{REVISION_UPDATE_LABELS.title}</h2>
+      <h2 className="text-xl font-semibold text-gray-900">
+        {REVISION_UPDATE_LABELS.title}
+      </h2>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <div className="mb-2">
           <TextareaInput
@@ -102,7 +109,10 @@ const RevisionRequestUpdateForm = ({ onClose, onAddProgressUpdate }: RevisionReq
           >
             {REVISION_UPDATE_LABELS.cancel}
           </Button>
-          <Button className="bg-teal-800 hover:bg-teal-900 text-white px-5" type="submit">
+          <Button
+            className="bg-teal-800 hover:bg-teal-900 text-white px-5"
+            type="submit"
+          >
             {REVISION_UPDATE_LABELS.submit}
           </Button>
         </div>

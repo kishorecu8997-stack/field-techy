@@ -26,7 +26,10 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
           >
             <span
               className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
-              style={{ backgroundColor: item.accentColor || TIMELINE_LIST_DEFAULTS.accentColor }}
+              style={{
+                backgroundColor:
+                  item.accentColor || TIMELINE_LIST_DEFAULTS.accentColor,
+              }}
               aria-hidden
             />
             <div className="flex items-center gap-3">
@@ -41,7 +44,10 @@ const TimelineList: React.FC<TimelineListProps> = ({ items, className }) => {
               {item.statusText && (
                 <span
                   className="text-xs font-medium flex items-center gap-1"
-                  style={{ color: item.statusColor || TIMELINE_LIST_DEFAULTS.statusColor }}
+                  style={{
+                    color:
+                      item.statusColor || TIMELINE_LIST_DEFAULTS.statusColor,
+                  }}
                 >
                   {isApproved ? (
                     <HiCheckCircle aria-hidden />

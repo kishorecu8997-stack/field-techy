@@ -29,7 +29,8 @@ export const UPDATE_LOG_LABELS = {
 export const UPDATE_LOG_MESSAGES = {
   modalBody: "Are you sure you want to update the progress?",
   submitSuccess: "Log submitted",
-  revisionFeedback: "The tool is not working . check it please , and correct it",
+  revisionFeedback:
+    "The tool is not working . check it please , and correct it",
 } as const;
 
 export const UPDATE_LOG_STATUS = {

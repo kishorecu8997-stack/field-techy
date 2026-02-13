@@ -28,12 +28,16 @@ const TimelineSection: React.FC<{
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
 }> = ({ OfferJobStatus, progressUpdates = [], onAddProgressUpdate }) => {
   const [isRevisionOpen, setIsRevisionOpen] = useState(false);
-  const [activeRevision, setActiveRevision] =
-    useState<ProgressUpdate | null>(null);
-  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] = useState(false);
+  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(
+    null,
+  );
+  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] =
+    useState(false);
   const [isBreakDetailsOpen, setIsBreakDetailsOpen] = useState(false);
   const [activeBreak, setActiveBreak] = useState<ProgressUpdate | null>(null);
-  const [collapsedUpdates, setCollapsedUpdates] = useState<Record<string, boolean>>({});
+  const [collapsedUpdates, setCollapsedUpdates] = useState<
+    Record<string, boolean>
+  >({});
 
   const handleCloseRevision = () => {
     setIsRevisionOpen(false);
@@ -118,7 +122,10 @@ const TimelineSection: React.FC<{
       />
 
       {/* Revision Update Form Modal */}
-      <Popup open={isRevisionUpdateFormOpen} onClose={handleCloseRevisionUpdateForm}>
+      <Popup
+        open={isRevisionUpdateFormOpen}
+        onClose={handleCloseRevisionUpdateForm}
+      >
         <RevisionRequestUpdateForm
           onClose={handleCloseRevisionUpdateForm}
           onAddProgressUpdate={onAddProgressUpdate}

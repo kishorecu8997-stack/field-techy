@@ -26,7 +26,10 @@ interface UpdateLogFormProps {
  * Sends multiple progress updates with different statuses for UI display.
  * Uses react-hook-form for form handling and validation.
  */
-const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => {
+const UpdateLogForm = ({
+  onClose,
+  onAddProgressUpdate,
+}: UpdateLogFormProps) => {
   const formCtx = useForm<UpdateLogFormFields>({
     defaultValues: UPDATE_LOG_DEFAULTS,
   });
@@ -47,7 +50,10 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
           variant: "primary",
           action: async (close) => {
             const attachmentName = data.attachments?.[0]?.name;
-            const baseUpdate: Omit<ProgressUpdate, "statusText" | "statusColor"> = {
+            const baseUpdate: Omit<
+              ProgressUpdate,
+              "statusText" | "statusColor"
+            > = {
               title: data.title || UPDATE_LOG_LABELS.title,
               description: data.notes,
               attachmentName,
@@ -87,8 +93,12 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
   return (
     <div className="flex flex-col p-6 gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-gray-900">{UPDATE_LOG_LABELS.title}</h2>
-        <span className="text-sm text-gray-500">{UPDATE_LOG_LABELS.jobIdLabel} {UPDATE_LOG_LABELS.jobId}</span>
+        <h2 className="text-xl font-semibold text-gray-900">
+          {UPDATE_LOG_LABELS.title}
+        </h2>
+        <span className="text-sm text-gray-500">
+          {UPDATE_LOG_LABELS.jobIdLabel} {UPDATE_LOG_LABELS.jobId}
+        </span>
       </div>
       <FormContainer methods={formCtx} onSubmit={handleSubmit}>
         <div className="mb-2">
@@ -123,7 +133,10 @@ const UpdateLogForm = ({ onClose, onAddProgressUpdate }: UpdateLogFormProps) => 
           >
             {UPDATE_LOG_LABELS.cancel}
           </Button>
-          <Button className="bg-teal-800 hover:bg-teal-900 text-white px-5" type="submit">
+          <Button
+            className="bg-teal-800 hover:bg-teal-900 text-white px-5"
+            type="submit"
+          >
             {UPDATE_LOG_LABELS.submit}
           </Button>
         </div>

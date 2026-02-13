@@ -32,9 +32,10 @@ import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
 import ActionRequiredBadge from "./ActionRequiredBadge";
 import TimelineToggleButton from "./TimelineToggleButton";
 import TimelineSectionHeader from "./TimelineSectionHeader";
-import type { RevisionFormData, RevisionRequestDetails } from "./clientTimelineTypes";
-
-
+import type {
+  RevisionFormData,
+  RevisionRequestDetails,
+} from "./clientTimelineTypes";
 
 const clientTimelineCards: TimelineCardData[] = [
   progressUpdateCardDataFromDummy,
@@ -68,29 +69,35 @@ type FormMode = (typeof FormMode)[keyof typeof FormMode];
  */
 const TimelineSection: React.FC = () => {
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-  const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] = useState(false);
+  const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] =
+    useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
-  const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] = useState(false);
+  const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] =
+    useState(false);
   const [isJobCollapsed, setIsJobCollapsed] = useState(false);
   const initialStatus: TimelineStatus = TIMELINE_STATUS.pending;
   const [jobStatus, setJobStatus] = useState<TimelineStatus>(initialStatus);
-  const [progressStatus, setProgressStatus] = useState<TimelineStatus>(initialStatus);
-  const [revisionUpdateStatus, setRevisionUpdateStatus] = useState<TimelineStatus>(initialStatus);
-  const [shortBreakStatus, setShortBreakStatus] = useState<TimelineStatus>(initialStatus);
-  const [finalStatementStatus, setFinalStatementStatus] = useState<TimelineStatus>(initialStatus);
+  const [progressStatus, setProgressStatus] =
+    useState<TimelineStatus>(initialStatus);
+  const [revisionUpdateStatus, setRevisionUpdateStatus] =
+    useState<TimelineStatus>(initialStatus);
+  const [shortBreakStatus, setShortBreakStatus] =
+    useState<TimelineStatus>(initialStatus);
+  const [finalStatementStatus, setFinalStatementStatus] =
+    useState<TimelineStatus>(initialStatus);
   const [formMode, setFormMode] = useState<FormMode | null>(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [showFormConfirm, setShowFormConfirm] = useState(false);
-  const [showShortBreakApprovalModal, setShowShortBreakApprovalModal] = useState(false);
+  const [showShortBreakApprovalModal, setShowShortBreakApprovalModal] =
+    useState(false);
   const [showJobApproveConfirm, setShowJobApproveConfirm] = useState(false);
   const [showJobRejectConfirm, setShowJobRejectConfirm] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
   const [keepProgressExpanded, setKeepProgressExpanded] = useState(false);
-  const [revisionRequestDetails, setRevisionRequestDetails] = useState<RevisionRequestDetails | null>(null);
+  const [revisionRequestDetails, setRevisionRequestDetails] =
+    useState<RevisionRequestDetails | null>(null);
   // State for revision update card data - setter can be used when API integration is added
-  const [revisionUpdateCardData] = useState(
-    createRevisionUpdateCardData()
-  );
+  const [revisionUpdateCardData] = useState(createRevisionUpdateCardData());
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
@@ -101,8 +108,16 @@ const TimelineSection: React.FC = () => {
     },
   });
 
-  const accentColor = jobStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : TIMELINE_CARD_COLORS.green;
-  const progressAccentColor = progressStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : progressStatus === TIMELINE_STATUS.revision ? TIMELINE_CARD_COLORS.orange : TIMELINE_CARD_COLORS.green;
+  const accentColor =
+    jobStatus === TIMELINE_STATUS.rejected
+      ? TIMELINE_CARD_COLORS.red
+      : TIMELINE_CARD_COLORS.green;
+  const progressAccentColor =
+    progressStatus === TIMELINE_STATUS.rejected
+      ? TIMELINE_CARD_COLORS.red
+      : progressStatus === TIMELINE_STATUS.revision
+        ? TIMELINE_CARD_COLORS.orange
+        : TIMELINE_CARD_COLORS.green;
   const shortBreakAccentColor = TIMELINE_CARD_COLORS.red;
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
@@ -150,7 +165,6 @@ const TimelineSection: React.FC = () => {
         Request Revision
       </span>
     ) : null;
-
 
   const handleProgressApprove = (keepExpanded = false) => {
     setKeepProgressExpanded(keepExpanded);
@@ -223,7 +237,7 @@ const TimelineSection: React.FC = () => {
   const handleFormCancel = () => {
     setShowFormModal(false);
     revisionFormMethods.reset();
-  };  
+  };
 
   const handleRevisionUpdateRequestRevision = () => {
     openForm(FormMode.RevisionUpdate);
@@ -257,29 +271,29 @@ const TimelineSection: React.FC = () => {
   const handleFinalStatementApprove = () => {
     setFinalStatementStatus(TIMELINE_STATUS.approved);
     setIsFinalStatementCollapsed(true);
-    toast.success(TOAST_MESSAGES.finalStatementApproved, { position: "top-right" });
+    toast.success(TOAST_MESSAGES.finalStatementApproved, {
+      position: "top-right",
+    });
   };
 
   const handleFinalStatementReject = () => {
     setFinalStatementStatus(TIMELINE_STATUS.rejected);
     setIsFinalStatementCollapsed(true);
-    toast.error(TOAST_MESSAGES.finalStatementRejected, { position: "top-right" });
+    toast.error(TOAST_MESSAGES.finalStatementRejected, {
+      position: "top-right",
+    });
   };
 
   const statusNode =
-    jobStatus === TIMELINE_STATUS.approved
-      ? (
-          <span className="flex items-center gap-1 text-xs font-semibold text-green-700">
-            <HiCheckCircle className="h-4 w-4" aria-hidden /> Approved
-          </span>
-        )
-      : jobStatus === TIMELINE_STATUS.rejected
-        ? (
-            <span className="flex items-center gap-1 text-xs font-semibold text-red-600">
-              <HiXMark className="h-4 w-4" aria-hidden /> Rejected
-            </span>
-          )
-        : null;
+    jobStatus === TIMELINE_STATUS.approved ? (
+      <span className="flex items-center gap-1 text-xs font-semibold text-green-700">
+        <HiCheckCircle className="h-4 w-4" aria-hidden /> Approved
+      </span>
+    ) : jobStatus === TIMELINE_STATUS.rejected ? (
+      <span className="flex items-center gap-1 text-xs font-semibold text-red-600">
+        <HiXMark className="h-4 w-4" aria-hidden /> Rejected
+      </span>
+    ) : null;
 
   const handleApprove = () => {
     setShowJobApproveConfirm(true);
@@ -343,7 +357,10 @@ const TimelineSection: React.FC = () => {
 
   // Auto-collapse cards once a decision is made
   useEffect(() => {
-    if (progressStatus === TIMELINE_STATUS.approved || progressStatus === TIMELINE_STATUS.rejected) {
+    if (
+      progressStatus === TIMELINE_STATUS.approved ||
+      progressStatus === TIMELINE_STATUS.rejected
+    ) {
       if (!keepProgressExpanded) {
         setIsProgressCollapsed(true);
       }
@@ -414,7 +431,6 @@ const TimelineSection: React.FC = () => {
           onProgressApprove={handleProgressApprove}
           onRevisionUpdateRequestRevision={handleRevisionUpdateRequestRevision}
         />
-
 
         {/* Short Term Break Card */}
         <ShortBreakCard
