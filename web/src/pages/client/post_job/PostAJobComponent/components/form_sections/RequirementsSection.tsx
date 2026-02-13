@@ -31,7 +31,9 @@ interface RequirementsSectionProps {
  */
 
 // Helper to create FileList from existing images
-const createFileListFromImages = (images: { name: string; url: string; file: File }[]): FileList => {
+const createFileListFromImages = (
+  images: { name: string; url: string; file: File }[],
+): FileList => {
   const files = images.map((img) => img.file);
   const dataTransfer = new DataTransfer();
   files.forEach((file) => dataTransfer.items.add(file));
@@ -88,9 +90,9 @@ const RequirementsSection = ({
 
   useEffect(() => {
     setHasToolContent(
-    (!!tools && tools.toString().trim() !== "") ||
-    (!!budget && budget.toString().trim() !== "") ||
-      (images instanceof FileList && images.length > 0)
+      (!!tools && tools.toString().trim() !== "") ||
+        (!!budget && budget.toString().trim() !== "") ||
+        (images instanceof FileList && images.length > 0),
     );
   }, [tools, budget, images]);
 
@@ -100,7 +102,10 @@ const RequirementsSection = ({
       ?.replace(/\D+/g, "")
       ?.trim();
     const files = watch("toolImages") as FileList | undefined;
-    const hasAnyField = !!toolId || (!!budget && Number(budget) > 0) || (files && files.length > 0);
+    const hasAnyField =
+      !!toolId ||
+      (!!budget && Number(budget) > 0) ||
+      (files && files.length > 0);
     if (!hasAnyField) {
       return;
     }
@@ -182,7 +187,10 @@ const RequirementsSection = ({
       setValue("toolImages", undefined);
     }
     setToolImageInputKey((key) => key + 1);
-    toolDetailsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    toolDetailsSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const handleCancelEdit = () => {
@@ -192,7 +200,10 @@ const RequirementsSection = ({
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
     clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
-    toolEntriesListRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    toolEntriesListRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const handleClearToolFields = () => {
@@ -204,7 +215,7 @@ const RequirementsSection = ({
     setHasToolContent(false);
   };
 
- // Sync tool budget total to form whenever toolEntries change
+  // Sync tool budget total to form whenever toolEntries change
   useEffect(() => {
     const total = toolEntries.reduce((sum, entry) => {
       const num = Number(entry.budget.replace(/\D/g, ""));
@@ -271,7 +282,7 @@ const RequirementsSection = ({
         rules={{
           validate: (val) => {
             if (val === undefined || val === null || val === "") return true;
-              const num = Number(val);
+            const num = Number(val);
 
             if (Number.isNaN(num) || num <= 0) {
               return "Enter a valid amount (minimum 1)";
