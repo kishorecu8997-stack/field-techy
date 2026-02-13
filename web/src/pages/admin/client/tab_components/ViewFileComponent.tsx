@@ -39,22 +39,22 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
 
   const downloadUrl = downloadData?.downloadUrl;
 
-  const handleDownload = async() => {
+  const handleDownload = async () => {
     if (downloadUrl) {
-    const response = await fetch(downloadUrl);
-    const blob = await response.blob();
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
 
-    const blobUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = fileType || "document";
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileType || "document";
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    window.URL.revokeObjectURL(blobUrl);
-  }
+      window.URL.revokeObjectURL(blobUrl);
+    }
   };
 
   const renderDocumentPreview = () => {

@@ -25,7 +25,7 @@ const JobDetailsSection = ({ isDisable }: { isDisable: boolean }) => {
         placeholder="Describe the role"
         required
         disabled={isDisable}
-        rules={validateDescription(5, 2000, "Job Description")}
+        rules={validateDescription(50, 2000, "Job Description")}
       />
     </div>
   );

@@ -1,3 +1,30 @@
+import type {
+  AdminGetJobsQuery,
+  AdminGetJobsResponse,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+
+export type JobItem = AdminGetJobsResponse["data"][number];
+export interface JobByCategoryProps {
+  data: JobItem[];
+  isLoading?: boolean;
+  error?: unknown;
+  filterType: AdminGetJobsQuery["jobType"] | undefined;
+  setFilterType: (value: AdminGetJobsQuery["jobType"] | undefined) => void;
+  filterBy: string | null;
+  setFilterBy: (value: string | null) => void;
+  filterRegion: string | null;
+  setFilterRegion: (value: string | null) => void;
+  serviceCategoryId: number | null;
+  setServiceCategoryId: (value: number | null) => void;
+  budget: string;
+  setBudget: (value: string) => void;
+  search: string;
+  setSearch: (value: string) => void;
+  onClearFilters: () => void;
+  showStatusSelect?: boolean;
+  currentStatus?: AdminGetJobsQuery["status"] | undefined;
+}
+
 export interface JobDataProps {
   id: string;
   clientDetails: {

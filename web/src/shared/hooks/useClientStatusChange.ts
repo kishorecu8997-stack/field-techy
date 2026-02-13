@@ -20,7 +20,7 @@ export const useClientStatusChange = () => {
     _row: ManageClientProps,
     status: string | null,
     showPopup: (config: PopupConfig) => Promise<unknown>,
-    onConfirm?: (row: ManageClientProps, status: string) => Promise<void>
+    onConfirm?: (row: ManageClientProps, status: string) => Promise<void>,
   ) => {
     if (!status) return;
 

@@ -5,7 +5,7 @@ import {
   type AppMarkProfileFileUploadedResponse,
   type AppRegisterClientResponse,
   type ClientGetRateCardResponse,
-  type ClientMarkJobFileUploadedResponses,
+  type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
   type ClientUpdateCompanyInfoResponse,
   clientGetCompanyInfo,
@@ -13,6 +13,9 @@ import {
   type AppUploadProfileFileResponse,
   clientGetRateCard,
   type ClientGetRateCardData,
+  type ClientMarksJobFileUploadedData,
+  type ClientMarksJobFileUploadedError,
+  type Options,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -22,7 +25,7 @@ import {
   appRegisterClientMutation,
   clientGetCompanyInfoOptions,
   clientGetJobsOptions,
-  clientMarkJobFileUploadedMutation,
+  clientMarksJobFileUploadedMutation,
   clientPostJobMutation,
   clientUpdateCompanyInfoMutation,
   clientGetJobsQueryKey,
@@ -211,13 +214,17 @@ export function useClientGetRateCard(options?: {
 
 export function useClientMarkJobFileUploaded(options?: {
   onSuccess?: (
-    data: ClientMarkJobFileUploadedResponses[keyof ClientMarkJobFileUploadedResponses],
+    data: ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
   ) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
-  return useMutation({
-    ...clientMarkJobFileUploadedMutation({ client: apiClient }),
+  return useMutation<
+    ClientMarksJobFileUploadedResponses[keyof ClientMarksJobFileUploadedResponses],
+    ClientMarksJobFileUploadedError,
+    Options<ClientMarksJobFileUploadedData>
+  >({
+    ...clientMarksJobFileUploadedMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.client.all });
       queryClient.invalidateQueries({
