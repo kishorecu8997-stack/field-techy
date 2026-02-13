@@ -1,22 +1,41 @@
 export interface ManageClientProps {
   id: number;
   userId: number;
-  clientType: string;
-  companyName: string;
-  personName: string;
-  address: string;
-  countryId: number;
-  stateId: number;
-  cityId: number;
-  postalCode: string;
-  industryId: number;
-  documentType: string;
-  documentNumber: string;
-  profilePictureId: number | null;
-  govIdDocId: number | null;
-  certificateDocId: number | null;
+  clientCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string | null;
+  registrationDate: string;
+  balance: number;
   profileStatus: string;
-  user: {
+  userStatus: string;
+  statusHistory?: Array<{
+    type: "suspension" | "block";
+    reason: string;
+    startDate?: string;
+    endDate?: string;
+    actionDate: string;
+    adminName: string;
+    revokedAt?: string | null;
+    revokedBy?: string | null;
+  }>;
+  // Other fields from detail view that might be missing in list view
+  clientType?: string;
+  companyName?: string;
+  personName?: string;
+  address?: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  postalCode?: string;
+  industryId?: number;
+  documentType?: string;
+  documentNumber?: string;
+  profilePictureId?: number | null;
+  govIdDocId?: number | null;
+  certificateDocId?: number | null;
+  user?: {
     id: number;
     name: string;
     email: string;
@@ -28,24 +47,15 @@ export interface ManageClientProps {
     updated_at: string;
     created_at: string;
   };
-  city: {
+  city?: {
     id: number;
     name: string;
     state_id: number;
   };
-  country: {
+  country?: {
     id: number;
     name: string;
   };
-  balance: number;
-  statusHistory: string[];
-  clientCode: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  location: string;
-  registrationDate: string;
-  userStatus: string;
 }
 
 export type DocumentType =
