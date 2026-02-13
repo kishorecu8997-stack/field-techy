@@ -26,6 +26,8 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
 
   const { mutateAsync: requestStart } = useEngineerRequestStart();
   const { mutateAsync: addWorkLog } = useEngineerAddWorkLog();
+
+  // This will also replaced once the API is ready
   // const { mutateAsync: uploadFile } = useAppUploadProfileFile();
   // const { mutateAsync: markFileUploaded } = useAppMarkProfileFileUploaded();
 

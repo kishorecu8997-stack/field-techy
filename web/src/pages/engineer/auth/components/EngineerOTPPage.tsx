@@ -81,7 +81,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
           phone?: string;
           otp: string;
         },
-        headers: { authorization: "" }, // Handled by interceptor, but required by type
+        headers: { authorization: "" },
       });
       handleNavigate?.();
     } catch (error: unknown) {

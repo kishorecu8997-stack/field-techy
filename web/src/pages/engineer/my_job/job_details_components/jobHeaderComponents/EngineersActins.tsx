@@ -46,8 +46,10 @@ const EngineersActions = ({
       toast.success("Job started successfully");
       setOfferJobStatus?.("started");
     },
-    onError: (err: any) => {
-      toast.error(err?.message || "Failed to start job");
+    onError: (err: unknown) => {
+      const errorMessage =
+        (err as { message?: string })?.message || "Failed to start job";
+      toast.error(errorMessage);
     },
   });
 
@@ -94,7 +96,7 @@ const EngineersActions = ({
               requestStart({ body: { assignmentId } });
               close(true);
             } else {
-              toast.error("Unable to start job: Missing assignment ID");
+              toast.error("Unable to start the job: Missing assignment ID");
             }
           },
         },
@@ -300,7 +302,7 @@ const EngineersActions = ({
                     setActiveTab?.("Work Submissions");
                   }}
                 >
-                  Submit work
+                  Submit Work
                 </Button>
               </div>
             ) : OfferJobStatus === ASSIGNMENT_STATUSES.accepted ? (
