@@ -38,7 +38,10 @@ export async function getDownloadUrl(
 ) {
   const { data } = await appDownloadProfileFileSdk({
     client: apiClient,
-    query: { fileType, userId: userId ?? undefined } as unknown as AppDownloadProfileFileData["query"],
+    query: {
+      fileType,
+      userId: userId ?? undefined,
+    } as unknown as AppDownloadProfileFileData["query"],
     headers: { authorization: "" },
   });
   return data;

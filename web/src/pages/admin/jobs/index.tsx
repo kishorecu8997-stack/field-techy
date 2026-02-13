@@ -66,11 +66,11 @@ export default function ManageJobs() {
     if (search) {
       const query = search.toLowerCase();
       matches =
-        (job.jobTitle.toLowerCase().includes(query) ||
-          job.jobCode.toLowerCase().includes(query) ||
-          job.postedBy.name.toLowerCase().includes(query) ||
-          job.postedBy.email.toLowerCase().includes(query) ||
-          (job.jobDescription?.toLowerCase().includes(query) ?? false));
+        job.jobTitle.toLowerCase().includes(query) ||
+        job.jobCode.toLowerCase().includes(query) ||
+        job.postedBy.name.toLowerCase().includes(query) ||
+        job.postedBy.email.toLowerCase().includes(query) ||
+        (job.jobDescription?.toLowerCase().includes(query) ?? false);
     }
 
     if (budget) {

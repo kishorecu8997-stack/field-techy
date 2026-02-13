@@ -56,7 +56,7 @@ export const useAdminProfileStore = create<AdminProfileState>((set, get) => ({
       ]);
 
       const profile: AdminProfile = {
-        id: "", 
+        id: "",
         fullName: personalInfo.name || "",
         email: personalInfo.email || "",
         phoneNumber: personalInfo.phoneNumber || "",
@@ -68,7 +68,9 @@ export const useAdminProfileStore = create<AdminProfileState>((set, get) => ({
         profileFetched: true,
       });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Profile fetch failed");
+      toast.error(
+        error instanceof Error ? error.message : "Profile fetch failed",
+      );
     } finally {
       set({ loading: false });
     }
@@ -98,7 +100,13 @@ export const useAdminProfile = () => {
     ) {
       fetchProfile();
     }
-  }, [session?.accessToken, session?.role, profileFetched, loading, fetchProfile]);
+  }, [
+    session?.accessToken,
+    session?.role,
+    profileFetched,
+    loading,
+    fetchProfile,
+  ]);
 
   return profile;
 };
