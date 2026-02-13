@@ -17,7 +17,10 @@ import type { ManageEngineerProps, EngineerStatusType } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useUpdateEngineerProfileStatus, fetchAdminManageEngineersPaged } from "@/shared/apiServices/admin/adminOpenApiService";
+import {
+  useUpdateEngineerProfileStatus,
+  fetchAdminManageEngineersPaged,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 export type EngineerApiResponse = {
   id: number;
@@ -62,14 +65,19 @@ export type EngineerApiResponse = {
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
-  const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
+  const [rowStatuses, setRowStatuses] = useState<
+    Record<number, EngineerStatusType>
+  >({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const externalFilters = useMemo(() => ({ search }), [search]);
-  
-  const isEngineerStatus = (value: string | null): value is EngineerStatusType =>
-    value !== null && Object.values(EngineerStatus).includes(value as EngineerStatusType);
+
+  const isEngineerStatus = (
+    value: string | null,
+  ): value is EngineerStatusType =>
+    value !== null &&
+    Object.values(EngineerStatus).includes(value as EngineerStatusType);
 
   const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
     onSuccess: (_data, variables) => {
@@ -78,12 +86,18 @@ export default function PendingRequest() {
           ? "Engineer Approved Successfully!"
           : "Engineer Rejected Successfully!",
       );
-      setRowStatuses((prev) => ({ ...prev, [variables.userId]: variables.profileStatus }));
+      setRowStatuses((prev) => ({
+        ...prev,
+        [variables.userId]: variables.profileStatus,
+      }));
     },
     onError: () => toast.error("Failed to update engineer status"),
   });
 
-  const handleStatusChange = async (data: ManageEngineerProps, status: EngineerStatusType) => {
+  const handleStatusChange = async (
+    data: ManageEngineerProps,
+    status: EngineerStatusType,
+  ) => {
     if (!status) return;
     const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
     const bodyMessage =
@@ -103,8 +117,8 @@ export default function PendingRequest() {
             status === EngineerStatus.APPROVE
               ? "primary"
               : status === EngineerStatus.REJECT
-              ? "danger"
-              : "warning",
+                ? "danger"
+                : "warning",
           action: async (close) => {
             try {
               await updateEngineerStatus({
@@ -151,8 +165,12 @@ export default function PendingRequest() {
           <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
           <div>
             <div className="font-semibold">{row.details.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.phone}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.email}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.phone}
+            </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.email}
+            </div>
           </div>
         </div>
       ),
@@ -163,7 +181,10 @@ export default function PendingRequest() {
       renderCell: (row) => (
         <div className="text-sm flex flex-col gap-1">
           {row.submittedDocuments.map((doc, idx) => (
-            <span key={idx} className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200">
+            <span
+              key={idx}
+              className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"
+            >
               {doc}
             </span>
           ))}
@@ -189,10 +210,18 @@ export default function PendingRequest() {
       ),
     },
     { key: "location", label: "Location" },
-    { key: "registrationDate", label: "Registration Date", dataCellAlign: "center" },
+    {
+      key: "registrationDate",
+      label: "Registration Date",
+      dataCellAlign: "center",
+    },
     { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center" },
     { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
-    { key: "employmentStatus", label: "Employment Status", dataCellAlign: "center" },
+    {
+      key: "employmentStatus",
+      label: "Employment Status",
+      dataCellAlign: "center",
+    },
     { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
     {
       key: "approvalStatus",
@@ -200,7 +229,10 @@ export default function PendingRequest() {
       renderCell: (row) => {
         const current = rowStatuses[row.userId] ?? EngineerStatus.PENDING;
         const preparedOptions = [
-          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({ ...opt, disabled: true })),
+          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
+            ...opt,
+            disabled: true,
+          })),
           ...JobStatus.filter((opt) => opt.value !== current),
         ];
         return (
@@ -223,13 +255,28 @@ export default function PendingRequest() {
       align: "center",
       renderCell: (row) => (
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-yellow-100 rounded-md cursor-pointer" onClick={() => navigate(absoluteUrls.admin.home.manage_engineer_view)}>
+          <div
+            className="p-2 bg-yellow-100 rounded-md cursor-pointer"
+            onClick={() =>
+              navigate(absoluteUrls.admin.home.manage_engineer_view)
+            }
+          >
             <FiEye className="text-yellow-600" />
           </div>
-          <div className="p-2 bg-blue-100 rounded-md cursor-pointer" onClick={() => navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.userId}`)}>
+          <div
+            className="p-2 bg-blue-100 rounded-md cursor-pointer"
+            onClick={() =>
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.userId}`,
+              )
+            }
+          >
             <CiEdit className="text-blue-600" />
           </div>
-          <div className="p-2 bg-red-100 rounded-md cursor-pointer" onClick={() => handleDeleteEngineer()}>
+          <div
+            className="p-2 bg-red-100 rounded-md cursor-pointer"
+            onClick={() => handleDeleteEngineer()}
+          >
             <RiDeleteBin6Line className="text-red-600" />
           </div>
         </div>
@@ -245,59 +292,63 @@ export default function PendingRequest() {
     page: number;
     pageSize: number;
     filters?: { [key: string]: string };
-  }): Promise<{ data: (ManageEngineerProps & { srNo: number })[]; total: number }> => {
-
+  }): Promise<{
+    data: (ManageEngineerProps & { srNo: number })[];
+    total: number;
+  }> => {
     const { data, total } = await fetchAdminManageEngineersPaged({
       page,
       limit: pageSize,
       profileStatus: "pending",
     });
 
-    let rows = ((data ?? []) as EngineerApiResponse[]).map((e: EngineerApiResponse, idx: number) => {
-      const base: ManageEngineerProps = {
-        id: e.id,
-        userId: e.userId,
-        engineerID: e.engineerCode,
-        details: {
-          name: e.name || e.user?.name || "N/A",
-          email: e.email || e.user?.email || "N/A",
-          phone: e.phoneNumber || e.user?.phone_number || "N/A",
-        },
-        submittedDocuments: [],
-        documents: "View",
-        location: e.location || `${e.cityName}, ${e.countryName}`,
-        registrationDate: new Date(e.registrationDate).toLocaleDateString(),
-        walletBalance: (e.balance ?? 0).toString(),
-        kycStatus:
-          e.profileStatus === "pending"
-            ? EngineerStatus.PENDING
-            : (e.profileStatus as EngineerStatusType),
-        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-        avgRating: e.averageRating ?? 0,
-        approvalStatus:
-          e.profileStatus === "pending"
-            ? EngineerStatus.PENDING
-            : (e.profileStatus as EngineerStatusType),
-      };
+    let rows = ((data ?? []) as EngineerApiResponse[]).map(
+      (e: EngineerApiResponse, idx: number) => {
+        const base: ManageEngineerProps = {
+          id: e.id,
+          userId: e.userId,
+          engineerID: e.engineerCode,
+          details: {
+            name: e.name || e.user?.name || "N/A",
+            email: e.email || e.user?.email || "N/A",
+            phone: e.phoneNumber || e.user?.phone_number || "N/A",
+          },
+          submittedDocuments: [],
+          documents: "View",
+          location: e.location || `${e.cityName}, ${e.countryName}`,
+          registrationDate: new Date(e.registrationDate).toLocaleDateString(),
+          walletBalance: (e.balance ?? 0).toString(),
+          kycStatus:
+            e.profileStatus === "pending"
+              ? EngineerStatus.PENDING
+              : (e.profileStatus as EngineerStatusType),
+          employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+          avgRating: e.averageRating ?? 0,
+          approvalStatus:
+            e.profileStatus === "pending"
+              ? EngineerStatus.PENDING
+              : (e.profileStatus as EngineerStatusType),
+        };
 
-      return {
-        ...base,
-        srNo: (page - 1) * pageSize + (idx + 1),
-      };
-    });
-
-const q = (filters?.search ?? "").trim().toLowerCase();
-  if (q) {
-    rows = rows.filter((r) =>
-      r.engineerID.toLowerCase().includes(q) ||
-      r.details.name.toLowerCase().includes(q) ||
-      r.details.email.toLowerCase().includes(q) ||
-      r.location.toLowerCase().includes(q)
+        return {
+          ...base,
+          srNo: (page - 1) * pageSize + (idx + 1),
+        };
+      },
     );
-    
-  }
-  return { data: rows, total: total ?? rows.length };
-};
+
+    const q = (filters?.search ?? "").trim().toLowerCase();
+    if (q) {
+      rows = rows.filter(
+        (r) =>
+          r.engineerID.toLowerCase().includes(q) ||
+          r.details.name.toLowerCase().includes(q) ||
+          r.details.email.toLowerCase().includes(q) ||
+          r.location.toLowerCase().includes(q),
+      );
+    }
+    return { data: rows, total: total ?? rows.length };
+  };
 
   return (
     <div>
@@ -322,7 +373,10 @@ const q = (filters?.search ?? "").trim().toLowerCase();
           <div className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-bold">View File {selectedRowId}</span>
-              <div className="text-xl font-semibold cursor-pointer" onClick={() => setIsModalOpen(false)}>
+              <div
+                className="text-xl font-semibold cursor-pointer"
+                onClick={() => setIsModalOpen(false)}
+              >
                 <IoCloseSharp />
               </div>
             </div>

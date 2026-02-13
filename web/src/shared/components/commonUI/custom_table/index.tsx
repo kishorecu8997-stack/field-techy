@@ -50,7 +50,7 @@ export function CustomTable<T extends object>({
   const error = externalError ?? internalError;
 
   useEffect(() => {
-    setCurrentPage(1); 
+    setCurrentPage(1);
   }, [externalFilters]);
 
   // ---------- Fetch (Server Pagination) ----------
@@ -209,7 +209,9 @@ export function CustomTable<T extends object>({
                                 {col.renderCell
                                   ? col.renderCell(row, i)
                                   : col.key
-                                    ? (row[col.key as keyof T] as React.ReactNode)
+                                    ? (row[
+                                        col.key as keyof T
+                                      ] as React.ReactNode)
                                     : null}
                               </span>
                             </div>
