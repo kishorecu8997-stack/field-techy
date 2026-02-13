@@ -14,7 +14,7 @@ import {
   DUMMY_TABS_LABELS,
   PROPOSAL_POPUP_COPY,
   PROPOSAL_TOAST_MESSAGES,
-} from "@/dummy_data/jobTabs/jobsectiondummy";
+} from "@/dummy_data/jobTabs/jobsectiondata";
 import { JOB_STATUSES } from "@/pages/client/search_result/types";
 import type { JobTabSectionProps } from "../types";
 import SendProposal from "@/pages/engineer/home/components/SendProposal";

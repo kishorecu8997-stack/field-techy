@@ -1,7 +1,7 @@
 import React from "react";
 import { IoAttach } from "react-icons/io5";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { DUMMY_TABS_LABELS } from "@/dummy_data/jobTabs/jobsectiondummy";
+import { DUMMY_TABS_LABELS } from "@/dummy_data/jobTabs/jobsectiondata";
 import { networkEngineerProposals } from "@/dummy_data/jobTabs/networkEngineerProposals";
 
 interface ManageProposalsTabProps {

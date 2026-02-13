@@ -67,7 +67,15 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
               />
             </div>
 
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-end gap-3 mt-6">
+              <Button
+                variant="no_style"
+                type="button"
+                onClick={onCancel}
+                className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
@@ -76,17 +84,6 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
               </Button>
             </div>
           </FormContainer>
-
-          <div className="flex justify-end mt-3">
-            <Button
-              variant="no_style"
-              type="button"
-              onClick={onCancel}
-              className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              Cancel
-            </Button>
-          </div>
         </div>
       </div>
     </div>

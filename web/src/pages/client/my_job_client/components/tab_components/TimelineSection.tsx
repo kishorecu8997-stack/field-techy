@@ -103,9 +103,16 @@ const TimelineSection: React.FC = () => {
 
   const accentColor = jobStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : TIMELINE_CARD_COLORS.green;
   const progressAccentColor = progressStatus === TIMELINE_STATUS.rejected ? TIMELINE_CARD_COLORS.red : progressStatus === TIMELINE_STATUS.revision ? TIMELINE_CARD_COLORS.orange : TIMELINE_CARD_COLORS.green;
-  // const revisionUpdateAccentColor = TIMELINE_CARD_COLORS.orange; // COMMENTED OUT - Revision Request Update Card is hidden
   const shortBreakAccentColor = TIMELINE_CARD_COLORS.red;
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
+
+  const actionRequiredCount = [
+    progressStatus,
+    revisionUpdateStatus,
+    shortBreakStatus,
+    finalStatementStatus,
+    jobStatus,
+  ].filter((status) => status === TIMELINE_STATUS.pending).length;
 
   const shortBreakStatusNode =
     shortBreakStatus === TIMELINE_STATUS.approved ? (
@@ -389,7 +396,7 @@ const TimelineSection: React.FC = () => {
 
       <div className="px-4 pb-4 space-y-6">
         {/* Action Required Badge - Always at the top */}
-        <ActionRequiredBadge />
+        <ActionRequiredBadge count={actionRequiredCount} />
 
         {/* Progress Update Card */}
         <ProgressUpdateCard
