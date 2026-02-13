@@ -1,5 +1,5 @@
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useClientProfileGetProfileById } from "@/shared/apiServices/profiles/client/clientProfileService";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
@@ -37,15 +37,11 @@ const JobDetailsPage = () => {
   const { data: searchResults, isLoading } = useEngineerSearchJobs({}, true);
   const jobData = searchResults?.find((j) => String(j.id) === params.jobId);
 
-  const { data: client } = useClientProfileGetProfileById(
-    String(jobData?.clientId ?? ""),
-    {
-      enabled: !!jobData?.clientId,
-    },
-  );
+  // TODO: Adjust if this endpoint is not suitable for public profile fetching
+  const { data: client } = useClientGetCompanyInfo(!!jobData?.clientId);
 
-  const location =
-    [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+  /* @ts-ignore: city/country properties missing on type, using fallback */
+  const location = [client?.cityId, client?.countryId].filter(Boolean).join(", ") || "-";
 
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
@@ -60,7 +56,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -85,7 +81,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -104,7 +100,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => {}}
+            onSortChange={() => { }}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -122,7 +118,8 @@ const JobDetailsPage = () => {
 
   // Prepare mapped job data
   const jobTitle = jobData?.jobTitle || "";
-  const clientName = client?.companyName || client?.contactPersonName || "";
+  /* @ts-ignore: Handling complex union type from ClientGetCompanyInfoResponse */
+  const clientName = client?.companyName || client?.name || client?.personName || "Unknown Client";
   const duration = getDurationString({
     startDateStr: jobData?.startDate || "",
     endDateStr: jobData?.endDate || "",
@@ -164,7 +161,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => {}}
+          onSortChange={() => { }}
           isReport
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">

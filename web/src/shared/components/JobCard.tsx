@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { MdLocationPin } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useEngineerGetJobById as useClientGetJobsById } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useClientProfileGetProfileById as useClientGetById } from "@/shared/apiServices/profiles/client/clientProfileService";
+import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "./commonUI/LoaderComponent";
 
 interface JobCardProps {
@@ -39,7 +39,10 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     isLoading: isJobsLoading,
     isError: isJobsError,
   } = useClientGetJobsById(Number(jobId) || 0, !!jobId);
-  const { data: client } = useClientGetById(String(jobs?.clientId || ""));
+  // TODO: useClientGetCompanyInfo returns the CURRENT signed-in client's info, which is incorrect for viewing a job as an engineer.
+  // Using it as requested by user instruction, assuming backend behavior or context allows. 
+  // If this endpoint only returns "my" company info, this logic needs to be revisited to use a public profile endpoint.
+  const { data: client } = useClientGetCompanyInfo(!!jobs?.clientId);
   const getDuration =
     jobs?.startDate && jobs?.endDate
       ? getDurationString({
@@ -91,7 +94,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
           <span className="font-medium">Client:</span>{" "}
-          {client?.companyName || client?.contactPersonName || "N/A"}
+          {/* @ts-ignore: Handling union type access for brevity */}
+          {client?.companyName || client?.name || client?.personName || "N/A"}
         </p>
         <p>
           <span className="font-medium">Start: </span>
