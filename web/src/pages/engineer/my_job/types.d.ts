@@ -1,4 +1,10 @@
-import type { SortOption } from "../search_result/types";
+import type React from "react";
+import type { Dispatch, SetStateAction } from "react";
+import type {
+  JobStatus as SearchJobStatus,
+  SortOption,
+  WorkingType as SearchWorkingType,
+} from "../search_result/types";
 
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
@@ -16,12 +22,23 @@ import type { SortOption } from "../search_result/types";
 /**
  * Represents the possible statuses for a job.
  */
-export type JobStatus = "active" | "completed" | "pending" | "cancelled";
+export type JobStatus =
+  | SearchJobStatus
+  | "active"
+  | "completed"
+  | "pending"
+  | "cancelled"
+  | string;
 
 /**
  * Represents the type of work arrangement for a job.
  */
-export type WorkingType = "remote" | "on-site" | "hybrid";
+export type WorkingType =
+  | SearchWorkingType
+  | "remote"
+  | "on-site"
+  | "hybrid"
+  | string;
 
 /**
  * Props for the header component on "My Jobs" pages.
@@ -84,26 +101,25 @@ export interface JobHeaderCardProps {
   title: string;
   client: string;
   duration: string;
-  type?: string;
-  status?: StatusType | string;
+  type?: WorkingType | string;
+  status?: JobStatus | string;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<SetStateAction<string>>;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | undefined>
+  >;
+  OfferJobStatus?: OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
   numberOfApplicants?: number;
   hideDurationAndClient?: boolean;
+  activeTab?: string;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  onOpenFinalStatement?: () => void;
 }
 
 export interface JobTabsProps {
@@ -158,6 +174,69 @@ export interface LogEntry {
   children?: React.ReactNode;
 }
 
+export interface ProgressUpdate {
+  title: string;
+  description: string;
+  attachmentName?: string;
+  timestamp: string;
+  statusText?: string;
+  statusColor?: string;
+  accentColor?: string;
+  detailsType?: "break" | "revision" | string;
+  detailsLabel?: string;
+  startTime?: string;
+  endTime?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  reason?: string;
+  requestType?: string;
+}
+
+// Break request form fields used in break request modal/form
+export type BreakRequestFormFields = {
+  requestType: "Short Term Break" | "Long Term Break" | "";
+  startTime: string;
+  endTime: string;
+  startDate: string;
+  endDate: string;
+  duration: string;
+  reason: string;
+};
+
+// Update Log form fields
+export type UpdateLogFormFields = {
+  title: string;
+  notes: string;
+  attachments: FileList | null;
+};
+
+/**
+ * Represents the possible statuses for an offered job.
+ */
+export const OfferedJobStatus = {
+  initial: "initial",
+  accepted: "accepted",
+  declined: "declined",
+  started: "started",
+  checkedIn: "checked-in",
+} as const;
+
+export type OfferedJobStatusType =
+  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+
+/**
+ * Represents a job-like object with common job properties.
+ */
+export type JobLike = {
+  startDate?: string | Date | null;
+  jobDuration?: string | number | null;
+  duration?: string | number | null;
+  status?: string | null;
+  jobTitle?: string | null;
+  title?: string | null;
+};
+
 /**
  * Props for a component that renders a list of log entries.
  */
@@ -210,6 +289,7 @@ export interface WorkSubmissionComponentProps {
 
 /**
  * Represents a generic label-value pair for displaying information.
+ * Represents work information items.
  */
 export interface WorkInfoItem {
   label: string;
@@ -234,4 +314,40 @@ export interface ProposalFormData {
  */
 export interface ProposalInfoTabProps {
   submittedProposal: ProposalFormData;
+}
+
+/**
+ * Props for the component used to submit work details.
+ */
+export interface WorkSubmissionComponentProps {
+  name: string;
+  workDates: string;
+  startTime: string;
+  endTime: string;
+  onsiteTask: boolean;
+  location: string;
+  fileName: string;
+  notes: string;
+  signatureUrl?: string;
+  isApproved?: boolean;
+  paymentStatus: string;
+  reviewerName: string;
+  rating: number;
+  reviewComment: string;
+}
+
+/**
+ * Props for the RevisionRequestUpdateForm component
+ */
+export interface RevisionRequestUpdateFormProps {
+  onClose: () => void;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+}
+
+/**
+ * Form fields for revision update submission
+ */
+export interface RevisionUpdateFields {
+  notes: string;
+  attachments: FileList | null;
 }

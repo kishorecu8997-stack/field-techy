@@ -8,7 +8,8 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
-import BreakRequest from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequest";
+import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
+import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 
 /**
  * EngineersActions Component
@@ -25,21 +26,25 @@ const EngineersActions = ({
   isSendProposal,
   OfferJobStatus,
   status,
+  activeTab,
+  isDummyJob,
+  onAddProgressUpdate,
+  onOpenFinalStatement,
 }: {
-  setOfferJobStatus?: Dispatch<SetStateAction<string>>;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | undefined>
+  >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
   setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
   status?: JobStatus | string;
-  OfferJobStatus?:
-    | "initial"
-    | "accepted"
-    | "declined"
-    | "started"
-    | "checked-in"
-    | undefined;
+  OfferJobStatus?: OfferedJobStatusType | undefined;
+  activeTab?: string;
+  isDummyJob?: boolean;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  onOpenFinalStatement?: () => void;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -68,52 +73,13 @@ const EngineersActions = ({
     });
   };
 
-  const handleConfirmStartJob = async () => {
-    await showPopup({
-      title: "Start Job",
-      body: "Are you sure you want to start this job?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "danger",
-        },
-        {
-          label: "Yes, start",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            toast.success("Job started successfully");
-            close(true);
-            setOfferJobStatus?.("started");
-          },
-        },
-      ],
-    });
+  const handleConfirmStartJob = () => {
+    toast.success("Job started successfully");
+    setOfferJobStatus?.("started");
   };
 
-  const handleConfirmCheckIn = async () => {
-    await showPopup({
-      title: "Check In",
-      body: "Are you sure you want to check in this job?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "danger",
-        },
-        {
-          label: "Yes, check in",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            toast.success("Job checked in successfully");
-            close(true);
-            setOfferJobStatus?.("checked-in");
-          },
-        },
-      ],
-    });
+  const handleFinalStatement = () => {
+    onOpenFinalStatement?.();
   };
 
   const handleViewJobPosting = async () => {
@@ -141,10 +107,40 @@ const EngineersActions = ({
   const handlebreakRequest = async () => {
     await showPopup({
       title: "",
-      body: <BreakRequest onClose={closePopup} />,
+      body: (
+        <BreakRequestForm
+          onClose={closePopup}
+          onAddProgressUpdate={onAddProgressUpdate}
+        />
+      ),
+      bodyClassName: "overflow-visible",
+      containerClassName: "overflow-visible max-h-none h-auto sm:max-w-2xl",
       actionButtons: [],
     });
   };
+
+  const postStartActions = (
+    <div className="flex flex-wrap gap-2 w-fit">
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handleFinalStatement}
+      >
+        Final Statement
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handlebreakRequest}
+      >
+        Break Request
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={() => setOpen?.(true)}
+      >
+        Create Log
+      </Button>
+    </div>
+  );
 
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
@@ -161,7 +157,7 @@ const EngineersActions = ({
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
               onClick={() => setOpen?.(true)}
             >
-              Update Log
+              Create Log
             </Button>
             <Button
               className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -180,7 +176,18 @@ const EngineersActions = ({
           </div>
         ) : status === JOB_STATUSES.new ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
-            {!isSendProposal ? (
+            {isDummyJob && activeTab === "Timeline" ? (
+              OfferJobStatus === "started" ? (
+                postStartActions
+              ) : (
+                <Button
+                  className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                  onClick={() => handleConfirmStartJob()}
+                >
+                  Start Job
+                </Button>
+              )
+            ) : !isSendProposal ? (
               <Button
                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                 onClick={() => setSendProposal?.(true)}
@@ -239,21 +246,14 @@ const EngineersActions = ({
                 </Button>
               </div>
             ) : OfferJobStatus === "started" ? (
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => {
-                  handleConfirmCheckIn();
-                }}
-              >
-                Check in
-              </Button>
+              postStartActions
             ) : (
               <div className="flex flex-wrap gap-2 w-fit">
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                   onClick={() => setOpen?.(true)}
                 >
-                  Update Log
+                  Create Log
                 </Button>
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
