@@ -1,7 +1,7 @@
 import { addToQueue } from "./offlineQueue";
 import type { OfflineAction } from "./types";
 import { apiClient } from "@/shared/apiServices/apiClient";
-import { engineerRequestStart, engineerSubmitSignOff } from "@/api/sdk.gen";
+import { engineerRequestStart } from "@/api/sdk.gen";
 
 /**
  * Fallback implementation of updateJobStatus used when the network is unstable.
@@ -34,21 +34,10 @@ export async function offlineAwareUpdateJobStatus(
         body: { assignmentId: Number(jobId) }, // Assuming jobId is assignmentId for start
       });
     } else if (status === "Completed") {
-      const placeholderFile = {
-        filename: "placeholder",
-        size: 0,
-        mimeType: "application/octet-stream",
-      };
-      return await engineerSubmitSignOff({
-        client: apiClient,
-        // Note: submitSignOff requires attachments. Using placeholders for offline fallback.
-        body: {
-          assignmentId: Number(jobId),
-          workAttachment: placeholderFile,
-          signatureAttachment: placeholderFile,
-          comments: "Offline auto-completion",
-        },
-      });
+      console.warn(
+        "Skipping 'Completed' status update via offline wrapper. Real attachments are required.",
+      );
+      return null;
     }
 
     // Default or other statuses - simplistic implementation

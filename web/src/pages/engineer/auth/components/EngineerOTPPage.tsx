@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useVerifyOtp } from "@/shared/apiServices/commonOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
+import type { AppVerifyOtpData } from "@/api";
 
 interface EngineerOTPPageProps {
   header?: string;
@@ -46,6 +47,7 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
   handleNavigate,
   buttonText,
   verificationType,
+  contact,
   onResendOTP,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -68,10 +70,16 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
 
   const handleSubmit = async (data: OTPValues) => {
     try {
+      const body =
+        verificationType === "email"
+          ? { type: "email" as const, email: contact, otp: data.otp }
+          : { type: "phone" as const, phone: contact, otp: data.otp };
+
       await verifyOtp({
-        body: {
-          type: verificationType,
-          code: data.otp,
+        body: body as AppVerifyOtpData["body"] & {
+          email?: string;
+          phone?: string;
+          otp: string;
         },
         headers: { authorization: "" }, // Handled by interceptor, but required by type
       });
@@ -121,9 +129,8 @@ const EngineerOTPPage: React.FC<EngineerOTPPageProps> = ({
                 type="button"
                 onClick={handleResend}
                 disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`text-green-600 dark:text-green-400 font-medium ${timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 Resend
               </Button>

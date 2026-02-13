@@ -4,6 +4,7 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import ExploreEngineerHeaderCard from "@/shared/components/cards/client/ExploreEngineerHeaderCard";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import { useClientActionOnAssignment } from "@/shared/apiServices/client/clientOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -22,6 +23,8 @@ const ManageExploreEngineer = () => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
 
+  const { mutateAsync: actionOnAssignment } = useClientActionOnAssignment();
+
   const handleAccept = async () => {
     await showPopup({
       title: "Assign Job",
@@ -39,11 +42,23 @@ const ManageExploreEngineer = () => {
           label: "Yes, accept",
           variant: "primary",
           value: "accept",
-          action: (close) => {
-            navigate(
-              `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
-            );
-            close(true);
+          action: async (close) => {
+            try {
+              await actionOnAssignment({
+                body: {
+                  assignmentId: Number(params.id),
+                  // this data should be come from the client data or job list
+                  pendingApproval: "application",
+                  action: "approve",
+                },
+              });
+              navigate(
+                `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
+              );
+              close(true);
+            } catch (error) {
+              console.error(error);
+            }
           },
         },
       ],
@@ -51,7 +66,41 @@ const ManageExploreEngineer = () => {
   };
 
   const handleDecline = () => {
-    console.log("Declined");
+    showPopup({
+      title: "Decline Proposal",
+      body: "Are you sure you want to decline this proposal?",
+      actionButtons: [
+        {
+          label: "No",
+          variant: "secondary",
+          value: "cancel",
+          action: (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, decline",
+          variant: "primary",
+          value: "decline",
+          action: async (close) => {
+            try {
+              await actionOnAssignment({
+                body: {
+                  assignmentId: Number(params.id),
+                  // this data should be come from the client data or job list
+                  pendingApproval: "application",
+                  action: "reject",
+                },
+              });
+              navigate(-1);
+              close(true);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+        },
+      ],
+    });
   };
 
   return (

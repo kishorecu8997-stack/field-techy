@@ -40,12 +40,13 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     isError: isJobsError,
   } = useClientGetJobsById(Number(jobId) || 0, !!jobId);
   const { data: client } = useClientGetById(String(jobs?.clientId || ""));
-  const getDuration = jobs?.startDate
-    ? getDurationString({
+  const getDuration =
+    jobs?.startDate && jobs?.endDate
+      ? getDurationString({
         startDateStr: jobs.startDate,
-        endDateStr: jobs.endDate as string,
+        endDateStr: jobs.endDate,
       })
-    : undefined;
+      : "N/A";
   if (isJobsLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh] w-full col-span-2">
