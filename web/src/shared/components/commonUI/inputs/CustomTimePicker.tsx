@@ -19,6 +19,7 @@ interface TimePickerProps {
   onChange?: (value: string) => void;
   containerClassName?: string;
   inputClassName?: string;
+  dropdownPosition?: "above" | "below";
 }
 
 /**
@@ -55,6 +56,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   onChange,
   containerClassName = "w-full",
   inputClassName = "w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-md px-4 py-3 bg-white flex items-center justify-between cursor-pointer shadow-sm",
+  dropdownPosition = "above",
 }) => {
   const { control, clearErrors } = useFormContext();
   const [open, setOpen] = useState(false);
@@ -233,13 +235,17 @@ export const TimePicker: React.FC<TimePickerProps> = ({
                 <Clock className="w-5 h-5 text-gray-400" />
               </button>
 
-              {/* ---- POPUP ALWAYS OPENS ABOVE ---- */}
+              {/* ---- POPUP POSITION ---- */}
               <div
                 className={`
                   absolute z-50 bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-600 rounded-lg p-3 flex gap-4
                   transition-all duration-200 ease-out transform
 
-                  bottom-full mb-2 origin-bottom
+                  ${
+                    dropdownPosition === "below"
+                      ? "top-full mt-2 origin-top"
+                      : "bottom-full mb-2 origin-bottom"
+                  }
 
                   ${
                     open

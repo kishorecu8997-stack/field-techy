@@ -1,4 +1,7 @@
-import type { AdminGetJobsQuery, AdminGetJobsResponse } from "@/shared/apiServices/admin/adminOpenApiService";
+import type {
+  AdminGetJobsQuery,
+  AdminGetJobsResponse,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 export type JobItem = AdminGetJobsResponse["data"][number];
 export interface JobByCategoryProps {
@@ -26,7 +29,6 @@ export interface JobByCategoryProps {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
 }
-
 
 export interface JobDataProps {
   id: string;

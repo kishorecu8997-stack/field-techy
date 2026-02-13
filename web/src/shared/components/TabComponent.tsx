@@ -10,6 +10,11 @@ interface TabComponentProps {
   tabs: TabItem[];
   defaultActiveTab?: string;
   isShowTabs?: boolean;
+  onTabChange?: (tabLabel: string) => void;
+  activeClassName?: string;
+  inactiveClassName?: string;
+  neutralActiveTabClass?: string;
+  neutralInactiveTabClass?: string;
 }
 
 /**
@@ -32,7 +37,14 @@ const TabComponent: React.FC<TabComponentProps> = ({
   tabs,
   defaultActiveTab,
   isShowTabs = true,
+  onTabChange,
+  activeClassName = "bg-teal-800 text-white",
+  inactiveClassName = "bg-white border border-gray-300 dark:border-gray-600 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700",
+  neutralActiveTabClass,
+  neutralInactiveTabClass,
 }) => {
+  const finalActiveClassName = neutralActiveTabClass || activeClassName;
+  const finalInactiveClassName = neutralInactiveTabClass || inactiveClassName;
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
 
   const visibleTabs = tabs.filter((tab) => !tab.hide);
@@ -41,6 +53,11 @@ const TabComponent: React.FC<TabComponentProps> = ({
   useEffect(() => {
     setActiveTab(defaultActiveTab);
   }, [defaultActiveTab]);
+
+  const handleTabClick = (tabLabel: string) => {
+    setActiveTab(tabLabel);
+    onTabChange?.(tabLabel);
+  };
 
   if (visibleTabs.length === 0) {
     return (
@@ -57,11 +74,11 @@ const TabComponent: React.FC<TabComponentProps> = ({
           visibleTabs.map((tab) => (
             <button
               key={tab.label}
-              onClick={() => setActiveTab(tab.label)}
+              onClick={() => handleTabClick(tab.label)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                 activeTab === tab.label
-                  ? "bg-teal-800 text-white"
-                  : "bg-white border border-gray-300 dark:border-gray-600 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+                  ? finalActiveClassName
+                  : finalInactiveClassName
               }`}
             >
               {tab.label}
@@ -70,11 +87,7 @@ const TabComponent: React.FC<TabComponentProps> = ({
       </div>
 
       <div className="mt-4">
-        {visibleTabs.find((tab) => tab.label === activeTab)?.content || (
-          <div className="p-6 bg-gray-50 rounded-lg text-gray-500">
-            No content available for selected tab.
-          </div>
-        )}
+        {visibleTabs.find((tab) => tab.label === activeTab)?.content || null}
       </div>
     </div>
   );

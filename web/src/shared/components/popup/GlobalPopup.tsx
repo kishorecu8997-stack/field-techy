@@ -27,7 +27,11 @@ export function GlobalPopup() {
         if (e.target === e.currentTarget) closePopup(null);
       }}
     >
-      <div className="w-full sm:max-w-md sm:rounded-lg sm:shadow-xl max-h-full flex flex-col bg-white dark:bg-gray-800 sm:inset-auto fixed sm:relative h-full sm:h-auto">
+      <div
+        className={`w-full sm:max-w-md sm:rounded-lg sm:shadow-xl max-h-full flex flex-col bg-white dark:bg-gray-800 sm:inset-auto fixed sm:relative h-full sm:h-auto ${
+          popup.props.containerClassName ?? ""
+        }`}
+      >
         <GenericPopup {...popup.props} onClose={closePopup} />
       </div>
     </div>
