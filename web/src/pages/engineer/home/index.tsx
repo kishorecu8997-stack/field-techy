@@ -103,7 +103,10 @@ const Home = () => {
   }, [jobs]);
 
   const recommendedJobs = useMemo(() => {
-    return jobs || [];
+    return (
+      jobs?.filter((job) => job.status === "Posted" || job.status === "NEW") ||
+      []
+    );
   }, [jobs]);
 
   const totalPages = Math.ceil(recommendedJobs.length / jobsPerPage);
