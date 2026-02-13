@@ -70,7 +70,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
     if (!status) return;
     await showPopup({
       title: `${status.charAt(0).toUpperCase() + status.slice(1)} Job`,
-      body: `Are you sure you want to ${status} this job?`,
+      body: `${status === "pending" ? "Are you sure you want to mark this job as pending?" : `Are you sure you want to ${status} this job?`}`,
       actionButtons: [
         {
           label: "Cancel",
@@ -241,7 +241,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         {currentStatus !== "Flagged" && (
           <>
             <SelectMenu
-              className="z-20"
+              className="z-30"
               placeholder="Filter by"
               value={filterBy}
               onChange={setFilterBy}
@@ -249,7 +249,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
             />
             <SelectMenu
               placeholder="Select Region"
-              className="z-20"
+              className="z-30"
               options={
                 adminLookupData?.map((item) => ({
                   value: item.name ?? "",
@@ -262,7 +262,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
 
             <SelectMenu
               placeholder="Category"
-              className="z-20"
+              className="z-30"
               value={serviceCategoryId ? String(serviceCategoryId) : null}
               onChange={(val) => setServiceCategoryId(val ? Number(val) : null)}
               options={categoryOptions}
