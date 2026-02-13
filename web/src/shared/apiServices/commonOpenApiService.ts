@@ -32,10 +32,13 @@ export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
  * Note: Empty authorization header is required by type definition,
  * but gets overridden by apiClient interceptor with actual JWT token.
  */
-export async function getDownloadUrl(fileType: ProfileFileType) {
+export async function getDownloadUrl(
+  fileType: ProfileFileType,
+  userId?: number | null,
+) {
   const { data } = await appDownloadProfileFileSdk({
     client: apiClient,
-    query: { fileType },
+    query: { fileType, userId: userId ?? undefined } as unknown as AppDownloadProfileFileData["query"],
     headers: { authorization: "" },
   });
   return data;
@@ -91,6 +94,7 @@ export function useAppUploadProfileFile(options?: {
  */
 export function useAppDownloadProfileFile(
   fileType: ProfileFileType | null | undefined,
+  userId?: number | null,
   enabled: boolean = true,
 ) {
   return useQuery({
@@ -98,7 +102,10 @@ export function useAppDownloadProfileFile(
       client: apiClient,
       // Use a valid member of ProfileFileType as a fallback when disabled
       // to satisfy the type system without using 'any'
-      query: { fileType: (fileType || "profilePicture") as ProfileFileType },
+      query: {
+        fileType: (fileType || "profilePicture") as ProfileFileType,
+        userId: userId ?? undefined,
+      } as unknown as AppDownloadProfileFileData["query"],
       headers: { authorization: "" },
     }),
     enabled: enabled && !!fileType,

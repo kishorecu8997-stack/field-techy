@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
-export interface Column<T> {
-  key: keyof T | string;
+export interface Column<T extends object> {
+  key?: keyof T | string;
   label: string | React.ReactNode;
   align?: "left" | "center" | "right";
   dataCellAlign?: "left" | "center" | "right";
-  renderCell?: (row: T) => React.ReactNode;
+  renderCell?: (row: T, index: number) => React.ReactNode;
 }
 
-export interface CustomTableProps<T> {
+export interface CustomTableProps<T extends object> {
   columns: Column<T>[];
   initialPageSize?: number;
   api?: (params: {
@@ -20,34 +20,41 @@ export interface CustomTableProps<T> {
   data?: T[];
   externalFilters?: { [key: string]: string };
   showPagination?: boolean;
+  loading?: boolean;
+  error?: string | null;
 }
 
 /**
  * @file CustomTable.tsx
  * @description Reusable, responsive data table with smart sticky header and pagination that never hides.
  */
-export function CustomTable<T>({
+export function CustomTable<T extends object>({
   columns,
   initialPageSize = 10,
   api,
   data,
   externalFilters,
   showPagination = true,
+  loading: externalLoading,
+  error: externalError,
 }: CustomTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [serverData, setServerData] = useState<T[]>([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const [internalError, setInternalError] = useState<string | null>(null);
+
+  const loading = externalLoading ?? internalLoading;
+  const error = externalError ?? internalError;
 
   // ---------- Fetch (Server Pagination) ----------
   useEffect(() => {
     const fetchData = async () => {
       if (!api) return;
       try {
-        setLoading(true);
-        setError(null);
+        setInternalLoading(true);
+        setInternalError(null);
         const res = await api({
           page: currentPage,
           pageSize,
@@ -56,9 +63,9 @@ export function CustomTable<T>({
         setServerData(res.data);
         setTotal(res.total);
       } catch {
-        setError("Failed to load data.");
+        setInternalError("Failed to load data.");
       } finally {
-        setLoading(false);
+        setInternalLoading(false);
       }
     };
     fetchData();
@@ -141,10 +148,10 @@ export function CustomTable<T>({
                               )} text-gray-800 dark:text-gray-100`}
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
-                                : ((row as Record<string, unknown>)[
-                                    col.key as string
-                                  ] as React.ReactNode)}
+                                ? col.renderCell(row, i)
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </td>
                           ))}
                         </tr>
@@ -180,10 +187,10 @@ export function CustomTable<T>({
                               className="flex justify-end"
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
-                                : ((row as Record<string, unknown>)[
-                                    col.key as string
-                                  ] as React.ReactNode)}
+                                ? col.renderCell(row, i)
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </div>
                           ) : (
                             <div
@@ -195,10 +202,10 @@ export function CustomTable<T>({
                               </span>
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
-                                  ? col.renderCell(row)
-                                  : ((row as Record<string, unknown>)[
-                                      col.key as string
-                                    ] as React.ReactNode)}
+                                  ? col.renderCell(row, i)
+                                  : col.key
+                                    ? (row[col.key as keyof T] as React.ReactNode)
+                                    : null}
                               </span>
                             </div>
                           );

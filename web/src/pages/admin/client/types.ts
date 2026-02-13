@@ -1,16 +1,81 @@
 export interface ManageClientProps {
   id: number;
-  clientID: string;
-  details: string;
-  documents: string;
-  location: string;
+  userId: number;
+  clientCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string | null;
   registrationDate: string;
-  walletBalance: string;
-  kycStatus: string;
-  approvalStatus: string;
-  requiredType: string;
+  balance: number;
+  profileStatus: string;
+  userStatus: string;
+  statusHistory?: Array<{
+    type: "suspension" | "block";
+    reason: string;
+    startDate?: string;
+    endDate?: string;
+    actionDate: string;
+    adminName: string;
+    revokedAt?: string | null;
+    revokedBy?: string | null;
+  }>;
+  // Other fields from detail view that might be missing in list view
+  clientType?: string;
+  companyName?: string;
+  personName?: string;
+  address?: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  postalCode?: string;
+  industryId?: number;
+  documentType?: string;
+  documentNumber?: string;
+  profilePictureId?: number | null;
+  govIdDocId?: number | null;
+  certificateDocId?: number | null;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    status: string;
+    user_role: string;
+    email_verified: boolean;
+    phone_verified: boolean;
+    updated_at: string;
+    created_at: string;
+  };
+  city?: {
+    id: number;
+    name: string;
+    state_id: number;
+  };
+  country?: {
+    id: number;
+    name: string;
+  };
 }
 
+export type DocumentType =
+  | "profilePicture"
+  | "resumeFile"
+  | "govIdDoc"
+  | "certificateDoc"
+  | null
+  | undefined;
+
+export interface DocumentOption {
+  value: string;
+  label: string;
+}
+
+export const documentType: DocumentOption[] = [
+  { value: "resumeFile", label: "Resume File" },
+  { value: "govIdDoc", label: "Government Document" },
+  { value: "certificateDoc", label: "Certificate Document" },
+];
 export interface walletViewData {
   id: number;
   dateTime: string;
@@ -20,7 +85,7 @@ export interface walletViewData {
   status: string;
 }
 
-interface ClientFormData {
+export interface ClientFormData {
   profileImage?: string | null;
   companyName: string;
   phoneNumber: string;
@@ -38,7 +103,7 @@ interface ClientFormData {
   qualificationCertificate: string | null;
 }
 
-interface CompanyInfo {
+export interface CompanyInfo {
   profileImage?: string;
   companyName: string;
   businessType: string;
