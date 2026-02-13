@@ -204,7 +204,9 @@ export function CustomTable<T extends object>({
                                 {col.renderCell
                                   ? col.renderCell(row, i)
                                   : col.key
-                                    ? (row[col.key as keyof T] as React.ReactNode)
+                                    ? (row[
+                                        col.key as keyof T
+                                      ] as React.ReactNode)
                                     : null}
                               </span>
                             </div>
