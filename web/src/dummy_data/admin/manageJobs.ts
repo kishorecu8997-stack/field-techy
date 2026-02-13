@@ -146,8 +146,9 @@ export const Region = [
 ];
 
 export const AllJobType = [
-  { value: "fullTime", label: "Full Time" },
-  { value: "onSite", label: "On Site" },
+  { value: "On site", label: "On Site" },
+  { value: "Remote", label: "Remote" },
+  { value: "Hybrid", label: "Hybrid" },
 ];
 
 export const manageFlaggedJobs: ManageFlaggedJobProps[] = [
