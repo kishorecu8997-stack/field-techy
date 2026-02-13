@@ -71,13 +71,9 @@ const JobOverviewCard: React.FC<JobOverview> = ({
           <nav className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             <NavLink
               to={absoluteUrls.client.home.my_jobs}
-              className="hover:text-teal-800 text-[1rem] whitespace-nowrap"
+              className={`px-3 py-1 rounded-full text-xs font-medium ${buttonColor} text-gray-900 dark:text-white text-opacity-100 hover:text-opacity-80 transition duration-200 cursor-pointer whitespace-nowrap`}
             >
-              <button
-                className={`px-3 py-1 rounded-full text-xs font-medium ${buttonColor} transition-colors duration-200 hover:opacity-90 cursor-pointer`}
-              >
-                View Jobs
-              </button>
+              View Jobs
             </NavLink>
           </nav>
         )}
