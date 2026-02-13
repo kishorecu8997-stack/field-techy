@@ -11,10 +11,11 @@ import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField
 import { absoluteUrls } from "@/config/urls";
 import { usePopupStore } from "@/shared/store/popupStore";
 import type { ProfileFormData } from "./types";
+import { useAdminUpdatePersonalInfo } from "@/shared/apiServices/admin/adminOpenApiService";
 import {
-  useAdminUpdatePersonalInfo,
-} from "@/shared/apiServices/admin/adminOpenApiService";
-import { useAdminProfile, useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
+  useAdminProfile,
+  useAdminProfileStore,
+} from "@/shared/store/useAdminProfileStore";
 import { useProfileFileUpload } from "@/shared/hooks/useProfileFileUpload";
 import { useAppDownloadProfileFile } from "@/shared/apiServices/commonOpenApiService";
 

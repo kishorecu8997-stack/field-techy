@@ -1,4 +1,7 @@
-import type { AdminGetJobsQuery, AdminGetJobsResponse } from "@/shared/apiServices/admin/adminOpenApiService";
+import type {
+  AdminGetJobsQuery,
+  AdminGetJobsResponse,
+} from "@/shared/apiServices/admin/adminOpenApiService";
 
 export type JobItem = AdminGetJobsResponse["data"][number];
 export interface JobByCategoryProps {
@@ -21,7 +24,6 @@ export interface JobByCategoryProps {
   showStatusSelect?: boolean;
   currentStatus?: AdminGetJobsQuery["status"] | undefined;
 }
-
 
 export interface JobDataProps {
   id: string;
