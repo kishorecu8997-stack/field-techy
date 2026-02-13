@@ -9,7 +9,7 @@ import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import SelectMenu from "@/shared/components/SelectMenu";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -52,10 +52,16 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   onClearFilters,
   showStatusSelect = false,
   currentStatus,
+  page = 1,
+  limit = 10,
+  total,
+  onPageChange,
+  onPageSizeChange,
 }) => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
   const [rowStatuses, setRowStatuses] = useState<Record<number, string>>({});
+  const previousStatusRef = useRef<Record<number, string>>({});
 
   const { data: categories } = useAppGetLookupData("serviceCategories");
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
@@ -68,7 +74,7 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
 
   const handleStatusChange = async (job: JobItem, status: string | null) => {
     if (!status) return;
-    await showPopup({
+    const result = await showPopup({
       title: `${status.charAt(0).toUpperCase() + status.slice(1)} Job`,
       body: `${status === "pending" ? "Are you sure you want to mark this job as pending?" : `Are you sure you want to ${status} this job?`}`,
       actionButtons: [
@@ -83,12 +89,31 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           variant: status.toLowerCase() === "approve" ? "primary" : "danger",
           action: async (close: (v: boolean) => void) => {
             // TODO: call status update API
+            setRowStatuses((prev) => ({
+              ...prev,
+              [job.id]: status,
+            }));
+
             console.log("Updating status for job", job.id, "to", status);
             close(true);
           },
         },
       ],
     });
+
+    // If popup was cancelled (result is null/falsy), revert to previous status
+    if (!result) {
+      const prev = previousStatusRef.current[job.id];
+      setRowStatuses((old) => {
+        const updated = { ...old };
+        if (prev !== undefined) {
+          updated[job.id] = prev;
+        } else {
+          delete updated[job.id];
+        }
+        return updated;
+      });
+    }
   };
 
   const handleDeleteJob = async (job: JobItem) => {
@@ -118,7 +143,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   const columns: Column<JobItem>[] = [
     {
       label: "Sr.No.",
-      renderCell: (_row: JobItem, index: number) => index + 1,
+      renderCell: (_row: JobItem, index: number) =>
+        (page - 1) * limit + index + 1,
     },
     { key: "jobCode", label: "Job ID" },
     {
@@ -190,8 +216,11 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           return (
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] || row.status || ""}
+              value={rowStatuses[row.id] ?? row.status ?? ""}
               onChange={(value) => {
+                // Save current value before updating so we can revert on cancel
+                previousStatusRef.current[row.id] =
+                  rowStatuses[row.id] ?? row.status ?? "";
                 setRowStatuses((prev) => ({ ...prev, [row.id]: value ?? "" }));
                 handleStatusChange(row, value);
               }}
@@ -300,9 +329,13 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         <CustomTable<JobItem>
           columns={columns}
           data={data}
-          initialPageSize={10}
+          initialPageSize={limit}
           loading={isLoading}
           error={error ? "An error occurred while fetching jobs." : null}
+          totalCount={total}
+          currentPage={page}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
         />
       </div>
     </div>

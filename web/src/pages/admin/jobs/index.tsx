@@ -30,6 +30,8 @@ export default function ManageJobs() {
   const [search, setSearch] = useState("");
   const [filterBy, setFilterBy] = useState<string | null>(null);
   const [filterRegion, setFilterRegion] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   const tabsConfig: Array<{
     label: string;
@@ -52,12 +54,15 @@ export default function ManageJobs() {
     isLoading,
     error,
   } = useAdminGetJobs({
+    page,
+    limit,
     status: currentStatus,
     jobType: filterType,
     serviceCategoryId: serviceCategoryId ?? undefined,
   });
 
   const allJobs = jobsResponse?.data || [];
+  const total = jobsResponse?.total ?? 0;
 
   // Local filtering for search and budget as backend might not support all query params yet
   const filteredJobs = allJobs.filter((job) => {
@@ -93,6 +98,19 @@ export default function ManageJobs() {
     setSearch("");
     setFilterBy(null);
     setFilterRegion(null);
+    setPage(1);
+  };
+
+  const handleTabChange = (tabLabel: string) => {
+    setActiveTabLabel(tabLabel);
+    handleClearFilters();
+  };
+
+  const handlePageChange = (newPage: number) => setPage(newPage);
+
+  const handlePageSizeChange = (newSize: number) => {
+    setLimit(newSize);
+    setPage(1);
   };
 
   const tabs = tabsConfig.map((config) => ({
@@ -117,6 +135,11 @@ export default function ManageJobs() {
         onClearFilters={handleClearFilters}
         showStatusSelect={config.label === "All Jobs"}
         currentStatus={currentStatus}
+        page={page}
+        limit={limit}
+        total={total}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     ),
     hide: false,
@@ -136,7 +159,7 @@ export default function ManageJobs() {
         <AdminTabComponent
           tabs={tabs}
           activeTab={activeTabLabel}
-          onTabChange={setActiveTabLabel}
+          onTabChange={handleTabChange}
         />
       </div>
     </div>
