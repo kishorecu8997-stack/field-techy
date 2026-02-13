@@ -18,6 +18,8 @@ import {
   CustomTable,
   type Column,
 } from "@/shared/components/commonUI/custom_table";
+import { useEffect } from "react";
+import { scrollToTop } from "@/utils";
 
 interface SearchHistoryItem {
   id: string;
@@ -43,6 +45,9 @@ interface SearchHistoryItem {
  * <SearchAnalyticsPage />
  */
 const SearchAnalyticsPage: React.FC = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
   const totalSearches = getTotalSearches(searchEvents);
   const keywordFrequency = getKeywordFrequency(searchEvents);
   const searchTrends = getSearchTrends(searchEvents);

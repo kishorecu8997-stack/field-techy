@@ -189,7 +189,9 @@ const VerificationCard = ({
               </Button>
             ) : (
               <>
-                <OTPInput name="otp" length={6} errorAlign="center" />
+                <div className="flex flex-col w-full justify-center items-center ">
+                  <OTPInput name="otp" length={6} errorAlign="center" />
+                </div>
 
                 <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5 px-1">
                   <span>

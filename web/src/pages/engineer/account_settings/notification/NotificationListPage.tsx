@@ -15,6 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 import type { NotificationProps } from "../types";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import { scrollToTop } from "@/utils";
 
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
@@ -36,6 +37,7 @@ const NotificationListPage = () => {
   ];
 
   useEffect(() => {
+    scrollToTop();
     setNotification(Notificationfilter(tab, mockNotifications, search));
   }, [tab, search]);
 

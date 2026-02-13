@@ -17,6 +17,7 @@ import {
 } from "@/shared/apiServices/commonOpenApiService";
 import { useEngineerStore } from "@/shared/store/useEngineerStore";
 import { queryKeys } from "@/shared/apiServices/queryKeys";
+import { useAdminProfileStore } from "@/shared/store/useAdminProfileStore";
 
 export type ProfileFileType =
   | "profilePicture"
@@ -25,7 +26,7 @@ export type ProfileFileType =
   | "certificateDoc";
 
 export interface UseProfileFileUploadOptions {
-  onSuccess?: (data?: any) => void;
+  onSuccess?: (data?: unknown) => void;
   onError?: (error: unknown) => void;
 }
 
@@ -113,6 +114,8 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
       if (userId) {
         if (isEngineer) {
           fetchEngineerProfile(userId);
+        } else if (isAdmin) {
+          useAdminProfileStore.getState().refetchProfile();
         } else {
           fetchClientProfile();
         }
@@ -140,6 +143,10 @@ export const useProfileFileUpload = (options?: UseProfileFileUploadOptions) => {
         const previewUrl = URL.createObjectURL(file);
         if (isEngineer) {
           useEngineerStore.getState().setProfileImageUrl(previewUrl);
+        } else if (isAdmin) {
+          useAdminProfileStore.getState().syncProfile({
+            profilePicture: previewUrl,
+          });
         } else {
           useClientStore.getState().setProfileImageUrl(previewUrl);
         }

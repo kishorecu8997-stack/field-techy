@@ -79,9 +79,11 @@ export default function AdminLogin() {
 
   const handleSubmit = async (data: LoginFormData) => {
     await loginMutation({
-      email: data.email,
-      password: data.password,
-      userRole: UserRole.ADMIN,
+      body: {
+        email: data.email,
+        password: data.password,
+        userRole: UserRole.ADMIN,
+      },
     });
   };
 

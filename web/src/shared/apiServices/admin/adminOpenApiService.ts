@@ -1,11 +1,7 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
-  appChangePassword,
-  appForgotPassword,
-  appGetLookupData,
-  appLogin,
-  appResetPassword,
+  putAdminUsersByUserIdStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -17,10 +13,28 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
+  type GetAdminManageClientsData,
+  type PutAdminUsersByUserIdStatusData,
+  type PutAdminUsersByUserIdStatusResponses,
+  type PutAdminUsersByUserIdStatusErrors,
+  type AdminGetPersonalInfoResponse,
+  type AdminUpdatePersonalInfoResponse,
 } from "@/api";
-import { createClient } from "@/api/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  adminGetPersonalInfoOptions,
+  adminUpdatePersonalInfoMutation,
+  appChangePasswordMutation,
+  appForgotPasswordMutation,
+  appGetLookupDataOptions,
+  appLoginMutation,
+  appResetPasswordMutation,
+  getAdminManageClientsOptions,
+  putAdminUsersByUserIdStatusMutation,
+} from "@/api/@tanstack/react-query.gen";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
+import type { EngineerStatusType } from "@/pages/admin/engineer/types";
+import { apiClient } from "../apiClient";
 
 export const LookupTable = {
   Countries: "countries",
@@ -37,12 +51,7 @@ export const LookupTable = {
 } as const;
 
 export type LookupTable = (typeof LookupTable)[keyof typeof LookupTable];
-
 export type ClientType = "home" | "corporate";
-
-const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3001",
-});
 
 export type LoginBody = NonNullable<AppLoginData["body"]>;
 
@@ -50,34 +59,20 @@ export function useAdminLogin(options?: {
   onSuccess?: (data: AppLoginResponse) => void;
   onError?: (error: unknown) => void;
 }) {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: LoginBody) => {
-      const response = await appLogin({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppLoginResponse;
-    },
+    ...appLoginMutation({ client: apiClient }),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
 }
 
-export function useGetAdminPersonalInfo(token: string) {
+export function useGetAdminPersonalInfo() {
   return useQuery({
-    queryKey: [queryKeys.admin.all, token],
-    queryFn: async () => {
-      const response = await adminGetPersonalInfo({
-        client: apiClient,
-        throwOnError: true,
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    },
-    enabled: !!token,
+    ...adminGetPersonalInfoOptions({ client: apiClient }),
   });
 }
 
@@ -92,24 +87,13 @@ export function useAdminUpdatePersonalInfo(options?: {
   onSuccess?: (data: AdminUpdatePersonalInfoSuccess) => void;
   onError?: (error: unknown) => void;
 }) {
-  return useMutation<
-    AdminUpdatePersonalInfoSuccess,
-    unknown,
-    { body: AdminPersonalInfoBody; token: string }
-  >({
-    mutationFn: async ({ body, token }) => {
-      const response = await adminUpdatePersonalInfo({
-        client: apiClient,
-        body,
-        throwOnError: true,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdatePersonalInfoMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all });
+      options?.onSuccess?.(data);
     },
-    onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
 }
@@ -121,21 +105,7 @@ export function useAppChangePassword(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async ({
-      body,
-      token,
-    }: {
-      body: ChangePasswordBody;
-      token: string;
-    }) => {
-      const response = await appChangePassword({
-        client: apiClient,
-        body,
-        throwOnError: true,
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data as AppChangePasswordResponse;
-    },
+    ...appChangePasswordMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -148,14 +118,7 @@ export function useAppForgotPassword(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async (body: ForgotPasswordBody) => {
-      const response = await appForgotPassword({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppForgotPasswordResponse;
-    },
+    ...appForgotPasswordMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -168,14 +131,7 @@ export function useAppResetPassword(options?: {
   onError?: (error: unknown) => void;
 }) {
   return useMutation({
-    mutationFn: async (body: ResetPasswordBody) => {
-      const response = await appResetPassword({
-        client: apiClient,
-        body,
-        throwOnError: true,
-      });
-      return response.data as AppResetPasswordResponse;
-    },
+    ...appResetPasswordMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
@@ -193,15 +149,109 @@ export function useAppGetLookupData(
   },
 ) {
   return useQuery({
-    queryKey: [queryKeys.admin.all, "lookupData", table],
-    queryFn: async () => {
-      const response = await appGetLookupData({
-        client: apiClient,
-        throwOnError: true,
-        query: { table },
-      });
-      return response.data;
-    },
+    ...appGetLookupDataOptions({
+      client: apiClient,
+      query: { table },
+    }),
     ...options,
   });
+}
+
+export function useUpdateEngineerProfileStatus(options?: {
+  onSuccess?: (
+    data: PutAdminUsersByUserIdStatusResponses[200],
+    variables: {
+      userId: number;
+      profileStatus: EngineerStatusType;
+      token: string;
+    },
+  ) => void;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation<
+    PutAdminUsersByUserIdStatusResponses[200],
+    PutAdminUsersByUserIdStatusErrors | unknown,
+    { userId: number; profileStatus: EngineerStatusType; token: string }
+  >({
+    mutationFn: async ({ userId, profileStatus, token }) => {
+      const response = await putAdminUsersByUserIdStatus({
+        client: apiClient,
+        path: { userId },
+        body: { profileStatus },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        throwOnError: true,
+      });
+
+      return response.data;
+    },
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+}
+
+export type AdminManageClientsResponse = NonNullable<
+  GetAdminManageClientsData["body"]
+>;
+
+export function useAdminManageClients(options?: {
+  clientType: ClientType;
+  onSuccess?: (data: AdminManageClientsResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const { clientType, ...queryOptions } = options ?? {};
+
+  return useQuery({
+    ...getAdminManageClientsOptions({
+      client: apiClient,
+      query: {
+        clientType,
+      },
+    }),
+    ...queryOptions,
+  });
+}
+
+export type AdminClientsByUserIdStatusBody = NonNullable<
+  PutAdminUsersByUserIdStatusData["body"]
+>;
+
+export type AdminClientsByUserIdStatusResponse = NonNullable<
+  PutAdminUsersByUserIdStatusResponses[200]
+>;
+
+export function useAdminClientsByUserIdStatus(options?: {
+  onSuccess?: (data: AdminClientsByUserIdStatusResponse) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...putAdminUsersByUserIdStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["adminManageClients"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+/**
+ * Raw API functions for use outside of hooks (e.g. in Zustand stores)
+ */
+export async function getAdminPersonalInfo() {
+  const response = await adminGetPersonalInfo({
+    client: apiClient,
+    throwOnError: true,
+  });
+  return response.data as AdminGetPersonalInfoResponse;
+}
+
+export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
+  const response = await adminUpdatePersonalInfo({
+    client: apiClient,
+    body,
+    throwOnError: true,
+  });
+  return response.data as AdminUpdatePersonalInfoResponse;
 }

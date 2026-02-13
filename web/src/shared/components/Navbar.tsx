@@ -96,7 +96,7 @@ const Navbar: React.FC<NavbarProps> = ({ onDrawerToggle, isDrawerOpen }) => {
               }}
               className="hover:text-teal-800 text-[1rem] whitespace-nowrap cursor-pointer dark:text-gray-400 "
             >
-              Earning
+              Earnings
             </div>
           </Tooltip>
         </nav>

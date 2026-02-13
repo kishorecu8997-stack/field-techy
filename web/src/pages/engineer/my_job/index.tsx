@@ -4,12 +4,14 @@ import { SORT_OPTIONS, JOB_FILTERS } from "../search_result/types";
 import type { JobFilter } from "../search_result/types";
 import JobList from "./my_job_components/JobList";
 import SidebarProfile from "./my_job_components/SidebarProfile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StatusFilter from "@/shared/components/status_filter_component/StatusFilter";
 import FilterButton from "@/shared/components/commonUI/FilterButton";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
+import { useEngineerGetJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import { scrollToTop } from "@/utils";
 
 /**
  * Displays the engineer's dashboard with job listings and profile sidebar.
@@ -20,6 +22,41 @@ const MyJobsPage = () => {
     JOB_FILTERS.ALL_JOBS,
   );
   const navigate = useNavigate();
+
+  const jobStatus = (() => {
+    switch (activeFilter) {
+      case JOB_FILTERS.APPLIED:
+        return "Posted";
+      case JOB_FILTERS.IN_PROGRESS:
+        return "In Progress";
+      case JOB_FILTERS.COMPLETED:
+        return "Closed";
+      case JOB_FILTERS.CANCELLED:
+        return "Cancelled";
+      default:
+        return undefined;
+    }
+  })();
+
+  const jobType = (() => {
+    switch (activeFilter) {
+      case JOB_FILTERS.ON_SITE:
+        return "On site";
+      case JOB_FILTERS.REMOTE:
+        return "Remote";
+      case JOB_FILTERS.HYBRID:
+        return "Hybrid";
+      default:
+        return undefined;
+    }
+  })();
+
+  const {
+    data: jobs,
+    isLoading,
+    isError,
+  } = useEngineerGetJobs(jobStatus, jobType);
+
   const jobFilters = [
     JOB_FILTERS.ALL_JOBS,
     JOB_FILTERS.APPLIED,
@@ -32,6 +69,9 @@ const MyJobsPage = () => {
     JOB_FILTERS.REMOTE,
     JOB_FILTERS.HYBRID,
   ];
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   return (
     <div className=" bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -39,6 +79,7 @@ const MyJobsPage = () => {
         <MyJobsHeader
           title="My Jobs"
           currentSort={SORT_OPTIONS.NEWEST}
+          // todo: implement sort functionality later
           onSortChange={() => {}}
           isReport
         />
@@ -67,7 +108,7 @@ const MyJobsPage = () => {
           onFilterChange={setActiveFilter as (filter: string) => void}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <JobList activeFilter={activeFilter} />
+          <JobList jobs={jobs || []} isLoading={isLoading} isError={isError} />
           <div className="lg:col-span-1">
             <div className="sticky top-6">
               <SidebarProfile user={userData} earnings={earningsData} />

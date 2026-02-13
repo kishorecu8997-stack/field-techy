@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from "react";
 import Pagination from "./TablePagination";
 
-export interface Column<T> {
-  key: keyof T | string;
+export interface Column<T extends object> {
+  key?: keyof T | string;
   label: string | React.ReactNode;
   align?: "left" | "center" | "right";
   dataCellAlign?: "left" | "center" | "right";
-  renderCell?: (row: T) => React.ReactNode;
+  renderCell?: (row: T, index: number) => React.ReactNode;
 }
 
-export interface CustomTableProps<T> {
+export interface CustomTableProps<T extends object> {
   columns: Column<T>[];
   initialPageSize?: number;
   api?: (params: {
@@ -27,7 +26,7 @@ export interface CustomTableProps<T> {
  * @file CustomTable.tsx
  * @description Reusable, responsive data table with smart sticky header and pagination that never hides.
  */
-export function CustomTable<T>({
+export function CustomTable<T extends object>({
   columns,
   initialPageSize = 10,
   api,
@@ -98,7 +97,7 @@ export function CustomTable<T>({
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col flex-1 shadow overflow-hidden bg-white dark:bg-gray-900">
-        <div className="flex-1 overflow-y-auto overflow-x-auto">
+        <div className="flex-1 overflow-auto min-h-[250px] max-h-[600px]">
           {loading && (
             <div className="text-center py-10 text-gray-500 dark:text-gray-300">
               Loading...
@@ -142,8 +141,10 @@ export function CustomTable<T>({
                               )} text-gray-800 dark:text-gray-100`}
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
-                                : (row as any)[col.key]}
+                                ? col.renderCell(row, i)
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </td>
                           ))}
                         </tr>
@@ -179,8 +180,10 @@ export function CustomTable<T>({
                               className="flex justify-end"
                             >
                               {col.renderCell
-                                ? col.renderCell(row)
-                                : (row as any)[col.key]}
+                                ? col.renderCell(row, i)
+                                : col.key
+                                  ? (row[col.key as keyof T] as React.ReactNode)
+                                  : null}
                             </div>
                           ) : (
                             <div
@@ -192,8 +195,10 @@ export function CustomTable<T>({
                               </span>
                               <span className="text-gray-800 dark:text-gray-100 text-left">
                                 {col.renderCell
-                                  ? col.renderCell(row)
-                                  : (row as any)[col.key]}
+                                  ? col.renderCell(row, i)
+                                  : col.key
+                                    ? (row[col.key as keyof T] as React.ReactNode)
+                                    : null}
                               </span>
                             </div>
                           );

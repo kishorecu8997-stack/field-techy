@@ -43,7 +43,7 @@ export const RadioField = ({
   direction = "vertical", // 👈 default layout
   containerClassName = "flex flex-col py-1 w-full",
   radioItemClassName = "flex items-center mb-2",
-  radioInputClassName = "h-4 w-4 text-blue-600 dark:text-blue-500 focus:ring-blue-500 focus:ring-2",
+  radioInputClassName = "h-4 w-4 appearance-none text-blue-600 dark:text-blue-500 rounded-full border checked:bg-blue-600 checked:border-brand checked:ring-2 checked:ring-offset-2",
   wrapperClassName,
   disabled = false,
 }: RadioFieldProps) => {
