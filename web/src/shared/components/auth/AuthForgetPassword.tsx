@@ -9,6 +9,9 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { absoluteUrls } from "@/config/urls";
 import { useForgotPassword } from "@/shared/apiServices/commonOpenApiService";
 import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
+import Popup from "@/shared/components/Popup";
+import { useState } from "react";
+import OTPPage from "@/pages/engineer/auth/components/OTPPage";
 import type { AppForgotPasswordError } from "@/api";
 
 export type ForgetPasswordFormData = {
@@ -25,26 +28,21 @@ interface AuthForgetPasswordProps {
  * @param {"client" | "engineer"} props.role - The role of the user.
  * @returns {JSX.Element} The AuthForgetPassword component.
  */
-const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
-  const navigate = useNavigate();
-  const { success, error: toastError } = useToast();
 
+const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const methods = useForm<ForgetPasswordFormData>({
     defaultValues: {
       email: "",
     },
   });
+  const { success, error: toastError } = useToast();
 
   const { mutate: forgotPassword, isPending } = useForgotPassword({
     onSuccess: () => {
       success("OTP sent to your email address");
-      const resetUrl =
-        role === "client"
-          ? absoluteUrls.client.auth.reset_password
-          : absoluteUrls.engineer.auth.reset_password;
-
-      const tokenQuery = "";
-      navigate(`${resetUrl}?email=${methods.getValues("email")}${tokenQuery}`);
+      setIsOpen(true);
     },
     onError: (err: AppForgotPasswordError) => {
       toastError(err?.error || "Failed to send OTP");
@@ -73,7 +71,7 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
           </div>
           <h2 className="text-3xl font-bold">Forgot password</h2>
           <h2 className="text-base font-normal text-gray-700 dark:text-gray-300 ">
-            Enter your email id address to reset your password.
+            Enter your email address to reset your password.
           </h2>
         </div>
         <FormContainer
@@ -101,6 +99,27 @@ const AuthForgetPassword = ({ role }: AuthForgetPasswordProps) => {
             Submit
           </Button>
         </FormContainer>
+
+        <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+          <OTPPage
+            header="Enter the OTP"
+            description="We sent you an OTP code"
+            onClose={() => setIsOpen(false)}
+            onSubmit={(otpData) => {
+              const resetUrl =
+                role === "client"
+                  ? absoluteUrls.client.auth.reset_password
+                  : absoluteUrls.engineer.auth.reset_password;
+              const otpQuery =
+                otpData && otpData.otp
+                  ? `&otp=${encodeURIComponent(otpData.otp)}`
+                  : "";
+              navigate(
+                `${resetUrl}?email=${methods.getValues("email")}${otpQuery}`,
+              );
+            }}
+          />
+        </Popup>
       </div>
     </div>
   );
