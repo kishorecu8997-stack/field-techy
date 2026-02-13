@@ -5,7 +5,7 @@ interface ActionRequiredBadgeProps {
 }
 
 /**
- * ActionRequiredBadge - Displays a statictati action required badge
+ * ActionRequiredBadge – Displays a static action required badge with a count of pending items.
  */
 const ActionRequiredBadge: React.FC<ActionRequiredBadgeProps> = ({ count = 0 }) => {
   return (
