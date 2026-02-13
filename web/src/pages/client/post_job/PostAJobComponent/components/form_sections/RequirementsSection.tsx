@@ -29,6 +29,17 @@ interface RequirementsSectionProps {
  * @param {RequirementsSectionProps} props - The props for the component.
  * @returns {React.ReactElement} The rendered RequirementsSection component.
  */
+
+// Helper to create FileList from existing images
+const createFileListFromImages = (
+  images: { name: string; url: string; file: File }[],
+): FileList => {
+  const files = images.map((img) => img.file);
+  const dataTransfer = new DataTransfer();
+  files.forEach((file) => dataTransfer.items.add(file));
+  return dataTransfer.files;
+};
+
 const RequirementsSection = ({
   isDisable,
   skillOptions,
@@ -46,6 +57,9 @@ const RequirementsSection = ({
   const [toolEntries, setToolEntries] = useState<ToolEntry[]>([]);
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
+  const [hasToolContent, setHasToolContent] = useState(false);
+  const toolDetailsSectionRef = useRef<HTMLDivElement>(null);
+  const toolEntriesListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     register("toolEntriesCount", {
@@ -70,12 +84,31 @@ const RequirementsSection = ({
     setValue("toolsData", toolEntries);
   }, [setValue, toolEntries]);
 
+  const tools = watch("tools");
+  const budget = watch("toolBudgetNotes");
+  const images = watch("toolImages");
+
+  useEffect(() => {
+    setHasToolContent(
+      (!!tools && tools.toString().trim() !== "") ||
+        (!!budget && budget.toString().trim() !== "") ||
+        (images instanceof FileList && images.length > 0),
+    );
+  }, [tools, budget, images]);
+
   const handleAddToolEntry = () => {
     const toolId = (watch("tools") as string | undefined)?.trim();
     const budget = (watch("toolBudgetNotes") as string | undefined)
       ?.replace(/\D+/g, "")
       ?.trim();
     const files = watch("toolImages") as FileList | undefined;
+    const hasAnyField =
+      !!toolId ||
+      (!!budget && Number(budget) > 0) ||
+      (files && files.length > 0);
+    if (!hasAnyField) {
+      return;
+    }
 
     if (!toolId) {
       toast.error("Please select a tool before adding");
@@ -96,7 +129,7 @@ const RequirementsSection = ({
       files && files.length > 0
         ? Array.from(files).map((file) => ({
             name: file.name,
-            url: URL.createObjectURL(file), // Note: Object URL memory management might be needed in real app
+            url: URL.createObjectURL(file),
             file: file,
           }))
         : undefined;
@@ -105,11 +138,13 @@ const RequirementsSection = ({
       setToolEntries((prev) => {
         const next = [...prev];
         const existingImages = prev[editingToolIndex]?.images || [];
+        const imagesToUse =
+          newImages && newImages.length > 0 ? newImages : existingImages;
         next[editingToolIndex] = {
           id: toolId,
           name,
           budget: budget || "-",
-          images: newImages ?? existingImages,
+          images: imagesToUse,
         };
         return next;
       });
@@ -126,6 +161,7 @@ const RequirementsSection = ({
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
     clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    setHasToolContent(false);
   };
 
   const handleRemoveToolEntry = (index: number) => {
@@ -144,8 +180,39 @@ const RequirementsSection = ({
     setEditingToolIndex(index);
     setValue("tools", entry.id); // Set ID for select field
     setValue("toolBudgetNotes", entry.budget === "-" ? "" : entry.budget);
+    // Set existing images so FileUpload displays them with Preview/Re-upload
+    if (entry.images.length > 0) {
+      setValue("toolImages", createFileListFromImages(entry.images));
+    } else {
+      setValue("toolImages", undefined);
+    }
+    setToolImageInputKey((key) => key + 1);
+    toolDetailsSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingToolIndex(null);
+    setValue("tools", "");
+    setValue("toolBudgetNotes", "");
     setValue("toolImages", undefined);
     setToolImageInputKey((key) => key + 1);
+    clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    toolEntriesListRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  const handleClearToolFields = () => {
+    setValue("tools", "");
+    setValue("toolBudgetNotes", "");
+    setValue("toolImages", undefined);
+    setToolImageInputKey((key) => key + 1);
+    clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
+    setHasToolContent(false);
   };
 
   // Sync tool budget total to form whenever toolEntries change
@@ -160,7 +227,7 @@ const RequirementsSection = ({
   return (
     <div className="space-y-3">
       <SectionHeader title="Requirements" />
-      <div className="flex flex-col w-full gap-3">
+      <div className="flex flex-col w-full gap-3" ref={toolDetailsSectionRef}>
         <InputField
           name="numberOfVacancy"
           label="Number of Vacancies"
@@ -186,7 +253,7 @@ const RequirementsSection = ({
         />
         <SectionHeader title="Tool Details" />
         <SelectField
-          required={!toolEntries.length}
+          required={toolEntries.length === 0 || hasToolContent}
           name="tools"
           label="Tool Name"
           placeholder="Select Tool"
@@ -200,6 +267,7 @@ const RequirementsSection = ({
           placeholder="Upload tool files"
           disabled={isDisable}
           key={toolImageInputKey}
+          required={toolEntries.length === 0 || hasToolContent}
         />
       </div>
       <InputField
@@ -223,16 +291,35 @@ const RequirementsSection = ({
             if (num > 10_000_000) {
               return "Max allowed amount is 10,000,000";
             }
-
             return true;
           },
         }}
-        required
+        required={toolEntries.length === 0 || hasToolContent}
         disabled={isDisable}
       />
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        {hasToolContent && editingToolIndex === null && (
+          <Button
+            variant="secondary"
+            className="rounded-md"
+            onClick={handleClearToolFields}
+            disabled={isDisable}
+          >
+            Clear
+          </Button>
+        )}
+        {editingToolIndex !== null && (
+          <Button
+            variant="danger"
+            className="rounded-md"
+            onClick={handleCancelEdit}
+            disabled={isDisable}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
-          variant="outline"
+          variant="primary"
           className="rounded-md"
           onClick={handleAddToolEntry}
           disabled={isDisable}
@@ -241,7 +328,7 @@ const RequirementsSection = ({
         </Button>
       </div>
       {toolEntries.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2" ref={toolEntriesListRef}>
           <SectionHeader title="Tool Details" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {toolEntries.map((entry, idx) => (
