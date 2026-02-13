@@ -21,6 +21,8 @@ export interface CustomTableProps<T extends object> {
   data?: T[];
   externalFilters?: { [key: string]: string };
   showPagination?: boolean;
+  loading?: boolean;
+  error?: string | null;
 }
 
 /**
@@ -34,13 +36,18 @@ export function CustomTable<T extends object>({
   data,
   externalFilters,
   showPagination = true,
+  loading: externalLoading,
+  error: externalError,
 }: CustomTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [serverData, setServerData] = useState<T[]>([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const [internalError, setInternalError] = useState<string | null>(null);
+
+  const loading = externalLoading ?? internalLoading;
+  const error = externalError ?? internalError;
 
   useEffect(() => {
     setCurrentPage(1); 
@@ -51,8 +58,8 @@ export function CustomTable<T extends object>({
     const fetchData = async () => {
       if (!api) return;
       try {
-        setLoading(true);
-        setError(null);
+        setInternalLoading(true);
+        setInternalError(null);
         const res = await api({
           page: currentPage,
           pageSize,
@@ -61,9 +68,9 @@ export function CustomTable<T extends object>({
         setServerData(res.data);
         setTotal(res.total);
       } catch {
-        setError("Failed to load data.");
+        setInternalError("Failed to load data.");
       } finally {
-        setLoading(false);
+        setInternalLoading(false);
       }
     };
     fetchData();
