@@ -34,7 +34,6 @@ import {
   engineerApplyJobMutation,
   engineerDeleteEducationMutation,
   engineerDeleteExperienceMutation,
-  clientGetJobByIdOptions,
   engineerGetEducationOptions,
   engineerGetExperienceOptions,
   engineerGetMyJobsOptions,
@@ -64,14 +63,8 @@ import { type EngineerData } from "./engineerTypes";
  * Re-export shared hooks for convenience (avoiding naming conflicts)
  */
 export {
-  useSendOtp,
-  useVerifyOtp,
-  useLookupData,
-  useForgotPassword,
-  useResetPassword,
-  useAppUploadProfileFile,
-  useAppDownloadProfileFile,
-  getDownloadUrl,
+  getDownloadUrl, useAppDownloadProfileFile, useAppUploadProfileFile, useForgotPassword, useLookupData, useResetPassword, useSendOtp,
+  useVerifyOtp
 } from "../commonOpenApiService";
 
 /**
@@ -543,23 +536,13 @@ export function useEngineerRequestBreak(options?: {
   });
 }
 
-export function useEngineerGetJobById(jobId: number, enabled: boolean = true) {
-  return useQuery({
-    ...clientGetJobByIdOptions({
-      client: apiClient,
-      path: { jobId },
-    }),
-    enabled: enabled && !!jobId,
-  });
-}
-
-export function useGetJobLogs(jobId: number, enabled: boolean = true) {
+export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,
-      path: { jobId },
+      path: { assignmentId },
     }),
-    enabled: enabled && !!jobId,
+    enabled: enabled && !!assignmentId,
   });
 }
 

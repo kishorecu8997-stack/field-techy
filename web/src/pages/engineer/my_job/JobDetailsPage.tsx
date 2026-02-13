@@ -1,5 +1,4 @@
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
-import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
@@ -36,12 +35,6 @@ const JobDetailsPage = () => {
 
   const { data: searchResults, isLoading } = useEngineerSearchJobs({}, true);
   const jobData = searchResults?.find((j) => String(j.id) === params.jobId);
-
-  // TODO: Adjust if this endpoint is not suitable for public profile fetching
-  const { data: client } = useClientGetCompanyInfo(!!jobData?.clientId);
-
-  /* @ts-ignore: city/country properties missing on type, using fallback */
-  const location = [client?.cityId, client?.countryId].filter(Boolean).join(", ") || "-";
 
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
@@ -119,7 +112,7 @@ const JobDetailsPage = () => {
   // Prepare mapped job data
   const jobTitle = jobData?.jobTitle || "";
   /* @ts-ignore: Handling complex union type from ClientGetCompanyInfoResponse */
-  const clientName = client?.companyName || client?.name || client?.personName || "Unknown Client";
+  const clientName = jobData?.clientDetails?.companyName || jobData?.clientDetails?.name || jobData?.clientDetails?.personName || "Unknown Client";
   const duration = getDurationString({
     startDateStr: jobData?.startDate || "",
     endDateStr: jobData?.endDate || "",
@@ -153,7 +146,6 @@ const JobDetailsPage = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const OfferJobStatus = jobData.assignmentStatus as AssignmentStatus;
-  console.log("jobData :", jobData);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -176,7 +168,7 @@ const JobDetailsPage = () => {
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
-              jobLocation={location}
+              jobLocation={jobData?.clientDetails?.address || ""}
               numberOfVacancy={jobData?.vacancies ?? undefined}
               assignmentId={jobData?.assignmentId ?? undefined}
             />
@@ -192,7 +184,7 @@ const JobDetailsPage = () => {
             <ClientInfoCard
               name={clientName}
               memberSince={"-"} // Missing in new API
-              location={location as string}
+              location={jobData?.clientDetails?.address || ""}
               rating={0} // Missing in new API
               reviews={0} // Missing in new API
               verifications={[]} // Missing in new API

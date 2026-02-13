@@ -1,12 +1,13 @@
 export interface JobItem {
   id: string;
+  jobCode?: string;
   clientId: string;
 
   jobTitle: string;
   jobDescription: string;
-  category: string;
+  category: string | number;
 
-  jobType: "CONTRACT" | "FULL_TIME" | "PART_TIME" | string;
+  jobType: "On site" | "Remote" | "Hybrid" | string;
   engagementModel: number;
 
   countryId?: number;
@@ -16,6 +17,7 @@ export interface JobItem {
   location: string | null;
 
   startDate: string; // ISO date
+  endDate?: string | null;
 
   numberOfVacancy: number;
 
@@ -23,7 +25,14 @@ export interface JobItem {
   salary: string | null;
   budgetType: string | null;
 
-  status: "NEW" | "ACTIVE" | "CLOSED" | string;
+  status:
+    | "Posted"
+    | "In Progress"
+    | "Cancelled"
+    | "Closed"
+    | "Hold"
+    | "Flagged"
+    | string;
 
   skills: string[] | null;
   tools: string[] | null;
@@ -35,11 +44,15 @@ export interface JobItem {
   rating?: number;
   slaLevel?: string;
   client: Client;
+
+  // Additional assignment fields from API
+  assignmentId?: number | null;
+  assignmentType?: "invitation" | "application" | null;
 }
 
 export interface Client {
   id: string;
-  clientType: "HOME" | "COMPANY" | string;
+  clientType: "home" | "corporate" | string;
 
   companyName: string;
   contactPersonName: string;
@@ -53,6 +66,8 @@ export interface Client {
   postalCode: string;
   address: string;
 }
+
+
 
 /**
  * Form values for proposal submission

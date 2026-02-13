@@ -30,7 +30,6 @@ import {
   clientCancelJobMutation,
   clientGetAssignmentDetailsOptions,
   clientGetCompanyInfoOptions,
-  clientGetJobByIdOptions,
   clientGetJobsOptions,
   clientGetJobsQueryKey,
   clientInviteEngineerMutation,
@@ -236,15 +235,7 @@ export function useClientMarkJobFileUploaded(options?: {
   });
 }
 
-export function useClientGetJobById(jobId: number, enabled: boolean = true) {
-  return useQuery({
-    ...clientGetJobByIdOptions({
-      client: apiClient,
-      path: { jobId },
-    }),
-    enabled: enabled && !!jobId,
-  });
-}
+
 
 export function useClientInviteEngineer(options?: {
   onSuccess?: (data: ClientInviteEngineerResponse) => void;
@@ -358,13 +349,13 @@ export function useClientFiles(_clientId: string | number) {
   };
 }
 
-export function useGetJobLogs(jobId: number, enabled: boolean = true) {
+export function useGetJobLogs(assignmentId: number, enabled: boolean = true) {
   return useQuery({
     ...getJobLogsOptions({
       client: apiClient,
-      path: { jobId },
+      path: { assignmentId },
     }),
-    enabled: enabled && !!jobId,
+    enabled: enabled && !!assignmentId,
   });
 }
 

@@ -31,19 +31,20 @@ const Home = () => {
   // Use engineer search jobs to fetch available jobs
   const { data: jobsResponse } = useEngineerSearchJobs({});
 
-  console.log(jobsResponse, "Job Response");
-
   // Transform API response to UI model
   const jobs = useMemo(() => {
     if (!jobsResponse) return [];
 
-    return jobsResponse.map(
-      (job): JobItem => ({
+    return jobsResponse.map((job): JobItem => {
+      const clientDetails = job.clientDetails;
+
+      return {
         id: job.id.toString(),
+        jobCode: job.jobCode,
         clientId: job.clientId.toString(),
         jobTitle: job.jobTitle,
         jobDescription: job.jobDescription || "",
-        category: "", // Not available in list response
+        category: job.serviceCategoryId,
         jobType: job.jobType,
         engagementModel: job.engagementModelId,
         countryId: job.countryId,
@@ -51,6 +52,7 @@ const Home = () => {
         cityId: job.cityId,
         location: job.workLocationName || null,
         startDate: job.startDate || new Date().toISOString(),
+        endDate: job.endDate || null,
         numberOfVacancy: job.vacancies || 1,
         experience: job.experienceLevelId || 0,
         salary: job.totalPrice,
@@ -61,25 +63,29 @@ const Home = () => {
         toolAdditionalBudget: null,
         postedTime: job.createdAt || new Date().toISOString(),
         jobDuration: "10 Days",
-        budgetType: null, // Add missing property
+        budgetType: null,
         client: {
           id: job.clientId.toString(),
-          clientType: "COMPANY",
-          companyName: "Client Company", // Placeholder
-          contactPersonName: "Contact Person", // Placeholder
-          email: "",
-          phoneNumber: "",
+          clientType: clientDetails?.clientType || "unknown",
+          companyName:
+            clientDetails?.companyName ||
+            clientDetails?.personName ||
+            "Unknown",
+          contactPersonName: clientDetails?.personName || "Unknown",
+          email: clientDetails?.email || "",
+          phoneNumber: clientDetails?.phoneNumber || "",
           state: "",
           city: "",
           country: "",
           postalCode: "",
-          address: "",
+          address: clientDetails?.address || "",
         },
-      }),
-    );
+        assignmentId: job.assignmentId,
+        assignmentType: null,
+      };
+    });
   }, [jobsResponse]);
 
-  console.log(jobs, "jobs");
   const profile = useEngineerProfile();
 
   const handleExploreJobs = () => {
