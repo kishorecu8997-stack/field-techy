@@ -1,4 +1,6 @@
 import {
+  clientGetCompanyInfo,
+  clientGetRateCard,
   type AppChangePasswordResponse,
   type AppDeleteProfileFileResponse,
   type AppLoginResponse,
@@ -12,9 +14,7 @@ import {
   type ClientInviteEngineerResponse,
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
-  type ClientUpdateCompanyInfoResponse,
-  clientGetCompanyInfo,
-  clientGetRateCard,
+  type ClientUpdateCompanyInfoResponse
 } from "@/api";
 import {
   appChangePasswordMutation,

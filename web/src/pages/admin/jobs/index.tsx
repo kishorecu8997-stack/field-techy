@@ -1,11 +1,11 @@
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import CompletedJob from "./jobCatagory/CompletedJob";
-import DeclinedJob from "./jobCatagory/DeclinedJob";
-import HoldJob from "./jobCatagory/HoldJob";
-import AllJob from "./jobCatagory/AllJobs";
-import FlaggedJob from "./jobCatagory/FlaggedJob";
-import InProgressJob from "./jobCatagory/InProgressJob";
+import { useState } from "react";
+import {
+  useAdminGetJobs,
+  type AdminGetJobsQuery,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import JobByCategory from "./JobByCategory";
 
 /**
  * Renders the main page for managing jobs in the admin dashboard.
@@ -14,44 +14,116 @@ import InProgressJob from "./jobCatagory/InProgressJob";
  * such as "All Jobs", "In Progress", "Completed", etc. It also includes
  * a header with the page title and an "Export CSV" button.
  *
+ * It fetches data from the useAdminGetJobs API based on the active tab and filters.
+ *
  * @returns {JSX.Element} The rendered manage jobs page.
  */
 export default function ManageJobs() {
-  const tabs = [
-    {
-      label: "All Jobs",
-      content: <AllJob />,
-      hide: false,
-    },
-    {
-      label: "In Progress",
-      content: <InProgressJob />,
-      hide: false,
-    },
-    {
-      label: "Completed",
-      content: <CompletedJob />,
-      hide: false,
-    },
-    {
-      label: "Declined",
-      content: <DeclinedJob />,
-      hide: false,
-    },
-    {
-      label: "Hold Jobs",
-      content: <HoldJob />,
-      hide: false,
-    },
-    {
-      label: "Flagged Jobs",
-      content: <FlaggedJob />,
-      hide: false,
-    },
+  const [activeTabLabel, setActiveTabLabel] = useState("All Jobs");
+  const [filterType, setFilterType] = useState<
+    AdminGetJobsQuery["jobType"] | undefined
+  >(undefined);
+  const [serviceCategoryId, setServiceCategoryId] = useState<number | null>(
+    null,
+  );
+  const [budget, setBudget] = useState("");
+  const [search, setSearch] = useState("");
+  const [filterBy, setFilterBy] = useState<string | null>(null);
+  const [filterRegion, setFilterRegion] = useState<string | null>(null);
+
+  const tabsConfig: Array<{
+    label: string;
+    status: AdminGetJobsQuery["status"] | undefined;
+  }> = [
+    { label: "All Jobs", status: undefined },
+    { label: "In Progress", status: "In Progress" },
+    { label: "Completed", status: "Closed" },
+    { label: "Declined", status: "Cancelled" },
+    { label: "Hold Jobs", status: "Hold" },
+    { label: "Flagged Jobs", status: "Flagged" },
   ];
 
+  const currentStatus = tabsConfig.find(
+    (t) => t.label === activeTabLabel,
+  )?.status;
+
+  const {
+    data: jobsResponse,
+    isLoading,
+    error,
+  } = useAdminGetJobs({
+    status: currentStatus,
+    jobType: filterType,
+    serviceCategoryId: serviceCategoryId ?? undefined,
+  });
+
+  const allJobs = jobsResponse?.data || [];
+
+  // Local filtering for search and budget as backend might not support all query params yet
+  const filteredJobs = allJobs.filter((job) => {
+    let matches = true;
+
+    if (search) {
+      const query = search.toLowerCase();
+      matches =
+        (job.jobTitle.toLowerCase().includes(query) ||
+          job.jobCode.toLowerCase().includes(query) ||
+          job.postedBy.name.toLowerCase().includes(query) ||
+          job.postedBy.email.toLowerCase().includes(query) ||
+          (job.jobDescription?.toLowerCase().includes(query) ?? false));
+    }
+
+    if (budget) {
+      matches = matches && (job.totalPrice?.includes(budget) ?? false);
+    }
+
+    if (filterRegion) {
+      matches =
+        matches &&
+        job.countryName?.toLowerCase() === filterRegion.toLowerCase();
+    }
+
+    return matches;
+  });
+
+  const handleClearFilters = () => {
+    setFilterType(undefined);
+    setServiceCategoryId(null);
+    setBudget("");
+    setSearch("");
+    setFilterBy(null);
+    setFilterRegion(null);
+  };
+
+  const tabs = tabsConfig.map((config) => ({
+    label: config.label,
+    content: (
+      <JobByCategory
+        data={filteredJobs}
+        isLoading={isLoading}
+        error={error}
+        filterType={filterType}
+        setFilterType={setFilterType}
+        serviceCategoryId={serviceCategoryId}
+        setServiceCategoryId={setServiceCategoryId}
+        budget={budget}
+        setBudget={setBudget}
+        search={search}
+        setSearch={setSearch}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        filterRegion={filterRegion}
+        setFilterRegion={setFilterRegion}
+        onClearFilters={handleClearFilters}
+        showStatusSelect={config.label === "All Jobs"}
+        currentStatus={currentStatus}
+      />
+    ),
+    hide: false,
+  }));
+
   return (
-    <div className="w-full h-full flex flex-col p-3 gap-3 ">
+    <div className="w-full h-full flex flex-col p-3 gap-3">
       <div className="flex justify-between mt-2">
         <h1 className="font-semibold">Manage Jobs</h1>
         <div className="flex gap-4">
@@ -60,8 +132,12 @@ export default function ManageJobs() {
           </Button>
         </div>
       </div>
-      <div className="bg-white dark:bg-gray-700 rounded-lg p-2">
-        <AdminTabComponent tabs={tabs} defaultActiveTab={"All Jobs"} />
+      <div className="bg-white dark:bg-gray-700 rounded-lg p-2 h-full flex-1">
+        <AdminTabComponent
+          tabs={tabs}
+          activeTab={activeTabLabel}
+          onTabChange={setActiveTabLabel}
+        />
       </div>
     </div>
   );

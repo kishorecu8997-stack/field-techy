@@ -13,12 +13,14 @@ import {
   type AppLoginResponse,
   type AppResetPasswordData,
   type AppResetPasswordResponse,
-  type AdminGetClientsForManagementResponse,
+  type AdminGetClientsForManagementData,
   type AdminUpdateUserStatusData,
   type AdminUpdateUserStatusResponses,
   type AdminUpdateUserStatusErrors,
   type AdminGetPersonalInfoResponse,
   type AdminUpdatePersonalInfoResponse,
+  type AdminGetJobsData,
+  type AdminGetJobsResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -30,6 +32,7 @@ import {
   appResetPasswordMutation,
   adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
+  adminGetJobsOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -191,7 +194,9 @@ export function useUpdateEngineerProfileStatus(options?: {
   });
 }
 
-export type AdminManageClientsResponse = AdminGetClientsForManagementResponse;
+export type AdminManageClientsResponse = NonNullable<
+  AdminGetClientsForManagementData["body"]
+>;
 
 export function useAdminManageClients(options?: {
   clientType: ClientType;
@@ -252,4 +257,25 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
     throwOnError: true,
   });
   return response.data as AdminUpdatePersonalInfoResponse;
+}
+
+export type { AdminGetJobsResponse };
+
+export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]>;
+
+export function useAdminGetJobs(
+  query?: AdminGetJobsQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetJobsResponse) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetJobsOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
+  });
 }
