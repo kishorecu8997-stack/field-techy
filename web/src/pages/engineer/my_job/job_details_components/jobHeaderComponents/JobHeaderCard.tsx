@@ -38,6 +38,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   numberOfVacancy,
   numberOfApplicants,
   hideDurationAndClient = false,
+  assignmentId,
 }) => {
   console.log(OfferJobStatus);
 
@@ -190,6 +191,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             setOpen={setOpen}
             status={status}
             setSendProposal={setSendProposal}
+            assignmentId={assignmentId}
           />
         )}
       </div>

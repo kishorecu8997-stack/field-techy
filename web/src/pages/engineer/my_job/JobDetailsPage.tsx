@@ -181,6 +181,7 @@ const JobDetailsPage = () => {
               OfferJobStatus={OfferJobStatus}
               jobLocation={location}
               numberOfVacancy={jobData?.vacancies ?? undefined}
+              assignmentId={jobData?.assignmentId ?? undefined}
             />
 
             <JobTabSection

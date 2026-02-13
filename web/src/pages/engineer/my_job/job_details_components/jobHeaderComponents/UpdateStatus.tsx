@@ -66,7 +66,7 @@ const UpdateStatus = ({ onClose }: { onClose: () => void }) => {
                 const file = data.workScreenShot[0];
                 console.log(file);
 
-                // Replace the correct API
+                // Replace the correct API, once the API is ready
                 // 1. Get presigned URL
                 // const uploadRes = await uploadFile({
                 //   body: {

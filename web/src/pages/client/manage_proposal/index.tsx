@@ -1,11 +1,12 @@
 import { absoluteUrls } from "@/config/urls";
-import { ProposalsList } from "@/dummy_data/client/manage-proposal";
+import { useClientGetAssignmentDetails } from "@/shared/apiServices/client/clientOpenApiService";
 import ManageProposalCard from "@/shared/components/cards/client/ManageProposalCard";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import Filters from "@/shared/components/Filters";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../search_result/components/Pagination";
-import { useState } from "react";
 
 /**
  * `ManageProposal` is the main page component for clients to view and manage job proposals.
@@ -18,8 +19,32 @@ const ManageProposal = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
 
+  const {
+    data: assignments,
+    isLoading,
+    isError,
+    error,
+  } = useClientGetAssignmentDetails();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoaderComponent />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-screen items-center justify-center text-red-500">
+        Error loading data:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    );
+  }
+
   // Filtered engineers (mock — in real app, filter by category)
-  const filteredProposalList = ProposalsList; // Add actual filtering logic if needed
+  const filteredProposalList = assignments || []; // Add actual filtering logic if needed
 
   // Pagination
   const totalPages = Math.ceil(filteredProposalList.length / itemsPerPage);
@@ -35,23 +60,23 @@ const ManageProposal = () => {
           title="Manage Proposal"
           currentSort="newest"
           isShowBreadcrumb={false}
-          description={`${List.length} jobs found`}
+          description={`${filteredProposalList.length} jobs found`}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           <div className="lg:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {List.map((proposal) => (
-                <div className="cursor-pointer" key={proposal.id}>
+                <div className="cursor-pointer" key={proposal.assignmentId}>
                   <ManageProposalCard
-                    availability={proposal.availability}
-                    bidAmount={proposal.bitAmount}
-                    name={proposal.engineerName}
-                    payType={proposal.payType}
-                    rating={proposal.ratings}
-                    reviews={proposal.reviewCount}
+                    availability={proposal.assignmentStatus || "N/A"}
+                    bidAmount="N/A"
+                    name={`Engineer #${proposal.engineerId}`}
+                    payType="N/A"
+                    rating="N/A"
+                    reviews="0"
                     onClick={() =>
                       navigate(
-                        `${absoluteUrls.client.home.manage_proposal}/${proposal.id}`,
+                        `${absoluteUrls.client.home.manage_proposal}/${proposal.assignmentId}`,
                       )
                     }
                   />

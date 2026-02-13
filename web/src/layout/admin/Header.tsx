@@ -38,7 +38,6 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
   const adminProfile = useAdminProfile();
   const { data: adminLookupData } = useAppGetLookupData(LookupTable.Countries);
 
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -108,15 +107,13 @@ export default function Header({ onToggleSidebar }: NavbarProps) {
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
               <span className="font-bold text-gray-800">
                 {adminProfile?.profilePicture ? (
-                   <img
+                  <img
                     src={adminProfile.profilePicture}
                     alt="profile"
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  (
-                    adminProfile?.fullName?.charAt(0) || "A"
-                  ).toLocaleUpperCase()
+                  (adminProfile?.fullName?.charAt(0) || "A").toLocaleUpperCase()
                 )}
               </span>
             </div>

@@ -166,7 +166,9 @@ const PDFPreview: React.FC<PDFPreviewProps> = ({ url, className }) => {
   }, [url, retryCount]);
 
   return (
-    <div className={`relative w-full rounded-lg bg-white ${className || "h-56"}`}>
+    <div
+      className={`relative w-full rounded-lg bg-white ${className || "h-56"}`}
+    >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600" />

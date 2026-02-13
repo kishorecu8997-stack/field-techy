@@ -97,6 +97,7 @@ export interface JobHeaderCardProps {
   numberOfVacancy?: number;
   numberOfApplicants?: number;
   hideDurationAndClient?: boolean;
+  assignmentId?: number;
 }
 
 export interface JobTabsProps {

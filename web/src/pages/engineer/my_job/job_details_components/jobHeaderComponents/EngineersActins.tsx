@@ -11,6 +11,7 @@ import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import BreakRequest from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequest";
+import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * EngineersActions Component
@@ -26,6 +27,7 @@ const EngineersActions = ({
   isSendProposal,
   OfferJobStatus,
   status,
+  assignmentId,
 }: {
   setOfferJobStatus?: Dispatch<SetStateAction<AssignmentStatus | undefined>>;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
@@ -34,9 +36,20 @@ const EngineersActions = ({
   isSendProposal?: boolean;
   status?: JobStatus | AssignmentStatus | string;
   OfferJobStatus?: AssignmentStatus;
+  assignmentId?: number;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
+
+  const { mutate: requestStart } = useEngineerRequestStart({
+    onSuccess: () => {
+      toast.success("Job started successfully");
+      setOfferJobStatus?.("started");
+    },
+    onError: (err: any) => {
+      toast.error(err?.message || "Failed to start job");
+    },
+  });
 
   const handleConfirmAcceptJob = async () => {
     await showPopup({
@@ -77,9 +90,12 @@ const EngineersActions = ({
           value: "yes",
           variant: "primary",
           action: async (close) => {
-            toast.success("Job started successfully");
-            close(true);
-            setOfferJobStatus?.("started");
+            if (assignmentId) {
+              requestStart({ body: { assignmentId } });
+              close(true);
+            } else {
+              toast.error("Unable to start job: Missing assignment ID");
+            }
           },
         },
       ],

@@ -14,7 +14,6 @@ interface ViewFileComponentProps {
   onClose: () => void;
   title?: string;
   fileType: ProfileFileType | null;
-  userId?: number | null;
 }
 
 /**
@@ -29,32 +28,31 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
   fileType,
-  userId,
 }) => {
   const {
     data: downloadData,
     isLoading,
     isError,
-  } = useAppDownloadProfileFile(fileType, userId, !!fileType);
+  } = useAppDownloadProfileFile(fileType, !!fileType);
 
   const downloadUrl = downloadData?.downloadUrl;
 
-  const handleDownload = async() => {
+  const handleDownload = async () => {
     if (downloadUrl) {
-    const response = await fetch(downloadUrl);
-    const blob = await response.blob();
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
 
-    const blobUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = fileType || "document";
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileType || "document";
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    window.URL.revokeObjectURL(blobUrl);
-  }
+      window.URL.revokeObjectURL(blobUrl);
+    }
   };
 
   const renderDocumentPreview = () => {

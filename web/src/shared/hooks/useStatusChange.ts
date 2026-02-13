@@ -37,7 +37,10 @@ export const useStatusChange = ({
   showPopup,
   handleStatusChange,
 }: UseStatusChangeProps) => {
-  const onStatusChange = async (row: ManageClientProps, value: string | null) => {
+  const onStatusChange = async (
+    row: ManageClientProps,
+    value: string | null,
+  ) => {
     if (!value) return;
 
     const previousStatus = rowStatuses[row.id] ?? row.profileStatus ?? "";
@@ -56,7 +59,8 @@ export const useStatusChange = ({
       async (confirmedRow: ManageClientProps, status: string) => {
         try {
           const payload: AdminClientsByUserIdStatusBody = {
-            profileStatus: status as AdminClientsByUserIdStatusBody["profileStatus"],
+            profileStatus:
+              status as AdminClientsByUserIdStatusBody["profileStatus"],
           };
 
           await updateClientStatus({

@@ -221,7 +221,7 @@ export type AdminClientsByUserIdStatusResponse = NonNullable<
 
 export function useAdminClientsByUserIdStatus(options?: {
   onSuccess?: (data: AdminClientsByUserIdStatusResponse) => void;
-  onError?: (error: unknown) => void; 
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
   return useMutation({
