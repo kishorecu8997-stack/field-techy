@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { MODAL_TITLES } from "@/constants/timelineConstants";
 import { TextareaInput } from "@/shared/components/commonUI/inputs";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
+import { useForm } from "react-hook-form";
 
 type ShortBreakFormValues = {
   notes: string;
@@ -57,7 +58,7 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
             {MODAL_TITLES.shortBreakApproval}
           </h2>
 
-          <FormProvider {...formMethods}>
+          <FormContainer methods={formMethods} onSubmit={onSubmit}>
             <div className="space-y-4">
               <TextareaInput
                 name="notes"
@@ -65,9 +66,18 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
                 placeholder="Complete your work and then take a break"
               />
             </div>
-          </FormProvider>
 
-          <div className="flex justify-end gap-3 mt-6">
+            <div className="flex justify-end mt-6">
+              <Button
+                type="submit"
+                className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
+              >
+                Submit
+              </Button>
+            </div>
+          </FormContainer>
+
+          <div className="flex justify-end mt-3">
             <Button
               variant="no_style"
               type="button"
@@ -75,13 +85,6 @@ const ShortBreakApprovalModal: React.FC<ShortBreakApprovalModalProps> = ({
               className="border border-gray-300 dark:border-gray-600 px-5 py-2 rounded text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={onSubmit}
-              className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2 rounded"
-            >
-              Submit
             </Button>
           </div>
         </div>
