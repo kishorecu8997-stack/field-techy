@@ -41,6 +41,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { queryKeys } from "../queryKeys";
+import { type ClientGetAssignmentDetailsData } from "@/api";
 
 // RE-EXPORT shared hooks for convenience
 export * from "../commonOpenApiService";
@@ -252,13 +253,17 @@ export function useClientInviteEngineer(options?: {
   });
 }
 
+
+// ...
+
 export function useClientGetAssignmentDetails(
-  // query params were removed as the generated type ClientGetAssignmentDetailsData defines query?: never
+  query: ClientGetAssignmentDetailsData["query"] = {},
   enabled: boolean = true,
 ) {
   return useQuery({
     ...clientGetAssignmentDetailsOptions({
       client: apiClient,
+      query,
     }),
     enabled: enabled,
   });

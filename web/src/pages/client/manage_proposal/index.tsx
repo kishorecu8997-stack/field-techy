@@ -26,6 +26,8 @@ const ManageProposal = () => {
     error,
   } = useClientGetAssignmentDetails();
 
+  console.log(assignments);
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -69,8 +71,8 @@ const ManageProposal = () => {
                 <div className="cursor-pointer" key={proposal.assignmentId}>
                   <ManageProposalCard
                     availability={proposal.assignmentStatus || "N/A"}
-                    bidAmount="N/A"
-                    name={`Engineer #${proposal.engineerId}`}
+                    bidAmount={String(proposal.engineer?.hourlyRate) || "N/A"}
+                    name={proposal.engineer?.name || "N/A"}
                     payType="N/A"
                     rating="N/A"
                     reviews="0"

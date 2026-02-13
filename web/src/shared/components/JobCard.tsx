@@ -4,7 +4,7 @@ import { JobStatusBadge } from "@/shared/components/JobStatusBadge/JobStatusBadg
 import { getDurationString, scrollToTop } from "@/utils";
 import { getCurrencyFromStorage } from "@/utils/currency";
 import { MdLocationPin } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useClientGetCompanyInfo } from "@/shared/apiServices/client/clientOpenApiService";
 
 interface JobCardProps {
@@ -32,12 +32,11 @@ interface JobCardProps {
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
   const { allocationType = "Automatic", id, jobTitle, status, jobType, startDate, endDate, workLocationName, totalPrice, clientDetails } = props;
+  const location = useLocation();
+  const isClientPath = location.pathname.includes("/client");
 
-  // Use props directly.
-  // We can still try to fetch company info if clientDetails is missing, but prefer props.
-  // Re-fetching company info might still be useful if clientDetails in job list is incomplete.
-  // But let's rely on props as much as possible to be fast.
-  const { data: client } = useClientGetCompanyInfo(!!props.clientId); // Keeping this for now if clientDetails is missing
+  // Only call this API if we are in the client module to avoid permission errors
+  const { data: client } = useClientGetCompanyInfo(isClientPath && !!props.clientId);
 
   const getDuration =
     startDate && endDate
