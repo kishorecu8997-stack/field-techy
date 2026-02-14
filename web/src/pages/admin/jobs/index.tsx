@@ -54,15 +54,14 @@ export default function ManageJobs() {
     isLoading,
     error,
   } = useAdminGetJobs({
-    page,
-    limit,
+    page: 1,
+    limit: 10000,
     status: currentStatus,
     jobType: filterType,
     serviceCategoryId: serviceCategoryId ?? undefined,
   });
 
   const allJobs = jobsResponse?.data || [];
-  const total = jobsResponse?.total ?? 0;
 
   // Local filtering for search and budget as backend might not support all query params yet
   const filteredJobs = allJobs.filter((job) => {
@@ -91,6 +90,8 @@ export default function ManageJobs() {
     return matches;
   });
 
+  const paginatedJobs = filteredJobs.slice((page - 1) * limit, page * limit);
+
   const handleClearFilters = () => {
     setFilterType(undefined);
     setServiceCategoryId(null);
@@ -117,7 +118,7 @@ export default function ManageJobs() {
     label: config.label,
     content: (
       <JobByCategory
-        data={filteredJobs}
+        data={paginatedJobs}
         isLoading={isLoading}
         error={error}
         filterType={filterType}
@@ -137,7 +138,7 @@ export default function ManageJobs() {
         currentStatus={currentStatus}
         page={page}
         limit={limit}
-        total={total}
+        total={filteredJobs.length}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />
