@@ -39,7 +39,7 @@ These APIs leverage **TanStack Query (React Query)** for state management and ca
 **Base URL Configuration:**
 ```typescript
 const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+  baseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000",
 });
 ```
 
