@@ -193,9 +193,6 @@ export function useUpdateEngineerProfileStatus(options?: {
   });
 }
 
-export type ProfileStatusType = EngineerStatusType;
-export type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
-
 export type AdminGetEngineersQuery = NonNullable<AdminGetEngineersForManagementData["query"]>;
 
 export function useAdminManageEngineers (
