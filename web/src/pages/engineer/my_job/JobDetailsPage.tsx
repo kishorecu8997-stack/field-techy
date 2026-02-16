@@ -4,13 +4,13 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
+import { SORT_OPTIONS, type JobStatus, JOB_STATUSES, type AssignmentStatus } from "../search_result/types";
 import type { ProgressUpdate } from "./types.d";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
+import JobTabSection from "./job_details_components/JobTabSection";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import { toast } from "react-toastify";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 
 /**
@@ -23,13 +23,12 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    isDummyJob ? "Job Overview" : "Job Information",
+    "Job Information",
   );
-  const [OfferJobStatus, setOfferJobStatus] = useState<
-    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
-  >("initial");
+
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
+  const isDummyJob = false;
 
   // Always call hooks - pass 0 if jobId is missing or dummy
   /* const { data: jobData, isLoading } = useEngineerGetJobById(
@@ -122,12 +121,13 @@ const JobDetailsPage = () => {
 
   // Prepare mapped job data
   const jobTitle = jobData?.jobTitle || "";
-  /* @ts-ignore: Handling complex union type from ClientGetCompanyInfoResponse */
-  const clientName = jobData?.clientDetails?.companyName || jobData?.clientDetails?.name || jobData?.clientDetails?.personName || "Unknown Client";
+  const clientName = jobData?.clientDetails?.companyName || jobData?.clientDetails?.personName || "Unknown Client";
   const duration = getDurationString({
     startDateStr: jobData?.startDate || "",
     endDateStr: jobData?.endDate || "",
   });
+
+  const location = jobData?.workLocationName || jobData?.clientDetails?.address || "Unknown Location";
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -180,9 +180,9 @@ const JobDetailsPage = () => {
               setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
               hideBreakDetails={isDummyJob}
-              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
-              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
-              numberOfApplicants={isDummyJob ? 20 : undefined}
+              jobLocation={location}
+              numberOfVacancy={jobData?.vacancies || 0}
+              numberOfApplicants={undefined}
               hideDurationAndClient={isDummyJob}
               activeTab={activeTab}
               onAddProgressUpdate={handleAddProgressUpdate}

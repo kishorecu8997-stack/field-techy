@@ -1,10 +1,12 @@
-import type React from "react";
-import type { Dispatch, SetStateAction } from "react";
 import type {
+  AssignmentStatus,
   JobStatus as SearchJobStatus,
   SortOption,
   WorkingType as SearchWorkingType,
 } from "../search_result/types";
+export type { OfferedJobStatusType } from "../search_result/types";
+
+
 
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
@@ -109,9 +111,9 @@ export interface JobHeaderCardProps {
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | undefined>
+    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
   >;
-  OfferJobStatus?: OfferedJobStatusType | undefined;
+  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
@@ -215,16 +217,7 @@ export type UpdateLogFormFields = {
 /**
  * Represents the possible statuses for an offered job.
  */
-export const OfferedJobStatus = {
-  initial: "initial",
-  accepted: "accepted",
-  declined: "declined",
-  started: "started",
-  checkedIn: "checked-in",
-} as const;
 
-export type OfferedJobStatusType =
-  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
 
 /**
  * Represents a job-like object with common job properties.

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TimelineList from "@/shared/components/TimelineList";
 import { formatNow } from "@/utils/formatDateTime";
 import type { OfferedJobStatusType, ProgressUpdate } from "../../types.d";
+import type { AssignmentStatus } from "@/pages/engineer/search_result/types";
 import Popup from "@/shared/components/Popup";
 import RevisionRequestUpdateForm from "../jobHeaderComponents/RevisionRequestUpdateForm";
 import ProgressUpdateItem from "./ProgressUpdateItem";
@@ -23,7 +24,7 @@ import { ENGINEER_TIMELINE_STATUS } from "@/constants/timelineConstants";
  * Designed as a presentational component; network calls are simulated via props.
  */
 const TimelineSection: React.FC<{
-  OfferJobStatus?: OfferedJobStatusType;
+  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus;
   progressUpdates?: ProgressUpdate[];
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
 }> = ({ OfferJobStatus, progressUpdates = [], onAddProgressUpdate }) => {

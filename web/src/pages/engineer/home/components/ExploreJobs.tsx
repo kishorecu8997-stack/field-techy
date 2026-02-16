@@ -63,7 +63,7 @@ const ExploreJobs: React.FC = () => {
 
       // Category filter
       if (filters.category.length > 0 && job.category) {
-        if (!filters.category.includes(job.category)) return false;
+        if (!filters.category.includes(String(job.category))) return false;
       }
 
       // Skills filter (at least one match required)

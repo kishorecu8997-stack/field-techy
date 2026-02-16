@@ -2,6 +2,7 @@ import { icons } from "@/config/icons";
 import {
   JOB_STATUSES,
   type JobStatus,
+  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -10,7 +11,8 @@ import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
 import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
 import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
-
+// ...
+// ...
 /**
  * EngineersActions Component
  * Renders the actions section for the Manage Proposal page, including a button to invite a new job.
@@ -32,7 +34,7 @@ const EngineersActions = ({
   onOpenFinalStatement,
 }: {
   setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | undefined>
+    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
   >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
@@ -40,7 +42,8 @@ const EngineersActions = ({
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
   status?: JobStatus | string;
-  OfferJobStatus?: OfferedJobStatusType | undefined;
+  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus | undefined;
+
   activeTab?: string;
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
