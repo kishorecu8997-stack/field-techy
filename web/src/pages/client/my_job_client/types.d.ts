@@ -131,3 +131,49 @@ export interface EngineerInviteCardProps {
   onInviteClick?: (id?: number) => void; // for invite button
   selected?: boolean;
 }
+
+// Props for JobTabSection component
+export type JobTabSectionProps = {
+  status: JobStatus | string;
+  isWorkSubmitted?: boolean;
+  isSendProposal?: boolean;
+  activeTab?: string;
+  OfferJobStatus?: string;
+  isDummyNetworkEngineer?: boolean;
+  showManageProposals?: boolean;
+  isJobAccepted?: boolean;
+};
+
+export const TIMELINE_CARD_TYPE: {
+  ProgressUpdate: "progressUpdate";
+  RevisionRequestUpdate: "revisionRequestUpdate";
+  ShortTermBreak: "shortTermBreak";
+  FinalStatement: "finalStatement";
+  JobStarted: "jobStarted";
+};
+
+export type TimelineCardType =
+  (typeof TIMELINE_CARD_TYPE)[keyof typeof TIMELINE_CARD_TYPE];
+
+export type CardButtonType = "approve" | "reject" | "requestRevision";
+
+export interface TimelineCardAttachment {
+  name: string;
+}
+
+export interface TimelineCardData {
+  id: string;
+  type: TimelineCardType;
+  title: string;
+  description: string;
+  timestamp: string;
+  attachments?: TimelineCardAttachment[];
+  accentColor: string;
+  buttons: CardButtonType[];
+}
+
+export interface ActivityTimelineItem {
+  title: string;
+  timestamp: string;
+  accentColor: string;
+}

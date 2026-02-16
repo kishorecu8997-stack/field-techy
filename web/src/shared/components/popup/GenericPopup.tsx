@@ -15,6 +15,7 @@ export interface GenericPopupButton {
     | "solid"
     | "warning"
     | undefined;
+  className?: string;
 
   action?: (close: (result: unknown) => void) => Promise<void> | void;
 }
@@ -24,6 +25,8 @@ export interface GenericPopupProps {
   body: string | React.ReactNode;
   actionButtons: GenericPopupButton[];
   onClose: (value: unknown) => void;
+  bodyClassName?: string;
+  containerClassName?: string;
 }
 
 /*
@@ -54,7 +57,11 @@ export function GenericPopup(props: GenericPopupProps) {
         </h2>
       </div>
 
-      <div className="px-4 pb-2 flex-grow overflow-y-auto bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200">
+      <div
+        className={`px-4 pb-2 flex-grow bg-white dark:bg-neutral-800 text-gray-700 dark:text-gray-200 ${
+          props.bodyClassName ?? "overflow-y-auto"
+        }`}
+      >
         {typeof props.body === "string" ? <p>{props.body}</p> : props.body}
       </div>
 
@@ -68,7 +75,7 @@ export function GenericPopup(props: GenericPopupProps) {
               variant={button.variant}
               className={`px-4 py-2 font-medium transition-all ${
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
-              }`}
+              } ${button.className ?? ""}`}
               disabled={isLoading}
               onClick={() => handleClick(button, idx)}
               onKeyUp={(e) => {
