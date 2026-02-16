@@ -6,7 +6,7 @@ import { useUserSessionStore } from "../store/useUserSessionStore";
  * Centrally configured with base URL and auth interceptors.
  */
 export const apiClient = createClient({
-  baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+  baseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000",
 });
 
 // Configure client to use auth interceptor
