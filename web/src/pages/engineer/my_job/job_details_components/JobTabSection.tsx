@@ -148,14 +148,12 @@ const JobTabSection = ({
     ? neutralInactiveTabClass
     : undefined;
 
-
-
   // Network Engineer dummy flow
   if (isDummyNetworkEngineer) {
     const remainingProposals = Math.max(
       networkEngineerProposals.length -
-      acceptedProposals.length -
-      rejectedProposals.length,
+        acceptedProposals.length -
+        rejectedProposals.length,
       0,
     );
 
@@ -244,96 +242,96 @@ const JobTabSection = ({
       },
       ...(submittedProposal
         ? [
-          {
-            label: JOB_TAB_LABELS.proposalInfo,
-            content: (
-              <ProposalInfoTab submittedProposal={submittedProposal} />
-            ),
-          },
-        ]
+            {
+              label: JOB_TAB_LABELS.proposalInfo,
+              content: (
+                <ProposalInfoTab submittedProposal={submittedProposal} />
+              ),
+            },
+          ]
         : []),
       ...(showManageProposals
         ? [
-          {
-            label: JOB_TAB_LABELS.manageProposals,
-            content: (
-              <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg break-words">
-                <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">{`${JOB_TAB_COPY.totalProposalsLabel} (${remainingProposals})`}</h3>
+            {
+              label: JOB_TAB_LABELS.manageProposals,
+              content: (
+                <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg break-words">
+                  <h3 className="text-lg font-semibold mb-6 text-gray-900 dark:text-white">{`${JOB_TAB_COPY.totalProposalsLabel} (${remainingProposals})`}</h3>
 
-                {networkEngineerProposals
-                  .filter(
-                    (proposal) =>
-                      !acceptedProposals.includes(proposal.id) &&
-                      !rejectedProposals.includes(proposal.id),
-                  )
-                  .map((proposal, idx) => (
-                    <div
-                      key={proposal.id}
-                      className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 break-words"
-                    >
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{`Proposal ${idx + 1}`}</p>
-                          <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            {proposal.name}
-                          </h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {proposal.role}
-                          </p>
-                        </div>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{`${JOB_TAB_COPY.receivedOnPrefix}${proposal.receivedOn}`}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
-                        {proposal.description}
-                      </p>
-                      {proposal.attachmentName && (
-                        <div className="mb-4">
-                          <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
-                            <IoAttach
-                              className="w-4 h-4 flex-shrink-0"
-                              aria-hidden="true"
-                            />
-                            {proposal.attachmentName}
+                  {networkEngineerProposals
+                    .filter(
+                      (proposal) =>
+                        !acceptedProposals.includes(proposal.id) &&
+                        !rejectedProposals.includes(proposal.id),
+                    )
+                    .map((proposal, idx) => (
+                      <div
+                        key={proposal.id}
+                        className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 break-words"
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">{`Proposal ${idx + 1}`}</p>
+                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {proposal.name}
+                            </h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {proposal.role}
+                            </p>
                           </div>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">{`${JOB_TAB_COPY.receivedOnPrefix}${proposal.receivedOn}`}</span>
                         </div>
-                      )}
-                      <div className="flex gap-3 justify-end">
-                        <Button
-                          variant="no_style"
-                          onClick={() => handleRejectProposal(proposal.id)}
-                          className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-                        >
-                          {JOB_TAB_COPY.reject}
-                        </Button>
-                        <Button
-                          variant="no_style"
-                          className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-                        >
-                          {JOB_TAB_COPY.viewProfile}
-                        </Button>
-                        <Button
-                          variant="no_style"
-                          onClick={() => handleAcceptProposal(proposal.id)}
-                          className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium"
-                        >
-                          {JOB_TAB_COPY.accept}
-                        </Button>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap break-words">
+                          {proposal.description}
+                        </p>
+                        {proposal.attachmentName && (
+                          <div className="mb-4">
+                            <div className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all">
+                              <IoAttach
+                                className="w-4 h-4 flex-shrink-0"
+                                aria-hidden="true"
+                              />
+                              {proposal.attachmentName}
+                            </div>
+                          </div>
+                        )}
+                        <div className="flex gap-3 justify-end">
+                          <Button
+                            variant="no_style"
+                            onClick={() => handleRejectProposal(proposal.id)}
+                            className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                          >
+                            {JOB_TAB_COPY.reject}
+                          </Button>
+                          <Button
+                            variant="no_style"
+                            className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                          >
+                            {JOB_TAB_COPY.viewProfile}
+                          </Button>
+                          <Button
+                            variant="no_style"
+                            onClick={() => handleAcceptProposal(proposal.id)}
+                            className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium"
+                          >
+                            {JOB_TAB_COPY.accept}
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
 
-                {acceptedProposals.length + rejectedProposals.length >=
-                  networkEngineerProposals.length && (
+                  {acceptedProposals.length + rejectedProposals.length >=
+                    networkEngineerProposals.length && (
                     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg text-center">
                       <p className="text-gray-600 dark:text-gray-400">
                         {JOB_TAB_COPY.allProcessed}
                       </p>
                     </div>
                   )}
-              </div>
-            ),
-          },
-        ]
+                </div>
+              ),
+            },
+          ]
         : []),
     ];
 
@@ -391,64 +389,64 @@ const JobTabSection = ({
     },
     ...(submittedProposal
       ? [
-        {
-          label: JOB_TAB_LABELS.proposalInfo,
-          content: <ProposalInfoTab submittedProposal={submittedProposal} />,
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.proposalInfo,
+            content: <ProposalInfoTab submittedProposal={submittedProposal} />,
+          },
+        ]
       : []),
     ...(isDummyJob
       ? [
-        {
-          label: JOB_TAB_LABELS.jobOverview,
-          content: <JobOverviewSection {...engineerJobOverview} />,
-        },
-        {
-          label: JOB_TAB_LABELS.workLocation,
-          content: (
-            <WorkLocationMap
-              latitude={MAP_DEFAULTS.latitude}
-              longitude={MAP_DEFAULTS.longitude}
-              locationName={MAP_DEFAULTS.locationName}
-              address={workLocation || MAP_DEFAULTS.address}
-            />
-          ),
-        },
-      ]
+          {
+            label: JOB_TAB_LABELS.jobOverview,
+            content: <JobOverviewSection {...engineerJobOverview} />,
+          },
+          {
+            label: JOB_TAB_LABELS.workLocation,
+            content: (
+              <WorkLocationMap
+                latitude={MAP_DEFAULTS.latitude}
+                longitude={MAP_DEFAULTS.longitude}
+                locationName={MAP_DEFAULTS.locationName}
+                address={workLocation || MAP_DEFAULTS.address}
+              />
+            ),
+          },
+        ]
       : [
-        {
-          label: JOB_TAB_LABELS.jobInformation,
-          content: <JobInfoSection jobInfo={job} />,
-        },
-        {
-          label: JOB_TAB_LABELS.requirement,
-          content: (
-            <Proposal
-              jobTitle={requirements.jobTitle}
-              terms={requirements.terms}
-            />
-          ),
-        },
-        {
-          label: JOB_TAB_LABELS.spocDetails,
-          content: <LocationMap />,
-        },
-        {
-          label: JOB_TAB_LABELS.other,
-          content: (
-            <Proposal
-              jobTitle={otherProposal.jobTitle}
-              terms={otherProposal.terms}
-            />
-          ),
-        },
-        {
-          label: JOB_TAB_LABELS.terms,
-          content: (
-            <Proposal jobTitle={termsData.jobTitle} terms={termsData.terms} />
-          ),
-        },
-      ]),
+          {
+            label: JOB_TAB_LABELS.jobInformation,
+            content: <JobInfoSection jobInfo={job} />,
+          },
+          {
+            label: JOB_TAB_LABELS.requirement,
+            content: (
+              <Proposal
+                jobTitle={requirements.jobTitle}
+                terms={requirements.terms}
+              />
+            ),
+          },
+          {
+            label: JOB_TAB_LABELS.spocDetails,
+            content: <LocationMap />,
+          },
+          {
+            label: JOB_TAB_LABELS.other,
+            content: (
+              <Proposal
+                jobTitle={otherProposal.jobTitle}
+                terms={otherProposal.terms}
+              />
+            ),
+          },
+          {
+            label: JOB_TAB_LABELS.terms,
+            content: (
+              <Proposal jobTitle={termsData.jobTitle} terms={termsData.terms} />
+            ),
+          },
+        ]),
   ];
 
   return (

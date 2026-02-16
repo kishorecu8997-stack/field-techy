@@ -14,7 +14,7 @@ import {
   type ClientInviteEngineerResponse,
   type ClientMarksJobFileUploadedResponses,
   type ClientPostJobResponse,
-  type ClientUpdateCompanyInfoResponse
+  type ClientUpdateCompanyInfoResponse,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -236,8 +236,6 @@ export function useClientMarkJobFileUploaded(options?: {
   });
 }
 
-
-
 export function useClientInviteEngineer(options?: {
   onSuccess?: (data: ClientInviteEngineerResponse) => void;
   onError?: (error: unknown) => void;
@@ -252,7 +250,6 @@ export function useClientInviteEngineer(options?: {
     onError: options?.onError,
   });
 }
-
 
 // ...
 

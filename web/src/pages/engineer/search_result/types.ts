@@ -175,4 +175,3 @@ export const ASSIGNMENT_STATUSES = {
 
 export type AssignmentStatus =
   (typeof ASSIGNMENT_STATUSES)[keyof typeof ASSIGNMENT_STATUSES];
-

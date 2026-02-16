@@ -31,22 +31,42 @@ interface JobCardProps {
  * Links to the job details page on click.
  */
 const JobCard: React.FC<JobCardProps> = (props) => {
-  const { allocationType = "Automatic", id, jobTitle, status, jobType, startDate, endDate, workLocationName, totalPrice, clientDetails } = props;
+  const {
+    allocationType = "Automatic",
+    id,
+    jobTitle,
+    status,
+    jobType,
+    startDate,
+    endDate,
+    workLocationName,
+    totalPrice,
+    clientDetails,
+  } = props;
   const location = useLocation();
   const isClientPath = location.pathname.includes("/client");
 
   // Only call this API if we are in the client module to avoid permission errors
-  const { data: client } = useClientGetCompanyInfo(isClientPath && !!props.clientId);
+  const { data: client } = useClientGetCompanyInfo(
+    isClientPath && !!props.clientId,
+  );
 
   const getDuration =
     startDate && endDate
       ? getDurationString({
-        startDateStr: startDate,
-        endDateStr: endDate,
-      })
+          startDateStr: startDate,
+          endDateStr: endDate,
+        })
       : "N/A";
 
-  const companyName = clientDetails?.companyName || clientDetails?.personName || clientDetails?.name || (client as any)?.companyName || (client as any)?.name || (client as any)?.personName || "N/A";
+  const companyName =
+    clientDetails?.companyName ||
+    clientDetails?.personName ||
+    clientDetails?.name ||
+    (client as any)?.companyName ||
+    (client as any)?.name ||
+    (client as any)?.personName ||
+    "N/A";
 
   return (
     <Link
@@ -77,8 +97,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       </div>
       <div className="space-y-1.5 text-sm text-gray-600 dark:text-gray-400 mb-3">
         <p>
-          <span className="font-medium">Client:</span>{" "}
-          {companyName}
+          <span className="font-medium">Client:</span> {companyName}
         </p>
         <p>
           <span className="font-medium">Start: </span>
@@ -103,7 +122,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
       </div>
 
       <div className="mt-3">
-        <JobStatusBadge status={(status) as any} />
+        <JobStatusBadge status={status as any} />
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2">
           <span className="font-medium">Allocation:</span> {allocationType}
         </div>

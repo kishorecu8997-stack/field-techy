@@ -55,8 +55,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   const remainingProposals = Math.max(
     networkEngineerProposals.length -
-    acceptedProposals.length -
-    rejectedProposals.length,
+      acceptedProposals.length -
+      rejectedProposals.length,
     0,
   );
 
@@ -182,19 +182,19 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
     },
     ...(showManageProposals
       ? [
-        {
-          label: DUMMY_TABS_LABELS.manageProposals,
-          content: (
-            <ManageProposalsTab
-              remainingProposals={remainingProposals}
-              acceptedProposals={acceptedProposals}
-              rejectedProposals={rejectedProposals}
-              onAcceptProposal={handleAcceptProposal}
-              onRejectProposal={handleRejectProposal}
-            />
-          ),
-        },
-      ]
+          {
+            label: DUMMY_TABS_LABELS.manageProposals,
+            content: (
+              <ManageProposalsTab
+                remainingProposals={remainingProposals}
+                acceptedProposals={acceptedProposals}
+                rejectedProposals={rejectedProposals}
+                onAcceptProposal={handleAcceptProposal}
+                onRejectProposal={handleRejectProposal}
+              />
+            ),
+          },
+        ]
       : []),
   ];
 

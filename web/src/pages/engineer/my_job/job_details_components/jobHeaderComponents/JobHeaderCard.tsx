@@ -43,7 +43,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onOpenFinalStatement,
 }) => {
   console.log(OfferJobStatus);
-  const isDummyJob = true
+  const isDummyJob = true;
 
   const location = useLocation();
   const isClient = location.pathname.includes("client");

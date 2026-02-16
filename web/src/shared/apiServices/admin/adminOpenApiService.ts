@@ -232,7 +232,9 @@ export function useAdminClientsByUserIdStatus(options?: {
   return useMutation({
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.manageClients });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.manageClients,
+      });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,

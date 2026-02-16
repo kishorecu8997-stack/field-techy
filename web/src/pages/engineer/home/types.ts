@@ -67,8 +67,6 @@ export interface Client {
   address: string;
 }
 
-
-
 /**
  * Form values for proposal submission
  * @interface ProposalFormValues

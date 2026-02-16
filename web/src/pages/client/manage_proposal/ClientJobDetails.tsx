@@ -9,7 +9,11 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { type AssignmentStatus, type JobStatus, type OfferedJobStatusType } from "../../engineer/search_result/types";
+import {
+  type AssignmentStatus,
+  type JobStatus,
+  type OfferedJobStatusType,
+} from "../../engineer/search_result/types";
 
 /**
  * Page component displaying detailed information about a specific job.

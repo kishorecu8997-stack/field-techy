@@ -61,7 +61,7 @@ const OfferPages = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
@@ -86,12 +86,12 @@ const OfferPages = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={
-                rawJob?.clientDetails?.companyName || rawJob?.clientDetails?.personName || "Client"
+                rawJob?.clientDetails?.companyName ||
+                rawJob?.clientDetails?.personName ||
+                "Client"
               }
               memberSince={dummyClient.memberSince}
-              location={
-                rawJob?.workLocationName || dummyClient.location
-              }
+              location={rawJob?.workLocationName || dummyClient.location}
               rating={dummyClient.rating}
               reviews={dummyClient.reviews}
               verifications={dummyClient.verifications}

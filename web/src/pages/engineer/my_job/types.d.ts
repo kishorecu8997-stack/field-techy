@@ -6,8 +6,6 @@ import type {
 } from "../search_result/types";
 export type { OfferedJobStatusType } from "../search_result/types";
 
-
-
 /**
  * @file Centralized type definitions for the "My Jobs" feature.
  *
@@ -217,7 +215,6 @@ export type UpdateLogFormFields = {
 /**
  * Represents the possible statuses for an offered job.
  */
-
 
 /**
  * Represents a job-like object with common job properties.
