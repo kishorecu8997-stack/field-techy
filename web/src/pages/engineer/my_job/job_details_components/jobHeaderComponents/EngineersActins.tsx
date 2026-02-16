@@ -2,16 +2,14 @@ import { icons } from "@/config/icons";
 import {
   JOB_STATUSES,
   type JobStatus,
-  ASSIGNMENT_STATUSES,
-  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { type Dispatch, type SetStateAction } from "react";
 import { toast } from "react-toastify";
-import BreakRequest from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequest";
-import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import BreakRequestForm from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestForm";
+import type { ProgressUpdate, OfferedJobStatusType } from "../../types.d";
 
 /**
  * EngineersActions Component
@@ -23,35 +21,33 @@ const EngineersActions = ({
   setOfferJobStatus,
   setSendProposal,
   setOpen,
+  setIsWorkSubmitted,
   setActiveTab,
   isSendProposal,
   OfferJobStatus,
   status,
-  assignmentId,
+  activeTab,
+  isDummyJob,
+  onAddProgressUpdate,
+  onOpenFinalStatement,
 }: {
-  setOfferJobStatus?: Dispatch<SetStateAction<AssignmentStatus | undefined>>;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | undefined>
+  >;
   setSendProposal?: Dispatch<SetStateAction<boolean>>;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  setIsWorkSubmitted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
   isSendProposal?: boolean;
-  status?: JobStatus | AssignmentStatus | string;
-  OfferJobStatus?: AssignmentStatus;
-  assignmentId?: number;
+  status?: JobStatus | string;
+  OfferJobStatus?: OfferedJobStatusType | undefined;
+  activeTab?: string;
+  isDummyJob?: boolean;
+  onAddProgressUpdate?: (update: ProgressUpdate) => void;
+  onOpenFinalStatement?: () => void;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
-
-  const { mutate: requestStart } = useEngineerRequestStart({
-    onSuccess: () => {
-      toast.success("Job started successfully");
-      setOfferJobStatus?.("started");
-    },
-    onError: (err: unknown) => {
-      const errorMessage =
-        (err as { message?: string })?.message || "Failed to start job";
-      toast.error(errorMessage);
-    },
-  });
 
   const handleConfirmAcceptJob = async () => {
     await showPopup({
@@ -77,31 +73,13 @@ const EngineersActions = ({
     });
   };
 
-  const handleConfirmStartJob = async () => {
-    await showPopup({
-      title: "Start Job",
-      body: "Are you sure you want to start this job?",
-      actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "danger",
-        },
-        {
-          label: "Yes, start",
-          value: "yes",
-          variant: "primary",
-          action: async (close) => {
-            if (assignmentId) {
-              requestStart({ body: { assignmentId } });
-              close(true);
-            } else {
-              toast.error("Unable to start the job: Missing assignment ID");
-            }
-          },
-        },
-      ],
-    });
+  const handleConfirmStartJob = () => {
+    toast.success("Job started successfully");
+    setOfferJobStatus?.("started");
+  };
+
+  const handleFinalStatement = () => {
+    onOpenFinalStatement?.();
   };
 
   const handleViewJobPosting = async () => {
@@ -129,183 +107,124 @@ const EngineersActions = ({
   const handlebreakRequest = async () => {
     await showPopup({
       title: "",
-      body: <BreakRequest onClose={closePopup} />,
+      body: (
+        <BreakRequestForm
+          onClose={closePopup}
+          onAddProgressUpdate={onAddProgressUpdate}
+        />
+      ),
+      bodyClassName: "overflow-visible",
+      containerClassName: "overflow-visible max-h-none h-auto sm:max-w-2xl",
       actionButtons: [],
     });
   };
 
+  const postStartActions = (
+    <div className="flex flex-wrap gap-2 w-fit">
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handleFinalStatement}
+      >
+        Final Statement
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={handlebreakRequest}
+      >
+        Break Request
+      </Button>
+      <Button
+        className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"
+        onClick={() => setOpen?.(true)}
+      >
+        Create Log
+      </Button>
+    </div>
+  );
+
   return (
-    // This is old code it should be maintained till the new code is ready
-
-    // <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
-    //   <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
-
-    //     {/* if the job is in progress the engineer can break request, update log and submit work */}
-    //     {status === JOB_STATUSES.inProgress ? (
-    //       <div className="flex flex-wrap gap-2 w-fit">
-    //         <Button
-    //           className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //           onClick={handlebreakRequest}
-    //         >
-    //           Break Request
-    //         </Button>
-    //         <Button
-    //           className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //           onClick={() => setOpen?.(true)}
-    //         >
-    //           Update Log
-    //         </Button>
-    //         <Button
-    //           className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //           onClick={() => {
-    //             setActiveTab?.("Work Submissions");
-    //           }}
-    //         >
-    //           Submit work
-    //         </Button>
-    //       </div>
-    //     )
-    //       // if the job is applied the engineer can see the job applied status
-    //       : status === JOB_STATUSES.applied ? (
-    //         <div className="flex flex-wrap gap-2 w-fit items-center">
-    //           <icons.checkCircle className="text-green-500 w-6 h-6" />
-    //           <span className="text-lg">Job Applied</span>
-    //         </div>
-    //       )
-    //         // if the job is new the engineer can send proposal
-    //         : status === JOB_STATUSES.new ? (
-    //           <div className="flex flex-wrap gap-2 w-fit items-center">
-    //             {!isSendProposal ? (
-    //               <Button
-    //                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                 onClick={() => setSendProposal?.(true)}
-    //               >
-    //                 Send Proposal
-    //               </Button>
-    //             ) : (
-    //               <div
-    //                 className="hover:underline cursor-pointer "
-    //                 onClick={() => handleViewJobPosting()}
-    //               >
-    //                 View Job posting
-    //               </div>
-    //             )}
-    //           </div>
-    //           // if the job is offer the engineer can accept or decline the offer
-    //         ) : status === JOB_STATUSES.offer ? (
-    //           <div className="flex flex-wrap gap-2 w-fit items-center">
-    //             {/* if the offer is initial the engineer can accept or decline the offer */}
-    //             {OfferJobStatus === "initial" ? (
-    //               <div className="flex flex-row gap-4">
-    //                 <Button
-    //                   className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => handleConfirmAcceptJob()}
-    //                 >
-    //                   Accept Job
-    //                 </Button>
-
-    //                 <Button
-    //                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => {
-    //                     setActiveKey("cancelOffer");
-    //                     setISOpenSidebar(true);
-    //                   }}
-    //                 >
-    //                   Decline
-    //                 </Button>
-    //               </div>
-    //             ) : OfferJobStatus === "accepted" ? (
-    //               // the engineer can start the job once he accepted the offer
-    //               <div className="flex flex-row gap-4">
-    //                 <Button
-    //                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => {
-    //                     handleConfirmStartJob();
-    //                   }}
-    //                 >
-    //                   Start Job
-    //                 </Button>
-
-    //                 <Button
-    //                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => {
-    //                     setActiveKey("cancelOffer");
-    //                     setISOpenSidebar(true);
-    //                   }}
-    //                 >
-    //                   Decline
-    //                 </Button>
-    //               </div>
-    //             ) : OfferJobStatus === "started" ? (
-    //               // the engineer can only check
-    //               <Button
-    //                 className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                 onClick={() => {
-    //                   handleConfirmCheckIn();
-    //                 }}
-    //               >
-    //                 Check in
-    //               </Button>
-    //             ) : (
-    //               // after complete a day of work the engineer can update the log and submit the work
-    //               <div className="flex flex-wrap gap-2 w-fit">
-    //                 <Button
-    //                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => setOpen?.(true)}
-    //                 >
-    //                   Update Log
-    //                 </Button>
-    //                 <Button
-    //                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-    //                   onClick={() => {
-    //                     setActiveTab?.("Work Submissions");
-    //                   }}
-    //                 >
-    //                   Submit Work
-    //                 </Button>
-    //               </div>
-    //             )}
-    //           </div>
-    //         ) : (
-    //           // after job is completed
-    //           <div className="flex flex-wrap gap-2 w-fit items-center">
-    //             <icons.checkCircle className="text-green-500 w-6 h-6" />
-    //             <span className="text-lg">Job Completed</span>
-    //           </div>
-    //         )}
-    //   </span>
-    // </div>
-
-    // new code, something is missing compare to old code, please update the code
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
       <span className="flex rounded-md text-sm font-medium h-fit justify-end items-end w-fit">
-        {/* if the job is in progress the engineer can break request, update log and submit work */}
         {status === JOB_STATUSES.inProgress ? (
-          <>
-            {OfferJobStatus === ASSIGNMENT_STATUSES.started ? (
-              <div className="flex flex-wrap gap-2 w-fit">
+          <div className="flex flex-wrap gap-2 w-fit">
+            <Button
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              onClick={handlebreakRequest}
+            >
+              Break Request
+            </Button>
+            <Button
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              onClick={() => setOpen?.(true)}
+            >
+              Create Log
+            </Button>
+            <Button
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              onClick={() => {
+                setIsWorkSubmitted?.(true);
+                setActiveTab?.("Work Submissions");
+              }}
+            >
+              Submit work
+            </Button>
+          </div>
+        ) : status === JOB_STATUSES.applied ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            <icons.checkCircle className="text-green-500 w-6 h-6" />
+            <span className="text-lg">Job Applied</span>
+          </div>
+        ) : status === JOB_STATUSES.new ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {isDummyJob && activeTab === "Timeline" ? (
+              OfferJobStatus === "started" ? (
+                postStartActions
+              ) : (
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                  onClick={handlebreakRequest}
+                  onClick={() => handleConfirmStartJob()}
                 >
-                  Break Request
+                  Start Job
                 </Button>
+              )
+            ) : !isSendProposal ? (
+              <Button
+                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                onClick={() => setSendProposal?.(true)}
+              >
+                Send Proposal
+              </Button>
+            ) : (
+              <div
+                className="text-white hover:underline cursor-pointer"
+                onClick={() => handleViewJobPosting()}
+              >
+                View Job posting
+              </div>
+            )}
+          </div>
+        ) : status === JOB_STATUSES.offer ? (
+          <div className="flex flex-wrap gap-2 w-fit items-center">
+            {OfferJobStatus === "initial" ? (
+              <div className="flex flex-row gap-4">
                 <Button
-                  className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                  onClick={() => setOpen?.(true)}
+                  className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
+                  onClick={() => handleConfirmAcceptJob()}
                 >
-                  Update Log
+                  Accept Job
                 </Button>
+
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                   onClick={() => {
-                    setActiveTab?.("Work Submissions");
+                    setActiveKey("cancelOffer");
+                    setISOpenSidebar(true);
                   }}
                 >
-                  Submit Work
+                  Decline
                 </Button>
               </div>
-            ) : OfferJobStatus === ASSIGNMENT_STATUSES.accepted ? (
+            ) : OfferJobStatus === "accepted" ? (
               <div className="flex flex-row gap-4">
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -326,89 +245,32 @@ const EngineersActions = ({
                   Decline
                 </Button>
               </div>
-            ) : OfferJobStatus === ASSIGNMENT_STATUSES.assigned ? (
-              <div className="flex flex-row gap-4">
+            ) : OfferJobStatus === "started" ? (
+              postStartActions
+            ) : (
+              <div className="flex flex-wrap gap-2 w-fit">
                 <Button
-                  className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-                  onClick={() => handleConfirmAcceptJob()}
+                  className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+                  onClick={() => setOpen?.(true)}
                 >
-                  Accept Job
+                  Create Log
                 </Button>
-
                 <Button
                   className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
                   onClick={() => {
-                    setActiveKey("cancelOffer");
-                    setISOpenSidebar(true);
+                    setIsWorkSubmitted?.(true);
+                    setActiveTab?.("Work Submissions");
                   }}
                 >
-                  Decline
+                  Submit Work
                 </Button>
-              </div>
-            ) : OfferJobStatus === ASSIGNMENT_STATUSES.rejected ? (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg">Job Rejected</span>
-              </div>
-            ) : OfferJobStatus === ASSIGNMENT_STATUSES.startPendingApproval ? (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg">Job Start Pending Approval</span>
-              </div>
-            ) : OfferJobStatus === ASSIGNMENT_STATUSES.submitPendingApproval ? (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg">Job Start Pending Approval</span>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg">Job Pending</span>
-              </div>
-            )}
-          </>
-        ) : status === JOB_STATUSES.cancelled ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            <icons.checkCircle className="text-green-500 w-6 h-6" />
-            <span className="text-lg">Job Cancelled</span>
-          </div>
-        ) : status === JOB_STATUSES.flagged ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            <icons.checkCircle className="text-green-500 w-6 h-6" />
-            <span className="text-lg">Job Flagged</span>
-          </div>
-        ) : status === JOB_STATUSES.closed ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            <icons.checkCircle className="text-green-500 w-6 h-6" />
-            <span className="text-lg">Job Closed</span>
-          </div>
-        ) : status === JOB_STATUSES.posted ? (
-          <div className="flex flex-wrap gap-2 w-fit items-center">
-            {OfferJobStatus === ASSIGNMENT_STATUSES.applied ? (
-              <div className="flex flex-wrap gap-2 w-fit items-center">
-                <icons.checkCircle className="text-green-500 w-6 h-6" />
-                <span className="text-lg">Job Applied</span>
-              </div>
-            ) : !isSendProposal ? (
-              <Button
-                className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-                onClick={() => setSendProposal?.(true)}
-              >
-                Send Proposal
-              </Button>
-            ) : (
-              <div
-                className="hover:underline cursor-pointer "
-                onClick={() => handleViewJobPosting()}
-              >
-                View Job posting
               </div>
             )}
           </div>
         ) : (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             <icons.checkCircle className="text-green-500 w-6 h-6" />
-            <span className="text-lg">Job Pending</span>
+            <span className="text-lg">Job Completed</span>
           </div>
         )}
       </span>

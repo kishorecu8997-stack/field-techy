@@ -4,7 +4,7 @@ import { sampleJobs } from "@/dummy_data/searchDataClient";
 import { sampleJobs as sampleJobs1 } from "@/dummy_data/searchData";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/JobHeaderCard";
-import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTabSection";
+import JobTabSection from "@/pages/client/my_job_client/components/JobTabSection";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { useEffect, useState } from "react";
@@ -91,7 +91,6 @@ const ClientJobDetails = () => {
               numberOfApplicants={numberOfApplicants}
             />
             <JobTabSection
-              //@ts-expect-error Unable to resolve to a known type, refer the right type of job status and fix the mismatch
               status={matchedJob?.status as JobStatus}
               isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}

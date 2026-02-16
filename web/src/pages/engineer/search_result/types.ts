@@ -11,6 +11,9 @@ export const JOB_STATUSES = {
   closed: "Closed",
   hold: "Hold",
   flagged: "Flagged",
+  applied: "Applied",
+  new: "New",
+  offer: "offer",
 } as const;
 export type JobStatus = (typeof JOB_STATUSES)[keyof typeof JOB_STATUSES];
 
@@ -172,3 +175,4 @@ export const ASSIGNMENT_STATUSES = {
 
 export type AssignmentStatus =
   (typeof ASSIGNMENT_STATUSES)[keyof typeof ASSIGNMENT_STATUSES];
+

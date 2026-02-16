@@ -14,7 +14,8 @@ import { icons } from "@/config/icons";
 import { useWatch } from "react-hook-form";
 import CustomTimePicker from "@/shared/components/commonUI/inputs/CustomTimePicker";
 import { useEffect } from "react";
-import { useClientGetJobs as useGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
+import type { JobLike } from "../../types";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 type BreakType = "Long Term Break" | "Short Term Break" | "";
 interface BreakRequestFormData {
@@ -46,7 +47,7 @@ interface BreakRequestFormData {
  * @returns {JSX.Element} Rendered break request form with status table and calendar
  */
 const BreakRequest = ({ onClose }: { onClose: () => void }) => {
-  const { data: apiJobs } = useGetJobs();
+  const { data: apiJobs } = useEngineerSearchJobs({}, true);
   const methods = useForm<BreakRequestFormData>({
     defaultValues: {
       breakType: "Long Term Break",
@@ -85,7 +86,8 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
   const parseTime = (time: string | undefined, date: Date) => {
     if (!time) return new Date(date);
     const [timePart, modifier] = time.split(" ");
-    let [hours, minutes] = timePart.split(":").map(Number);
+    const [hoursPart, minutes] = timePart.split(":").map(Number);
+    let hours = hoursPart;
     if (modifier === "PM" && hours < 12) hours += 12;
     if (modifier === "AM" && hours === 12) hours = 0;
     const newDate = new Date(date);
@@ -93,7 +95,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     return newDate;
   };
 
-  const getJobEndDate = (job: any) => {
+  const getJobEndDate = (job: JobLike) => {
     const startDate = job.startDate;
     const duration = job.jobDuration || job.duration;
 
@@ -112,7 +114,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
     if (!data.startDate || !data.endDate) return { jobConflicts: [] };
     const breakStartDate = new Date(data.startDate);
     const breakEndDate = new Date(data.endDate);
-    const jobConflicts = (apiJobs || []).filter((job: any) => {
+    const jobConflicts = (apiJobs || []).filter((job: JobLike) => {
       if (!job.startDate) return false;
       const jobStart = new Date(job.startDate);
       const jobEnd = getJobEndDate(job);
@@ -168,7 +170,7 @@ const BreakRequest = ({ onClose }: { onClose: () => void }) => {
             if (jobConflicts.length > 0) {
               toast.warn(
                 `Conflict detected with existing jobs: ${jobConflicts
-                  .map((j: any) => j.jobTitle || j.title)
+                  .map((j: JobLike) => j.jobTitle || j.title)
                   .join(", ")}`,
                 { autoClose: 10000 },
               );

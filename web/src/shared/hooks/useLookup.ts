@@ -38,7 +38,6 @@ type LookupQueryOptions = UseQueryOptions<
  */
 export const useApiClient = () => {
   const baseUrl =
-    import.meta.env.VITE_API_URL_NEW ||
     import.meta.env.VITE_API_URL ||
     "http://localhost:3000";
   return useMemo(() => createClient({ baseUrl }), [baseUrl]);

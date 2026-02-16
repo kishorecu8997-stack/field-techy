@@ -4,17 +4,14 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import {
-  JOB_STATUSES,
-  SORT_OPTIONS,
-  type AssignmentStatus,
-  type JobStatus,
-} from "../search_result/types";
+import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
+import type { ProgressUpdate } from "./types.d";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import JobTabSection from "./job_details_components/JobTabSection";
+import { toast } from "react-toastify";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -25,7 +22,14 @@ const JobDetailsPage = () => {
   const params = useParams();
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Job Information");
+  const [activeTab, setActiveTab] = useState(
+    isDummyJob ? "Job Overview" : "Job Information",
+  );
+  const [OfferJobStatus, setOfferJobStatus] = useState<
+    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
+  >("initial");
+  const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
+  const [showFinalStatement, setShowFinalStatement] = useState(false);
 
   // Always call hooks - pass 0 if jobId is missing or dummy
   /* const { data: jobData, isLoading } = useEngineerGetJobById(
@@ -40,6 +44,13 @@ const JobDetailsPage = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
+
+  const handleAddProgressUpdate = (update: ProgressUpdate) => {
+    setProgressUpdates((prev) => [update, ...prev]);
+  };
+
+  const handleOpenFinalStatement = () => setShowFinalStatement(true);
+  const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -168,17 +179,39 @@ const JobDetailsPage = () => {
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
-              jobLocation={jobData?.clientDetails?.address || ""}
-              numberOfVacancy={jobData?.vacancies ?? undefined}
-              assignmentId={jobData?.assignmentId ?? undefined}
+              hideBreakDetails={isDummyJob}
+              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
+              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
+              numberOfApplicants={isDummyJob ? 20 : undefined}
+              hideDurationAndClient={isDummyJob}
+              activeTab={activeTab}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              onOpenFinalStatement={handleOpenFinalStatement}
             />
 
             <JobTabSection
               status={jobStatus}
               isSendProposal={isSendProposal}
               activeTab={activeTab}
+              setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
+              isDummyJob={isDummyJob}
+              workLocation={location as string}
+              isDummyNetworkEngineer={isDummyJob}
+              showManageProposals={false}
+              progressUpdates={progressUpdates}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              hideTimelineContent={showFinalStatement}
             />
+
+            {showFinalStatement && (
+              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                <FinalStatementForm
+                  onClose={handleCloseFinalStatement}
+                  onAddProgressUpdate={handleAddProgressUpdate}
+                />
+              </div>
+            )}
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard

@@ -66,8 +66,11 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   );
 };
 
+const isValidDateObj = (date: Date | null | undefined): date is Date =>
+  date instanceof Date && !Number.isNaN(date.getTime());
+
 const formatDate = (date: Date | null): string => {
-  if (!date) return "";
+  if (!isValidDateObj(date)) return "";
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
@@ -120,7 +123,9 @@ const DatePickerRender: FC<{
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
-  const [currentMonth, setCurrentMonth] = useState(value || new Date());
+  const [currentMonth, setCurrentMonth] = useState(
+    isValidDateObj(value) ? value : new Date(),
+  );
   const [view, setView] = useState<"day" | "month" | "year">("day");
   const datePickerRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState(formatDate(value));
@@ -128,7 +133,7 @@ const DatePickerRender: FC<{
   // Sync input on external change
   useEffect(() => {
     setInputValue(formatDate(value));
-    if (isOpen && value) setCurrentMonth(value);
+    if (isOpen && isValidDateObj(value)) setCurrentMonth(value);
   }, [value, isOpen]);
 
   // Detect available space & auto-position dropdown
@@ -187,6 +192,7 @@ const DatePickerRender: FC<{
   };
 
   const getDaysInMonth = (date: Date): Date[] => {
+    if (!isValidDateObj(date)) return [];
     const year = date.getFullYear();
     const month = date.getMonth();
     return Array.from(
@@ -196,6 +202,7 @@ const DatePickerRender: FC<{
   };
 
   const getPreviousMonthDays = (date: Date): Date[] => {
+    if (!isValidDateObj(date)) return [];
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     return Array.from({ length: firstDay.getDay() }, (_, i) => {
       const prevMonthLastDay = new Date(
@@ -212,6 +219,7 @@ const DatePickerRender: FC<{
   };
 
   const getNextMonthDays = (date: Date): Date[] => {
+    if (!isValidDateObj(date)) return [];
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     return Array.from(
       { length: 6 - lastDay.getDay() },
@@ -348,7 +356,9 @@ const DatePickerRender: FC<{
 
                 {/* Current month */}
                 {getDaysInMonth(currentMonth).map((d, i) => {
-                  const isSelected = value?.toDateString() === d.toDateString();
+                  const selectedValue = isValidDateObj(value) ? value : null;
+                  const isSelected =
+                    selectedValue?.toDateString() === d.toDateString();
                   const isToday =
                     new Date().toDateString() === d.toDateString();
                   const invalid = !isDateValid(d, minDate, maxDate);
