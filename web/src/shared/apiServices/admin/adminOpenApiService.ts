@@ -1,7 +1,6 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
-  adminGetEngineersForManagement as getAdminManageEngineers,
   adminUpdateUserStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
@@ -22,6 +21,8 @@ import {
   type AdminUpdatePersonalInfoResponse,
   type AdminGetJobsData,
   type AdminGetJobsResponse,
+  type AdminGetEngineersForManagementData,
+  type AdminGetEngineersForManagementResponses,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -34,6 +35,7 @@ import {
   adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
+  adminGetEngineersForManagementOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -193,29 +195,24 @@ export function useUpdateEngineerProfileStatus(options?: {
 
 export type ProfileStatusType = EngineerStatusType;
 export type UserStatusType = "active" | "inactive" | "suspended" | "blocked";
-export interface PagedEngineersResponse<T = unknown> {
-  data: T[];
-  total: number;
-}
 
-export async function fetchAdminManageEngineersPaged<T = unknown>({
-  page,
-  limit,
-  status,
-  profileStatus,
-}: {
-  page: number;
-  limit: number;
-  status?: UserStatusType;
-  profileStatus?: ProfileStatusType;
-}): Promise<PagedEngineersResponse<T>> {
-  const response = await getAdminManageEngineers({
-    client: apiClient,
-    query: { page, limit, status, profileStatus },
-    throwOnError: true,
+export type AdminGetEngineersQuery = NonNullable<AdminGetEngineersForManagementData["query"]>;
+
+export function useAdminManageEngineers (
+  query?: AdminGetEngineersQuery,
+  options?: {
+    enabled?: boolean;
+  onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+  onError?: (error: unknown) => void;
+},
+) {
+  return useQuery({
+    ...adminGetEngineersForManagementOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
   });
-
-  return response.data as unknown as PagedEngineersResponse<T>;
 }
 
 export type AdminManageClientsResponse = NonNullable<
