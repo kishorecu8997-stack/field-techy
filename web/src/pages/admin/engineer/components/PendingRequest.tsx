@@ -13,7 +13,7 @@ import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps, EngineerStatusType } from "../types";
+import type { ManageEngineerProps, EngineerStatusType, EngineerApiResponse } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
@@ -22,28 +22,6 @@ import {
   fetchAdminManageEngineersPaged,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 
-export type EngineerApiResponse = {
-  id: number;
-  userId: number;
-  engineerCode: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  location: string;
-  cityName: string;
-  countryName: string;
-  registrationDate: string;
-  balance: number;
-  profileStatus: string;
-  isEmployed: boolean;
-  averageRating: number;
-  user?: {
-    name: string;
-    email: string;
-    phone_number: string;
-  };
-  isLoading?: boolean;
-};
 
 /**
  * PendingRequest Component
