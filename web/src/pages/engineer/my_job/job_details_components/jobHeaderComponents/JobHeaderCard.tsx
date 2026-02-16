@@ -42,8 +42,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
 }) => {
-  console.log(OfferJobStatus);
-  const isDummyJob = true;
+  const isDummyJob = false;
 
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -78,7 +77,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     setIsMenuOpen(false);
   };
   const handleConfirmAction = () => {
-    console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
   const handleBreakDetails = async () => {
@@ -96,11 +94,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   return (
     <>
       <div
-        className={`${
-          isSendProposal
-            ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-        } p-5 rounded-xl shadow-md`}
+        className={`${isSendProposal
+          ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+          } p-5 rounded-xl shadow-md`}
       >
         <div className="flex justify-between items-start">
           <div>
@@ -112,23 +109,23 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
             {(numberOfVacancy !== undefined ||
               numberOfApplicants !== undefined) && (
-              <p className="text-sm mt-1">
-                {numberOfVacancy !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
-                  </span>
-                )}
-                {numberOfVacancy !== undefined &&
-                  numberOfApplicants !== undefined && (
-                    <span>{JOB_HEADER_COPY.separator}</span>
+                <p className="text-sm mt-1">
+                  {numberOfVacancy !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.vacanciesLabel} {numberOfVacancy}
+                    </span>
                   )}
-                {numberOfApplicants !== undefined && (
-                  <span>
-                    {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
-                  </span>
-                )}
-              </p>
-            )}
+                  {numberOfVacancy !== undefined &&
+                    numberOfApplicants !== undefined && (
+                      <span>{JOB_HEADER_COPY.separator}</span>
+                    )}
+                  {numberOfApplicants !== undefined && (
+                    <span>
+                      {JOB_HEADER_COPY.applicantsLabel} {numberOfApplicants}
+                    </span>
+                  )}
+                </p>
+              )}
           </div>
           <div className="flex gap-2 items-center">
             {!hideBreakDetails && (
