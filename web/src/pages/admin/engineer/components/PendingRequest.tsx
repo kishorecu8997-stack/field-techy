@@ -20,7 +20,7 @@ import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminManageEngineers,
-  useUpdateEngineerProfileStatus,
+  useAdminEngineersByUserIdStatus
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 
@@ -41,28 +41,20 @@ export default function PendingRequest() {
   });
 
   // Mutation for updating status
-  const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
-    onSuccess: (_data, variables) => {
-      toast.success(
-        variables.profileStatus === EngineerStatus.APPROVE
-          ? "Engineer approved successfully!"
-          : variables.profileStatus === EngineerStatus.REJECT
-          ? "Engineer rejected successfully!"
-          : "Engineer status updated successfully!"
-      );
-      setRowStatuses((prev) => ({ ...prev, [variables.userId]: variables.profileStatus }));
-    },
-    onError: () => toast.error("Failed to update engineer status"),
-  });
+  const { mutateAsync: updateEngineerStatus } = useAdminEngineersByUserIdStatus();
 
   // Use the hook for status change
-  const { onStatusChange } = useEngineerStatusChange({
-    rowStatuses,
-    setRowStatuses,
-    mutateAsync: updateEngineerStatus,
-    showPopup,
-    refetch: () => refetch(),
-  });
+const { onStatusChange } = useEngineerStatusChange({
+  rowStatuses,
+  setRowStatuses,
+  mutateAsync: async ({ userId, profileStatus }: { userId: number; profileStatus: EngineerStatusType }) =>
+    updateEngineerStatus({
+      path: { userId },
+      body: { profileStatus },
+    }),
+  showPopup,
+  refetch
+});
 
   // Map API response to table rows
   const engineersData: ManageEngineerProps[] = (engineersResponse?.data ?? []).map((e) => ({
@@ -118,7 +110,7 @@ export default function PendingRequest() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "srNo", label: "Sr.No." },
+    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
     { key: "engineerID", label: "Engineer ID" },
     {
       key: "details",
