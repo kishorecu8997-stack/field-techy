@@ -160,15 +160,17 @@ export function useAppGetLookupData(
   });
 }
 
-export type AdminGetEngineersQuery = NonNullable<AdminGetEngineersForManagementData["query"]>;
+export type AdminGetEngineersQuery = NonNullable<
+  AdminGetEngineersForManagementData["query"]
+>;
 
-export function useAdminManageEngineers (
+export function useAdminManageEngineers(
   query?: AdminGetEngineersQuery,
   options?: {
     enabled?: boolean;
-  onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
-  onError?: (error: unknown) => void;
-},
+    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onError?: (error: unknown) => void;
+  },
 ) {
   return useQuery({
     ...adminGetEngineersForManagementOptions({

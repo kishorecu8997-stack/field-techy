@@ -20,7 +20,7 @@ import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import {
   useAdminManageEngineers,
-  useAdminEngineersByUserIdStatus
+  useAdminEngineersByUserIdStatus,
 } from "@/shared/apiServices/admin/adminOpenApiService";
 import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 
@@ -28,36 +28,51 @@ export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
 
-  const [rowStatuses, setRowStatuses] = useState<Record<number, EngineerStatusType>>({});
+  const [rowStatuses, setRowStatuses] = useState<
+    Record<number, EngineerStatusType>
+  >({});
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
   // Fetch pending engineers via API
-  const { data: engineersResponse, isLoading , refetch} = useAdminManageEngineers({
+  const {
+    data: engineersResponse,
+    isLoading,
+    refetch,
+  } = useAdminManageEngineers({
     page: 1,
     limit: 50,
     profileStatus: "pending",
   });
 
   // Mutation for updating status
-  const { mutateAsync: updateEngineerStatus } = useAdminEngineersByUserIdStatus();
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
   // Use the hook for status change
-const { onStatusChange } = useEngineerStatusChange({
-  rowStatuses,
-  setRowStatuses,
-  mutateAsync: async ({ userId, profileStatus }: { userId: number; profileStatus: EngineerStatusType }) =>
-    updateEngineerStatus({
-      path: { userId },
-      body: { profileStatus },
-    }),
-  showPopup,
-  refetch
-});
+  const { onStatusChange } = useEngineerStatusChange({
+    rowStatuses,
+    setRowStatuses,
+    mutateAsync: async ({
+      userId,
+      profileStatus,
+    }: {
+      userId: number;
+      profileStatus: EngineerStatusType;
+    }) =>
+      updateEngineerStatus({
+        path: { userId },
+        body: { profileStatus },
+      }),
+    showPopup,
+    refetch,
+  });
 
   // Map API response to table rows
-  const engineersData: ManageEngineerProps[] = (engineersResponse?.data ?? []).map((e) => ({
+  const engineersData: ManageEngineerProps[] = (
+    engineersResponse?.data ?? []
+  ).map((e) => ({
     id: e.userId,
     userId: e.userId,
     engineerID: e.engineerCode,
@@ -84,7 +99,7 @@ const { onStatusChange } = useEngineerStatusChange({
         e.engineerID.toLowerCase().includes(q) ||
         e.details.name.toLowerCase().includes(q) ||
         e.details.email.toLowerCase().includes(q) ||
-        e.location.toLowerCase().includes(q)
+        e.location.toLowerCase().includes(q),
     );
   }, [engineersData, search]);
 
@@ -110,7 +125,10 @@ const { onStatusChange } = useEngineerStatusChange({
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) => index + 1,
+    },
     { key: "engineerID", label: "Engineer ID" },
     {
       key: "details",
@@ -120,8 +138,12 @@ const { onStatusChange } = useEngineerStatusChange({
           <FaUserCircle className="h-6 w-6 text-neutral-500 dark:text-neutral-400" />
           <div>
             <div className="font-semibold">{row.details.name}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.phone}</div>
-            <div className="text-sm text-neutral-500 dark:text-neutral-400">{row.details.email}</div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.phone}
+            </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              {row.details.email}
+            </div>
           </div>
         </div>
       ),
@@ -161,10 +183,18 @@ const { onStatusChange } = useEngineerStatusChange({
       ),
     },
     { key: "location", label: "Location" },
-    { key: "registrationDate", label: "Registration Date", dataCellAlign: "center" },
+    {
+      key: "registrationDate",
+      label: "Registration Date",
+      dataCellAlign: "center",
+    },
     { key: "walletBalance", label: "Wallet Balance", dataCellAlign: "center" },
     { key: "kycStatus", label: "KYC Status", dataCellAlign: "center" },
-    { key: "employmentStatus", label: "Employment Status", dataCellAlign: "center" },
+    {
+      key: "employmentStatus",
+      label: "Employment Status",
+      dataCellAlign: "center",
+    },
     { key: "avgRating", label: "Avg Rating", dataCellAlign: "center" },
     {
       key: "approvalStatus",
@@ -172,7 +202,10 @@ const { onStatusChange } = useEngineerStatusChange({
       renderCell: (row) => {
         const current = rowStatuses[row.id] ?? EngineerStatus.PENDING;
         const preparedOptions = [
-          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({ ...opt, disabled: true })),
+          ...JobStatus.filter((opt) => opt.value === current).map((opt) => ({
+            ...opt,
+            disabled: true,
+          })),
           ...JobStatus.filter((opt) => opt.value !== current),
         ];
 
@@ -198,14 +231,18 @@ const { onStatusChange } = useEngineerStatusChange({
         <div className="flex items-center gap-2">
           <div
             className="p-2 bg-yellow-100 rounded-md cursor-pointer"
-            onClick={() => navigate(absoluteUrls.admin.home.manage_engineer_view)}
+            onClick={() =>
+              navigate(absoluteUrls.admin.home.manage_engineer_view)
+            }
           >
             <FiEye className="text-yellow-600" />
           </div>
           <div
             className="p-2 bg-blue-100 rounded-md cursor-pointer"
             onClick={() =>
-              navigate(`${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`)
+              navigate(
+                `${absoluteUrls.admin.home.manage_engineer_edit}/${row.id}`,
+              )
             }
           >
             <CiEdit className="text-blue-600" />

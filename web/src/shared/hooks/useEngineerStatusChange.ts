@@ -1,5 +1,8 @@
 import { toast } from "react-toastify";
-import type { ManageEngineerProps, EngineerStatusType } from "@/pages/admin/engineer/types";
+import type {
+  ManageEngineerProps,
+  EngineerStatusType,
+} from "@/pages/admin/engineer/types";
 import type { PopupConfig } from "@/shared/store/popupStore";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { EngineerStatus } from "@/pages/admin/engineer/types";
@@ -9,14 +12,16 @@ import { EngineerStatus } from "@/pages/admin/engineer/types";
  */
 export interface UseEngineerStatusChangeProps {
   rowStatuses: Record<number, EngineerStatusType>;
-  setRowStatuses: React.Dispatch<React.SetStateAction<Record<number, EngineerStatusType>>>;
+  setRowStatuses: React.Dispatch<
+    React.SetStateAction<Record<number, EngineerStatusType>>
+  >;
   mutateAsync: UseMutationResult<
     unknown,
     unknown,
     { userId: number; profileStatus: EngineerStatusType }
   >["mutateAsync"];
   showPopup: (config: PopupConfig) => Promise<unknown>;
-    refetch: () => void;
+  refetch: () => void;
 }
 
 /**
@@ -27,15 +32,16 @@ export const useEngineerStatusChange = ({
   setRowStatuses,
   mutateAsync,
   showPopup,
-  refetch
+  refetch,
 }: UseEngineerStatusChangeProps) => {
   const onStatusChange = async (
     row: ManageEngineerProps,
-    status: EngineerStatusType | null
+    status: EngineerStatusType | null,
   ) => {
     if (!status) return;
 
-    const previousStatus = rowStatuses[row.id] ?? row.approvalStatus ?? "pending";
+    const previousStatus =
+      rowStatuses[row.id] ?? row.approvalStatus ?? "pending";
 
     // Optimistic update
     setRowStatuses((prev) => ({ ...prev, [row.id]: status }));
@@ -50,10 +56,10 @@ export const useEngineerStatusChange = ({
         {
           label: "Yes",
           value: "yes",
-            variant:
+          variant:
             status === EngineerStatus.APPROVE
-                ? "primary"
-                : status === EngineerStatus.REJECT
+              ? "primary"
+              : status === EngineerStatus.REJECT
                 ? "danger"
                 : "warning",
           action: async (close) => {
@@ -63,10 +69,10 @@ export const useEngineerStatusChange = ({
 
               try {
                 refetch();
-                } catch {
-                    toast.warning("Status updated but failed to refresh data");
-                }
-            close(true);
+              } catch {
+                toast.warning("Status updated but failed to refresh data");
+              }
+              close(true);
             } catch {
               close(true);
             }
