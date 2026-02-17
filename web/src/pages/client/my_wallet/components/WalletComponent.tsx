@@ -1,3 +1,4 @@
+import { useClientBalance, useClientTransactions } from "@/shared/apiServices/client/clientOpenApiService";
 import type { WalletData, Transaction } from "../types";
 import { sampleWalletData } from "@/dummy_data/sampleWalletData";
 import { useThemeHook } from "@/shared/hooks/useThemeHook";
@@ -20,6 +21,12 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
 }) => {
   const isDarkMode = useThemeHook();
   const [showBalance, setShowBalance] = useState<boolean>(false);
+  const { data: balance} = useClientBalance();
+  const { 
+    data: transactionsRaw, isLoading: txLoading, isError: txError } = useClientTransactions({ limit: 15, sortOrder: "desc" }, // recent first
+    true 
+  );
+  console.log("Transactions data:", transactionsRaw, "Loading:", txLoading, "Error:", txError);
   // Format date to display as "27 Feb, 2024 | 11:54 AM"
   const formatDate = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = {
@@ -81,10 +88,10 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
   };
 
   // Format currency
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat("en-US", {
+  const formatCurrency = (amount: number, currencyCode: string = "USD") => {
+    return new Intl.NumberFormat(undefined, {
       style: "currency",
-      currency: "USD",
+      currency: currencyCode,
       minimumFractionDigits: 2,
     }).format(amount);
   };
@@ -114,7 +121,9 @@ const WalletComponent: React.FC<WalletComponentProps> = ({
           </p>
           <div className="flex justify-between items-center">
             <p className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-              {showBalance ? formatCurrency(data.currentBalance) : "******"}
+              {showBalance
+                ? formatCurrency(Number(balance?.balance),balance?.currencyCode)
+                : "******"}
             </p>
             {!showBalance ? (
               <BsEyeFill

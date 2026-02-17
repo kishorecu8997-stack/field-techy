@@ -16,6 +16,13 @@ import {
   type ClientMarksJobFileUploadedData,
   type ClientMarksJobFileUploadedError,
   type Options,
+  getClientBalance,
+  type GetClientBalanceResponse,
+  type GetClientBalanceError,
+  type GetClientTransactionsData,
+  type GetClientTransactionsResponse,
+  type GetClientTransactionsError,
+  getClientTransactions,
 } from "@/api";
 import {
   appChangePasswordMutation,
@@ -245,4 +252,40 @@ export async function getClientCompanyInfo() {
     throwOnError: true,
   });
   return response.data as ClientGetCompanyInfoResponse;
+}
+
+export function useClientBalance(enabled: boolean = true) {
+  return useQuery<GetClientBalanceResponse, GetClientBalanceError>({
+    queryKey: [queryKeys.client.all, "balance"],
+    queryFn: async () => {
+      const response = await getClientBalance({ client: apiClient });
+      if (response.data) {
+        return response.data;
+      }
+      throw response.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useClientTransactions(
+  params: GetClientTransactionsData["query"] = {},
+  enabled = true
+) {
+  return useQuery<GetClientTransactionsResponse, GetClientTransactionsError>({
+    queryKey: [queryKeys.client.all, "transactions", params],
+    queryFn: async () => {
+      const res = await getClientTransactions({
+        client: apiClient,
+        query: params,
+      });
+      if (res.data) return res.data;
+      throw res.error ?? { error: "Unknown error" };
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 }
