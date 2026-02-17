@@ -1,8 +1,6 @@
 import type { PopupConfig } from "@/shared/store/popupStore";
 import type { UseMutationResult } from "@tanstack/react-query";
-import type {
-  EngineerStatusType,
-} from "@/pages/admin/engineer/types";
+import type { EngineerStatusType } from "@/pages/admin/engineer/types";
 
 /**
  * Props for engineer status hook

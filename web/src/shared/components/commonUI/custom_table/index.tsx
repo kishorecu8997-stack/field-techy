@@ -61,7 +61,9 @@ export function CustomTable<T extends object>({
     !!externalOnPageChange &&
     externalCurrentPage !== undefined &&
     externalTotalCount !== undefined;
-  const activePage = isExternalPagination ? (externalCurrentPage ?? 1) : currentPage;
+  const activePage = isExternalPagination
+    ? (externalCurrentPage ?? 1)
+    : currentPage;
   const activePageSize = isExternalPagination ? initialPageSize : pageSize;
 
   // ---------- Fetch (Server Pagination) ----------
