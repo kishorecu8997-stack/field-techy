@@ -47,12 +47,14 @@ const HomeClient: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
     {
       clientType: "home",
+      query: { page, limit, search: search || undefined },
     },
   );
-
   const { mutateAsync: updateClientStatus } = useAdminClientsByUserIdStatus();
 
   const { onStatusChange } = useStatusChange({
@@ -94,7 +96,8 @@ const HomeClient: React.FC = () => {
   const columns: Column<ManageClientProps>[] = [
     {
       label: "Sr.No.",
-      renderCell: (_row: ManageClientProps, index: number) => index + 1,
+      renderCell: (_row: ManageClientProps, index: number) =>
+        (page - 1) * limit + index + 1,
     },
     {
       key: "clientCode",
@@ -262,7 +265,11 @@ const HomeClient: React.FC = () => {
         <CustomTable<ManageClientProps>
           columns={columns}
           data={clientData}
-          initialPageSize={10}
+          initialPageSize={limit}
+          totalCount={manageClient?.total || 0}
+          currentPage={page}
+          onPageChange={setPage}
+          onPageSizeChange={setLimit}
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
