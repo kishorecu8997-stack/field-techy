@@ -14,6 +14,7 @@ import { AiFillThunderbolt } from "react-icons/ai";
 const NotificationItem: React.FC<NotificationItemProps> = ({
     notification,
     onDismiss,
+    onMarkAsRead,
     index = "10", // Default or passed index for navigation
 }) => {
     const {
@@ -93,7 +94,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     };
 
     return (
-        <div className="relative flex items-start p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200  dark:bg-gray-600">
+        <div
+            onClick={() => {
+                onMarkAsRead?.(id);
+            }}
+            className={`relative flex items-start p-4 mb-4 rounded-lg border transition-colors cursor-pointer duration-200 ${!notification.read
+                ? "bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800"
+                : "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+                }`}
+        >
             {onDismiss && (
                 <IoMdClose
                     className="absolute top-1 right-1 size-5 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white cursor-pointer"

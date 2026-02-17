@@ -24,6 +24,9 @@ export function useAppNotifications() {
   // Automatically map the data using the adapter
   const mappedData = result.data?.data?.map(mapApiNotification) ?? [];
 
+  // Sort by createdAt descending (newest first)
+  mappedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
   return {
     ...result,
     notifications: mappedData,

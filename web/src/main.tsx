@@ -1,3 +1,4 @@
+import { ToastProvider } from "./shared/components/commonUI/toastContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -6,6 +7,7 @@ import "./index.css";
 import { GlobalPopup } from "./shared/components/popup/GlobalPopup.tsx";
 import "./shared/apiServices/utils/errorHandlerConfig";
 import { ToastHandler } from "./shared/components/commonUI/ToastHandler.tsx";
+import { FCMHandler } from "./shared/components/FCMHandler.tsx";
 
 /**
  * Creates a configured QueryClient instance with default query behaviors.
@@ -42,31 +44,13 @@ if (!root) {
   window.__react_root__ = root;
 }
 
-// Register Firebase Messaging Service Worker
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/firebase-messaging-sw.js")
-      .then((registration) => {
-        console.log(
-          "Service Worker registered successfully with scope:",
-          registration.scope
-        );
-      })
-      .catch((err) => {
-        console.error("Service Worker registration failed:", err);
-      });
-  });
-}
-
-import { ToastProvider } from "./shared/components/commonUI/toastContext.tsx";
-
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <GlobalPopup />
         <ToastHandler />
+        <FCMHandler />
         <App />
       </ToastProvider>
     </QueryClientProvider>
