@@ -56,8 +56,10 @@ export function CustomTable<T extends object>({
   const loading = externalLoading ?? internalLoading;
   const error = externalError ?? internalError;
 
-  // Determine if external (server-side) pagination is active
-  const isExternalPagination = !!(externalOnPageChange);
+  const isExternalPagination =
+    !!externalOnPageChange &&
+    externalCurrentPage !== undefined &&
+    externalTotalCount !== undefined;
   const activePage = isExternalPagination ? (externalCurrentPage ?? 1) : currentPage;
   const activePageSize = isExternalPagination ? initialPageSize : pageSize;
 
