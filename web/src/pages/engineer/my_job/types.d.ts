@@ -103,6 +103,7 @@ export interface JobHeaderCardProps {
   duration: string;
   type?: WorkingType | string;
   status?: JobStatus | string;
+
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
@@ -120,6 +121,7 @@ export interface JobHeaderCardProps {
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  onToggleChat?: (jobId: string) => void;
 }
 
 export interface JobTabsProps {

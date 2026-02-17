@@ -40,6 +40,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  onToggleChat,
 }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -51,8 +52,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const navigate = useNavigate();
   const { closePopup, showPopup } = usePopupStore();
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
-    "hold",
+    "hold"
   );
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
@@ -130,6 +132,18 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
           <div className="flex gap-2 items-center">
+            {onToggleChat && (
+              <button
+                className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap"
+                onClick={() => {
+                  if (!params.jobId) return;
+                  onToggleChat(params.jobId);
+                }}
+              >
+                Chats
+              </button>
+            )}
+
             {!hideBreakDetails && (
               <div
                 className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
@@ -164,7 +178,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                               {item}
                             </div>
                           </li>
-                        ),
+                        )
                       )}
                     </ul>
                   </div>

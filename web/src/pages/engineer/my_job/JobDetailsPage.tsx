@@ -16,6 +16,7 @@ import ReviewClientModal from "./job_details_components/jobHeaderComponents/Revi
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
+import ChatForJobs from "@/shared/components/ChatForJobs";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -29,7 +30,7 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    isDummyJob ? "Job Overview" : "Job Information",
+    isDummyJob ? "Job Overview" : "Job Information"
   );
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
@@ -37,9 +38,12 @@ const JobDetailsPage = () => {
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
 
+  // <-- Chat visibility toggle
+  const [isChatVisible, setIsChatVisible] = useState(false);
+
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : (params.jobId ?? ""),
+    isDummyJob ? "" : params.jobId ?? ""
   );
   const { data: client } = useClientGetById(jobs?.clientId ?? "", {
     enabled: !!jobs?.clientId && !isDummyJob,
@@ -47,6 +51,7 @@ const JobDetailsPage = () => {
   const location = isDummyJob
     ? "Chennai, Tamil Nadu, India"
     : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
+
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -149,72 +154,80 @@ const JobDetailsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
           isReport
-          customLabels={
-            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
-          }
+          customLabels={isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined}
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={jobTitle}
-              client={clientName}
-              duration={duration as string}
-              type={engagementType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
-              OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyJob}
-              jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
-              numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
-              numberOfApplicants={isDummyJob ? 20 : undefined}
-              hideDurationAndClient={isDummyJob}
-              activeTab={activeTab}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              onOpenFinalStatement={handleOpenFinalStatement}
-            />
 
-            <JobTabSection
-              status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              setSendProposal={setIsSendProposal}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={OfferJobStatus}
-              isDummyJob={isDummyJob}
-              workLocation={location as string}
-              isDummyNetworkEngineer={isDummyJob}
-              showManageProposals={false}
-              progressUpdates={progressUpdates}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              hideTimelineContent={showFinalStatement}
-            />
+        {/* Show Chat if toggled */}
+        {isChatVisible && params.jobId ? (
+          <div className="mt-4 h-[calc(100vh-6rem)]">
+            <ChatForJobs jobId={params.jobId} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={jobTitle}
+                client={clientName}
+                duration={duration as string}
+                type={engagementType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                setOfferJobStatus={setOfferJobStatus}
+                OfferJobStatus={OfferJobStatus}
+                hideBreakDetails={isDummyJob}
+                jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
+                numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
+                numberOfApplicants={isDummyJob ? 20 : undefined}
+                hideDurationAndClient={isDummyJob}
+                activeTab={activeTab}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                onOpenFinalStatement={handleOpenFinalStatement}
+                onToggleChat={() => setIsChatVisible(true)}
+              />
 
-            {showFinalStatement && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                <FinalStatementForm
-                  onClose={handleCloseFinalStatement}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                />
-              </div>
-            )}
+              <JobTabSection
+                status={jobStatus}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                setSendProposal={setIsSendProposal}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={OfferJobStatus}
+                isDummyJob={isDummyJob}
+                workLocation={location as string}
+                isDummyNetworkEngineer={isDummyJob}
+                showManageProposals={false}
+                progressUpdates={progressUpdates}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                hideTimelineContent={showFinalStatement}
+              />
+
+              {showFinalStatement && (
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                  <FinalStatementForm
+                    onClose={handleCloseFinalStatement}
+                    onAddProgressUpdate={handleAddProgressUpdate}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-1">
+              <ClientInfoCard
+                name={clientName}
+                memberSince={client?.memberSince as string}
+                location={location as string}
+                rating={client?.rating || 0}
+                reviews={client?.reviewCount ?? 0}
+                verifications={client?.verifications ?? []}
+                onOpenReview={() => setIsReviewOpen(true)}
+              />
+            </div>
           </div>
-          <div className="lg:col-span-1">
-            <ClientInfoCard
-              name={clientName}
-              memberSince={client?.memberSince as string}
-              location={location as string}
-              rating={client?.rating || 0}
-              reviews={client?.reviewCount ?? 0}
-              verifications={client?.verifications ?? []}
-              onOpenReview={() => setIsReviewOpen(true)}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       <ReviewClientModal
