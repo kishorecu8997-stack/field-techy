@@ -7,11 +7,11 @@ import React, { useState, useEffect, useRef } from "react";
 async function hashOTP(otp) {
   const encoder = new TextEncoder();
   const data = encoder.encode(otp);
-  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
   // Convert buffer to hex string
   return Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 import { useForm } from "react-hook-form";
 
