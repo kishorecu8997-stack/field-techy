@@ -1,43 +1,120 @@
 import { earningsData } from "@/dummy_data/jobDetails";
-import { sampleJobs } from "@/dummy_data/searchDataClient";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
+import { SORT_OPTIONS } from "../../search_result/types";
 import JobCardDetailsHeader from "./JobCardDetailsHeader";
 import JobTabSection from "./JobTabSection";
+import { useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
 
 /**
  * `JobsDetails` is a page component that displays detailed information about a specific job.
- * It features a header with job status and actions, a filterable section for different job aspects
- * (like logs, submissions, etc.), and a sidebar with wallet information.
- * @returns {React.ReactElement} The rendered job details page.
+ * Uses API data from useClientGetJobs hook.
  */
 const JobsDetails: React.FC = () => {
-  // const jobFilters = [
-  //   "Engineers Logs",
-  //   "Work Submissions",
-  //   "Job Information",
-  //   "Requirement",
-  //   "SPOC",
-  //   "Other",
-  //   "Proposal's Terms & Conditions",
-  // ];
   const params = useParams();
-  const [isWorkSubmitted] = useState(false);
-  const [isSendProposal] = useState(false);
-  const [isJobAccepted] = useState(false);
-  const [activeTab] = useState("Job Information");
+  const [activeTab] = useState("Timeline");
+  const jobId = params.jobId;
 
-  const filter = () => {
-    return sampleJobs.find((job) => {
-      return job.id === Number(params.jobId);
-    });
+  // Fetch jobs data from API
+  const { data: jobsData, isLoading, error } = useClientGetJobs(true);
+  // Find the specific job from the API data
+  const jobsArray = Array.isArray(jobsData) ? jobsData : [];
+  const job = jobsArray.find((j: { id?: string | number }) => String(j.id) === jobId) || jobsArray[0];
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen transition-colors duration-200">
+        <div className="container mx-auto px-4 py-6">
+          <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+            <MyJobsHeader
+              title="Job Details"
+              currentSort={SORT_OPTIONS.NEWEST}
+              isReport
+              onSortChange={() => {}}
+            />
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <div className="text-gray-600 dark:text-gray-400">Loading job details...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen transition-colors duration-200">
+        <div className="container mx-auto px-4 py-6">
+          <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+            <MyJobsHeader
+              title="Job Details"
+              currentSort={SORT_OPTIONS.NEWEST}
+              isReport
+              onSortChange={() => {}}
+            />
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <div className="text-red-600 dark:text-red-400">Error loading job details</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No job found
+  if (!job) {
+    return (
+      <div className="min-h-screen transition-colors duration-200">
+        <div className="container mx-auto px-4 py-6">
+          <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
+            <MyJobsHeader
+              title="Job Details"
+              currentSort={SORT_OPTIONS.NEWEST}
+              isReport
+              onSortChange={() => {}}
+            />
+          </div>
+          <div className="flex justify-center items-center h-64">
+            <div className="text-gray-600 dark:text-gray-400">
+              {jobsArray.length > 0 
+                ? `Job with ID ${jobId} not found. Available IDs: ${jobsArray.map((j: { id: number }) => j.id).join(", ")}`
+                : "No jobs found for this client"
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Format duration
+  let durationDisplay = "Not specified";
+  if (job.startDate && job.endDate) {
+    const startDate = new Date(job.startDate);
+    const endDate = new Date(job.endDate);
+    durationDisplay = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+  } else if (job.startDate) {
+    durationDisplay = `Starts: ${new Date(job.startDate).toLocaleDateString()}`;
+  }
+
+  // Transform API job to component format
+  const formattedJob = {
+    id: job.id,
+    title: job.jobTitle || "Untitled Job",
+    duration: durationDisplay,
+    client: "N/A (This is your job)",
+    type: job.jobType || "Remote",
+    status: job.status || "Posted",
   };
+
+  console.log("formattedJob being passed to JobCardDetailsHeader:", formattedJob);
+
   return (
     <div className="min-h-screen transition-colors duration-200">
-      <div className="container  mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6">
         <div className="w-full sticky top-[80px] z-10 bg-gray-100 dark:bg-gray-900">
           <MyJobsHeader
             title="Job Details"
@@ -49,14 +126,13 @@ const JobsDetails: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-              <JobCardDetailsHeader />
+              <JobCardDetailsHeader job={formattedJob} />
               <div className="space-y-6 pt-2">
                 <JobTabSection
-                  status={filter()?.status as JobStatus}
-                  isWorkSubmitted={isWorkSubmitted}
-                  isSendProposal={isSendProposal}
-                  isJobAccepted={isJobAccepted}
+                  status={formattedJob.status}
                   activeTab={activeTab}
+                  job={job}
+                  assignmentId={job.assignmentIds?.[0] ? Number(job.assignmentIds[0]) : Number(jobId)}
                 />
               </div>
             </div>

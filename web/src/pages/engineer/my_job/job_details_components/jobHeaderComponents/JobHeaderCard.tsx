@@ -1,5 +1,4 @@
 import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
 import Popup from "@/shared/components/Popup";
 import React, { useState } from "react";
@@ -16,6 +15,7 @@ import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
+ * Original UI with teal-800 background, Break Details button, and EngineersActions.
  *
  * @param {JobHeaderCardProps} props - Props for the JobHeaderCard component.
  * @returns {JSX.Element} The rendered JobHeaderCard component.
@@ -40,11 +40,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  assignmentId,
 }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
   const params = useParams();
-  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -53,6 +53,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
     "hold",
   );
+
   const handleMenuAction = (action: string) => {
     let type: "hold" | "clone" | "cancel";
 
@@ -74,10 +75,12 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     setIsConfirmOpen(true); // open modal
     setIsMenuOpen(false);
   };
+
   const handleConfirmAction = () => {
     console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
+
   const handleBreakDetails = async () => {
     if (isClient) {
       await showPopup({
@@ -90,17 +93,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
     }
   };
 
+  // Determine card background based on send proposal state
+  const cardBackgroundClass = isSendProposal
+    ? "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
+    : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br";
+
   return (
     <>
-      <div
-        className={`${
-          isSendProposal
-            ? isDummyJob
-              ? "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-              : "text-gray-800 bg-yellow-50 mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-            : "bg-teal-800 text-white mt-4 dark:from-teal-900/30 dark:to-teal-800/30 dark:bg-gradient-to-br"
-        } p-5 rounded-xl shadow-md`}
-      >
+      <div className={`${cardBackgroundClass} p-5 rounded-xl shadow-md`}>
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-xl md:text-2xl font-bold">{title || "-"}</h1>
@@ -130,9 +130,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             )}
           </div>
           <div className="flex gap-2 items-center">
+            {/* Break Details button - visible unless hideBreakDetails is true */}
             {!hideBreakDetails && (
               <div
-                className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer "
+                className="flex flex-row-reverse text-white gap-2 items-center bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
                 onClick={handleBreakDetails}
               >
                 <span>{JOB_HEADER_COPY.breakDetails}</span>
@@ -142,9 +143,11 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                 </div>
               </div>
             )}
+            {/* On Site badge */}
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap">
               {type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
             </span>
+            {/* Client menu */}
             {isClient && (
               <div className="relative">
                 <IoEllipsisVerticalOutline
@@ -183,31 +186,34 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             </span>
           </div>
         )}
+        {/* Client or Engineer actions */}
         {isClient ? (
           <ClientActions />
         ) : (
           <EngineersActions
-            OfferJobStatus={OfferJobStatus}
-            isSendProposal={isSendProposal}
-            setActiveTab={setActiveTab}
-            setIsWorkSubmitted={setIsWorkSubmitted}
-            setOfferJobStatus={setOfferJobStatus}
-            setOpen={setOpen}
-            status={status}
-            setSendProposal={setSendProposal}
-            activeTab={activeTab}
-            isDummyJob={isDummyJob}
-            onAddProgressUpdate={onAddProgressUpdate}
-            onOpenFinalStatement={onOpenFinalStatement}
-          />
+              OfferJobStatus={OfferJobStatus}
+              isSendProposal={isSendProposal}
+              setActiveTab={setActiveTab}
+              setIsWorkSubmitted={setIsWorkSubmitted}
+              setOfferJobStatus={setOfferJobStatus}
+              setOpen={setOpen}
+              status={status}
+              setSendProposal={setSendProposal}
+              activeTab={activeTab}
+              onAddProgressUpdate={onAddProgressUpdate}
+              onOpenFinalStatement={onOpenFinalStatement}
+              assignmentId={assignmentId}
+            />
         )}
       </div>
+      {/* Update Log Popup */}
       <Popup open={open} onClose={() => setOpen(false)}>
         <UpdateLogForm
           onClose={() => setOpen(false)}
           onAddProgressUpdate={onAddProgressUpdate}
         />
       </Popup>
+      {/* Confirmation Modal Popup */}
       <Popup open={isConfirmOpen} onClose={() => setIsConfirmOpen(false)}>
         <ConfirmationModal
           actionType={actionType}

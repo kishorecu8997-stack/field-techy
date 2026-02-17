@@ -1,33 +1,36 @@
 // JobCardDetailsHeader.tsx
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import Popup from "@/shared/components/Popup";
 import RequestRevision from "./RequestRevision";
 import ConfirmationModal from "./ConfirmationModal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   JOB_STATUSES,
-  WORKING_TYPES,
 } from "@/pages/client/search_result/types";
 import { icons } from "@/config/icons";
-import { sampleJobs } from "@/dummy_data/searchDataClient";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { absoluteUrls } from "@/config/urls";
 
+interface JobCardDetailsHeaderProps {
+  job: {
+    id: string | number;
+    title: string;
+    duration: string;
+    client: string;
+    type: "On site" | "Remote" | "Hybrid";
+    status: string;
+  };
+}
+
 /*
- * JobCardDetailsHeader component is used to display the job details header
+ * JobCardDetailsHeader component displays the job details header
  * It contains the job title, job status, working type, and job actions
  */
-const JobCardDetailsHeader = () => {
+const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
   const navigate = useNavigate();
-  const params = useParams();
-  const job = useMemo(() => {
-    const jobId = params.jobId;
-    if (!jobId) return null;
-    return sampleJobs.find((j) => String(j.id) === jobId);
-  }, [params.jobId]);
-
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +97,7 @@ const JobCardDetailsHeader = () => {
           <h1 className="text-xl md:text-2xl font-bold">{job.title}</h1>
           <div className="flex items-center">
             <span className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium text-gray-900 whitespace-nowrap">
-              {job.type === WORKING_TYPES.onsite ? "On Site" : "Remote"}
+              {job.type}
             </span>
             <div className="relative">
               <IoEllipsisVerticalOutline

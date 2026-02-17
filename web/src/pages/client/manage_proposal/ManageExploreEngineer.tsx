@@ -1,9 +1,9 @@
 import { absoluteUrls } from "@/config/urls";
-import { ProposalsList } from "@/dummy_data/client/manage-proposal";
 import { earningsData } from "@/dummy_data/jobDetails";
 import ExploreEngineerHeaderCard from "@/shared/components/cards/client/ExploreEngineerHeaderCard";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
+import { useClientGetAssignmentDetails, useClientActionOnAssignment } from "@/shared/apiServices/client/clientOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -16,11 +16,33 @@ import { useNavigate, useParams } from "react-router-dom";
 const ManageExploreEngineer = () => {
   const params = useParams();
 
+  const { data: assignments } = useClientGetAssignmentDetails({
+    assignmentId: Number(params.id),
+  });
+
   const getProposal = () => {
-    return ProposalsList.find((proposal) => proposal.id === Number(params.id));
+    // return ProposalsList.find((proposal) => proposal.id === Number(params.id));
+    if (!assignments || assignments.length === 0) return undefined;
+    const proposal = assignments[0];
+
+    // Map API data to component expectations
+    return {
+      id: proposal.assignmentId,
+      engineerName: proposal.engineer?.name || "Unknown Engineer",
+      ratings: proposal.engineer?.averageRating || "N/A",
+      reviewCount: "0", // Not available in API response yet
+      bitAmount: proposal.engineer?.hourlyRate?.toString() || "N/A",
+      payType: "Hourly", // Default or derived
+      availability: proposal.assignmentStatus || "Unknown",
+      jobName: (proposal as any).jobTitle || "Job", // Accessing extra prop we know exists
+      proposal: proposal.proposalDetail || "No details",
+      portfolioDoc: "Portfolio", // Placeholder
+    };
   };
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
+
+  const { mutateAsync: actionOnAssignment } = useClientActionOnAssignment();
 
   const handleAccept = async () => {
     await showPopup({
@@ -39,11 +61,23 @@ const ManageExploreEngineer = () => {
           label: "Yes, accept",
           variant: "primary",
           value: "accept",
-          action: (close) => {
-            navigate(
-              `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
-            );
-            close(true);
+          action: async (close) => {
+            try {
+              await actionOnAssignment({
+                body: {
+                  assignmentId: Number(params.id),
+                  // this data should be come from the client data or job list
+                  pendingApproval: "application",
+                  action: "approve",
+                },
+              });
+              navigate(
+                `${absoluteUrls.client.home.job_details}/${getProposal()?.id}`,
+              );
+              close(true);
+            } catch (error) {
+              console.error(error);
+            }
           },
         },
       ],
@@ -51,7 +85,41 @@ const ManageExploreEngineer = () => {
   };
 
   const handleDecline = () => {
-    console.log("Declined");
+    showPopup({
+      title: "Decline Proposal",
+      body: "Are you sure you want to decline this proposal?",
+      actionButtons: [
+        {
+          label: "No",
+          variant: "secondary",
+          value: "cancel",
+          action: (close) => {
+            close(true);
+          },
+        },
+        {
+          label: "Yes, decline",
+          variant: "primary",
+          value: "decline",
+          action: async (close) => {
+            try {
+              await actionOnAssignment({
+                body: {
+                  assignmentId: Number(params.id),
+                  // this data should be come from the client data or job list
+                  pendingApproval: "application",
+                  action: "reject",
+                },
+              });
+              navigate(-1);
+              close(true);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+        },
+      ],
+    });
   };
 
   return (

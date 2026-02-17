@@ -11,6 +11,7 @@ import {
 import { IoClose } from "react-icons/io5";
 import type { ProposalFormData } from "../../types.d";
 import type { UseFormReturn } from "react-hook-form";
+import { toast } from "react-toastify";
 
 /**
  * Form component for submitting job proposals with description and file attachments.
@@ -31,8 +32,10 @@ const ProposalForm = ({
   setSubmittedProposal,
   setSendProposal,
   setSelectedTab,
+  setHasApplied,
   reviewData,
-  isDummyNetworkEngineer = false,
+  onConfirm,
+  // isDummyNetworkEngineer kept for future use
 }: {
   methods: UseFormReturn<ProposalFormData>;
   onSubmit: (data: ProposalFormData) => void;
@@ -45,7 +48,9 @@ const ProposalForm = ({
   >;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedTab?: React.Dispatch<React.SetStateAction<string>>;
+  setHasApplied?: React.Dispatch<React.SetStateAction<boolean>>;
   reviewData: ProposalFormData | null;
+  onConfirm?: (data: ProposalFormData) => Promise<void>;
   isDummyNetworkEngineer?: boolean;
 }) => (
   <>
@@ -167,18 +172,30 @@ const ProposalForm = ({
             <Button
               variant="no_style"
               type="button"
-              onClick={() => {
-                setShowReview(false);
-                setShowSuccess(true);
-                setTimeout(() => {
-                  setShowSuccess(false);
-                  const data = reviewData || methods.getValues();
-                  if (setSubmittedProposal) setSubmittedProposal(data);
+              onClick={async () => {
+                try {
+                  if (onConfirm) {
+                    const data = reviewData || methods.getValues();
+                    await onConfirm(data);
+                  }
+                  // Set hasApplied to show Proposal Info tab immediately
+                  if (setHasApplied) setHasApplied(true);
+                  // Close review modal and show success
+                  setShowReview(false);
+                  setShowSuccess(true);
+                  // Switch to tabs immediately and select Proposal Info tab
                   if (setSendProposal) setSendProposal(false);
-                  if (isDummyNetworkEngineer && setSelectedTab)
-                    setSelectedTab(JOB_TAB_LABELS.proposalInfo);
-                  methods.reset();
-                }, JOB_TAB_CONFIG.successDelayMs);
+                  if (setSelectedTab) setSelectedTab(JOB_TAB_LABELS.proposalInfo);
+                  setTimeout(() => {
+                    setShowSuccess(false);
+                    const data = reviewData || methods.getValues();
+                    if (setSubmittedProposal) setSubmittedProposal(data);
+                    methods.reset();
+                  }, JOB_TAB_CONFIG.successDelayMs);
+                } catch (error) {
+                  console.error("Error submitting proposal:", error);
+                  toast.error("Failed to submit proposal. Please try again.");
+                }
               }}
               className="px-4 py-1.5 bg-teal-700 text-sm text-white rounded-md hover:bg-teal-800 transition"
             >

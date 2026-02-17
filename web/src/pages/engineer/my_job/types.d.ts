@@ -4,6 +4,7 @@ import type {
   JobStatus as SearchJobStatus,
   SortOption,
   WorkingType as SearchWorkingType,
+  AssignmentStatus,
 } from "../search_result/types";
 
 /**
@@ -102,16 +103,14 @@ export interface JobHeaderCardProps {
   client: string;
   duration: string;
   type?: WorkingType | string;
-  status?: JobStatus | string;
+  status?: JobStatus | AssignmentStatus | string;
   setIsWorkSubmitted?: React.Dispatch<React.SetStateAction<boolean>>;
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<
-    SetStateAction<OfferedJobStatusType | undefined>
-  >;
-  OfferJobStatus?: OfferedJobStatusType | undefined;
+  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>>;
+  OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;
   numberOfVacancy?: number;
@@ -120,6 +119,7 @@ export interface JobHeaderCardProps {
   activeTab?: string;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  assignmentId?: number;
 }
 
 export interface JobTabsProps {
@@ -254,17 +254,6 @@ export interface ProposalTermsProps {
     items: Array<{ text: string; subItems?: string[] }>;
   };
   element?: React.ReactNode;
-}
-
-/**
- * Props for the header card of a job, displaying summary information.
- */
-export interface JobHeaderCardProps {
-  title: string;
-  client: string;
-  duration: string;
-  type?: WorkingType | string;
-  status?: JobStatus | string;
 }
 
 /**

@@ -7,20 +7,24 @@ import {
   type Filters,
   type SortOption,
 } from "@/pages/engineer/search_result/types";
-import { useGetJobs } from "@/shared/apiServices/client/clientService";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useEngineerProfile } from "@/shared/store/useEngineerStore";
 import React, { useMemo, useState } from "react";
 import type { JobItem } from "../types";
-import { exploreJobsDummy } from "@/dummy_data/engineerJobOverview";
+import { mapApiJobToJobItem } from "@/pages/engineer/search_result/mappers";
 
 /**
  * ExploreJobs Page - Browse and filter open job listings
  */
 const ExploreJobs: React.FC = () => {
   const profile = useEngineerProfile();
-  const { data: apiJobs } = useGetJobs();
+  const { data: apiJobsResponse } = useEngineerSearchJobs({});
+
+  const apiJobs = useMemo(() => {
+    return (apiJobsResponse || []).map(mapApiJobToJobItem);
+  }, [apiJobsResponse]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortOption>(SORT_OPTIONS.RELEVANCE);
@@ -45,8 +49,7 @@ const ExploreJobs: React.FC = () => {
   // Filter jobs by status NEW and add dummy job at the top
   const allNewJobs = useMemo(() => {
     const apiNewJobs = (apiJobs || []).filter((job) => job.status === "NEW");
-    // Add dummy job to the beginning of the list
-    return [exploreJobsDummy as JobItem, ...apiNewJobs];
+    return apiNewJobs;
   }, [apiJobs]);
 
   // Step 2: Apply filters
@@ -60,7 +63,7 @@ const ExploreJobs: React.FC = () => {
 
       // Category filter
       if (filters.category.length > 0 && job.category) {
-        if (!filters.category.includes(job.category)) return false;
+        if (!filters.category.includes(String(job.category))) return false;
       }
 
       // Skills filter (at least one match required)
@@ -158,7 +161,7 @@ const ExploreJobs: React.FC = () => {
       case SORT_OPTIONS.DISTANCE: {
         const isRemote = (job: JobItem) => {
           const loc = (job.location || "").toLowerCase();
-          const type = (job.engagementModel || "").toLowerCase();
+          const type = (job.jobType || "").toLowerCase();
           return (
             type === "remote" ||
             loc.includes("remote") ||
@@ -229,8 +232,8 @@ const ExploreJobs: React.FC = () => {
             const a =
               Math.sin(dLat / 2) ** 2 +
               Math.cos(toRad(c1.lat)) *
-                Math.cos(toRad(c2.lat)) *
-                Math.sin(dLng / 2) ** 2;
+              Math.cos(toRad(c2.lat)) *
+              Math.sin(dLng / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return R * c;
           };
@@ -292,9 +295,8 @@ const ExploreJobs: React.FC = () => {
       <div className="container mx-auto max-w-9xl px-2 py-2 md:px-2">
         <MyJobsHeader
           title="Explore Jobs"
-          description={`${sortedJobs.length} job${
-            sortedJobs.length !== 1 ? "s" : ""
-          } found`}
+          description={`${sortedJobs.length} job${sortedJobs.length !== 1 ? "s" : ""
+            } found`}
           isShowBreadcrumb={false}
           isShowSort={true}
           isReport={true}

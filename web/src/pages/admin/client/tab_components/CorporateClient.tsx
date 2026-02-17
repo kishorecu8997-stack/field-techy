@@ -43,7 +43,6 @@ const CorporateClient: React.FC = () => {
   const { handleStatusChange } = useClientStatusChange();
   const [search, setSearch] = useState("");
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
-  const [activeUserId, setActiveUserId] = useState<number | null>(null);
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
@@ -64,7 +63,8 @@ const CorporateClient: React.FC = () => {
     handleStatusChange,
   });
 
-  const clientData = (manageClient?.data || []) as ManageClientProps[];
+  const clientData = (manageClient?.data ||
+    []) as unknown as ManageClientProps[];
 
   const handleDeleteClient = async (client: ManageClientProps) => {
     await showPopup({
@@ -163,7 +163,6 @@ const CorporateClient: React.FC = () => {
             value={activeRowId === row.id ? selectedType : null}
             onChange={(value) => {
               setActiveRowId(row.id);
-              setActiveUserId(row.userId);
               setSelectedType(value as ProfileFileType | null);
               setIsOpen(true);
             }}
@@ -270,7 +269,6 @@ const CorporateClient: React.FC = () => {
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>
         <ViewFileComponent
           onClose={() => setIsOpen(false)}
-          userId={activeUserId}
           fileType={selectedType}
         />
       </Popup>
