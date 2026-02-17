@@ -199,7 +199,9 @@ export type AdminManageClientsResponse = AdminGetClientsForManagementResponse;
 
 export type AdminGetClientsQuery = NonNullable<
   AdminGetClientsForManagementData["query"]
->;
+> & {
+  search?: string;
+};
 
 export function useAdminManageClients(options?: {
   clientType?: ClientType;
@@ -268,7 +270,9 @@ export async function updateAdminPersonalInfo(body: AdminPersonalInfoBody) {
 
 export type { AdminGetJobsResponse };
 
-export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]>;
+export type AdminGetJobsQuery = NonNullable<AdminGetJobsData["query"]> & {
+  search?: string;
+};
 
 export function useAdminGetJobs(
   query?: AdminGetJobsQuery,

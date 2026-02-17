@@ -54,11 +54,12 @@ export default function ManageJobs() {
     isLoading,
     error,
   } = useAdminGetJobs({
-    page: 1,
-    limit: 10000,
+    page,
+    limit,
     status: currentStatus,
     jobType: filterType,
     serviceCategoryId: serviceCategoryId ?? undefined,
+    search: search || undefined,
   });
 
   const allJobs = jobsResponse?.data || [];
@@ -90,7 +91,7 @@ export default function ManageJobs() {
     return matches;
   });
 
-  const paginatedJobs = filteredJobs.slice((page - 1) * limit, page * limit);
+  const paginatedJobs = filteredJobs;
 
   const handleClearFilters = () => {
     setFilterType(undefined);
@@ -138,7 +139,7 @@ export default function ManageJobs() {
         currentStatus={currentStatus}
         page={page}
         limit={limit}
-        total={filteredJobs.length}
+        total={jobsResponse?.total || 0}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       />
