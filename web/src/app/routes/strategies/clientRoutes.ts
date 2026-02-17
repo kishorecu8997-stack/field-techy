@@ -13,9 +13,6 @@ import { withSuspense } from "../WithSuspense";
  * Implements RouteStrategy for client-specific routes
  */
 export class ClientRouteStrategy implements RouteStrategy {
-  /**
-   * Get public routes (authentication pages)
-   */
   getPublicRoutes(): RouteObject[] {
     return [
       {

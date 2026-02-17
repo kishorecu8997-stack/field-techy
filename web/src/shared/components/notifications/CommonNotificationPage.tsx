@@ -9,7 +9,7 @@ import {
 import { groupNotificationsByDate } from "@/shared/apiServices/notifications/notificationAdapter";
 
 interface CommonNotificationPageProps {
-    viewAllLink: string;
+    viewAllLink?: string;
     className?: string;
 }
 

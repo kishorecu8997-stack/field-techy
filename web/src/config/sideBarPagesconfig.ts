@@ -170,7 +170,7 @@ const Feedback = React.lazy(
   () => import("@/pages/client/my_job_client/components/FeedbackForm"),
 );
 const ClientNotification = React.lazy(
-  () => import("@/pages/client/messages/ClientNotification"),
+  () => import("@/pages/client/notification/NotificationPage"),
 );
 
 const RecentTransactionsModule =

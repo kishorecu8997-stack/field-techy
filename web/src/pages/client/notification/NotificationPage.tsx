@@ -1,6 +1,5 @@
 
 import CommonNotificationPage from "@/shared/components/notifications/CommonNotificationPage";
-import { absoluteUrls } from "@/config/urls";
 
 /**
  * NotificationPage component displays a notification panel with a list of notifications.
@@ -11,7 +10,6 @@ import { absoluteUrls } from "@/config/urls";
 function NotificationPage() {
   return (
     <CommonNotificationPage
-      viewAllLink={absoluteUrls.client.home.notifications}
       className="flex justify-center items-start min-h-screen p-4"
     />
   );

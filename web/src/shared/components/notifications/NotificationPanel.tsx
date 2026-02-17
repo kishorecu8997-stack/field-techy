@@ -83,17 +83,7 @@ const NotificationPanel = ({
 
                                     return (
                                         <div key={notif.id} className="relative group">
-                                            {!notif.read && (
-                                                <div
-                                                    className="absolute z-10 top-4 left-1 size-2.5 rounded-full bg-blue-500 shadow-md cursor-pointer hover:bg-blue-600 transition-colors"
-                                                    title="Mark as read"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        onMarkAsRead?.(notif.id);
-                                                    }}
-                                                />
-                                            )}
-                                            <div className={!notif.read ? "pl-3" : ""}>
+                                            <div>
                                                 <NotificationItem
                                                     notification={notif}
                                                     onDismiss={onDismiss}

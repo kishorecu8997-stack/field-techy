@@ -5,15 +5,9 @@
  * - FCM message reception from Firebase (Background & Terminated states)
  * - Real-time message forwarding to all open tabs (Simulating WebSocket behavior to update UI)
  * - Notification display and click handling
- */
-
-console.log("FCM Service Worker starting up");
-
-/**
  * Claim clients immediately on activation to ensure control
  */
 self.addEventListener("activate", (event) => {
-    console.log("Service Worker activated");
     event.waitUntil(
         Promise.all([
             self.clients.claim(), // Take control of all clients immediately
@@ -60,7 +54,6 @@ async function sendToAllOpenTabs(message) {
 self.addEventListener("message", async (event) => {
     if (!event.data) return;
     const { type, data } = event.data;
-    console.log("Service worker received message:", type, data);
 
     if (type === "SKIP_WAITING") {
         self.skipWaiting();
@@ -71,7 +64,6 @@ self.addEventListener("message", async (event) => {
  * Handle push notifications from FCM
  */
 self.addEventListener("push", async (event) => {
-    console.log("Push notification received:", event);
 
     if (!event.data) {
         console.warn("No data in push event");
@@ -80,7 +72,6 @@ self.addEventListener("push", async (event) => {
 
     try {
         const payload = event.data.json();
-        console.log("Push payload:", payload);
 
         // Extract notification details, falling back to 'data' if 'notification' is missing
         // This handles cases where the payload is data-only (common in some backend implementations)
@@ -131,7 +122,6 @@ self.addEventListener("push", async (event) => {
  * content-available handling logic
  */
 self.addEventListener("notificationclick", (event) => {
-    console.log("Notification clicked:", event);
     event.notification.close();
 
     const clickedNotification = event.notification;
@@ -169,7 +159,6 @@ self.addEventListener("notificationclick", (event) => {
  * Install event - cache resources
  */
 self.addEventListener("install", (event) => {
-    console.log("Service Worker installing");
     event.waitUntil(
         caches.open("fcm-receiver-v1").then((cache) => {
             return cache.addAll(["/", "/index.html", "/favicon.svg"]).catch((error) => {
