@@ -47,9 +47,12 @@ const CorporateClient: React.FC = () => {
   const [selectedType, setSelectedType] = useState<ProfileFileType | null>(
     null,
   );
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const { data: manageClient, refetch: refetchClients } = useAdminManageClients(
     {
       clientType: "corporate",
+      query: { page, limit },
     },
   );
 
@@ -264,7 +267,11 @@ const CorporateClient: React.FC = () => {
         <CustomTable<ManageClientProps>
           columns={columns}
           data={clientData}
-          initialPageSize={10}
+          initialPageSize={limit}
+          totalCount={manageClient?.total || 0}
+          currentPage={page}
+          onPageChange={setPage}
+          onPageSizeChange={setLimit}
         />
       </div>
       <Popup open={isOpen} onClose={() => setIsOpen(false)}>

@@ -21,6 +21,7 @@ import {
   type AdminUpdatePersonalInfoResponse,
   type AdminGetJobsData,
   type AdminGetJobsResponse,
+  type AdminGetClientsForManagementResponse,
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -194,23 +195,29 @@ export function useUpdateEngineerProfileStatus(options?: {
   });
 }
 
-export type AdminManageClientsResponse = NonNullable<
-  AdminGetClientsForManagementData["body"]
+export type AdminManageClientsResponse = AdminGetClientsForManagementResponse;
+
+export type AdminGetClientsQuery = NonNullable<
+  AdminGetClientsForManagementData["query"]
 >;
 
 export function useAdminManageClients(options?: {
-  clientType: ClientType;
+  clientType?: ClientType;
+  query?: AdminGetClientsQuery;
   onSuccess?: (data: AdminManageClientsResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  const { clientType, ...queryOptions } = options ?? {};
+  const { clientType, query, ...queryOptions } = options ?? {};
+
+  const queryParams: AdminGetClientsQuery = {
+    ...query,
+    ...(clientType ? { clientType } : {}),
+  };
 
   return useQuery({
     ...adminGetClientsForManagementOptions({
       client: apiClient,
-      query: {
-        clientType,
-      },
+      query: queryParams,
     }),
     ...queryOptions,
   });
