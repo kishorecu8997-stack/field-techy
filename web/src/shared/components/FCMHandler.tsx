@@ -24,7 +24,7 @@ export const FCMHandler = () => {
                     onMessage: (message: FCMMessage) => {
                         if (message.notification) {
                             const newNotification = {
-                                id: parseInt(message.messageId || Date.now().toString().slice(-9)), // Ensure number ID
+                                id: parseInt(message.messageId || Date.now().toString().slice(-9)),
                                 title: message.notification.title || "New Notification",
                                 body: message.notification.body || "",
                                 createdAt: new Date().toISOString(),
