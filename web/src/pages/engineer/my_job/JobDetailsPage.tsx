@@ -30,7 +30,7 @@ const JobDetailsPage = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
-    isDummyJob ? "Job Overview" : "Job Information"
+    isDummyJob ? "Job Overview" : "Job Information",
   );
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
@@ -43,7 +43,7 @@ const JobDetailsPage = () => {
 
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : params.jobId ?? ""
+    isDummyJob ? "" : (params.jobId ?? ""),
   );
   const { data: client } = useClientGetById(jobs?.clientId ?? "", {
     enabled: !!jobs?.clientId && !isDummyJob,
@@ -154,7 +154,9 @@ const JobDetailsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
           isReport
-          customLabels={isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined}
+          customLabels={
+            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
+          }
         />
 
         {/* Show Chat if toggled */}
@@ -178,7 +180,9 @@ const JobDetailsPage = () => {
                 setOfferJobStatus={setOfferJobStatus}
                 OfferJobStatus={OfferJobStatus}
                 hideBreakDetails={isDummyJob}
-                jobLocation={isDummyJob ? "Chennai, Tamil Nadu, India" : location}
+                jobLocation={
+                  isDummyJob ? "Chennai, Tamil Nadu, India" : location
+                }
                 numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
                 numberOfApplicants={isDummyJob ? 20 : undefined}
                 hideDurationAndClient={isDummyJob}
