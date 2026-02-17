@@ -140,11 +140,6 @@ class FCMService {
         { scope: "/" },
       );
 
-      console.log(
-        "Service Worker registered successfully",
-        this.serviceWorkerRegistration,
-      );
-
       operationsStore.updateStep(operationId, "register-sw", {
         status: "done",
         message: "Service Worker registered",
@@ -152,15 +147,9 @@ class FCMService {
       });
 
       // Set up service worker message listener for FCM messages
-      console.log(
-        "Setting up service worker message listener for FCM messages",
-      );
-      // Listen for messages from the service worker
       navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
-        console.log("Service worker message event received:", event.data);
         const { type, data } = event.data;
         if (type === "FCM_MESSAGE") {
-          console.log("Processing FCM_MESSAGE from service worker:", data);
           this.callbacks.onMessage?.(data as FCMMessage);
         }
       });
@@ -177,15 +166,11 @@ class FCMService {
 
       // Wait for service worker to be ready
       await navigator.serviceWorker.ready;
-      console.log("Service Worker is ready");
-
       operationsStore.updateStep(operationId, "sw-ready", {
         status: "done",
         message: "Service Worker is ready",
         timestamp: Date.now(),
       });
-
-      console.log("FCM Service: Service worker registration complete");
 
       // Step 7: Request notification permission
       const requestPermissionStep: Step = {
@@ -223,7 +208,6 @@ class FCMService {
 
       // Listen for foreground messages
       onMessage(this.messaging, (payload) => {
-        console.log("Received foreground message:", payload);
         this.callbacks.onMessage?.(payload as FCMMessage);
       });
 
@@ -258,12 +242,10 @@ class FCMService {
           throw new Error("VAPID key not configured");
         }
 
-        console.log("Getting FCM token directly from Firebase...");
         const token = await getToken(this.messaging, {
           vapidKey,
           serviceWorkerRegistration: this.serviceWorkerRegistration!,
         });
-        console.log("FCM token retrieved during initialization:", !!token);
 
         operationsStore.updateStep(operationId, "get-token", {
           status: "done",
@@ -281,7 +263,6 @@ class FCMService {
           this.callbacks.onTokenRefresh(token);
         }
       } catch (error) {
-        console.error("Failed to get FCM token during initialization:", error);
         operationsStore.updateStep(operationId, "get-token", {
           status: "failed",
           message: `Failed to retrieve FCM token: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -295,7 +276,6 @@ class FCMService {
       }
 
       this.initialized = true;
-      console.log("FCMService initialized successfully");
 
       operationsStore.updateOperation(operationId, {
         status: "done",
@@ -306,7 +286,6 @@ class FCMService {
         error instanceof Error
           ? error
           : new Error("Unknown error during FCMService initialization");
-      console.error("Failed to initialize FCMService:", err);
 
       operationsStore.updateOperation(operationId, {
         status: "failed",
@@ -342,13 +321,10 @@ class FCMService {
       );
     }
 
-    console.log("FCM Service: Getting token directly from Firebase");
     try {
       const token = await getToken(this.messaging, { vapidKey });
-      console.log("FCM Service: Token retrieved successfully:", !!token);
       return token;
     } catch (error) {
-      console.error("FCM Service: Token retrieval failed:", error);
       throw error;
     }
   }

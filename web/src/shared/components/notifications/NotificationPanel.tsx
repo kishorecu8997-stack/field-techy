@@ -39,7 +39,7 @@ const NotificationPanel = ({
                 {onMarkAllAsRead && hasUnread && (
                     <button
                         onClick={onMarkAllAsRead}
-                        className="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="text-xs font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors cursor-pointer"
                     >
                         Mark all as read
                     </button>
@@ -56,7 +56,7 @@ const NotificationPanel = ({
                 )}
             </div>
 
-            <div className="space-y-6 pb-20 mt-2">
+            <div className="space-y-6 mt-2">
                 {allGroupsEmpty ? (
                     <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300 dark:bg-gray-800/50 dark:border-gray-700">
                         <div className="text-4xl mb-3">🔔</div>

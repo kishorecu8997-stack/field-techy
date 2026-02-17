@@ -1,42 +1,5 @@
-/**
- * Message history store
- */
 
-import type { FCMMessage } from "./types/index";
 import { create } from "zustand";
-
-interface MessageWithTimestamp extends FCMMessage {
-  receivedAt?: string;
-}
-
-interface MessageState {
-  messages: MessageWithTimestamp[];
-  addMessage: (message: FCMMessage) => void;
-  clearMessages: () => void;
-  removeMessage: (index: number) => void;
-}
-
-/**
- * Zustand store for managing received messages
- */
-export const useMessageStore = create<MessageState>((set) => ({
-  messages: [],
-  addMessage: (message: FCMMessage) =>
-    set((state) => ({
-      messages: [
-        {
-          ...message,
-          receivedAt: new Date().toISOString(),
-        },
-        ...state.messages,
-      ],
-    })),
-  clearMessages: () => set({ messages: [] }),
-  removeMessage: (index: number) =>
-    set((state) => ({
-      messages: state.messages.filter((_, i) => i !== index),
-    })),
-}));
 
 interface TokenState {
   token: string | null;

@@ -1,13 +1,12 @@
+
 import { useEffect } from "react";
 import { fcmService } from "@/shared/config/firebaseConfig";
-import { useMessageStore, useTokenStore } from "@/shared/store";
+import { useTokenStore } from "@/shared/store";
 import { registerDeviceToken } from "@/shared/apiServices/notifications/notificationOpenApiService";
-import { toast } from "react-toastify";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const FCMHandler = () => {
-    const { addMessage } = useMessageStore();
     const {
         updateToken,
         setRegistrationStatus,
@@ -21,36 +20,50 @@ export const FCMHandler = () => {
             try {
                 await fcmService.initialize({
                     onMessage: (message: FCMMessage) => {
-                        console.log("FCM Message received:", message);
-                        addMessage(message);
+                        if (message.notification) {
+                            const newNotification = {
+                                id: parseInt(message.messageId || Date.now().toString().slice(-9)), // Ensure number ID
+                                title: message.notification.title || "New Notification",
+                                body: message.notification.body || "",
+                                createdAt: new Date().toISOString(),
+                                isRead: false,
+                                type: "info",
+                            };
 
-                        // Invalidate notification queries to trigger a re-fetch
+                            // Update the cache immediately
+                            queryClient.setQueryData(
+                                [{ _id: 'appGetNotifications' }], // Match the query key structure
+                                (oldData: any) => {
+                                    if (!oldData) return { data: [newNotification] };
+
+                                    // Check if notification with same ID already exists
+                                    const exists = oldData.data?.some((n: any) => n.id === newNotification.id);
+                                    if (exists) return oldData;
+
+                                    // Prepend the new notification to the existing list
+                                    return {
+                                        ...oldData,
+                                        data: [newNotification, ...(oldData.data || [])]
+                                    };
+                                }
+                            );
+                        }
+
+                        // Invalidate to eventually sync with server
                         queryClient.invalidateQueries({
                             predicate: (query) => {
                                 const key = query.queryKey[0] as any;
                                 return key && typeof key === 'object' && key._id === 'appGetNotifications';
                             }
                         });
-
-                        if (message.notification) {
-                            // toast.info(
-                            //     `${message.notification.title}: ${message.notification.body}`,
-                            // );
-                            console.log(
-                                `${message.notification.title}: ${message.notification.body}`,
-                            );
-                        }
                     },
                     onTokenRefresh: async (newToken: string) => {
-                        console.log("Token refreshed:", newToken);
                         updateToken(newToken);
                         setIsLoading(true);
                         try {
                             await registerDeviceToken(newToken);
                             setRegistrationStatus(true);
-                            console.log("Token registered with server");
                         } catch (error) {
-                            console.error("Failed to register token with server:", error);
                             setErrorMessage("Failed to sync notification token");
                             setRegistrationStatus(false);
                         } finally {
@@ -61,7 +74,6 @@ export const FCMHandler = () => {
                         setIsLoading(loading);
                     },
                     onError: (error: Error) => {
-                        console.error("FCM Error:", error);
                         setErrorMessage(error.message);
                     },
                 });
@@ -72,7 +84,6 @@ export const FCMHandler = () => {
 
         initializeFCM();
     }, [
-        addMessage,
         updateToken,
         setRegistrationStatus,
         setIsLoading,

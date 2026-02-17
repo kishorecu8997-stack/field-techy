@@ -91,16 +91,19 @@ const RequirementsSection = ({
   useEffect(() => {
     setHasToolContent(
       (!!tools && tools.toString().trim() !== "") ||
-        (!!budget && budget.toString().trim() !== "") ||
-        (images instanceof FileList && images.length > 0),
+      (!!budget && budget.toString().trim() !== "") ||
+      (images instanceof FileList && images.length > 0),
     );
   }, [tools, budget, images]);
 
   const handleAddToolEntry = () => {
-    const toolId = (watch("tools") as string | undefined)?.trim();
-    const budget = (watch("toolBudgetNotes") as string | undefined)
-      ?.replace(/\D+/g, "")
-      ?.trim();
+    const toolVal = watch("tools");
+    const toolId = typeof toolVal === "string" ? toolVal.trim() : toolVal ? String(toolVal).trim() : undefined;
+
+    const budgetVal = watch("toolBudgetNotes");
+    const budget = budgetVal
+      ? String(budgetVal).replace(/\D+/g, "").trim()
+      : undefined;
     const files = watch("toolImages") as FileList | undefined;
     const hasAnyField =
       !!toolId ||
@@ -128,10 +131,10 @@ const RequirementsSection = ({
     const newImages =
       files && files.length > 0
         ? Array.from(files).map((file) => ({
-            name: file.name,
-            url: URL.createObjectURL(file),
-            file: file,
-          }))
+          name: file.name,
+          url: URL.createObjectURL(file),
+          file: file,
+        }))
         : undefined;
 
     if (editingToolIndex !== null) {
