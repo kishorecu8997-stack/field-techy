@@ -3,26 +3,8 @@ import type {
   ManageEngineerProps,
   EngineerStatusType,
 } from "@/pages/admin/engineer/types";
-import type { PopupConfig } from "@/shared/store/popupStore";
-import type { UseMutationResult } from "@tanstack/react-query";
 import { EngineerStatus } from "@/pages/admin/engineer/types";
-
-/**
- * Props for engineer status hook
- */
-export interface UseEngineerStatusChangeProps {
-  rowStatuses: Record<number, EngineerStatusType>;
-  setRowStatuses: React.Dispatch<
-    React.SetStateAction<Record<number, EngineerStatusType>>
-  >;
-  mutateAsync: UseMutationResult<
-    unknown,
-    unknown,
-    { userId: number; profileStatus: EngineerStatusType }
-  >["mutateAsync"];
-  showPopup: (config: PopupConfig) => Promise<unknown>;
-  refetch: () => void;
-}
+import type { UseEngineerStatusChangeProps } from "./types";
 
 /**
  * Hook to handle engineer status changes with popup confirmation and optimistic UI
@@ -43,7 +25,6 @@ export const useEngineerStatusChange = ({
     const previousStatus =
       rowStatuses[row.id] ?? row.approvalStatus ?? "pending";
 
-    // Optimistic update
     setRowStatuses((prev) => ({ ...prev, [row.id]: status }));
 
     let isSuccess = false;
@@ -66,12 +47,7 @@ export const useEngineerStatusChange = ({
             try {
               await mutateAsync({ userId: row.id, profileStatus: status });
               isSuccess = true;
-
-              try {
-                refetch();
-              } catch {
-                toast.warning("Status updated but failed to refresh data");
-              }
+              refetch();
               close(true);
             } catch {
               close(true);

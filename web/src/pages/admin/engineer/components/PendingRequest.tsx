@@ -35,7 +35,6 @@ export default function PendingRequest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
 
-  // Fetch pending engineers via API
   const {
     data: engineersResponse,
     isLoading,
