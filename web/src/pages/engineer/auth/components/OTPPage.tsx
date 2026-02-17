@@ -15,7 +15,6 @@ async function hashOTP(otp: string) {
     .join("");
 }
 
-
 export interface OTPValues {
   otp: string;
 }

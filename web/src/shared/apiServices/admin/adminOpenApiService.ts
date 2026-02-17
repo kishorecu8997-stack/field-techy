@@ -1,7 +1,6 @@
 import {
   adminGetPersonalInfo,
   adminUpdatePersonalInfo,
-  adminUpdateUserStatus,
   type AdminUpdatePersonalInfoData,
   type AdminUpdatePersonalInfoResponses,
   type AppChangePasswordData,
@@ -16,11 +15,12 @@ import {
   type AdminGetClientsForManagementData,
   type AdminUpdateUserStatusData,
   type AdminUpdateUserStatusResponses,
-  type AdminUpdateUserStatusErrors,
   type AdminGetPersonalInfoResponse,
   type AdminUpdatePersonalInfoResponse,
   type AdminGetJobsData,
   type AdminGetJobsResponse,
+  type AdminGetEngineersForManagementData,
+  type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
 } from "@/api";
 import {
@@ -34,10 +34,10 @@ import {
   adminGetClientsForManagementOptions,
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
+  adminGetEngineersForManagementOptions,
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
-import type { EngineerStatusType } from "@/pages/admin/engineer/types";
 import { apiClient } from "../apiClient";
 
 export const LookupTable = {
@@ -161,37 +161,24 @@ export function useAppGetLookupData(
   });
 }
 
-export function useUpdateEngineerProfileStatus(options?: {
-  onSuccess?: (
-    data: AdminUpdateUserStatusResponses[200],
-    variables: {
-      userId: number;
-      profileStatus: EngineerStatusType;
-      token: string;
-    },
-  ) => void;
-  onError?: (error: unknown) => void;
-}) {
-  return useMutation<
-    AdminUpdateUserStatusResponses[200],
-    AdminUpdateUserStatusErrors | unknown,
-    { userId: number; profileStatus: EngineerStatusType; token: string }
-  >({
-    mutationFn: async ({ userId, profileStatus, token }) => {
-      const response = await adminUpdateUserStatus({
-        client: apiClient,
-        path: { userId },
-        body: { profileStatus },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        throwOnError: true,
-      });
+export type AdminGetEngineersQuery = NonNullable<
+  AdminGetEngineersForManagementData["query"]
+>;
 
-      return response.data;
-    },
-    onSuccess: options?.onSuccess,
-    onError: options?.onError,
+export function useAdminManageEngineers(
+  query?: AdminGetEngineersQuery,
+  options?: {
+    enabled?: boolean;
+    onSuccess?: (data: AdminGetEngineersForManagementResponses) => void;
+    onError?: (error: unknown) => void;
+  },
+) {
+  return useQuery({
+    ...adminGetEngineersForManagementOptions({
+      client: apiClient,
+      query,
+    }),
+    ...options,
   });
 }
 
@@ -242,6 +229,21 @@ export function useAdminClientsByUserIdStatus(options?: {
     ...adminUpdateUserStatusMutation({ client: apiClient }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["adminManageClients"] });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+}
+
+export function useAdminEngineersByUserIdStatus(options?: {
+  onSuccess?: (data: AdminUpdateUserStatusResponses[200]) => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...adminUpdateUserStatusMutation({ client: apiClient }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["adminManageEngineers"] });
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
