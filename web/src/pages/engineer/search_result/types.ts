@@ -158,13 +158,4 @@ export const JOB_FILTERS = {
 
 export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];
 
-export const OfferedJobStatus = {
-  initial: "initial",
-  accepted: "accepted",
-  declined: "declined",
-  started: "started",
-  checkedIn: "checked-in",
-} as const;
-
-export type OfferedJobStatusType =
-  (typeof OfferedJobStatus)[keyof typeof OfferedJobStatus];
+export { OfferedJobStatus } from "../my_job/types.d";

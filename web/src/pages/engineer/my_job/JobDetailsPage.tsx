@@ -7,6 +7,7 @@ import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
+import type { ProgressUpdate } from "./types.d";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./job_details_components/JobTabSection";
@@ -14,6 +15,7 @@ import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -32,6 +34,8 @@ const JobDetailsPage = () => {
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
+  const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
+  const [showFinalStatement, setShowFinalStatement] = useState(false);
 
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(
@@ -47,6 +51,13 @@ const JobDetailsPage = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
   };
+
+  const handleAddProgressUpdate = (update: ProgressUpdate) => {
+    setProgressUpdates((prev) => [update, ...prev]);
+  };
+
+  const handleOpenFinalStatement = () => setShowFinalStatement(true);
+  const handleCloseFinalStatement = () => setShowFinalStatement(false);
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -161,6 +172,9 @@ const JobDetailsPage = () => {
               numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
               numberOfApplicants={isDummyJob ? 20 : undefined}
               hideDurationAndClient={isDummyJob}
+              activeTab={activeTab}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              onOpenFinalStatement={handleOpenFinalStatement}
             />
 
             <JobTabSection
@@ -169,12 +183,25 @@ const JobDetailsPage = () => {
               isSendProposal={isSendProposal}
               setSendProposal={setIsSendProposal}
               activeTab={activeTab}
+              setActiveTab={setActiveTab}
               OfferJobStatus={OfferJobStatus}
               isDummyJob={isDummyJob}
               workLocation={location as string}
               isDummyNetworkEngineer={isDummyJob}
               showManageProposals={false}
+              progressUpdates={progressUpdates}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              hideTimelineContent={showFinalStatement}
             />
+
+            {showFinalStatement && (
+              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                <FinalStatementForm
+                  onClose={handleCloseFinalStatement}
+                  onAddProgressUpdate={handleAddProgressUpdate}
+                />
+              </div>
+            )}
           </div>
           <div className="lg:col-span-1">
             <ClientInfoCard
