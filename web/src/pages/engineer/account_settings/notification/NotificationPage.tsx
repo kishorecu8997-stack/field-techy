@@ -1,41 +1,58 @@
-import { useState } from "react";
-import { mockNotifications } from "@/dummy_data/notificationData";
-import type { NotificationProps, GroupedNotifications } from "../types";
-import NotificationPanel from "./NotificationPanel";
-
-const groupNotificationsByDate = (
-  notifications: NotificationProps[],
-): GroupedNotifications => {
-  const grouped: GroupedNotifications = {
-    Today: [],
-    Yesterday: [],
-  };
-
-  notifications.forEach((notif) => {
-    if (notif.id <= 2) {
-      grouped.Today.push(notif);
-    } else {
-      grouped.Yesterday.push(notif);
-    }
-  });
-
-  return grouped;
-};
+import NotificationPanel from "@/shared/components/notifications/NotificationPanel";
+import { absoluteUrls } from "@/config/urls";
+import {
+  useAppNotifications,
+  useAppMarkNotificationAsRead,
+  useAppMarkAllNotificationsAsRead,
+  useAppDeleteNotification,
+} from "@/shared/apiServices/notifications/notificationOpenApiService";
+import { groupNotificationsByDate } from "@/shared/apiServices/notifications/notificationAdapter";
 
 /**
  * Page component that centers the notification panel in the viewport for displaying grouped notifications.
  */
 function NotificationPage() {
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const { notifications, isLoading } = useAppNotifications();
+
+  if (isLoading) {
+    return <div className="flex justify-center p-10">Loading notifications...</div>;
+  }
+
+  const { mutate: markAsRead } = useAppMarkNotificationAsRead();
+  const { mutate: markAllAsRead } = useAppMarkAllNotificationsAsRead();
+  const { mutate: deleteNotification } = useAppDeleteNotification();
+
   const grouped = groupNotificationsByDate(notifications);
 
   const handleDismiss = (id: number) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    deleteNotification({
+      body: {
+        id
+      }
+    });
+  };
+
+  const handleMarkAsRead = (id: number) => {
+    markAsRead({
+      body: {
+        id
+      }
+    });
+  };
+
+  const handleMarkAllAsRead = () => {
+    markAllAsRead({});
   };
 
   return (
-    <div className=" flex justify-center items-start">
-      <NotificationPanel grouped={grouped} onDismiss={handleDismiss} />
+    <div className="flex justify-center items-start">
+      <NotificationPanel
+        grouped={grouped}
+        onDismiss={handleDismiss}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAllAsRead={handleMarkAllAsRead}
+        viewAllLink={absoluteUrls.engineer.home.notifications}
+      />
     </div>
   );
 }

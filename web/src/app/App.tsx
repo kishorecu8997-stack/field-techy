@@ -8,6 +8,8 @@ import { TourProvider } from "@reactour/tour";
 import OnboardingFlowGuide from "@/pages/engineer/home/components/OnboardingFlowGuide";
 import { useTokenExpiration } from "@/hooks/useTokenExpiration";
 import { tourStyles } from "@/utils/styles";
+import { useFCM } from "@/shared/hooks/useFCM";
+import { useEffect } from "react";
 
 /**
  * The main application component that sets up routing.
@@ -22,6 +24,12 @@ const App = () => {
   useOfflineSync();
   useJobExpirationNotification();
   useTokenExpiration();
+  const { checkPermission } = useFCM();
+
+  useEffect(() => {
+    checkPermission();
+  }, [checkPermission]);
+
   return (
     <>
       <TourProvider

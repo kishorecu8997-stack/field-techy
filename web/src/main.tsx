@@ -42,6 +42,23 @@ if (!root) {
   window.__react_root__ = root;
 }
 
+// Register Firebase Messaging Service Worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration) => {
+        console.log(
+          "Service Worker registered successfully with scope:",
+          registration.scope
+        );
+      })
+      .catch((err) => {
+        console.error("Service Worker registration failed:", err);
+      });
+  });
+}
+
 import { ToastProvider } from "./shared/components/commonUI/toastContext.tsx";
 
 root.render(

@@ -1,4 +1,3 @@
-import { mockNotifications } from "@/dummy_data/notificationData";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdOutlineInsertInvitation } from "react-icons/md";
@@ -12,10 +11,11 @@ import { BsPostcard } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { usePopupStore } from "@/shared/store/popupStore";
-import type { NotificationProps } from "../types";
+import type { NotificationProps } from "@/shared/types/notification";
 import { absoluteUrls } from "@/config/urls";
 import { useNavigate } from "react-router-dom";
 import { scrollToTop } from "@/utils";
+import { useAppNotifications } from "@/shared/apiServices/notifications/notificationOpenApiService";
 
 /**
  * Renders a notification center with categorized views (All, Jobs, Wallet, Unread).
@@ -29,6 +29,9 @@ const NotificationListPage = () => {
   const [tab, setTab] = useState("all");
   const [filter, setFilter] = useState(4);
   const [notification, setNotification] = useState<NotificationProps[]>([]);
+
+  const { notifications, isLoading } = useAppNotifications();
+
   const Titles = [
     { id: 0, type: "all", label: "All Notifications" },
     { id: 1, type: "job_offer", label: "Jobs" },
@@ -38,8 +41,10 @@ const NotificationListPage = () => {
 
   useEffect(() => {
     scrollToTop();
-    setNotification(Notificationfilter(tab, mockNotifications, search));
-  }, [tab, search]);
+    if (notifications) {
+      setNotification(Notificationfilter(tab, notifications, search));
+    }
+  }, [tab, search, notifications]);
 
   const ButtonRender = (type: string) => {
     const btnname = (type: string) => {
@@ -204,11 +209,10 @@ const NotificationListPage = () => {
                   setTab(title.type);
                   setSearch("");
                 }}
-                className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${
-                  title.type === tab
-                    ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
-                    : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
-                }`}
+                className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${title.type === tab
+                  ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
+                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                  }`}
               >
                 {title.label}
               </div>
@@ -231,6 +235,8 @@ const NotificationListPage = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
+          {isLoading && <div className="text-center p-4">Loading notifications...</div>}
+          {!isLoading && notification.length === 0 && <div className="text-center p-4 text-gray-500">No notifications found.</div>}
           {notification
             .slice(0, filter)
             .map((notifications: NotificationProps) => (
@@ -264,7 +270,7 @@ const NotificationListPage = () => {
       <div
         className="flex cursor-pointer mt-2 flex-row items-center justify-center gap-x-5"
         onClick={() => {
-          (filter > 4 ? setFilter(4) : setFilter(mockNotifications.length),
+          (filter > 4 ? setFilter(4) : setFilter(notification.length),
             scrollTo(0, 0));
         }}
       >

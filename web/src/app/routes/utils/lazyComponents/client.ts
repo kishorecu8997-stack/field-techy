@@ -92,6 +92,9 @@ export const PostAJobPage = React.lazy(
 export const ClientSearchAnalyticsPage = React.lazy(
   () => import("@/pages/client/search_analytics/ClientSearchAnalyticsPage"),
 );
+export const ClientNotificationPage = React.lazy(
+  () => import("@/pages/client/notification/NotificationPage"),
+);
 
 // Client Policy Pages
 export const ClientFAQ = React.lazy(

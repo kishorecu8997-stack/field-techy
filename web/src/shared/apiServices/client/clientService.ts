@@ -11,7 +11,7 @@ import type {
 
 // Create API client for OpenAPI calls
 // const apiClient = createClient({
-//   baseUrl: import.meta.env.VITE_API_URL_NEW || "http://localhost:3000",
+//   baseUrl: import.meta.env.VITE_API_URL || "http://localhost:3000",
 // });
 
 export const CLIENT_QUERY_KEYS = {
