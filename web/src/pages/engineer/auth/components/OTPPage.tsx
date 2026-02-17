@@ -3,6 +3,7 @@ import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 // Utility to hash a string using SHA-256 and return hex
 async function hashOTP(otp: string) {
   const encoder = new TextEncoder();
@@ -13,7 +14,7 @@ async function hashOTP(otp: string) {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
-import { useForm } from "react-hook-form";
+
 
 export interface OTPValues {
   otp: string;
