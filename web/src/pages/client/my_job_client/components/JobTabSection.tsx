@@ -47,6 +47,8 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
   activeTab,
   isDummyNetworkEngineer,
   showManageProposals = true,
+  onAllCardsApprovedChange,
+  onTabChange,
 }) => {
   const [acceptedProposals, setAcceptedProposals] = useState<string[]>([]);
   const [rejectedProposals, setRejectedProposals] = useState<string[]>([]);
@@ -163,7 +165,7 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
 
   // Simplified tab set for the dummy Network Engineer job
   const dummyTabs = [
-    { label: DUMMY_TABS_LABELS.timeline, content: <TimelineSection /> },
+    { label: DUMMY_TABS_LABELS.timeline, content: <TimelineSection onAllCardsApprovedChange={onAllCardsApprovedChange} /> },
     {
       label: DUMMY_TABS_LABELS.jobOverview,
       content: <JobOverviewSection {...engineerJobOverview} />,
@@ -207,7 +209,11 @@ const JobTabSection: React.FC<JobTabSectionProps> = ({
       {isSendProposal ? (
         <SendProposal />
       ) : (
-        <TabComponent tabs={tabs} defaultActiveTab={activeTab || defaultTab} />
+        <TabComponent 
+          tabs={tabs} 
+          defaultActiveTab={activeTab || defaultTab} 
+          onTabChange={onTabChange}
+        />
       )}
     </div>
   );

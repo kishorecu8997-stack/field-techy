@@ -40,6 +40,10 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   activeTab,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  isFinalStatementSubmitted,
+  onOpenGiveClientFeedback,
+  onOpenViewClientFeedback,
+  allCardsApproved,
 }) => {
   const location = useLocation();
   const isClient = location.pathname.includes("client");
@@ -184,7 +188,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           </div>
         )}
         {isClient ? (
-          <ClientActions />
+          <ClientActions activeTab={activeTab} allCardsApproved={allCardsApproved} />
         ) : (
           <EngineersActions
             OfferJobStatus={OfferJobStatus}
@@ -199,6 +203,9 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
             isDummyJob={isDummyJob}
             onAddProgressUpdate={onAddProgressUpdate}
             onOpenFinalStatement={onOpenFinalStatement}
+            isFinalStatementSubmitted={isFinalStatementSubmitted}
+            onOpenGiveClientFeedback={onOpenGiveClientFeedback}
+            onOpenViewClientFeedback={onOpenViewClientFeedback}
           />
         )}
       </div>

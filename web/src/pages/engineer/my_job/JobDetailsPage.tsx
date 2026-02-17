@@ -2,7 +2,7 @@ import {
   useClientGetById,
   useClientGetJobsById,
 } from "@/shared/apiServices/client/clientService";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { isDummyNetworkEngineerJob, DUMMY_CLIENT_FEEDBACK } from "@/constants/dummyJobs";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -13,6 +13,8 @@ import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeade
 import JobTabSection from "./job_details_components/JobTabSection";
 import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import GiveClientFeedbackModal from "./job_details_components/jobHeaderComponents/GiveClientFeedbackModal";
+import ViewClientFeedbackModal from "./job_details_components/jobHeaderComponents/ViewClientFeedbackModal";
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
@@ -36,6 +38,9 @@ const JobDetailsPage = () => {
   >("initial");
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
+  const [isFinalStatementSubmitted, setIsFinalStatementSubmitted] = useState(false);
+  const [showGiveClientFeedback, setShowGiveClientFeedback] = useState(false);
+  const [showViewClientFeedback, setShowViewClientFeedback] = useState(false);
 
   // Always call hooks - pass empty string if jobId is missing or dummy
   const { data: jobs, isLoading } = useClientGetJobsById(
@@ -54,10 +59,26 @@ const JobDetailsPage = () => {
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
+    
+    // Check if a final statement was just submitted
+    if (update.title === "Final Statement") {
+      setIsFinalStatementSubmitted(true);
+    }
   };
 
   const handleOpenFinalStatement = () => setShowFinalStatement(true);
   const handleCloseFinalStatement = () => setShowFinalStatement(false);
+  
+  const handleOpenGiveClientFeedback = () => setShowGiveClientFeedback(true);
+  const handleCloseGiveClientFeedback = () => setShowGiveClientFeedback(false);
+  
+  const handleSubmitClientFeedback = () => {
+    toast.success("Feedback submitted successfully");
+    handleCloseGiveClientFeedback();
+  };
+
+  const handleOpenViewClientFeedback = () => setShowViewClientFeedback(true);
+  const handleCloseViewClientFeedback = () => setShowViewClientFeedback(false);
 
   // Handle missing jobId with a proper error state
   if (!params.jobId) {
@@ -175,6 +196,9 @@ const JobDetailsPage = () => {
               activeTab={activeTab}
               onAddProgressUpdate={handleAddProgressUpdate}
               onOpenFinalStatement={handleOpenFinalStatement}
+              isFinalStatementSubmitted={isFinalStatementSubmitted}
+              onOpenGiveClientFeedback={handleOpenGiveClientFeedback}
+              onOpenViewClientFeedback={handleOpenViewClientFeedback}
             />
 
             <JobTabSection
@@ -222,6 +246,22 @@ const JobDetailsPage = () => {
         onClose={() => setIsReviewOpen(false)}
         clientName={(client?.companyName as string) ?? "Client"}
         onSubmit={handleSubmitReview}
+      />
+      
+      <GiveClientFeedbackModal
+        isOpen={showGiveClientFeedback}
+        onClose={handleCloseGiveClientFeedback}
+        clientName={isDummyJob ? "Kraft and Co" : ((client?.companyName as string) ?? "Client")}
+        onSubmit={handleSubmitClientFeedback}
+      />
+      
+      <ViewClientFeedbackModal
+        isOpen={showViewClientFeedback}
+        onClose={handleCloseViewClientFeedback}
+        clientName={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientName : ((client?.companyName as string) ?? "Client")}
+        clientImage={isDummyJob ? DUMMY_CLIENT_FEEDBACK.clientImage : undefined}
+        rating={isDummyJob ? DUMMY_CLIENT_FEEDBACK.rating : undefined}
+        review={isDummyJob ? DUMMY_CLIENT_FEEDBACK.review : undefined}
       />
     </div>
   );

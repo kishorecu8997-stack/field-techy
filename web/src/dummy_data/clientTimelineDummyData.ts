@@ -68,3 +68,11 @@ export const finalStatementCardData: TimelineCardData = {
   accentColor: "#16a34a",
   buttons: ["reject", "approve"],
 };
+
+// Engineer Timeline Data
+export const engineerTimelineData = {
+  engineerNumber: "Engineer 1",
+  name: "Ram",
+  role: "Network Engineer",
+  lastActivity: "05 Apr 2026, 3:20 PM",
+};

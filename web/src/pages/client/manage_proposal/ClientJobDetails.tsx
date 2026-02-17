@@ -24,6 +24,7 @@ const ClientJobDetails = () => {
   const [OfferJobStatus, setOfferJobStatus] = useState<
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
+  const [allCardsApproved, setAllCardsApproved] = useState(false);
 
   const jobId = Number(params.jobId);
   const id = Number(params.id);
@@ -89,6 +90,8 @@ const ClientJobDetails = () => {
               }
               numberOfVacancy={numberOfVacancy}
               numberOfApplicants={numberOfApplicants}
+              activeTab={activeTab}
+              allCardsApproved={allCardsApproved}
             />
             <JobTabSection
               status={matchedJob?.status as JobStatus}
@@ -98,6 +101,8 @@ const ClientJobDetails = () => {
               OfferJobStatus={OfferJobStatus}
               isDummyNetworkEngineer={isDummyNetworkEngineer}
               showManageProposals
+              onAllCardsApprovedChange={setAllCardsApproved}
+              onTabChange={setActiveTab}
             />
           </div>
           <SidebarJobPostWallet earnings={earningsData} />

@@ -30,6 +30,9 @@ const EngineersActions = ({
   isDummyJob,
   onAddProgressUpdate,
   onOpenFinalStatement,
+  isFinalStatementSubmitted,
+  onOpenGiveClientFeedback,
+  onOpenViewClientFeedback,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | undefined>
@@ -45,6 +48,9 @@ const EngineersActions = ({
   isDummyJob?: boolean;
   onAddProgressUpdate?: (update: ProgressUpdate) => void;
   onOpenFinalStatement?: () => void;
+  isFinalStatementSubmitted?: boolean;
+  onOpenGiveClientFeedback?: () => void;
+  onOpenViewClientFeedback?: () => void;
 }) => {
   const { closePopup, showPopup } = usePopupStore();
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
@@ -119,7 +125,24 @@ const EngineersActions = ({
     });
   };
 
-  const postStartActions = (
+  const postStartActions = isFinalStatementSubmitted ? (
+    <div className="flex flex-wrap gap-4 w-fit">
+      <div
+        className="text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-2 border-white hover:bg-teal-700/40"
+        onClick={() => onOpenViewClientFeedback?.()}
+      >
+        <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        <span>View Feedback From Client</span>
+      </div>
+      <div
+        className="text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 cursor-pointer transition-all duration-200 border-b-2 border-white hover:bg-teal-700/40"
+        onClick={() => onOpenGiveClientFeedback?.()}
+      >
+        <icons.star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        <span>Give Feedback On Client</span>
+      </div>
+    </div>
+  ) : (
     <div className="flex flex-wrap gap-2 w-fit">
       <Button
         className="bg-teal-900 text-white px-6 py-2 rounded-md font-semibold border border-white/40 shadow-sm"

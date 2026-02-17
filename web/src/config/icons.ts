@@ -10,6 +10,7 @@ import {
   FaRegCheckCircle,
   FaRegUser,
   FaSignOutAlt,
+  FaStar,
 } from "react-icons/fa";
 import { FaFileLines, FaLocationDot } from "react-icons/fa6";
 import {
@@ -82,4 +83,5 @@ export const icons = {
   checkmark: IoMdCheckmark,
   active: FiZap,
   sessions: MdOutlineMobileFriendly,
+  star: FaStar,
 };

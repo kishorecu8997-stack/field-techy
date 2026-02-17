@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { HiCheckCircle } from "react-icons/hi";
+import { HiCheckCircle, HiChevronDown, HiStar } from "react-icons/hi";
 import { HiXMark } from "react-icons/hi2";
 import { toast } from "react-toastify";
 import { formatDateTime } from "@/utils/formatDateTime";
@@ -11,6 +11,7 @@ import {
   createRevisionUpdateCardData,
   shortTermBreakCardData as shortTermBreakCardDataFromDummy,
   finalStatementCardData as finalStatementCardDataFromDummy,
+  engineerTimelineData,
 } from "@/dummy_data/clientTimelineDummyData";
 import {
   TIMELINE_STATUS,
@@ -30,8 +31,8 @@ import RevisionFormModal from "./RevisionFormModal";
 import ConfirmModal from "./ConfirmModal";
 import ShortBreakApprovalModal from "./ShortBreakApprovalModal";
 import ActionRequiredBadge from "./ActionRequiredBadge";
-import TimelineToggleButton from "./TimelineToggleButton";
 import TimelineSectionHeader from "./TimelineSectionHeader";
+import GiveEngineerFeedbackModal from "./GiveEngineerFeedbackModal";
 import type {
   RevisionFormData,
   RevisionRequestDetails,
@@ -60,6 +61,10 @@ const FormMode = {
 
 type FormMode = (typeof FormMode)[keyof typeof FormMode];
 
+interface TimelineSectionProps {
+  onAllCardsApprovedChange?: (allApproved: boolean) => void;
+}
+
 /**
  * Client timeline tab for progress, revisions, short breaks, final statements, and job approvals.
  * Uses dummy data to render cards and simulate states without API calls.
@@ -67,10 +72,9 @@ type FormMode = (typeof FormMode)[keyof typeof FormMode];
  * Modal + confirm flows collect revision inputs and short-break notes.
  * Toasts provide immediate feedback on approve/reject/revision actions.
  */
-const TimelineSection: React.FC = () => {
+const TimelineSection: React.FC<TimelineSectionProps> = ({ onAllCardsApprovedChange }) => {
+  const [isSectionCollapsed, setIsSectionCollapsed] = useState(false);
   const [isProgressCollapsed, setIsProgressCollapsed] = useState(false);
-  const [isRevisionUpdateCollapsed, setIsRevisionUpdateCollapsed] =
-    useState(false);
   const [isShortBreakCollapsed, setIsShortBreakCollapsed] = useState(false);
   const [isFinalStatementCollapsed, setIsFinalStatementCollapsed] =
     useState(false);
@@ -94,10 +98,22 @@ const TimelineSection: React.FC = () => {
   const [showJobRejectConfirm, setShowJobRejectConfirm] = useState(false);
   const [shortBreakNotes, setShortBreakNotes] = useState("");
   const [keepProgressExpanded, setKeepProgressExpanded] = useState(false);
+  const [showEngineerFeedbackModal, setShowEngineerFeedbackModal] = useState(false);
   const [revisionRequestDetails, setRevisionRequestDetails] =
     useState<RevisionRequestDetails | null>(null);
   // State for revision update card data - setter can be used when API integration is added
   const [revisionUpdateCardData] = useState(createRevisionUpdateCardData());
+
+  // Notify parent when all cards are approved
+  useEffect(() => {
+    const allApproved =
+      jobStatus === TIMELINE_STATUS.approved &&
+      progressStatus === TIMELINE_STATUS.approved &&
+      shortBreakStatus === TIMELINE_STATUS.approved &&
+      finalStatementStatus === TIMELINE_STATUS.approved;
+    
+    onAllCardsApprovedChange?.(allApproved);
+  }, [jobStatus, progressStatus, shortBreakStatus, finalStatementStatus, onAllCardsApprovedChange]);
 
   const revisionFormMethods = useForm<RevisionFormData>({
     mode: "onSubmit",
@@ -124,6 +140,14 @@ const TimelineSection: React.FC = () => {
   const actionRequiredCount = [
     progressStatus,
     revisionUpdateStatus,
+    shortBreakStatus,
+    finalStatementStatus,
+    jobStatus,
+  ].filter((status) => status === TIMELINE_STATUS.pending).length;
+
+  // Calculate pending approvals for the main 4 cards (excluding revision update)
+  const pendingApprovalsCount = [
+    progressStatus,
     shortBreakStatus,
     finalStatementStatus,
     jobStatus,
@@ -223,7 +247,6 @@ const TimelineSection: React.FC = () => {
       });
     } else {
       setRevisionUpdateStatus(TIMELINE_STATUS.revision);
-      setIsRevisionUpdateCollapsed(true);
     }
 
     toast.success(TOAST_MESSAGES.revisionSubmitted, { position: "top-right" });
@@ -249,11 +272,16 @@ const TimelineSection: React.FC = () => {
   };
 
   const handleShortBreakApprovalSubmit = () => {
-    setShowShortBreakApprovalModal(false);
-    setShortBreakNotes("");
     setShortBreakStatus(TIMELINE_STATUS.approved);
-    setIsShortBreakCollapsed(true);
+    setShortBreakNotes("");
+    setShowShortBreakApprovalModal(false);
     toast.success(TOAST_MESSAGES.shortBreakApproved, { position: "top-right" });
+  };
+
+  const handleEngineerFeedbackSubmit = (payload: { rating: number; review: string }) => {
+    console.log("Engineer feedback submitted:", payload);
+    toast.success("Feedback submitted successfully!", { position: "top-right" });
+    // TODO: Send feedback to API
   };
 
   const handleShortBreakApprovalCancel = () => {
@@ -368,10 +396,6 @@ const TimelineSection: React.FC = () => {
       setIsProgressCollapsed(false);
     }
 
-    if (revisionUpdateStatus !== TIMELINE_STATUS.pending) {
-      setIsRevisionUpdateCollapsed(true);
-    }
-
     if (shortBreakStatus !== TIMELINE_STATUS.pending) {
       setIsShortBreakCollapsed(true);
     }
@@ -394,24 +418,92 @@ const TimelineSection: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-      <TimelineToggleButton
-        isCollapsed={
-          isProgressCollapsed &&
-          isRevisionUpdateCollapsed &&
-          isShortBreakCollapsed &&
-          isFinalStatementCollapsed &&
-          isJobCollapsed
-        }
-        onToggle={() => {
-          setIsProgressCollapsed((prev) => !prev);
-          setIsRevisionUpdateCollapsed((prev) => !prev);
-          setIsShortBreakCollapsed((prev) => !prev);
-          setIsFinalStatementCollapsed((prev) => !prev);
-          setIsJobCollapsed((prev) => !prev);
-        }}
-      />
+      {isSectionCollapsed ? (
+        /* Collapsed View - Engineer Summary */
+        <div
+          className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          onClick={() => setIsSectionCollapsed(false)}
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                {engineerTimelineData.engineerNumber}
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {engineerTimelineData.name}
+                </span>
+                <span className="text-gray-500 dark:text-gray-400">•</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  {engineerTimelineData.role}
+                </span>
+              </div>
+              <div className="text-sm space-y-1">
+                {pendingApprovalsCount > 0 ? (
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Status:{" "}
+                    <span className="font-medium text-red-600 dark:text-red-400">
+                      {pendingApprovalsCount} pending approval
+                      {pendingApprovalsCount > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Status: <span className="font-medium">No pending approvals</span>
+                  </div>
+                )}
+                <div className="text-gray-500 dark:text-gray-400">
+                  Last activity: {engineerTimelineData.lastActivity}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {pendingApprovalsCount === 0 && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
+                  aria-label="Give Feedback On Engineer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowEngineerFeedbackModal(true);
+                  }}
+                >
+                  <HiStar className="h-5 w-5 text-yellow-500" />
+                  <span className="hidden sm:inline">Give Feedback On Engineer</span>
+                </button>
+              )}
+              <HiChevronDown className="h-5 w-5 text-gray-500" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Expanded View - Full Timeline */
+        <>
+          <div className="flex justify-end items-center gap-2 px-4 pt-3">
+            {pendingApprovalsCount === 0 && (
+              <button
+                type="button"
+                className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 transition-opacity hover:opacity-80 underline"
+                aria-label="Give Feedback On Engineer"
+                onClick={() => {
+                  setShowEngineerFeedbackModal(true);
+                }}
+              >
+                <HiStar className="h-5 w-5 text-yellow-500" />
+                <span>Give Feedback On Engineer</span>
+              </button>
+            )}
+            <button
+              type="button"
+              className="p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Collapse engineer section"
+              onClick={() => setIsSectionCollapsed(true)}
+            >
+              <HiChevronDown className="h-5 w-5 rotate-180" />
+            </button>
+          </div>
 
-      <div className="px-4 pb-4 space-y-6">
+          <div className="px-4 pb-4 space-y-6">
         {/* Action Required Badge - Always at the top */}
         <ActionRequiredBadge count={actionRequiredCount} />
 
@@ -466,8 +558,11 @@ const TimelineSection: React.FC = () => {
         />
 
         <TimelineSectionHeader items={activityTimelineItems} />
-      </div>
+          </div>
+        </>
+      )}
 
+      {/* Modals - Always available regardless of collapsed state */}
       <RevisionFormModal
         isOpen={showFormModal && Boolean(formMode)}
         isRevisionMode={formMode === FormMode.Revision}
@@ -494,6 +589,14 @@ const TimelineSection: React.FC = () => {
         onNotesChange={setShortBreakNotes}
         onCancel={handleShortBreakApprovalCancel}
         onSubmit={handleShortBreakApprovalSubmit}
+      />
+
+      <GiveEngineerFeedbackModal
+        isOpen={showEngineerFeedbackModal}
+        onClose={() => setShowEngineerFeedbackModal(false)}
+        engineerName={engineerTimelineData.name}
+        engineerRole={engineerTimelineData.role}
+        onSubmit={handleEngineerFeedbackSubmit}
       />
     </div>
   );
