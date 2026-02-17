@@ -14,7 +14,6 @@ import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import type { ManageEngineerProps, EngineerStatusType } from "../types";
 import { EngineerStatus } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
@@ -154,7 +153,7 @@ export default function PendingRequest() {
       label: "Submitted Documents",
       renderCell: (row) => (
         <div className="text-sm flex flex-col gap-1">
-          {row.submittedDocuments.map((doc, idx) => (
+          {row.submittedDocuments?.map((doc, idx) => (
             <span
               key={idx}
               className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs dark:bg-gray-700 dark:text-gray-200"

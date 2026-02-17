@@ -1,13 +1,13 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import { FaUserCircle } from "react-icons/fa";
-import type { ManageEngineerProps } from "../types";
+import type { ManageEngineerProps, EngineerStatusType } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "react-toastify";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * SuspendedUser Component
@@ -29,17 +29,80 @@ export default function SuspendedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
 
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Suspended")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
-    });
+  const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+    page: 1,
+    limit: 50,
+    status: "suspended",
+  });
+
+  // Map API response to table rows
+  const engineersData: ManageEngineerProps[] = (
+    engineersResponse?.data ?? []
+  ).map((e) => {
+    // Get latest suspension entry
+    const suspension = e.statusHistory
+      ?.filter((s) => s.type === "suspension")
+      ?.sort(
+        (a, b) =>
+          new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime(),
+      )[0];
+
+    return {
+      id: e.id,
+      userId: e.userId,
+
+      engineerID: e.engineerCode ?? "N/A",
+
+      details: {
+        name: e.name ?? "N/A",
+        email: e.email ?? "N/A",
+        phone: e.phoneNumber ?? "N/A",
+      },
+
+      location: e.location ?? "N/A",
+
+      registrationDate: e.registrationDate
+        ? new Date(e.registrationDate).toLocaleDateString()
+        : "N/A",
+
+      walletBalance: e.balance?.toString() ?? "0",
+
+      kycStatus: e.profileStatus as EngineerStatusType,
+
+      employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+
+      avgRating: e.averageRating ?? 0,
+
+      approvalStatus: e.profileStatus as EngineerStatusType,
+      suspendReason: suspension?.reason ?? "N/A",
+      suspendFrom: suspension?.startDate
+        ? new Date(suspension.startDate).toLocaleDateString()
+        : "N/A",
+
+      suspendTo: suspension?.endDate
+        ? new Date(suspension.endDate).toLocaleDateString()
+        : "N/A",
+
+      suspendBy: suspension?.adminName ?? "N/A",
+
+      suspendOn: suspension?.actionDate
+        ? new Date(suspension.actionDate).toLocaleDateString()
+        : "N/A",
+
+      currentStatus: suspension?.revokedAt ? "Revoked" : "Suspended",
+    };
+  });
+
+  const filteredData = useMemo(() => {
+    const q = search.toLowerCase();
+    return engineersData.filter(
+      (e) =>
+        e.engineerID.toLowerCase().includes(q) ||
+        e.details.name.toLowerCase().includes(q) ||
+        e.details.email.toLowerCase().includes(q) ||
+        e.location.toLowerCase().includes(q),
+    );
+  }, [engineersData, search]);
 
   const handleRevoke = async (id: number) => {
     await showPopup({
@@ -66,7 +129,7 @@ export default function SuspendedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
     {
       key: "engineerID",
       label: "Engineer ID",
@@ -133,6 +196,7 @@ export default function SuspendedUser() {
             columns={columns}
             data={filteredData}
             initialPageSize={10}
+            loading={isLoading}
           />
         </div>
       </div>

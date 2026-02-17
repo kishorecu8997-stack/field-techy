@@ -1,4 +1,3 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
@@ -6,8 +5,9 @@ import { FaUserCircle } from "react-icons/fa";
 import type { ManageEngineerProps } from "../types";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { usePopupStore } from "@/shared/store/popupStore";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "react-toastify";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * BlockedUser Component
@@ -28,17 +28,92 @@ import { toast } from "react-toastify";
 export default function BlockedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Blocked")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
+
+    const { data: engineersResponse, isLoading } = useAdminManageEngineers({
+      page: 1,
+      limit: 50,
+      status: "blocked",
     });
+
+    // Map API response to table rows
+    const engineersData: ManageEngineerProps[] = (
+      engineersResponse?.data ?? []
+    ).map((e) => {
+      const latestStatus = e.statusHistory?.sort(
+        (a, b) =>
+          new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime(),
+      )[0];
+
+      return {
+        id: e.id,
+        userId: e.userId,
+
+        engineerID: e.engineerCode ?? "N/A",
+
+        details: {
+          name: e.name ?? "N/A",
+          email: e.email ?? "N/A",
+          phone: e.phoneNumber ?? "N/A",
+        },
+
+        documents: "View",
+        submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
+
+        location: e.location ?? "N/A",
+
+        registrationDate: e.registrationDate
+          ? new Date(e.registrationDate).toLocaleDateString()
+          : "N/A",
+
+        walletBalance: e.balance?.toString() ?? "0",
+
+        kycStatus: e.profileStatus,
+
+        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+
+        avgRating: e.averageRating ?? 0,
+
+        approvalStatus: e.profileStatus,
+
+        suspendReason: latestStatus?.reason ?? "N/A",
+
+        suspendFrom: latestStatus?.startDate
+          ? new Date(latestStatus.startDate).toLocaleDateString()
+          : "N/A",
+
+        suspendTo: latestStatus?.endDate
+          ? new Date(latestStatus.endDate).toLocaleDateString()
+          : "N/A",
+
+        suspendBy: latestStatus?.adminName ?? "N/A",
+
+        suspendOn: latestStatus?.actionDate
+          ? new Date(latestStatus.actionDate).toLocaleDateString()
+          : "N/A",
+
+        currentStatus: latestStatus
+          ? latestStatus.revokedAt
+            ? "Revoked"
+            : e.userStatus === "blocked"
+              ? "Blocked"
+              : e.userStatus === "suspended"
+                ? "Suspended"
+                : latestStatus.type.charAt(0).toUpperCase() +
+                  latestStatus.type.slice(1)
+          : "Active",
+      };
+    });
+
+    const filteredData = useMemo(() => {
+      const q = search.toLowerCase();
+      return engineersData.filter(
+        (e) =>
+          e.engineerID.toLowerCase().includes(q) ||
+          e.details.name.toLowerCase().includes(q) ||
+          e.details.email.toLowerCase().includes(q) ||
+          e.location.toLowerCase().includes(q),
+      );
+    }, [engineersData, search]);
 
   const handleUnblock = async (id: number) => {
     await showPopup({
@@ -65,7 +140,7 @@ export default function BlockedUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
     {
       key: "engineerID",
       label: "Engineer ID",
@@ -127,6 +202,7 @@ export default function BlockedUser() {
             columns={columns}
             data={filteredData}
             initialPageSize={10}
+            loading={isLoading}
           />
         </div>
       </div>

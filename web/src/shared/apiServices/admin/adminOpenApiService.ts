@@ -22,6 +22,8 @@ import {
   type AdminGetEngineersForManagementData,
   type AdminGetEngineersForManagementResponses,
   type AdminGetClientsForManagementResponse,
+  // type AdminGetEngineerResponses,
+  // type AdminGetEngineerResponses
 } from "@/api";
 import {
   adminGetPersonalInfoOptions,
@@ -35,6 +37,8 @@ import {
   adminUpdateUserStatusMutation,
   adminGetJobsOptions,
   adminGetEngineersForManagementOptions,
+  adminGetEngineerOptions,
+  // adminGetEngineerQueryKey
 } from "@/api/@tanstack/react-query.gen";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../queryKeys";
@@ -290,5 +294,15 @@ export function useAdminGetJobs(
       query,
     }),
     ...options,
+  });
+}
+
+export function useAdminGetEngineerById(userId: number, enabled = true) {
+  return useQuery({
+    ...adminGetEngineerOptions({
+      client: apiClient,
+      path: { userId },
+    }),
+    enabled,
   });
 }

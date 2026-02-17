@@ -1,7 +1,7 @@
 import { absoluteUrls } from "@/config/urls";
 import AdminTabComponent from "@/shared/components/AdminTabComponent";
 import { Button } from "@/shared/components/commonUI/Buttons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,38 +10,40 @@ import BasicInformation from "../addEngineer/BasicInformation";
 import Documents from "../addEngineer/Documents";
 import ExperienceDetails from "../addEngineer/ExperienceDetails";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService"
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 
 /**
  * EditEngineer component for editing an existing engineer.
- * Pre-filled with dummy data for development/testing.
+ * Fetches engineer data via API.
  */
 export default function EditEngineer() {
   const [activeTab, setActiveTab] = useState("Basic Information");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
   const { id } = useParams<{ id: string }>();
+  const { showPopup } = usePopupStore();
 
-  // Find by ID (replace with real API call if needed)
-  const editEngineer = manageEngineer.find((user) => user.id.toString() === id);
+  // Fetch engineer data
+  const { data: engineerData, isLoading } = useAdminGetEngineerById(Number(id), !!id);
 
+  // Initialize form
   const methods = useForm<EngineerFormData>({
     defaultValues: {
-      name: editEngineer?.details.name || "John Doe",
-      email: editEngineer?.details.email || "john.doe@example.com",
-      phoneNumber: editEngineer?.details.phone || "+91 9876576512",
+      name: engineerData?.name || "",
+      email: engineerData?.email || "",
+      phoneNumber: engineerData?.phoneNumber || "",
       profileImage: null,
-      address: "123 Tech Street, San Francisco, CA",
-      skills: ["React", "TypeScript", "Next.js"],
-      price: "75.5",
-      serviceCategory: "Legal Services",
-      portfolio: "https://alexj.dev",
-      designation: "Senior Frontend Engineer",
-      location: "San Francisco, CA",
-      employer: "Tech Innovators Inc.",
-      experience: "5",
+      address: engineerData?.address || "",
+      skills: [], // OpenAPI type does not include skills, adjust later if needed
+      price: engineerData?.hourlyRate || "",
+      serviceCategory: engineerData?.serviceCategoryId?.toString() || "",
+      portfolio: engineerData?.portfolioLink || "",
+      designation: engineerData?.currentDesignation || "",
+      location: "", // map city/state/country if needed
+      employer: engineerData?.employer || "",
+      experience: engineerData?.experienceYears?.toString() || "",
       resume: "",
       governmentId: "",
       certificate: "",
@@ -50,13 +52,35 @@ export default function EditEngineer() {
     reValidateMode: "onChange",
   });
 
-  const { trigger } = methods;
-  const { showPopup } = usePopupStore();
+  // Update defaultValues when data is loaded
+  useEffect(() => {
+    if (engineerData) {
+      methods.reset({
+        name: engineerData.name,
+        email: engineerData.email,
+        phoneNumber: engineerData.phoneNumber,
+        profileImage: null,
+        address: engineerData.address || "",
+        skills: [],
+        price: engineerData.hourlyRate || "",
+        serviceCategory: engineerData.serviceCategoryId?.toString() || "",
+        portfolio: engineerData.portfolioLink || "",
+        designation: engineerData.currentDesignation || "",
+        location: "",
+        employer: engineerData.employer || "",
+        experience: engineerData.experienceYears?.toString() || "",
+        resume: "",
+        governmentId: "",
+        certificate: "",
+      });
+    }
+  }, [engineerData, methods]);
 
-  // Handle Next button navigation between tabs
+  const { trigger, getValues, reset } = methods;
+
+  // Tab navigation
   const handleNext = async () => {
     let isValid = false;
-
     if (activeTab === "Basic Information") {
       isValid = await trigger([
         "name",
@@ -81,34 +105,26 @@ export default function EditEngineer() {
   };
 
   const handlePrevious = async () => {
-    if (activeTab === "Experience Details") {
-      setActiveTab("Basic Information");
-    } else if (activeTab === "Documents") {
-      setActiveTab("Experience Details");
-    }
+    if (activeTab === "Experience Details") setActiveTab("Basic Information");
+    else if (activeTab === "Documents") setActiveTab("Experience Details");
   };
 
-  const handleupdateConfirmation = async (data: EngineerFormData) => {
+  // Update confirmation popup
+  const handleUpdateConfirmation = async (data: EngineerFormData) => {
     await showPopup({
       title: "Update Engineer",
-      body: "Are you sure you want to update this details?",
+      body: "Are you sure you want to update these details?",
       actionButtons: [
-        {
-          label: "Cancel",
-          value: null,
-          variant: "outline",
-        },
+        { label: "Cancel", value: null, variant: "outline" },
         {
           label: "Update",
           value: "save",
           variant: "primary",
           action: async (close) => {
-            console.log("data :", data);
-            // TODO: call your delete API here
-            // await deleteJob(job.id);
+            console.log("Updated data:", data);
             toast.success("Engineer updated successfully!");
             navigate(absoluteUrls.admin.home.manage_engineer);
-            methods.reset();
+            reset();
             close(true);
           },
         },
@@ -116,14 +132,13 @@ export default function EditEngineer() {
     });
   };
 
-  // Handle form submission
+  // Save handler
   const handleSave = async () => {
     const isValid = await trigger();
     if (isValid) {
       setIsSubmitting(true);
       try {
-        const data = methods.getValues();
-        handleupdateConfirmation(data);
+        handleUpdateConfirmation(getValues());
       } finally {
         setIsSubmitting(false);
       }
@@ -131,37 +146,24 @@ export default function EditEngineer() {
   };
 
   const tabs = [
-    {
-      label: "Basic Information",
-      content: <BasicInformation />,
-      hide: false,
-    },
-    {
-      label: "Experience Details",
-      content: <ExperienceDetails />,
-      hide: false,
-    },
-    {
-      label: "Documents",
-      content: <Documents />,
-      hide: false,
-    },
+    { label: "Basic Information", content: <BasicInformation />, hide: false },
+    { label: "Experience Details", content: <ExperienceDetails />, hide: false },
+    { label: "Documents", content: <Documents />, hide: false },
   ];
 
   const isLastTab = activeTab === "Documents";
+
+  if (isLoading) return <LoaderComponent />;
 
   return (
     <div className="w-full px-4 h-full mt-6">
       <div className="flex py-3 justify-between gap-4">
         <h2 className="mt-2 mb-4 font-semibold">Edit Engineer</h2>
-        <Button variant="solid" onClick={() => navigate(-1)}>
-          Back
-        </Button>
+        <Button variant="solid" onClick={() => navigate(-1)}>Back</Button>
       </div>
 
       <FormContainer methods={methods}>
         <div className="bg-white dark:bg-gray-700 rounded-lg px-4 py-1 mx-auto">
-          {/* FIX: Use controlled props for tab switching */}
           <AdminTabComponent
             tabs={tabs}
             activeTab={activeTab}
@@ -170,11 +172,7 @@ export default function EditEngineer() {
 
           <div className="flex justify-end gap-x-3 mt-6 px-4 pb-4">
             {activeTab !== "Basic Information" && (
-              <Button
-                type="button"
-                onClick={handlePrevious}
-                className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90"
-              >
+              <Button type="button" onClick={handlePrevious} className="px-6 py-2 bg-gradient-to-r from-teal-700 to-teal-900 text-white rounded-lg hover:opacity-90">
                 Back
               </Button>
             )}

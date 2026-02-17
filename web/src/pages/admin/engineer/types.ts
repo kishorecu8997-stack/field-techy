@@ -63,7 +63,7 @@ export interface ManageEngineerProps {
   userId: number;
   engineerID: string;
   details: DetailsTypes;
-  documents: string;
+  documents?: string;
   status?: adminJobsStatus;
   location: string;
   registrationDate: string;
@@ -79,7 +79,7 @@ export interface ManageEngineerProps {
   suspendBy?: string;
   suspendOn?: string;
   currentStatus?: string;
-  submittedDocuments: string[];
+  submittedDocuments?: string[];
 }
 export interface SuspendEngineerFormData {
   suspendStartDate: Date | null;

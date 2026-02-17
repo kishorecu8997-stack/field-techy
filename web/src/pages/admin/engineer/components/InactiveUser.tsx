@@ -1,10 +1,9 @@
-import { manageEngineer } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
-import { useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import {
@@ -12,15 +11,16 @@ import {
   type BlockEngineerFormData,
   type ManageEngineerProps,
   type SuspendEngineerFormData,
+  type EngineerStatusType
 } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useClickOutside } from "@/shared/components/UseclickOutside";
 import { useForm } from "react-hook-form";
 import SuspendEngineer from "./SuspendEngineer";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import BlockEngineer from "./BlockEngineer";
 import ActionsMenu from "./ActionMenu";
+import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApiService";
 
 /**
  * InactiveUser Component
@@ -43,23 +43,47 @@ export default function InactiveUser() {
   const [showAction, setShowAction] = useState<number | null>(null);
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
-
-  const filteredData = manageEngineer
-    .filter((e) => e.employmentStatus === "Inactive")
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
-    });
-
-  useClickOutside(dropdownRef, triggerRef, () => setShowAction(null));
+      const {
+        data: engineersResponse,
+        isLoading,
+      } = useAdminManageEngineers({
+        page: 1,
+        limit: 50,
+        status: "inactive",
+      });
+      
+      // Map API response to table rows
+      const engineersData: ManageEngineerProps[] = (engineersResponse?.data ?? []).map((e) => ({
+        id: e.userId,
+        userId: e.userId,
+        engineerID: e.engineerCode,
+        details: {
+          name: e.name || "N/A",
+          email: e.email || "N/A",
+          phone: e.phoneNumber || "N/A",
+        },
+        submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
+        documents: "View",
+        location: e.location || "N/A",
+        registrationDate: new Date(e.registrationDate).toLocaleDateString(),
+        walletBalance: e.balance?.toString() ?? "0",
+        kycStatus: e.profileStatus as EngineerStatusType,
+        employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+        avgRating: e.averageRating,
+        approvalStatus: e.profileStatus as EngineerStatusType,
+      }));
+    
+      const filteredData = useMemo(() => {
+        const q = search.toLowerCase();
+        return engineersData.filter(
+          (e) =>
+            e.engineerID.toLowerCase().includes(q) ||
+            e.details.name.toLowerCase().includes(q) ||
+            e.details.email.toLowerCase().includes(q) ||
+            e.location.toLowerCase().includes(q)
+        );
+      }, [engineersData, search]);
 
   //Delete confirmation
   const handleDeleteEngineer = async (job: ManageEngineerProps) => {
@@ -87,7 +111,7 @@ export default function InactiveUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
     {
       key: "engineerID",
       label: "Engineer ID",
@@ -164,7 +188,6 @@ export default function InactiveUser() {
       label: "Avg Rating",
       dataCellAlign: "center",
     },
-    { key: "lastActiveOn", label: "Last Active On", dataCellAlign: "center" },
     {
       key: "action",
       label: "Actions",
@@ -248,6 +271,7 @@ export default function InactiveUser() {
             columns={columns}
             data={filteredData}
             initialPageSize={10}
+            loading={isLoading}
           />
         </div>
       </div>
