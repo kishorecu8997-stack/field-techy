@@ -32,7 +32,6 @@ async function sendToAllOpenTabs(message) {
     try {
         // Match all clients including those not controlled yet
         const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
-        console.log(`Found ${clients.length} open tabs, sending FCM_MESSAGE to all:`, message);
 
         clients.forEach(client => {
             client.postMessage({
