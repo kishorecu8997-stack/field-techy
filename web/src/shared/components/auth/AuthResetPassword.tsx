@@ -10,6 +10,20 @@ import { useToast } from "@/shared/components/commonUI/toastContext.tsx";
 import { type AppResetPasswordError } from "@/api";
 import AuthPasswordSection from "./AuthPasswordSection";
 
+/**
+ * AuthResetPassword component for resetting user passwords.
+ *
+ * This component provides a form for users (client or engineer) to reset their password
+ * using an OTP sent to their email. It handles form validation, submission, and displays
+ * success or error messages. On successful password reset, it redirects the user to the
+ * appropriate login page based on their role.
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {"client" | "engineer"} props.role - The user role for which the password is being reset
+ * @returns {JSX.Element} The rendered reset password form
+ */
+
 export type ResetPasswordFormData = {
   email: string;
   otp: string;

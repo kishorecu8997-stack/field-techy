@@ -52,6 +52,11 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   onClearFilters,
   showStatusSelect = false,
   currentStatus,
+  page = 1,
+  limit = 10,
+  total,
+  onPageChange,
+  onPageSizeChange,
 }) => {
   const { showPopup } = usePopupStore();
   const navigate = useNavigate();
@@ -83,6 +88,11 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           variant: status.toLowerCase() === "approve" ? "primary" : "danger",
           action: async (close: (v: boolean) => void) => {
             // TODO: call status update API
+            setRowStatuses((prev) => ({
+              ...prev,
+              [job.id]: status,
+            }));
+
             console.log("Updating status for job", job.id, "to", status);
             close(true);
           },
@@ -118,7 +128,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
   const columns: Column<JobItem>[] = [
     {
       label: "Sr.No.",
-      renderCell: (_row: JobItem, index: number) => index + 1,
+      renderCell: (_row: JobItem, index: number) =>
+        (page - 1) * limit + index + 1,
     },
     { key: "jobCode", label: "Job ID" },
     {
@@ -190,9 +201,8 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
           return (
             <SelectMenu
               placeholder="Select"
-              value={rowStatuses[row.id] || row.status || ""}
+              value={rowStatuses[row.id] ?? row.status ?? ""}
               onChange={(value) => {
-                setRowStatuses((prev) => ({ ...prev, [row.id]: value ?? "" }));
                 handleStatusChange(row, value);
               }}
               options={AllJobStatus}
@@ -300,9 +310,13 @@ const JobByCategory: React.FC<JobByCategoryProps> = ({
         <CustomTable<JobItem>
           columns={columns}
           data={data}
-          initialPageSize={10}
+          initialPageSize={limit}
           loading={isLoading}
           error={error ? "An error occurred while fetching jobs." : null}
+          totalCount={total}
+          currentPage={page}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
         />
       </div>
     </div>
