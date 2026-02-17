@@ -34,14 +34,16 @@ export default function PendingRequest() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const {
     data: engineersResponse,
     isLoading,
     refetch,
   } = useAdminManageEngineers({
-    page: 1,
-    limit: 50,
+    page: currentPage,
+    limit: pageSize,
     profileStatus: "pending",
   });
 
@@ -267,8 +269,12 @@ export default function PendingRequest() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            totalCount={engineersResponse?.total ?? 0}
             loading={isLoading}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         </div>
       </div>

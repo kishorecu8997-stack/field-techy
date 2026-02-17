@@ -49,7 +49,8 @@ export const useEngineerStatusChange = ({
               isSuccess = true;
               refetch();
               close(true);
-            } catch {
+            } catch (error) {
+              toast.error(`Failed to update engineer status: ${error}`);
               close(true);
             }
           },
@@ -60,7 +61,6 @@ export const useEngineerStatusChange = ({
     // rollback if failed
     if (result !== true || !isSuccess) {
       setRowStatuses((prev) => ({ ...prev, [row.id]: previousStatus }));
-      toast.error("Failed to update engineer status");
     }
   };
 
