@@ -65,11 +65,7 @@ export const useOperationsStore = create<OperationsState>((set) => ({
     }));
   },
 
-  updateStep: (
-    operationId: string,
-    stepId: string,
-    updates: Partial<Step>,
-  ) => {
+  updateStep: (operationId: string, stepId: string, updates: Partial<Step>) => {
     set((state) => ({
       operations: state.operations.map((op) =>
         op.id === operationId
@@ -102,11 +98,7 @@ export const operationsStore = {
     useOperationsStore.getState().updateOperation(id, updates),
   addStep: (operationId: string, step: Step) =>
     useOperationsStore.getState().addStep(operationId, step),
-  updateStep: (
-    operationId: string,
-    stepId: string,
-    updates: Partial<Step>,
-  ) =>
+  updateStep: (operationId: string, stepId: string, updates: Partial<Step>) =>
     useOperationsStore.getState().updateStep(operationId, stepId, updates),
   clearOperations: () => useOperationsStore.getState().clearOperations(),
 };

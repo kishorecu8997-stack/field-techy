@@ -147,12 +147,15 @@ class FCMService {
       });
 
       // Set up service worker message listener for FCM messages
-      navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
-        const { type, data } = event.data;
-        if (type === "FCM_MESSAGE") {
-          this.callbacks.onMessage?.(data as FCMMessage);
-        }
-      });
+      navigator.serviceWorker.addEventListener(
+        "message",
+        (event: MessageEvent) => {
+          const { type, data } = event.data;
+          if (type === "FCM_MESSAGE") {
+            this.callbacks.onMessage?.(data as FCMMessage);
+          }
+        },
+      );
 
       // Step 5: Wait for Service Worker ready
       const swReadyStep: Step = {

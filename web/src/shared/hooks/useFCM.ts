@@ -2,7 +2,10 @@ import { useState, useCallback, useEffect } from "react";
 import { fcmService } from "@/shared/config/firebaseConfig";
 import { useDeviceStore } from "@/shared/store/useDeviceStore";
 import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
-import { registerDeviceToken, deregisterDeviceToken } from "@/shared/apiServices/notifications/notificationOpenApiService";
+import {
+  registerDeviceToken,
+  deregisterDeviceToken,
+} from "@/shared/apiServices/notifications/notificationOpenApiService";
 
 /**
  * Custom hook to manage Firebase Cloud Messaging (FCM) permissions, token retrieval,
@@ -20,7 +23,9 @@ export const useFCM = () => {
   const [error, setError] = useState<string | null>(null);
 
   const setFcmToken = useDeviceStore((state) => state.setFcmToken);
-  const setNotificationPermission = useDeviceStore((state) => state.setNotificationPermission);
+  const setNotificationPermission = useDeviceStore(
+    (state) => state.setNotificationPermission,
+  );
   const session = useUserSessionStore((state) => state.session);
 
   /**
@@ -58,7 +63,9 @@ export const useFCM = () => {
               setFcmToken(token);
               await registerTokenWithBackend(token);
             } else {
-              console.log("FCM token matches stored token, skipping registration.");
+              console.log(
+                "FCM token matches stored token, skipping registration.",
+              );
             }
           }
         }
@@ -72,52 +79,55 @@ export const useFCM = () => {
    * Requests notification permission from the user.
    * If granted, retrieves the FCM token, updates store, and registers with backend.
    */
-  const requestNotificationPermission = useCallback(async (): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
+  const requestNotificationPermission =
+    useCallback(async (): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      if (!("Notification" in window)) {
-        throw new Error("This browser does not support notifications");
-      }
-
-      const permission = await Notification.requestPermission();
-      setNotificationPermission(permission);
-
-      if (permission === "granted") {
-        // Ensure service is initialized
-        if (!fcmService.isInitialized()) {
-          // If not initialized, we might need to initialize it.
-          // But initialization requires callbacks (onMessage etc provided by FCMHandler).
-          // Ideally FCMHandler is present. If not, this might fail unless we provide dummy callbacks
-          // or move initialization logic here. 
-          // For now, assuming FCMHandler is present.
-          console.warn("FCMService not initialized yet. Make sure FCMHandler is mounted.");
+      try {
+        if (!("Notification" in window)) {
+          throw new Error("This browser does not support notifications");
         }
 
-        const token = await fcmService.getToken();
+        const permission = await Notification.requestPermission();
+        setNotificationPermission(permission);
 
-        if (token) {
-          setFcmToken(token);
-          await registerTokenWithBackend(token);
-          setLoading(false);
-          return true;
+        if (permission === "granted") {
+          // Ensure service is initialized
+          if (!fcmService.isInitialized()) {
+            // If not initialized, we might need to initialize it.
+            // But initialization requires callbacks (onMessage etc provided by FCMHandler).
+            // Ideally FCMHandler is present. If not, this might fail unless we provide dummy callbacks
+            // or move initialization logic here.
+            // For now, assuming FCMHandler is present.
+            console.warn(
+              "FCMService not initialized yet. Make sure FCMHandler is mounted.",
+            );
+          }
+
+          const token = await fcmService.getToken();
+
+          if (token) {
+            setFcmToken(token);
+            await registerTokenWithBackend(token);
+            setLoading(false);
+            return true;
+          } else {
+            setError("No registration token available.");
+            setLoading(false);
+            return false;
+          }
         } else {
-          setError("No registration token available.");
+          setError("Notification permission denied");
           setLoading(false);
           return false;
         }
-      } else {
-        setError("Notification permission denied");
+      } catch (err: any) {
+        setError(err.message || "An error occurred while retrieving token");
         setLoading(false);
         return false;
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred while retrieving token");
-      setLoading(false);
-      return false;
-    }
-  }, [setFcmToken, setNotificationPermission, registerTokenWithBackend]);
+    }, [setFcmToken, setNotificationPermission, registerTokenWithBackend]);
 
   /**
    * Re-check permission and register token when user session changes (e.g. login)

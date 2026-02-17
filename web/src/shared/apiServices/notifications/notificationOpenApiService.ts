@@ -25,7 +25,9 @@ export function useAppNotifications() {
   const mappedData = result.data?.data?.map(mapApiNotification) ?? [];
 
   // Sort by createdAt descending (newest first)
-  mappedData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  mappedData.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
 
   return {
     ...result,
@@ -38,8 +40,10 @@ const invalidateNotifications = (queryClient: any) => {
   queryClient.invalidateQueries({
     predicate: (query: any) => {
       const key = query.queryKey[0];
-      return key && typeof key === 'object' && key._id === 'appGetNotifications';
-    }
+      return (
+        key && typeof key === "object" && key._id === "appGetNotifications"
+      );
+    },
   });
 };
 

@@ -1,6 +1,9 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { NotificationProps, GroupedNotifications } from "@/shared/types/notification";
+import type {
+  NotificationProps,
+  GroupedNotifications,
+} from "@/shared/types/notification";
 
 dayjs.extend(relativeTime);
 

@@ -1,4 +1,3 @@
-
 import CommonNotificationPage from "@/shared/components/notifications/CommonNotificationPage";
 import { absoluteUrls } from "@/config/urls";
 

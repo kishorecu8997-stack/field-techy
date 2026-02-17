@@ -209,10 +209,11 @@ const NotificationListPage = () => {
                   setTab(title.type);
                   setSearch("");
                 }}
-                className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${title.type === tab
-                  ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
-                  }`}
+                className={`px-5 py-2 text-sm font-semibold cursor-pointer rounded-md ${
+                  title.type === tab
+                    ? "bg-teal-800 text-white dark:bg-teal-800 dark:text-white"
+                    : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                }`}
               >
                 {title.label}
               </div>
@@ -235,8 +236,14 @@ const NotificationListPage = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
-          {isLoading && <div className="text-center p-4">Loading notifications...</div>}
-          {!isLoading && notification.length === 0 && <div className="text-center p-4 text-gray-500">No notifications found.</div>}
+          {isLoading && (
+            <div className="text-center p-4">Loading notifications...</div>
+          )}
+          {!isLoading && notification.length === 0 && (
+            <div className="text-center p-4 text-gray-500">
+              No notifications found.
+            </div>
+          )}
           {notification
             .slice(0, filter)
             .map((notifications: NotificationProps) => (

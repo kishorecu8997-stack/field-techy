@@ -97,20 +97,22 @@ const NavbarClient: React.FC<NavbarClientProps> = ({
         <NavLink
           onClick={scrollToTop}
           to={absoluteUrls.client.home.my_projects}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_projects)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_projects)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Projects
         </NavLink>
         <NavLink
           onClick={scrollToTop}
           to={absoluteUrls.client.home.my_jobs}
-          className={`${location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
-            ? "text-teal-800 font-semibold"
-            : ""
-            } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
+          className={`${
+            location.pathname.startsWith(absoluteUrls.client.home.my_jobs)
+              ? "text-teal-800 font-semibold"
+              : ""
+          } hover:text-teal-800 text-[1rem] whitespace-nowrap`}
         >
           My Jobs
         </NavLink>
