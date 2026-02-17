@@ -4,7 +4,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 // Utility to hash a string using SHA-256 and return hex
-async function hashOTP(otp) {
+async function hashOTP(otp: string) {
   const encoder = new TextEncoder();
   const data = encoder.encode(otp);
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
