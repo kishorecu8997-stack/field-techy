@@ -18,7 +18,7 @@ import { registerDeviceToken, deregisterDeviceToken } from "@/shared/apiServices
 export const useFCM = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const setFcmToken = useDeviceStore((state) => state.setFcmToken);
   const setNotificationPermission = useDeviceStore((state) => state.setNotificationPermission);
   const session = useUserSessionStore((state) => state.session);
@@ -44,17 +44,23 @@ export const useFCM = () => {
     if (!("Notification" in window)) return;
     const permission = Notification.permission;
     setNotificationPermission(permission);
-    
+
     if (permission === "granted") {
       try {
         // Ensure service is initialized (via FCMHandler) before getting token
-        // Use a small delay or retry if needed, but usually FCMHandler runs on mount
         if (fcmService.isInitialized()) {
-             const token = await fcmService.getToken();
-             if (token) {
-                setFcmToken(token);
-                await registerTokenWithBackend(token);
-             }
+          const token = await fcmService.getToken();
+          if (token) {
+            // Check if token is different from stored token to avoid unnecessary API calls
+            const storedToken = useDeviceStore.getState().fcmToken;
+
+            if (token !== storedToken) {
+              setFcmToken(token);
+              await registerTokenWithBackend(token);
+            } else {
+              console.log("FCM token matches stored token, skipping registration.");
+            }
+          }
         }
       } catch (err) {
         console.error("Error retrieving token in checkPermission:", err);
@@ -81,16 +87,16 @@ export const useFCM = () => {
       if (permission === "granted") {
         // Ensure service is initialized
         if (!fcmService.isInitialized()) {
-             // If not initialized, we might need to initialize it.
-             // But initialization requires callbacks (onMessage etc provided by FCMHandler).
-             // Ideally FCMHandler is present. If not, this might fail unless we provide dummy callbacks
-             // or move initialization logic here. 
-             // For now, assuming FCMHandler is present.
-             console.warn("FCMService not initialized yet. Make sure FCMHandler is mounted.");
+          // If not initialized, we might need to initialize it.
+          // But initialization requires callbacks (onMessage etc provided by FCMHandler).
+          // Ideally FCMHandler is present. If not, this might fail unless we provide dummy callbacks
+          // or move initialization logic here. 
+          // For now, assuming FCMHandler is present.
+          console.warn("FCMService not initialized yet. Make sure FCMHandler is mounted.");
         }
 
         const token = await fcmService.getToken();
-        
+
         if (token) {
           setFcmToken(token);
           await registerTokenWithBackend(token);

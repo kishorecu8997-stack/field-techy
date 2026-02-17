@@ -18,7 +18,6 @@ interface EnvConfig {
 /**
  * Get environment variables with validation
  */
-// ... (previous content)
 export function getEnvConfig(): EnvConfig {
   const fcmApiKey = (import.meta.env as Record<string, string>)
     .VITE_FCM_API_KEY;

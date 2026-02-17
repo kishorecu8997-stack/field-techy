@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { fcmService } from "@/shared/config/firebaseConfig";
 import { useTokenStore } from "@/shared/store";
+import { useDeviceStore } from "@/shared/store/useDeviceStore";
 import { registerDeviceToken } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ export const FCMHandler = () => {
         setIsLoading,
         setErrorMessage,
     } = useTokenStore();
+    const { setFcmToken } = useDeviceStore();
     const queryClient = useQueryClient();
 
     useEffect(() => {
@@ -58,16 +60,27 @@ export const FCMHandler = () => {
                         });
                     },
                     onTokenRefresh: async (newToken: string) => {
+                        // Check if token is actually new
+                        const currentToken = useDeviceStore.getState().fcmToken;
+
+                        // Always update local store
                         updateToken(newToken);
-                        setIsLoading(true);
-                        try {
-                            await registerDeviceToken(newToken);
-                            setRegistrationStatus(true);
-                        } catch (error) {
-                            setErrorMessage("Failed to sync notification token");
-                            setRegistrationStatus(false);
-                        } finally {
-                            setIsLoading(false);
+
+                        if (newToken !== currentToken) {
+                            setFcmToken(newToken); // Update persisted device store
+
+                            setIsLoading(true);
+                            try {
+                                await registerDeviceToken(newToken);
+                                setRegistrationStatus(true);
+                            } catch (error) {
+                                setErrorMessage("Failed to sync notification token");
+                                setRegistrationStatus(false);
+                            } finally {
+                                setIsLoading(false);
+                            }
+                        } else {
+                            console.log("FCMHandler: Token matches stored token, skipping registration.");
                         }
                     },
                     onTokenLoading: (loading: boolean) => {
@@ -89,6 +102,7 @@ export const FCMHandler = () => {
         setIsLoading,
         setErrorMessage,
         queryClient,
+        setFcmToken
     ]);
 
     return null;
