@@ -16,12 +16,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
-import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
-import { FaBell } from "react-icons/fa";
-import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
-import { usePopupStore } from "@/shared/store/popupStore";
 import { IoChatbubble } from "react-icons/io5";
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
