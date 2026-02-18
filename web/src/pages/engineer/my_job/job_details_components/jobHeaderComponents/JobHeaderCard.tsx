@@ -13,6 +13,8 @@ import ConfirmationModal from "@/pages/client/my_job_client/components/Confirmat
 import { FaBell } from "react-icons/fa";
 import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { IoChatbubble } from "react-icons/io5";
+
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -52,7 +54,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   const navigate = useNavigate();
   const { closePopup, showPopup } = usePopupStore();
   const [actionType, setActionType] = useState<"hold" | "clone" | "cancel">(
-    "hold"
+    "hold",
   );
 
   const handleMenuAction = (action: string) => {
@@ -134,13 +136,14 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <div className="flex gap-2 items-center">
             {onToggleChat && (
               <button
-                className="bg-gray-300 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium justify-items-center h-fit justify-center items-center text-gray-900 whitespace-nowrap"
+                className="bg-teal-700 backdrop-blur-sm px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 text-white cursor-pointer hover:bg-teal-600 transition-colors"
                 onClick={() => {
                   if (!params.jobId) return;
                   onToggleChat(params.jobId);
                 }}
               >
-                Chats
+                <IoChatbubble size={16} />
+                <span>Chats</span>
               </button>
             )}
 
@@ -178,7 +181,7 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
                               {item}
                             </div>
                           </li>
-                        )
+                        ),
                       )}
                     </ul>
                   </div>
