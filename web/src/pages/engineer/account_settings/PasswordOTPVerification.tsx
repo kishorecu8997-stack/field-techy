@@ -1,4 +1,4 @@
-import { useSendEmailOTP } from "@/shared/apiServices/engineer/engineerService";
+import { useSendOtp } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { GlobalApiErrorHandler } from "@/shared/apiServices/utils/GlobalApiErrorHandler";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { validateEmail } from "@/shared/components/commonUI/emailValidation";
@@ -7,6 +7,7 @@ import { useMemo, useState, useRef, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { MdCheckCircle, MdOutlineMailOutline } from "react-icons/md";
 import { toast } from "react-toastify";
+import type { AppSendOtpData } from "@/api";
 
 /**
  * Password OTP Verification component
@@ -36,8 +37,7 @@ export const PasswordOTPVerification = ({
     verifiedRef.current = verified;
   }, [verified]);
 
-  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } =
-    useSendEmailOTP();
+  const { mutateAsync: sendEmailOTP, isPending: isSendingOtp } = useSendOtp();
 
   const isInputDisabled = verified || externalDisabled;
   const emailValue = watch(name);
@@ -59,7 +59,12 @@ export const PasswordOTPVerification = ({
   const handleRequestOTP = async () => {
     if (!isValidEmail) return;
     try {
-      await sendEmailOTP(emailValue);
+      await sendEmailOTP({
+        body: { type: "email", email: emailValue } as AppSendOtpData["body"] & {
+          email: string;
+        },
+        headers: { authorization: "" },
+      });
       toast.success("OTP sent successfully to your email.");
       clearErrors(name); // Clear any previous errors
       setVerified(true);

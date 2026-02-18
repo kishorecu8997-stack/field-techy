@@ -1,22 +1,22 @@
-import {
-  useClientGetById,
-  useClientGetJobsById,
-} from "@/shared/apiServices/client/clientService";
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
+import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { SORT_OPTIONS, type JobStatus } from "../search_result/types";
-import type { ProgressUpdate } from "./types.d";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
+import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
-import JobTabSection from "./job_details_components/JobTabSection";
-import { getDurationString } from "@/utils";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
 import { toast } from "react-toastify";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import ChatForJobs from "@/shared/components/ChatForJobs";
+import JobTabSection from "./job_details_components/JobTabSection";
+import type { ProgressUpdate } from "./types.d";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -42,16 +42,24 @@ const JobDetailsPage = () => {
   const [isChatVisible, setIsChatVisible] = useState(false);
 
   // Always call hooks - pass empty string if jobId is missing or dummy
-  const { data: jobs, isLoading } = useClientGetJobsById(
-    isDummyJob ? "" : (params.jobId ?? ""),
-  );
-  const { data: client } = useClientGetById(jobs?.clientId ?? "", {
-    enabled: !!jobs?.clientId && !isDummyJob,
+  // const { data: jobs, isLoading } = useClientGetJobsById(
+  //   isDummyJob ? "" : (params.jobId ?? ""),
+  // );
+  // const { data: client } = useClientGetById(jobs?.clientId ?? "", {
+  //   enabled: !!jobs?.clientId && !isDummyJob,
+  // });
+
+  const { data: jobList, isLoading } = useEngineerSearchJobs({
+    jobId: Number(params.jobId),
   });
   const location = isDummyJob
     ? "Chennai, Tamil Nadu, India"
     : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
 
+
+  const job = jobList?.[0];
+
+  const location = job?.clientDetails?.address;
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
     setIsReviewOpen(false);
@@ -109,7 +117,7 @@ const JobDetailsPage = () => {
   }
 
   // Handle case where job data is not found
-  if (!jobs && !isDummyJob) {
+  if (!job && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -133,18 +141,18 @@ const JobDetailsPage = () => {
   }
 
   // Prepare dummy job data
-  const jobTitle = isDummyJob ? "Network Engineer" : (jobs?.jobTitle as string);
-  const clientName = isDummyJob ? "-" : (client?.companyName as string);
+  const jobTitle = isDummyJob ? "Network Engineer" : (job?.jobTitle as string);
+  const clientName = isDummyJob
+    ? "-"
+    : (job?.clientDetails?.companyName as string);
   const duration = isDummyJob
     ? "5 weeks"
     : getDurationString({
-        startDateStr: jobs?.startDate as string,
-        endDateStr: jobs?.projectDeadline as string,
+        startDateStr: job?.startDate as string,
+        endDateStr: job?.endDate as string,
       });
-  const engagementType = isDummyJob
-    ? "ON_SITE"
-    : (jobs?.engagementModel as string);
-  const jobStatus = isDummyJob ? "NEW" : (jobs?.status as JobStatus);
+  const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
+  const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -158,78 +166,73 @@ const JobDetailsPage = () => {
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
           }
         />
-
-        {/* Show Chat if toggled */}
+{/* Show Chat if toggled */}
         {isChatVisible && params.jobId ? (
           <div className="mt-4 h-[calc(100vh-6rem)]">
             <ChatForJobs jobId={params.jobId} />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-            <div className="lg:col-span-2 space-y-6">
-              <JobHeaderCard
-                title={jobTitle}
-                client={clientName}
-                duration={duration as string}
-                type={engagementType}
-                status={jobStatus}
-                setIsWorkSubmitted={setIsWorkSubmitted}
-                setSendProposal={setIsSendProposal}
-                isSendProposal={isSendProposal}
-                setActiveTab={setActiveTab}
-                setOfferJobStatus={setOfferJobStatus}
-                OfferJobStatus={OfferJobStatus}
-                hideBreakDetails={isDummyJob}
-                jobLocation={
-                  isDummyJob ? "Chennai, Tamil Nadu, India" : location
-                }
-                numberOfVacancy={isDummyJob ? 4 : jobs?.numberOfVacancy}
-                numberOfApplicants={isDummyJob ? 20 : undefined}
-                hideDurationAndClient={isDummyJob}
-                activeTab={activeTab}
-                onAddProgressUpdate={handleAddProgressUpdate}
-                onOpenFinalStatement={handleOpenFinalStatement}
-                onToggleChat={() => setIsChatVisible(true)}
-              />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          <div className="lg:col-span-2 space-y-6">
+            <JobHeaderCard
+              title={jobTitle}
+              client={clientName}
+              duration={duration as string}
+              type={engagementType}
+              status={jobStatus}
+              setIsWorkSubmitted={setIsWorkSubmitted}
+              setSendProposal={setIsSendProposal}
+              isSendProposal={isSendProposal}
+              setActiveTab={setActiveTab}
+              setOfferJobStatus={setOfferJobStatus}
+              OfferJobStatus={OfferJobStatus}
+              hideBreakDetails={isDummyJob}
+              jobLocation={location ?? ""}
+              numberOfVacancy={job?.vacancies ?? 0}
+              numberOfApplicants={isDummyJob ? 20 : undefined}
+              hideDurationAndClient={isDummyJob}
+              activeTab={activeTab}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              onOpenFinalStatement={handleOpenFinalStatement}
+              onToggleChat={() => setIsChatVisible(true)}
+            />
 
-              <JobTabSection
-                status={jobStatus}
-                isWorkSubmitted={isWorkSubmitted}
-                isSendProposal={isSendProposal}
-                setSendProposal={setIsSendProposal}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                OfferJobStatus={OfferJobStatus}
-                isDummyJob={isDummyJob}
-                workLocation={location as string}
-                isDummyNetworkEngineer={isDummyJob}
-                showManageProposals={false}
-                progressUpdates={progressUpdates}
-                onAddProgressUpdate={handleAddProgressUpdate}
-                hideTimelineContent={showFinalStatement}
-              />
+            <JobTabSection
+              status={jobStatus}
+              isWorkSubmitted={isWorkSubmitted}
+              isSendProposal={isSendProposal}
+              setSendProposal={setIsSendProposal}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              OfferJobStatus={OfferJobStatus}
+              isDummyJob={isDummyJob}
+              workLocation={location as string}
+              isDummyNetworkEngineer={isDummyJob}
+              showManageProposals={false}
+              progressUpdates={progressUpdates}
+              onAddProgressUpdate={handleAddProgressUpdate}
+              hideTimelineContent={showFinalStatement}
+            />
 
-              {showFinalStatement && (
-                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                  <FinalStatementForm
-                    onClose={handleCloseFinalStatement}
-                    onAddProgressUpdate={handleAddProgressUpdate}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="lg:col-span-1">
-              <ClientInfoCard
-                name={clientName}
-                memberSince={client?.memberSince as string}
-                location={location as string}
-                rating={client?.rating || 0}
-                reviews={client?.reviewCount ?? 0}
-                verifications={client?.verifications ?? []}
-                onOpenReview={() => setIsReviewOpen(true)}
-              />
-            </div>
+            {showFinalStatement && (
+              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                <FinalStatementForm
+                  onClose={handleCloseFinalStatement}
+                  onAddProgressUpdate={handleAddProgressUpdate}
+                />
+              </div>
+            )}
+          </div>
+          <div className="lg:col-span-1">
+            <ClientInfoCard
+              name={clientName}
+              memberSince={job?.clientDetails?.companyName as string} // TODO: memberSince not in clientDetails, using companyName as placeholder or fix if available
+              location={location as string}
+              rating={0} // client details don't have rating
+              reviews={0} // client details don't have review count
+              verifications={[]} // client details don't have verifications
+              onOpenReview={() => setIsReviewOpen(true)}
+            />
           </div>
         )}
       </div>
@@ -237,7 +240,7 @@ const JobDetailsPage = () => {
       <ReviewClientModal
         isOpen={isReviewOpen}
         onClose={() => setIsReviewOpen(false)}
-        clientName={(client?.companyName as string) ?? "Client"}
+        clientName={clientName ?? "Client"}
         onSubmit={handleSubmitReview}
       />
     </div>

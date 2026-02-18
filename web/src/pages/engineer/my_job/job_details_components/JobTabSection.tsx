@@ -13,6 +13,7 @@ import { IoAttach } from "react-icons/io5";
 import {
   JOB_STATUSES,
   type JobStatus,
+  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import type { OfferedJobStatusType } from "@/pages/engineer/my_job/types.d";
 import Proposal from "@/shared/components/Proposal";
@@ -70,7 +71,7 @@ const JobTabSection = ({
   setSendProposal?: React.Dispatch<React.SetStateAction<boolean>>;
   activeTab?: string;
   setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
-  OfferJobStatus?: OfferedJobStatusType;
+  OfferJobStatus?: OfferedJobStatusType | AssignmentStatus;
   isDummyJob?: boolean;
   workLocation?: string;
   isDummyNetworkEngineer?: boolean;
@@ -135,9 +136,9 @@ const JobTabSection = ({
     "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700";
 
   const shouldHideLogs = !(
-    status === JOB_STATUSES.inprogress ||
-    status === JOB_STATUSES.completed ||
-    OfferJobStatus === "checked-in"
+    status === JOB_STATUSES.inProgress ||
+    status === JOB_STATUSES.closed ||
+    OfferJobStatus === "started"
   );
 
   const activeTabClassName = hideTimelineContent

@@ -6,7 +6,7 @@ import {
   validateZipcode,
 } from "@/pages/client/my_account/Validate";
 import { validateCompany } from "@/pages/engineer/auth/components/profile_setup/profileValidators";
-import { useVatOptions } from "@/shared/apiServices/client/clientService";
+import { useVatOptions } from "@/shared/apiServices/client/clientOpenApiService";
 import { InputField } from "@/shared/components/commonUI/inputs";
 import EmailFieldWithValidation from "@/shared/components/commonUI/inputs/EmailFieldWithValidation";
 import { PhoneInputWithValidation } from "@/shared/components/commonUI/inputs/PhoneInputWithValidation";

@@ -116,7 +116,7 @@ const PostAJobFields = ({
 
   return (
     <div className="flex gap-4 flex-row p-2">
-      <div className="w-2/3 space-y-8 bg-white dark:bg-gray-900 rounded-lg p-4">
+      <div className="w-full md:w-2/3 space-y-8 bg-white dark:bg-gray-900 rounded-lg p-4">
         <JobDetailsSection isDisable={isDisable} />
         <LocationSection
           isDisable={isDisable}
