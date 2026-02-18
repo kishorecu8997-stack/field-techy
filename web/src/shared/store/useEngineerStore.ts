@@ -8,7 +8,7 @@ import {
   getPersonalInfo,
   getSkillsAndTools,
   getWorkPreference,
-} from "../apiServices/engineer/engineerOpenApiService";
+} from "../apiServices/engineer/engineerRawApi";
 import { getDownloadUrl } from "../apiServices/commonOpenApiService";
 
 interface EngineerStore {

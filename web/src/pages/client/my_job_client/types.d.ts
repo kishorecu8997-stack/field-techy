@@ -142,6 +142,7 @@ export type JobTabSectionProps = {
   isDummyNetworkEngineer?: boolean;
   showManageProposals?: boolean;
   isJobAccepted?: boolean;
+  jobID?: string;
 };
 
 export const TIMELINE_CARD_TYPE: {

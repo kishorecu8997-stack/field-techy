@@ -103,3 +103,17 @@ const jobFilterObj = jobFilters.reduce<Record<number, string>>(
 
 export const JOB_FILTERS = jobFilterObj;
 export default jobFilters;
+
+export const ASSIGNMENT_STATUSES = {
+  assigned: "assigned",
+  accepted: "accepted",
+  rejected: "rejected",
+  applied: "applied",
+  started: "started",
+  startPendingApproval: "start_pending_approval",
+  submitted: "submitted",
+  submitPendingApproval: "submit_pending_approval",
+} as const;
+
+export type AssignmentStatus =
+  (typeof ASSIGNMENT_STATUSES)[keyof typeof ASSIGNMENT_STATUSES];

@@ -32,16 +32,10 @@ export type ProfileFileType = AppDownloadProfileFileData["query"]["fileType"];
  * Note: Empty authorization header is required by type definition,
  * but gets overridden by apiClient interceptor with actual JWT token.
  */
-export async function getDownloadUrl(
-  fileType: ProfileFileType,
-  userId?: number | null,
-) {
+export async function getDownloadUrl(fileType: ProfileFileType) {
   const { data } = await appDownloadProfileFileSdk({
     client: apiClient,
-    query: {
-      fileType,
-      userId: userId ?? undefined,
-    } as unknown as AppDownloadProfileFileData["query"],
+    query: { fileType },
     headers: { authorization: "" },
   });
   return data;
@@ -79,15 +73,37 @@ export function useVerifyOtp(options?: {
   });
 }
 
+/**
+ * React Query hook to initiate a profile file upload.
+ * Extended to support WORK_SCREEN_SHOT by wrapping the generated mutation.
+ */
 export function useAppUploadProfileFile(options?: {
   onSuccess?: (data: AppUploadProfileFileResponse) => void;
   onError?: (error: unknown) => void;
 }) {
-  return useMutation({
+  const mutation = useMutation({
     ...appUploadProfileFileMutation({ client: apiClient }),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });
+
+  // Override mutateAsync to accept our extended ProfileFileType
+  const mutateAsync = async (params: {
+    body: {
+      fileType: ProfileFileType;
+      filename: string;
+      size: number;
+      mimeType: string;
+    };
+    headers: { authorization: string };
+  }) => {
+    return mutation.mutateAsync(params as any);
+  };
+
+  return {
+    ...mutation,
+    mutateAsync,
+  };
 }
 
 /**
@@ -97,7 +113,6 @@ export function useAppUploadProfileFile(options?: {
  */
 export function useAppDownloadProfileFile(
   fileType: ProfileFileType | null | undefined,
-  userId?: number | null,
   enabled: boolean = true,
 ) {
   return useQuery({
@@ -107,8 +122,7 @@ export function useAppDownloadProfileFile(
       // to satisfy the type system without using 'any'
       query: {
         fileType: (fileType || "profilePicture") as ProfileFileType,
-        userId: userId ?? undefined,
-      } as unknown as AppDownloadProfileFileData["query"],
+      },
       headers: { authorization: "" },
     }),
     enabled: enabled && !!fileType,
@@ -119,12 +133,15 @@ export function useAppDownloadProfileFile(
 export function useLookupData(
   table: AppGetLookupDataData["query"]["table"],
   parentId?: string,
+  enabled: boolean = true,
 ) {
   return useQuery({
     ...appGetLookupDataOptions({
       client: apiClient,
       query: { table, parentId },
     }),
+    enabled:
+      enabled && ((table !== "states" && table !== "cities") || !!parentId),
     staleTime: 1000 * 60 * 60,
   });
 }

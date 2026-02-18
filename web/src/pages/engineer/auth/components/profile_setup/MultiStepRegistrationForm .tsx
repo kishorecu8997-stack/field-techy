@@ -1,7 +1,7 @@
 import { assetsConfig } from "@/assets";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
-import { useEngineerSignup } from "@/shared/apiServices/engineer/engineerService";
+import { useRegisterEngineer } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +28,7 @@ const MultiStepRegistrationForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { isPending: isSubmitting } = useEngineerSignup({
+  const { isPending: isSubmitting } = useRegisterEngineer({
     onSuccess: () => {
       toast.success("Completed registration successfully");
       navigate("/engineer/auth");

@@ -8,7 +8,7 @@ import Proposal from "@/shared/components/Proposal";
 const JobInfoSection: React.FC<{
   jobInfo: JobInfoSectionProps;
 }> = ({ jobInfo }) => {
-  const { jobTitle, terms, files } = jobInfo;
+  const { jobTitle, terms, files = [] } = jobInfo;
 
   return (
     <div className="">

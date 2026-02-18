@@ -16,7 +16,7 @@ import {
 import { IoDocumentText } from "react-icons/io5";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { useClientFiles } from "@/shared/apiServices/client/clientService";
+import { useClientFiles } from "@/shared/apiServices/client/clientOpenApiService";
 import { ClientFilesProvider } from "./context/ClientFilesProvider";
 import {
   useClientStore,

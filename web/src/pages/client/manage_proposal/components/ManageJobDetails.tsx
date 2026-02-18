@@ -6,6 +6,7 @@ import JobTabSection from "@/pages/engineer/my_job/job_details_components/JobTab
 import {
   SORT_OPTIONS,
   type JobStatus,
+  type AssignmentStatus,
 } from "@/pages/engineer/search_result/types";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useState } from "react";
@@ -22,8 +23,8 @@ const ManageJobDetails = () => {
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
   const [OfferJobStatus, setOfferJobStatus] = useState<
-    "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
-  >("initial");
+    AssignmentStatus | undefined
+  >(undefined);
 
   const filter = () => {
     return sampleJobs.find((job) => {
