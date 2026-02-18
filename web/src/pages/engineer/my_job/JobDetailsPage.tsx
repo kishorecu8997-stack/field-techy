@@ -11,9 +11,9 @@ import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
 import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import { toast } from "react-toastify";
-import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
-import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
+// import { toast } from "react-toastify";
+// import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+// import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
 import ChatForJobs from "@/shared/components/ChatForJobs";
 import JobTabSection from "./job_details_components/JobTabSection";
 import type { ProgressUpdate } from "./types.d";
@@ -52,13 +52,11 @@ const JobDetailsPage = () => {
   const { data: jobList, isLoading } = useEngineerSearchJobs({
     jobId: Number(params.jobId),
   });
-  const location = isDummyJob
-    ? "Chennai, Tamil Nadu, India"
-    : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
-
+  // const location = isDummyJob
+  //   ? "Chennai, Tamil Nadu, India"
+  //   : [client?.city, client?.country].filter(Boolean).join(", ") || "-";
 
   const job = jobList?.[0];
-
   const location = job?.clientDetails?.address;
   const handleSubmitReview = () => {
     toast.success("Review submitted successfully");
@@ -166,83 +164,86 @@ const JobDetailsPage = () => {
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
           }
         />
-{/* Show Chat if toggled */}
+
+        {/* Show Chat if toggled */}
         {isChatVisible && params.jobId ? (
           <div className="mt-4 h-[calc(100vh-6rem)]">
             <ChatForJobs jobId={params.jobId} />
           </div>
         ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={jobTitle}
-              client={clientName}
-              duration={duration as string}
-              type={engagementType}
-              status={jobStatus}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
-              OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyJob}
-              jobLocation={location ?? ""}
-              numberOfVacancy={job?.vacancies ?? 0}
-              numberOfApplicants={isDummyJob ? 20 : undefined}
-              hideDurationAndClient={isDummyJob}
-              activeTab={activeTab}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              onOpenFinalStatement={handleOpenFinalStatement}
-              onToggleChat={() => setIsChatVisible(true)}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={jobTitle}
+                client={clientName}
+                duration={duration as string}
+                type={engagementType}
+                status={jobStatus}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                setOfferJobStatus={setOfferJobStatus}
+                OfferJobStatus={OfferJobStatus}
+                hideBreakDetails={isDummyJob}
+                jobLocation={location ?? ""}
+                numberOfVacancy={job?.vacancies ?? 0}
+                numberOfApplicants={isDummyJob ? 20 : undefined}
+                hideDurationAndClient={isDummyJob}
+                activeTab={activeTab}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                onOpenFinalStatement={handleOpenFinalStatement}
+                onToggleChat={() => setIsChatVisible(true)}
+              />
 
-            <JobTabSection
-              status={jobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              setSendProposal={setIsSendProposal}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              OfferJobStatus={OfferJobStatus}
-              isDummyJob={isDummyJob}
-              workLocation={location as string}
-              isDummyNetworkEngineer={isDummyJob}
-              showManageProposals={false}
-              progressUpdates={progressUpdates}
-              onAddProgressUpdate={handleAddProgressUpdate}
-              hideTimelineContent={showFinalStatement}
-            />
+              <JobTabSection
+                status={jobStatus}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                setSendProposal={setIsSendProposal}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                OfferJobStatus={OfferJobStatus}
+                isDummyJob={isDummyJob}
+                workLocation={location as string}
+                isDummyNetworkEngineer={isDummyJob}
+                showManageProposals={false}
+                progressUpdates={progressUpdates}
+                onAddProgressUpdate={handleAddProgressUpdate}
+                hideTimelineContent={showFinalStatement}
+              />
 
-            {showFinalStatement && (
-              <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
-                <FinalStatementForm
-                  onClose={handleCloseFinalStatement}
-                  onAddProgressUpdate={handleAddProgressUpdate}
-                />
-              </div>
-            )}
-          </div>
-          <div className="lg:col-span-1">
-            <ClientInfoCard
-              name={clientName}
-              memberSince={job?.clientDetails?.companyName as string} // TODO: memberSince not in clientDetails, using companyName as placeholder or fix if available
-              location={location as string}
-              rating={0} // client details don't have rating
-              reviews={0} // client details don't have review count
-              verifications={[]} // client details don't have verifications
-              onOpenReview={() => setIsReviewOpen(true)}
-            />
+              {showFinalStatement && (
+                <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mt-6">
+                  <FinalStatementForm
+                    onClose={handleCloseFinalStatement}
+                    onAddProgressUpdate={handleAddProgressUpdate}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-1">
+              <ClientInfoCard
+                name={clientName}
+                memberSince={job?.clientDetails?.companyName as string} // TODO: memberSince not in clientDetails, using companyName as placeholder or fix if available
+                location={location as string}
+                rating={0} // client details don't have rating
+                reviews={0} // client details don't have review count
+                verifications={[]} // client details don't have verifications
+                onOpenReview={() => setIsReviewOpen(true)}
+              />
+            </div>
           </div>
         )}
-      </div>
 
-      <ReviewClientModal
-        isOpen={isReviewOpen}
-        onClose={() => setIsReviewOpen(false)}
-        clientName={clientName ?? "Client"}
-        onSubmit={handleSubmitReview}
-      />
+        <ReviewClientModal
+          isOpen={isReviewOpen}
+          onClose={() => setIsReviewOpen(false)}
+          clientName={clientName ?? "Client"}
+          onSubmit={handleSubmitReview}
+        />
+      </div>
     </div>
   );
 };
