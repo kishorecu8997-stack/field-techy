@@ -9,7 +9,10 @@ import RevisionModal from "./RevisionModal";
 import BreakDetailsModal from "./BreakDetailsModal";
 import { REVISION_UPDATE_LABELS } from "@/constants/revisionUpdateConstants";
 import { ENGINEER_TIMELINE_STATUS } from "@/constants/timelineConstants";
-import { useGetJobLogs, useEngineerGetMyJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
+import {
+  useGetJobLogs,
+  useEngineerGetMyJobs,
+} from "@/shared/apiServices/engineer/engineerOpenApiService";
 import type { GetJobLogsResponse, EngineerGetMyJobsResponse } from "@/api";
 
 /**
@@ -40,10 +43,17 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
     // Generate proper title based on logType
     let title = log.title || log.logType;
     let details = log.details;
-    
+
     // Customize title based on logType and status
     if (log.logType === "SUBMISSION") {
-      if (log.status === "pending" as 'pending' | 'approved' | 'rejected' | 'revision_requested') {
+      if (
+        log.status ===
+        ("pending" as
+          | "pending"
+          | "approved"
+          | "rejected"
+          | "revision_requested")
+      ) {
         title = "Proposal Submitted";
         details = details || "Engineer submitted a proposal for this job";
       } else if (log.status === "approved") {
@@ -63,12 +73,19 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
       title = "Job Completed";
       details = details || "Job has been completed";
     }
-    
+
     return {
       title,
       timestamp: formatApiDate(log.timestamp),
-      statusText: log.status.charAt(0).toUpperCase() + log.status.slice(1).replace(/_/g, " "),
-      statusColor: log.status === "approved" ? "#22c55e" : log.status === "rejected" ? "#ef4444" : "#f59e0b",
+      statusText:
+        log.status.charAt(0).toUpperCase() +
+        log.status.slice(1).replace(/_/g, " "),
+      statusColor:
+        log.status === "approved"
+          ? "#22c55e"
+          : log.status === "rejected"
+            ? "#ef4444"
+            : "#f59e0b",
       accentColor: "#3b82f6",
       details,
       attachmentUrl: log.attachmentUrl,
@@ -79,12 +96,19 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
 /**
  * Transform break requests to timeline items
  */
-const transformBreakRequestsToItems = (breakRequests: GetJobLogsResponse["breakRequests"]) => {
+const transformBreakRequestsToItems = (
+  breakRequests: GetJobLogsResponse["breakRequests"],
+) => {
   return breakRequests.map((br) => ({
     title: `${br.type === "short_term" ? "Short Term" : "Long Term"} Break`,
     timestamp: formatApiDate(br.createdAt),
     statusText: br.status.charAt(0).toUpperCase() + br.status.slice(1),
-    statusColor: br.status === "approved" ? "#22c55e" : br.status === "rejected" ? "#ef4444" : "#f59e0b",
+    statusColor:
+      br.status === "approved"
+        ? "#22c55e"
+        : br.status === "rejected"
+          ? "#ef4444"
+          : "#f59e0b",
     accentColor: "#8b5cf6",
     details: br.reason,
     startDate: br.startAt,
@@ -95,13 +119,20 @@ const transformBreakRequestsToItems = (breakRequests: GetJobLogsResponse["breakR
 /**
  * Transform sign-off sheets to timeline items
  */
-const transformSignOffsToItems = (signOffs: GetJobLogsResponse["signOffSheets"]) => {
+const transformSignOffsToItems = (
+  signOffs: GetJobLogsResponse["signOffSheets"],
+) => {
   if (!signOffs) return [];
   return signOffs.map((so) => ({
     title: "Final Statement",
     timestamp: formatApiDate(so.createdAt),
     statusText: so.status.charAt(0).toUpperCase() + so.status.slice(1),
-    statusColor: so.status === "approved" ? "#22c55e" : so.status === "rejected" ? "#ef4444" : "#f59e0b",
+    statusColor:
+      so.status === "approved"
+        ? "#22c55e"
+        : so.status === "rejected"
+          ? "#ef4444"
+          : "#f59e0b",
     accentColor: "#10b981",
     details: so.details,
   }));
@@ -112,13 +143,13 @@ const transformSignOffsToItems = (signOffs: GetJobLogsResponse["signOffSheets"])
  */
 const transformProposalToTimelineItems = (
   jobs: EngineerGetMyJobsResponse,
-  currentJobId?: number
+  currentJobId?: number,
 ) => {
   if (!jobs || jobs.length === 0) return [];
 
   // Filter to current job if provided, otherwise get all proposals
-  const relevantJobs = currentJobId 
-    ? jobs.filter(job => job.id === currentJobId) 
+  const relevantJobs = currentJobId
+    ? jobs.filter((job) => job.id === currentJobId)
     : jobs;
 
   const allItems: Array<{
@@ -133,7 +164,7 @@ const transformProposalToTimelineItems = (
 
   relevantJobs.forEach((job) => {
     // Add entries in reverse chronological order (most recent first) based on status
-    
+
     // 6. Proposal Rejected entry (if rejected) - most recent for rejected status
     if (job.assignmentStatus === "rejected") {
       const rejectedTimestamp = job.respondedAt;
@@ -149,7 +180,7 @@ const transformProposalToTimelineItems = (
         });
       }
     }
-    
+
     // 5. Job Started entry (if started - client approved)
     if (job.assignmentStatus === "started") {
       const startedTimestamp = job.assignedAt || job.respondedAt;
@@ -165,7 +196,7 @@ const transformProposalToTimelineItems = (
         });
       }
     }
-    
+
     // 4. Start Request Pending entry (if start_pending_approval)
     if (job.assignmentStatus === "start_pending_approval") {
       const startPendingTimestamp = job.respondedAt;
@@ -183,9 +214,14 @@ const transformProposalToTimelineItems = (
     }
 
     // 3. Proposal Accepted entry (if accepted/assigned or later statuses)
-    if (job.assignmentStatus === "accepted" || job.assignmentStatus === "assigned" ||
-        job.assignmentStatus === "start_pending_approval" || job.assignmentStatus === "started" ||
-        job.assignmentStatus === "submitted" || job.assignmentStatus === "submit_pending_approval") {
+    if (
+      job.assignmentStatus === "accepted" ||
+      job.assignmentStatus === "assigned" ||
+      job.assignmentStatus === "start_pending_approval" ||
+      job.assignmentStatus === "started" ||
+      job.assignmentStatus === "submitted" ||
+      job.assignmentStatus === "submit_pending_approval"
+    ) {
       const acceptedTimestamp = job.assignedAt || job.respondedAt;
       if (acceptedTimestamp) {
         allItems.push({
@@ -201,10 +237,16 @@ const transformProposalToTimelineItems = (
     }
 
     // 2. Proposal Submitted entry (if applied)
-    if (job.assignmentStatus === "applied" || job.assignmentStatus === "accepted" || 
-        job.assignmentStatus === "rejected" || job.assignmentStatus === "assigned" ||
-        job.assignmentStatus === "start_pending_approval" || job.assignmentStatus === "started" ||
-        job.assignmentStatus === "submitted" || job.assignmentStatus === "submit_pending_approval") {
+    if (
+      job.assignmentStatus === "applied" ||
+      job.assignmentStatus === "accepted" ||
+      job.assignmentStatus === "rejected" ||
+      job.assignmentStatus === "assigned" ||
+      job.assignmentStatus === "start_pending_approval" ||
+      job.assignmentStatus === "started" ||
+      job.assignmentStatus === "submitted" ||
+      job.assignmentStatus === "submit_pending_approval"
+    ) {
       const submittedTimestamp = job.appliedAt || job.respondedAt;
       if (submittedTimestamp) {
         allItems.push({
@@ -251,10 +293,18 @@ const TimelineSection: React.FC<{
   jobId?: number;
   hasApplied?: boolean;
 }> = ({
-  progressUpdates = [], onAddProgressUpdate, assignmentId, jobId, hasApplied = false }) => {
+  progressUpdates = [],
+  onAddProgressUpdate,
+  assignmentId,
+  jobId,
+  hasApplied = false,
+}) => {
   const [isRevisionOpen, setIsRevisionOpen] = useState(false);
-  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(null);
-  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] = useState(false);
+  const [activeRevision, setActiveRevision] = useState<ProgressUpdate | null>(
+    null,
+  );
+  const [isRevisionUpdateFormOpen, setIsRevisionUpdateFormOpen] =
+    useState(false);
   const [isBreakDetailsOpen, setIsBreakDetailsOpen] = useState(false);
   const [activeBreak, setActiveBreak] = useState<ProgressUpdate | null>(null);
   const [collapsedUpdates, setCollapsedUpdates] = useState<
@@ -269,10 +319,15 @@ const TimelineSection: React.FC<{
 
   // Fetch engineer's jobs to get proposal status
   const { data: engineerJobs } = useEngineerGetMyJobs(!!jobId || !!hasApplied);
-  
+
   // Transform proposal data to timeline items
   const proposalTimelineItems = useMemo(() => {
-    if (!engineerJobs || !Array.isArray(engineerJobs) || engineerJobs.length === 0) return [];
+    if (
+      !engineerJobs ||
+      !Array.isArray(engineerJobs) ||
+      engineerJobs.length === 0
+    )
+      return [];
     return transformProposalToTimelineItems(engineerJobs, jobId);
   }, [engineerJobs, jobId]);
 
@@ -281,7 +336,9 @@ const TimelineSection: React.FC<{
     if (!jobLogs) return [];
 
     const logItems = transformLogsToTimelineItems(jobLogs.logs || []);
-    const breakItems = transformBreakRequestsToItems(jobLogs.breakRequests || []);
+    const breakItems = transformBreakRequestsToItems(
+      jobLogs.breakRequests || [],
+    );
     const signOffItems = transformSignOffsToItems(jobLogs.signOffSheets || []);
 
     const allItems = [...logItems, ...breakItems, ...signOffItems];

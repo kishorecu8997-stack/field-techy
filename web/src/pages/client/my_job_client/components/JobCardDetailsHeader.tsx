@@ -6,9 +6,7 @@ import Popup from "@/shared/components/Popup";
 import RequestRevision from "./RequestRevision";
 import ConfirmationModal from "./ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-import {
-  JOB_STATUSES,
-} from "@/pages/client/search_result/types";
+import { JOB_STATUSES } from "@/pages/client/search_result/types";
 import { icons } from "@/config/icons";
 import useDrawerStore from "@/shared/store/useDrawerStore";
 import { absoluteUrls } from "@/config/urls";
@@ -30,7 +28,7 @@ interface JobCardDetailsHeaderProps {
  */
 const JobCardDetailsHeader: React.FC<JobCardDetailsHeaderProps> = ({ job }) => {
   const navigate = useNavigate();
-  
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);

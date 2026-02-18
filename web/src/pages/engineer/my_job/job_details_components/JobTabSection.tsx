@@ -12,7 +12,11 @@ import ProposalForm from "./tab_components/ProposalForm";
 import SuccessOverlay from "./tab_components/SuccessOverlay";
 import TimelineSection from "./tab_components/TimelineSection";
 import { useForm } from "react-hook-form";
-import type { ProposalFormData, ProgressUpdate, JobInfoSectionProps } from "../types.d";
+import type {
+  ProposalFormData,
+  ProgressUpdate,
+  JobInfoSectionProps,
+} from "../types.d";
 import { useEngineerApplyJob } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import { toast } from "react-toastify";
 
@@ -21,7 +25,7 @@ import { toast } from "react-toastify";
  * - Timeline
  * - Job Overview
  * - Work Location
- * 
+ *
  * Shows Proposal Info tab only after proposal is submitted.
  */
 const JobTabSection = ({
@@ -94,9 +98,13 @@ const JobTabSection = ({
 
   // Determine if engineer has applied based on OfferJobStatus from API (persists after refresh)
   // This is the primary source of truth - local hasApplied state only works within session
-  const hasAppliedFromApi = OfferJobStatus === "applied" || OfferJobStatus === "accepted" || 
-    OfferJobStatus === "assigned" || OfferJobStatus === "start_pending_approval" ||
-    OfferJobStatus === "started" || OfferJobStatus === "submit_pending_approval" ||
+  const hasAppliedFromApi =
+    OfferJobStatus === "applied" ||
+    OfferJobStatus === "accepted" ||
+    OfferJobStatus === "assigned" ||
+    OfferJobStatus === "start_pending_approval" ||
+    OfferJobStatus === "started" ||
+    OfferJobStatus === "submit_pending_approval" ||
     OfferJobStatus === "submitted";
 
   // Show "Job Applied" status instead of "Send Proposal" after submission
@@ -108,7 +116,9 @@ const JobTabSection = ({
   };
 
   // Handler to submit proposal to API
-  const handleConfirmProposal = async (data: ProposalFormData): Promise<void> => {
+  const handleConfirmProposal = async (
+    data: ProposalFormData,
+  ): Promise<void> => {
     if (!jobId) {
       toast.error("Job ID is missing. Cannot submit proposal.");
       throw new Error("Job ID is missing");
@@ -117,7 +127,7 @@ const JobTabSection = ({
     // Get the file from attachments if present
     const fileList = data.attachments;
     const file = fileList && fileList.length > 0 ? fileList[0] : null;
-    
+
     const proposalAttachmentMeta = file
       ? {
           filename: file.name,
@@ -155,7 +165,7 @@ const JobTabSection = ({
   };
 
   const attachmentFiles = reviewData?.attachments
-    ? Array.from(reviewData.attachments).map((file: File) =>  file.name )
+    ? Array.from(reviewData.attachments).map((file: File) => file.name)
     : [];
 
   // 3 tabs only: Timeline, Job Overview, Work Location
@@ -174,7 +184,11 @@ const JobTabSection = ({
     },
     {
       label: JOB_TAB_LABELS.jobOverview,
-      content: <JobInfoSection jobInfo={jobInfo || { jobTitle: "", terms: { items: [] }, files: [] }} />,
+      content: (
+        <JobInfoSection
+          jobInfo={jobInfo || { jobTitle: "", terms: { items: [] }, files: [] }}
+        />
+      ),
     },
     {
       label: JOB_TAB_LABELS.workLocation,
@@ -187,10 +201,12 @@ const JobTabSection = ({
             label: JOB_TAB_LABELS.proposalInfo,
             content: (
               <ProposalInfoTab
-                submittedProposal={submittedProposal || {
-                  proposalDescription: "",
-                  attachments: null,
-                }}
+                submittedProposal={
+                  submittedProposal || {
+                    proposalDescription: "",
+                    attachments: null,
+                  }
+                }
               />
             ),
           },

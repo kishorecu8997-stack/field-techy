@@ -185,7 +185,8 @@ const ProposalForm = ({
                   setShowSuccess(true);
                   // Switch to tabs immediately and select Proposal Info tab
                   if (setSendProposal) setSendProposal(false);
-                  if (setSelectedTab) setSelectedTab(JOB_TAB_LABELS.proposalInfo);
+                  if (setSelectedTab)
+                    setSelectedTab(JOB_TAB_LABELS.proposalInfo);
                   setTimeout(() => {
                     setShowSuccess(false);
                     const data = reviewData || methods.getValues();

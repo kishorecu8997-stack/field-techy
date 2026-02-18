@@ -37,7 +37,11 @@ import type {
   RevisionFormData,
   RevisionRequestDetails,
 } from "./clientTimelineTypes";
-import { useGetJobLogs, useClientGetAssignmentDetails, useClientActionOnAssignment } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useGetJobLogs,
+  useClientGetAssignmentDetails,
+  useClientActionOnAssignment,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import type { GetJobLogsResponse } from "@/api";
 
 const clientTimelineCards: TimelineCardData[] = [
@@ -90,12 +94,21 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
     // Generate proper title based on logType
     let title = log.title || log.logType;
     let details = log.details;
-    
+
     // Customize title based on logType and status
     if (log.logType === "SUBMISSION") {
-      if (log.status === "pending" as 'pending' | 'approved' | 'rejected' | 'revision_requested') {
+      if (
+        log.status ===
+        ("pending" as
+          | "pending"
+          | "approved"
+          | "rejected"
+          | "revision_requested")
+      ) {
         title = "Proposal Received";
-        details = details || "Proposals received. Manage them in the Manage Proposals tab.";
+        details =
+          details ||
+          "Proposals received. Manage them in the Manage Proposals tab.";
       } else if (log.status === "approved") {
         title = "Proposal Accepted";
         details = details || "Client accepted a proposal";
@@ -113,12 +126,19 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
       title = "Job Completed";
       details = details || "Job has been completed";
     }
-    
+
     return {
       title,
       timestamp: formatApiDate(log.timestamp),
-      statusText: log.status.charAt(0).toUpperCase() + log.status.slice(1).replace(/_/g, " "),
-      statusColor: log.status === "approved" ? "#22c55e" : log.status === "rejected" ? "#ef4444" : "#f59e0b",
+      statusText:
+        log.status.charAt(0).toUpperCase() +
+        log.status.slice(1).replace(/_/g, " "),
+      statusColor:
+        log.status === "approved"
+          ? "#22c55e"
+          : log.status === "rejected"
+            ? "#ef4444"
+            : "#f59e0b",
       accentColor: "#3b82f6",
       details,
       attachmentUrl: log.attachmentUrl,
@@ -196,7 +216,9 @@ const TimelineSection: React.FC<{
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
     onError: (error) => {
       console.error("Assignment action failed:", error);
-      toast.error("Failed to process request. Please try again.", { position: "top-right" });
+      toast.error("Failed to process request. Please try again.", {
+        position: "top-right",
+      });
     },
   });
 
@@ -207,7 +229,7 @@ const TimelineSection: React.FC<{
     if (!assignmentDetails || assignmentDetails.length === 0) {
       return [];
     }
-    
+
     const allItems: Array<{
       title: string;
       timestamp: string;
@@ -217,14 +239,17 @@ const TimelineSection: React.FC<{
       details: string;
       sortOrder: number;
     }> = [];
-    
+
     assignmentDetails.forEach((assignment) => {
       const status = assignment.assignmentStatus?.toLowerCase();
       const engineerName = assignment.engineer?.name || "Engineer";
-      const appliedDate = formatApiDate(assignment.appliedAt) || formatApiDate(assignment.invitedAt) || formatDateTime();
-      
+      const appliedDate =
+        formatApiDate(assignment.appliedAt) ||
+        formatApiDate(assignment.invitedAt) ||
+        formatDateTime();
+
       // Add entries in reverse chronological order (most recent first) based on current status
-      
+
       // Add "Work Submitted" if status is submitted (most recent)
       if (status === "submitted") {
         allItems.push({
@@ -237,7 +262,7 @@ const TimelineSection: React.FC<{
           sortOrder: 100,
         });
       }
-      
+
       // Add "Job Started" if status is started, or submitted
       if (status === "started" || status === "submitted") {
         allItems.push({
@@ -250,11 +275,16 @@ const TimelineSection: React.FC<{
           sortOrder: status === "submitted" ? 90 : 100,
         });
       }
-      
+
       // Add "Proposal Accepted" if status is accepted, assigned, start_pending_approval, started, or submitted
-      if (status === "accepted" || status === "assigned" || 
-          status === "start_pending_approval" || status === "started" || 
-          status === "submitted" || status === "submit_pending_approval") {
+      if (
+        status === "accepted" ||
+        status === "assigned" ||
+        status === "start_pending_approval" ||
+        status === "started" ||
+        status === "submitted" ||
+        status === "submit_pending_approval"
+      ) {
         allItems.push({
           title: "Proposal Accepted",
           timestamp: appliedDate,
@@ -265,7 +295,7 @@ const TimelineSection: React.FC<{
           sortOrder: 50,
         });
       }
-      
+
       // Always add "Proposal Received" entry (oldest)
       allItems.push({
         title: "Proposal Received",
@@ -276,7 +306,7 @@ const TimelineSection: React.FC<{
         details: `Received proposal from ${engineerName}`,
         sortOrder: 0,
       });
-      
+
       // Add "Proposal Rejected" if status is rejected
       if (status === "rejected") {
         allItems.push({
@@ -290,7 +320,7 @@ const TimelineSection: React.FC<{
         });
       }
     });
-    
+
     // Sort by sortOrder descending (highest first = most recent first)
     allItems.sort((a, b) => b.sortOrder - a.sortOrder);
     return allItems;
@@ -302,20 +332,28 @@ const TimelineSection: React.FC<{
 
     // Find the latest progress update log (supports "progress_update" and "SUBMISSION" types)
     const progressLog = jobLogs.logs.find(
-      (log) => log.logType === "progress_update" || log.logType === "SUBMISSION"
+      (log) =>
+        log.logType === "progress_update" || log.logType === "SUBMISSION",
     );
 
     if (!progressLog) return null;
 
     // Build attachments array from attachmentUrl if available
     const attachments = progressLog.attachmentUrl
-      ? [{ name: progressLog.attachmentUrl.split("/").pop()?.split("?")[0] || "Attachment", url: progressLog.attachmentUrl }]
+      ? [
+          {
+            name:
+              progressLog.attachmentUrl.split("/").pop()?.split("?")[0] ||
+              "Attachment",
+            url: progressLog.attachmentUrl,
+          },
+        ]
       : undefined;
 
     // Generate proper title based on logType and status
     let title = progressLog.title || "Progress Update";
     if (progressLog.logType === "SUBMISSION") {
-      if (progressLog.status === "pending" as any) {
+      if (progressLog.status === ("pending" as any)) {
         title = "Proposal Submitted";
       } else if (progressLog.status === "approved") {
         title = "Proposal Accepted";
@@ -412,7 +450,11 @@ const TimelineSection: React.FC<{
     }
 
     // Add "Proposal Received" fallback when hasProposals is true and no proposal items
-    if (hasProposals && proposalTimelineItems.length === 0 && apiTimelineItems.length === 0) {
+    if (
+      hasProposals &&
+      proposalTimelineItems.length === 0 &&
+      apiTimelineItems.length === 0
+    ) {
       allItems.push({
         title: "Proposal Received",
         timestamp: formatDateTime(),
@@ -437,7 +479,7 @@ const TimelineSection: React.FC<{
   const hasPendingStartRequest = useMemo(() => {
     if (!assignmentDetails || assignmentDetails.length === 0) return false;
     return assignmentDetails.some(
-      (a) => a.assignmentStatus === "start_pending_approval"
+      (a) => a.assignmentStatus === "start_pending_approval",
     );
   }, [assignmentDetails]);
 
@@ -447,7 +489,8 @@ const TimelineSection: React.FC<{
       return {
         ...jobStartedCardDataForCard,
         title: "Job Started",
-        description: "Engineer has requested to start the job. Please review and approve.",
+        description:
+          "Engineer has requested to start the job. Please review and approve.",
       };
     }
     return jobStartedCardDataForCard;
@@ -470,14 +513,21 @@ const TimelineSection: React.FC<{
   const finalStatementAccentColor = TIMELINE_CARD_COLORS.green;
 
   // Calculate action required count - includes pending start request
-  const hasAnyApiData = jobLogs && (jobLogs.logs?.length || jobLogs.breakRequests?.length || jobLogs.signOffSheets?.length);
-  const actionRequiredCount = (hasAnyApiData ? [
-    progressStatus,
-    revisionUpdateStatus,
-    shortBreakStatus,
-    finalStatementStatus,
-    jobStatus,
-  ].filter((status) => status === TIMELINE_STATUS.pending).length : 0) + (hasPendingStartRequest ? 1 : 0);
+  const hasAnyApiData =
+    jobLogs &&
+    (jobLogs.logs?.length ||
+      jobLogs.breakRequests?.length ||
+      jobLogs.signOffSheets?.length);
+  const actionRequiredCount =
+    (hasAnyApiData
+      ? [
+          progressStatus,
+          revisionUpdateStatus,
+          shortBreakStatus,
+          finalStatementStatus,
+          jobStatus,
+        ].filter((status) => status === TIMELINE_STATUS.pending).length
+      : 0) + (hasPendingStartRequest ? 1 : 0);
 
   const shortBreakStatusNode =
     shortBreakStatus === TIMELINE_STATUS.approved ? (
@@ -767,7 +817,9 @@ const TimelineSection: React.FC<{
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-6">
         <div className="flex justify-center items-center h-32">
-          <div className="text-gray-600 dark:text-gray-400">Loading timeline data...</div>
+          <div className="text-gray-600 dark:text-gray-400">
+            Loading timeline data...
+          </div>
         </div>
       </div>
     );
@@ -794,7 +846,9 @@ const TimelineSection: React.FC<{
 
       <div className="px-4 pb-4 space-y-6">
         {/* Action Required Badge - Only show when there's action required */}
-        {actionRequiredCount > 0 && <ActionRequiredBadge count={actionRequiredCount} />}
+        {actionRequiredCount > 0 && (
+          <ActionRequiredBadge count={actionRequiredCount} />
+        )}
 
         {/* Progress Update Card - Only show when API has data */}
         {hasProgressData && (
@@ -811,7 +865,9 @@ const TimelineSection: React.FC<{
             onProgressReject={handleProgressReject}
             onRequestRevision={handleRequestRevision}
             onProgressApprove={handleProgressApprove}
-            onRevisionUpdateRequestRevision={handleRevisionUpdateRequestRevision}
+            onRevisionUpdateRequestRevision={
+              handleRevisionUpdateRequestRevision
+            }
           />
         )}
 
@@ -819,7 +875,11 @@ const TimelineSection: React.FC<{
         {hasBreakData && (
           <ShortBreakCard
             isCollapsed={isShortBreakCollapsed}
-            cardData={apiBreakRequestData ? { ...shortTermBreakCardData, ...apiBreakRequestData } : shortTermBreakCardData}
+            cardData={
+              apiBreakRequestData
+                ? { ...shortTermBreakCardData, ...apiBreakRequestData }
+                : shortTermBreakCardData
+            }
             shortBreakAccentColor={shortBreakAccentColor}
             shortBreakStatus={shortBreakStatus}
             shortBreakStatusNode={shortBreakStatusNode}
@@ -832,7 +892,11 @@ const TimelineSection: React.FC<{
         {hasFinalStatementData && (
           <FinalStatementCard
             isCollapsed={isFinalStatementCollapsed}
-            cardData={apiFinalStatementData ? { ...finalStatementCardData, ...apiFinalStatementData } : finalStatementCardData}
+            cardData={
+              apiFinalStatementData
+                ? { ...finalStatementCardData, ...apiFinalStatementData }
+                : finalStatementCardData
+            }
             finalStatementAccentColor={finalStatementAccentColor}
             finalStatementStatus={finalStatementStatus}
             finalStatementStatusNode={finalStatementStatusNode}
@@ -847,26 +911,32 @@ const TimelineSection: React.FC<{
             isCollapsed={isJobCollapsed}
             cardData={jobStartedCard}
             accentColor={accentColor}
-            jobStatus={hasPendingStartRequest ? TIMELINE_STATUS.pending : jobStatus}
+            jobStatus={
+              hasPendingStartRequest ? TIMELINE_STATUS.pending : jobStatus
+            }
             statusNode={statusNode}
             onReject={handleReject}
             onApprove={handleApprove}
           />
         )}
 
-        {hasProgressData && <TimelineSectionHeader items={activityTimelineItems} />}
+        {hasProgressData && (
+          <TimelineSectionHeader items={activityTimelineItems} />
+        )}
 
         {/* Show TimelineList for job logs */}
-        {timelineItems.length > 0 && (
-          <TimelineList items={timelineItems} />
-        )}
+        {timelineItems.length > 0 && <TimelineList items={timelineItems} />}
 
         {/* Show message when no timeline data and not loading */}
-        {!hasProgressData && !hasBreakData && !hasFinalStatementData && !isLoadingLogs && timelineItems.length === 0 && (
-          <div className="text-center text-gray-500 py-4">
-            No timeline data available yet
-          </div>
-        )}
+        {!hasProgressData &&
+          !hasBreakData &&
+          !hasFinalStatementData &&
+          !isLoadingLogs &&
+          timelineItems.length === 0 && (
+            <div className="text-center text-gray-500 py-4">
+              No timeline data available yet
+            </div>
+          )}
       </div>
 
       <RevisionFormModal

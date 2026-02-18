@@ -4,7 +4,10 @@ import JobHeaderCard from "@/pages/engineer/my_job/job_details_components/jobHea
 import JobTabSection from "@/pages/client/my_job_client/components/JobTabSection";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { useClientGetAssignmentDetails, useClientGetJobs } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientGetAssignmentDetails,
+  useClientGetJobs,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { JobStatus } from "../my_job_client/types.d";
@@ -21,28 +24,35 @@ const ClientJobDetails = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Timeline");
-  const [OfferJobStatus, setOfferJobStatus] = useState<OfferedJobStatusType | AssignmentStatus | undefined>(undefined);
+  const [OfferJobStatus, setOfferJobStatus] = useState<
+    OfferedJobStatusType | AssignmentStatus | undefined
+  >(undefined);
 
   const jobId = Number(params.jobId);
 
   // Fetch assignment details using jobId
-  const { data: assignmentData, isLoading, error } = useClientGetAssignmentDetails(
-    { jobId },
-    !!jobId
-  );
+  const {
+    data: assignmentData,
+    isLoading,
+    error,
+  } = useClientGetAssignmentDetails({ jobId }, !!jobId);
 
   // Fallback to useClientGetJobs if needed for job details
   const { data: jobsData } = useClientGetJobs(true);
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
-  const job = jobsArray.find((j: { id?: string | number }) => Number(j.id) === jobId);
+  const job = jobsArray.find(
+    (j: { id?: string | number }) => Number(j.id) === jobId,
+  );
 
   // Get the first assignment from the assignment data
   const assignments = Array.isArray(assignmentData) ? assignmentData : [];
   const firstAssignment = assignments[0];
   const assignmentId = firstAssignment?.assignmentId;
-  
+
   // Check if this is the dummy Network Engineer job
-  const isDummyNetworkEngineer = job ? isDummyNetworkEngineerJob(job.id) : false;
+  const isDummyNetworkEngineer = job
+    ? isDummyNetworkEngineerJob(job.id)
+    : false;
 
   // Set default tab based on job type - moved to useEffect to avoid setState during render
   useEffect(() => {
@@ -66,7 +76,9 @@ const ClientJobDetails = () => {
             />
           </div>
           <div className="flex justify-center items-center h-64">
-            <div className="text-gray-600 dark:text-gray-400">Loading job details...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Loading job details...
+            </div>
           </div>
         </div>
       </div>

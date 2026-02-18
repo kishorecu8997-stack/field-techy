@@ -5,7 +5,11 @@ import {
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { SORT_OPTIONS, type JobStatus, type AssignmentStatus } from "../../search_result/types";
+import {
+  SORT_OPTIONS,
+  type JobStatus,
+  type AssignmentStatus,
+} from "../../search_result/types";
 import ClientInfoCard from "./ClientInfoCard";
 import JobHeaderCard from "./jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./JobTabSection";
@@ -28,7 +32,9 @@ const OfferPages = () => {
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
-  const [offerJobStatus, setOfferJobStatus] = useState<AssignmentStatus | undefined>();
+  const [offerJobStatus, setOfferJobStatus] = useState<
+    AssignmentStatus | undefined
+  >();
 
   const rawJob = useMemo(() => {
     if (!apiJob) return null;

@@ -45,7 +45,9 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
     onSuccess: () => {
       toast.success("Proposal action completed successfully");
       // Invalidate assignment queries to refresh timeline
-      queryClient.invalidateQueries({ queryKey: ["clientGetAssignmentDetails"] });
+      queryClient.invalidateQueries({
+        queryKey: ["clientGetAssignmentDetails"],
+      });
     },
     onError: (error) => {
       console.error("Failed to action on proposal:", error);
@@ -88,12 +90,22 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
   // Filter proposals that haven't been processed yet
   // Also filter out proposals that are already approved/accepted from the API
   // Also filter out proposals where job has started (start_pending_approval, started, submitted, etc.)
-  const approvedStatuses = ["accepted", "assigned", "approved", "start_pending_approval", "started", "submit_pending_approval", "submitted"];
+  const approvedStatuses = [
+    "accepted",
+    "assigned",
+    "approved",
+    "start_pending_approval",
+    "started",
+    "submit_pending_approval",
+    "submitted",
+  ];
   const remainingProposals = assignments.filter(
     (proposal) =>
-      !approvedStatuses.includes(proposal.assignmentStatus?.toLowerCase() || "") &&
+      !approvedStatuses.includes(
+        proposal.assignmentStatus?.toLowerCase() || "",
+      ) &&
       !acceptedProposals.includes(String(proposal.assignmentId)) &&
-      !rejectedProposals.includes(String(proposal.assignmentId))
+      !rejectedProposals.includes(String(proposal.assignmentId)),
   );
 
   if (isLoading) {
@@ -158,7 +170,10 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 max-w-full break-all hover:bg-gray-200 dark:hover:bg-gray-600 transition"
               >
-                <IoAttach className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                <IoAttach
+                  className="w-4 h-4 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 View Attachment
               </a>
             </div>
@@ -167,7 +182,9 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             <Button
               variant="no_style"
               onClick={() => handleRejectProposal(proposal.assignmentId)}
-              disabled={rejectedProposals.includes(String(proposal.assignmentId))}
+              disabled={rejectedProposals.includes(
+                String(proposal.assignmentId),
+              )}
               className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition disabled:opacity-50"
             >
               {DUMMY_TABS_LABELS.reject}
@@ -181,7 +198,9 @@ const ManageProposalsTab: React.FC<ManageProposalsTabProps> = ({
             <Button
               variant="no_style"
               onClick={() => handleAcceptProposal(proposal.assignmentId)}
-              disabled={acceptedProposals.includes(String(proposal.assignmentId))}
+              disabled={acceptedProposals.includes(
+                String(proposal.assignmentId),
+              )}
               className="px-6 py-2 bg-green-800 hover:bg-green-900 text-white rounded transition font-medium disabled:opacity-50"
             >
               {DUMMY_TABS_LABELS.accept}

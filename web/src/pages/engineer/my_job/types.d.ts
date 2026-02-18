@@ -110,7 +110,9 @@ export interface JobHeaderCardProps {
   isSendProposal?: boolean;
   setIsJobAccepted?: Dispatch<SetStateAction<boolean>>;
   setActiveTab?: Dispatch<SetStateAction<string>>;
-  setOfferJobStatus?: Dispatch<SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>>;
+  setOfferJobStatus?: Dispatch<
+    SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
+  >;
   OfferJobStatus?: AssignmentStatus | OfferedJobStatusType | undefined;
   hideBreakDetails?: boolean;
   jobLocation?: string;

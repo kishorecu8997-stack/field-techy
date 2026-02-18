@@ -19,7 +19,9 @@ const JobDetails: React.FC = () => {
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
 
   // Find the specific job from the API data
-  const job = jobsArray.find((j: { id?: string | number }) => String(j.id) === jobId);
+  const job = jobsArray.find(
+    (j: { id?: string | number }) => String(j.id) === jobId,
+  );
 
   // Loading state
   if (isLoading) {
@@ -27,7 +29,9 @@ const JobDetails: React.FC = () => {
       <div className="min-h-screen transition-colors duration-200 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-center items-center h-64">
-            <div className="text-gray-600 dark:text-gray-400">Loading job details...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Loading job details...
+            </div>
           </div>
         </div>
       </div>
@@ -40,7 +44,9 @@ const JobDetails: React.FC = () => {
       <div className="min-h-screen transition-colors duration-200 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-center items-center h-64">
-            <div className="text-red-600 dark:text-red-400">Error loading job details</div>
+            <div className="text-red-600 dark:text-red-400">
+              Error loading job details
+            </div>
           </div>
         </div>
       </div>
@@ -54,10 +60,9 @@ const JobDetails: React.FC = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-center items-center h-64">
             <div className="text-gray-600 dark:text-gray-400">
-              {jobsArray.length > 0 
+              {jobsArray.length > 0
                 ? `Job with ID ${jobId} not found. Available IDs: ${jobsArray.map((j: { id: number }) => j.id).join(", ")}`
-                : "No jobs found for this client"
-              }
+                : "No jobs found for this client"}
             </div>
           </div>
         </div>
@@ -88,7 +93,11 @@ const JobDetails: React.FC = () => {
           status={statusDisplay}
           activeTab={activeTab}
           job={job}
-          assignmentId={job.assignmentIds?.[0] ? Number(job.assignmentIds[0]) : Number(jobId)}
+          assignmentId={
+            job.assignmentIds?.[0]
+              ? Number(job.assignmentIds[0])
+              : Number(jobId)
+          }
         />
       </div>
     </div>

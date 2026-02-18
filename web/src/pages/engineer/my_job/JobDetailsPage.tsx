@@ -12,7 +12,11 @@ import {
   type AssignmentStatus,
   type JobStatus,
 } from "../search_result/types";
-import type { ProgressUpdate, OfferedJobStatusType, JobInfoSectionProps } from "./types.d";
+import type {
+  ProgressUpdate,
+  OfferedJobStatusType,
+  JobInfoSectionProps,
+} from "./types.d";
 import type { EngineerSearchJobsResponse } from "@/api";
 import ClientInfoCard from "./job_details_components/ClientInfoCard";
 import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
@@ -23,7 +27,9 @@ import JobTabSection from "./job_details_components/JobTabSection";
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
  */
-const mapJobToJobInfo = (job: EngineerSearchJobsResponse[number]): JobInfoSectionProps => {
+const mapJobToJobInfo = (
+  job: EngineerSearchJobsResponse[number],
+): JobInfoSectionProps => {
   const termsItems: Array<{ text: string }> = [];
 
   // Add job description as first term item if available
@@ -33,10 +39,14 @@ const mapJobToJobInfo = (job: EngineerSearchJobsResponse[number]): JobInfoSectio
 
   // Add start and end dates
   if (job.startDate) {
-    termsItems.push({ text: `Start Date: ${new Date(job.startDate).toLocaleDateString()}` });
+    termsItems.push({
+      text: `Start Date: ${new Date(job.startDate).toLocaleDateString()}`,
+    });
   }
   if (job.endDate) {
-    termsItems.push({ text: `End Date: ${new Date(job.endDate).toLocaleDateString()}` });
+    termsItems.push({
+      text: `End Date: ${new Date(job.endDate).toLocaleDateString()}`,
+    });
   }
 
   // Add total price if available
@@ -63,7 +73,7 @@ const mapJobToJobInfo = (job: EngineerSearchJobsResponse[number]): JobInfoSectio
   const files: string[] = [];
   if (job.attachmentUrl) {
     // Extract filename from URL if it's a full URL
-    const urlParts = job.attachmentUrl.split('/');
+    const urlParts = job.attachmentUrl.split("/");
     const fileName = urlParts[urlParts.length - 1] || "Job Attachment";
     files.push(fileName);
   }
@@ -93,7 +103,9 @@ const JobDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("Job Information");
   const [progressUpdates, setProgressUpdates] = useState<ProgressUpdate[]>([]);
   const [showFinalStatement, setShowFinalStatement] = useState(false);
-  const [_offerJobStatus, setOfferJobStatus] = useState<OfferedJobStatusType | AssignmentStatus | undefined>();
+  const [_offerJobStatus, setOfferJobStatus] = useState<
+    OfferedJobStatusType | AssignmentStatus | undefined
+  >();
   const [_isWorkSubmitted] = useState(false);
 
   // Fetch job data from real API using search endpoint with jobId filter
@@ -201,8 +213,7 @@ const JobDetailsPage = () => {
   };
 
   const engagementType =
-    engagementTypeMapping[job?.jobType || ""] ||
-    (job?.jobType as string);
+    engagementTypeMapping[job?.jobType || ""] || (job?.jobType as string);
 
   const statusMapping: Record<string, JobStatus> = {
     Posted: JOB_STATUSES.posted,
@@ -267,11 +278,15 @@ const JobDetailsPage = () => {
               onAddProgressUpdate={handleAddProgressUpdate}
               assignmentId={assignmentId}
               jobId={Number(params.jobId)}
-              jobInfo={job ? mapJobToJobInfo(job) : {
-                jobTitle: "",
-                terms: { title: "Job Details", items: [] },
-                files: []
-              }}
+              jobInfo={
+                job
+                  ? mapJobToJobInfo(job)
+                  : {
+                      jobTitle: "",
+                      terms: { title: "Job Details", items: [] },
+                      files: [],
+                    }
+              }
             />
 
             {showFinalStatement && (

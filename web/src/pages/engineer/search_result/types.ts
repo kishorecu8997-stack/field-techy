@@ -153,7 +153,6 @@ export const JOB_FILTERS = {
 
 export type JobFilter = (typeof JOB_FILTERS)[keyof typeof JOB_FILTERS];
 
-
 export const ASSIGNMENT_STATUSES = {
   assigned: "assigned",
   accepted: "accepted",

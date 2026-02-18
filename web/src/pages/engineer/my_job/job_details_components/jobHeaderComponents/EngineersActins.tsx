@@ -19,7 +19,7 @@ import { useEngineerRequestStart } from "@/shared/apiServices/engineer/engineerO
  * OfferedJobStatusType = "initial" | "accepted" | "declined" | "started" | "checked-in"
  */
 const mapAssignmentToOfferStatus = (
-  status: AssignmentStatus | undefined
+  status: AssignmentStatus | undefined,
 ): OfferedJobStatusType | undefined => {
   if (!status) return undefined;
 
@@ -83,20 +83,21 @@ const EngineersActions = ({
   const { setActiveKey, setISOpenSidebar } = useDrawerStore();
 
   // Hook for requesting to start a job
-  const { mutateAsync: requestStartJob, isPending: isStartingJob } = useEngineerRequestStart({
-    onSuccess: () => {
-      toast.success("Job start request submitted successfully");
-      handleUpdateOfferStatus("started");
-    },
-    onError: (error) => {
-      console.error("Failed to request job start:", error);
-      toast.error("Failed to request job start. Please try again.");
-    },
-  });
+  const { mutateAsync: requestStartJob, isPending: isStartingJob } =
+    useEngineerRequestStart({
+      onSuccess: () => {
+        toast.success("Job start request submitted successfully");
+        handleUpdateOfferStatus("started");
+      },
+      onError: (error) => {
+        console.error("Failed to request job start:", error);
+        toast.error("Failed to request job start. Please try again.");
+      },
+    });
 
   // Map AssignmentStatus to OfferedJobStatusType for internal logic
   const mappedOfferStatus = mapAssignmentToOfferStatus(
-    OfferJobStatus as AssignmentStatus
+    OfferJobStatus as AssignmentStatus,
   );
 
   // Handler to update offer job status
@@ -148,7 +149,9 @@ const EngineersActions = ({
               if (assignmentId) {
                 await requestStartJob({ body: { assignmentId } });
               } else {
-                toast.error("No assignment found. Please apply to the job first.");
+                toast.error(
+                  "No assignment found. Please apply to the job first.",
+                );
               }
             } catch (error) {
               console.error("Start job error:", error);
@@ -181,9 +184,9 @@ const EngineersActions = ({
   };
 
   const handleViewJobPosting = () => {
-  setSendProposal?.(false);
-  setActiveTab?.("Job Information");
-};
+    setSendProposal?.(false);
+    setActiveTab?.("Job Information");
+  };
 
   const postStartActions = (
     <div className="flex flex-wrap gap-2 w-fit">
@@ -208,7 +211,10 @@ const EngineersActions = ({
     </div>
   );
 
-  const isApplied = (status === JOB_STATUSES.applied || OfferJobStatus === "applied") && OfferJobStatus !== "accepted" && OfferJobStatus !== "assigned";
+  const isApplied =
+    (status === JOB_STATUSES.applied || OfferJobStatus === "applied") &&
+    OfferJobStatus !== "accepted" &&
+    OfferJobStatus !== "assigned";
   const isNew = status === JOB_STATUSES.new || status === "new";
   const isOffer = status === JOB_STATUSES.offer || status === "offer";
   const isPosted = status === JOB_STATUSES.posted;
@@ -216,23 +222,29 @@ const EngineersActions = ({
   const isClosed = status === JOB_STATUSES.closed;
 
   // Check if proposal is accepted (Start Job should show when proposal is accepted or assigned)
-  const isProposalAccepted = OfferJobStatus === "accepted" || OfferJobStatus === "assigned" || mappedOfferStatus === "accepted";
-  
+  const isProposalAccepted =
+    OfferJobStatus === "accepted" ||
+    OfferJobStatus === "assigned" ||
+    mappedOfferStatus === "accepted";
+
   // Check if assignment exists - show Start Job whenever there's an assignmentId
   const hasAssignment = !!assignmentId;
-  
+
   // Check if job has actually started (only true when assignment status is 'started', not 'start_pending_approval')
   const hasJobStarted = OfferJobStatus === "started";
-  
+
   // Check if there's a pending start request
   const hasStartPending = OfferJobStatus === "start_pending_approval";
-  
-  // Guard: can user start the job?
-  const canStartJob = (isProposalAccepted || isOffer || OfferJobStatus === "initial" ) && !hasStartPending && !hasJobStarted;
 
-   // Check if proposal already submitted via API
-  const hasSubmittedProposal = 
-    OfferJobStatus === "applied" || 
+  // Guard: can user start the job?
+  const canStartJob =
+    (isProposalAccepted || isOffer || OfferJobStatus === "initial") &&
+    !hasStartPending &&
+    !hasJobStarted;
+
+  // Check if proposal already submitted via API
+  const hasSubmittedProposal =
+    OfferJobStatus === "applied" ||
     OfferJobStatus === "submitted" ||
     OfferJobStatus === "assigned" ||
     OfferJobStatus === "accepted" ||
@@ -240,31 +252,54 @@ const EngineersActions = ({
     OfferJobStatus === "started" ||
     mappedOfferStatus === "initial" ||
     mappedOfferStatus === "checked-in";
-    
+
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
-  if (hasJobStarted || hasStartPending) return postStartActions;
+    if (hasJobStarted || hasStartPending) return postStartActions;
 
-  if (hasStartPending) {
-    return (
-      <div className="flex flex-wrap gap-2 w-fit items-center">
-        <icons.checkCircle className="text-yellow-500 w-6 h-6" />
-        <span className="text-lg">Start Pending Approval</span>
-      </div>
-    );
-  }
+    if (hasStartPending) {
+      return (
+        <div className="flex flex-wrap gap-2 w-fit items-center">
+          <icons.checkCircle className="text-yellow-500 w-6 h-6" />
+          <span className="text-lg">Start Pending Approval</span>
+        </div>
+      );
+    }
 
-  if (canStartJob) {
-    return (
-      <div className="flex flex-row gap-4">
-        <Button
-          className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-          onClick={handleConfirmStartJob}
-          disabled={isStartingJob}
-        >
-          Start Job
-        </Button>
-        {isOffer && (
+    if (canStartJob) {
+      return (
+        <div className="flex flex-row gap-4">
+          <Button
+            className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+            onClick={handleConfirmStartJob}
+            disabled={isStartingJob}
+          >
+            Start Job
+          </Button>
+          {isOffer && (
+            <Button
+              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+              onClick={() => {
+                setActiveKey("cancelOffer");
+                setISOpenSidebar(true);
+              }}
+            >
+              Decline
+            </Button>
+          )}
+        </div>
+      );
+    }
+
+    if (mappedOfferStatus === "initial" && isOffer) {
+      return (
+        <div className="flex flex-row gap-4">
+          <Button
+            className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
+            onClick={handleConfirmAcceptJob}
+          >
+            Accept Job
+          </Button>
           <Button
             className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
             onClick={() => {
@@ -274,56 +309,31 @@ const EngineersActions = ({
           >
             Decline
           </Button>
-        )}
-      </div>
-    );
-  }
+        </div>
+      );
+    }
 
-  if (mappedOfferStatus === "initial" && isOffer) {
-    return (
-      <div className="flex flex-row gap-4">
-        <Button
-          className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-          onClick={handleConfirmAcceptJob}
-        >
-          Accept Job
-        </Button>
+    // Default: Send Proposal / View Job Posting
+    if (!isSendProposal && !hasSubmittedProposal) {
+      return (
         <Button
           className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-          onClick={() => {
-            setActiveKey("cancelOffer");
-            setISOpenSidebar(true);
-          }}
+          onClick={() => setSendProposal?.(true)}
         >
-          Decline
+          Send Proposal
         </Button>
+      );
+    }
+
+    return (
+      <div
+        className="hover:underline cursor-pointer"
+        onClick={handleViewJobPosting}
+      >
+        View Job Posting
       </div>
     );
-  }
-
-  // Default: Send Proposal / View Job Posting
-  if (!isSendProposal && !hasSubmittedProposal) {
-    return (
-      <Button
-        className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-        onClick={() => setSendProposal?.(true)}
-      >
-        Send Proposal
-      </Button>
-    );
-  }
-
-  return (
-    <div
-      className="hover:underline cursor-pointer"
-      onClick={handleViewJobPosting}
-    >
-      View Job Posting
-    </div>
-  );
-};
-
-
+  };
 
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
@@ -360,7 +370,8 @@ const EngineersActions = ({
             <span className="text-lg">Job Applied</span>
           </div>
         ) : /* New/Posted/Offer/Accepted/Assigned Status */
-        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) && !hasStartPending ? (
+        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) &&
+          !hasStartPending ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             {renderJobActionButtons()}
           </div>

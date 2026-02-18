@@ -21,7 +21,9 @@ const JobsDetails: React.FC = () => {
   const { data: jobsData, isLoading, error } = useClientGetJobs(true);
   // Find the specific job from the API data
   const jobsArray = Array.isArray(jobsData) ? jobsData : [];
-  const job = jobsArray.find((j: { id?: string | number }) => String(j.id) === jobId) || jobsArray[0];
+  const job =
+    jobsArray.find((j: { id?: string | number }) => String(j.id) === jobId) ||
+    jobsArray[0];
   // Loading state
   if (isLoading) {
     return (
@@ -36,7 +38,9 @@ const JobsDetails: React.FC = () => {
             />
           </div>
           <div className="flex justify-center items-center h-64">
-            <div className="text-gray-600 dark:text-gray-400">Loading job details...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Loading job details...
+            </div>
           </div>
         </div>
       </div>
@@ -57,7 +61,9 @@ const JobsDetails: React.FC = () => {
             />
           </div>
           <div className="flex justify-center items-center h-64">
-            <div className="text-red-600 dark:text-red-400">Error loading job details</div>
+            <div className="text-red-600 dark:text-red-400">
+              Error loading job details
+            </div>
           </div>
         </div>
       </div>
@@ -79,10 +85,9 @@ const JobsDetails: React.FC = () => {
           </div>
           <div className="flex justify-center items-center h-64">
             <div className="text-gray-600 dark:text-gray-400">
-              {jobsArray.length > 0 
+              {jobsArray.length > 0
                 ? `Job with ID ${jobId} not found. Available IDs: ${jobsArray.map((j: { id: number }) => j.id).join(", ")}`
-                : "No jobs found for this client"
-              }
+                : "No jobs found for this client"}
             </div>
           </div>
         </div>
@@ -110,7 +115,10 @@ const JobsDetails: React.FC = () => {
     status: job.status || "Posted",
   };
 
-  console.log("formattedJob being passed to JobCardDetailsHeader:", formattedJob);
+  console.log(
+    "formattedJob being passed to JobCardDetailsHeader:",
+    formattedJob,
+  );
 
   return (
     <div className="min-h-screen transition-colors duration-200">
@@ -132,7 +140,11 @@ const JobsDetails: React.FC = () => {
                   status={formattedJob.status}
                   activeTab={activeTab}
                   job={job}
-                  assignmentId={job.assignmentIds?.[0] ? Number(job.assignmentIds[0]) : Number(jobId)}
+                  assignmentId={
+                    job.assignmentIds?.[0]
+                      ? Number(job.assignmentIds[0])
+                      : Number(jobId)
+                  }
                 />
               </div>
             </div>

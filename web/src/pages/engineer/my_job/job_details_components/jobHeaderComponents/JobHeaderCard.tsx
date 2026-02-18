@@ -1,6 +1,4 @@
-import {
-  WORKING_TYPES,
-} from "@/pages/engineer/search_result/types";
+import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
 
 import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
 import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
@@ -193,19 +191,19 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
           <ClientActions />
         ) : (
           <EngineersActions
-              OfferJobStatus={OfferJobStatus}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setOfferJobStatus={setOfferJobStatus}
-              setOpen={setOpen}
-              status={status}
-              setSendProposal={setSendProposal}
-              activeTab={activeTab}
-              onAddProgressUpdate={onAddProgressUpdate}
-              onOpenFinalStatement={onOpenFinalStatement}
-              assignmentId={assignmentId}
-            />
+            OfferJobStatus={OfferJobStatus}
+            isSendProposal={isSendProposal}
+            setActiveTab={setActiveTab}
+            setIsWorkSubmitted={setIsWorkSubmitted}
+            setOfferJobStatus={setOfferJobStatus}
+            setOpen={setOpen}
+            status={status}
+            setSendProposal={setSendProposal}
+            activeTab={activeTab}
+            onAddProgressUpdate={onAddProgressUpdate}
+            onOpenFinalStatement={onOpenFinalStatement}
+            assignmentId={assignmentId}
+          />
         )}
       </div>
       {/* Update Log Popup */}
