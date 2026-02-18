@@ -197,13 +197,6 @@ const HomeClient: React.FC = () => {
       ),
     },
     {
-      key: "clientType",
-      label: "Required Type",
-      renderCell: (row: ManageClientProps) => (
-        <span className="capitalize">{row.clientType}</span>
-      ),
-    },
-    {
       key: "userStatus",
       label: "User Status",
       renderCell: (row: ManageClientProps) => {

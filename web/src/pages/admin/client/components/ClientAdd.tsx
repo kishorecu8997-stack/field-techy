@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   businessTypes,
   citiesByCountry,
@@ -19,6 +19,7 @@ import {
 } from "../Validates";
 import PhoneInputField from "@/shared/components/commonUI/inputs/PhoneInputField";
 import { useFormContext } from "react-hook-form";
+import { validateEmailRules } from "@/shared/components/commonUI/emailValidation";
 
 /**
  * ClientAdd component renders the form fields for adding or editing the basic information of a client.
@@ -31,35 +32,57 @@ import { useFormContext } from "react-hook-form";
  * @returns {JSX.Element} The rendered form fields for client's basic information.
  */
 const ClientAdd: React.FC = () => {
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
+  const clientType = watch("clientType");
   const selectedCountry = watch("country");
+
+  useEffect(() => {
+    if (!clientType) {
+      setValue("clientType", "corporate");
+    }
+  }, [clientType, setValue]);
+
   const cityOptions = selectedCountry
     ? citiesByCountry[selectedCountry] || []
     : [];
+
   const stateOptions = selectedCountry
     ? statesByCountry[selectedCountry] || []
     : [];
 
   return (
     <div className="h-full w-full flex flex-1 overflow-y-auto flex-col bg-transparent rounded-md p-4">
-      {/* Profile Image */}
       <div className="mb-8">
         <label className="block mb-3 font-medium">Profile Image</label>
         <div className="w-fit">
           <ImageUploaderField name="profileImage" />
         </div>
       </div>
+
       {/* Form Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left Column */}
         <div className="space-y-6">
-          <InputField
-            name="companyName"
-            label="Company Name"
-            placeholder="Enter Company Name"
+          <SelectField
+            label="Client Type"
+            name="clientType"
+            placeholder="Select Client Type"
+            options={[
+              { label: "Corporate", value: "corporate" },
+              { label: "Home", value: "home" },
+            ]}
             required
-            rules={{ validate: (v: string) => validateCompany(v) }}
           />
+
+          {clientType === "corporate" && (
+            <InputField
+              name="companyName"
+              label="Company Name"
+              placeholder="Enter Company Name"
+              required
+              rules={{ validate: (v: string) => validateCompany(v) }}
+            />
+          )}
+
           <PhoneInputField
             name="phoneNumber"
             label="Phone Number"
@@ -67,13 +90,23 @@ const ClientAdd: React.FC = () => {
             required
           />
 
-          <SelectField
-            label="Industry"
-            name="industry"
-            placeholder="Select Industry"
-            options={industries}
+          <InputField
+            name="email"
+            label="Email Address"
+            type="text"
             required
+            rules={validateEmailRules}
           />
+
+          {clientType === "corporate" && (
+            <SelectField
+              label="Industry"
+              name="industry"
+              placeholder="Select Industry"
+              options={industries}
+              required
+            />
+          )}
 
           <SelectField
             label="Country"
@@ -82,6 +115,7 @@ const ClientAdd: React.FC = () => {
             options={countries}
             required
           />
+
           <SelectField
             label="City"
             name="city"
@@ -89,18 +123,9 @@ const ClientAdd: React.FC = () => {
             options={cityOptions}
             required
           />
-          <div className="relative">
-            <SelectField
-              label="Tax Document (VAT)"
-              name="taxDocument"
-              placeholder="Select tax document"
-              options={taxDocuments}
-              required
-            />
-          </div>
         </div>
 
-        {/* Right Column */}
+        {/* RIGHT COLUMN */}
         <div className="space-y-6">
           <InputField
             label="Contact Person Name"
@@ -110,20 +135,26 @@ const ClientAdd: React.FC = () => {
             rules={{ validate: (v: string) => validateName(v) }}
           />
 
-          <SelectField
-            label="Business Type"
-            name="businessType"
-            placeholder="Select business type"
-            options={businessTypes}
-            required
-          />
+          {clientType === "corporate" && (
+            <SelectField
+              label="Business Type"
+              name="businessType"
+              placeholder="Select business type"
+              options={businessTypes}
+              required
+            />
+          )}
 
-          <InputField
-            label="Address"
-            name="address"
-            required
-            rules={{ validate: (v: string) => validateAddress(v) }}
-          />
+          {clientType === "corporate" && (
+            <InputField
+              label="Address"
+              name="address"
+              placeholder="Enter Address"
+              required
+              rules={{ validate: (v: string) => validateAddress(v) }}
+            />
+          )}
+
           <SelectField
             label="State"
             name="state"
@@ -131,6 +162,7 @@ const ClientAdd: React.FC = () => {
             options={stateOptions}
             required
           />
+
           <InputField
             name="postalCode"
             label="Postal Code"
@@ -142,13 +174,26 @@ const ClientAdd: React.FC = () => {
                 validateZipcode(value, selectedCountry),
             }}
           />
-          <InputField
-            label="Enter VAT registration number"
-            name="vatRegistrationNumber"
-            required
-            placeholder="Enter VAT registration number"
-            rules={{ validate: (v: string) => validateVatNumber(v) }}
-          />
+
+          {clientType === "corporate" && (
+            <>
+              <InputField
+                label="Enter VAT registration number"
+                name="vatRegistrationNumber"
+                required
+                placeholder="Enter VAT registration number"
+                rules={{ validate: (v: string) => validateVatNumber(v) }}
+              />
+
+              <SelectField
+                label="Tax Document (VAT)"
+                name="taxDocument"
+                placeholder="Select tax document"
+                options={taxDocuments}
+                required
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

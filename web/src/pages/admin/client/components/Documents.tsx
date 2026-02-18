@@ -58,9 +58,9 @@ export default function Documents() {
           {/* Qualification Certificate */}
           <div className="w-full">
             <FileUpload
-              name="qualificationCertificate"
-              label="Qualification Certificate"
-              placeholder="Upload Qualification Certificate"
+              name="certificate"
+              label="Certificate"
+              placeholder="Upload Certificate"
               accept=".pdf"
               maxPages={5}
               validatePDF={true}
