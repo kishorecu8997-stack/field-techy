@@ -1,4 +1,3 @@
-
 import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
@@ -70,7 +69,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -95,7 +94,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -114,7 +113,7 @@ const JobDetailsPage = () => {
           <MyJobsHeader
             title="Job Details"
             currentSort={SORT_OPTIONS.NEWEST}
-            onSortChange={() => { }}
+            onSortChange={() => {}}
             isReport
           />
           <div className="flex items-center justify-center min-h-[400px]">
@@ -132,16 +131,16 @@ const JobDetailsPage = () => {
 
   // Prepare dummy job data
   const jobTitle = isDummyJob ? "Network Engineer" : (job?.jobTitle as string);
-  const clientName = isDummyJob ? "-" : (job?.clientDetails?.companyName as string);
+  const clientName = isDummyJob
+    ? "-"
+    : (job?.clientDetails?.companyName as string);
   const duration = isDummyJob
     ? "5 weeks"
     : getDurationString({
-      startDateStr: job?.startDate as string,
-      endDateStr: job?.endDate as string,
-    });
-  const engagementType = isDummyJob
-    ? "ON_SITE"
-    : (job?.jobType as string);
+        startDateStr: job?.startDate as string,
+        endDateStr: job?.endDate as string,
+      });
+  const engagementType = isDummyJob ? "ON_SITE" : (job?.jobType as string);
   const jobStatus = isDummyJob ? "New" : (job?.status as JobStatus);
 
   return (
@@ -150,7 +149,7 @@ const JobDetailsPage = () => {
         <MyJobsHeader
           title="Job Details"
           currentSort={SORT_OPTIONS.NEWEST}
-          onSortChange={() => { }}
+          onSortChange={() => {}}
           isReport
           customLabels={
             isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined

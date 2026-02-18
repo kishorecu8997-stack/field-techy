@@ -222,11 +222,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-        (item: { id: string; filters: Filters; timestamp: string }) => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }),
-      )
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }),
+        )
       : [];
   });
 
@@ -344,8 +344,9 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
