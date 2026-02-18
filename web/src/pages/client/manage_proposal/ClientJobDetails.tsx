@@ -10,7 +10,7 @@ import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { type JobStatus } from "../search_result/types";
-
+import ChatForJobs from "@/shared/components/ChatForJobs";
 /**
  * Page component displaying detailed information about a specific job.
  *
@@ -25,21 +25,22 @@ const ClientJobDetails = () => {
     "initial" | "accepted" | "declined" | "started" | "checked-in" | undefined
   >("initial");
 
+  const [isChatVisible, setIsChatVisible] = useState(false);
+
   const jobId = Number(params.jobId);
   const id = Number(params.id);
 
   const proposal = ProposalsList.find((job) => job.id === id);
   const data = sampleJobs.find((job) => job.id === jobId);
+
   const matchedJob = proposal
     ? sampleJobs1.find((job) => job.id === proposal.jobID)
     : data
       ? sampleJobs.find((job) => job.id === jobId)
       : null;
 
-  // Check if this is the dummy Network Engineer job
   const isDummyNetworkEngineer = isDummyNetworkEngineerJob(matchedJob?.id);
 
-  // Set default tab based on job type - moved to useEffect to avoid setState during render
   useEffect(() => {
     if (isDummyNetworkEngineer && activeTab === "Job Information") {
       setActiveTab("Job Overview");
@@ -68,40 +69,50 @@ const ClientJobDetails = () => {
             }}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
-            <JobHeaderCard
-              title={matchedJob?.title as string}
-              client={matchedJob?.client as string}
-              duration={matchedJob?.duration as string}
-              type={matchedJob?.type}
-              status={matchedJob?.status}
-              setIsWorkSubmitted={setIsWorkSubmitted}
-              setSendProposal={setIsSendProposal}
-              isSendProposal={isSendProposal}
-              setActiveTab={setActiveTab}
-              setOfferJobStatus={setOfferJobStatus}
-              OfferJobStatus={OfferJobStatus}
-              hideBreakDetails={isDummyNetworkEngineer}
-              hideDurationAndClient={isDummyNetworkEngineer}
-              jobLocation={
-                isDummyNetworkEngineer ? matchedJob?.location : undefined
-              }
-              numberOfVacancy={numberOfVacancy}
-              numberOfApplicants={numberOfApplicants}
-            />
-            <JobTabSection
-              status={matchedJob?.status as JobStatus}
-              isWorkSubmitted={isWorkSubmitted}
-              isSendProposal={isSendProposal}
-              activeTab={activeTab}
-              OfferJobStatus={OfferJobStatus}
-              isDummyNetworkEngineer={isDummyNetworkEngineer}
-              showManageProposals
-            />
+
+        {isChatVisible && params.jobId ? (
+          <div className="mt-4 h-[calc(100vh-6rem)]">
+            <ChatForJobs jobId={params.jobId} />
           </div>
-          <SidebarJobPostWallet earnings={earningsData} />
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="lg:col-span-2 space-y-6">
+              <JobHeaderCard
+                title={matchedJob?.title as string}
+                client={matchedJob?.client as string}
+                duration={matchedJob?.duration as string}
+                type={matchedJob?.type}
+                status={matchedJob?.status}
+                setIsWorkSubmitted={setIsWorkSubmitted}
+                setSendProposal={setIsSendProposal}
+                isSendProposal={isSendProposal}
+                setActiveTab={setActiveTab}
+                setOfferJobStatus={setOfferJobStatus}
+                OfferJobStatus={OfferJobStatus}
+                hideBreakDetails={isDummyNetworkEngineer}
+                hideDurationAndClient={isDummyNetworkEngineer}
+                jobLocation={
+                  isDummyNetworkEngineer ? matchedJob?.location : undefined
+                }
+                numberOfVacancy={numberOfVacancy}
+                numberOfApplicants={numberOfApplicants}
+                onToggleChat={() => setIsChatVisible(true)}
+              />
+
+              <JobTabSection
+                status={matchedJob?.status as JobStatus}
+                isWorkSubmitted={isWorkSubmitted}
+                isSendProposal={isSendProposal}
+                activeTab={activeTab}
+                OfferJobStatus={OfferJobStatus}
+                isDummyNetworkEngineer={isDummyNetworkEngineer}
+                showManageProposals
+              />
+            </div>
+
+            <SidebarJobPostWallet earnings={earningsData} />
+          </div>
+        )}
       </div>
     </div>
   );
