@@ -26,21 +26,20 @@ const ClientJobDetails = () => {
   >("initial");
 
   const [isChatVisible, setIsChatVisible] = useState(false);
-
   const jobId = Number(params.jobId);
   const id = Number(params.id);
 
   const proposal = ProposalsList.find((job) => job.id === id);
   const data = sampleJobs.find((job) => job.id === jobId);
-
   const matchedJob = proposal
     ? sampleJobs1.find((job) => job.id === proposal.jobID)
     : data
       ? sampleJobs.find((job) => job.id === jobId)
       : null;
-
+  // Check if this is the dummy Network Engineer job
   const isDummyNetworkEngineer = isDummyNetworkEngineerJob(matchedJob?.id);
 
+  // Set default tab based on job type - moved to useEffect to avoid setState during render
   useEffect(() => {
     if (isDummyNetworkEngineer && activeTab === "Job Information") {
       setActiveTab("Job Overview");
