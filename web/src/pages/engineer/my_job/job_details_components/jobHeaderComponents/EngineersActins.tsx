@@ -61,6 +61,7 @@ const EngineersActions = ({
   onAddProgressUpdate,
   onOpenFinalStatement,
   assignmentId,
+  isSendProposal,
 }: {
   setOfferJobStatus?: Dispatch<
     SetStateAction<OfferedJobStatusType | AssignmentStatus | undefined>
@@ -146,7 +147,6 @@ const EngineersActions = ({
             try {
               if (assignmentId) {
                 await requestStartJob({ body: { assignmentId } });
-                handleUpdateOfferStatus("started");
               } else {
                 toast.error("No assignment found. Please apply to the job first.");
               }
@@ -179,6 +179,11 @@ const EngineersActions = ({
       actionButtons: [],
     });
   };
+
+  const handleViewJobPosting = () => {
+  setSendProposal?.(false);
+  setActiveTab?.("Job Information");
+};
 
   const postStartActions = (
     <div className="flex flex-wrap gap-2 w-fit">
@@ -223,55 +228,43 @@ const EngineersActions = ({
   const hasStartPending = OfferJobStatus === "start_pending_approval";
   
   // Guard: can user start the job?
-  const canStartJob = hasAssignment || isProposalAccepted || isOffer;
+  const canStartJob = (isProposalAccepted || isOffer || OfferJobStatus === "initial" ) && !hasStartPending && !hasJobStarted;
 
+   // Check if proposal already submitted via API
+  const hasSubmittedProposal = 
+    OfferJobStatus === "applied" || 
+    OfferJobStatus === "submitted" ||
+    OfferJobStatus === "assigned" ||
+    OfferJobStatus === "accepted" ||
+    OfferJobStatus === "start_pending_approval" ||
+    OfferJobStatus === "started" ||
+    mappedOfferStatus === "initial" ||
+    mappedOfferStatus === "checked-in";
+    
   // Extracted shared button logic to avoid duplication
   const renderJobActionButtons = () => {
-    if (hasJobStarted) return postStartActions;
-    
-    if (hasStartPending) {
-      return (
-        <div className="flex flex-wrap gap-2 w-fit items-center">
-          <icons.checkCircle className="text-yellow-500 w-6 h-6" />
-          <span className="text-lg">Start Pending Approval</span>
-        </div>
-      );
-    }
+  if (hasJobStarted || hasStartPending) return postStartActions;
 
-    if (canStartJob) {
-      return (
-        <div className="flex flex-row gap-4">
-          <Button
-            className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-            onClick={() => handleConfirmStartJob()}
-            disabled={isStartingJob}
-          >
-            Start Job
-          </Button>
-          {isOffer && (
-            <Button
-              className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
-              onClick={() => {
-                setActiveKey("cancelOffer");
-                setISOpenSidebar(true);
-              }}
-            >
-              Decline
-            </Button>
-          )}
-        </div>
-      );
-    }
+  if (hasStartPending) {
+    return (
+      <div className="flex flex-wrap gap-2 w-fit items-center">
+        <icons.checkCircle className="text-yellow-500 w-6 h-6" />
+        <span className="text-lg">Start Pending Approval</span>
+      </div>
+    );
+  }
 
-    if (mappedOfferStatus === "initial" && isOffer) {
-      return (
-        <div className="flex flex-row gap-4">
-          <Button
-            className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
-            onClick={() => handleConfirmAcceptJob()}
-          >
-            Accept Job
-          </Button>
+  if (canStartJob) {
+    return (
+      <div className="flex flex-row gap-4">
+        <Button
+          className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+          onClick={handleConfirmStartJob}
+          disabled={isStartingJob}
+        >
+          Start Job
+        </Button>
+        {isOffer && (
           <Button
             className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
             onClick={() => {
@@ -281,11 +274,35 @@ const EngineersActions = ({
           >
             Decline
           </Button>
-        </div>
-      );
-    }
+        )}
+      </div>
+    );
+  }
 
-    // Default: Show Send Proposal button
+  if (mappedOfferStatus === "initial" && isOffer) {
+    return (
+      <div className="flex flex-row gap-4">
+        <Button
+          className="bg-teal-800 text-black px-6 py-2 rounded-md font-medium border border-gray-300"
+          onClick={handleConfirmAcceptJob}
+        >
+          Accept Job
+        </Button>
+        <Button
+          className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
+          onClick={() => {
+            setActiveKey("cancelOffer");
+            setISOpenSidebar(true);
+          }}
+        >
+          Decline
+        </Button>
+      </div>
+    );
+  }
+
+  // Default: Send Proposal / View Job Posting
+  if (!isSendProposal && !hasSubmittedProposal) {
     return (
       <Button
         className="bg-teal-800 text-white px-6 py-2 rounded-md font-medium border border-gray-300"
@@ -294,7 +311,19 @@ const EngineersActions = ({
         Send Proposal
       </Button>
     );
-  };
+  }
+
+  return (
+    <div
+      className="hover:underline cursor-pointer"
+      onClick={handleViewJobPosting}
+    >
+      View Job Posting
+    </div>
+  );
+};
+
+
 
   return (
     <div className="mt-4 flex flex-wrap gap-3 h-fit justify-end">
@@ -331,7 +360,7 @@ const EngineersActions = ({
             <span className="text-lg">Job Applied</span>
           </div>
         ) : /* New/Posted/Offer/Accepted/Assigned Status */
-        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) ? (
+        (isNew || isPosted || isOffer || isProposalAccepted || hasAssignment) && !hasStartPending ? (
           <div className="flex flex-wrap gap-2 w-fit items-center">
             {renderJobActionButtons()}
           </div>

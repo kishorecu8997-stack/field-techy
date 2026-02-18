@@ -3,7 +3,10 @@ import { earningsData } from "@/dummy_data/jobDetails";
 import ExploreEngineerHeaderCard from "@/shared/components/cards/client/ExploreEngineerHeaderCard";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import SidebarJobPostWallet from "@/shared/components/SidebarJobPostWallet";
-import { useClientGetAssignmentDetails, useClientActionOnAssignment } from "@/shared/apiServices/client/clientOpenApiService";
+import {
+  useClientGetAssignmentDetails,
+  useClientActionOnAssignment,
+} from "@/shared/apiServices/client/clientOpenApiService";
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useNavigate, useParams } from "react-router-dom";
 

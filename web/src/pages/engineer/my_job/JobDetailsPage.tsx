@@ -1,10 +1,11 @@
+import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
 import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
 import { getDurationString } from "@/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import {
   JOB_STATUSES,
   SORT_OPTIONS,
@@ -13,6 +14,11 @@ import {
 } from "../search_result/types";
 import type { ProgressUpdate, OfferedJobStatusType, JobInfoSectionProps } from "./types.d";
 import type { EngineerSearchJobsResponse } from "@/api";
+import ClientInfoCard from "./job_details_components/ClientInfoCard";
+import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
+import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
+import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
+import JobTabSection from "./job_details_components/JobTabSection";
 
 /**
  * Maps API job data to JobInfoSectionProps format for the Job Overview tab
@@ -71,11 +77,6 @@ const mapJobToJobInfo = (job: EngineerSearchJobsResponse[number]): JobInfoSectio
     files,
   };
 };
-import ClientInfoCard from "./job_details_components/ClientInfoCard";
-import JobHeaderCard from "./job_details_components/jobHeaderComponents/JobHeaderCard";
-import ReviewClientModal from "./job_details_components/jobHeaderComponents/ReviewClientModal";
-import FinalStatementForm from "./job_details_components/jobHeaderComponents/FinalStatementForm";
-import JobTabSection from "./job_details_components/JobTabSection";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -85,6 +86,8 @@ import JobTabSection from "./job_details_components/JobTabSection";
  */
 const JobDetailsPage = () => {
   const params = useParams();
+  const isDummyJob = isDummyNetworkEngineerJob(params.jobId);
+  const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
@@ -93,14 +96,18 @@ const JobDetailsPage = () => {
   const [_offerJobStatus, setOfferJobStatus] = useState<OfferedJobStatusType | AssignmentStatus | undefined>();
   const [_isWorkSubmitted] = useState(false);
 
-  // Fetch job data from real API using search endpoint and filter by jobId
-  const { data: searchResults, isLoading } = useEngineerSearchJobs({}, true);
-  const jobData = searchResults?.find((j) => String(j.id) === params.jobId);
+  // Fetch job data from real API using search endpoint with jobId filter
+  const { data: jobList, isLoading: isJobsLoading } = useEngineerSearchJobs({
+    jobId: Number(params.jobId),
+  });
 
-  const handleSubmitReview = () => {
-    toast.success("Review submitted successfully");
-    setIsReviewOpen(false);
-  };
+  const job = jobList?.[0];
+
+  // const location = job?.clientDetails?.address;
+  // const handleSubmitReview = () => {
+  //   toast.success("Review submitted successfully");
+  //   setIsReviewOpen(false);
+  // };
 
   const handleAddProgressUpdate = (update: ProgressUpdate) => {
     setProgressUpdates((prev) => [update, ...prev]);
@@ -135,7 +142,7 @@ const JobDetailsPage = () => {
   }
 
   // Handle loading state
-  if (isLoading) {
+  if (isJobsLoading && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -154,7 +161,7 @@ const JobDetailsPage = () => {
   }
 
   // Handle case where job data is not found
-  if (!jobData) {
+  if (!job && !isDummyJob) {
     return (
       <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-6 md:px-6">
@@ -177,15 +184,15 @@ const JobDetailsPage = () => {
     );
   }
 
-  // Prepare mapped job data from API response
-  const jobTitle = jobData.jobTitle || "";
-  const clientId = jobData.clientId;
-  const jobLocation = jobData.workLocationName || "";
+  // Prepare mapped job data from API response - use job as the primary source
+  const jobTitle = job?.jobTitle || "";
+  const clientId = job?.clientId;
+  const jobLocation = job?.workLocationName || "";
   const duration = getDurationString({
-    startDateStr: jobData.startDate || "",
-    endDateStr: jobData.endDate || "",
+    startDateStr: job?.startDate || "",
+    endDateStr: job?.endDate || "",
   });
-  const assignmentId = jobData.assignmentId ?? undefined;
+  const assignmentId = job?.assignmentId ?? undefined;
 
   const engagementTypeMapping: Record<string, string> = {
     "On site": "ON_SITE",
@@ -194,8 +201,8 @@ const JobDetailsPage = () => {
   };
 
   const engagementType =
-    engagementTypeMapping[jobData.jobType] ||
-    (jobData.jobType as string);
+    engagementTypeMapping[job?.jobType || ""] ||
+    (job?.jobType as string);
 
   const statusMapping: Record<string, JobStatus> = {
     Posted: JOB_STATUSES.posted,
@@ -207,12 +214,12 @@ const JobDetailsPage = () => {
   };
 
   const jobStatus: JobStatus | AssignmentStatus =
-    statusMapping[jobData.status as string] ||
-    (jobData.status as AssignmentStatus) ||
+    statusMapping[job?.status as string] ||
+    (job?.status as AssignmentStatus) ||
     JOB_STATUSES.posted;
 
   // Get assignment status from API data (maps to OfferedJobStatusType via EngineersActions)
-  const assignmentStatus = jobData.assignmentStatus as AssignmentStatus;
+  const assignmentStatus = job?.assignmentStatus as AssignmentStatus;
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -222,6 +229,9 @@ const JobDetailsPage = () => {
           currentSort={SORT_OPTIONS.NEWEST}
           onSortChange={() => {}}
           isReport
+          customLabels={
+            isDummyJob ? { "dummy-j1": "Network Engineer" } : undefined
+          }
         />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
@@ -231,13 +241,14 @@ const JobDetailsPage = () => {
               duration={duration as string}
               type={engagementType}
               status={jobStatus}
+              setIsWorkSubmitted={setIsWorkSubmitted}
               setSendProposal={setIsSendProposal}
               isSendProposal={isSendProposal}
               setActiveTab={setActiveTab}
               OfferJobStatus={_offerJobStatus || assignmentStatus}
               setOfferJobStatus={setOfferJobStatus}
               jobLocation={jobLocation}
-              numberOfVacancy={jobData.vacancies ?? undefined}
+              numberOfVacancy={job?.vacancies ?? undefined}
               activeTab={activeTab}
               onAddProgressUpdate={handleAddProgressUpdate}
               onOpenFinalStatement={handleOpenFinalStatement}
@@ -246,7 +257,9 @@ const JobDetailsPage = () => {
 
             <JobTabSection
               status={jobStatus}
+              isWorkSubmitted={isWorkSubmitted}
               isSendProposal={isSendProposal}
+              setSendProposal={setIsSendProposal}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               OfferJobStatus={assignmentStatus}
@@ -254,7 +267,11 @@ const JobDetailsPage = () => {
               onAddProgressUpdate={handleAddProgressUpdate}
               assignmentId={assignmentId}
               jobId={Number(params.jobId)}
-              jobInfo={mapJobToJobInfo(jobData)}
+              jobInfo={job ? mapJobToJobInfo(job) : {
+                jobTitle: "",
+                terms: { title: "Job Details", items: [] },
+                files: []
+              }}
             />
 
             {showFinalStatement && (
@@ -285,7 +302,7 @@ const JobDetailsPage = () => {
           isOpen={isReviewOpen}
           onClose={() => setIsReviewOpen(false)}
           clientName={`Client #${clientId}`}
-          onSubmit={handleSubmitReview}
+          // onSubmit={handleSubmitReview}
         />
       )}
     </div>

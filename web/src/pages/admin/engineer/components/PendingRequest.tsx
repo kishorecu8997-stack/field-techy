@@ -1,143 +1,110 @@
 import { absoluteUrls } from "@/config/urls";
-import { JobStatus, manageEngineer } from "@/dummy_data/admin/manageEngineer";
+import { JobStatus } from "@/dummy_data/admin/manageEngineer";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import type { Column } from "@/shared/components/commonUI/custom_table";
 import CustomTable from "@/shared/components/commonUI/custom_table";
 import { SearchInput } from "@/shared/components/commonUI/custom_table/SearchInput";
 import Popup from "@/shared/components/Popup";
 import SelectMenu from "@/shared/components/SelectMenu";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { IoCloseSharp } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import type { ManageEngineerProps } from "../types";
-import { usePopupStore } from "@/shared/store/popupStore";
 import { toast } from "react-toastify";
-import { useUpdateEngineerProfileStatus } from "@/shared/apiServices/admin/adminOpenApiService";
-import type { EngineerStatusType } from "../types";
-import { EngineerStatus } from "../types";
-import { useUserSessionStore } from "@/shared/store/useUserSessionStore";
 
-/**
- * PendingRequest Component
- *
- * Displays a management dashboard for engineers, including:
- * - A search input for filtering results.
- * - A customizable table for viewing detailed engineer data.
- * - Actionable buttons for viewing document details.
- *
- * @component
- * @example
- * return (
- *   <PendingRequest />
- * );
- *
- * @returns {JSX.Element} The rendered PendingRequest component.
- */
+import type { ManageEngineerProps, EngineerStatusType } from "../types";
+import { EngineerStatus } from "../types";
+import { usePopupStore } from "@/shared/store/popupStore";
+import {
+  useAdminManageEngineers,
+  useAdminEngineersByUserIdStatus,
+} from "@/shared/apiServices/admin/adminOpenApiService";
+import { useEngineerStatusChange } from "@/shared/hooks/useEngineerStatusChange";
 
 export default function PendingRequest() {
   const navigate = useNavigate();
   const { showPopup } = usePopupStore();
+
   const [rowStatuses, setRowStatuses] = useState<
     Record<number, EngineerStatusType>
   >({});
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState<number | null>(null);
-  const [search, setSearch] = useState("");
-  const [engineers, setEngineers] = useState(manageEngineer);
-  const session = useUserSessionStore((s) => s.session);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const filteredData = engineers
-    .filter((e) => e.kycStatus === EngineerStatus.PENDING)
-    .filter((e) => {
-      const query = search.toLowerCase();
-      return (
-        e.engineerID.toLowerCase().includes(query) ||
-        e.details.name.toLowerCase().includes(query) ||
-        e.details.email.toLowerCase().includes(query) ||
-        e.location.toLowerCase().includes(query)
-      );
-    });
-
-  const isEngineerStatus = (
-    value: string | null,
-  ): value is EngineerStatusType => {
-    return (
-      value !== null &&
-      Object.values(EngineerStatus).includes(value as EngineerStatusType)
-    );
-  };
-
-  const { mutateAsync: updateEngineerStatus } = useUpdateEngineerProfileStatus({
-    onSuccess: (_data, variables) => {
-      if (variables.profileStatus === EngineerStatus.APPROVE)
-        toast.success("Engineer approved successfully!");
-      else if (variables.profileStatus === EngineerStatus.REJECT)
-        toast.success("Engineer rejected successfully!");
-
-      // Update local row status
-      setRowStatuses((prev) => ({
-        ...prev,
-        [variables.userId]: variables.profileStatus,
-      }));
-
-      // Remove engineer from pending list if status is not pending
-      if (variables.profileStatus !== EngineerStatus.PENDING) {
-        setEngineers((prev) =>
-          prev.filter((eng) => eng.id !== variables.userId),
-        );
-      }
-    },
-    onError: () => toast.error("Failed to update engineer status"),
+  const {
+    data: engineersResponse,
+    isLoading,
+    refetch,
+  } = useAdminManageEngineers({
+    page: currentPage,
+    limit: pageSize,
+    profileStatus: "pending",
   });
 
-  const handleStatusChange = async (
-    data: ManageEngineerProps,
-    status: EngineerStatusType,
-  ) => {
-    if (!status) return;
+  // Mutation for updating status
+  const { mutateAsync: updateEngineerStatus } =
+    useAdminEngineersByUserIdStatus();
 
-    const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
-    const bodyMessage =
-      status === EngineerStatus.PENDING
-        ? "Are you sure you want to set this engineer to pending?"
-        : `Are you sure you want to ${formattedStatus} this engineer?`;
+  // Use the hook for status change
+  const { onStatusChange } = useEngineerStatusChange({
+    rowStatuses,
+    setRowStatuses,
+    mutateAsync: async ({
+      userId,
+      profileStatus,
+    }: {
+      userId: number;
+      profileStatus: EngineerStatusType;
+    }) =>
+      updateEngineerStatus({
+        path: { userId },
+        body: { profileStatus },
+      }),
+    showPopup,
+    refetch,
+  });
 
-    await showPopup({
-      title: `${formattedStatus} Engineer`,
-      body: bodyMessage,
-      actionButtons: [
-        { label: "Cancel", value: null, variant: "outline" },
-        {
-          label: "Yes",
-          value: "yes",
-          variant:
-            status === EngineerStatus.APPROVE
-              ? "primary"
-              : status === EngineerStatus.REJECT
-                ? "danger"
-                : "warning",
-          action: async (close) => {
-            try {
-              await updateEngineerStatus({
-                userId: data.id,
-                profileStatus: status,
-                token: session?.accessToken || "",
-              });
-              close(true);
-            } catch {
-              close(true);
-            }
-          },
-        },
-      ],
-    });
-  };
+  // Map API response to table rows
+  const engineersData: ManageEngineerProps[] = (
+    engineersResponse?.data ?? []
+  ).map((e) => ({
+    id: e.userId,
+    userId: e.userId,
+    engineerID: e.engineerCode,
+    details: {
+      name: e.name || "N/A",
+      email: e.email || "N/A",
+      phone: e.phoneNumber || "N/A",
+    },
+    submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
+    documents: "View",
+    location: e.location || "N/A",
+    registrationDate: new Date(e.registrationDate).toLocaleDateString(),
+    walletBalance: e.balance?.toString() ?? "0",
+    kycStatus: e.profileStatus as EngineerStatusType,
+    employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
+    avgRating: e.averageRating,
+    approvalStatus: e.profileStatus as EngineerStatusType,
+  }));
 
-  const handleDeleteEngineer = async (job: ManageEngineerProps) => {
+  const filteredData = useMemo(() => {
+    const q = search.toLowerCase();
+    return engineersData.filter(
+      (e) =>
+        e.engineerID.toLowerCase().includes(q) ||
+        e.details.name.toLowerCase().includes(q) ||
+        e.details.email.toLowerCase().includes(q) ||
+        e.location.toLowerCase().includes(q),
+    );
+  }, [engineersData, search]);
+
+  const handleDeleteEngineer = async (_row: ManageEngineerProps) => {
     await showPopup({
       title: "Delete Engineer",
       body: "Are you sure you want to delete this engineer?",
@@ -148,8 +115,9 @@ export default function PendingRequest() {
           value: "delete",
           variant: "danger",
           action: async (close) => {
-            setEngineers((prev) => prev.filter((eng) => eng.id !== job.id));
             toast.success("Engineer deleted successfully!");
+            // Here you would call the API to delete the engineer using _row.id
+            console.log("Deleting engineer:", _row.id);
             close(true);
           },
         },
@@ -158,7 +126,10 @@ export default function PendingRequest() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { key: "id", label: "Sr.No." },
+    {
+      label: "Sr.No.",
+      renderCell: (_row: ManageEngineerProps, index: number) => index + 1,
+    },
     { key: "engineerID", label: "Engineer ID" },
     {
       key: "details",
@@ -244,8 +215,8 @@ export default function PendingRequest() {
             placeholder="Select"
             value={current}
             onChange={(value) => {
-              if (!isEngineerStatus(value) || value === current) return;
-              handleStatusChange(row, value);
+              if (!value) return;
+              onStatusChange(row, value as EngineerStatusType);
             }}
             options={preparedOptions}
             badge
@@ -298,7 +269,12 @@ export default function PendingRequest() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            totalCount={engineersResponse?.total ?? 0}
+            loading={isLoading}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         </div>
       </div>

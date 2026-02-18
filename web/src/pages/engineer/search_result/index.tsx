@@ -17,6 +17,8 @@ import { mapFiltersToApiQuery } from "./utils";
 
 /**
  * Parse filters from URL search params
+ * @param searchParams - URL search parameters
+ * @returns Parsed filters
  */
 const parseFiltersFromUrl = (
   searchParams: URLSearchParams,
@@ -60,6 +62,8 @@ const parseFiltersFromUrl = (
 
 /**
  * Convert filters to URL search params
+ * @param filters - Filters to convert
+ * @returns URL search parameters
  */
 const filtersToSearchParams = (filters: Filters): URLSearchParams => {
   const params = new URLSearchParams();
@@ -94,7 +98,6 @@ const filtersToSearchParams = (filters: Filters): URLSearchParams => {
 
 /**
  * Main application component for job search results
- *
  * @returns {JSX.Element} Rendered application component
  */
 const SearchResult = () => {
@@ -219,11 +222,11 @@ const SearchResult = () => {
     const saved = localStorage.getItem("searchHistory");
     return saved
       ? JSON.parse(saved).map(
-        (item: { id: string; filters: Filters; timestamp: string }) => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }),
-      )
+          (item: { id: string; filters: Filters; timestamp: string }) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }),
+        )
       : [];
   });
 
@@ -341,8 +344,9 @@ const SearchResult = () => {
           <Button
             leftIcon={
               <svg
-                className={`w-4 h-4 transition-transform ${showAdvancedSearch ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 transition-transform ${
+                  showAdvancedSearch ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

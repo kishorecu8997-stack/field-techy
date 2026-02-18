@@ -1,17 +1,20 @@
-import { WORKING_TYPES } from "@/pages/engineer/search_result/types";
-import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import {
+  WORKING_TYPES,
+} from "@/pages/engineer/search_result/types";
+
+import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
+import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
+import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
 import Popup from "@/shared/components/Popup";
+import { JOB_HEADER_COPY } from "@/shared/constants/jobHeader";
+import { usePopupStore } from "@/shared/store/popupStore";
 import React, { useState } from "react";
+import { FaBell } from "react-icons/fa";
+import { IoEllipsisVerticalOutline } from "react-icons/io5";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import type { JobHeaderCardProps } from "../../types";
 import EngineersActions from "./EngineersActins";
 import UpdateLogForm from "./UpdateLogForm";
-import ClientActions from "@/pages/client/manage_proposal/components/ClientActions";
-import { IoEllipsisVerticalOutline } from "react-icons/io5";
-import ConfirmationModal from "@/pages/client/my_job_client/components/ConfirmationModal";
-import { FaBell } from "react-icons/fa";
-import BreakRequestDetails from "@/pages/engineer/my_job/job_details_components/jobHeaderComponents/BreakRequestDetails";
-import { usePopupStore } from "@/shared/store/popupStore";
 
 /**
  * Displays the main header card for a job with title, client, duration, type, and status.
@@ -77,7 +80,6 @@ const JobHeaderCard: React.FC<JobHeaderCardProps> = ({
   };
 
   const handleConfirmAction = () => {
-    console.log("Confirmed action:", actionType);
     setIsConfirmOpen(false);
   };
 

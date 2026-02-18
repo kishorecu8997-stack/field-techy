@@ -60,6 +60,7 @@ export interface DetailsTypes {
 }
 export interface ManageEngineerProps {
   id: number;
+  userId: number;
   engineerID: string;
   details: DetailsTypes;
   documents: string;
@@ -113,3 +114,26 @@ export const EngineerStatus = {
 
 export type EngineerStatusType =
   (typeof EngineerStatus)[keyof typeof EngineerStatus];
+
+export type EngineerApiResponse = {
+  id: number;
+  userId: number;
+  engineerCode: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string;
+  cityName: string;
+  countryName: string;
+  registrationDate: string;
+  balance: number;
+  profileStatus: string;
+  isEmployed: boolean;
+  averageRating: number;
+  user?: {
+    name: string;
+    email: string;
+    phone_number: string;
+  };
+  isLoading?: boolean;
+};
