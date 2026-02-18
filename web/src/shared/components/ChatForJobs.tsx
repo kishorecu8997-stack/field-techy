@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaFileAlt, FaImage, FaVideo, FaPhone } from "react-icons/fa";
+import { FaFileAlt, FaImage, FaVideo } from "react-icons/fa";
 import { FiSearch, FiPlus } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";
+import { IoMdCall } from "react-icons/io";
 
 interface ChatForJobsProps {
   jobId: string;
@@ -247,7 +248,7 @@ const ChatForJobs: React.FC<ChatForJobsProps> = ({ jobId }) => {
               onClick={() => console.log("Audio Call")}
               className="p-2 rounded-full bg-gray-200 hover:bg-green-200 border border-gray-300 hover:border-green-600 text-teal-700 hover:text-teal-600 transition flex items-center justify-center"
             >
-              <FaPhone size={18} />
+              <IoMdCall size={18} />
             </button>
           </div>
         </div>
