@@ -78,7 +78,7 @@ const NotificationPanel = ({
                   const isBlocked =
                     isPaused &&
                     notif.type !== "job_offer" &&
-                    notif.id !== pendingId;
+                    String(notif.id) !== String(pendingId);
                   if (isBlocked) return null;
 
                   return (

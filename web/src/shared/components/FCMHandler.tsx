@@ -5,6 +5,12 @@ import { useDeviceStore } from "@/shared/store/useDeviceStore";
 import { registerDeviceToken } from "@/shared/apiServices/notifications/notificationOpenApiService";
 import type { FCMMessage } from "@/shared/store/types";
 import { useQueryClient } from "@tanstack/react-query";
+import type { AppGetNotificationsResponse } from "@/api/types.gen";
+
+type CachedNotification = Omit<
+  AppGetNotificationsResponse["data"][number],
+  "id"
+> & { id: string | number };
 
 export const FCMHandler = () => {
   const { updateToken, setRegistrationStatus, setIsLoading, setErrorMessage } =
@@ -19,9 +25,7 @@ export const FCMHandler = () => {
           onMessage: (message: FCMMessage) => {
             if (message.notification) {
               const newNotification = {
-                id: parseInt(
-                  message.messageId || Date.now().toString().slice(-9),
-                ),
+                id: message.messageId || Date.now().toString(),
                 title: message.notification.title || "New Notification",
                 body: message.notification.body || "",
                 createdAt: new Date().toISOString(),
@@ -32,12 +36,12 @@ export const FCMHandler = () => {
               // Update the cache immediately
               queryClient.setQueryData(
                 [{ _id: "appGetNotifications" }], // Match the query key structure
-                (oldData: any) => {
-                  if (!oldData) return { data: [newNotification] };
+                (oldData: { data: CachedNotification[] } | undefined) => {
+                  if (!oldData) return { data: [newNotification as CachedNotification] };
 
                   // Check if notification with same ID already exists
                   const exists = oldData.data?.some(
-                    (n: any) => n.id === newNotification.id,
+                    (n) => n.id === newNotification.id,
                   );
                   if (exists) return oldData;
 
@@ -53,7 +57,7 @@ export const FCMHandler = () => {
             // Invalidate to eventually sync with server
             queryClient.invalidateQueries({
               predicate: (query) => {
-                const key = query.queryKey[0] as any;
+                const key = query.queryKey[0] as { _id?: string };
                 return (
                   key &&
                   typeof key === "object" &&

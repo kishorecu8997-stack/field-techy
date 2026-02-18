@@ -7,7 +7,13 @@ import type {
 
 dayjs.extend(relativeTime);
 
-export const mapApiNotification = (notif: any): NotificationProps => ({
+export const mapApiNotification = (notif: {
+  id: number | string;
+  title: string;
+  body: string;
+  createdAt: string;
+  isRead: boolean;
+}): NotificationProps => ({
   id: notif.id,
   type: "info", // Fallback to info, can be refined if API provides more specific types
   title: notif.title,

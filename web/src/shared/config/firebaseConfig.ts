@@ -175,27 +175,22 @@ class FCMService {
         timestamp: Date.now(),
       });
 
-      // Step 7: Request notification permission
-      const requestPermissionStep: Step = {
-        id: "request-permission",
-        name: "Request notification permission",
+      // Step 7: Check notification permission
+      const checkPermissionStep: Step = {
+        id: "check-permission",
+        name: "Check notification permission",
         status: "in-progress",
         message: undefined,
         timestamp: Date.now(),
       };
-      operationsStore.addStep(operationId, requestPermissionStep);
+      operationsStore.addStep(operationId, checkPermissionStep);
 
-      // Request notification permission
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        throw new Error(
-          "Notification permission denied. Please allow notifications to receive FCM messages.",
-        );
-      }
+      // Just check current permission status during initialization
+      const permission = Notification.permission;
 
-      operationsStore.updateStep(operationId, "request-permission", {
+      operationsStore.updateStep(operationId, "check-permission", {
         status: "done",
-        message: "Notification permission granted",
+        message: `Notification permission is: ${permission}`,
         timestamp: Date.now(),
       });
 
@@ -222,7 +217,7 @@ class FCMService {
         timestamp: Date.now(),
       });
 
-      // Step 9: Get FCM token
+      // Step 9: Get FCM token (only if permission is granted)
       const getTokenStep: Step = {
         id: "get-token",
         name: "Retrieve FCM token",
@@ -231,6 +226,16 @@ class FCMService {
         timestamp: Date.now(),
       };
       operationsStore.addStep(operationId, getTokenStep);
+
+      if (Notification.permission !== "granted") {
+        operationsStore.updateStep(operationId, "get-token", {
+          status: "done",
+          message: "Skipped: Notification permission not granted",
+          timestamp: Date.now(),
+        });
+        this.initialized = true;
+        return;
+      }
 
       // Set loading state to true
       this.callbacks.onTokenLoading?.(true);
@@ -299,6 +304,26 @@ class FCMService {
       this.callbacks.onError?.(err);
       throw err;
     }
+  }
+
+  /**
+   * Request notification permission and get token if granted
+   */
+  async requestPermission(): Promise<NotificationPermission> {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted" && this.initialized) {
+      try {
+        const token = await this.getToken();
+        if (token && this.callbacks.onTokenRefresh) {
+          this.callbacks.onTokenRefresh(token);
+        }
+      } catch (error) {
+        console.error("Failed to get token after permission grant:", error);
+      }
+    }
+
+    return permission;
   }
 
   /**

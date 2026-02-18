@@ -7,6 +7,8 @@ import {
 } from "@/api/@tanstack/react-query.gen";
 import { apiClient } from "../apiClient";
 import { mapApiNotification } from "./notificationAdapter";
+import { appRegisterDeviceToken } from "@/api/sdk.gen";
+import { getStableDeviceId } from "@/shared/store/useDeviceStore";
 
 /**
  * Shared Notification API services
@@ -36,10 +38,10 @@ export function useAppNotifications() {
 }
 
 // Helper to invalidate notifications reliably using predicate matching
-const invalidateNotifications = (queryClient: any) => {
+const invalidateNotifications = (queryClient: ReturnType<typeof useQueryClient>) => {
   queryClient.invalidateQueries({
-    predicate: (query: any) => {
-      const key = query.queryKey[0];
+    predicate: (query) => {
+      const key = query.queryKey[0] as { _id?: string };
       return (
         key && typeof key === "object" && key._id === "appGetNotifications"
       );
@@ -48,7 +50,7 @@ const invalidateNotifications = (queryClient: any) => {
 };
 
 export function useAppMarkNotificationAsRead(options?: {
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
@@ -65,7 +67,7 @@ export function useAppMarkNotificationAsRead(options?: {
 }
 
 export function useAppMarkAllNotificationsAsRead(options?: {
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
@@ -82,7 +84,7 @@ export function useAppMarkAllNotificationsAsRead(options?: {
 }
 
 export function useAppDeleteNotification(options?: {
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
@@ -102,13 +104,15 @@ export function useAppDeleteNotification(options?: {
  * Raw API registration for device tokens
  */
 export async function registerDeviceToken(token: string) {
-  const { appRegisterDeviceToken } = await import("@/api/sdk.gen");
+
+  const deviceId = getStableDeviceId();
+
   return appRegisterDeviceToken({
     client: apiClient,
     body: {
       token,
       platform: "web",
-      deviceId: `web-${window.navigator.userAgent.substring(0, 50)}-${Date.now()}`,
+      deviceId,
     },
   });
 }

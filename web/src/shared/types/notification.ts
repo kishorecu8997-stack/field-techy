@@ -1,18 +1,18 @@
 // No imports needed for these interfaces
 
 export interface NotificationProps {
-  id: number;
+  id: string | number;
   type:
-    | "job_offer"
-    | "invitation"
-    | "revision"
-    | "payment_released"
-    | "proposal_received"
-    | "application_viewed"
-    | "view"
-    | "job_reminder"
-    | "withdrawal"
-    | "info";
+  | "job_offer"
+  | "invitation"
+  | "revision"
+  | "payment_released"
+  | "proposal_received"
+  | "application_viewed"
+  | "view"
+  | "job_reminder"
+  | "withdrawal"
+  | "info";
   title: string;
   message: string;
   jobTitle?: string;
@@ -34,15 +34,15 @@ export interface GroupedNotifications {
 
 export interface NotificationItemProps {
   notification: NotificationProps;
-  onDismiss?: (id: number) => void;
-  onMarkAsRead?: (id: number) => void;
+  onDismiss?: (id: string | number) => void;
+  onMarkAsRead?: (id: string | number) => void;
   index?: string;
 }
 
 export interface NotificationPanelProps {
   grouped: GroupedNotifications;
-  onDismiss?: (id: number) => void;
-  onMarkAsRead?: (id: number) => void;
+  onDismiss?: (id: string | number) => void;
+  onMarkAsRead?: (id: string | number) => void;
   onMarkAllAsRead?: () => void;
   viewAllLink?: string;
 }

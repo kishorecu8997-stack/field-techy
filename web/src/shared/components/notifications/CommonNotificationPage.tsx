@@ -34,18 +34,18 @@ const CommonNotificationPage: React.FC<CommonNotificationPageProps> = ({
 
   const grouped = groupNotificationsByDate(notifications);
 
-  const handleDismiss = (id: number) => {
+  const handleDismiss = (id: string | number) => {
     deleteNotification({
       body: {
-        id,
+        id: id as number,
       },
     });
   };
 
-  const handleMarkAsRead = (id: number) => {
+  const handleMarkAsRead = (id: string | number) => {
     markAsRead({
       body: {
-        id,
+        id: id as number,
       },
     });
   };
