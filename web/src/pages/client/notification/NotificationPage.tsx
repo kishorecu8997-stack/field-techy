@@ -8,7 +8,7 @@ import CommonNotificationPage from "@/shared/components/notifications/CommonNoti
  */
 function NotificationPage() {
   return (
-    <CommonNotificationPage className="flex justify-center items-start min-h-screen p-4" />
+    <CommonNotificationPage className="flex justify-center items-start min-h-screen pt-0 px-4" />
   );
 }
 

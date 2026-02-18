@@ -35,7 +35,7 @@ const NotificationPanel = ({
 
   return (
     <div className="max-w-md w-full max-h-full overflow-y-auto relative">
-      <div className="flex justify-end gap-4 mb-4 pr-2 sticky top-0 bg-white dark:bg-gray-800 z-10 py-2">
+      <div className="flex justify-end gap-4 mb-2 pr-2 sticky top-0 bg-white dark:bg-gray-800 z-10 py-1">
         {onMarkAllAsRead && hasUnread && (
           <button
             onClick={onMarkAllAsRead}
@@ -56,7 +56,7 @@ const NotificationPanel = ({
         )}
       </div>
 
-      <div className="space-y-6 mt-2">
+      <div className="space-y-6 mt-1">
         {allGroupsEmpty ? (
           <div className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300 dark:bg-gray-800/50 dark:border-gray-700">
             <div className="text-4xl mb-3">🔔</div>
