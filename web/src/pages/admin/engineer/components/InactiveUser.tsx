@@ -113,7 +113,7 @@ export default function InactiveUser() {
   };
 
   const columns: Column<ManageEngineerProps>[] = [
-    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => index + 1 },
+    { label: "Sr.No.", renderCell: (_row: ManageEngineerProps, index: number) => (currentPage - 1) * pageSize + index + 1 },
     {
       key: "engineerID",
       label: "Engineer ID",
