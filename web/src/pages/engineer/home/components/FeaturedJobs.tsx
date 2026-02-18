@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useReverseGeocoding } from "@/hooks/useReverseGeocoding";
 import type { JobItem } from "../types";
+import { useLookupData } from "@/shared/apiServices/commonOpenApiService";
 
 /**
  * Renders a circular progress ring for the match score.
@@ -112,6 +113,15 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
   const job = props as JobItem;
   const [isSelected, setSelected] = useState(false);
   const matchScore = props.matchScore;
+  const { data: engagementModels } = useLookupData("engagementModels");
+
+  const engagementModelName = useMemo(() => {
+    if (!props.engagementModel || !engagementModels) return "";
+    const model = engagementModels.find(
+      (e) => e.id === Number(props.engagementModel),
+    );
+    return model?.name || "";
+  }, [props.engagementModel, engagementModels]);
 
   useEffect(() => {
     if (props.id) {
@@ -145,20 +155,31 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
     }
   };
 
-  const handleSwitchJobs = (jobModel: string) => {
-    switch (jobModel) {
-      case "ON_SITE":
-        return "On Site";
-      case "REMOTE":
-        return "Remote";
-      case "HYBRID":
-        return "Hybrid";
-      default:
-        return "On Site";
-    }
-  };
-
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { address: resolvedAddress } = useReverseGeocoding(props.location);
+
+  const { data: countries } = useLookupData("countries");
+  const { data: states } = useLookupData("states", props.countryId?.toString());
+  const { data: cities } = useLookupData("cities", props.stateId?.toString());
+
+  const locationDisplay = useMemo(() => {
+    const countryName = countries?.find((c) => c.id === props.countryId)?.name;
+    const stateName = states?.find((s) => s.id === props.stateId)?.name;
+
+    const parts = [stateName, countryName].filter(Boolean);
+    return parts.length > 0
+      ? parts.join(", ")
+      : resolvedAddress || props.location || "-";
+  }, [
+    countries,
+    states,
+    cities,
+    props.countryId,
+    props.stateId,
+    props.cityId,
+    resolvedAddress,
+    props.location,
+  ]);
 
   // Safely extract the first number from experience (handles "1, 2", "3+", etc.)
   const experienceValue = useMemo(() => {
@@ -210,9 +231,9 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
               {props.jobType}
             </span>
           )}
-          {props.engagementModel && (
+          {engagementModelName && (
             <span className="px-3 py-1 text-xs font-medium bg-white dark:bg-gray-700/60 rounded whitespace-nowrap">
-              {handleSwitchJobs(props.engagementModel)}
+              {engagementModelName}
             </span>
           )}
           {props.experience && (
@@ -262,7 +283,7 @@ const FeatureJobCard: React.FC<JobItem & { matchScore?: number }> = (props) => {
               </span>
             )}
             <span className="block text-gray-500 dark:text-gray-400 text-xs font-medium">
-              {resolvedAddress || props.location || "-"}
+              {locationDisplay}
             </span>
           </div>
         </div>

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { Filters } from "../types";
 import { usePopupStore } from "@/shared/store/popupStore";
+import { useLookupData } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * FilterPanel component provides filtering options for job listings
@@ -16,8 +17,17 @@ const FilterPanel: React.FC<{
   onClearAll: () => void;
   currentFilters: Filters;
 }> = ({ onFilterChange, onClearAll, currentFilters }) => {
-  const [selectedLocation, setSelectedLocation] = useState<string[]>(
-    currentFilters.location || [],
+  // Fetch lookup data
+  const { data: workLocations, isLoading: isLoadingLocations } =
+    useLookupData("workLocations");
+  const { data: serviceCategories, isLoading: isLoadingCategories } =
+    useLookupData("serviceCategories");
+  const { data: skillsData, isLoading: isLoadingSkills } =
+    useLookupData("skills");
+
+  // Local state for filters
+  const [selectedLocationType, setSelectedLocationType] = useState<string[]>(
+    currentFilters.locationType || [],
   );
   const [selectedCategory, setSelectedCategory] = useState<string[]>(
     currentFilters.category || [],
@@ -28,48 +38,39 @@ const FilterPanel: React.FC<{
   const [experience, setExperience] = useState<number>(
     currentFilters.experience || 0,
   );
-  const [budgetType, setBudgetType] = useState<"hourly" | "fixed" | "">(
-    currentFilters.budgetType || "",
+  const [budgetType, setBudgetType] = useState<"hourly" | "fixed" | null>(
+    currentFilters.budgetType || null,
   );
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
     currentFilters.skills || [],
   );
 
+  // Sync local state with currentFilters when they change
+  useEffect(() => {
+    setSelectedLocationType(currentFilters.locationType || []);
+    setSelectedCategory(currentFilters.category || []);
+    setSelectedRating(currentFilters.rating || []);
+    setExperience(currentFilters.experience || 0);
+    setBudgetType(currentFilters.budgetType || null);
+    setSelectedSkills(currentFilters.skills || []);
+  }, [currentFilters]);
+
   // Available filter options
-  const locationOptions = ["On-Site", "Remote", "Hybrid"];
-  const categoryOptions = [
-    "IT",
-    "Construction",
-    "Designing",
-    "Sale",
-    "Teaching",
-    "Animation",
-    "More",
-  ];
   const ratingOptions = [1, 2, 3, 4, 5];
   const budgetOptions = ["Hourly Price", "Fixed Price"];
-  const skillOptions = [
-    "Figma",
-    "Adobe XD",
-    "PhotoShop",
-    "Motion Graphics",
-    "Animations",
-    "UI/UX",
-    "SQL",
-    "PowerPoint",
-    "Adobe Suit",
-  ];
 
   /**
    * Handle toggle of filter options
    * @param {string[]} currentSelection - Current selection array
    * @param {string} value - Value to toggle
    * @param {Function} setter - State setter function
+   * @param {string} filterKey - Key in the Filters object
    */
   const toggleFilter = (
     currentSelection: string[],
     value: string,
     setter: React.Dispatch<React.SetStateAction<string[]>>,
+    filterKey: keyof Filters,
   ) => {
     const newSelection = [...currentSelection];
     const index = newSelection.indexOf(value);
@@ -81,13 +82,7 @@ const FilterPanel: React.FC<{
     setter(newSelection);
     updateFilters({
       ...currentFilters,
-      [setter === setSelectedLocation
-        ? "location"
-        : setter === setSelectedCategory
-          ? "category"
-          : setter === setSelectedSkills
-            ? "skills"
-            : ""]: newSelection,
+      [filterKey]: newSelection,
     });
   };
 
@@ -122,11 +117,11 @@ const FilterPanel: React.FC<{
    * Clear all filters
    */
   const handleClearAll = () => {
-    setSelectedLocation([]);
+    setSelectedLocationType([]);
     setSelectedCategory([]);
     setSelectedRating([]);
     setExperience(0);
-    setBudgetType("");
+    setBudgetType(null);
     setSelectedSkills([]);
     onClearAll();
   };
@@ -156,6 +151,22 @@ const FilterPanel: React.FC<{
     });
   };
 
+  // Loading state
+  const isLoading =
+    isLoadingLocations || isLoadingCategories || isLoadingSkills;
+
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 h-fit border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-gray-500 dark:text-gray-400">
+            Loading filters...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 h-fit border border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="flex justify-between items-center mb-4">
@@ -170,25 +181,30 @@ const FilterPanel: React.FC<{
         </div>
       </div>
 
-      {/* Location Filter */}
+      {/* Job Type Filter (Work Location) */}
       <div className="mb-5">
         <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Location
+          Job Type
         </h3>
         <div className="flex flex-wrap gap-2">
-          {locationOptions.map((option) => (
+          {workLocations?.map((location) => (
             <button
-              key={option}
+              key={location.id}
               onClick={() =>
-                toggleFilter(selectedLocation, option, setSelectedLocation)
+                toggleFilter(
+                  selectedLocationType,
+                  location.name,
+                  setSelectedLocationType,
+                  "locationType",
+                )
               }
               className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedLocation.includes(option)
+                selectedLocationType.includes(location.name)
                   ? "bg-green-700 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               }`}
             >
-              {option}
+              {location.name}
             </button>
           ))}
         </div>
@@ -200,19 +216,24 @@ const FilterPanel: React.FC<{
           Category
         </h3>
         <div className="flex flex-wrap gap-2">
-          {categoryOptions.map((option) => (
+          {serviceCategories?.map((category) => (
             <button
-              key={option}
+              key={category.id}
               onClick={() =>
-                toggleFilter(selectedCategory, option, setSelectedCategory)
+                toggleFilter(
+                  selectedCategory,
+                  String(category.id),
+                  setSelectedCategory,
+                  "category",
+                )
               }
               className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedCategory.includes(option)
+                selectedCategory.includes(String(category.id))
                   ? "bg-green-700 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               }`}
             >
-              {option}
+              {category.name}
             </button>
           ))}
         </div>
@@ -310,19 +331,24 @@ const FilterPanel: React.FC<{
           Skills
         </h3>
         <div className="flex flex-wrap gap-2">
-          {skillOptions.slice(0, 9).map((skill) => (
+          {skillsData?.slice(0, 9).map((skill) => (
             <button
-              key={skill}
+              key={skill.id}
               onClick={() =>
-                toggleFilter(selectedSkills, skill, setSelectedSkills)
+                toggleFilter(
+                  selectedSkills,
+                  String(skill.id),
+                  setSelectedSkills,
+                  "skills",
+                )
               }
               className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
-                selectedSkills.includes(skill)
+                selectedSkills.includes(String(skill.id))
                   ? "bg-green-700 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               }`}
             >
-              {skill}
+              {skill.name}
             </button>
           ))}
         </div>

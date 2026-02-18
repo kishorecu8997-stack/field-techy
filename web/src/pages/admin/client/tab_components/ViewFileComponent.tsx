@@ -14,7 +14,6 @@ interface ViewFileComponentProps {
   onClose: () => void;
   title?: string;
   fileType: ProfileFileType | null;
-  userId?: number | null;
 }
 
 /**
@@ -29,13 +28,12 @@ const ViewFileComponent: React.FC<ViewFileComponentProps> = ({
   onClose,
   title = "View File",
   fileType,
-  userId,
 }) => {
   const {
     data: downloadData,
     isLoading,
     isError,
-  } = useAppDownloadProfileFile(fileType, userId, !!fileType);
+  } = useAppDownloadProfileFile(fileType, !!fileType);
 
   const downloadUrl = downloadData?.downloadUrl;
 

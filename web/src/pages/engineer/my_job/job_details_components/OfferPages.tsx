@@ -2,16 +2,14 @@ import {
   client as dummyClient,
   jobHeaderData as dummyJobHeader,
 } from "@/dummy_data/jobDetails";
-import { offerPageDummy } from "@/dummy_data/offerPageDummy";
-import { isDummyNetworkEngineerJob } from "@/constants/dummyJobs";
-import { useClientGetJobsById } from "@/shared/apiServices/client/clientService";
 import MyJobsHeader from "@/shared/components/MyJobsHeader";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SORT_OPTIONS, type JobStatus } from "../../search_result/types";
 import ClientInfoCard from "./ClientInfoCard";
 import JobHeaderCard from "./jobHeaderComponents/JobHeaderCard";
 import JobTabSection from "./JobTabSection";
+import { useEngineerSearchJobs } from "@/shared/apiServices/engineer/engineerOpenApiService";
 
 /**
  * Page component displaying detailed information about a specific job.
@@ -21,29 +19,41 @@ import JobTabSection from "./JobTabSection";
 const OfferPages = () => {
   const { jobId } = useParams();
 
-  // Skip API call for dummy job
-  const isDummyJob = isDummyNetworkEngineerJob(jobId);
-  const { data: apiJob } = useClientGetJobsById(isDummyJob ? "" : jobId || "");
+  // Fetch job details directly using the API
+  const { data: apiJob } = useEngineerSearchJobs(
+    { jobId: Number(jobId) },
+    !!jobId,
+  );
 
   const [isWorkSubmitted, setIsWorkSubmitted] = useState(false);
   const [isSendProposal, setIsSendProposal] = useState(false);
   const [activeTab, setActiveTab] = useState("Job Information");
 
-  const jobData = useMemo(() => {
-    // Handle dummy job
-    if (isDummyJob) {
-      return offerPageDummy;
-    }
-
+  const rawJob = useMemo(() => {
     if (!apiJob) return null;
+    return Array.isArray(apiJob) ? (apiJob[0] as any) : (apiJob as any);
+  }, [apiJob]);
+
+  const jobData = useMemo(() => {
+    if (!rawJob) return null;
+
+    // Safely access client details
+    const clientName =
+      rawJob.clientDetails?.companyName ||
+      rawJob.clientDetails?.personName ||
+      "Unknown Client";
+
     return {
-      title: apiJob.jobTitle || "Untitled Job",
-      client: apiJob.client?.companyName || "Hidden Client",
-      duration: apiJob.jobDuration || "Not specified",
-      type: apiJob.engagementModel || "ON_SITE",
-      status: apiJob.status || "NEW",
+      title: rawJob.jobTitle || "Untitled Job",
+      client: clientName,
+      duration:
+        rawJob.startDate && rawJob.endDate
+          ? `${rawJob.startDate} - ${rawJob.endDate}`
+          : "Not specified",
+      type: "ON_SITE", // TODO: Map engagementModelId
+      status: rawJob.status || "NEW",
     };
-  }, [apiJob, isDummyJob]);
+  }, [rawJob]);
 
   return (
     <div className="min-h-[45rem] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -76,16 +86,12 @@ const OfferPages = () => {
           <div className="lg:col-span-1">
             <ClientInfoCard
               name={
-                isDummyJob
-                  ? "-"
-                  : apiJob?.client?.companyName || dummyClient.name
+                rawJob?.clientDetails?.companyName ||
+                rawJob?.clientDetails?.personName ||
+                "Client"
               }
               memberSince={dummyClient.memberSince}
-              location={
-                isDummyJob
-                  ? "Chennai, Tamil Nadu, India"
-                  : apiJob?.location || dummyClient.location
-              }
+              location={rawJob?.workLocationName || dummyClient.location}
               rating={dummyClient.rating}
               reviews={dummyClient.reviews}
               verifications={dummyClient.verifications}

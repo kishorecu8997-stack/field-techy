@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
-import { toast } from "react-toastify";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import {
   FileUpload,
@@ -45,15 +44,8 @@ const RequirementsSection = ({
   skillOptions,
   toolOptions,
 }: RequirementsSectionProps) => {
-  const {
-    watch,
-    register,
-    setValue,
-    clearErrors,
-    formState: { submitCount },
-  } = useFormContext();
+  const { watch, register, setValue, setError, clearErrors } = useFormContext();
 
-  const lastToolToastSubmitCount = useRef(0);
   const [toolEntries, setToolEntries] = useState<ToolEntry[]>([]);
   const [toolImageInputKey, setToolImageInputKey] = useState(0);
   const [editingToolIndex, setEditingToolIndex] = useState<number | null>(null);
@@ -65,19 +57,10 @@ const RequirementsSection = ({
     register("toolEntriesCount", {
       validate: (val) => {
         if (Number(val) > 0) return true;
-
-        if (
-          submitCount > 0 &&
-          lastToolToastSubmitCount.current !== submitCount
-        ) {
-          lastToolToastSubmitCount.current = submitCount;
-          toast.error("Please add a tool details");
-        }
-
         return "Add at least one tool entry before submitting";
       },
     });
-  }, [register, submitCount]);
+  }, [register]);
 
   useEffect(() => {
     setValue("toolEntriesCount", toolEntries.length, { shouldValidate: true });
@@ -118,20 +101,40 @@ const RequirementsSection = ({
       return;
     }
 
+    let hasError = false;
+
     if (!toolId) {
-      toast.error("Please select a tool before adding");
-      return;
+      setError("tools", { type: "manual", message: "Tool Name is required" });
+      hasError = true;
     }
     if (!files || files.length === 0) {
-      toast.error("Tool image is required");
-      return;
+      setError("toolImages", {
+        type: "manual",
+        message: "Tool Image is required",
+      });
+      hasError = true;
     }
     if (!budget || Number(budget) <= 0) {
-      toast.error("Valid tool cost is required");
-      return;
+      setError("toolBudgetNotes", {
+        type: "manual",
+        message: "Tool Cost is required",
+      });
+      hasError = true;
+    } else if (Number(budget) > 10_000_000) {
+      setError("toolBudgetNotes", {
+        type: "manual",
+        message: "Max allowed amount is 10,000,000",
+      });
+      hasError = true;
     }
+
+    if (hasError) return;
+
     const toolOption = toolOptions.find((opt) => opt.value === toolId);
     const name = toolOption?.label || "Unknown Tool";
+
+    // Clear errors if validation passes
+    clearErrors(["tools", "toolBudgetNotes", "toolImages"]);
 
     const newImages =
       files && files.length > 0
@@ -149,7 +152,7 @@ const RequirementsSection = ({
         const imagesToUse =
           newImages && newImages.length > 0 ? newImages : existingImages;
         next[editingToolIndex] = {
-          id: toolId,
+          id: toolId || "",
           name,
           budget: budget || "-",
           images: imagesToUse,
@@ -160,7 +163,12 @@ const RequirementsSection = ({
     } else {
       setToolEntries((prev) => [
         ...prev,
-        { id: toolId, name, budget: budget || "-", images: newImages ?? [] },
+        {
+          id: toolId || "",
+          name,
+          budget: budget || "-",
+          images: newImages ?? [],
+        },
       ]);
     }
 

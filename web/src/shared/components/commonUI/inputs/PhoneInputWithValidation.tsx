@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { CountrySelect } from "./CountrySelect";
+import { PHONE_COUNTRIES as phoneCountries } from "@/dummy_data/phoneInput";
 import { COUNTRIES } from "./PhoneInputField";
-import { usePhoneCountries } from "@/shared/apiServices/client/clientService";
 
 // TODO: Uncomment when user availability check API is ready for production
 // import { useDebouncedUserExists } from "@/shared/apiServices/user";
@@ -30,9 +30,8 @@ export const PhoneInputWithValidation = ({
     useFormContext();
   const phoneValue = watch(name);
 
-  // Fetch phone countries from API
-  const { data: phoneCountries = [], isLoading: phoneCountriesLoading } =
-    usePhoneCountries();
+  // Use static phone countries from dummy data
+  const phoneCountriesLoading = false;
 
   // Initialize phone field with default country code if empty
   useEffect(() => {
