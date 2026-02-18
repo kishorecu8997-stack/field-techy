@@ -87,6 +87,7 @@ const EngineersActions = ({
     useEngineerRequestStart({
       onSuccess: () => {
         toast.success("Job start request submitted successfully");
+        window.location.reload();
         handleUpdateOfferStatus("started");
       },
       onError: (error) => {
@@ -123,6 +124,7 @@ const EngineersActions = ({
             toast.success("Job accepted successfully");
             close(true);
             handleUpdateOfferStatus("accepted");
+            window.location.reload();
           },
         },
       ],

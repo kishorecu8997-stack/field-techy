@@ -214,6 +214,9 @@ const TimelineSection: React.FC<{
 
   // Mutation for client action on assignment (approve/reject start job)
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
+    onSuccess: () => {
+    window.location.reload();
+  },
     onError: (error) => {
       console.error("Assignment action failed:", error);
       toast.error("Failed to process request. Please try again.", {

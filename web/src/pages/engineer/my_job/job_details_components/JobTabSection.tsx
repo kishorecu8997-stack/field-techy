@@ -157,6 +157,9 @@ const JobTabSection = ({
       }
 
       toast.success("Proposal submitted successfully!");
+      
+      // Refresh the page immediately after successful submission
+      window.location.reload();
     } catch (error) {
       console.error("Failed to submit proposal:", error);
       toast.error("Failed to submit proposal. Please try again.");
