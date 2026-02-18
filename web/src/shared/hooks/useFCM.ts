@@ -89,15 +89,34 @@ export const useFCM = () => {
           throw new Error("This browser does not support notifications");
         }
 
-        const permission = await fcmService.requestPermission();
+        const permission = await Notification.requestPermission();
         setNotificationPermission(permission);
 
         if (permission === "granted") {
-          // The token retrieval and backend registration are now handled by 
-          // the fcmService.requestPermission() which triggers the 
-          // onTokenRefresh callback set in FCMHandler.
-          setLoading(false);
-          return true;
+          // Ensure service is initialized
+          if (!fcmService.isInitialized()) {
+            // If not initialized, we might need to initialize it.
+            // But initialization requires callbacks (onMessage etc provided by FCMHandler).
+            // Ideally FCMHandler is present. If not, this might fail unless we provide dummy callbacks
+            // or move initialization logic here.
+            // For now, assuming FCMHandler is present.
+            console.warn(
+              "FCMService not initialized yet. Make sure FCMHandler is mounted.",
+            );
+          }
+
+          const token = await fcmService.getToken();
+
+          if (token) {
+            setFcmToken(token);
+            await registerTokenWithBackend(token);
+            setLoading(false);
+            return true;
+          } else {
+            setError("No registration token available.");
+            setLoading(false);
+            return false;
+          }
         } else {
           setError("Notification permission denied");
           setLoading(false);
