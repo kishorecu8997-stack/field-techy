@@ -28,10 +28,12 @@ import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApi
 export default function BlockedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
     const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-      page: 1,
-      limit: 50,
+      page: currentPage,
+      limit: pageSize,
       status: "blocked",
     });
 
@@ -47,50 +49,34 @@ export default function BlockedUser() {
       return {
         id: e.id,
         userId: e.userId,
-
         engineerID: e.engineerCode ?? "N/A",
-
         details: {
           name: e.name ?? "N/A",
           email: e.email ?? "N/A",
           phone: e.phoneNumber ?? "N/A",
         },
-
         documents: "View",
         submittedDocuments: e.statusHistory?.map((s) => s.type) ?? [],
-
         location: e.location ?? "N/A",
-
         registrationDate: e.registrationDate
           ? new Date(e.registrationDate).toLocaleDateString()
           : "N/A",
-
         walletBalance: e.balance?.toString() ?? "0",
-
         kycStatus: e.profileStatus,
-
         employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-
         avgRating: e.averageRating ?? 0,
-
         approvalStatus: e.profileStatus,
-
         suspendReason: latestStatus?.reason ?? "N/A",
-
         suspendFrom: latestStatus?.startDate
           ? new Date(latestStatus.startDate).toLocaleDateString()
           : "N/A",
-
         suspendTo: latestStatus?.endDate
           ? new Date(latestStatus.endDate).toLocaleDateString()
           : "N/A",
-
         suspendBy: latestStatus?.adminName ?? "N/A",
-
         suspendOn: latestStatus?.actionDate
           ? new Date(latestStatus.actionDate).toLocaleDateString()
           : "N/A",
-
         currentStatus: latestStatus
           ? latestStatus.revokedAt
             ? "Revoked"
@@ -201,8 +187,12 @@ export default function BlockedUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
             loading={isLoading}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>

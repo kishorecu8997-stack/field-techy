@@ -44,12 +44,14 @@ export default function InactiveUser() {
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
       const {
         data: engineersResponse,
         isLoading,
       } = useAdminManageEngineers({
-        page: 1,
-        limit: 50,
+        page: currentPage,
+        limit: pageSize,
         status: "inactive",
       });
       
@@ -270,8 +272,12 @@ export default function InactiveUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
             loading={isLoading}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>

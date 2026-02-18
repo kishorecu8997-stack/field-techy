@@ -43,13 +43,15 @@ export default function ActiveUser() {
   const [isSuspendEngineer, setIsSuspendEngineer] = useState<boolean>(false);
   const [isBlockEngineer, setIsBlockEngineer] = useState<boolean>(false);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
     const {
       data: engineersResponse,
       isLoading,
     } = useAdminManageEngineers({
-      page: 1,
-      limit: 10,
+      page: currentPage,
+      limit: pageSize,
       status: "active",
     });
     
@@ -272,8 +274,12 @@ export default function ActiveUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
+            totalCount={engineersResponse?.total ?? 0}
             loading={isLoading}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
           />
         </div>
       </div>

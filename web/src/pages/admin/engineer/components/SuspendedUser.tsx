@@ -28,10 +28,12 @@ import { useAdminManageEngineers } from "@/shared/apiServices/admin/adminOpenApi
 export default function SuspendedUser() {
   const { showPopup } = usePopupStore();
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { data: engineersResponse, isLoading } = useAdminManageEngineers({
-    page: 1,
-    limit: 50,
+    page: currentPage,
+    limit: pageSize,
     status: "suspended",
   });
 
@@ -46,49 +48,35 @@ export default function SuspendedUser() {
         (a, b) =>
           new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime(),
       )[0];
-
     return {
       id: e.id,
       userId: e.userId,
-
       engineerID: e.engineerCode ?? "N/A",
-
       details: {
         name: e.name ?? "N/A",
         email: e.email ?? "N/A",
         phone: e.phoneNumber ?? "N/A",
       },
-
       location: e.location ?? "N/A",
-
       registrationDate: e.registrationDate
         ? new Date(e.registrationDate).toLocaleDateString()
         : "N/A",
-
       walletBalance: e.balance?.toString() ?? "0",
-
       kycStatus: e.profileStatus as EngineerStatusType,
-
       employmentStatus: e.isEmployed ? "Employed" : "Unemployed",
-
       avgRating: e.averageRating ?? 0,
-
       approvalStatus: e.profileStatus as EngineerStatusType,
       suspendReason: suspension?.reason ?? "N/A",
       suspendFrom: suspension?.startDate
         ? new Date(suspension.startDate).toLocaleDateString()
         : "N/A",
-
       suspendTo: suspension?.endDate
         ? new Date(suspension.endDate).toLocaleDateString()
         : "N/A",
-
       suspendBy: suspension?.adminName ?? "N/A",
-
       suspendOn: suspension?.actionDate
         ? new Date(suspension.actionDate).toLocaleDateString()
         : "N/A",
-
       currentStatus: suspension?.revokedAt ? "Revoked" : "Suspended",
     };
   });
@@ -195,8 +183,12 @@ export default function SuspendedUser() {
           <CustomTable<ManageEngineerProps>
             columns={columns}
             data={filteredData}
-            initialPageSize={10}
+            initialPageSize={pageSize}
+            currentPage={currentPage}
             loading={isLoading}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+            totalCount={engineersResponse?.total ?? 0}
           />
         </div>
       </div>

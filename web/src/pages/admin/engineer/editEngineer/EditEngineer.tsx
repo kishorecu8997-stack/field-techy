@@ -13,6 +13,7 @@ import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer
 import { usePopupStore } from "@/shared/store/popupStore";
 import { useAdminGetEngineerById } from "@/shared/apiServices/admin/adminOpenApiService"
 import LoaderComponent from "@/shared/components/commonUI/LoaderComponent";
+import { usePhoneCountries } from "@/shared/apiServices/client/clientService";
 
 /**
  * EditEngineer component for editing an existing engineer.
@@ -24,6 +25,7 @@ export default function EditEngineer() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { showPopup } = usePopupStore();
+  const { data: phoneCountries = [] } = usePhoneCountries();
 
   // Fetch engineer data
   const { data: engineerData, isLoading } = useAdminGetEngineerById(Number(id), !!id);
@@ -36,12 +38,12 @@ export default function EditEngineer() {
       phoneNumber: engineerData?.phoneNumber || "",
       profileImage: null,
       address: engineerData?.address || "",
-      skills: [], // OpenAPI type does not include skills, adjust later if needed
+      skills: [],
       price: engineerData?.hourlyRate || "",
       serviceCategory: engineerData?.serviceCategoryId?.toString() || "",
       portfolio: engineerData?.portfolioLink || "",
       designation: engineerData?.currentDesignation || "",
-      location: "", // map city/state/country if needed
+      location: "",
       employer: engineerData?.employer || "",
       experience: engineerData?.experienceYears?.toString() || "",
       resume: "",
@@ -53,28 +55,52 @@ export default function EditEngineer() {
   });
 
   // Update defaultValues when data is loaded
-  useEffect(() => {
-    if (engineerData) {
-      methods.reset({
-        name: engineerData.name,
-        email: engineerData.email,
-        phoneNumber: engineerData.phoneNumber,
-        profileImage: null,
-        address: engineerData.address || "",
-        skills: [],
-        price: engineerData.hourlyRate || "",
-        serviceCategory: engineerData.serviceCategoryId?.toString() || "",
-        portfolio: engineerData.portfolioLink || "",
-        designation: engineerData.currentDesignation || "",
-        location: "",
-        employer: engineerData.employer || "",
-        experience: engineerData.experienceYears?.toString() || "",
-        resume: "",
-        governmentId: "",
-        certificate: "",
-      });
+useEffect(() => {
+  if (!engineerData) return;
+
+  const rawPhone =
+    // engineerData.user?.phone_number ??
+    engineerData.phoneNumber ??
+    "";
+
+  let formattedPhone = "";
+
+  if (rawPhone) {
+    const matchedCountry = phoneCountries.find((c) =>
+      rawPhone.startsWith(c.code)
+    );
+
+    if (matchedCountry) {
+      const nationalNumber = rawPhone.replace(matchedCountry.code, "");
+      formattedPhone = `${matchedCountry.code} ${nationalNumber}`;
+    } else {
+      formattedPhone = rawPhone;
     }
-  }, [engineerData, methods]);
+  }
+
+  methods.reset({
+    name: engineerData.name ?? "",
+    email: engineerData.email ?? "",
+    phoneNumber: formattedPhone,
+    profileImage: null,
+    address: engineerData.address ?? "",
+    skills: [],
+    price: engineerData.hourlyRate ?? "",
+    serviceCategory: engineerData.serviceCategoryId
+      ? String(engineerData.serviceCategoryId)
+      : "",
+    portfolio: engineerData.portfolioLink ?? "",
+    designation: engineerData.currentDesignation ?? "",
+    location: "",
+    employer: engineerData.employer ?? "",
+    experience: engineerData.experienceYears
+      ? String(engineerData.experienceYears)
+      : "",
+    resume: "",
+    governmentId: "",
+    certificate: "",
+  });
+}, [engineerData, phoneCountries, methods]);
 
   const { trigger, getValues, reset } = methods;
 
