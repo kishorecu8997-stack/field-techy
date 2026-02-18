@@ -155,7 +155,7 @@ const JobTabSection = ({
   };
 
   const attachmentFiles = reviewData?.attachments
-    ? Array.from(reviewData.attachments).map((file: unknown) => file instanceof File ? file.name : String(file))
+    ? Array.from(reviewData.attachments).map((file: File) =>  file.name )
     : [];
 
   // 3 tabs only: Timeline, Job Overview, Work Location

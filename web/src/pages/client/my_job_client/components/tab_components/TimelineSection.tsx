@@ -49,7 +49,6 @@ const clientTimelineCards: TimelineCardData[] = [
 ];
 
 const [
-  _progressUpdateCardData,
   revisionRequestUpdateCardData,
   shortTermBreakCardData,
   finalStatementCardData,
@@ -94,7 +93,7 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
     
     // Customize title based on logType and status
     if (log.logType === "SUBMISSION") {
-      if (log.status === "pending" as any) {
+      if (log.status === "pending" as 'pending' | 'approved' | 'rejected' | 'revision_requested') {
         title = "Proposal Received";
         details = details || "Proposals received. Manage them in the Manage Proposals tab.";
       } else if (log.status === "approved") {
@@ -195,9 +194,6 @@ const TimelineSection: React.FC<{
 
   // Mutation for client action on assignment (approve/reject start job)
   const { mutate: actionOnAssignment } = useClientActionOnAssignment({
-    onSuccess: (data) => {
-      console.log("Assignment action successful:", data);
-    },
     onError: (error) => {
       console.error("Assignment action failed:", error);
       toast.error("Failed to process request. Please try again.", { position: "top-right" });

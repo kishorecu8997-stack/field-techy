@@ -43,7 +43,7 @@ const transformLogsToTimelineItems = (logs: GetJobLogsResponse["logs"]) => {
     
     // Customize title based on logType and status
     if (log.logType === "SUBMISSION") {
-      if (log.status === "pending" as any) {
+      if (log.status === "pending" as 'pending' | 'approved' | 'rejected' | 'revision_requested') {
         title = "Proposal Submitted";
         details = details || "Engineer submitted a proposal for this job";
       } else if (log.status === "approved") {
@@ -305,22 +305,17 @@ const TimelineSection: React.FC<{
       sortOrder: number;
     }> = [];
 
-    // Add proposal items from engineer jobs API if available
     if (proposalTimelineItems.length > 0) {
       allItems.push(...proposalTimelineItems);
     }
 
-    // Add API logs if available (these will have real timestamps)
     if (apiTimelineItems.length > 0) {
-      // Assign sortOrder based on timestamp for API items (higher than proposal items)
       const apiItemsWithSortOrder = apiTimelineItems.map((item, index) => ({
         ...item,
         sortOrder: 200 + index,
       }));
       allItems.push(...apiItemsWithSortOrder);
     }
-
-    // Sort by sortOrder descending (highest first = most recent first)
     return allItems.sort((a, b) => (b.sortOrder || 0) - (a.sortOrder || 0));
   }, [apiTimelineItems, proposalTimelineItems]);
 
