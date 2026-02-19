@@ -1,51 +1,100 @@
+import { icons } from "@/config/icons";
 import { Button } from "@/shared/components/commonUI/Buttons";
 import { FormContainer } from "@/shared/components/commonUI/inputs/FormContainer";
 import { OTPInput } from "@/shared/components/commonUI/inputs/OTPInput";
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { IoClose } from "react-icons/io5";
+
 
 export interface OTPValues {
   otp: string;
 }
 
+interface OTPPageProps {
+  header?: string;
+  description?: string;
+  onClose?: () => void;
+  /**
+   * @deprecated Use onSubmit instead.
+   */
+  handleNavigate?: () => void;
+  /**
+   * Optional handler that receives the OTP value on submission.
+   */
+  onSubmit?: (data: OTPValues) => void;
+  buttonText?: string;
+  isSuccess?: boolean;
+  /**
+   * Initial time in seconds for the countdown timer.
+   * @default 60
+   */
+  initialTimerSeconds?: number;
+  /**
+   * Maximum number of resend attempts allowed.
+   * @default Infinity
+   */
+  maxResendAttempts?: number;
+  /**
+   * Callback function triggered when the resend button is clicked.
+   */
+  onResend?: () => void;
+}
+
 /**
- * OTP verification page component for handling one-time password authentication.
- * Provides an input field for entering OTP, countdown timer, and resend functionality.
- * Used in email/phone verification processes during registration or login.
+ * A self-contained component for OTP (One-Time Password) verification, typically used within a modal or popup.
  *
- * @component
- * @param {VerifyEmailModalProps} props - Component properties
- * @param {string} [props.header] - Header text for the OTP modal
- * @param {string} [props.description] - Description text for the OTP process
- * @param {() => void} [props.onClose] - Function to close the modal
- * @param {() => void} [props.handleNavigate] - Function to navigate after successful verification
- * @example
- * return (
- *   <OTPPage
- *     header="Verify Email"
- *     description="Enter the code sent to your email"
- *     onClose={() => setShowOTP(false)}
- *     handleNavigate={() => navigate('/dashboard')}
- *   />
- * )
+ * This component provides a complete UI for OTP entry, including input fields, a countdown
+ * timer for resending the code, and a submit button. It manages its own form state using
+ * `react-hook-form`.
  *
- * @returns {JSX.Element} The rendered OTP verification component
+ * It is used for various verification flows, such as email/phone confirmation during sign-up,
+ * password resets, or two-factor authentication at login.
+ *
+ * @param {OTPPageProps} props - The props for the component.
+ * @param {string} [props.header] - The main title displayed in the modal.
+ * @param {string} [props.description] - A descriptive text shown below the header.
+ * @param {() => void} [props.onClose] - Callback function to close the modal.
+ * @param {() => void} [props.handleNavigate] - Callback executed on successful OTP submission to proceed (Deprecated, use onSubmit).
+ * @param {function} [props.onSubmit] - Optional handler that receives the OTP value on submission.
+ * @param {string} [props.buttonText="Submit"] - The text for the submit button.
+ * @param {boolean} [props.isSuccess] - If true, hides the OTP input and timer.
+ * @param {number} [props.initialTimerSeconds=60] - Initial time in seconds for the countdown timer.
+ * @param {number} [props.maxResendAttempts=Infinity] - Maximum number of resend attempts allowed.
+ * @param {() => void} [props.onResend] - Callback function triggered when the resend button is clicked.
  */
-const OTPPage: React.FC<VerifyEmailModalProps> = ({
+
+const isUniformOtp = (value: string) => /^(\d)\1{5}$/.test(value);
+
+const OTPPage: React.FC<OTPPageProps> = ({
   header,
   description,
   onClose,
-  handleNavigate,
+  onSubmit,
+  buttonText,
+  isSuccess,
+  initialTimerSeconds = 60,
+  maxResendAttempts = Infinity,
+  onResend,
 }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [timeLeft, setTimeLeft] = useState<number>(initialTimerSeconds);
+  const [resendCount, setResendCount] = useState<number>(0);
   const inputRefs = useRef<HTMLInputElement[]>([]);
 
-  const method = useForm({
+  const method = useForm<OTPValues>({
     defaultValues: {
       otp: "",
     },
   });
+
+  const otpValue = method.watch("otp");
+
+  useEffect(() => {
+    if (!otpValue || otpValue.length < 6) return;
+
+    if (!isUniformOtp(otpValue)) {
+      method.clearErrors("otp");
+    }
+  }, [otpValue, method]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -53,13 +102,37 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-  const handleSubmit = () => {
-    handleNavigate?.();
+  const handleSubmit = async (data: OTPValues) => {
+    if (!data.otp || data.otp.length !== 6) {
+      method.setError("otp", {
+        type: "validate",
+        message: "Please enter the 6-digit OTP",
+      });
+      return;
+    }
+
+    if (isUniformOtp(data.otp)) {
+      method.setError("otp", {
+        type: "validate",
+        message: "OTP can't be the same number",
+      });
+      return;
+    }
+
+      // Pass the plain OTP value to onSubmit
+      onSubmit?.({ ...data, otp: data.otp });
   };
 
   const handleResend = () => {
-    setTimeLeft(60);
-    inputRefs.current[0].focus();
+    if (resendCount >= maxResendAttempts) return;
+
+    onResend?.();
+    setTimeLeft(initialTimerSeconds);
+    setResendCount((prev) => prev + 1);
+
+    if (inputRefs.current && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
   };
 
   return (
@@ -70,10 +143,11 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
         className="w-full"
       >
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg relative gap-3">
-          <IoClose
+          <icons.closeFilled
             className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 h-7 w-7 cursor-pointer"
             onClick={onClose}
           />
+
           <div className="p-2 flex flex-col gap-2 items-center justify-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
               {header}
@@ -82,28 +156,37 @@ const OTPPage: React.FC<VerifyEmailModalProps> = ({
               {description}
             </p>
           </div>
-          <div className="p-2">
-            <OTPInput name="otp" length={6} errorAlign="center" />
-            <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
-              <span>
-                {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
-              </span>
-              <button
-                onClick={handleResend}
-                disabled={timeLeft > 0}
-                className={`text-green-600 dark:text-green-400 font-medium ${
-                  timeLeft > 0 ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Resend
-              </button>
+
+          {!isSuccess && (
+            <div className="p-1">
+              <OTPInput name="otp" length={6} errorAlign="center" />
+
+              <div className="flex justify-between items-center mb-4 text-sm text-gray-500 dark:text-gray-400 p-5">
+                <span>
+                  {timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={timeLeft > 0 || resendCount >= maxResendAttempts}
+                  className={`text-green-600 dark:text-green-400 font-medium ${
+                    timeLeft > 0 || resendCount >= maxResendAttempts
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  Resend
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
           <Button
             type="submit"
             className="w-full bg-gradient-to-r from-teal-700 to-teal-900 text-white py-2 rounded-lg hover:opacity-90 transition"
           >
-            Submit
+            {buttonText || "Submit"}
           </Button>
         </div>
       </FormContainer>
