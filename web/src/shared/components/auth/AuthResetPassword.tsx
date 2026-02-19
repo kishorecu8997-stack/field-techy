@@ -39,12 +39,13 @@ const AuthResetPassword = ({ role }: AuthResetPasswordProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
+  const otp = searchParams.get("otp") || "";
   const { success, error: toastError } = useToast();
 
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
       email: email,
-      otp: "",
+      otp: otp,
       password: "",
       confirmPassword: "",
     },
